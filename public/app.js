@@ -905,7 +905,7 @@
     html+='</tbody></table>';
     box.innerHTML=html;
   }
-  function eqRefresh(){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); renderEqHeatmap(); }
+  function eqRefresh(){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
 
   /* ═══════════ WORKSPACE LANDING ═══════════ */
   var WS={
@@ -1877,7 +1877,7 @@
   renderPending(); renderBillInsights();
   renderTeam(); renderEscalation(); renderProfileInsights();
   renderTickets(); renderContactInsights();
-  renderEqBudget(); renderEqInsights(); setEqView('plan'); renderEqHistory(); updateEqSubmitBtn(); renderEqHeatmap();
+  renderEqBudget(); renderEqInsights(); setEqView('plan'); renderEqHistory(); updateEqSubmitBtn();
   document.addEventListener('click',eqPopDocClick);
   syncRecert();
   (function(){
@@ -2231,7 +2231,7 @@ function ctForecastView(yr){
   var bars=FY.bars.map(function(b,i){return '<div class="ctb"><div class="ctb-stack'+(i===FY.focus?' focus':'')+'" style="height:'+b[1]+'%"><div style="height:34%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:33%;background:var(--g300)"></div></div><div class="ctb-l'+(i===FY.focus?' focus':'')+'">'+ b[0]+'</div></div>';}).join('');
   var rowHtml=FY.rows.map(function(r){return '<div class="lrow" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div class="lrow-pri">'+r[0]+'</div>'+r.slice(1).map(function(v,i){return '<div'+(i===FY.hi?' style="font-weight:800;color:var(--red)"':'')+'>'+v+'</div>';}).join('')+'</div>';}).join('');
   var colHdr=FY.cols.map(function(c){return '<div>'+c+'</div>';}).join('');
-  return '<div class="ct-fy-summary"><div class="cfs"><div class="cfs-n">'+FY.total+'</div><div class="cfs-k">'+(yr==='FY25'?'FY25':'FY26')+' forecast revenue</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">'+FY.yoy+'</div><div class="cfs-k">year-over-year</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n">'+FY.win+'</div><div class="cfs-k">committed vs pipeline</div></div></div>'
+  return '<div class="ct-fy-summary"><div class="cfs"><div class="cfs-n">'+FY.total+'</div><div class="cfs-k">'+(yr==='FY25'?'FY25':'FY26')+' forecast revenue</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">'+FY.yoy+'</div><div class="cfs-k">year-over-year growth</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n">'+FY.win+'</div><div class="cfs-k">committed vs pipeline</div></div></div>'
   +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">FY forecast by pillar</span><span class="sub">$ millions \xb7 '+(yr==='FY25'?'FY 2025 view':'FY 2026 view')+'</span></div><div class="ct-bars big">'+bars+'</div><div class="ct-legend" style="margin-top:10px"><span><i style="background:var(--red)"></i>Building</span><span><i style="background:var(--charcoal)"></i>Infrastructure</span><span><i style="background:var(--g300)"></i>Industrial</span></div><div class="cfs-note">'+ctIc('sparkle',14)+' '+FY.note+'</div></div>'
   +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By product line</span><span class="sub">'+(yr==='FY25'?'anchored on FY25F':'anchored on FY26F')+'</span></div><div class="list"><div class="lrow lhead" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div>Product line</div>'+colHdr+'</div>'+rowHtml+'</div></div>';
 }
