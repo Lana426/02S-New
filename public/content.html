@@ -1037,17 +1037,11 @@
       <span style="font-size:10px;color:rgba(255,255,255,.4);display:block;margin-top:2px">Control Tower</span>
     </div>
     <div class="sb-nav">
-      <div class="sb-group">Overview</div>
-      <button class="sb-item active" data-screen="ct-dash" onclick="ctNav('ct-dash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
-      <div class="sb-group">Portfolio</div>
-      <button class="sb-item" data-screen="ct-forecast" onclick="ctNav('ct-forecast')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Demand forecast</button>
-      <button class="sb-item" data-screen="ct-financials" onclick="ctNav('ct-financials')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Financials &amp; margin</button>
-      <div class="sb-group">Catalog</div>
-      <button class="sb-item" data-screen="ct-rates" onclick="ctNav('ct-rates')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Rate management</button>
-      <div class="sb-group">Reporting</div>
-      <button class="sb-item" data-screen="ct-analytics" onclick="ctNav('ct-analytics')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/></svg>Analytics</button>
+      <div class="sb-group">02S Opportunities</div>
+      <button class="sb-item active" data-screen="ct-opp-list" onclick="ctNav('ct-opp-list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Opportunities</button>
+      <button class="sb-item" data-screen="ct-opp-detail" onclick="ctNav('ct-opp-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Margin plan</button>
     </div>
-    <div class="sb-foot">02S Control Tower &middot; leadership view</div>
+    <div class="sb-foot">02S Control Tower &middot; pursuit &amp; finance</div>
   </nav>
 
   <!-- MAIN -->
@@ -1055,107 +1049,134 @@
     <div class="topbar">
       <div class="tb-brand"><span>02S</span> Control Tower</div>
       <div class="tb-right">
-        <button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to workspaces</button>
+        <button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to workspaces</button>
       </div>
     </div>
     <div class="content">
 
-      <!-- ══ DASHBOARD ══ -->
-      <div class="cc-screen" id="ct-dash" style="display:block">
-        <div class="phead"><div><h1>Dashboard</h1><div class="meta"><span class="chip">02S Control Tower</span></div></div></div>
-        <div class="vitals">
-          <div class="vital ok">
-            <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Portfolio value</div>
-            <div class="vv">$47.4M</div>
-            <div class="vsub"><span class="tag ok">3 active &middot; 2 pursuit</span></div>
-          </div>
-          <div class="vital ok">
-            <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Wtd. margin (active)</div>
-            <div class="vv">13.4%</div>
-            <div class="vsub"><span class="tag ok">Above 12% target</span></div>
-          </div>
-          <div class="vital warn">
-            <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>At-risk projects</div>
-            <div class="vv">1</div>
-            <div class="vsub"><span class="tag warn">Desert Basin BESS</span></div>
-          </div>
-          <div class="vital info">
-            <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>Pursuit pipeline</div>
-            <div class="vv">$21.0M</div>
-            <div class="vsub"><span class="tag info">2 opportunities</span></div>
-          </div>
+      <!-- ══ OPPORTUNITIES LIST ══ -->
+      <div class="cc-screen" id="ct-opp-list" style="display:block">
+        <div class="phead"><div><h1>02S Opportunities</h1><div class="meta"><span class="chip">Pipeline, margin plans &amp; pillar breakdowns</span></div></div></div>
+
+        <div class="opp-flag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div><b>Wireframe from the existing 02S Opportunities product.</b> Rebuilt here as live HTML to sit alongside the rest of the prototype — the real product is in production today.</div>
         </div>
-        <div class="t1grid">
-          <div>
-            <div class="sec-h"><span class="st">Needs attention</span></div>
-            <div class="attn-ns" style="margin-top:12px">
-              <div style="padding:14px 16px;border:1px solid var(--g200);border-radius:8px;margin-bottom:10px">
-                <div class="rtop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--red)"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span class="rname" style="font-weight:600;font-size:13px;margin-left:8px">Desert Basin BESS &mdash; over budget</span><span class="rprio">High</span></div>
-                <div class="rreason">Forecast at complete $5.6M vs $5.3M budget &mdash; $300K overrun. Closeout phase. Review scope with project team.</div>
-                <button class="btn btn-ghost btn-sm" onclick="ctNav('ct-financials')" style="margin-top:6px">View financials</button>
-              </div>
-              <div style="padding:14px 16px;border:1px solid var(--g200);border-radius:8px;margin-bottom:10px">
-                <div class="rtop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--warning)"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg><span class="rname" style="font-weight:600;font-size:13px;margin-left:8px">Rate catalog &mdash; 2 items due for review</span><span class="rprio" style="color:var(--warning)">Medium</span></div>
-                <div class="rreason">Man Lift / Boom 60&ndash;80ft (BML-60) and Compactor (CMP-SL) last updated Jan 2026 &mdash; annual review due Q3 2026.</div>
-                <button class="btn btn-ghost btn-sm" onclick="ctNav('ct-rates')" style="margin-top:6px">Review rates</button>
-              </div>
-              <div style="padding:14px 16px;border:1px solid var(--g200);border-radius:8px">
-                <div class="rtop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--info)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><span class="rname" style="font-weight:600;font-size:13px;margin-left:8px">Highplains Solar &mdash; estimating window closes Jul 21</span><span class="rprio" style="color:var(--info)">Low</span></div>
-                <div class="rreason">Pursuit estimate due in 0 days. Equipment demand peaks Q3&ndash;Q4 2026 &mdash; confirm taxonomy and rates before submission.</div>
-                <button class="btn btn-ghost btn-sm" onclick="ctNav('ct-forecast')" style="margin-top:6px">View forecast</button>
-              </div>
-            </div>
+
+        <div class="opp-filter">
+          <span class="opp-fchip">Name <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Tier <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Business Unit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">State <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Region <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Market Sector <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Stage <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Stage Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Has Margin Plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Self Perform Scope <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span style="margin-left:auto;font-size:11.5px;color:var(--info)">Award / construction date from <b>Thu, Jan 1, 2026</b></span>
+        </div>
+
+        <div class="opp-cards">
+          <div class="opp-sum"><div class="os-k">Revenue opportunity</div><div class="os-v">$6.47B</div><div class="os-s">$3.13B awarded</div></div>
+          <div class="opp-sum"><div class="os-k">Sales opportunity</div><div class="os-v">$4.77B</div><div class="os-s">$2.15B awarded</div></div>
+          <div class="opp-sum"><div class="os-k">Sales margin</div><div class="os-v">$946.98M</div><div class="os-s">$451.51M awarded</div></div>
+        </div>
+
+        <div class="opp-totals">
+          <div class="opp-tot"><div class="ot-k">Total opportunities</div><div class="ot-v">634</div></div>
+          <div class="opp-tot"><div class="ot-k">Margin plans</div><div class="ot-v">226</div></div>
+        </div>
+
+        <div class="card" style="border-top:3px solid var(--red)">
+          <div class="card-h">
+            <span class="card-title" style="color:var(--red)">All opportunities</span>
+            <span class="hcount">select one to open its margin plan</span>
+            <div class="hright"><button class="btn btn-ghost btn-sm" onclick="toast('New margin plan (demo)')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create margin plan</button></div>
           </div>
-          <div>
-            <div class="sec-h"><span class="st">Quick links</span></div>
-            <div class="mini" style="margin-top:12px">
-              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Demand forecast</span><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-forecast')">Open</button></div>
-              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Financials &amp; margin</span><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-financials')">Open</button></div>
-              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/></svg>Rate management</span><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-rates')">Open</button></div>
-              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="2" y="13" width="4" height="8" rx="1"/></svg>Analytics</span><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-analytics')">Open</button></div>
+          <div class="opp-grid">
+
+            <div class="opp-item on" onclick="ctNav('ct-opp-detail')">
+              <div class="oi-head">
+                <div>
+                  <b>Fountain Valley WTP Pretreatment</b>
+                  <div class="oi-tags"><span class="opp-chip opp-chip-warn">Medium</span>Construction Management/General Contracting &nbsp;<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>&nbsp;Colorado Springs</div>
+                </div>
+                <span class="oi-val">$40.0M</span>
+              </div>
+              <div class="oi-tl">
+                <div class="oi-tl-h">Construction timeline</div>
+                <div class="oi-tl-row"><span><i>Award</i>—</span><span><i>Start</i>12/01/2027</span><span><i>Complete</i>12/31/2029</span></div>
+              </div>
+              <div class="oi-nolink">No linked margin plans</div>
             </div>
+
+            <div class="opp-item" onclick="ctNav('ct-opp-detail')">
+              <div class="oi-head">
+                <div>
+                  <b>1GPA – 2026 Q1 JOC Sales</b>
+                  <div class="oi-tags"><span class="opp-chip opp-chip-red">High</span>Construction Management/General Contracting &nbsp;<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>&nbsp;Phoenix</div>
+                </div>
+                <span class="oi-val">$1.8M</span>
+              </div>
+              <div class="oi-tl">
+                <div class="oi-tl-h">Construction timeline</div>
+                <div class="oi-tl-row"><span><i>Award</i>—</span><span><i>Start</i>08/03/2026</span><span><i>Complete</i>03/31/2027</span></div>
+              </div>
+              <div class="oi-mp">
+                <div class="oi-tl-h">Margin plan</div>
+                <div class="oi-tl-row"><span><i>Revenue opp.</i>$214.9K</span><span><i>TAM capture</i>29.4%</span><span><i>Sales opp.</i>$63.2K</span><span><i>Sales margin</i>$15.0K</span></div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <!-- ══ DEMAND FORECAST ══ -->
-      <div class="cc-screen" id="ct-forecast">
-        <div class="phead"><div><h1>Demand forecast</h1><div class="meta"><span class="chip">02S Control Tower</span><span class="chip">Equipment &middot; Q1&ndash;Q4 2026</span></div></div></div>
-        <div class="insight" style="margin-bottom:20px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          Q2 2026 is the portfolio peak for equipment demand (Apex Solar at full build). Highplains Solar ramps in Q3&ndash;Q4 &mdash; confirm equipment allocation before the estimating submission deadline.
+      <!-- ══ MARGIN PLAN (OPPORTUNITY DETAIL) ══ -->
+      <div class="cc-screen" id="ct-opp-detail">
+        <div class="phead" style="align-items:flex-start">
+          <div><h1 style="font-size:22px">1GPA – 2026 Q1 JOC Sales</h1><div class="meta"><span class="chip">Margin plan &middot; opportunity detail</span></div></div>
+          <button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-list')" style="flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M15 18l-6-6 6-6"/></svg>All opportunities</button>
         </div>
+
+        <div class="opp-flag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div><b>Wireframe from the existing 02S Opportunities product.</b> Rebuilt here as live HTML to sit alongside the rest of the prototype.</div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px">
+          <div class="opp-detail-top">
+            <div><div class="odt-k">Estimated overall value</div><div class="odt-v">$1,812,212</div></div>
+            <div><div class="odt-k">Market type</div><div class="odt-v">Commercial</div></div>
+            <div><div class="odt-k">Region</div><div class="odt-v">Southwest</div></div>
+          </div>
+        </div>
+
+        <div class="opp-metric-row">
+          <div class="omr"><div class="omr-k">Revenue opportunity</div><div class="omr-v">$214.91K</div></div>
+          <div class="omr"><div class="omr-k">TAM capture %</div><div class="omr-v">29.4%</div></div>
+          <div class="omr"><div class="omr-k">Sales opportunity</div><div class="omr-v">$63.24K</div></div>
+          <div class="omr"><div class="omr-k">Sales margin</div><div class="omr-v">$14.97K</div></div>
+        </div>
+
+        <div class="card" style="margin:14px 0">
+          <div class="card-h">
+            <span class="card-title">Risks &amp; opportunities</span>
+            <span class="opp-chip opp-chip-gray" style="margin-left:8px">Weighted impact —</span>
+            <div class="hright"><button class="btn btn-ghost btn-sm" onclick="toast('Add risk/opportunity (demo)')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create</button></div>
+          </div>
+          <div style="font-size:12px;color:var(--g500);padding:6px 2px">No risks or opportunities captured yet.</div>
+        </div>
+
         <div class="card">
-          <div class="card-h"><span class="card-title">Cross-project equipment demand</span><span class="hcount">units on rent per quarter</span></div>
-          <div id="ctForecastTable" style="padding:0 0 4px"></div>
+          <div class="card-h"><span class="card-title">Pillar breakdown</span><span class="hcount">edit product-line detail in each pillar to inform the estimate</span></div>
+          <div class="opp-tabs" id="ctPillarTabs">
+            <span class="opp-tab active" onclick="ctPillarTab(this)">Equipment</span><span class="opp-tab" onclick="ctPillarTab(this)">Logistics</span><span class="opp-tab" onclick="ctPillarTab(this)">Procurement</span><span class="opp-tab" onclick="ctPillarTab(this)">Prefabrication</span><span class="opp-tab" onclick="ctPillarTab(this)">Professional Services</span>
+          </div>
+          <div class="opp-pillar-sum">
+            <span style="color:var(--red);font-weight:700;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Equipment</span>
+            <span>Revenue opportunity <b>$28,995</b></span>
+            <span>Sales opportunity <b>$28,995</b></span>
+            <span>Sales margin <b>$10,058</b></span>
+            <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="toast('Add product line (demo)')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Product lines</button>
+          </div>
+          <div class="opp-llist">
+            <div class="opp-lrow opp-lrow-head opp-lrow-cols"><div>Product line</div><div>Rev. opp.</div><div>Rev. est.</div><div>Capture %</div><div>Sales opp.</div><div>Profit %</div><div>Sales margin</div><div>Prob. %</div></div>
+            <div class="opp-lrow opp-lrow-cols"><div class="opp-lrow-pri" style="color:var(--info)">Fleet &amp; Personnel Assets</div><div>$4.5K</div><div>$4.5K</div><div>100.0%</div><div>$4.5K</div><div>60.0%</div><div><b>$2.7K</b></div><div>100.0%</div></div><div class="opp-lrow opp-lrow-cols"><div class="opp-lrow-pri" style="">Contractor Controller Equipment Program (CCEP)</div><div>—</div><div>—</div><div>—</div><div>—</div><div>—</div><div><b>—</b></div><div>—</div></div><div class="opp-lrow opp-lrow-cols"><div class="opp-lrow-pri" style="">Fuel Services</div><div>—</div><div>—</div><div>—</div><div>—</div><div>—</div><div><b>—</b></div><div>—</div></div><div class="opp-lrow opp-lrow-cols"><div class="opp-lrow-pri" style="">Equipment Management Program (EMP)</div><div>$24.5K</div><div>$24.5K</div><div>100.0%</div><div>$24.5K</div><div>30.0%</div><div><b>$7.3K</b></div><div>100.0%</div></div>
+          </div>
         </div>
-      </div>
-
-      <!-- ══ FINANCIALS & MARGIN ══ -->
-      <div class="cc-screen" id="ct-financials">
-        <div class="phead"><div><h1>Financials &amp; margin</h1><div class="meta"><span class="chip">02S Control Tower</span></div></div></div>
-        <div id="ctFinancialsTable"></div>
-      </div>
-
-      <!-- ══ RATE MANAGEMENT ══ -->
-      <div class="cc-screen" id="ct-rates">
-        <div class="phead">
-          <div><h1>Rate management</h1><div class="meta"><span class="chip">02S Control Tower</span><span class="chip">02S rate catalog &middot; effective Jan 2026</span></div></div>
-          <div style="display:flex;gap:8px;align-items:flex-end"><button class="btn btn-dark btn-sm" onclick="ctAddRate()">+ Add rate</button></div>
-        </div>
-        <div class="insight" style="margin-bottom:20px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex-shrink:0"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
-          2 rates are due for annual review &mdash; BML-60 and CMP-SL. Rates are used to compute project cost estimates and YardHub order pricing.
-        </div>
-        <div class="card" style="padding:0">
-          <div id="ctRatesTable"></div>
-        </div>
-      </div>
-
-      <!-- ══ ANALYTICS ══ -->
-      <div class="cc-screen" id="ct-analytics">
-        <div class="phead"><div><h1>Analytics</h1><div class="meta"><span class="chip">02S Control Tower</span></div></div></div>
-        <div id="ctAnalyticsContent"></div>
       </div>
 
     </div>
