@@ -880,7 +880,6 @@
       if(a<0)a=0; if(b<0)b=N-1;
       for(var mi=a;mi<=b&&mi<N;mi++) data[catKey][mi]+=l.qty;
     }
-    function cellBg(v){ if(!v)return 'var(--g100)'; if(v<=20)return 'rgba(220,29,52,0.15)'; if(v<=50)return 'rgba(220,29,52,0.35)'; return 'rgba(220,29,52,0.65)'; }
     // compute per-month peak category index
     var colMax=new Array(N).fill(0);
     for(var ci2=0;ci2<cats.length;ci2++) for(var mj2=0;mj2<N;mj2++) if(data[cats[ci2]][mj2]>colMax[mj2]) colMax[mj2]=data[cats[ci2]][mj2];
@@ -895,11 +894,11 @@
       html+='<tr><td style="padding:4px 8px;font-weight:600;color:var(--g700);font-size:11.5px;border-bottom:1px solid var(--g150)">'+cat+'</td>';
       for(var mj=0;mj<N;mj++){
         var v=row[mj];
-        var bg=cellBg(v);
-        var clr=v?'var(--g900)':'var(--g400)';
         var isPeak=(v>0&&colPeak[mj]===ci);
-        var outline=isPeak?';outline:2px solid var(--red);outline-offset:-2px;z-index:1;position:relative':'';
-        html+='<td style="text-align:center;height:28px;width:40px;background:'+bg+';color:'+clr+';font-weight:'+(isPeak?'800':(v?'600':'400'))+';border-bottom:1px solid var(--g150);border-left:1px solid rgba(0,0,0,.04)'+outline+'" title="'+(v?cat+': '+v+' units'+(isPeak?' (peak this month)':''):'')+'"><span style="'+(isPeak?'text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px':'')+'font-size:'+(isPeak?'11.5':'11')+'px">'+(v||'')+'</span></td>';
+        var bg=isPeak?'var(--red)':'var(--g100)';
+        var clr=isPeak?'#fff':(v?'var(--g700)':'var(--g300)');
+        var fw=isPeak?'700':(v?'500':'400');
+        html+='<td style="text-align:center;height:28px;width:40px;background:'+bg+';color:'+clr+';font-weight:'+fw+';border-bottom:1px solid var(--g150);border-left:1px solid rgba(0,0,0,.04)" title="'+(v?cat+': '+v+' units'+(isPeak?' — peak this month':''):'')+'"><span style="font-size:11px">'+(v||'')+'</span></td>';
       }
       html+='</tr>';
     }
@@ -1787,11 +1786,11 @@
     var uc=document.getElementById('uc'); if(uc)uc.style.display='none';
     var lp=document.getElementById('landing'); if(lp)lp.style.display='none';
     var ap=document.querySelector('.app'); if(ap)ap.style.display='none';
-    document.getElementById('ccApp').style.display = 'flex';
+    var cc=document.getElementById('ccApp'); if(cc)cc.style.display='flex';
     ccNav('cc-dash');
   }
   function backFromCC() {
-    document.getElementById('ccApp').style.display = 'none';
+    var cc=document.getElementById('ccApp'); if(cc)cc.style.display='none';
     var lp=document.getElementById('landing'); if(lp)lp.style.display='flex';
   }
   function ccNav(id) {
@@ -1929,23 +1928,44 @@
     'scissor':['Asset › Access › Scissor Lift › Electric › 30-35ft','Asset › Access › Scissor Lift › Electric › 19-26ft','Asset › Access › Scissor Lift › Rough-Terrain']
   };
   function ccTaxKey(item){ var s=item.toLowerCase(); if(s.indexOf('excavator')>-1)return 'excavator'; if(s.indexOf('tower crane')>-1)return 'tower crane'; if(s.indexOf('telehandler')>-1)return 'telehandler'; if(s.indexOf('scissor')>-1)return 'scissor'; return ''; }
+  function ccSetStatus(id, val){
+    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
+    r.status=val; renderCcBacklog();
+  }
   function renderCcBacklog(){
     var el=document.getElementById('ccBacklogRows'); if(!el)return;
     var f=CC_BACKLOG_FILTER;
-    var rows=CC_BACKLOG.filter(function(r){ return f==='All'||(f==='Equipment'&&r.pillar==='Equipment')||(f!=='Equipment'&&r.pillar!=='Equipment'); });
+    var rows=CC_BACKLOG.filter(function(r){ return f==='All'||(f==='Equipment'&&r.pillar==='Equipment')||(f==='Other'&&r.pillar!=='Equipment'); });
     if(!rows.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12.5px">No open requests.</div>';return;}
-    var pillarDot=function(p){var clr={Equipment:'var(--red)',Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'}[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+clr+';margin-right:5px;flex-shrink:0"></span>';};
-    var taxChip=function(r){if(!r.ovr)return '<span class="cc-badge neu">Non-equipment</span>';if(r.taxMapped)return '<span class="cc-badge ok" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">✓ Confirmed</span>';return '<span class="cc-badge warn" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">⚡ Needs confirm</span>';};
-    var ovrChip=function(r){if(!r.ovr)return '—';var ov=CC_BACKLOG_OVERRIDES[r.id];var rec=ov?ov.choice:r.ovr.rec;return '<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned':'Re-rent')+(ov?' EM':'')+'</span>';};
-    var statChip=function(r){var m={'New':'warn','Acknowledged':'info','In fulfillment':'ok','Fulfilled':'ok'};return '<span class="cc-badge '+(m[r.status]||'neu')+'">'+r.status+'</span>';};
-    el.innerHTML='<table class="cc-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:90px">ID</th><th>Item</th><th style="width:130px">Taxonomy</th><th style="width:110px">Owned vs. re-rent</th><th style="width:100px">Status</th><th style="width:80px"></th></tr></thead><tbody>'
+    var pillarClr={Equipment:'var(--red)',Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'};
+    var dot=function(p){var c=pillarClr[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+c+';margin-right:5px;flex-shrink:0"></span>';};
+    var taxCell=function(r){
+      if(r.pillar!=='Equipment') return '<td colspan="2"><div style="display:flex;align-items:center;gap:6px">'+dot(r.pillar)+'<span style="font-size:12px;color:var(--g600)">'+r.pillar+'</span></div></td>';
+      var tax=r.taxMapped?'<span class="cc-badge ok" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">✓ Confirmed</span>':'<span class="cc-badge warn" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">⚡ Needs confirm</span>';
+      var ov=CC_BACKLOG_OVERRIDES[r.id]; var rec=ov?ov.choice:r.ovr.rec;
+      var ovrBadge='<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned':'Re-rent')+(ov?' EM':'')+'</span>';
+      return '<td>'+tax+'</td><td>'+ovrBadge+'</td>';
+    };
+    var statCell=function(r){
+      if(r.pillar!=='Equipment'){
+        var opts=['New','Acknowledged','In fulfillment','Fulfilled'];
+        return '<td><select class="acc-sel" style="font-size:11.5px;padding:3px 6px;height:26px" onchange="ccSetStatus(\''+r.id+'\',this.value)">'+opts.map(function(o){return '<option'+(r.status===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select></td>';
+      }
+      var m={'New':'warn','Acknowledged':'info','In fulfillment':'ok','Fulfilled':'ok'};
+      return '<td><span class="cc-badge '+(m[r.status]||'neu')+'">'+r.status+'</span></td>';
+    };
+    var showEqCols = f!=='Other';
+    var thead = showEqCols
+      ? '<thead><tr><th style="width:86px">ID</th><th>Item</th><th style="width:118px">Taxonomy</th><th style="width:96px">OvR</th><th style="width:108px">Status</th><th style="width:82px"></th></tr></thead>'
+      : '<thead><tr><th style="width:86px">ID</th><th>Item</th><th colspan="2">Pillar</th><th style="width:150px">Status</th><th style="width:82px"></th></tr></thead>';
+    el.innerHTML='<table class="cc-table" style="width:100%">'+thead+'<tbody>'
       +rows.map(function(r){
-        return '<tr><td><div class="cc-table-pri"><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></div></td>'
-          +'<td><div style="font-weight:600;font-size:12.5px">'+r.item+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+pillarDot(r.pillar)+r.project+'</div></td>'
-          +'<td>'+taxChip(r)+'</td>'
-          +'<td>'+ovrChip(r)+'</td>'
-          +'<td>'+statChip(r)+'</td>'
-          +'<td><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
+        return '<tr>'
+          +'<td><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></td>'
+          +'<td><div style="font-weight:600;font-size:12.5px">'+r.item+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+dot(r.pillar)+r.project+'</div></td>'
+          +taxCell(r)
+          +statCell(r)
+          +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
           +'</tr>';
       }).join('')
       +'</tbody></table>';
@@ -2138,7 +2158,7 @@
           +'<td>'+r.qty+'</td>'
           +'<td>'+r.need+'</td>'
           +'<td><span class="cc-badge '+(r.status==='New'?'warn':r.status==='Acknowledged'?'info':'ok')+'">'+r.status+'</span></td>'
-          +'<td><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
+          +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
           +'</tr>';
       }).join('')+'</tbody></table>';
   }

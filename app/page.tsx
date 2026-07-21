@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import Script from 'next/script';
 
 export default function Page() {
   useEffect(() => {
@@ -9,14 +8,13 @@ export default function Page() {
       .then(r => r.text())
       .then(html => {
         const root = document.getElementById('appRoot');
-        if (root) root.innerHTML = html;
+        if (!root) return;
+        root.innerHTML = html;
+        const script = document.createElement('script');
+        script.src = '/app.js';
+        document.body.appendChild(script);
       });
   }, []);
 
-  return (
-    <>
-      <div id="appRoot" />
-      <Script src="/app.js" strategy="afterInteractive" />
-    </>
-  );
+  return <div id="appRoot" />;
 }

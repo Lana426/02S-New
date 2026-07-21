@@ -20,14 +20,14 @@
       <div class="caps"><span class="cap">Demand planning</span><span class="cap">Catalog &amp; ordering</span><span class="cap">Order tracking</span><span class="cap">Billing &amp; budget</span></div>
       <div class="wcard-cta">Enter workspace <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
-    <div class="wcard soon live" onclick="enterWorkspace('command')">
-      <span class="wcard-st soon">Under construction</span>
+    <div class="wcard live" onclick="enterWorkspace('command')">
+      <span class="wcard-st ok">Active</span>
       <div class="wcard-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
       <h3>Command Center</h3>
       <p class="who">02S operations &middot; equipment mgrs, dispatch &amp; fulfillment</p>
       <p class="desc">Receive and fulfill demand across every project &mdash; allocate the shared fleet, schedule logistics and hauls, and keep utilization high.</p>
       <div class="caps"><span class="cap">Demand intake</span><span class="cap">Fleet allocation</span><span class="cap">Dispatch</span><span class="cap">Utilization</span></div>
-      <div class="wcard-cta">Preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="wcard-cta">Enter workspace <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
     <div class="wcard soon live" onclick="enterWorkspace('control')">
       <span class="wcard-st soon">Under construction</span>
@@ -802,6 +802,232 @@
   </div>
 </div>
 
+<div class="app" id="ccApp" style="display:none">
+  <!-- SIDEBAR -->
+  <nav class="sb">
+    <div class="sb-logo" onclick="backFromCC()" title="Back to workspaces" style="cursor:pointer">
+      <span class="mark"><img src="data:image/png;base64,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" alt="McCarthy Building Companies"></span>
+      <span style="font-size:10px;color:rgba(255,255,255,.4);display:block;margin-top:2px">Command Center</span>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-group">Overview</div>
+      <button class="sb-item active" data-screen="cc-dash" onclick="ccNav('cc-dash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</button>
+      <div class="sb-group">Demand</div>
+      <button class="sb-item" data-screen="cc-edp" onclick="ccNav('cc-edp')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Equipment plan</button>
+      <div class="sb-group">Fulfillment</div>
+      <button class="sb-item" data-screen="cc-backlog" onclick="ccNav('cc-backlog')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Order backlog</button>
+      <div class="sb-group">Finance</div>
+      <button class="sb-item" data-screen="cc-billing" onclick="ccNav('cc-billing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>Billing &amp; anomalies</button>
+      <button class="sb-item" data-screen="cc-capex" onclick="ccNav('cc-capex')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>CAPEX plan</button>
+    </div>
+    <div class="sb-foot">02S Command Center &middot; ops view</div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-brand"><span>02S</span> Command Center</div>
+      <div class="tb-right">
+        <button class="btn btn-ghost btn-sm" onclick="backFromCC()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Back to workspaces</button>
+      </div>
+    </div>
+    <div class="content">
+
+      <!-- ══ DASHBOARD ══ -->
+      <div class="cc-screen" id="cc-dash" style="display:block">
+        <div class="phead"><div><h1>Dashboard</h1><div class="meta"><span class="chip">02S Command Center</span></div></div></div>
+        <div class="cc-recert-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;flex-shrink:0;color:var(--warning)"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+          <div style="flex:1"><b style="font-size:13px">Weekly on-rent recertification due</b><div style="font-size:12px;color:var(--g600);margin-top:2px">3 items awaiting confirmation &mdash; confirm by Friday or items auto-renew</div></div>
+          <button class="btn btn-dark btn-sm" onclick="openCcRecert()">Certify now</button>
+        </div>
+        <div class="vitals">
+          <div class="vital info"><div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 00-2 2v7h6m0-9h6m-6 0V4a1 1 0 011-1h4a1 1 0 011 1v7m0 0h4a2 2 0 012 2v7h-6"/></svg>Active requests</div><div class="vv">18</div><div class="vsub"><span class="tag info">Ops view</span></div></div>
+          <div class="vital warn"><div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>Awaiting OvR decision</div><div class="vv">3</div><div class="vsub"><span class="tag warn">Action needed</span></div></div>
+          <div class="vital warn"><div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Taxonomy to confirm</div><div class="vv">2</div><div class="vsub"><span class="tag warn">Needs map</span></div></div>
+          <div class="vital ok"><div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>Sent to YardHub this week</div><div class="vv">11</div><div class="vsub"><span class="tag ok">On track</span></div></div>
+        </div>
+        <div class="t1grid">
+          <div class="card">
+            <div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></span><span class="ht">Attention needed</span></div>
+            <div class="attn-list">
+              <div class="attn urgent"><span class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span><div class="abody"><div class="at">REQ-1058 needs taxonomy confirmation</div><div class="asub">2&times; excavator 45&ndash;55T &middot; confirm before YardHub push</div></div><div class="aright"><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-edp')">Review</button></div></div>
+              <div class="attn urgent"><span class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></span><div class="abody"><div class="at">REQ-1071 OvR pending</div><div class="asub">Tower crane &middot; owned vs. re-rent decision due</div></div><div class="aright"><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-ovr')">Review</button></div></div>
+              <div class="attn"><span class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></span><div class="abody"><div class="at">3 bills with anomalies &mdash; review before auto-finalize</div><div class="asub">$13.7K at risk &middot; 2-day auto-finalize window</div></div><div class="aright"><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-billing')">Review</button></div></div>
+            </div>
+          </div>
+          <div class="rail">
+            <div class="mini"><div class="mk">Quick links</div>
+              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Order backlog</span><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-backlog')">Open</button></div>
+              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Equipment plan</span><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-edp')">Open</button></div>
+              <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Billing</span><button class="btn btn-ghost btn-sm" onclick="ccNav('cc-billing')">Open</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ EQUIPMENT DEMAND PLAN — OPS ══ -->
+      <div class="cc-screen" id="cc-edp">
+        <div class="phead"><div><h1>Equipment demand plan <span style="font-size:16px;font-weight:500;color:var(--g500)">ops view</span></h1></div></div>
+        <div class="vitals">
+          <div class="vital ok"><div class="vk">Active projects</div><div class="vv">14</div></div>
+          <div class="vital ok"><div class="vk">Planned value</div><div class="vv">$18.4<span class="u">M</span></div></div>
+          <div class="vital warn"><div class="vk">Awaiting taxonomy</div><div class="vv">3</div><div class="vsub"><span class="tag warn">Needs map</span></div></div>
+          <div class="vital ok"><div class="vk">Owned coverage</div><div class="vv">67<span class="u">%</span></div><div class="vsub"><span class="tag ok">vs. re-rent</span></div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-h" style="padding-bottom:0">
+            <span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 00-2 2v7h6m0-9h6m-6 0V4a1 1 0 011-1h4a1 1 0 011 1v7m0 0h4a2 2 0 012 2v7h-6"/></svg></span>
+            <span class="ht">Requests from project teams</span>
+            <div class="hright"><button class="btn btn-red btn-sm" onclick="toast('Pushing confirmed requests to YardHub...')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Push selected to YardHub</button></div>
+          </div>
+          <div style="padding:12px 0 4px">
+            <table class="cc-table">
+              <thead><tr><th>Request ID / Asset</th><th>Taxonomy match</th><th>OvR</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="pri">REQ-1058</div><div class="sub">2&times; 50-ton excavator, dual aux + GPS</div></td>
+                  <td><button class="tax-chip ok" onclick="toast('Taxonomy confirmed — Asset › Earthmoving › Excavator › 45-55T')">&check; Asset &rsaquo; Earthmoving &rsaquo; Excavator &rsaquo; 45-55T</button></td>
+                  <td><span class="tag ok">Use owned</span></td>
+                  <td><span class="tag ok">Ready</span></td>
+                  <td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-1058')">Review</button></td>
+                </tr>
+                <tr>
+                  <td><div class="pri">REQ-2210</div><div class="sub">Tower crane for structural steel, ~250ft</div></td>
+                  <td><button class="tax-chip sug" onclick="ccConfirmTax('REQ-2210')">&#9889; Asset &rsaquo; Lifting &rsaquo; Tower Crane &middot; confirm</button></td>
+                  <td><span class="tag info">Re-rent</span></td>
+                  <td><span class="tag warn">Needs map</span></td>
+                  <td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2210')">Review</button></td>
+                </tr>
+                <tr>
+                  <td><div class="pri">REQ-2244</div><div class="sub">4&times; scissor lift, 32ft electric</div></td>
+                  <td><button class="tax-chip sug" onclick="ccConfirmTax('REQ-2244')">&#9889; Asset &rsaquo; Access &rsaquo; Scissor Lift &middot; confirm</button></td>
+                  <td><span class="tag ok">Use owned</span></td>
+                  <td><span class="tag warn">Needs map</span></td>
+                  <td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2244')">Review</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg></span><span class="ht">Portfolio demand roll-up</span></div>
+          <div style="padding:4px 18px 16px">
+            <table class="cc-table">
+              <thead><tr><th>Category</th><th>Peak units</th><th>Peak month</th></tr></thead>
+              <tbody>
+                <tr><td class="pri">Earthmoving</td><td>26</td><td>July 2026</td></tr>
+                <tr><td class="pri">Lifting</td><td>3</td><td>Aug 2026</td></tr>
+                <tr><td class="pri">Aerial</td><td>82</td><td>Oct 2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ ORDER BACKLOG ══ -->
+      <div class="cc-screen" id="cc-backlog">
+        <div class="sec-title">Order backlog <span class="sec-sub">all pillar orders — equipment requires taxonomy + OvR before YardHub handoff</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+            <div id="ccBacklogFilters" style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="fpill on" data-f="All" onclick="ccFilterBacklog(this,'All')">All orders</button>
+              <button class="fpill" data-f="Equipment" onclick="ccFilterBacklog(this,'Equipment')">Equipment</button>
+              <button class="fpill" data-f="Other" onclick="ccFilterBacklog(this,'Other')">Non-equipment</button>
+            </div>
+            <button class="btn btn-red btn-sm" style="margin-left:auto" onclick="toast('Confirmed items sent to YardHub — 2 items routed')">Push confirmed → YardHub</button>
+          </div>
+          <div id="ccBacklogRows"></div>
+        </div>
+      </div>
+
+      <!-- ══ BILLING & ANOMALIES ══ -->
+      <div class="cc-screen" id="cc-billing">
+        <div class="phead"><div><h1>Billing &amp; anomalies</h1></div></div>
+        <div class="vitals">
+          <div class="vital ok"><div class="vk">Billed MTD</div><div class="vv">$142<span class="u">K</span></div></div>
+          <div class="vital bad"><div class="vk">Anomalies detected</div><div class="vv">3</div><div class="vsub"><span class="tag bad">Review needed</span></div></div>
+          <div class="vital bad"><div class="vk">At risk</div><div class="vv">$38<span class="u">K</span></div><div class="vsub"><span class="tag bad">Disputed amount</span></div></div>
+          <div class="vital warn"><div class="vk">Open disputes</div><div class="vv">2</div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-h"><span class="hi" style="background:var(--red-tint);color:var(--red)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span><span class="ht">Anomalies</span><span style="margin-left:6px" class="cc-badge red">3 flagged</span></div>
+          <div style="padding:4px 0 4px">
+            <table class="cc-table">
+              <thead><tr><th>Bill ID &middot; Item</th><th>Amount</th><th>Anomaly</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td><div class="pri">BILL-9012</div><div class="sub">Excavator 45-55T</div></td><td style="font-weight:700">$8,400</td><td><span class="cc-badge red">12% above contract rate</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9012','dispute','12% above contract rate')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9012','approve')">Approve</button></td></tr>
+                <tr><td><div class="pri">BILL-9008</div><div class="sub">Scissor lift</div></td><td style="font-weight:700">$1,150</td><td><span class="cc-badge warn">Late billing start &mdash; 3 days after on-rent</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9008','dispute','Late billing start — 3 days after on-rent')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9008','approve')">Approve</button></td></tr>
+                <tr><td><div class="pri">BILL-8999</div><div class="sub">Telehandler</div></td><td style="font-weight:700">$4,300</td><td><span class="cc-badge warn">PO quantity mismatch</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-8999','dispute','PO quantity mismatch')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-8999','approve')">Approve</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><span class="ht">Billing history</span></div>
+          <div style="padding:4px 0 4px">
+            <table class="cc-table">
+              <thead><tr><th>Bill ID</th><th>Item</th><th>Amount</th><th>Period</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td class="mono">BILL-9015</td><td>Boom lift 60ft</td><td style="font-weight:700">$7,500</td><td>Jul 2026</td><td><span class="tag ok">Approved</span></td></tr>
+                <tr><td class="mono">BILL-9014</td><td>Dozer D6</td><td style="font-weight:700">$16,200</td><td>Jul 2026</td><td><span class="tag ok">Approved</span></td></tr>
+                <tr><td class="mono">BILL-9013</td><td>Generator 45kW</td><td style="font-weight:700">$4,200</td><td>Jul 2026</td><td><span class="tag ok">Approved</span></td></tr>
+                <tr><td class="mono">BILL-9011</td><td>Light tower &times;4</td><td style="font-weight:700">$4,800</td><td>Jun 2026</td><td><span class="tag ok">Approved</span></td></tr>
+                <tr><td class="mono">BILL-9010</td><td>Compaction roller</td><td style="font-weight:700">$6,800</td><td>Jun 2026</td><td><span class="tag warn">Disputed</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ CAPEX PLAN ══ -->
+      <div class="cc-screen" id="cc-capex">
+        <div class="sec-title">CAPEX plan <span class="sec-sub">ranked buy list · validate to build the plan</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--red)"></div><div class="vital-lbl">CAPEX flagged</div><div class="vital-val">$2.4M</div><div class="vital-sub">across 4 candidates</div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--success)"></div><div class="vital-lbl">Buy candidates</div><div class="vital-val">3</div><div class="vital-sub">validated in plan: <span id="ccCapexCount">empty</span></div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--warning)"></div><div class="vital-lbl">Plan total</div><div class="vital-val" id="ccCapexTotal">$0</div><div class="vital-sub">validated items only</div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--info)"></div><div class="vital-lbl">Re-rent preferred</div><div class="vital-val">1</div><div class="vital-sub">capital not justified</div></div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700">Ranked buy list</div>
+            <span style="font-size:11.5px;color:var(--g500);margin-left:8px">02S recommendation based on recurring re-rent spend</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="cc-table" style="table-layout:auto">
+              <thead><tr><th>Asset</th><th>Rec.</th><th>Purchase</th><th>Buy price</th><th>Annual re-rent</th><th>Payback</th><th></th></tr></thead>
+              <tbody id="ccCapexBuyList"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700">Your CAPEX plan</div>
+            <button id="ccCapexSubmitBtn" class="btn btn-red btn-sm" style="margin-left:auto;display:none" onclick="ccCapexSubmitPlan()">Submit plan</button>
+          </div>
+          <div id="ccCapexPlanBody"></div>
+        </div>
+      </div>
+
+      <!-- ══ OTHER PILLAR PLANS ══ -->
+      <div id="cc-pillars" class="cc-screen" style="display:none">
+        <div class="sec-title">Other pillar plans <span class="sec-sub">non-equipment demand from project teams · manage queue manually</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;gap:6px;margin-bottom:12px">
+            <button class="btn btn-ghost btn-sm on" id="cpPillarAll" onclick="ccPillFilter(this,'all')">All</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Prefab')">Prefab</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Logistics')">Logistics</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Procurement')">Procurement</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Professional services')">Prof. services</button>
+          </div>
+          <div id="ccPillRows"></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /ccApp -->
 <div id="toast" class="toast"></div>
 <div id="eqPop" class="eqpop hide"></div>
 <div id="modal" class="modal-overlay hide" onclick="if(event.target===this)closeModal()">
