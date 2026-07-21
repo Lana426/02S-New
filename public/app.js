@@ -2184,6 +2184,14 @@
     var btn=document.querySelector('#ctApp .sb-item[data-screen="'+id+'"]'); if(btn)btn.classList.add('active');
     if(typeof ctNavNsInit==='function')ctNavNsInit(id);
   }
+  function ctSetVer(v){
+    var ns=v==='ns';
+    var bv1=document.getElementById('ctBtnV1'); if(bv1)bv1.classList.toggle('on',!ns);
+    var bns=document.getElementById('ctBtnNS'); if(bns)bns.classList.toggle('on',ns);
+    var nv1=document.getElementById('ctNavV1'); if(nv1)nv1.style.display=ns?'none':'';
+    var nns=document.getElementById('ctNavNS'); if(nns)nns.style.display=ns?'':'none';
+    ctNav(ns?'ct-main':'ct-opp-list');
+  }
   function ctPillarTab(el){
     el.parentElement.querySelectorAll('.opp-tab').forEach(function(t){t.classList.remove('active');});
     el.classList.add('active');

@@ -1314,3 +1314,37 @@
 .lrow-pri{font-weight:700;color:var(--charcoal)}
 .ns-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:linear-gradient(135deg,#7C3AED,#4F46E5);color:#fff;border:none}
 .illus-tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;color:var(--g500);background:var(--g100);border:1px solid var(--g200)}
+
+/* ── CT card / grid / list system (NS screens) ── */
+#ctApp .card{padding:16px;display:flex;flex-direction:column;min-width:0}
+#ctApp .card .card-h{margin:-16px -16px 14px;padding:13px 16px}
+.card .ch{display:flex;align-items:center;gap:9px;margin-bottom:13px;flex-wrap:wrap}
+.card .ch .ci{width:30px;height:30px;border-radius:8px;background:var(--red-tint);color:var(--red);display:flex;align-items:center;justify-content:center;flex:none}
+.card .ch .ci.k2{background:var(--g200);color:var(--charcoal)}
+.card .ch .ci.k3{background:var(--info-tint);color:var(--info)}
+.card .ch .ci.k4{background:var(--warning-tint);color:var(--warning)}
+.card .ch .t{font-weight:700;font-size:13px;letter-spacing:.01em;color:var(--charcoal)}
+.card .ch .sub{font-size:11px;color:var(--g500);font-weight:500;margin-left:4px}
+.clink{margin-top:auto;padding-top:12px;color:var(--red);font-weight:700;font-size:12.5px;display:inline-flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;text-align:left}
+.clink:hover{gap:9px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.list{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);overflow:hidden;margin-bottom:2px}
+.lrow{display:grid;gap:12px;padding:10px 14px;border-bottom:1px solid var(--g150);align-items:center;font-size:12.5px}
+.lrow:last-child{border-bottom:none}
+.lrow.click:hover,[onclick].lrow:hover{background:var(--g100)}
+.lrow.on{background:var(--g100)}
+.lhead{background:var(--g100);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--g500);font-weight:700;padding:8px 14px;border-bottom:1px solid var(--g200)}
+.edp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+#ctApp table.mini{width:100%;border-collapse:collapse;font-size:12.5px}
+#ctApp table.mini th{text-align:left;color:var(--g500);font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:8px;border-bottom:1px solid var(--g200)}
+#ctApp table.mini td{padding:9px 8px;border-bottom:1px solid var(--g150);color:var(--charcoal)}
+#ctApp table.mini tr:last-child td{border-bottom:none}
+#ctApp table.mini tr:hover td{background:var(--g100)}
+#ctApp .searchbar{position:relative;margin-bottom:10px}
+#ctApp .searchbar input{width:100%;border:1px solid var(--g200);border-radius:8px;padding:8px 12px 8px 36px;font-size:12.5px;outline:none;background:#fff;box-sizing:border-box}
+#ctApp .searchbar input:focus{border-color:var(--charcoal)}
+#ctApp .searchbar .si{position:absolute;left:11px;top:9px;color:var(--g500)}
+.mono{font-family:'SFMono-Regular',Consolas,monospace;font-size:.9em;letter-spacing:.01em}
