@@ -2182,9 +2182,79 @@
     document.querySelectorAll('#ctApp .sb-item').forEach(function(b){b.classList.remove('active');});
     var screen=document.getElementById(id); if(screen)screen.style.display='block';
     var btn=document.querySelector('#ctApp .sb-item[data-screen="'+id+'"]'); if(btn)btn.classList.add('active');
+    if(typeof ctNavNsInit==='function')ctNavNsInit(id);
   }
   function ctPillarTab(el){
     el.parentElement.querySelectorAll('.opp-tab').forEach(function(t){t.classList.remove('active');});
     el.classList.add('active');
     toast(el.textContent.trim()+' pillar — demo shows Equipment detail');
   }
+
+/* ═══ CT North Star icons + helpers ═══ */
+var CT_ICONS={grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',chart:'<line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="11" width="3" height="8" rx="1"/><rect x="10.5" y="6" width="3" height="13" rx="1"/><rect x="16" y="14" width="3" height="5" rx="1"/>',layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/>',dollar:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>',check:'<polyline points="20 6 9 17 4 12"/>',sparkle:'<path d="M12 3l1.6 5L18 9.5l-4.4 1.5L12 16l-1.6-5L6 9.5 10.4 8 12 3z"/>',bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',search:'<circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',chevronRight:'<polyline points="9 18 15 12 9 6"/>',send:'<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',team:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',box:'<path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/>',gauge:'<path d="M3.5 13a8.5 8.5 0 1 1 17 0"/><line x1="12" y1="13" x2="8.5" y2="9.5"/><circle cx="12" cy="13" r="1.2"/>',link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',receipt:'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/>',warning:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',close:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'};
+function ctIc(name,sz){sz=sz||16;return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:'+sz+'px;height:'+sz+'px;flex-shrink:0">'+(CT_ICONS[name]||'')+'</svg>';}
+
+/* Allocation flow data */
+var AF_DATA=[
+  ['gauge','Regional utilization','How busy each region\'s crews and fleet are — the base 02S allocates against.','Bay Area 88% · Mountain 72% · Southwest 91%'],
+  ['chart','National market splits','How results split across Building, Infrastructure, and Industrial markets.','Building 46% · Infra 34% · Industrial 20%'],
+  ['team','Resource / cost allocation','Shared crews, equipment, and overhead assigned to the jobs that used them.','$42M shared cost allocated across 61 jobs'],
+  ['box','Project / opportunity','Everything lands on the project (or opportunity) it belongs to — the leaf of the flow.','634 opportunities · 226 with margin plans']
+];
+function ctAllocPick(el,i){el.parentElement.querySelectorAll('.af-step').forEach(function(s){s.classList.remove('on');});el.classList.add('on');var d=AF_DATA[i],box=document.getElementById('afDetail');if(box)box.innerHTML='<div class="af-d-t">'+ctIc(d[0],14)+' '+d[1]+'</div><div class="af-d-b">'+d[2]+'</div><div class="af-d-m">'+d[3]+'</div>';}
+
+/* Waterfall data */
+var WF_DATA=[
+  ['Gross margin','$472M','Revenue less direct project cost.','var(--charcoal)'],
+  ['Less: project costs','−$132M','Field labor, equipment, materials on the job.','var(--red)'],
+  ['Less: market G&A','−$66M','Regional office & market-level overhead.','var(--red)'],
+  ['Less: national G&A','−$57M','Shared services allocated nationally.','var(--red)'],
+  ['Less: enterprise G&A','−$47M','Corporate overhead allocation.','var(--red)'],
+  ['Operating profit','$170M','What drops through to the bottom line.','var(--success)']
+];
+function ctWfPick(el,i){el.closest('.waterfall').querySelectorAll('.wf-row').forEach(function(r){r.classList.remove('on');});el.classList.add('on');var d=WF_DATA[i],box=document.getElementById('wfDetail');if(box)box.innerHTML='<div class="af-d-t">'+d[0]+' \xb7 <span style="color:'+d[3]+'">'+d[1]+'</span></div><div class="af-d-b">'+d[2]+'</div>';}
+
+/* FY Forecast */
+function ctForecastView(yr){
+  var FY={
+    FY25:{focus:2,bars:[['FY23A',55],['FY24A',68],['FY25F',82],['FY26F',94],['FY27F',100]],total:'$1.31B',yoy:'+21% vs FY24',win:'62%',cols:['FY23A','FY24A','FY25F','FY26F'],rows:[['Fleet & Personnel Assets','$180M','$210M','$250M','$290M'],['Procurement volume buys','$120M','$150M','$185M','$220M'],['Prefab programs','$60M','$78M','$95M','$120M'],['Logistics / GC-GR','$40M','$52M','$66M','$80M']],hi:2,note:'FY 2025 is mostly committed — 82% of the forecast is backed by won or in-execution work.'},
+    FY26:{focus:3,bars:[['FY24A',68],['FY25F',82],['FY26F',94],['FY27F',100],['FY28F',108]],total:'$1.58B',yoy:'+15% vs FY25',win:'44%',cols:['FY24A','FY25F','FY26F','FY27F'],rows:[['Fleet & Personnel Assets','$210M','$250M','$290M','$330M'],['Procurement volume buys','$150M','$185M','$220M','$255M'],['Prefab programs','$78M','$95M','$120M','$150M'],['Logistics / GC-GR','$52M','$66M','$80M','$96M']],hi:2,note:'FY 2026 leans more on pipeline — only 44% is committed today, so scenario range is wider.'}
+  }[yr];
+  var bars=FY.bars.map(function(b,i){return '<div class="ctb"><div class="ctb-stack'+(i===FY.focus?' focus':'')+'" style="height:'+b[1]+'%"><div style="height:34%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:33%;background:var(--g300)"></div></div><div class="ctb-l'+(i===FY.focus?' focus':'')+'">'+ b[0]+'</div></div>';}).join('');
+  var rowHtml=FY.rows.map(function(r){return '<div class="lrow" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div class="lrow-pri">'+r[0]+'</div>'+r.slice(1).map(function(v,i){return '<div'+(i===FY.hi?' style="font-weight:800;color:var(--red)"':'')+'>'+v+'</div>';}).join('')+'</div>';}).join('');
+  var colHdr=FY.cols.map(function(c){return '<div>'+c+'</div>';}).join('');
+  return '<div class="ct-fy-summary"><div class="cfs"><div class="cfs-n">'+FY.total+'</div><div class="cfs-k">'+(yr==='FY25'?'FY25':'FY26')+' forecast revenue</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">'+FY.yoy+'</div><div class="cfs-k">year-over-year</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n">'+FY.win+'</div><div class="cfs-k">committed vs pipeline</div></div></div>'
+  +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">FY forecast by pillar</span><span class="sub">$ millions \xb7 '+(yr==='FY25'?'FY 2025 view':'FY 2026 view')+'</span></div><div class="ct-bars big">'+bars+'</div><div class="ct-legend" style="margin-top:10px"><span><i style="background:var(--red)"></i>Building</span><span><i style="background:var(--charcoal)"></i>Infrastructure</span><span><i style="background:var(--g300)"></i>Industrial</span></div><div class="cfs-note">'+ctIc('sparkle',14)+' '+FY.note+'</div></div>'
+  +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By product line</span><span class="sub">'+(yr==='FY25'?'anchored on FY25F':'anchored on FY26F')+'</span></div><div class="list"><div class="lrow lhead" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div>Product line</div>'+colHdr+'</div>'+rowHtml+'</div></div>';
+}
+function ctForecastYear(el,yr){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var c=document.getElementById('ctForecast');if(c)c.innerHTML=ctForecastView(yr);}
+
+/* Margin drill modal — uses existing openModal pattern */
+function ctDraftPlans(){
+  var rows=[['Mercy Hospital','9.0%','9.4%'],['Civic Center Ph.2','8.0%','7.8%'],['Baystate Med','9.0%','9.1%'],['Route 9 Widening','7.5%','7.9%']];
+  var rowHtml=rows.map(function(r){return '<div class="lrow" style="grid-template-columns:1.7fr 1fr 1fr"><div class="lrow-pri">'+r[0]+'</div><div style="color:var(--g500)">'+r[1]+' <span style="font-size:10px">TAM</span></div><div><span class="chip ok">'+r[2]+' drafted</span></div></div>';}).join('');
+  var body='<div class="ai-panel" style="margin:0 0 12px"><div class="aih"><div class="ico">'+ctIc('sparkle',16)+'</div><div class="t">02S can draft these from the estimates</div></div><div class="ctx" style="margin-bottom:0">Rather than defaulting to TAM, 02S drafts a margin plan for each opportunity from its estimate and pillar mix — leadership reviews and approves instead of building from scratch.</div></div><div class="list"><div class="lrow lhead" style="grid-template-columns:1.7fr 1fr 1fr"><div>Opportunity</div><div>TAM default</div><div>02S draft</div></div>'+rowHtml+'<div style="font-size:11px;color:var(--g500);padding:8px 4px">+ 8 more</div></div>'
+  +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Not now</button><button class="btn btn-dark" onclick="closeModal();toast(\'12 margin plans drafted — routed to leadership for review\')">'+ctIc('check',14)+' Draft all 12 for review</button></div>';
+  openModal('<div><h3 style="margin:0 0 2px">Draft the missing margin plans</h3><div class="sub">12 opportunities \xb7 $14M without a plan</div></div>', body);
+}
+function ctMarginDrill(pillar){
+  var D={Equipment:{plan:'8.4%',tgt:'9.0%',d:'−60 bps',drivers:[['Re-rent premium on cranes','+$1.8M cost','red'],['Idle-unit billing','+$0.3M','warn'],['Owned-fleet mix improving','−$0.4M','ok']],lever:'Pull the tower-crane buy forward — see the CAPEX plan.'},Prefab:{plan:'10.2%',tgt:'11.0%',d:'−80 bps',drivers:[['Denver shop over capacity','overtime + delay','red'],['Re-route to Phoenix','recoverable','warn'],['Standardized assemblies','helping','ok']],lever:'Move pull-forward pre-builds to Phoenix or Las Vegas.'},Procurement:{plan:'6.3%',tgt:'6.0%',d:'+30 bps',drivers:[['Consolidated supplier volume','saving','ok'],['Preferred-tier rebates','saving','ok']],lever:'Hold the line — consolidation is working.'}}[pillar]||{plan:'—',tgt:'—',d:'',drivers:[],lever:''};
+  var driverHtml=D.drivers.map(function(dr){var c=dr[2]==='red'?'var(--red)':dr[2]==='warn'?'var(--warning)':'var(--success)';return '<div class="lrow" style="grid-template-columns:1.8fr 1fr"><div class="lrow-pri"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+c+';margin-right:6px;flex-shrink:0"></span>'+dr[0]+'</div><div style="text-align:right;color:var(--g500);font-size:11.5px">'+dr[1]+'</div></div>';}).join('');
+  var body='<div style="font-size:12px;color:var(--g700);font-weight:700;margin-bottom:8px">What\'s moving it</div><div class="list">'+driverHtml+'</div><div class="ai-panel" style="margin-top:12px"><div class="aih"><div class="ico">'+ctIc('bulb',16)+'</div><div class="t">Recommended lever</div></div><div class="ctx" style="margin-bottom:0">'+D.lever+'</div></div>'
+  +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-dark" onclick="closeModal();toast(\'Added to the action plan\')">'+ctIc('send',14)+' Add lever to action plan</button></div>';
+  openModal('<div><h3 style="margin:0 0 2px">'+pillar+' margin</h3><div class="sub">plan '+D.plan+' vs target '+D.tgt+' \xb7 '+D.d+'</div></div>', body);
+}
+
+/* Scenario cards */
+function scenarioCards(k){
+  var S={base:{rev:'$4.77B',mgn:'7.6%',op:'$362M',note:'Weighted pipeline as planned.',tone:''},up:{rev:'$5.02B',mgn:'8.1%',op:'$407M',note:'Fountain Valley + 1 pursuit convert; margin lifts on mix.',tone:'ok'},down:{rev:'$4.41B',mgn:'7.0%',op:'$309M',note:'Two soft-award jobs slip a quarter; re-rent premium rises.',tone:'red'}};var s=S[k]||S.base;
+  return '<div class="scn-cell"><div class="scn-k">Revenue</div><div class="scn-v">'+s.rev+'</div></div><div class="scn-cell"><div class="scn-k">Operating margin</div><div class="scn-v'+(s.tone?' '+s.tone:'')+'">'+s.mgn+'</div></div><div class="scn-cell"><div class="scn-k">Operating profit</div><div class="scn-v">'+s.op+'</div></div><div class="scn-note">'+s.note+'</div>';
+}
+function runScenario(el,k){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var g=document.getElementById('scnGrid');if(g)g.innerHTML=scenarioCards(k);}
+
+/* Init NS screens on navigate */
+function ctNavNsInit(id){
+  if(id==='ct-forecast'){var c=document.getElementById('ctForecast');if(c&&!c.dataset.init){c.innerHTML=ctForecastView('FY25');c.dataset.init='1';}}
+  if(id==='ct-fpa'){var g=document.getElementById('scnGrid');if(g&&!g.dataset.init){g.innerHTML=scenarioCards('base');g.dataset.init='1';}}
+  if(id==='ct-allocation'){var af=document.querySelector('#ct-allocation .af-step');if(af){var det=document.getElementById('afDetail');if(det&&!det.dataset.init){ctAllocPick(af,0);det.dataset.init='1';}}}
+}
