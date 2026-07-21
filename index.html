@@ -1371,7 +1371,7 @@
                   <span class="rprio">Priority 2</span>
                 </div>
                 <div class="rreason">Structural steel is crane-dependent &mdash; if steel holds its start, the crane arrives <b style="color:var(--g900)">4 days ahead of need</b>. Confirm ship-to or shift mobilization to cut idle standby.</div>
-                <div class="ract"><button class="btn btn-dark" onclick="openModal('Add ship-to location','<div class=\"mform\"><div class=\"mf\"><label>Delivery address</label><input class=\"rin\" id=\"shipAddr\" placeholder=\"Street address, city, state\"></div><div class=\"mf\"><label>Site contact</label><input class=\"rin\" id=\"shipContact\" placeholder=\"Name and phone\"></div></div><div class=\"modal-foot\"><button class=\"btn btn-ghost\" onclick=\"closeModal()\">Cancel</button><button class=\"btn btn-dark\" onclick=\"var a=(document.getElementById(\'shipAddr\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}closeModal();toast(\'Ship-to location saved — 02S notified\');\">Save</button></div>')">Add ship-to</button><button class="btn btn-ghost btn-sm" onclick="openSchedule()">Shift date</button></div>
+                <div class="ract"><button class="btn btn-dark" onclick="openShipToModal()">Add ship-to</button><button class="btn btn-ghost btn-sm" onclick="openSchedule()">Shift date</button></div>
               </div>
               <div class="row">
                 <div class="rtop">
@@ -3607,6 +3607,16 @@
     if(cat==='Report issue'){ openIssue(); return; }
   }
   // Schedule change — structured request (NS pre-fills a smart suggestion)
+  function openShipToModal(){
+    openModal('Add ship-to location',
+      '<div class="mform">'
+      +'<div class="mf"><label>Delivery address</label><input class="rin" id="shipAddr" placeholder="Street address, city, state"></div>'
+      +'<div class="mf"><label>Site contact</label><input class="rin" id="shipContact" placeholder="Name and phone"></div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="var a=(document.getElementById(\'shipAddr\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}closeModal();toast(\'Ship-to location saved — 02S notified\')">Save</button></div>'
+    );
+  }
   function openSchedule(){
     var ns=CURRENT==='ns';
     var sugg = ns ? '<div class="msg-sugg"><span class="ms-i">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span><div><b>02S suggests</b> — your 2× Scissor Lift (ORD-3031) have sat idle 4 days. An early off-rent recovers ~$740. <button class="linkbtn" onclick="schedUse()">Use this</button></div></div>' : '';
