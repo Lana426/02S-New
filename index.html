@@ -417,6 +417,14 @@
   .cc-recert-banner{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:var(--radius);margin-bottom:16px}
   .cc-screen{display:none}
   #ccApp{display:none}
+  .vital-bar{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px 0 0 2px}
+  .vital-lbl{font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--g500);text-transform:uppercase;margin-bottom:8px;margin-top:2px}
+  .vital-val{font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .vital-sub{font-size:11.5px;color:var(--g500);margin-top:6px}
+  .fpill{display:inline-flex;align-items:center;font-size:12px;font-weight:500;color:var(--g600);padding:4px 11px;border-radius:20px;border:1px solid var(--g200);background:#fff;cursor:pointer;transition:all .12s}
+  .fpill.on{background:var(--g900);color:#fff;border-color:var(--g900)}
+  .cc-table-pri{display:flex;align-items:center}
+  .cc-table tr.done td{opacity:.55}
 
 
   /* Ask 02S enhancements */
@@ -2116,11 +2124,10 @@
       var pil=PILLARS[i];
       var items=CATALOG.filter(function(p){return p.pillar===pil.key;});
       var open=(catOpen===pil.key);
-      var cnt = pil.depth==='thin' ? 'Ordered by request' : (items.length+(pil.depth==='part'?'+':'')+' item'+(items.length===1?'':'s'));
       html+='<div class="pacc'+(open?' open':'')+'">'+
         '<button class="pacc-head" onclick="togglePillar(\''+pil.key+'\')">'+
           '<span class="pacc-ic">'+svg(pillarIcon(pil.key),2)+'</span>'+
-          '<span class="pacc-t"><span class="pacc-name">'+pil.label+'</span><span class="pacc-sub">'+cnt+'</span></span>'+
+          '<span class="pacc-t"><span class="pacc-name">'+pil.label+'</span></span>'+
           '<span class="depth '+pil.depth+'">'+pil.dtext+'</span>'+
           '<span class="pacc-chev">'+svg('<path d="M6 9l6 6 6-6"/>',2)+'</span>'+
         '</button>'+
@@ -2337,6 +2344,16 @@
   /* ═══════════ CART ═══════════ */
   function removeFromCart(cid){state.cart=state.cart.filter(function(c){return c.cid!==cid;}); renderCart();}
   function flashCount(){var c=document.getElementById('reqCount');c.style.transform='scale(1.35)';setTimeout(function(){c.style.transform='';},180);}
+  function overridePlanMatch(itemId, planId){
+    openModal('Override plan match',
+      '<div style="font-size:12.5px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px;margin-bottom:14px">'
+      +'<b>This item matches plan item '+planId+'.</b> You can add it as a separate ad hoc request — it will be logged as a new need outside the plan.</div>'
+      +'<div class="mf" style="margin-bottom:12px"><label>Reason for adding as new need</label>'
+      +'<select class="acc-sel wfull"><option>Scope change — additional quantity needed</option><option>Plan item no longer applicable — replacing with this request</option><option>Ad hoc need — not in original plan</option><option>Other</option></select></div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-red" onclick="closeModal();toast(\'Added as new need — logged outside plan · 02S notified\')">Add as new need</button></div>'
+    );
+  }
   function renderCart(){
     var body=document.getElementById('reqBody'), count=document.getElementById('reqCount');
     count.textContent=state.cart.length;
@@ -2349,7 +2366,7 @@
       if(c.total) total+=c.total;
       if(c.pillarKey==='equipment') eq++; else other++;
       var planline;
-      if(c.plan){matches++; planline='<div class="ri-plan match">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'Matches plan item '+c.plan+' <span class="lk">view</span></div>';}
+      if(c.plan){matches++; planline='<div class="ri-plan match">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'Matches plan item '+c.plan+' <span class="lk" onclick="toast(\'Viewing plan item '+c.plan+'\')">view</span><span class="lk" style="margin-left:8px;color:var(--warning)" onclick="overridePlanMatch(\''+c.id+'\',\''+c.plan+'\')">override / add as new need</span></div>';}
       else {newn++; planline='<div class="ri-plan newneed">'+svg('<path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/>',2)+(ns?'New need — logged':'New need — not in plan')+' <span class="lk">'+(ns?'ok':'confirm')+'</span></div>';}
       var priceStr = c.total? (c.isQuote?('<span class="ri-price">Quote</span>'):('<span class="ri-price">'+fmt(c.total)+'</span>')) : '<span class="ri-price">Quote</span>';
       return '<div class="ri-row"><span class="ri-thumb">'+svg(ICON[c.icon]||ICON.box)+'</span>'+
@@ -2698,15 +2715,25 @@
           +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
           +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
           +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. 02-320.14" style="width:110px"></td>'
-          +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest('tr').remove()" title="Remove row"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
+          +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove row"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
           +'</tr>';
       }
       return thead+rows;
     };
     var h='<div style="overflow-x:auto;margin-bottom:12px"><table style="border-collapse:collapse;font-size:12.5px" id="bulkTbl">'+bulkRows()+'</table></div>'
-      +'<button class="btn btn-ghost btn-sm" onclick="var t=document.getElementById('bulkTbl');var r=t.insertRow(-1);r.innerHTML='<td style=\"padding:5px 4px\"><input class=\"rin\" placeholder=\"e.g. Excavator 20T\" style=\"width:200px\"></td><td style=\"padding:5px 4px\"><input class=\"rin\" type=\"number\" min=\"1\" placeholder=\"1\" style=\"width:60px;text-align:center\"></td><td style=\"padding:5px 4px\"><input class=\"rin\" placeholder=\"YYYY-MM\" style=\"width:90px\"></td><td style=\"padding:5px 4px\"><input class=\"rin\" placeholder=\"YYYY-MM\" style=\"width:90px\"></td><td style=\"padding:5px 4px\"><input class=\"rin\" placeholder=\"e.g. 02-320.14\" style=\"width:110px\"></td><td></td>';"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> +Row</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="_addBulkRow()"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> +Row</button>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveBulkLines()">Add all lines</button></div>';
     openModal('Bulk grid entry', h);
+  }
+  function _addBulkRow(){
+    var t=document.getElementById('bulkTbl'); if(!t)return;
+    var r=t.insertRow(-1);
+    r.innerHTML='<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:200px"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:60px;text-align:center"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" placeholder="YYYY-MM" style="width:90px"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" placeholder="YYYY-MM" style="width:90px"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. 02-320.14" style="width:110px"></td>'
+      +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>';
   }
   function _saveBulkLines(){
     var tbl=document.getElementById('bulkTbl'); if(!tbl)return;
@@ -2727,13 +2754,13 @@
     else toast('No lines added — fill in at least one description');
   }
   function _openEqImport(){
-    var h='<div style="border:2px dashed var(--g300);border-radius:var(--radius);padding:28px;text-align:center;background:var(--g50);margin-bottom:14px;cursor:pointer" onclick="toast('File picker — select HeavyBid CSV or Excel export')">'
+    var h='<div style="border:2px dashed var(--g300);border-radius:var(--radius);padding:28px;text-align:center;background:var(--g50);margin-bottom:14px;cursor:pointer" onclick="toast(\'File picker — select HeavyBid CSV or Excel export\')">'
       +'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"28\" height=\"28\" style=\"color:var(--g400);margin:0 auto 10px;display:block\"><path d=\"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg>'
       +'<div style=\"font-size:13px;font-weight:600;color:var(--g700)\">Drop file here or click to upload</div>'
       +'<div style=\"font-size:11.5px;color:var(--g500);margin-top:4px\">HeavyBid CSV, Excel estimate export, or 02S template</div>'
       +'</div>'
       +'<div class="mf" style="margin-bottom:12px"><label>Map task codes to</label><select class="acc-sel wfull" style="margin-top:5px"><option>Task code hierarchy</option><option>P6 Schedule activities</option><option>Manual</option></select></div>'
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="closeModal();toast('Import processing — 02S will map lines and return for review')">Import &amp; map</button></div>';
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="closeModal();toast(\'Import processing — 02S will map lines and return for review\')">Import &amp; map</button></div>';
     openModal('Import from HeavyBid / estimate', h);
   }
   function openEqEdit(id){ var l=eqGetLine(id); if(!l)return; eqEditId=id; var stt=eqLineState(l);
@@ -2830,6 +2857,11 @@
       for(var mi=a;mi<=b&&mi<N;mi++) data[catKey][mi]+=l.qty;
     }
     function cellBg(v){ if(!v)return 'var(--g100)'; if(v<=20)return 'rgba(220,29,52,0.15)'; if(v<=50)return 'rgba(220,29,52,0.35)'; return 'rgba(220,29,52,0.65)'; }
+    // compute per-month peak category index
+    var colMax=new Array(N).fill(0);
+    for(var ci2=0;ci2<cats.length;ci2++) for(var mj2=0;mj2<N;mj2++) if(data[cats[ci2]][mj2]>colMax[mj2]) colMax[mj2]=data[cats[ci2]][mj2];
+    var colPeak={}; // mj -> cat index with peak
+    for(var mj3=0;mj3<N;mj3++) if(colMax[mj3]>0) for(var ci3=0;ci3<cats.length;ci3++) if(data[cats[ci3]][mj3]===colMax[mj3]){colPeak[mj3]=ci3;break;}
     var html='<table style="border-collapse:collapse;font-size:11px;white-space:nowrap;width:100%">'
       +'<thead><tr><th style="width:120px;text-align:left;padding:6px 8px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);border-bottom:1px solid var(--g200)">Class</th>'
       +months.map(function(m){return '<th style="width:40px;text-align:center;padding:5px 2px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;color:var(--g500);border-bottom:1px solid var(--g200)">'+mLabel(m)+'</th>';}).join('')
@@ -2841,7 +2873,9 @@
         var v=row[mj];
         var bg=cellBg(v);
         var clr=v?'var(--g900)':'var(--g400)';
-        html+='<td style="text-align:center;height:28px;width:40px;background:'+bg+';color:'+clr+';font-weight:'+(v?'600':'400')+';border-bottom:1px solid var(--g150);border-left:1px solid rgba(0,0,0,.04)">'+(v||'')+'</td>';
+        var isPeak=(v>0&&colPeak[mj]===ci);
+        var outline=isPeak?';outline:2px solid var(--red);outline-offset:-2px;z-index:1;position:relative':'';
+        html+='<td style="text-align:center;height:28px;width:40px;background:'+bg+';color:'+clr+';font-weight:'+(isPeak?'800':(v?'600':'400'))+';border-bottom:1px solid var(--g150);border-left:1px solid rgba(0,0,0,.04)'+outline+'" title="'+(v?cat+': '+v+' units'+(isPeak?' (peak this month)':''):'')+'"><span style="'+(isPeak?'text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px':'')+'font-size:'+(isPeak?'11.5':'11')+'px">'+(v||'')+'</span></td>';
       }
       html+='</tr>';
     }
@@ -3331,13 +3365,9 @@
       } else if(mode==='edit'){
         var opts=COST_CODES.map(function(c){return '<option'+(c===b.cost?' selected':'')+'>'+c+'</option>';}).join('');
         inline='<div class="pc-inline">'+
-          '<div class="pi-t">Edit cost code <span class="pi-note">every change is captured to the audit trail</span></div>'+
-          '<div class="pi-grid">'+
-            '<label>Job / Dept<select><option>4820 · Bldg A</option><option>4830 · Sitework</option></select></label>'+
-            '<label>Expenditure code<select><option>EQ-RENT</option><option>EQ-OWN</option><option>SVC</option></select></label>'+
-            '<label>Cost code / acc<select id="cc-'+b.id+'">'+opts+'</select></label>'+
-          '</div>'+
-          '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
+          '<div class="pi-t">Dispute · correct cost code <span class="pi-note">every change is captured to the audit trail</span></div>'+
+          '<div style="margin-bottom:10px"><label style="font-size:10.5px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.02em;display:flex;flex-direction:column;gap:4px">Cost code<select style="border:1px solid var(--g250);border-radius:6px;padding:7px 8px;font:inherit;font-size:12px;color:var(--g800);background:#fff;font-weight:500;max-width:260px;margin-top:4px" id="cc-'+b.id+'">'+opts+'</select></label></div>'+
+          '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save correction</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       }
       var notes = b.notes ? '<span class="pc-notes" onclick="toast(\'Opening billing discussion for '+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+b.notes+' note'+(b.notes===1?'':'s')+'</span>' : '<span class="pc-notes" onclick="toast(\'Start a billing discussion for '+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+'Discuss</span>';
@@ -3355,8 +3385,7 @@
         '</div>'+
         '<div class="pc-actions">'+
           '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
-          '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
-          '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Edit cost code</button>'+
+          '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Dispute / correct code</button>'+
           notes+audit+
         '</div>'+
         inline+
@@ -3669,6 +3698,9 @@
     document.querySelectorAll('#ccApp .cc-screen').forEach(function(el) {
       el.style.display = el.id === id ? 'block' : 'none';
     });
+    if(id==='cc-backlog') renderCcBacklog();
+    if(id==='cc-capex') renderCcCapex();
+    if(id==='cc-pillars'){ var el=document.getElementById('cpPillarAll'); if(el)ccPillFilter(el,'all'); }
   }
   function openCcReview(id) {
     var data = {
@@ -3694,13 +3726,26 @@
       + '<div class="util-note">Utilization target for this class: <b>'+d.utilTarget+'%</b> · Units below target are flagged as idle — policy requires own-fleet consideration first before going to market</div>'
       + d.guardrails.map(function(g){return '<div class="ovr-gr"><span class="ovr-gr-dot" style="background:'+dotColor(g[2])+'"></span><div><b>'+g[0]+'</b><span class="gd">'+g[1]+'</span></div></div>';}).join('')
       + '<div style="margin-top:12px;display:flex;gap:8px">'
-      + '<button class="btn btn-red btn-sm" onclick="closeModal();toast(''+id+' OvR confirmed → routing to YardHub')">'+(d.rec==='owned'?'Confirm — use owned':'Confirm — re-rent')+'</button>'
-      + '<button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride(''+id+'')">Override recommendation</button>'
+      + '<button class="btn btn-red btn-sm" onclick="closeModal();toast(\'' + id + ' OvR confirmed → routing to YardHub\')">'+(d.rec==='owned'?'Confirm — use owned':'Confirm — re-rent')+'</button>'
+      + '<button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride(\'' + id + '\')">Override recommendation</button>'
       + '</div>';
     openModal(id+' — owned vs. re-rent', h);
   }
   function openCcOvrOverride(id) {
-    openModal('Override OvR recommendation', '<div style="font-size:12.5px;color:var(--g600);margin-bottom:14px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px"><b>You're overriding the system recommendation.</b> Your reasoning is logged and feeds the fleet model over time.</div><div class="mf" style="margin-bottom:10px"><label>New decision</label><div class="seg" style="margin-top:6px"><button class="seg-b on" id="ccOwnBtn" onclick="this.classList.add('on');document.getElementById('ccRrBtn').classList.remove('on')">Use owned fleet</button><button class="seg-b" id="ccRrBtn" onclick="this.classList.add('on');document.getElementById('ccOwnBtn').classList.remove('on')">Re-rent from market</button></div></div><div class="mf"><label>Reasoning <span style="color:var(--red)">*</span></label><textarea class="rin" rows="3" id="ccOvrReason" placeholder="e.g. Owned unit in service hold until the 18th — re-renting to protect the crane window…" style="width:100%"></textarea></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="var r=(document.getElementById('ccOvrReason')||{}).value;if(!r){toast('Add reasoning first');return;}closeModal();toast(''+id+' override submitted — reasoning logged')">Submit override</button></div>');
+    var body = '<div style="font-size:12.5px;color:var(--g600);margin-bottom:14px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px"><b>You\'re overriding the system recommendation.</b> Your reasoning is logged and feeds the fleet model over time.</div>'
+      + '<div class="mf" style="margin-bottom:10px"><label>New decision</label><div class="seg" style="margin-top:6px">'
+      + '<button class="seg-b on" id="ccOwnBtn" onclick="this.classList.add(\'on\');document.getElementById(\'ccRrBtn\').classList.remove(\'on\')">Use owned fleet</button>'
+      + '<button class="seg-b" id="ccRrBtn" onclick="this.classList.add(\'on\');document.getElementById(\'ccOwnBtn\').classList.remove(\'on\')">Re-rent from market</button>'
+      + '</div></div>'
+      + '<div class="mf"><label>Reasoning <span style="color:var(--red)">*</span></label><textarea class="rin" rows="3" id="ccOvrReason" placeholder="e.g. Owned unit in service hold until the 18th — re-renting to protect the crane window…" style="width:100%"></textarea></div>'
+      + '<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      + '<button class="btn btn-red" onclick="ccSubmitOverride(\'' + id + '\')">Submit override</button></div>';
+    openModal('Override OvR recommendation', body);
+  }
+  function ccSubmitOverride(id) {
+    var r = (document.getElementById('ccOvrReason')||{}).value;
+    if(!r){ toast('Add reasoning first'); return; }
+    closeModal(); toast(id + ' override submitted — reasoning logged');
   }
   function openCcRecert() {
     var items = [
@@ -3715,11 +3760,11 @@
         +'<span class="tag ok">On-rent</span></div>'
         +'<div style="font-size:12px;color:var(--g600);margin-bottom:10px">'+r.note+'</div>'
         +'<div style="display:flex;gap:8px">'
-        +'<button class="btn btn-red btn-sm" onclick="this.textContent='Confirmed ✓';this.disabled=true;toast(''+r.id+' — recertified for another week')">Still needed</button>'
-        +'<button class="btn btn-ghost btn-sm" onclick="closeModal();toast('Call-off initiated for '+r.item+'')">Call off</button>'
+        +'<button class="btn btn-red btn-sm" onclick="this.textContent=\'Confirmed ✓\';this.disabled=true;toast(\'' + r.id + ' — recertified for another week\')">Still needed</button>'
+        +'<button class="btn btn-ghost btn-sm" onclick="closeModal();toast(\'Call-off initiated for ' + r.item.replace(/'/g,"\\'") + '\')">Call off</button>'
         +'</div></div>';
     }).join('');
-    openModal('Weekly on-rent recertification', '<div style="font-size:12px;color:var(--g700);padding:8px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px;margin-bottom:14px">Confirm each item is still needed. Confirmed items auto-renew; called-off items trigger return logistics.</div>'+rows+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();toast('Recertification submitted — 02S notified · 3 items renewed')">Submit all &amp; renew</button></div>');
+    openModal('Weekly on-rent recertification', '<div style="font-size:12px;color:var(--g700);padding:8px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px;margin-bottom:14px">Confirm each item is still needed. Confirmed items auto-renew; called-off items trigger return logistics.</div>'+rows+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();toast(\'Recertification submitted — 02S notified · 3 items renewed\')">Submit all &amp; renew</button></div>');
   }
 
   /* ═══════════ INIT (after all data + functions are defined) ═══════════ */
@@ -3747,6 +3792,235 @@
       if(hero) hero.style.transform='';
     });
   })();
+
+  // ══ CC BACKLOG DATA ══
+  var CC_BACKLOG_OVERRIDES={};
+  var CC_BACKLOG=[
+    {id:'REQ-1058',pillar:'Equipment',project:'Hercules Solar + BESS',item:'2× excavator 45–55T',qty:'2',need:'Jun 1',type:'Catalog',status:'New',
+     tax:'Asset › Earthmoving › Excavator › 45-55T',taxMapped:false,
+     ovr:{rec:'owned',summary:'4 idle units at Riverside yard (12 mi). 34% utilization — below 65% target. Owned fleet costs $8,400/mo vs. $12,400/mo re-rent.',
+       guardrails:[['Fleet availability','4 idle units at Riverside yard · 12 mi','ok'],['Transport cost','Est. $1,200 mob · 4-month duration justifies','ok'],['Utilization target','34% vs. 65% target — below threshold, idle fleet','ok'],['Near-term demand','No competing demand at Riverside through Aug','ok']]}},
+    {id:'REQ-1071',pillar:'Equipment',project:'Mercy Hospital Tower B',item:'1× tower crane (self-erect)',qty:'1',need:'Aug 3',type:'Catalog',status:'New',
+     tax:'Asset › Lifting › Tower Crane › Self-Erect',taxMapped:false,
+     ovr:{rec:'rerent',summary:'No owned tower cranes in fleet. Re-rent at $12,400/mo — only viable option.',
+       guardrails:[['Fleet availability','No owned tower cranes in portfolio','red'],['Transport cost','n/a — no owned inventory','warn'],['Utilization target','Class not owned — target N/A','warn'],['Near-term demand','n/a','warn']]}},
+    {id:'REQ-2244',pillar:'Equipment',project:'Downtown Medical Center',item:'4× scissor lift 32ft electric',qty:'4',need:'May 15',type:'Catalog',status:'Acknowledged',
+     tax:'Asset › Access › Scissor Lift › Electric › 30-35ft',taxMapped:true,
+     ovr:{rec:'owned',summary:'8 idle scissor lifts at West yard (22 mi). 41% utilization — below 75% target.',
+       guardrails:[['Fleet availability','8 idle units at West yard · 22 mi','ok'],['Transport cost','$0 mob — within service radius','ok'],['Utilization target','41% vs. 75% target — idle fleet flagged','ok'],['Near-term demand','No competing demand through Q3','ok']]}},
+    {id:'REQ-2210',pillar:'Equipment',project:'Hercules Solar + BESS',item:'3× telehandler 10K',qty:'3',need:'Jul 10',type:'Catalog',status:'New',
+     tax:'Asset › Material handling › Telehandler › 10K',taxMapped:false,
+     ovr:{rec:'owned',summary:'3 idle telehandlers at Central depot (8 mi). 52% utilization — below 60% target.',
+       guardrails:[['Fleet availability','3 idle at Central depot · 8 mi','ok'],['Transport cost','$0 mob · depot is on-route','ok'],['Utilization target','52% vs. 60% target — borderline','ok'],['Near-term demand','Competing demand from Riverside starts Sep','ok']]}},
+    {id:'REQ-2301',pillar:'Prefab',project:'Downtown Medical Center',item:'L2 headwall assemblies × 24',qty:'24',need:'Sep 1',type:'Custom',status:'New',tax:null,taxMapped:false,ovr:null},
+    {id:'REQ-2315',pillar:'Logistics',project:'Mercy Hospital Tower B',item:'Lowboy haul — crawler crane components',qty:'1',need:'Jul 28',type:'Custom',status:'Acknowledged',tax:null,taxMapped:false,ovr:null},
+    {id:'REQ-2320',pillar:'Procurement',project:'Hercules Solar + BESS',item:'Safety supplies bundle — Phase 2',qty:'1',need:'Jun 15',type:'Catalog',status:'New',tax:null,taxMapped:false,ovr:null},
+    {id:'REQ-2330',pillar:'Professional services',project:'Downtown Medical Center',item:'Commissioning agent — BESS',qty:'1',need:'Oct 1',type:'Custom',status:'New',tax:null,taxMapped:false,ovr:null}
+  ];
+  var CC_BACKLOG_FILTER='All';
+  var CC_TAX_OPTS={
+    'excavator':['Asset › Earthmoving › Excavator › 45-55T','Asset › Earthmoving › Excavator › 30-45T','Asset › Earthmoving › Excavator › 20-30T'],
+    'tower crane':['Asset › Lifting › Tower Crane › Self-Erect','Asset › Lifting › Tower Crane › Luffing Jib','Asset › Lifting › Tower Crane › Top-Slewing'],
+    'telehandler':['Asset › Material handling › Telehandler › 10K','Asset › Material handling › Telehandler › 6K','Asset › Material handling › Telehandler › Rotating'],
+    'scissor':['Asset › Access › Scissor Lift › Electric › 30-35ft','Asset › Access › Scissor Lift › Electric › 19-26ft','Asset › Access › Scissor Lift › Rough-Terrain']
+  };
+  function ccTaxKey(item){ var s=item.toLowerCase(); if(s.indexOf('excavator')>-1)return 'excavator'; if(s.indexOf('tower crane')>-1)return 'tower crane'; if(s.indexOf('telehandler')>-1)return 'telehandler'; if(s.indexOf('scissor')>-1)return 'scissor'; return ''; }
+  function renderCcBacklog(){
+    var el=document.getElementById('ccBacklogRows'); if(!el)return;
+    var f=CC_BACKLOG_FILTER;
+    var rows=CC_BACKLOG.filter(function(r){ return f==='All'||(f==='Equipment'&&r.pillar==='Equipment')||(f!=='Equipment'&&r.pillar!=='Equipment'); });
+    if(!rows.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12.5px">No open requests.</div>';return;}
+    var pillarDot=function(p){var clr={Equipment:'var(--red)',Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'}[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+clr+';margin-right:5px;flex-shrink:0"></span>';};
+    var taxChip=function(r){if(!r.ovr)return '<span class="cc-badge neu">Non-equipment</span>';if(r.taxMapped)return '<span class="cc-badge ok" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">✓ Confirmed</span>';return '<span class="cc-badge warn" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">⚡ Needs confirm</span>';};
+    var ovrChip=function(r){if(!r.ovr)return '—';var ov=CC_BACKLOG_OVERRIDES[r.id];var rec=ov?ov.choice:r.ovr.rec;return '<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned':'Re-rent')+(ov?' EM':'')+'</span>';};
+    var statChip=function(r){var m={'New':'warn','Acknowledged':'info','In fulfillment':'ok','Fulfilled':'ok'};return '<span class="cc-badge '+(m[r.status]||'neu')+'">'+r.status+'</span>';};
+    el.innerHTML='<table class="cc-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:90px">ID</th><th>Item</th><th style="width:130px">Taxonomy</th><th style="width:110px">Owned vs. re-rent</th><th style="width:100px">Status</th><th style="width:80px"></th></tr></thead><tbody>'
+      +rows.map(function(r){
+        return '<tr><td><div class="cc-table-pri"><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></div></td>'
+          +'<td><div style="font-weight:600;font-size:12.5px">'+r.item+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+pillarDot(r.pillar)+r.project+'</div></td>'
+          +'<td>'+taxChip(r)+'</td>'
+          +'<td>'+ovrChip(r)+'</td>'
+          +'<td>'+statChip(r)+'</td>'
+          +'<td><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
+          +'</tr>';
+      }).join('')
+      +'</tbody></table>';
+  }
+  function ccFilterBacklog(el,f){ CC_BACKLOG_FILTER=f; document.querySelectorAll('#ccBacklogFilters .fpill').forEach(function(p){p.classList.toggle('on',p.dataset.f===f);}); renderCcBacklog(); }
+  function ccConfirmTax(id){
+    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
+    var el=document.getElementById('ccTaxChosen'); var chosen=(el&&el.value)||r.tax;
+    r.tax=chosen; r.taxMapped=true;
+    var sec=document.getElementById('ccTaxSection'); if(sec)sec.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:var(--radius-sm)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg><div><div style="font-size:11.5px;font-weight:600;color:var(--success)">Taxonomy confirmed</div><div style="font-size:11px;color:var(--g600);margin-top:2px">'+r.tax+'</div></div></div>';
+    renderCcBacklog(); toast(id+' taxonomy confirmed — ready to send to YardHub');
+  }
+  function ccSendToYardHub(id){
+    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
+    if(!r.taxMapped){toast('Confirm the taxonomy match first');return;}
+    r.status='In fulfillment'; closeModal(); toast(id+' → sent to YardHub · status In fulfillment · project notified'); renderCcBacklog();
+  }
+  function ccOvrOverride(id){
+    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r||!r.ovr)return;
+    var ov=CC_BACKLOG_OVERRIDES[id];
+    var altRec=ov?ov.choice:(r.ovr.rec==='owned'?'rerent':'owned');
+    openModal('Override OvR — '+id,
+      '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px">'
+      +'<b>You\'re overriding the system recommendation.</b> Your reasoning is logged and feeds the fleet model.</div>'
+      +'<div class="mf" style="margin-bottom:10px"><label>Your decision</label><div class="seg" style="margin-top:6px">'
+      +'<button class="seg-b'+(altRec==='owned'?' on':'')+'" id="ccOB" onclick="this.classList.add(\'on\');document.getElementById(\'ccRB\').classList.remove(\'on\')">Owned fleet</button>'
+      +'<button class="seg-b'+(altRec==='rerent'?' on':'')+'" id="ccRB" onclick="this.classList.add(\'on\');document.getElementById(\'ccOB\').classList.remove(\'on\')">Re-rent from market</button>'
+      +'</div></div>'
+      +'<div class="mf"><label>Reasoning <span style="color:var(--red)">*</span></label><textarea class="rin" rows="3" id="ccOvrR" style="width:100%" placeholder="e.g. Owned unit in service hold — re-renting to protect schedule…"></textarea></div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-red" onclick="ccSubmitOvr(\''+id+'\')">Submit override</button></div>'
+    );
+  }
+  function ccSubmitOvr(id){
+    var r=(document.getElementById('ccOvrR')||{}).value; if(!r||!r.trim()){toast('Add reasoning first');return;}
+    var ch=document.getElementById('ccOB')&&document.getElementById('ccOB').classList.contains('on')?'owned':'rerent';
+    CC_BACKLOG_OVERRIDES[id]={choice:ch,reason:r};
+    closeModal(); toast(id+' OvR override submitted — reasoning logged'); renderCcBacklog();
+  }
+  function ccReviewReq(id){
+    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
+    var eq=r.pillar==='Equipment';
+    var grDot=function(s){return {ok:'var(--success)',warn:'var(--warning)',red:'var(--red)'}[s]||'var(--g300)';};
+    var taxHTML='';
+    if(eq){
+      var taxOpts=CC_TAX_OPTS[ccTaxKey(r.item)]||[];
+      var quickBtns=taxOpts.map(function(o){return '<button class="tax-chip '+(o===r.tax?'ok':'sug')+'" onclick="document.getElementById(\'ccTaxChosen\').value=\''+o+'\';this.parentElement.querySelectorAll(\'.tax-chip\').forEach(function(b){b.className=\'tax-chip sug\';});this.className=\'tax-chip ok\'">'+o+'</button>';}).join('');
+      if(r.taxMapped){
+        taxHTML='<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:var(--radius-sm);margin-bottom:12px" id="ccTaxSection"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--success);margin-bottom:4px">Taxonomy confirmed</div><div style="font-size:12.5px;color:var(--g700)">'+r.tax+'</div></div>';
+      } else {
+        taxHTML='<div style="border:1px solid var(--g200);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px" id="ccTaxSection">'
+          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Taxonomy match</div><span class="cc-badge warn">Needs confirmation</span></div>'
+          +'<div style="font-size:11.5px;color:var(--g600);margin-bottom:6px">AI-recommended:</div>'
+          +'<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:10px">'+r.tax+'</div>'
+          +'<div style="font-size:11px;color:var(--g500);margin-bottom:6px">Quick options:</div>'
+          +'<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">'+quickBtns+'</div>'
+          +'<input id="ccTaxChosen" value="'+(r.tax||'')+'" style="display:none">'
+          +'<button class="btn btn-ghost btn-sm" onclick="ccConfirmTax(\''+id+'\')">✓ Confirm match</button>'
+          +'</div>';
+      }
+    }
+    var ovrHTML='';
+    if(eq&&r.ovr){
+      var ov=CC_BACKLOG_OVERRIDES[id];
+      var rec=ov?ov.choice:r.ovr.rec;
+      ovrHTML='<div class="ovr-panel" style="margin-bottom:12px">'
+        +'<div class="ovr-panel-h"><span class="ovr-panel-lbl">Owned vs. re-rent</span>'
+        +'<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned fleet':'Re-rent')+(ov?' · EM override':'')+'</span>'
+        +'<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="ccOvrOverride(\''+id+'\')">Override</button></div>'
+        +'<div style="font-size:12px;color:var(--g600);margin:6px 0 10px">'+r.ovr.summary+'</div>'
+        +r.ovr.guardrails.map(function(g){return '<div class="ovr-gr"><span class="ovr-gr-dot" style="background:'+grDot(g[2])+'"></span><div><b>'+g[0]+'</b><span class="gd"> · '+g[1]+'</span></div></div>';}).join('')
+        +(ov?'<div style="font-size:11px;margin-top:8px;padding:6px 10px;background:var(--warning-tint);border-radius:5px;color:var(--warning)">EM override: <b>'+(ov.choice==='owned'?'Owned':'Re-rent')+'</b> — "'+ov.reason+'"</div>':'')
+        +'</div>';
+    }
+    var noteHTML='';
+    if(!eq){
+      noteHTML='<div style="font-size:12px;padding:10px 12px;background:var(--info-tint);border:1px solid var(--info);border-radius:var(--radius-sm);margin-bottom:12px;color:var(--charcoal)">'
+        +'<b>Non-equipment — managed queue.</b> The '+r.pillar.toLowerCase()+' lead fulfills through the existing process; update status here and the project sees each change.</div>';
+    }
+    var body='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:4px">'+r.pillar+' · '+r.project+'</div>'
+      +'<div style="font-weight:600;font-size:14px;margin-bottom:12px">'+r.item+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">'
+      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Qty</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.qty+'</div></div>'
+      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Need by</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.need+'</div></div>'
+      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Type</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.type+'</div></div>'
+      +'</div>'
+      +noteHTML+taxHTML+ovrHTML
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +(eq?'<button class="btn btn-red" onclick="ccSendToYardHub(\''+id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Send to YardHub</button>':'<button class="btn btn-dark btn-sm" onclick="closeModal();toast(\'Status updated · project notified\')">Update status</button>')
+      +'</div>';
+    openModal('Review '+id, body);
+  }
+
+  // ══ CC CAPEX DATA ══
+  var CC_CAPEX_BUYS=[
+    {id:'cb1',cat:'Rough-terrain crane 90T',why:'$504K/yr recurring re-rent across 3 jobs — exceeds purchase break-even',buy:'Buy',val:'$280K',yr:'$504K/yr re-rent',payback:'7 mo',rec:'buy'},
+    {id:'cb2',cat:'Scissor lift fleet — 32ft electric (6 units)',why:'$290K/yr recurring re-rent · high idle risk signals owned fleet expansion',buy:'Buy 6 units',val:'$145K',yr:'$290K/yr re-rent',payback:'6 mo',rec:'buy'},
+    {id:'cb3',cat:'Telehandler — 10K rotating (3 units)',why:'$210K/yr re-rent · utilization 41% when active — buy gives utilization upside',buy:'Buy 3 units',val:'$120K',yr:'$210K/yr re-rent',payback:'7 mo',rec:'buy'},
+    {id:'cb4',cat:'Tower crane — self-erect',why:'Specialty piece · 1-2 jobs/yr · re-rent preferred — capital not justified',buy:'Re-rent',val:'n/a',yr:'$148K/yr re-rent',payback:'—',rec:'rerent'}
+  ];
+  var CC_CAPEX_PLAN=[];
+  function renderCcCapex(){
+    var buyList=document.getElementById('ccCapexBuyList'); if(!buyList)return;
+    var planBody=document.getElementById('ccCapexPlanBody'); if(!planBody)return;
+    var total=0;
+    buyList.innerHTML=CC_CAPEX_BUYS.map(function(b){
+      var inPlan=CC_CAPEX_PLAN.indexOf(b.id)>-1;
+      var recChip=b.rec==='buy'?'<span class="cc-badge ok">Buy</span>':'<span class="cc-badge neu">Re-rent</span>';
+      return '<tr class="'+(inPlan?'done':'')+'"><td><div style="font-weight:600;font-size:12.5px">'+b.cat+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+b.why+'</div></td>'
+        +'<td style="white-space:nowrap">'+recChip+'</td>'
+        +'<td style="font-weight:600">'+b.buy+'</td>'
+        +'<td style="font-weight:700;font-size:13px">'+b.val+'</td>'
+        +'<td>'+b.yr+'</td>'
+        +'<td>'+b.payback+'</td>'
+        +'<td style="text-align:right">'+(b.rec==='rerent'?'<span style="font-size:11.5px;color:var(--g400)">Re-rent preferred</span>':(inPlan?'<span class="cc-badge ok">In plan</span>':'<button class="btn btn-red btn-sm" onclick="ccCapexValidate(\''+b.id+'\')">Validate</button> <button class="btn btn-ghost btn-sm" onclick="ccCapexDecline(\''+b.id+'\')">Decline</button>'))+'</td>'
+        +'</tr>';
+    }).join('');
+    var planItems=CC_CAPEX_BUYS.filter(function(b){return CC_CAPEX_PLAN.indexOf(b.id)>-1;});
+    planItems.forEach(function(b){var v=parseFloat(b.val.replace(/[^0-9.]/g,''))||0;total+=v;});
+    document.getElementById('ccCapexTotal').textContent=total?'$'+total+'K':'$0';
+    document.getElementById('ccCapexCount').textContent=planItems.length?planItems.length+' item'+(planItems.length>1?'s':''):'empty';
+    var sub=document.getElementById('ccCapexSubmitBtn'); if(sub)sub.style.display=planItems.length?'flex':'none';
+    if(!planItems.length){planBody.innerHTML='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12.5px"><b>No line items yet.</b><div style="margin-top:4px">Validate items from the ranked buy list above and they\'ll populate here.</div></div>';return;}
+    planBody.innerHTML='<table class="cc-table"><thead><tr><th>Asset</th><th>Purchase</th><th>Total</th><th></th></tr></thead><tbody>'
+      +planItems.map(function(b){return '<tr><td style="font-weight:600">'+b.cat+'</td><td>'+b.buy+'</td><td style="font-weight:700">'+b.val+'</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ccCapexRemove(\''+b.id+'\')">Remove</button></td></tr>';}).join('')
+      +'</tbody></table>';
+  }
+  function ccCapexValidate(id){
+    var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;}); if(!b)return;
+    openModal('Validate for CAPEX — '+b.cat,
+      '<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:6px;margin-bottom:14px;font-size:12.5px">'
+      +'<b>Validating adds '+b.cat+' to the CAPEX plan</b> and captures your name, timestamp, and reasoning.</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+      +'<div style="border:1px solid var(--g200);border-radius:6px;padding:10px"><div style="font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--g500);margin-bottom:4px">Annual re-rent cost</div><div style="font-size:18px;font-weight:700;color:var(--g900)">'+b.yr+'</div></div>'
+      +'<div style="border:1px solid var(--success);border-radius:6px;padding:10px;background:var(--success-tint)"><div style="font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--success);margin-bottom:4px">Purchase price</div><div style="font-size:18px;font-weight:700;color:var(--g900)">'+b.val+'</div><div style="font-size:11px;color:var(--g600);margin-top:3px">Payback '+b.payback+'</div></div>'
+      +'</div>'
+      +'<div class="mf"><label>Validation reasoning <span style="font-weight:400;color:var(--g500)">(recommended)</span></label><textarea class="rin" rows="2" id="ccCapexR">Gap confirmed across pipeline; recurring re-rent spend justifies the buy.</textarea></div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="ccCapexConfirm(\''+id+'\')">✓ Validate &amp; add to plan</button></div>'
+    );
+  }
+  function ccCapexConfirm(id){if(CC_CAPEX_PLAN.indexOf(id)<0)CC_CAPEX_PLAN.push(id);closeModal();renderCcCapex();var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;});if(b)toast(b.cat+' validated → added to CAPEX plan');}
+  function ccCapexRemove(id){CC_CAPEX_PLAN=CC_CAPEX_PLAN.filter(function(x){return x!==id;});renderCcCapex();toast('Removed from CAPEX plan');}
+  function ccCapexDecline(id){
+    var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;}); if(!b)return;
+    openModal('Decline — '+b.cat,
+      '<div class="mf" style="margin-bottom:10px"><label>Reason</label><select class="acc-sel wfull"><option>One-off spike — not sustained demand</option><option>Re-rent more cost-effective</option><option>Capital constrained this cycle</option><option>Prefer to redeploy existing fleet</option><option>Other</option></select></div>'
+      +'<div class="mf"><label>Details</label><textarea class="rin" rows="2" placeholder="Captured for the record and the model"></textarea></div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="closeModal();toast(\''+b.cat.replace(/'/g,"\\'")+" declined — reason captured\')"+'\">Decline &amp; record</button></div>'
+    );
+  }
+  function ccCapexSubmitPlan(){
+    openModal('Submit CAPEX plan',
+      '<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:6px;margin-bottom:14px;font-size:12.5px">'
+      +'<b>Plan captured.</b> Your validated buy list is saved and shown here for leadership review. In V1 the plan lives on this screen — export or share it manually.</div>'
+      +'<div style="display:flex;gap:8px;margin-top:4px"><button class="btn btn-ghost btn-sm" onclick="toast(\'Exported to PDF (demo)\')">Export PDF</button><button class="btn btn-ghost btn-sm" onclick="toast(\'Link copied (demo)\')">Copy link</button></div>'
+      +'<div class="modal-foot"><button class="btn btn-red" onclick="closeModal()">Done</button></div>'
+    );
+  }
+
+  // ══ CC PILLARS ══
+  function ccPillFilter(el,f){
+    el.parentElement.querySelectorAll('.btn').forEach(function(b){b.classList.remove('on');});
+    el.classList.add('on');
+    var rows=CC_BACKLOG.filter(function(r){return r.pillar!=='Equipment'&&(f==='all'||r.pillar===f);});
+    var box=document.getElementById('ccPillRows'); if(!box)return;
+    if(!rows.length){box.innerHTML='<div style="padding:16px;color:var(--g400);font-size:12.5px">No open '+f+' demand right now.</div>';return;}
+    var pillarDot=function(p){var clr={Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'}[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+clr+';margin-right:5px"></span>';};
+    box.innerHTML='<table class="cc-table"><thead><tr><th>ID</th><th>Pillar</th><th>Item</th><th>Qty</th><th>Need by</th><th>Status</th><th></th></tr></thead><tbody>'
+      +rows.map(function(r){
+        return '<tr><td><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></td>'
+          +'<td>'+pillarDot(r.pillar)+r.pillar+'</td>'
+          +'<td><div style="font-weight:600">'+r.item+'</div><div style="font-size:11px;color:var(--g500)">'+r.project+'</div></td>'
+          +'<td>'+r.qty+'</td>'
+          +'<td>'+r.need+'</td>'
+          +'<td><span class="cc-badge '+(r.status==='New'?'warn':r.status==='Acknowledged'?'info':'ok')+'">'+r.status+'</span></td>'
+          +'<td><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
+          +'</tr>';
+      }).join('')+'</tbody></table>';
+  }
 </script>
 
 <div class="app" id="ccApp" style="display:none">
@@ -3763,7 +4037,7 @@
       <button class="sb-item" data-screen="cc-edp" onclick="ccNav('cc-edp')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Equipment plan &mdash; ops</button>
       <div class="sb-group">Fulfillment</div>
       <button class="sb-item" data-screen="cc-backlog" onclick="ccNav('cc-backlog')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Order backlog</button>
-      <button class="sb-item" data-screen="cc-ovr" onclick="ccNav('cc-ovr')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>Owned vs. re-rent</button>
+      <button class="sb-item" data-screen="cc-pillars" onclick="ccNav('cc-pillars')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Other pillar plans</button>
       <div class="sb-group">Finance</div>
       <button class="sb-item" data-screen="cc-billing" onclick="ccNav('cc-billing')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>Billing &amp; anomalies</button>
       <button class="sb-item" data-screen="cc-capex" onclick="ccNav('cc-capex')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>CAPEX plan</button>
@@ -3875,75 +4149,17 @@
 
       <!-- ══ ORDER BACKLOG ══ -->
       <div class="cc-screen" id="cc-backlog">
-        <div class="phead"><div><h1>Order backlog</h1></div></div>
-        <div class="filterbar" style="margin-bottom:16px">
-          <button class="pill on" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">All</button>
-          <button class="pill" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">Equipment</button>
-          <button class="pill" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">Prefab</button>
-          <button class="pill" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">Procurement</button>
-          <button class="pill" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">Logistics</button>
-          <button class="pill" onclick="this.parentNode.querySelectorAll('.pill').forEach(function(p){p.classList.remove('on')});this.classList.add('on')">Prof. services</button>
-        </div>
-        <div class="card">
-          <table class="cc-table">
-            <thead><tr><th>ID</th><th>Item</th><th>Project</th><th>Qty</th><th>Need by</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
-              <tr><td class="mono">ORD-3058</td><td><div class="pri">Excavator 45-55T</div></td><td>Solar Project Alpha</td><td>2</td><td>Aug 1</td><td><span class="tag info">Equipment</span></td><td><span class="tag ok">Confirmed</span> <span class="tag ok" style="margin-left:4px">Use owned</span></td><td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-1058')">Review</button> <button class="btn btn-red btn-sm" onclick="toast('ORD-3058 sent to YardHub')">Send</button></td></tr>
-              <tr><td class="mono">ORD-3059</td><td><div class="pri">Tower crane 250ft</div></td><td>Downtown Office</td><td>1</td><td>Sep 15</td><td><span class="tag info">Equipment</span></td><td><span class="tag warn">Needs map</span> <span class="tag info" style="margin-left:4px">Re-rent</span></td><td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2210')">Review</button></td></tr>
-              <tr><td class="mono">ORD-3060</td><td><div class="pri">Scissor lift 32ft (4&times;)</div></td><td>Solar Project Alpha</td><td>4</td><td>Oct 1</td><td><span class="tag info">Equipment</span></td><td><span class="tag warn">Needs map</span> <span class="tag ok" style="margin-left:4px">Use owned</span></td><td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2244')">Review</button></td></tr>
-              <tr><td class="mono">ORD-3061</td><td><div class="pri">L2 headwall &mdash; prefab unit</div></td><td>Riverside Hospital</td><td>1</td><td>Aug 15</td><td><span class="tag neu">Prefab</span></td><td><span class="tag info">In fabrication</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Prefab details for ORD-3061')">View</button></td></tr>
-              <tr><td class="mono">ORD-3062</td><td><div class="pri">Structural steel Pkg A</div></td><td>Downtown Office</td><td>&mdash;</td><td>Sep 1</td><td><span class="tag neu">Procurement</span></td><td><span class="tag ok">PO issued</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('PO details for ORD-3062')">View</button></td></tr>
-              <tr><td class="mono">ORD-3063</td><td><div class="pri">Flatbed haul &times;3 loads</div></td><td>Solar Project Alpha</td><td>3</td><td>Jul 28</td><td><span class="tag neu">Logistics</span></td><td><span class="tag ok">Scheduled</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Logistics details for ORD-3063')">View</button></td></tr>
-              <tr><td class="mono">ORD-3064</td><td><div class="pri">Geotechnical inspector</div></td><td>Riverside Hospital</td><td>2 FTE</td><td>Aug 1</td><td><span class="tag neu">Prof. services</span></td><td><span class="tag ok">Active</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Services details for ORD-3064')">View</button></td></tr>
-              <tr><td class="mono">ORD-3065</td><td><div class="pri">Boom lift 80ft</div></td><td>Downtown Office</td><td>2</td><td>Nov 1</td><td><span class="tag info">Equipment</span></td><td><span class="tag neu">Draft</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Draft ORD-3065')">Review</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- ══ OWNED VS RE-RENT ══ -->
-      <div class="cc-screen" id="cc-ovr">
-        <div class="phead"><div><h1>Owned vs. re-rent</h1></div></div>
-        <div class="vitals">
-          <div class="vital ok"><div class="vk">Owned coverage</div><div class="vv">67<span class="u">%</span></div></div>
-          <div class="vital ok"><div class="vk">Owned fleet value</div><div class="vv">$8.4<span class="u">M</span></div></div>
-          <div class="vital"><div class="vk">Re-rent spend</div><div class="vv">$3.2<span class="u">M</span></div></div>
-          <div class="vital ok"><div class="vk">Saved vs. all re-rent</div><div class="vv">$1.1<span class="u">M</span></div><div class="vsub"><span class="tag ok">Fleet benefit</span></div></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px">
-          <div class="card" style="padding:18px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-              <div><div style="font-size:15px;font-weight:650;letter-spacing:-.01em">REQ-1058 &mdash; 2&times; Excavator 45&ndash;55T</div><div style="font-size:12px;color:var(--g500);margin-top:2px">Solar Project Alpha &middot; Aug 1 need date</div></div>
-              <span class="tag ok">Use owned &mdash; confirmed</span>
+        <div class="sec-title">Order backlog <span class="sec-sub">equipment taxonomy + OvR decisions before YardHub handoff</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+            <div id="ccBacklogFilters" style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="fpill on" data-f="All" onclick="ccFilterBacklog(this,'All')">All</button>
+              <button class="fpill" data-f="Equipment" onclick="ccFilterBacklog(this,'Equipment')">Equipment</button>
+              <button class="fpill" data-f="Other" onclick="ccFilterBacklog(this,'Other')">Other pillars</button>
             </div>
-            <div class="ovr-cost">
-              <div class="ovr-opt rec"><div class="oo-lbl">&check; Owned fleet</div><div class="oo-val">$8,400/mo</div><div class="oo-sub">+ $1,200 mob</div><div class="oo-note">34% util &middot; below 65% target &mdash; idle</div></div>
-              <div class="ovr-opt"><div class="oo-lbl">Re-rent</div><div class="oo-val">$12,400/mo</div><div class="oo-sub">2-day lead</div><div class="oo-note" style="color:var(--g500)">+$4,000/mo vs. owned</div></div>
-            </div>
-            <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-1058')">View full analysis</button><button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride('REQ-1058')">Override</button></div>
+            <button class="btn btn-red btn-sm" style="margin-left:auto" onclick="toast('Confirmed items sent to YardHub — 2 items routed')">Push confirmed → YardHub</button>
           </div>
-          <div class="card" style="padding:18px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-              <div><div style="font-size:15px;font-weight:650;letter-spacing:-.01em">REQ-2210 &mdash; 1&times; Tower crane (self-erect)</div><div style="font-size:12px;color:var(--g500);margin-top:2px">Downtown Office &middot; Sep 15 need date</div></div>
-              <span class="tag info">Re-rent &mdash; pending</span>
-            </div>
-            <div class="ovr-cost">
-              <div class="ovr-opt"><div class="oo-lbl">Owned fleet</div><div class="oo-val">n/a</div><div class="oo-note" style="color:var(--g500)">No owned tower cranes</div></div>
-              <div class="ovr-opt rec"><div class="oo-lbl">&check; Re-rent</div><div class="oo-val">$12,400/mo</div><div class="oo-sub">2-day lead</div><div class="oo-note">Recommended &mdash; no owned alternative</div></div>
-            </div>
-            <div style="display:flex;gap:8px"><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2210')">View full analysis</button><button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride('REQ-2210')">Override</button></div>
-          </div>
-          <div class="card" style="padding:18px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-              <div><div style="font-size:15px;font-weight:650;letter-spacing:-.01em">REQ-2244 &mdash; 4&times; Scissor lift 32ft</div><div style="font-size:12px;color:var(--g500);margin-top:2px">Solar Project Alpha &middot; Oct 1 need date</div></div>
-              <span class="tag warn">Pending decision</span>
-            </div>
-            <div class="ovr-cost">
-              <div class="ovr-opt rec"><div class="oo-lbl">&check; Owned fleet</div><div class="oo-val">$1,900/mo</div><div class="oo-sub">$0 mob</div><div class="oo-note">41% util &middot; below 75% target &mdash; idle</div></div>
-              <div class="ovr-opt"><div class="oo-lbl">Re-rent</div><div class="oo-val">$2,400/mo</div><div class="oo-sub">3-day lead</div><div class="oo-note" style="color:var(--g500)">+$500/mo vs. owned</div></div>
-            </div>
-            <div style="display:flex;gap:8px"><button class="btn btn-red btn-sm" onclick="toast('REQ-2244 OvR confirmed — use owned → routing to YardHub')">Confirm &mdash; use owned</button><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2244')">View full analysis</button><button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride('REQ-2244')">Override</button></div>
-          </div>
+          <div id="ccBacklogRows"></div>
         </div>
       </div>
 
@@ -3988,46 +4204,46 @@
 
       <!-- ══ CAPEX PLAN ══ -->
       <div class="cc-screen" id="cc-capex">
-        <div class="phead"><div><h1>CAPEX plan</h1></div></div>
-        <div class="vitals">
-          <div class="vital warn"><div class="vk">CAPEX flagged</div><div class="vv">$2.4<span class="u">M</span></div></div>
-          <div class="vital"><div class="vk">Candidates</div><div class="vv">4</div></div>
-          <div class="vital ok"><div class="vk">Buy candidates</div><div class="vv">3</div></div>
-          <div class="vital info"><div class="vk">Lease candidates</div><div class="vv">1</div></div>
+        <div class="sec-title">CAPEX plan <span class="sec-sub">ranked buy list · validate to build the plan</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--red)"></div><div class="vital-lbl">CAPEX flagged</div><div class="vital-val">$2.4M</div><div class="vital-sub">across 4 candidates</div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--success)"></div><div class="vital-lbl">Buy candidates</div><div class="vital-val">3</div><div class="vital-sub">validated in plan: <span id="ccCapexCount">empty</span></div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--warning)"></div><div class="vital-lbl">Plan total</div><div class="vital-val" id="ccCapexTotal">$0</div><div class="vital-sub">validated items only</div></div>
+          <div class="vital" style="position:relative"><div class="vital-bar" style="background:var(--info)"></div><div class="vital-lbl">Re-rent preferred</div><div class="vital-val">1</div><div class="vital-sub">capital not justified</div></div>
         </div>
-        <div class="card">
-          <div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span><span class="ht">CAPEX candidates</span><span style="margin-left:auto;font-size:12px;color:var(--g500)">Based on rental spend vs. purchase economics</span></div>
-          <div style="padding:4px 0 4px">
-            <table class="cc-table">
-              <thead><tr><th>Equipment</th><th>Rental cost/yr</th><th>Purchase price</th><th>Payback</th><th>Recommendation</th><th></th></tr></thead>
-              <tbody>
-                <tr>
-                  <td><div class="pri">Rough-terrain crane 90T</div><div class="sub">3 units in plan, 7-mo payback</div></td>
-                  <td style="font-weight:600">$504K/yr</td>
-                  <td style="font-weight:600">$280K</td>
-                  <td><span class="cc-badge ok">7 months</span></td>
-                  <td><span class="tag ok">Buy</span></td>
-                  <td><button class="btn btn-ghost btn-sm" onclick="toast('CAPEX request initiated for RT crane 90T')">Initiate</button></td>
-                </tr>
-                <tr>
-                  <td><div class="pri">Scissor lift fleet 32ft</div><div class="sub">12 units, high utilization</div></td>
-                  <td style="font-weight:600">$290K/yr</td>
-                  <td style="font-weight:600">$145K</td>
-                  <td><span class="cc-badge ok">6 months</span></td>
-                  <td><span class="tag ok">Buy</span></td>
-                  <td><button class="btn btn-ghost btn-sm" onclick="toast('CAPEX request initiated for scissor lift fleet')">Initiate</button></td>
-                </tr>
-                <tr>
-                  <td><div class="pri">Tower crane (self-erect)</div><div class="sub">Specialty &mdash; always re-rent</div></td>
-                  <td style="font-weight:600">$148K/yr</td>
-                  <td style="font-weight:600">&mdash;</td>
-                  <td><span class="cc-badge neu">N/A</span></td>
-                  <td><span class="tag neu">Re-rent</span></td>
-                  <td><button class="btn btn-ghost btn-sm" onclick="toast('Tower crane flagged as always re-rent')">Notes</button></td>
-                </tr>
-              </tbody>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;align-items:center;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700">Ranked buy list</div>
+            <span style="font-size:11.5px;color:var(--g500);margin-left:8px">02S recommendation based on recurring re-rent spend</span>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="cc-table" style="table-layout:auto">
+              <thead><tr><th>Asset</th><th>Rec.</th><th>Purchase</th><th>Buy price</th><th>Annual re-rent</th><th>Payback</th><th></th></tr></thead>
+              <tbody id="ccCapexBuyList"></tbody>
             </table>
           </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:700">Your CAPEX plan</div>
+            <button id="ccCapexSubmitBtn" class="btn btn-red btn-sm" style="margin-left:auto;display:none" onclick="ccCapexSubmitPlan()">Submit plan</button>
+          </div>
+          <div id="ccCapexPlanBody"></div>
+        </div>
+      </div>
+
+      <!-- ══ OTHER PILLAR PLANS ══ -->
+      <div id="cc-pillars" class="cc-screen" style="display:none">
+        <div class="sec-title">Other pillar plans <span class="sec-sub">non-equipment demand from project teams · manage queue manually</span></div>
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;gap:6px;margin-bottom:12px">
+            <button class="btn btn-ghost btn-sm on" id="cpPillarAll" onclick="ccPillFilter(this,'all')">All</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Prefab')">Prefab</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Logistics')">Logistics</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Procurement')">Procurement</button>
+            <button class="btn btn-ghost btn-sm" onclick="ccPillFilter(this,'Professional services')">Prof. services</button>
+          </div>
+          <div id="ccPillRows"></div>
         </div>
       </div>
 
