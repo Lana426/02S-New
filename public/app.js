@@ -916,6 +916,7 @@
     var lp=document.getElementById('landing'), ap=document.querySelector('.app'), uc=document.getElementById('uc');
     if(w==='portal'){ if(lp)lp.style.display='none'; if(uc)uc.style.display='none'; if(ap)ap.style.display='flex'; go('dashboard'); window.scrollTo(0,0); return; }
     if(w==='command'){ enterCC(); return; }
+    if(w==='control'){ enterCT(); return; }
     var d=WS[w]; if(!d)return;
     document.getElementById('ucName').textContent=d.name;
     document.getElementById('ucWho').innerHTML=d.who;
@@ -2161,4 +2162,225 @@
           +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
           +'</tr>';
       }).join('')+'</tbody></table>';
+  }
+
+  /* ═══════════ CONTROL TOWER ═══════════ */
+  var CT_PROJECTS=[
+    {id:'P001',name:'Apex Solar',loc:'Phoenix, AZ',status:'Active',phase:'Construction',budget:12.4,committed:7.9,forecast:12.1,marginPct:14.2,trend:'stable'},
+    {id:'P002',name:'Ridgeline Wind',loc:'Lubbock, TX',status:'Active',phase:'Mobilization',budget:8.7,committed:3.2,forecast:8.5,marginPct:14.9,trend:'up'},
+    {id:'P003',name:'Desert Basin BESS',loc:'Tucson, AZ',status:'Active',phase:'Closeout',budget:5.3,committed:5.1,forecast:5.6,marginPct:8.2,trend:'down'},
+    {id:'P004',name:'Highplains Solar',loc:'Amarillo, TX',status:'Pursuit',phase:'Estimating',budget:14.2,committed:0,forecast:14.2,marginPct:13.9,trend:'stable'},
+    {id:'P005',name:'Cascade Hydro',loc:'Bend, OR',status:'Pursuit',phase:'Pursuit',budget:6.8,committed:0,forecast:6.8,marginPct:12.8,trend:'stable'}
+  ];
+  var CT_RATES=[
+    {cat:'Excavator 45–55T',code:'EXC-45',day:1850,week:7400,month:22000,eff:'Jan 2026',status:'Current'},
+    {cat:'Tower Crane (hammerhead)',code:'TCR-HH',day:3200,week:12800,month:38000,eff:'Jan 2026',status:'Current'},
+    {cat:'Crawler Crane 100–200T',code:'CCR-100',day:4100,week:16400,month:49000,eff:'Jan 2026',status:'Current'},
+    {cat:'Telehandler 8K–10K',code:'TLH-8K',day:580,week:2320,month:6900,eff:'Jan 2026',status:'Current'},
+    {cat:'Scissor Lift 26–33ft',code:'SCL-26',day:175,week:700,month:2100,eff:'Jan 2026',status:'Current'},
+    {cat:'Personnel Lift 40–60ft',code:'PBL-40',day:285,week:1140,month:3400,eff:'Jan 2026',status:'Current'},
+    {cat:'Flatbed Haul (local)',code:'HAL-FL',day:1100,week:4400,month:13200,eff:'Jan 2026',status:'Current'},
+    {cat:'Lowboy Haul (heavy)',code:'HAL-LB',day:1650,week:6600,month:19800,eff:'Jan 2026',status:'Current'},
+    {cat:'Man Lift / Boom 60–80ft',code:'BML-60',day:350,week:1400,month:4200,eff:'Jan 2026',status:'Review due'},
+    {cat:'Compactor (soil)',code:'CMP-SL',day:220,week:880,month:2640,eff:'Jan 2026',status:'Review due'}
+  ];
+  var CT_FORECAST=[
+    {project:'Apex Solar',cat:'Excavator',q1:3,q2:4,q3:2,q4:0},
+    {project:'Apex Solar',cat:'Crane',q1:1,q2:2,q3:1,q4:0},
+    {project:'Apex Solar',cat:'Telehandler',q1:4,q2:6,q3:4,q4:0},
+    {project:'Apex Solar',cat:'Lift',q1:2,q2:3,q3:2,q4:0},
+    {project:'Ridgeline Wind',cat:'Crane',q1:2,q2:3,q3:3,q4:2},
+    {project:'Ridgeline Wind',cat:'Excavator',q1:1,q2:2,q3:2,q4:1},
+    {project:'Ridgeline Wind',cat:'Telehandler',q1:3,q2:4,q3:4,q4:2},
+    {project:'Desert Basin BESS',cat:'Telehandler',q1:2,q2:1,q3:0,q4:0},
+    {project:'Desert Basin BESS',cat:'Lift',q1:1,q2:1,q3:0,q4:0},
+    {project:'Highplains Solar',cat:'Excavator',q1:0,q2:0,q3:2,q4:5},
+    {project:'Highplains Solar',cat:'Telehandler',q1:0,q2:0,q3:3,q4:6},
+    {project:'Highplains Solar',cat:'Crane',q1:0,q2:0,q3:1,q4:2},
+    {project:'Cascade Hydro',cat:'Crane',q1:0,q2:0,q3:0,q4:2},
+    {project:'Cascade Hydro',cat:'Excavator',q1:0,q2:0,q3:0,q4:3}
+  ];
+
+  function enterCT(){
+    var uc=document.getElementById('uc'); if(uc)uc.style.display='none';
+    var lp=document.getElementById('landing'); if(lp)lp.style.display='none';
+    var ap=document.querySelector('.app'); if(ap)ap.style.display='none';
+    var cc=document.getElementById('ccApp'); if(cc)cc.style.display='none';
+    var ct=document.getElementById('ctApp'); if(ct)ct.style.display='flex';
+    ctNav('ct-dash');
+  }
+  function backFromCT(){
+    var ct=document.getElementById('ctApp'); if(ct)ct.style.display='none';
+    var lp=document.getElementById('landing'); if(lp)lp.style.display='flex';
+  }
+  function ctNav(id){
+    document.querySelectorAll('#ctApp .cc-screen').forEach(function(s){s.style.display='none';});
+    document.querySelectorAll('#ctApp .sb-item').forEach(function(b){b.classList.remove('active');});
+    var screen=document.getElementById(id); if(screen)screen.style.display='block';
+    var btn=document.querySelector('#ctApp .sb-item[data-screen="'+id+'"]'); if(btn)btn.classList.add('active');
+    if(id==='ct-financials')renderCtFinancials();
+    if(id==='ct-rates')renderCtRates();
+    if(id==='ct-forecast')renderCtForecast();
+    if(id==='ct-analytics')renderCtAnalytics();
+  }
+
+  function renderCtFinancials(){
+    var el=document.getElementById('ctFinancialsTable'); if(!el)return;
+    function phaseTag(p){
+      var cls=p==='Closeout'?'warn':p==='Construction'?'info':p==='Mobilization'?'ok':'neu';
+      return '<span class="tag '+cls+'">'+p+'</span>';
+    }
+    function trendIco(t){
+      if(t==='up') return '<svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" style="width:14px;height:14px"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>';
+      if(t==='down') return '<svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" style="width:14px;height:14px"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>';
+      return '<svg viewBox="0 0 24 24" fill="none" stroke="var(--g400)" stroke-width="2.5" style="width:14px;height:14px"><path d="M5 12h14"/></svg>';
+    }
+    function row(p){
+      var pct=p.committed>0?Math.round(p.committed/p.budget*100):0;
+      var barColor=pct>95?'var(--red)':pct>70?'var(--warning)':'var(--success)';
+      var variance=parseFloat((p.forecast-p.budget).toFixed(1));
+      var varStr=(variance>0?'+':'')+variance.toFixed(1)+'M';
+      var varColor=variance>0.05?'var(--red)':variance<-0.05?'var(--success)':'var(--g500)';
+      var mpCls=p.marginPct>=14?'ok':p.marginPct>=10?'warn':'bad';
+      return '<tr>'
+        +'<td><div style="font-weight:600;font-size:13px">'+p.name+'</div><div style="font-size:11px;color:var(--g500);margin-top:1px">'+p.loc+'</div></td>'
+        +'<td>'+phaseTag(p.phase)+'</td>'
+        +'<td style="font-variant-numeric:tabular-nums">$'+p.budget.toFixed(1)+'M</td>'
+        +'<td>'
+          +'<div style="display:flex;align-items:center;gap:8px">'
+          +'<div style="flex:1;min-width:60px;background:var(--g150);border-radius:3px;height:7px;overflow:hidden">'
+          +'<div style="width:'+Math.min(pct,100)+'%;background:'+barColor+';height:100%"></div></div>'
+          +'<span style="font-size:11.5px;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:32px">'+pct+'%</span>'
+          +'</div>'
+        +'</td>'
+        +'<td style="font-variant-numeric:tabular-nums;color:'+varColor+'">'+varStr+'</td>'
+        +'<td><span class="cc-badge '+mpCls+'" style="min-width:48px;justify-content:center;display:inline-flex">'+p.marginPct.toFixed(1)+'%</span></td>'
+        +'<td>'+trendIco(p.trend)+'</td>'
+        +'</tr>';
+    }
+    var thead='<thead><tr><th>Project</th><th style="width:120px">Phase</th><th style="width:88px">Budget</th><th style="width:180px">Committed</th><th style="width:80px">Variance</th><th style="width:80px">Margin %</th><th style="width:36px"></th></tr></thead>';
+    var active=CT_PROJECTS.filter(function(p){return p.status==='Active';});
+    var pursuit=CT_PROJECTS.filter(function(p){return p.status==='Pursuit';});
+    var html='<div style="margin-bottom:22px">'
+      +'<div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g400);margin-bottom:10px">Active projects</div>'
+      +'<table class="cc-table" style="width:100%">'+thead+'<tbody>'+active.map(row).join('')+'</tbody></table></div>';
+    if(pursuit.length){
+      html+='<div>'
+        +'<div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g400);margin-bottom:10px">Pursuit pipeline</div>'
+        +'<table class="cc-table" style="width:100%">'+thead+'<tbody>'+pursuit.map(row).join('')+'</tbody></table></div>';
+    }
+    el.innerHTML=html;
+  }
+
+  function renderCtRates(){
+    var el=document.getElementById('ctRatesTable'); if(!el)return;
+    function fmt(n){return '$'+n.toLocaleString();}
+    var rows=CT_RATES.map(function(r){
+      var sc=r.status==='Review due'?'warn':'ok';
+      return '<tr>'
+        +'<td><div style="font-weight:600;font-size:12.5px">'+r.cat+'</div><div style="font-size:11px;color:var(--g400);font-family:var(--mono);margin-top:2px">'+r.code+'</div></td>'
+        +'<td style="font-variant-numeric:tabular-nums">'+fmt(r.day)+'</td>'
+        +'<td style="font-variant-numeric:tabular-nums">'+fmt(r.week)+'</td>'
+        +'<td style="font-variant-numeric:tabular-nums">'+fmt(r.month)+'</td>'
+        +'<td>'+r.eff+'</td>'
+        +'<td><span class="cc-badge '+sc+'">'+r.status+'</span></td>'
+        +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ctEditRate(\''+r.code+'\')">Edit</button></td>'
+        +'</tr>';
+    }).join('');
+    el.innerHTML='<table class="cc-table" style="width:100%">'
+      +'<thead><tr><th>Category / Code</th><th style="width:90px">Day</th><th style="width:96px">Week</th><th style="width:104px">Month</th><th style="width:100px">Effective</th><th style="width:110px">Status</th><th style="width:66px"></th></tr></thead>'
+      +'<tbody>'+rows+'</tbody></table>';
+  }
+  function ctEditRate(code){
+    var r=CT_RATES.find(function(x){return x.code===code;}); if(!r)return;
+    toast('Rate edit for '+r.code+' — full edit mode coming in v2');
+  }
+  function ctAddRate(){ toast('Add rate — coming in v2'); }
+
+  function renderCtForecast(){
+    var el=document.getElementById('ctForecastTable'); if(!el)return;
+    var colMax={q1:0,q2:0,q3:0,q4:0};
+    CT_FORECAST.forEach(function(r){
+      if(r.q1>colMax.q1)colMax.q1=r.q1;
+      if(r.q2>colMax.q2)colMax.q2=r.q2;
+      if(r.q3>colMax.q3)colMax.q3=r.q3;
+      if(r.q4>colMax.q4)colMax.q4=r.q4;
+    });
+    function cell(v,peak){
+      if(v===0) return '<td style="text-align:center;color:var(--g300);">—</td>';
+      if(v===peak&&peak>0) return '<td style="text-align:center;background:var(--red);color:#fff;font-weight:700">'+v+'</td>';
+      return '<td style="text-align:center;background:var(--g100);color:var(--g600)">'+v+'</td>';
+    }
+    var html='<table class="cc-table" style="width:100%">'
+      +'<thead><tr><th>Project</th><th>Category</th>'
+      +'<th style="width:80px;text-align:center">Q1 2026</th>'
+      +'<th style="width:80px;text-align:center">Q2 2026</th>'
+      +'<th style="width:80px;text-align:center">Q3 2026</th>'
+      +'<th style="width:80px;text-align:center">Q4 2026</th>'
+      +'<th style="width:68px;text-align:center">Total</th>'
+      +'</tr></thead><tbody>';
+    var lastProj='';
+    CT_FORECAST.forEach(function(r){
+      var total=r.q1+r.q2+r.q3+r.q4;
+      html+='<tr>'
+        +(r.project!==lastProj?'<td style="font-weight:600">'+r.project+'</td>':'<td style="color:var(--g300)"></td>')
+        +'<td>'+r.cat+'</td>'
+        +cell(r.q1,colMax.q1)
+        +cell(r.q2,colMax.q2)
+        +cell(r.q3,colMax.q3)
+        +cell(r.q4,colMax.q4)
+        +'<td style="text-align:center;font-weight:600">'+total+'</td>'
+        +'</tr>';
+      lastProj=r.project;
+    });
+    var tot={q1:0,q2:0,q3:0,q4:0};
+    CT_FORECAST.forEach(function(r){tot.q1+=r.q1;tot.q2+=r.q2;tot.q3+=r.q3;tot.q4+=r.q4;});
+    html+='<tr style="background:var(--g50);font-weight:700">'
+      +'<td colspan="2" style="font-size:12px;letter-spacing:.03em">Portfolio total</td>'
+      +'<td style="text-align:center">'+tot.q1+'</td>'
+      +'<td style="text-align:center">'+tot.q2+'</td>'
+      +'<td style="text-align:center">'+tot.q3+'</td>'
+      +'<td style="text-align:center">'+tot.q4+'</td>'
+      +'<td style="text-align:center">'+(tot.q1+tot.q2+tot.q3+tot.q4)+'</td>'
+      +'</tr></tbody></table>';
+    el.innerHTML=html;
+  }
+
+  function renderCtAnalytics(){
+    var el=document.getElementById('ctAnalyticsContent'); if(!el)return;
+    function barRow(label,pct,color){
+      return '<div style="display:flex;align-items:center;gap:12px;margin-bottom:11px">'
+        +'<div style="width:144px;font-size:12.5px;font-weight:500;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+label+'</div>'
+        +'<div style="flex:1;background:var(--g150);border-radius:4px;height:14px;overflow:hidden">'
+        +'<div style="width:'+Math.min(pct,100)+'%;background:'+color+';height:100%;border-radius:4px"></div></div>'
+        +'<div style="width:40px;text-align:right;font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--g600)">'+Math.round(pct)+'%</div>'
+        +'</div>';
+    }
+    var active=CT_PROJECTS.filter(function(p){return p.status==='Active';});
+    var utilRows=active.map(function(p){
+      var pct=Math.round(p.committed/p.budget*100);
+      var color=pct>95?'var(--red)':pct>70?'var(--warning)':'var(--success)';
+      return barRow(p.name,pct,color);
+    }).join('');
+    var catTotals={Excavator:0,Crane:0,Telehandler:0,Lift:0};
+    CT_FORECAST.forEach(function(r){var t=r.q1+r.q2+r.q3+r.q4; if(catTotals[r.cat]!==undefined)catTotals[r.cat]+=t;});
+    var grand=Object.values(catTotals).reduce(function(a,b){return a+b;},0)||1;
+    var catRows=Object.keys(catTotals).map(function(k){
+      return barRow(k,Math.round(catTotals[k]/grand*100),'var(--charcoal)');
+    }).join('');
+    var months=['Feb','Mar','Apr','May','Jun','Jul'];
+    var spend=[1.2,1.8,2.3,2.1,2.7,2.4];
+    var maxSpend=Math.max.apply(null,spend);
+    var trendRows=months.map(function(m,i){
+      return barRow(m+' 2026',Math.round(spend[i]/maxSpend*100),'var(--info)');
+    }).join('');
+    el.innerHTML=''
+      +'<div class="t1grid" style="grid-template-columns:1fr 1fr;gap:16px">'
+      +'<div class="card"><div class="card-h"><span class="card-title">Budget utilization &mdash; active projects</span></div><div style="padding:16px 20px">'+utilRows+'</div></div>'
+      +'<div class="card"><div class="card-h"><span class="card-title">Demand mix by category</span><span class="hcount">unit-quarters</span></div><div style="padding:16px 20px">'+catRows+'</div></div>'
+      +'</div>'
+      +'<div class="card" style="margin-top:16px">'
+      +'<div class="card-h"><span class="card-title">Monthly equipment spend trend</span><span class="hcount">active projects &middot; $M normalized</span></div>'
+      +'<div style="padding:16px 20px">'+trendRows+'</div>'
+      +'</div>';
   }
