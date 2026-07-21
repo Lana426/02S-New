@@ -2228,20 +2228,22 @@ var CT_PILLAR_LEGEND='<div class="ct-legend" style="margin-top:10px"><span><i st
 function ctForecastView(yr){
   var FY={
     FY25:{focus:2,bars:[['FY23A',55],['FY24A',68],['FY25F',82],['FY26F',94],['FY27F',100]],total:'$1.31B',yoy:'+21% vs FY24',win:'62%',
-      cols:['FY23A','FY24A','FY25F','FY26F'],hi:2,
-      rows:[['Equipment','$332M','$432M','$524M','$632M'],['Procurement','$241M','$313M','$380M','$458M'],['Logistics','$141M','$184M','$223M','$269M'],['Prefabrication','$60M','$78M','$95M','$115M'],['Prof. Services','$55M','$71M','$88M','$106M']],
+      cols:['FY23A','FY24A','FY25F','FY26F','FY27F'],hi:2,
+      rows:[['Equipment','$332M','$432M','$524M','$632M','$760M'],['Procurement','$241M','$313M','$380M','$458M','$551M'],['Logistics','$141M','$184M','$223M','$269M','$324M'],['Prefabrication','$60M','$78M','$95M','$115M','$139M'],['Prof. Services','$55M','$71M','$88M','$106M','$126M']],
       note:'FY 2025 is mostly committed — 82% of the forecast is backed by won or in-execution work.'},
     FY26:{focus:3,bars:[['FY24A',68],['FY25F',82],['FY26F',94],['FY27F',100],['FY28F',108]],total:'$1.58B',yoy:'+15% vs FY25',win:'44%',
-      cols:['FY24A','FY25F','FY26F','FY27F'],hi:2,
-      rows:[['Equipment','$432M','$524M','$632M','$760M'],['Procurement','$313M','$380M','$458M','$551M'],['Logistics','$184M','$223M','$269M','$324M'],['Prefabrication','$78M','$95M','$115M','$139M'],['Prof. Services','$71M','$88M','$106M','$126M']],
+      cols:['FY24A','FY25F','FY26F','FY27F','FY28F'],hi:2,
+      rows:[['Equipment','$432M','$524M','$632M','$760M','$900M'],['Procurement','$313M','$380M','$458M','$551M','$650M'],['Logistics','$184M','$223M','$269M','$324M','$385M'],['Prefabrication','$78M','$95M','$115M','$139M','$165M'],['Prof. Services','$71M','$88M','$106M','$126M','$148M']],
       note:'FY 2026 leans more on pipeline — only 44% is committed today, so scenario range is wider.'}
   }[yr];
   var bars=FY.bars.map(function(b,i){return '<div class="ctb"><div class="ctb-stack'+(i===FY.focus?' focus':'')+'" style="height:'+b[1]+'%">'+CT_PILLAR_STACK+'</div><div class="ctb-l'+(i===FY.focus?' focus':'')+'">'+b[0]+'</div></div>';}).join('');
-  var rowHtml=FY.rows.map(function(r){return '<div class="lrow" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div class="lrow-pri">'+r[0]+'</div>'+r.slice(1).map(function(v,i){return '<div'+(i===FY.hi?' style="font-weight:800;color:var(--red)"':'')+'>'+v+'</div>';}).join('')+'</div>';}).join('');
+  var cols=FY.cols.length;
+  var gtc='2fr'+' 1fr'.repeat(cols);
+  var rowHtml=FY.rows.map(function(r){return '<div class="lrow" style="grid-template-columns:'+gtc+'"><div class="lrow-pri">'+r[0]+'</div>'+r.slice(1).map(function(v,i){return '<div'+(i===FY.hi?' style="font-weight:800;color:var(--red)"':'')+'>'+v+'</div>';}).join('')+'</div>';}).join('');
   var colHdr=FY.cols.map(function(c){return '<div>'+c+'</div>';}).join('');
   return '<div class="ct-fy-summary"><div class="cfs"><div class="cfs-n">'+FY.total+'</div><div class="cfs-k">'+(yr==='FY25'?'FY25':'FY26')+' forecast revenue</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">'+FY.yoy+'</div><div class="cfs-k">year-over-year growth</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n">'+FY.win+'</div><div class="cfs-k">committed vs pipeline</div></div></div>'
-  +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">FY forecast by pillar</span><span class="sub">$ millions \xb7 '+(yr==='FY25'?'FY 2025 view':'FY 2026 view')+'</span></div><div class="ct-bars big">'+bars+'</div>'+CT_PILLAR_LEGEND+'<div class="cfs-note">'+ctIc('sparkle',14)+' '+FY.note+'</div></div>'
-  +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By 02S pillar</span><span class="sub">'+(yr==='FY25'?'anchored on FY25F':'anchored on FY26F')+'</span></div><div class="list"><div class="lrow lhead" style="grid-template-columns:2fr 1fr 1fr 1fr 1fr"><div>Pillar</div>'+colHdr+'</div>'+rowHtml+'</div></div>';
+  +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">FY forecast by pillar</span><span class="sub">$ millions \xb7 '+(yr==='FY25'?'FY 2025 view':'FY 2026 view')+'</span></div><div class="ct-bars big">'+bars+'</div>'+CT_PILLAR_LEGEND+'<div class="cfs-note">'+FY.note+'</div></div>'
+  +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By 02S pillar</span><span class="sub">'+(yr==='FY25'?'anchored on FY25F':'anchored on FY26F')+'</span></div><div class="list"><div class="lrow lhead" style="grid-template-columns:'+gtc+'"><div>Pillar</div>'+colHdr+'</div>'+rowHtml+'</div></div>';
 }
 function ctForecastYear(el,yr){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var c=document.getElementById('ctForecast');if(c)c.innerHTML=ctForecastView(yr);}
 
