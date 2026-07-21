@@ -1240,10 +1240,10 @@
           <button id="btnNS" class="ns" onclick="setVer('ns')">
             <svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg>North Star</button>
         </div>
-        <button class="tb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></button>
-        <button class="tb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg></button>
-        <button class="tb-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-        <button class="tb-roles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M15 18l-6-6 6-6"/></svg>Roles</button>
+        <button class="tb-ico" title="Notifications" onclick="toast('No new notifications')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/></svg></button>
+        <button class="tb-ico" title="Help &amp; support" onclick="go('contact')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3M12 17h.01"/></svg></button>
+        <button class="tb-ico" title="Your profile" onclick="go('profile')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+        <button class="tb-roles" onclick="openRolesModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M15 18l-6-6 6-6"/></svg>Roles</button>
       </div>
     </header>
 
@@ -1344,7 +1344,7 @@
                 <div class="abody"><div class="at">Safety bulletin &mdash; crane lift zone</div><div class="asub">Acknowledge before mobilization</div></div>
                 <div class="aright"><span class="tag warn">Before mob</span></div>
               </div>
-              <button class="viewall">View all 5 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+              <button class="viewall" onclick="go('orders')">View all 5 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             </div>
           </div>
           <!-- NS attention -->
@@ -1362,7 +1362,7 @@
                   <span class="rprio">Top priority</span>
                 </div>
                 <div class="rreason">Idle equipment bills whether it's used or not. At current rate this is <b style="color:var(--g900)">$1.9K/wk</b> of avoidable spend against Div&nbsp;3.</div>
-                <div class="ract"><button class="btn btn-red">Call off rental</button><span class="tag bad">$1.9K/wk exposure</span></div>
+                <div class="ract"><button class="btn btn-red" onclick="openSchedule()">Call off rental</button><span class="tag bad">$1.9K/wk exposure</span></div>
               </div>
               <div class="row">
                 <div class="rtop">
@@ -1371,7 +1371,7 @@
                   <span class="rprio">Priority 2</span>
                 </div>
                 <div class="rreason">Structural steel is crane-dependent &mdash; if steel holds its start, the crane arrives <b style="color:var(--g900)">4 days ahead of need</b>. Confirm ship-to or shift mobilization to cut idle standby.</div>
-                <div class="ract"><button class="btn btn-dark">Add ship-to</button><button class="btn btn-ghost btn-sm">Shift date</button></div>
+                <div class="ract"><button class="btn btn-dark" onclick="openModal('Add ship-to location','<div class=\"mform\"><div class=\"mf\"><label>Delivery address</label><input class=\"rin\" id=\"shipAddr\" placeholder=\"Street address, city, state\"></div><div class=\"mf\"><label>Site contact</label><input class=\"rin\" id=\"shipContact\" placeholder=\"Name and phone\"></div></div><div class=\"modal-foot\"><button class=\"btn btn-ghost\" onclick=\"closeModal()\">Cancel</button><button class=\"btn btn-dark\" onclick=\"var a=(document.getElementById(\'shipAddr\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}closeModal();toast(\'Ship-to location saved — 02S notified\');\">Save</button></div>')">Add ship-to</button><button class="btn btn-ghost btn-sm" onclick="openSchedule()">Shift date</button></div>
               </div>
               <div class="row">
                 <div class="rtop">
@@ -1380,9 +1380,9 @@
                   <span class="rprio">Priority 3</span>
                 </div>
                 <div class="rreason">Submit by Thursday to hold your <b style="color:var(--g900)">Aug 15</b> delivery slot &mdash; missing it pushes headwall delivery out two weeks.</div>
-                <div class="ract"><button class="btn btn-dark">Review submittal</button></div>
+                <div class="ract"><button class="btn btn-dark" onclick="go('dp-prefab')">Review submittal</button></div>
               </div>
-              <button class="viewall">View all 5 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+              <button class="viewall" onclick="go('orders')">View all 5 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             </div>
           </div>
         </div>
@@ -1636,7 +1636,7 @@
           <select class="fdrop-sel" id="ordCost" onchange="renderOrders()"><option value="">All cost codes</option><option>01 · General</option><option>03 · Concrete</option><option>05 · Metals</option><option>09 · Finishes</option></select>
           <select class="fdrop-sel" id="ordOrigin" onchange="renderOrders()"><option value="">All origins</option><option value="plan">Demand plan</option><option value="adhoc">Ad-hoc</option></select>
           <div class="date-range"><span class="dr-lbl">Ordered</span><input type="date" id="ordFrom" class="fdate" onchange="renderOrders()" title="From date"><span class="dr-sep">&rarr;</span><input type="date" id="ordTo" class="fdate" onchange="renderOrders()" title="To date"><button class="dr-clear" onclick="ordClearDates()" title="Clear date range">&times;</button></div>
-          <button class="btn btn-ghost" title="Export"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
+          <button class="btn btn-ghost" title="Export" onclick="toast('Orders exported — check your downloads folder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
         </div>
 
         <!-- NS predictive insight strip -->
@@ -1867,7 +1867,7 @@
         <div class="card" style="margin-top:16px">
           <div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span><span class="ht">Your 02S contacts</span></div>
           <div class="kc-grid">
-            <div class="kc"><div class="kc-k">Equipment coordinator</div><div class="kc-n">Marcus Webb</div><div class="kc-r">Equipment Coordinator — Southern Region</div><a class="kc-p">(555) 482-3190</a><div class="kc-h">Mon–Fri 6AM–6PM CT</div></div>
+            <div class="kc"><div class="kc-k">Equipment coordinator</div><div class="kc-n">Marcus Webb</div><div class="kc-r">Equipment Coordinator — Southern Region</div><a class="kc-p" onclick="toast('Calling (555) 482-3190…')" style="cursor:pointer">(555) 482-3190</a><div class="kc-h">Mon–Fri 6AM–6PM CT</div></div>
             <div class="kc"><div class="kc-k">Emergency hotline</div><div class="kc-n red">(555) 911-02S</div><div class="kc-r">24 / 7 / 365</div><span class="tag bad kc-tag">4-hour on-site response</span></div>
             <div class="kc"><div class="kc-k">Billing</div><div class="kc-n sm">o2s-billing@mccarthy.com</div><div class="kc-r">Mon–Fri 8AM–5PM CT</div><span class="tag info kc-tag">2 business day response</span></div>
           </div>
@@ -2382,10 +2382,10 @@
       (eq>0?'<div class="rr">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'Equipment &rarr; <b>YardHub</b> ('+eq+')</div>':'')+
       (other>0?'<div class="rr">'+svg('<path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/>',2)+'Other pillars &rarr; <b>02S ops backlog</b> ('+other+')</div>':'')+'</div>';
     body.innerHTML='<div class="req-items">'+rows+'</div>'+recon+
-      '<div class="req-upload">'+svg('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',2)+'Attach specs or drawings</div>'+
+      '<div class="req-upload" onclick="toast(\'Photo upload — attach specs or images\')">'+svg('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',2)+'Attach specs or drawings</div>'+
       '<div class="req-foot">'+route+
       '<div class="req-total"><span class="tl">Est. total · 02S rates</span><span class="tv">'+fmt(total)+'<span class="per"> /project</span></span></div>'+
-      '<button class="btn btn-red req-submit">Submit request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div>';
+      '<button class="btn btn-red req-submit" onclick="sendUnderstood()">Submit request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div>';
   }
 
   /* ═══════════ compose show/hide ═══════════ */
@@ -3273,9 +3273,9 @@
       '<span class="eor-i">'+svg('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M5 3L2.5 5.5M22 6l-2.5-2.5"/>',2)+'</span>'+
       '<div class="eor-body"><b>Approaching end of rental</b> — '+r.daysLeft+' days remaining (off-rent: '+r.offRent+').'+save+'</div>'+
       '<div class="eor-act">'+
-        '<button class="btn btn-info-solid btn-sm" onclick="event.stopPropagation();toast(\'Extend rental requested for '+o.id+' — sent to 02S\')">Extend rental</button>'+
-        '<button class="btn btn-return btn-sm" onclick="event.stopPropagation();toast(\'Return initiated for '+o.id+' — 02S will schedule pickup\')">Initiate return</button>'+
-        '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Browsing a different spec for '+o.id+'\')">Different spec</button>'+
+        '<button class="btn btn-info-solid btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Extend rental\')">Extend rental</button>'+
+        '<button class="btn btn-return btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Early off-rent / return\')">Initiate return</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'order\')">Different spec</button>'+
       '</div>'+
     '</div>';
   }
@@ -3290,7 +3290,7 @@
         '<span class="ck-t">'+c.t+'</span><span class="ck-due">Due '+c.due+'</span></div>';
     }).join('');
     var docs = r.docs.map(function(d){
-      return '<span class="doc-chip" onclick="event.stopPropagation();toast(\'Opening '+d+'\')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
+      return '<span class="doc-chip" data-doc="'+d.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openDocChip(this.getAttribute(\'data-doc\'))">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
     }).join('');
     return '<div class="recv '+(done?'d':'s')+'">'+
       '<div class="recv-head">'+svg(hdrIcon,2)+'<b>Receiving details</b><span class="recv-sub">· '+hdrLbl+'</span></div>'+
@@ -3370,7 +3370,7 @@
           '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save correction</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       }
-      var notes = b.notes ? '<span class="pc-notes" onclick="toast(\'Opening billing discussion for '+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+b.notes+' note'+(b.notes===1?'':'s')+'</span>' : '<span class="pc-notes" onclick="toast(\'Start a billing discussion for '+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+'Discuss</span>';
+      var notes = b.notes ? '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+b.notes+' note'+(b.notes===1?'':'s')+'</span>' : '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+'Discuss</span>';
       var audit = b.audit ? '<span class="pc-audit">'+b.audit+'</span>' : '<span class="pc-audit">Awaiting your review</span>';
       return '<div class="pcard'+(urg==='red'?' urg':'')+'" id="pc-'+b.id+'">'+
         '<div class="pc-top">'+
@@ -3481,7 +3481,7 @@
         : '<div class="esc-empty">Not set</div>';
       var btn = set?'Change':'Set contact';
       return '<div class="esc-cell'+(set?'':' empty')+'"><div class="esc-k">'+e.role+flag+'</div>'+body+
-        '<button class="esc-edit" onclick="toast(\''+btn+' &mdash; '+e.role+'\')">'+btn+'</button></div>';
+        '<button class="esc-edit" data-role="'+e.role.replace(/"/g,'&quot;')+'" data-isset="'+(set?'1':'0')+'" onclick="openSetEscalation(this)">'+btn+'</button></div>';
     }).join('');
   }
   function renderProfileInsights(){
@@ -3675,7 +3675,77 @@
   }
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & budget'); }
 
+  function openBillDiscuss(id){
+    openModal('Billing discussion — '+id,
+      '<div style="font-size:12px;color:var(--g600);margin-bottom:12px">Thread with 02S billing desk regarding '+id+'. Replies appear here and are sent to <b>o2s-billing@mccarthy.com</b>.</div>'
+      +'<div style="border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:12px;background:var(--g50)">'
+      +'<div style="font-size:11px;color:var(--g500);margin-bottom:6px">02S Billing · 2 days ago</div>'
+      +'<div style="font-size:12.5px;color:var(--g800)">Hi — we\'ve received your bill. Please note this covers the full on-rent window including the 3-day buffer per contract § 4.2. Let us know if you have questions.</div>'
+      +'</div>'
+      +'<div class="mf"><label>Reply</label><textarea class="rin" rows="3" id="billDiscussReply" placeholder="Type your message…" style="width:100%"></textarea></div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="var v=(document.getElementById(\'billDiscussReply\')||{}).value;if(!v||!v.trim()){toast(\'Enter a message first\');return;}closeModal();toast(\'Message sent to 02S billing desk · you will be notified of a reply\')">Send</button></div>'
+    );
+  }
 
+  function openEorAction(ordId, changeType){
+    var ns = CURRENT === 'ns';
+    var sugg = ns ? '<div class="msg-sugg"><span class="ms-i">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span><div><b>02S suggests</b> — ending this rental early recovers ~$740 this cycle.</div></div>' : '';
+    openModal('Request a schedule change — ' + ordId,
+      sugg +
+      '<div class="mform">'
+      +'<div class="mf"><label>Equipment</label><select id="eorEquip" class="acc-sel wfull">'+equipOptions(ordId)+'</select></div>'
+      +'<div class="mf"><label>Change type</label><select id="eorType" class="acc-sel wfull"><option'+(changeType==='Extend rental'?' selected':'')+'>Extend rental</option><option'+(changeType==='Early off-rent / return'?' selected':'')+'>Early off-rent / return</option><option>Reschedule delivery</option><option>Cancel</option></select></div>'
+      +'<div class="mf"><label>New date <span class="opt">if extending</span></label><input id="eorDate" type="date" class="rin" /></div>'
+      +'<div class="mf"><label>Notes <span class="opt">optional</span></label><textarea id="eorNotes" class="ctext" style="min-height:54px" placeholder="Any additional context…"></textarea></div>'
+      +'</div>'
+      +'<div class="modal-foot"><span class="cnote">'+svg('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',2)+'Routes to 02S Equipment · YardHub reviews impact.</span>'
+      +'<button class="btn btn-red" onclick="var eq=equipLabel(document.getElementById(\'eorEquip\').value);var ty=document.getElementById(\'eorType\').value;closeModal();toast(ty+\' submitted for \'+eq+\' — 02S notified\')">Submit request</button></div>'
+    );
+  }
+
+  function openDocChip(name){
+    window._docName = name;
+    openModal(name,
+      '<div style="display:flex;align-items:center;gap:10px;padding:14px;background:var(--g50);border:1px solid var(--g200);border-radius:6px;margin-bottom:14px">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:28px;height:28px;flex-shrink:0;color:var(--info)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>'
+      +'<div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+name+'</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attached to this order · provided by 02S</div></div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
+      +'<button class="btn btn-dark" onclick="closeModal();toast(\'Downloading \' + window._docName + \' — check your downloads folder\')">Download</button></div>'
+    );
+  }
+
+  function openSetEscalation(btn){
+    var role = btn.getAttribute('data-role');
+    var isSet = btn.getAttribute('data-isset') === '1';
+    openModal((isSet ? 'Change' : 'Set') + ' escalation contact — ' + role,
+      '<div class="mform">'
+      +'<div class="mf"><label>Full name</label><input class="rin" id="escName" placeholder="e.g. Jane Smith" /></div>'
+      +'<div class="mf"><label>Phone</label><input class="rin" id="escPhone" type="tel" placeholder="(555) 000-0000" /></div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="var n=(document.getElementById(\'escName\')||{}).value;var p=(document.getElementById(\'escPhone\')||{}).value;if(!n.trim()){toast(\'Enter a name\');return;}closeModal();toast(\'Escalation contact updated — 02S notified\')">Save</button></div>'
+    );
+  }
+
+  function openRolesModal(){
+    openModal('View as role',
+      '<div style="font-size:13px;color:var(--g600);margin-bottom:14px">Switch the portal view to see exactly what each team member sees.</div>'
+      +'<div class="mform">'
+      +'<div class="mf">'
+      +'<label>Current role</label>'
+      +'<select class="acc-sel wfull" id="rolePickSel">'
+      +'<option value="Admin" selected>Admin — Sarah Chen</option>'
+      +'<option value="Approver">Approver — Linda Osei</option>'
+      +'<option value="Editor">Editor — Dan Reyes</option>'
+      +'<option value="View only">View only — Tom Bradley</option>'
+      +'</select>'
+      +'</div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="var v=(document.getElementById(\'rolePickSel\')||{}).value;closeModal();toast(\'Viewing as \'+v+\' — some actions may be restricted\')">Apply</button></div>'
+    );
+  }
 
   // ═══ COMMAND CENTER ═══
   var CC_SCREEN = 'cc-dash';
@@ -4001,6 +4071,23 @@
     );
   }
 
+  function ccBillAction(id, action, anomaly){
+    if(action === 'dispute'){
+      openModal('Dispute bill — ' + id,
+        '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px">Flagged anomaly: <b>' + (anomaly||'Billing discrepancy') + '</b></div>'
+        +'<div class="mf"><label>Reason for dispute</label><textarea class="rin" rows="3" id="ccBillDisputeReason" placeholder="Describe the discrepancy…" style="width:100%"></textarea></div>'
+        +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+        +'<button class="btn btn-red" onclick="var v=(document.getElementById(\'ccBillDisputeReason\')||{}).value;closeModal();var r=v||\'Billing discrepancy\';toast(\'Dispute raised on ' + id + ' — auto-finalization paused · 02S notified\')">Submit dispute</button></div>'
+      );
+    } else {
+      openModal('Approve bill — ' + id,
+        '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px">Confirm approval of <b>' + id + '</b>. This bill will be routed to YardHub.</div>'
+        +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+        +'<button class="btn btn-approve" onclick="closeModal();this.closest(\'.modal-foot\').querySelectorAll(\'.btn\').forEach(function(b){b.disabled=true;});toast(\'' + id + ' approved — routed to YardHub\')">Approve</button></div>'
+      );
+    }
+  }
+
   // ══ CC PILLARS ══
   function ccPillFilter(el,f){
     el.parentElement.querySelectorAll('.btn').forEach(function(b){b.classList.remove('on');});
@@ -4116,14 +4203,14 @@
                 </tr>
                 <tr>
                   <td><div class="pri">REQ-2210</div><div class="sub">Tower crane for structural steel, ~250ft</div></td>
-                  <td><button class="tax-chip sug" onclick="toast('Please confirm taxonomy mapping for REQ-2210')">&#9889; Asset &rsaquo; Lifting &rsaquo; Tower Crane &middot; confirm</button></td>
+                  <td><button class="tax-chip sug" onclick="ccConfirmTax('REQ-2210')">&#9889; Asset &rsaquo; Lifting &rsaquo; Tower Crane &middot; confirm</button></td>
                   <td><span class="tag info">Re-rent</span></td>
                   <td><span class="tag warn">Needs map</span></td>
                   <td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2210')">Review</button></td>
                 </tr>
                 <tr>
                   <td><div class="pri">REQ-2244</div><div class="sub">4&times; scissor lift, 32ft electric</div></td>
-                  <td><button class="tax-chip sug" onclick="toast('Please confirm taxonomy mapping for REQ-2244')">&#9889; Asset &rsaquo; Access &rsaquo; Scissor Lift &middot; confirm</button></td>
+                  <td><button class="tax-chip sug" onclick="ccConfirmTax('REQ-2244')">&#9889; Asset &rsaquo; Access &rsaquo; Scissor Lift &middot; confirm</button></td>
                   <td><span class="tag ok">Use owned</span></td>
                   <td><span class="tag warn">Needs map</span></td>
                   <td><button class="btn btn-ghost btn-sm" onclick="openCcReview('REQ-2244')">Review</button></td>
@@ -4178,9 +4265,9 @@
             <table class="cc-table">
               <thead><tr><th>Bill ID &middot; Item</th><th>Amount</th><th>Anomaly</th><th>Actions</th></tr></thead>
               <tbody>
-                <tr><td><div class="pri">BILL-9012</div><div class="sub">Excavator 45-55T</div></td><td style="font-weight:700">$8,400</td><td><span class="cc-badge red">12% above contract rate</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Dispute opened for BILL-9012')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="toast('BILL-9012 approved')">Approve</button></td></tr>
-                <tr><td><div class="pri">BILL-9008</div><div class="sub">Scissor lift</div></td><td style="font-weight:700">$1,150</td><td><span class="cc-badge warn">Late billing start &mdash; 3 days after on-rent</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Dispute opened for BILL-9008')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="toast('BILL-9008 approved')">Approve</button></td></tr>
-                <tr><td><div class="pri">BILL-8999</div><div class="sub">Telehandler</div></td><td style="font-weight:700">$4,300</td><td><span class="cc-badge warn">PO quantity mismatch</span></td><td><button class="btn btn-ghost btn-sm" onclick="toast('Dispute opened for BILL-8999')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="toast('BILL-8999 approved')">Approve</button></td></tr>
+                <tr><td><div class="pri">BILL-9012</div><div class="sub">Excavator 45-55T</div></td><td style="font-weight:700">$8,400</td><td><span class="cc-badge red">12% above contract rate</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9012','dispute','12% above contract rate')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9012','approve')">Approve</button></td></tr>
+                <tr><td><div class="pri">BILL-9008</div><div class="sub">Scissor lift</div></td><td style="font-weight:700">$1,150</td><td><span class="cc-badge warn">Late billing start &mdash; 3 days after on-rent</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9008','dispute','Late billing start — 3 days after on-rent')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-9008','approve')">Approve</button></td></tr>
+                <tr><td><div class="pri">BILL-8999</div><div class="sub">Telehandler</div></td><td style="font-weight:700">$4,300</td><td><span class="cc-badge warn">PO quantity mismatch</span></td><td><button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-8999','dispute','PO quantity mismatch')">Dispute</button> <button class="btn btn-ghost btn-sm" onclick="ccBillAction('BILL-8999','approve')">Approve</button></td></tr>
               </tbody>
             </table>
           </div>
