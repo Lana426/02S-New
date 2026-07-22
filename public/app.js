@@ -718,7 +718,7 @@
       +_eqMenuBtn(ic('<path d="M12 5v14M5 12h14"/>'),   'Single line',            'Add one item manually — description, qty, dates',        '_openEqSingle()')
       +_eqMenuBtn(ic('<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>'), 'From 02S catalog', 'Pick priced equipment — rate auto-filled', '_openEqAddForm()')
       +_eqMenuBtn(ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'), 'Bulk grid entry', 'Enter multiple lines at once, spreadsheet-style', '_openEqBulk()')
-      +_eqMenuBtn(ic('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>'), 'Import from estimate', 'HeavyBid extract or Excel estimate — 02S maps lines automatically', '_openEqImport()')
+      +_eqMenuBtn(ic('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>'), 'Import from estimate', 'HeavyBid extract or Excel estimate', '_openEqImport()')
       +'</div>';
     openModal('Add demand line', h);
   }
