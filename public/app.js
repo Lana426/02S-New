@@ -430,21 +430,24 @@
   function fmtBig(n){var a=Math.abs(n),s=(n<0?'-':'');if(a>=1000000)return s+'$'+(a/1000000).toFixed(1)+'M';if(a>=1000)return s+'$'+Math.round(a/1000)+'K';return s+'$'+a;}
 
   var eqGroupBy='task';
+  var eqSearchStr='';
+  function eqSetSearch(v){ eqSearchStr=(v||'').toLowerCase().trim(); eqPopClose(); setEqView(eqState.view); }
   function eqTaskInfo(t){ for(var i=0;i<EQ_TASKS.length;i++){if(EQ_TASKS[i].task===t)return EQ_TASKS[i];} return null; }
   function eqGroupClass(l){ return (l.cat||'Other').split(' \u203a ')[0]; }
   function eqSumLines(ls){ var s=0; for(var i=0;i<ls.length;i++)s+=eqLineTotal(ls[i]); return s; }
   function eqGroups(){
     var mode=eqGroupBy, groups=[], map={}, i, l;
+    var _sl=eqSearchStr?EQ_LINES.filter(function(x){var q=eqSearchStr;return(x.desc||'').toLowerCase().indexOf(q)>=0||(x.cat||'').toLowerCase().indexOf(q)>=0||(x.code||'').toLowerCase().indexOf(q)>=0;}):EQ_LINES;
     if(mode==='code'){
       for(i=0;i<EQ_CODES.length;i++){var c=EQ_CODES[i]; var g={tag:c.code,title:c.name,meta:c.phase,lines:[],hasBudget:true,budget:c.budget,committed:c.committed,code:c.code}; groups.push(g); map[c.code]=g;}
-      for(i=0;i<EQ_LINES.length;i++){l=EQ_LINES[i]; if(map[l.code])map[l.code].lines.push(l);}
+      for(i=0;i<_sl.length;i++){l=_sl[i]; if(map[l.code])map[l.code].lines.push(l);}
       return groups;
     }
-    for(i=0;i<EQ_LINES.length;i++){
-      l=EQ_LINES[i]; var key,tag,title,meta,pcode=null;
+    for(i=0;i<_sl.length;i++){
+      l=_sl[i]; var key,tag,title,meta,pcode=null;
       if(mode==='task'){ key=l.task||(l.code+'.00'); var ti=eqTaskInfo(key); tag=key; title=ti?ti.name:l.desc; meta=ti?(ti.code+' \u00b7 '+ti.phase):l.code; pcode=ti?ti.code:l.code; }
       else if(mode==='class'){ key=eqGroupClass(l); tag=null; title=key; meta='equipment class'; }
-      else { key=l.scope||'Unassigned'; tag=null; title=key; meta='scope of work'; }
+      else { key=l.scope||'Unassigned'; tag=null; title=key; meta='schedule activity'; }
       if(!map[key]){ map[key]={tag:tag,title:title,meta:meta,lines:[],hasBudget:false,code:pcode}; groups.push(map[key]); }
       map[key].lines.push(l);
     }
@@ -669,7 +672,7 @@
     f+='<div id="eqfDetail"></div>';
     f+='<div class="mf"><label>Cost code <span class="opt">your project budget line</span></label><select id="eqfCode" class="acc-sel wfull">'+eqCodeOptions(code)+'</select></div>';
     f+='<div class="mf3"><div class="mf"><label>Quantity</label><input id="eqfQty" class="rin" type="number" min="1" value="'+(l?l.qty:1)+'"></div><div class="mf"><label>Date needed</label><select id="eqfFrom" class="acc-sel wfull">'+eqMonthOptions(l?l.from:EQ_MONTHS[6])+'</select></div><div class="mf"><label>Projected off-rent</label><select id="eqfTo" class="acc-sel wfull">'+eqMonthOptions(l?l.to:EQ_MONTHS[9])+'</select></div></div>';
-    f+='<div class="mf"><label>Scope <span class="opt">schedule activity</span></label><input id="eqfScope" class="rin" placeholder="Phase 3 \u00b7 Module install" value="'+(l?esc(l.scope):'')+'"></div>';
+    f+='<div class="mf"><label>Schedule activity</label><input id="eqfScope" class="rin" placeholder="Phase 3 \u00b7 Module install" value="'+(l?esc(l.scope):'')+'"></div>';
     f+='<div class="eqf-total" id="eqfHint">\u2014</div>';
     f+='</div>';
     return f;
@@ -715,19 +718,67 @@
     eqEditId=null; eqAddCode=code||null;
     var ic=function(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">'+d+'</svg>';};
     var h='<div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">'
-      +_eqMenuBtn(ic('<path d="M12 5v14M5 12h14"/>'),   'Single line',            'Add one item manually — description, qty, dates',        '_openEqSingle()')
+      +_eqMenuBtn(ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>'), 'Add lines',  'Enter one or more items manually — start with one row, add more as needed', '_openEqUnified()')
       +_eqMenuBtn(ic('<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>'), 'From 02S catalog', 'Pick priced equipment — rate auto-filled', '_openEqAddForm()')
-      +_eqMenuBtn(ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'), 'Bulk grid entry', 'Enter multiple lines at once, spreadsheet-style', '_openEqBulk()')
       +_eqMenuBtn(ic('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>'), 'Import from estimate', 'HeavyBid extract or Excel estimate', '_openEqImport()')
       +'</div>';
     openModal('Add demand line', h);
   }
+  function _openEqUnified(){
+    var makeRow=function(){
+      return '<tr>'
+        +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:190px"></td>'
+        +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:56px;text-align:center"></td>'
+        +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:130px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
+        +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
+        +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
+        +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
+        +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest('tr').remove()" title="Remove"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
+        +'</tr>';
+    };
+    var cols=['Description','Qty','Cost code','Date needed','Off-rent','Schedule activity',''];
+    var thead='<tr>'+cols.map(function(c){return '<th style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);padding:6px 8px;border-bottom:1px solid var(--g200);text-align:left;white-space:nowrap">'+c+'</th>';}).join('')+'</tr>';
+    var h='<div style="overflow-x:auto;margin-bottom:10px"><table style="border-collapse:collapse;font-size:12.5px" id="unifiedTbl">'+thead+makeRow()+'</table></div>'
+      +'<button class="btn btn-ghost btn-sm" onclick="_addUnifiedRow()"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> Add row</button>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveEqUnified()">Add lines</button></div>';
+    openModal('Add demand lines', h);
+  }
+  function _addUnifiedRow(){
+    var t=document.getElementById('unifiedTbl'); if(!t)return;
+    var r=t.insertRow(-1);
+    r.innerHTML='<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:190px"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:56px;text-align:center"></td>'
+      +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:130px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
+      +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
+      +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
+      +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
+      +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest('tr').remove()" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>';
+  }
+  function _saveEqUnified(){
+    var tbl=document.getElementById('unifiedTbl'); if(!tbl)return;
+    var rows=tbl.querySelectorAll('tr'); var added=0;
+    for(var i=1;i<rows.length;i++){
+      var inp=rows[i].querySelectorAll('input,select');
+      var desc=(inp[0].value||'').trim(); if(!desc)continue;
+      var qty=parseInt(inp[1].value,10)||1;
+      var code=(inp[2].value||EQ_CODES[0].code).trim();
+      var from=inp[3].value||EQ_MONTHS[0], to=inp[4].value||EQ_MONTHS[4];
+      var scope=(inp[5].value||'').trim();
+      var task=code+'.00';
+      eqSeq++;
+      EQ_LINES.push({id:'e'+eqSeq,task:task,code:code,desc:desc,cat:'Material handling',qty:qty,rate:null,from:from,to:to,status:'projected',submitted:false,scope:scope,catId:null});
+      eqLog('Added '+qty+'× '+desc+' ('+code+')'); added++;
+    }
+    closeModal();
+    if(added){ toast(added+' line'+(added===1?'':'s')+' added as draft'); eqRefresh(); }
+    else toast('No lines added — fill in at least one description');
+  }
   function _openEqSingle(){
     var h='<div class="mform">'
       +'<div class="mf"><label>Description</label><input id="eqsDesc" class="rin" placeholder="e.g. Excavator 20T" style="width:100%"></div>'
-      +'<div class="mf2"><div class="mf"><label>Quantity</label><input id="eqsQty" class="rin" type="number" min="1" value="1"></div><div class="mf"><label>Task code</label><input id="eqsTask" class="rin" placeholder="e.g. 02-320.14" value="01-000.00"></div></div>'
+      +'<div class="mf2"><div class="mf"><label>Quantity</label><input id="eqsQty" class="rin" type="number" min="1" value="1"></div><div class="mf"><label>Cost code</label><input id="eqsTask" class="rin" placeholder="e.g. 02-320.14" value="01-000.00"></div></div>'
       +'<div class="mf2"><div class="mf"><label>Date needed</label><select id="eqsFrom" class="acc-sel wfull">'+eqMonthOptions(EQ_MONTHS[6])+'</select></div><div class="mf"><label>Projected off-rent</label><select id="eqsTo" class="acc-sel wfull">'+eqMonthOptions(EQ_MONTHS[9])+'</select></div></div>'
-      +'<div class="mf"><label>Scope <span class="opt">schedule activity</span></label><input id="eqsScope" class="rin" placeholder="Phase 3 · Module install"></div>'
+      +'<div class="mf"><label>Schedule activity</label><input id="eqsScope" class="rin" placeholder="Phase 3 · Module install"></div>'
       +'</div>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveEqSingle()">Add line</button></div>';
     openModal('Add single line', h);
@@ -748,7 +799,7 @@
   function _openEqAddForm(){ openModal('Add demand line', eqForm(null)+eqFormFoot(false,false)); eqPickChange(); }
   function _openEqBulk(){
     var bulkRows=function(){
-      var cols=['Equipment description','Qty','Date needed','Off-rent','Task code'];
+      var cols=['Equipment description','Qty','Date needed','Off-rent','Cost code'];
       var thead='<tr>'+cols.map(function(c){return '<th style="font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);padding:7px 8px;border-bottom:1px solid var(--g200);text-align:left;white-space:nowrap">'+c+'</th>';}).join('')+'<th></th></tr>';
       var rows='';
       for(var i=0;i<5;i++){
@@ -757,7 +808,7 @@
           +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:60px;text-align:center"></td>'
           +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
           +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
-          +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. 02-320.14" style="width:110px"></td>'
+          +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. 02-320" style="width:110px"></td>'
           +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove row"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
           +'</tr>';
       }
@@ -1079,7 +1130,8 @@
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
-    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); }
+    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }
     window.scrollTo(0,0);
   }
 
@@ -1137,9 +1189,9 @@
   var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad'};
 
   var ORDERS=[
-    {id:'ORD-3051',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:null,qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok'},
-    {id:'ORD-3054',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:null,qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',recertDue:'Jul 21\u201325',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok'},
-    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:2,plan:null,
+    {id:'ORD-3051',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok'},
+    {id:'ORD-3054',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:'EQ-106',qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',anticipatedOff:'2026-09-30',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok'},
+    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:2,plan:'EQ-085',
       latest:'Delivery rescheduled to May 20 after a 2-day yard delay',latestTone:'warn',
       risk:{type:'risk',text:'Trending <b>2 days late</b> — steel erection (ORD-3038) crane mob depends on this. 02S flagged the yard for expedite.'},
       recv:{status:'scheduled',window:'May 20, 6:00 AM – 10:00 AM CT',windowType:'Heavy haul — oversized load',carrier:'McCarthy Logistics (internal)',dispatch:'(555) 482-7700',coordinator:'Marcus Webb',coordPhone:'(555) 482-3190',vehicle:'3-axle lowboy trailer. Operating weight 46,000 lb. North gate access — verify road bearing.',
@@ -1153,7 +1205,7 @@
         note:'Excavator ships on a single lowboy. Delivery revised to May 20 after a 2-day yard delay — steel erection (ORD-3038) crane mob depends on this unit landing on time. Access road must be cleared by May 19.',
         docs:['Delivery route map (PDF)','Access road load rating (PDF)','Operating manual (PDF)']}},
     {id:'ORD-3038',od:'2026-08-04',item:'Hydraulic Crane — 40T',sub:'1 unit · Aug hold',pillar:'equipment',dates:'Aug 4 – Aug 29',cost:'05 · Metals',stage:1,plan:'EQ-114',latest:'Allocated — rate confirmed, mobilization holds for August'},
-    {id:'ORD-3031',od:'2026-05-01',item:'Scissor Lift — 32 ft',sub:'2 units',pillar:'equipment',dates:'May 1 – May 15',cost:'09 · Finishes',stage:4,plan:null,qty:2,onRentSince:'May 1',mrate:3800,recert:'pending',recertDue:'Jul 21\u201325',note:'MEP rough-in at L2 \u2014 both units idle',nsReco:{rec:'return',why:'No badge-ins at L2 for 9 days \u00b7 BILL-9012 flagged idle-day overage \u00b7 MEP rough-in complete per CPM',save:3800},
+    {id:'ORD-3031',od:'2026-05-01',item:'Scissor Lift — 32 ft',sub:'2 units',pillar:'equipment',dates:'May 1 – May 15',cost:'09 · Finishes',stage:4,plan:'EQ-091',anticipatedOff:'2026-05-15',qty:2,onRentSince:'May 1',mrate:3800,recert:'pending',note:'MEP rough-in at L2 \u2014 both units idle',nsReco:{rec:'return',why:'No badge-ins at L2 for 9 days \u00b7 BILL-9012 flagged idle-day overage \u00b7 MEP rough-in complete per CPM',save:3800},
       latest:'On rent — both units idle 4 days (no badge-ins)',latestTone:'warn',
       rental:{offRent:'May 15, 2026',daysLeft:3,idle:true,save:740},
       recv:{status:'completed',window:'May 1, 7:00 AM – 9:00 AM CT',windowType:'Standard flatbed delivery',carrier:'McCarthy Logistics (internal)',dispatch:'(555) 482-7700',coordinator:'Marcus Webb',coordPhone:'(555) 482-3190',vehicle:'Single flatbed. 2 scissor-lift units. Standard site access.',
@@ -1194,20 +1246,20 @@
   function ordClearDates(){ var a=document.getElementById('ordFrom'); if(a)a.value=''; var b=document.getElementById('ordTo'); if(b)b.value=''; renderOrders(); }
   /* ═══════════ WEEKLY ON-RENT RECERTIFICATION ═══════════ */
   var recertPick={};
-  function recertItems(){ return ORDERS.filter(function(o){return o.recert==='pending';}); }
+  function recertItems(){ var today='2026-07-22'; return ORDERS.filter(function(o){return o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<today;}); }
   function openRecert(){
     var items=recertItems();
     if(!items.length){ toast('Nothing pending \u2014 all on-rent items are recertified for the week'); return; }
     var ns=CURRENT==='ns';
     recertPick={};
     items.forEach(function(o){ recertPick[o.id]=(ns && o.nsReco && o.nsReco.rec==='return') ? 'off' : 'keep'; });
-    openModal('Weekly on-rent recertification', recertBody());
+    openModal('Overdue off-rent exceptions', recertBody());
   }
   function recertBody(){
     var items=recertItems(), ns=CURRENT==='ns', keep=0,off=0;
     items.forEach(function(o){ if(recertPick[o.id]==='off')off++; else keep++; });
     var star='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var h='<div class="rc-sub">Hercules Solar + BESS \u00b7 Jul 21\u201325 \u00b7 '+items.length+' item'+(items.length===1?'':'s')+' pending</div>';
+    var h='<div class="rc-sub">Hercules Solar + BESS \u00b7 '+items.length+' item'+(items.length===1?'':'s')+' past anticipated off-rent without a return request</div>';
     if(ns){
       var ret=0,save=0; items.forEach(function(o){ if(o.nsReco&&o.nsReco.rec==='return'){ret++;save+=o.mrate||0;} });
       h+='<div class="rc-ns"><span class="rc-nsi">'+star+'</span><span><b>02S reviewed all '+items.length+' items against the CPM schedule, badge-in logs, and billing.</b> '+(items.length-ret)+' are clearly still needed and pre-set to renew; '+ret+' look returnable \u2014 <b>~'+fmtBig(save)+'/mo</b> at stake. Confirm or override below.</span></div>';
@@ -1248,12 +1300,29 @@
   function syncRecert(){
     var n=recertItems().length;
     var sub=document.getElementById('dashRecertSub');
-    if(sub) sub.textContent = n ? (n+' item'+(n===1?'':'s')+' due Jul 21\u201325 \u2014 confirm what\u2019s still on rent.') : 'All on-rent items recertified for the week \u2014 nothing pending.';
+    if(sub) sub.textContent = n ? (n+' overdue off-rent \u2014 anticipated return date passed, no request filed.') : 'No overdue off-rents \u2014 all on-rent items within their anticipated window.';
     var card=document.getElementById('dashRecert'); if(card) card.classList.toggle('rc-done', n===0);
+  }
+  function renderPlanRing(){
+    var mount=gel('dashPlanRing'); if(!mount)return;
+    var plan=0,adhoc=0;
+    ORDERS.forEach(function(o){ if(o.plan)plan++; else adhoc++; });
+    var total=plan+adhoc||1, pct=Math.round(plan/total*100);
+    var r=28, circ=2*Math.PI*r, arc=circ*plan/total;
+    var svg2='<svg width="72" height="72" viewBox="0 0 72 72" style="display:block;margin:0 auto 6px">'
+      +'<circle cx="36" cy="36" r="'+r+'" fill="none" stroke="var(--g200)" stroke-width="10"/>'
+      +'<circle cx="36" cy="36" r="'+r+'" fill="none" stroke="var(--success)" stroke-width="10" '
+      +'stroke-dasharray="'+arc.toFixed(1)+' '+circ.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 36 36)"/>'
+      +'<text x="36" y="41" text-anchor="middle" font-size="13" font-weight="700" fill="var(--charcoal)">'+pct+'%</text>'
+      +'</svg>';
+    mount.innerHTML=svg2
+      +'<div class="actt">Plan vs. ad-hoc</div>'
+      +'<div class="acts">'+plan+' of '+total+' orders sourced from the demand plan</div>'
+      +'<button class="btn" onclick="go('orders')">View orders<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
   }
   function renderOrders(){
     var _rb=document.getElementById('recertBanner');
-    if(_rb){ var _rc=recertItems(); _rb.innerHTML=_rc.length?('<div class="rc-banner">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<div class="rcb-t"><b>Weekly on-rent recertification</b><span>'+_rc.length+' item'+(_rc.length===1?'':'s')+' due Jul 21\u201325 \u00b7 confirm what\u2019s still on rent</span></div><button class="btn btn-red btn-sm" onclick="openRecert()">Review &amp; certify</button></div>'):''; }
+    if(_rb){ var _rc=recertItems(); _rb.innerHTML=_rc.length?('<div class="rc-banner">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div class="rcb-t"><b>Overdue off-rent</b><span>'+_rc.length+' item'+(_rc.length===1?'':'s')+' past anticipated return date \u2014 no return request on file</span></div><button class="btn btn-red btn-sm" onclick="openRecert()">Review</button></div>'):''; }
     var q=(document.getElementById('ordSearch').value||'').toLowerCase().trim();
     var fp=document.getElementById('ordPillar').value, fs=document.getElementById('ordStatus').value, fc=document.getElementById('ordCost').value;
     var fo=(document.getElementById('ordOrigin')||{}).value||'';
@@ -1498,6 +1567,27 @@
   ];
   function initials(n){var p=n.trim().split(/\s+/);return ((p[0]||'')[0]||'')+((p[1]||'')[0]||'');}
   function accTag(a){var m={'Admin':'bad','Approver':'info','Editor':'neu','View only':'neu'};return m[a]||'neu';}
+  var SHIP_TO={addr:'',contact:''};
+  function renderApprovers(){
+    var mount=gel('profApprovers'); if(!mount)return;
+    var ap=TEAM.filter(function(m){return m.access==='Approver'||m.access==='Admin';});
+    if(!ap.length){mount.innerHTML='<div style="font-size:12px;color:var(--g400)">No approvers assigned to this project.</div>';return;}
+    var h='';
+    ap.forEach(function(m){
+      h+='<div class="esc-row"><div class="er-role">'+m.role+'<span class="tag '+accTag(m.access)+'" style="margin-left:6px">'+m.access+'</span></div><div class="er-name">'+m.name+'</div><div class="er-ph">'+m.email+'</div></div>';
+    });
+    mount.innerHTML=h;
+  }
+  function renderShipTo(){
+    var mount=gel('profShipTo'); if(!mount)return;
+    if(SHIP_TO.addr){
+      mount.innerHTML='<div class="esc-row"><div class="er-role">Delivery address</div><div class="er-name">'+SHIP_TO.addr+'</div></div>'
+        +(SHIP_TO.contact?'<div class="esc-row"><div class="er-role">Site contact</div><div class="er-name">'+SHIP_TO.contact+'</div></div>':'')
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openShipToModal()">Edit</button>';
+    } else {
+      mount.innerHTML='<div style="font-size:12px;color:var(--g400);margin-bottom:8px">No ship-to location saved for this project.</div><button class="btn btn-ghost btn-sm" onclick="openShipToModal()">Add ship-to location</button>';
+    }
+  }
   function renderTeam(){
     var ns=CURRENT==='ns';
     document.getElementById('teamCount').textContent='· '+TEAM.length+' people';
@@ -1663,7 +1753,7 @@
       +'<div class="mf"><label>Site contact</label><input class="rin" id="shipContact" placeholder="Name and phone"></div>'
       +'</div>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-dark" onclick="var a=(document.getElementById(\'shipAddr\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}closeModal();toast(\'Ship-to location saved — 02S notified\')">Save</button></div>'
+      +'<button class="btn btn-dark" onclick="var a=(document.getElementById(\'shipAddr\')||{}).value,c=(document.getElementById(\'shipContact\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}SHIP_TO.addr=a.trim();SHIP_TO.contact=(c||\'\').trim();closeModal();renderShipTo();toast(\'Ship-to location saved\')">Save</button></div>'
     );
   }
   function openSchedule(){
@@ -1840,8 +1930,8 @@
     if(rn){
       var shield='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>';
       var bT, bS;
-      if(ns){ bT='On-rent recertification \u2014 '+rn+' items auto-renew Fri Jul 25 unless you act'; bS='02S pre-checked '+kp+' as still needed; flags '+ret+' (idle scissor lift) to return \u2014 recovers $3.8K/mo'; }
-      else { bT=rn+' on-rent items due for recertification (Jul 21\u201325)'; bS='Confirm what\u2019s still on rent \u2014 unconfirmed items auto-renew Friday'; }
+      if(ns){ bT='Overdue off-rent \u2014 '+rn+' item'+(rn===1?'':'s')+' past anticipated return, no request filed'; bS='02S flags idle scissor lift (ORD-3031) \u2014 anticipated off May 15, no return request \u2014 recovers $3.8K/mo'; }
+      else { bT=rn+' on-rent item'+(rn===1?'':'s')+' past anticipated off-rent date'; bS='Return request not yet filed \u2014 rental billing continues until off-rent is submitted'; }
       h+='<div class="rc-banner">'+shield+'<div class="rcb-t"><b>'+bT+'</b><span>'+bS+'</span></div><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="openRecert()">Review &amp; certify</button></div>';
     }
     var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
@@ -2597,7 +2687,8 @@
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
-    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); }
+    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }
     window.scrollTo(0,0);
   }
 

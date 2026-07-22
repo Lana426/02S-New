@@ -1536,3 +1536,8 @@
   .vital .vchev{position:absolute;top:11px;right:11px;color:var(--g300);opacity:0;transition:opacity .12s}
   .vital.clk:hover .vchev{opacity:1;color:var(--red)}
   .vital .vchev svg{width:15px;height:15px}
+
+/* eq demand plan search */
+.eq-search-wrap{position:relative;display:flex;align-items:center}
+.eq-search-inp{padding-left:30px!important;width:180px;font-size:12px}
+.eq-search-ico{position:absolute;left:8px;width:14px;height:14px;color:var(--g400);pointer-events:none;flex-shrink:0}
