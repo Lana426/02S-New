@@ -1075,7 +1075,7 @@
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
-    if(screen==='order') backToCatalog();
+    if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
@@ -2592,7 +2592,7 @@
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
-    if(screen==='order') backToCatalog();
+    if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
