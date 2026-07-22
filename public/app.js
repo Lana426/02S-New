@@ -686,11 +686,14 @@
     var opts='<option value="">\u2014 Select equipment \u2014</option>';
     for(var i=0;i<items.length;i++){ opts+='<option value="'+items[i].id+'"'+(pick===items[i].id?' selected':'')+'>'+items[i].name+' \u2014 '+fmt(items[i].mrate)+'/mo</option>'; }
     opts+='<option value="__custom__"'+(pick==='__custom__'?' selected':'')+'>Other / not in the catalog\u2026</option>';
+    var selectedName=l&&l.catId?(byId(l.catId)||{}).name||'':'';
     var f='<div class="mform">';
     f+='<div class="mf"><label>Equipment <span class="opt">rate is set by the 02S catalog</span></label>'
-     +'<div class="eq-search-wrap" style="margin-bottom:6px"><svg class="eq-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input class="rin eq-search-inp" id="eqCatSearch" placeholder="Search — excavator, crane…" oninput="eqCatFilter(this.value)"></div>'
-     +'<div id="eqCatHits" style="display:none;border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:6px;max-height:200px;overflow-y:auto"></div>';
-    f+='<select id="eqfPick" class="acc-sel wfull" onchange="eqPickChange()">'+opts+'</select></div>';
+     +'<div class="eq-search-wrap" style="margin-bottom:6px"><svg class="eq-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input class="rin eq-search-inp" id="eqCatSearch" placeholder="Search catalog — excavator, crane, scissor lift…" oninput="eqCatFilter(this.value)" value="'+selectedName+'"></div>'
+     +'<div id="eqCatHits" style="display:none;border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:6px;max-height:200px;overflow-y:auto"></div>'
+     +'<div id="eqCatSelected" style="'+(pick&&pick!=='__custom__'?'':'display:none')+';font-size:12px;color:var(--g600);padding:6px 8px;background:var(--g050);border-radius:6px;margin-bottom:4px">Selected: <b id="eqCatSelName">'+(selectedName||'')+'</b> <button class="linkbtn" style="margin-left:6px;font-size:11px" onclick="eqCatClear()">Clear</button></div>'
+     +'<input type="hidden" id="eqfPick" value="'+pick+'">'
+     +'</div>';
     f+='<div id="eqfDetail"></div>';
     f+='<div class="mf"><label>Cost code <span class="opt">your project budget line</span></label><select id="eqfCode" class="acc-sel wfull">'+eqCodeOptions(code)+'</select></div>';
     f+='<div class="mf3"><div class="mf"><label>Quantity</label><input id="eqfQty" class="rin" type="number" min="1" value="'+(l?l.qty:1)+'"></div><div class="mf"><label>Date needed</label><select id="eqfFrom" class="acc-sel wfull">'+eqMonthOptions(l?l.from:EQ_MONTHS[6])+'</select></div><div class="mf"><label>Projected off-rent</label><select id="eqfTo" class="acc-sel wfull">'+eqMonthOptions(l?l.to:EQ_MONTHS[9])+'</select></div></div>';
@@ -729,10 +732,19 @@
     wrap.style.display='block';
   }
   function eqCatSelect(pid){
-    var sel=gel('eqfPick'); if(!sel)return;
-    sel.value=pid; eqPickChange();
-    var inp=gel('eqCatSearch'); if(inp)inp.value=(byId(pid)||{}).name||'';
+    var hid=gel('eqfPick'); if(!hid)return;
+    hid.value=pid; eqPickChange();
+    var p=byId(pid)||{};
+    var inp=gel('eqCatSearch'); if(inp)inp.value='';
     var wrap=gel('eqCatHits'); if(wrap)wrap.style.display='none';
+    var sel=gel('eqCatSelected'); if(sel)sel.style.display='';
+    var nm=gel('eqCatSelName'); if(nm)nm.textContent=p.name||pid;
+  }
+  function eqCatClear(){
+    var hid=gel('eqfPick'); if(hid)hid.value='';
+    var sel=gel('eqCatSelected'); if(sel)sel.style.display='none';
+    var inp=gel('eqCatSearch'); if(inp){inp.value='';inp.focus();}
+    eqPickChange();
   }
   function eqCurrentRate(){
     var v=(gel('eqfPick')||{}).value;
@@ -1273,7 +1285,7 @@
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
   {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400},
-  {desc:'Idle-day surcharge (4 days, 2 units)',qty:8,rate:52.5,amt:420}
+  {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420}
 ]},
     {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Pending',date:'May 12',day:4,notes:0,
 charges:[
@@ -1369,6 +1381,11 @@ charges:[
       +'<div class="actt">Plan vs. ad-hoc</div>'
       +'<div class="acts">'+plan+' of '+total+' orders sourced from the demand plan</div>'
       +'<button class="btn" onclick="go(\'orders\')">View orders<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
+    // also populate the vitals row cards
+    var pv=gel('vitalPlanPct'); if(pv) pv.innerHTML=pct+'<span class="u">planned</span>';
+    var ps=gel('vitalPlanSub'); if(ps) ps.textContent=plan+' of '+total+' orders from plan';
+    var pvn=gel('vitalPlanPctNS'); if(pvn) pvn.innerHTML=pct+'<span class="u">planned</span>';
+    var psn=gel('vitalPlanSubNS'); if(psn) psn.textContent=plan+' of '+total+' orders from plan';
   }
   function renderOrders(){
     var _rb=document.getElementById('recertBanner');
@@ -1640,11 +1657,11 @@ charges:[
   function renderShipTo(){
     var mount=gel('profShipTo'); if(!mount)return;
     if(SHIP_TO.addr){
-      mount.innerHTML='<div class="esc-row"><div class="er-role">Delivery address</div><div class="er-name">'+SHIP_TO.addr+'</div></div>'
-        +(SHIP_TO.contact?'<div class="esc-row"><div class="er-role">Site contact</div><div class="er-name">'+SHIP_TO.contact+'</div></div>':'')
-        +'<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openShipToModal()">Edit</button>';
+      var cells='<div class="esc-cell"><div class="esc-k">Delivery address</div><div class="esc-n">'+SHIP_TO.addr+'</div></div>';
+      if(SHIP_TO.contact) cells+='<div class="esc-cell"><div class="esc-k">Site contact</div><div class="esc-n">'+SHIP_TO.contact+'</div></div>';
+      mount.innerHTML='<div class="esc-grid">'+cells+'</div><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="openShipToModal()">Edit</button>';
     } else {
-      mount.innerHTML='<div style="font-size:12px;color:var(--g400);margin-bottom:8px">No ship-to location saved for this project.</div><button class="btn btn-ghost btn-sm" onclick="openShipToModal()">Add ship-to location</button>';
+      mount.innerHTML='<div style="font-size:12px;color:var(--g400);margin-bottom:8px">No ship-to location saved.</div><button class="btn btn-ghost btn-sm" onclick="openShipToModal()">Add ship-to location</button>';
     }
   }
   function renderTeam(){

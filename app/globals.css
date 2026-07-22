@@ -70,7 +70,7 @@
   .chip.red{background:var(--red-tint);color:var(--red);border-color:transparent}
 
   /* ── VITALS ROW ─────────────────────────────── */
-  .vitals{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+  .vitals{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
   .vital{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
   .vital::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--g250)}
   .vital.ok::before{background:var(--success)}

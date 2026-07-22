@@ -130,6 +130,11 @@
           <div class="vv">1<span class="u">open</span></div>
           <div class="vsub">1 answered today</div>
         </div>
+        <div class="vital ok" id="vitalPlanV1">
+          <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Plan vs. ad-hoc</div>
+          <div class="vv" id="vitalPlanPct">—</div>
+          <div class="vsub" id="vitalPlanSub">Loading…</div>
+        </div>
       </div>
       <!-- NS: risk-intelligence metrics — the proactive layer -->
       <div class="vitals hide" id="vitalsNS">
@@ -152,6 +157,11 @@
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Open tickets</div>
           <div class="vv">1<span class="u">open</span></div>
           <div class="vsub"><span class="tag neu">Reply</span><span style="color:var(--g400)">Marcus &mdash; awaiting you</span></div>
+        </div>
+        <div class="vital ok" id="vitalPlanNS">
+          <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Plan vs. ad-hoc</div>
+          <div class="vv" id="vitalPlanPctNS">—</div>
+          <div class="vsub" id="vitalPlanSubNS">Loading…</div>
         </div>
       </div>
 
@@ -608,7 +618,7 @@
             <div class="access-legend">
               <span class="al-k">Access levels</span>
               <span><b>Admin</b> — full control incl. team &amp; billing</span>
-              <span><b>Approver</b> — can approve &amp; dispute bills</span>
+              <span><b>Approver</b> — can approve plans, orders &amp; bills</span>
               <span><b>Editor</b> — place &amp; modify orders</span>
               <span><b>View only</b> — read access</span>
               <span class="al-note">Permissions are set manually in v1.</span>
@@ -630,7 +640,7 @@
           <div class="card-h">
             <span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></span>
             <span class="ht">Approvers</span>
-            <span class="hcount">who can approve &amp; dispute bills</span>
+            <span class="hcount">who signs off on plans, orders &amp; billing</span>
           </div>
           <div style="padding:8px 18px 18px"><div class="esc-grid" id="profApprovers"></div></div>
         </div>
