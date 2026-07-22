@@ -704,27 +704,46 @@
     var del=canDelete?'<button class="btn btn-ghost" style="margin-right:auto;color:var(--red)" onclick="delEqLine(eqEditId)">Remove line</button>':'';
     return '<div class="modal-foot">'+del+'<div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" id="eqSaveBtn" onclick="saveEqLine()">'+(isEdit?'Save changes':'Add line')+'</button></div></div>';
   }
+  function _eqMenuBtn(icon,title,sub,fn){
+    return '<button class="btn btn-ghost" style="height:auto;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:12px;border-radius:var(--radius);width:100%" onclick="closeModal();'+fn+'">'
+      +'<span style="width:34px;height:34px;border-radius:8px;background:var(--g100);color:var(--charcoal);display:grid;place-items:center;flex-shrink:0">'+icon+'</span>'
+      +'<span style="flex:1;min-width:0"><span style="font-size:13px;font-weight:650;color:var(--g900);display:block">'+title+'</span><span style="font-size:11.5px;color:var(--g500)">'+sub+'</span></span>'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--g400);flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>'
+      +'</button>';
+  }
   function openEqAdd(code){
     eqEditId=null; eqAddCode=code||null;
-    var h='<div style="display:flex;flex-direction:column;gap:10px;margin-top:2px">'
-      +'<div style="font-size:12.5px;color:var(--g500);margin-bottom:2px">Choose how to add equipment to this plan.</div>'
-      +'<button class="btn btn-ghost" style="height:auto;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:14px;border-radius:var(--radius)" onclick="closeModal();_openEqAddForm()">'
-        +'<span style="width:36px;height:36px;border-radius:8px;background:var(--g100);color:var(--charcoal);display:grid;place-items:center;flex-shrink:0"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"18\" height=\"18\"><path d=\"M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z\"/><path d=\"M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12\"/></svg></span>'
-        +'<span style="flex:1"><span style="font-size:13.5px;font-weight:650;color:var(--g900);display:block">From 02S catalog</span><span style="font-size:12px;color:var(--g500)">Select from priced equipment, rate pre-filled</span></span>'
-        +'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"16\" height=\"16\" style=\"color:var(--g400)\"><path d=\"M9 18l6-6-6-6\"/></svg>'
-      +'</button>'
-      +'<button class="btn btn-ghost" style="height:auto;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:14px;border-radius:var(--radius)" onclick="closeModal();_openEqBulk()">'
-        +'<span style="width:36px;height:36px;border-radius:8px;background:var(--g100);color:var(--charcoal);display:grid;place-items:center;flex-shrink:0"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"18\" height=\"18\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M9 3v18M15 3v18\"/></svg></span>'
-        +'<span style="flex:1"><span style="font-size:13.5px;font-weight:650;color:var(--g900);display:block">Bulk grid entry</span><span style="font-size:12px;color:var(--g500)">Enter multiple lines at once, spreadsheet-style</span></span>'
-        +'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"16\" height=\"16\" style=\"color:var(--g400)\"><path d=\"M9 18l6-6-6-6\"/></svg>'
-      +'</button>'
-      +'<button class="btn btn-ghost" style="height:auto;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:14px;border-radius:var(--radius)" onclick="closeModal();_openEqImport()">'
-        +'<span style="width:36px;height:36px;border-radius:8px;background:var(--g100);color:var(--charcoal);display:grid;place-items:center;flex-shrink:0"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"18\" height=\"18\"><path d=\"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg></span>'
-        +'<span style="flex:1"><span style="font-size:13.5px;font-weight:650;color:var(--g900);display:block">Import from HeavyBid / estimate</span><span style="font-size:12px;color:var(--g500)">Upload a HeavyBid extract or estimate file — 02S maps equipment lines automatically</span></span>'
-        +'<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"16\" height=\"16\" style=\"color:var(--g400)\"><path d=\"M9 18l6-6-6-6\"/></svg>'
-      +'</button>'
+    var ic=function(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">'+d+'</svg>';};
+    var h='<div style="display:flex;flex-direction:column;gap:8px;margin-top:2px">'
+      +_eqMenuBtn(ic('<path d="M12 5v14M5 12h14"/>'),   'Single line',            'Add one item manually — description, qty, dates',        '_openEqSingle()')
+      +_eqMenuBtn(ic('<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/>'), 'From 02S catalog', 'Pick priced equipment — rate auto-filled', '_openEqAddForm()')
+      +_eqMenuBtn(ic('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>'), 'Bulk grid entry', 'Enter multiple lines at once, spreadsheet-style', '_openEqBulk()')
+      +_eqMenuBtn(ic('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>'), 'Import from estimate', 'HeavyBid extract or Excel estimate — 02S maps lines automatically', '_openEqImport()')
       +'</div>';
     openModal('Add demand line', h);
+  }
+  function _openEqSingle(){
+    var h='<div class="mform">'
+      +'<div class="mf"><label>Description</label><input id="eqsDesc" class="rin" placeholder="e.g. Excavator 20T" style="width:100%"></div>'
+      +'<div class="mf2"><div class="mf"><label>Quantity</label><input id="eqsQty" class="rin" type="number" min="1" value="1"></div><div class="mf"><label>Task code</label><input id="eqsTask" class="rin" placeholder="e.g. 02-320.14" value="01-000.00"></div></div>'
+      +'<div class="mf2"><div class="mf"><label>Date needed</label><select id="eqsFrom" class="acc-sel wfull">'+eqMonthOptions(EQ_MONTHS[6])+'</select></div><div class="mf"><label>Projected off-rent</label><select id="eqsTo" class="acc-sel wfull">'+eqMonthOptions(EQ_MONTHS[9])+'</select></div></div>'
+      +'<div class="mf"><label>Scope <span class="opt">schedule activity</span></label><input id="eqsScope" class="rin" placeholder="Phase 3 · Module install"></div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveEqSingle()">Add line</button></div>';
+    openModal('Add single line', h);
+  }
+  function _saveEqSingle(){
+    var desc=(gel('eqsDesc').value||'').trim();
+    if(!desc){toast('Enter a description');return;}
+    var qty=parseInt(gel('eqsQty').value,10)||1;
+    var task=(gel('eqsTask').value||'01-000.00').trim();
+    var from=gel('eqsFrom').value||EQ_MONTHS[0];
+    var to=gel('eqsTo').value||EQ_MONTHS[4];
+    var scope=(gel('eqsScope').value||'').trim();
+    eqSeq++;
+    EQ_LINES.push({id:'e'+eqSeq,task:task,code:task.split('.')[0]||'01-000',desc:desc,cat:'Material handling',qty:qty,rate:null,from:from,to:to,status:'projected',submitted:false,scope:scope,catId:null});
+    eqLog('Added '+qty+'\xd7 '+desc+' ('+task+')');
+    closeModal(); toast('Line added as draft'); eqRefresh();
   }
   function _openEqAddForm(){ openModal('Add demand line', eqForm(null)+eqFormFoot(false,false)); eqPickChange(); }
   function _openEqBulk(){
@@ -745,7 +764,7 @@
       return thead+rows;
     };
     var h='<div style="overflow-x:auto;margin-bottom:12px"><table style="border-collapse:collapse;font-size:12.5px" id="bulkTbl">'+bulkRows()+'</table></div>'
-      +'<button class="btn btn-ghost btn-sm" onclick="_addBulkRow()"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> +Row</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="_addBulkRow()"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> Add row</button>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveBulkLines()">Add all lines</button></div>';
     openModal('Bulk grid entry', h);
   }
