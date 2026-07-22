@@ -1079,6 +1079,7 @@
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
+    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); }
     window.scrollTo(0,0);
   }
 
@@ -2596,6 +2597,7 @@
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
     if(screen==='equip') eqRefresh();
+    if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); }
     window.scrollTo(0,0);
   }
 
