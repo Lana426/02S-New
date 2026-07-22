@@ -733,7 +733,7 @@
         +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
         +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
         +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
-        +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest('tr').remove()" title="Remove"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
+        +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
         +'</tr>';
     };
     var cols=['Description','Qty','Cost code','Date needed','Off-rent','Schedule activity',''];
@@ -752,7 +752,7 @@
       +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
       +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
       +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
-      +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest('tr').remove()" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>';
+      +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>';
   }
   function _saveEqUnified(){
     var tbl=document.getElementById('unifiedTbl'); if(!tbl)return;
@@ -1318,7 +1318,7 @@
     mount.innerHTML=svg2
       +'<div class="actt">Plan vs. ad-hoc</div>'
       +'<div class="acts">'+plan+' of '+total+' orders sourced from the demand plan</div>'
-      +'<button class="btn" onclick="go('orders')">View orders<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
+      +'<button class="btn" onclick="go(\'orders\')">View orders<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
   }
   function renderOrders(){
     var _rb=document.getElementById('recertBanner');
