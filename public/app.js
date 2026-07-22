@@ -37,9 +37,48 @@
     {id:'restroom',pillar:'prefab',pcat:'Prefab',cat:'Prefab',name:'Modular Restroom Pod',spec:'Factory-built · plumbed · code-compliant',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:9800},
     {id:'rigging',pillar:'procurement',pcat:'Procurement',cat:'Hardware',name:'Rigging & lift hardware',spec:'Slings, shackles, spreader bar — lot',price:'$340',unit:'',icon:'proc',mode:'onetime',rate:null,unitPrice:340},
     {id:'ppe',pillar:'procurement',pcat:'Procurement',cat:'Safety',name:'PPE kit (crew of 10)',spec:'Hard hats, vests, gloves, glasses',price:'$850',unit:'',icon:'proc',mode:'onetime',rate:null,unitPrice:850},
-    {id:'fasteners',pillar:'procurement',pcat:'Procurement',cat:'Materials',name:'Structural fasteners — lot',spec:'A325 bolts, nuts, washers — bulk',price:'$220',unit:'',icon:'proc',mode:'onetime',rate:null,unitPrice:220}
+    {id:'fasteners',pillar:'procurement',pcat:'Procurement',cat:'Materials',name:'Structural fasteners — lot',spec:'A325 bolts, nuts, washers — bulk',price:'$220',unit:'',icon:'proc',mode:'onetime',rate:null,unitPrice:220},
+    // Additional equipment
+    {id:'dozer-d6',pillar:'equipment',pcat:'Equipment › Earthmoving',cat:'Earthmoving',name:'Bulldozer — D6',spec:'Medium dozer · 6-way blade · GPS grade control',price:'$890',unit:'/day',icon:'earth',mode:'rental',rate:890,mrate:18500},
+    {id:'compactor',pillar:'equipment',pcat:'Equipment › Earthmoving',cat:'Earthmoving',name:'Vibratory Compactor — 84″',spec:'Padfoot drum · 84″ · soil & subgrade',price:'$440',unit:'/day',icon:'earth',mode:'rental',rate:440,mrate:9200},
+    {id:'motorgrader',pillar:'equipment',pcat:'Equipment › Earthmoving',cat:'Earthmoving',name:'Motor Grader — 140M',spec:'14-ft blade · GPS-ready · subgrade finishing',price:'$720',unit:'/day',icon:'earth',mode:'rental',rate:720,mrate:15000},
+    {id:'skidsteer',pillar:'equipment',pcat:'Equipment › Earthmoving',cat:'Earthmoving',name:'Skid Steer — 70HP',spec:'70HP · universal hitch · tracks',price:'$340',unit:'/day',icon:'earth',mode:'rental',rate:340,mrate:7100},
+    {id:'manlift40',pillar:'equipment',pcat:'Equipment › Access',cat:'Access',name:'Personnel Lift — 40 ft',spec:'Vertical mast · electric · indoor/outdoor',price:'$145',unit:'/day',icon:'lift',mode:'rental',rate:145,mrate:1500},
+    {id:'compressor375',pillar:'equipment',pcat:'Equipment › Power & air',cat:'Power',name:'Air Compressor — 375 CFM',spec:'Towable · 375 CFM · large tool support',price:'$265',unit:'/day',icon:'power',mode:'rental',rate:265,mrate:4800},
+    {id:'pump4in',pillar:'equipment',pcat:'Equipment › Dewatering',cat:'Dewatering',name:'Dewatering Pump — 4″',spec:'Diaphragm · 4″ inlet · mud capable',price:'$180',unit:'/day',icon:'power',mode:'rental',rate:180,mrate:2800},
+    {id:'weldgen',pillar:'equipment',pcat:'Equipment › Power & air',cat:'Power',name:'Welder / Generator Combo — 300A',spec:'300A welder + 10.5kW gen · diesel',price:'$195',unit:'/day',icon:'power',mode:'rental',rate:195,mrate:3200},
+    // Attachments
+    {id:'att-auger',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Auger Attachment',spec:'24″ diameter · skid steer / excavator mount',price:'$140',unit:'/day',icon:'earth',mode:'rental',rate:140,mrate:2200},
+    {id:'att-breaker',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Hydraulic Breaker',spec:'1,500 ft-lb impact · excavator pin-on',price:'$290',unit:'/day',icon:'earth',mode:'rental',rate:290,mrate:5200},
+    {id:'att-grapple',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Grapple Bucket',spec:'60″ · rotating · debris and log handling',price:'$210',unit:'/day',icon:'earth',mode:'rental',rate:210,mrate:3800},
+    {id:'att-trencher',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Trencher Attachment',spec:'6″ × 48″ depth · skid steer mount',price:'$175',unit:'/day',icon:'earth',mode:'rental',rate:175,mrate:2900},
+    {id:'att-broom',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Power Broom',spec:'72″ angle sweep · skid steer mount',price:'$115',unit:'/day',icon:'earth',mode:'rental',rate:115,mrate:1800},
+    {id:'att-forks',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Pallet Forks',spec:'48″ forks · 6,000 lb · universal quick-attach',price:'$85',unit:'/day',icon:'material',mode:'rental',rate:85,mrate:1100},
+    {id:'att-plate',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Tamper Plate Attachment',spec:'Vibratory plate · compaction · skid steer',price:'$130',unit:'/day',icon:'earth',mode:'rental',rate:130,mrate:2100},
+    {id:'att-ripper',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Ripper Attachment',spec:'Single-shank · dozer rear-mount · rock breaking',price:'$160',unit:'/day',icon:'earth',mode:'rental',rate:160,mrate:2600},
+    {id:'att-bucket-rock',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Rock Bucket — 36″',spec:'Heavy-duty · bolt-on edge · excavator pin-on',price:'$180',unit:'/day',icon:'earth',mode:'rental',rate:180,mrate:2900},
+    {id:'att-compwheel',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Compaction Wheel',spec:'Padfoot · excavator mount · trench compaction',price:'$145',unit:'/day',icon:'earth',mode:'rental',rate:145,mrate:2400},
+    {id:'att-mulcher',pillar:'equipment',pcat:'Equipment › Attachments',cat:'Attachments',name:'Brush Hog / Mulcher',spec:'Forestry mulcher · excavator or skid steer',price:'$310',unit:'/day',icon:'earth',mode:'rental',rate:310,mrate:5800},
+    // Prefab
+    {id:'pf-steelframe',pillar:'prefab',pcat:'Prefab › Structural',cat:'Structural',name:'Prefab Steel Frame Module',spec:'Shop-welded · per IBC · crane-set',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:24500},
+    {id:'pf-mepwall',pillar:'prefab',pcat:'Prefab › MEP',cat:'MEP',name:'MEP Coordination Wall',spec:'Prefabricated MEP rough-in panel · lift-in-place',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:8800},
+    {id:'pf-stairs',pillar:'prefab',pcat:'Prefab › Architectural',cat:'Architectural',name:'Prefab Stair Tower',spec:'Shop-fab · HSS stringers · pan treads · galv.',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:31200},
+    {id:'pf-gensteel',pillar:'prefab',pcat:'Prefab › Structural',cat:'Structural',name:'Structural Steel Embedment Kit',spec:'Anchor bolts, embed plates · column base set',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:4200},
+    // Logistics
+    {id:'log-lowboy',pillar:'logistics',pcat:'Logistics › Heavy haul',cat:'Heavy haul',name:'Lowboy Transport — up to 80T',spec:'Permitted route · escort included · 48-hr lead',price:'$2,400',unit:'/move',icon:'proc',mode:'onetime',rate:null,unitPrice:2400},
+    {id:'log-flatbed',pillar:'logistics',pcat:'Logistics › Freight',cat:'Freight',name:'Flatbed Freight — full trailer',spec:'48 ft flatbed · tarped · dock or flatbed delivery',price:'$1,100',unit:'/load',icon:'proc',mode:'onetime',rate:null,unitPrice:1100},
+    {id:'log-crane-mob',pillar:'logistics',pcat:'Logistics › Crane logistics',cat:'Crane logistics',name:'Crane Mobilization Package',spec:'Super-load permit · route survey · pilot cars',price:'Quote',unit:'',icon:'crane',mode:'onetime',rate:null,est:8500},
+    {id:'log-staging',pillar:'logistics',pcat:'Logistics › Staging',cat:'Staging',name:'Laydown Area Management',spec:'Inventory staging · material sequencing · daily',price:'$1,800',unit:'/week',icon:'proc',mode:'rental',rate:258,mrate:1800},
+    {id:'log-courier',pillar:'logistics',pcat:'Logistics › Freight',cat:'Freight',name:'Expedited Courier — same day',spec:'Parts & documents · metropolitan area',price:'$180',unit:'/run',icon:'proc',mode:'onetime',rate:null,unitPrice:180},
+    // Professional services
+    {id:'ps-survey',pillar:'profservices',pcat:'Prof. services › Survey',cat:'Survey',name:'Construction Survey Crew',spec:'Licensed PLS · layout & control · daily rate',price:'$2,200',unit:'/day',icon:'proc',mode:'rental',rate:2200,mrate:44000},
+    {id:'ps-inspect',pillar:'profservices',pcat:'Prof. services › Inspection',cat:'Inspection',name:'Special Inspections — IBC §1705',spec:'ICC-certified · concrete, steel, masonry',price:'$350',unit:'/day',icon:'proc',mode:'rental',rate:350,mrate:7000},
+    {id:'ps-geotech',pillar:'profservices',pcat:'Prof. services › Geotechnical',cat:'Geotechnical',name:'Geotechnical Monitoring',spec:'Inclinometers, piezometers · weekly report',price:'Quote',unit:'',icon:'proc',mode:'onetime',rate:null,est:6500},
+    {id:'ps-env',pillar:'profservices',pcat:'Prof. services › Environmental',cat:'Environmental',name:'Environmental Monitoring',spec:'Air quality, stormwater, noise · NPDES',price:'$1,400',unit:'/week',icon:'proc',mode:'rental',rate:200,mrate:1400},
+    {id:'ps-struct-eng',pillar:'profservices',pcat:'Prof. services › Engineering',cat:'Engineering',name:'Structural Engineering Support',spec:'SE-of-record backup · RFI & submittal review',price:'$280',unit:'/hr',icon:'proc',mode:'rental',rate:280,mrate:5600},
+    {id:'ps-safety',pillar:'profservices',pcat:'Prof. services › Safety',cat:'Safety',name:'Safety Officer — dedicated',spec:'OSHA-30 · daily site presence · weekly report',price:'$1,100',unit:'/day',icon:'proc',mode:'rental',rate:1100,mrate:22000}
   ];
-  var KW={crane:'crane40',scissor:'scissor32',lift:'boom60',boom:'boom60',tele:'tele10',telehandler:'tele10',forklift:'tele10',generator:'gen45',power:'gen45',genset:'gen45',excavator:'excav20',dig:'excav20',light:'lighttower',compressor:'aircomp',air:'aircomp',headwall:'headwall',prefab:'headwall',pipe:'piperack',rack:'piperack',restroom:'restroom',rigging:'rigging',sling:'rigging',ppe:'ppe',safety:'ppe',bolt:'fasteners',fastener:'fasteners'};
+  var KW={crane:'crane40',scissor:'scissor32',lift:'boom60',boom:'boom60',tele:'tele10',telehandler:'tele10',forklift:'tele10',generator:'gen45',power:'gen45',genset:'gen45',excavator:'excav20',dig:'excav20',light:'lighttower',compressor:'aircomp',air:'aircomp',headwall:'headwall',prefab:'headwall',pipe:'piperack',rack:'piperack',restroom:'restroom',rigging:'rigging',sling:'rigging',ppe:'ppe',safety:'ppe',bolt:'fasteners',fastener:'fasteners',dozer:'dozer-d6',compactor:'compactor',grader:'motorgrader',skid:'skidsteer','skid steer':'skidsteer',pump:'pump4in',dewater:'pump4in',welder:'weldgen',auger:'att-auger',breaker:'att-breaker',grapple:'att-grapple',trencher:'att-trencher',broom:'att-broom',forks:'att-forks',tamper:'att-plate',ripper:'att-ripper',mulcher:'att-mulcher',lowboy:'log-lowboy',flatbed:'log-flatbed',survey:'ps-survey',inspect:'ps-inspect',geotech:'ps-geotech',environmental:'ps-env',staging:'log-staging'};
 
   /* ═══════════════════ EQUIPMENT DEMAND PLAN ═══════════════════ */
   var EQ_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
@@ -132,7 +171,7 @@
       return '<div class="prod"><div class="pimg"><span class="pcat">'+p.cat+'</span>'+svg(ICON[p.icon]||ICON.box)+'</div>'+
         '<div class="pbody"><div class="pname">'+p.name+'</div><div class="pspec">'+p.spec+'</div>'+
         '<div class="pfoot"><div><div class="pprice">'+p.price+'<span class="pu">'+p.unit+'</span></div><div class="plead">'+lead+'</div></div>'+
-        '<button class="padd txt" onclick="openDetail(\''+p.id+'\',\'catalog\')">Add</button></div></div></div>';
+        '<button class="padd txt" onclick="openCatDetail(\''+p.id+'\')">Add</button></div></div></div>';
     }).join('');
     if(pil.depth==='part'){
       cards+='<div class="prod custom"><div class="pimg">'+svg('<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 3"/>')+'</div>'+
@@ -170,12 +209,12 @@
     acc.style.display='none';
     if(!hits.length){res.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:13px">No catalog items match "'+q+'"</div>';res.classList.remove('hide');return;}
     res.innerHTML=hits.map(function(p){
-      return '<div class="cat-card" onclick="openDetail(\''+p.id+'\',\'catalog\')">'
+      return '<div class="cat-card" onclick="openCatDetail(\''+p.id+'\')">'  
         +'<div class="cc-icon">'+svg(ICON[p.icon]||ICON.box,2)+'</div>'
         +'<div class="cc-name">'+p.name+'</div>'
         +'<div class="cc-spec">'+p.spec+'</div>'
         +'<div class="cc-meta"><span class="tag neu">'+pillarLabel(p.pillar)+'</span><span class="cc-price">'+p.price+p.unit+'</span></div>'
-        +'<button class="btn btn-dark btn-sm cc-add" onclick="event.stopPropagation();openDetail(\''+p.id+'\',\'catalog\')">Add to cart</button>'
+        +'<button class="btn btn-dark btn-sm cc-add" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add to cart</button>'
         +'</div>';
     }).join('');
     res.classList.remove('hide');
@@ -190,7 +229,7 @@
     CATALOG.forEach(function(p){ if(p.name.toLowerCase().indexOf(q)>-1||p.cat.toLowerCase().indexOf(q)>-1) hits[p.id]=1; });
     Object.keys(KW).forEach(function(k){ if(q.indexOf(k)>-1) hits[KW[k]]=1; });
     var rows=Object.keys(hits).slice(0,5).map(function(id){var p=byId(id);
-      return '<div class="ta-row" onclick="openDetail(\''+p.id+'\',\'catalog\')"><span class="tai">'+svg(ICON[p.icon]||ICON.box,2)+'</span><span class="tat">'+p.name+'</span><span class="ta-map">'+pillarLabel(p.pillar)+' · matched</span><span class="tameta">'+p.price+p.unit+'</span></div>';
+      return '<div class="ta-row" onclick="openCatDetail(\''+p.id+'\')"><span class="tai">'+svg(ICON[p.icon]||ICON.box,2)+'</span><span class="tat">'+p.name+'</span><span class="ta-map">'+pillarLabel(p.pillar)+' · matched</span><span class="tameta">'+p.price+p.unit+'</span></div>';
     });
     var custHit=null; Object.keys(CUSTOM_KW).forEach(function(k){ if(q.indexOf(k)>-1) custHit=CUSTOM_KW[k]; });
     if(custHit) rows.push('<div class="ta-row" onclick="openCustom(\''+custHit+'\')"><span class="tai">'+svg('<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z"/>',2)+'</span><span class="tat">Create custom request</span><span class="ta-map" style="background:var(--warning-tint);color:var(--warning)">'+custHit+' · custom</span><span class="tameta">via form &rsaquo;</span></div>');
@@ -202,6 +241,36 @@
 
   /* ═══════════ DETAIL FORM ═══════════ */
   function setTag(id,show){var e=document.getElementById(id); if(e) e.style.display=show?'':'none';}
+  function openCatDetail(pid){
+    var p=byId(pid); if(!p) return;
+    var ns=CURRENT==='ns';
+    var lead = p.mode==='rental' ? 'Lead 24–48 hr' : (p.pillar==='prefab' ? 'Lead 2–3 wk' : 'Ships 3–5 days');
+    var price = p.price+p.unit;
+    var modeTag = p.mode==='rental'?'<span class="tag info">Rental</span>':'<span class="tag neu">One-time</span>';
+    var nsReco = (ns && p.plan) ? '<div class="cd-reco">'+CC_SPARK+'In your demand plan ('+p.plan+') — pre-configured dates and qty ready</div>' : '';
+    var specs = [
+      {k:'Category',v:p.pcat||p.cat},
+      {k:'Specification',v:p.spec},
+      {k:'Rate',v:price+(p.mrate?' · $'+p.mrate.toLocaleString()+'/mo (est.)':'')},
+      {k:'Lead time',v:lead},
+      {k:'Pillar',v:pillarLabel(p.pillar)},
+      {k:'Mode',v:p.mode==='rental'?'Rental — daily/monthly rate':'One-time procurement'}
+    ];
+    var rows=specs.map(function(s){return '<div class="cd-row"><div class="cd-k">'+s.k+'</div><div class="cd-v">'+s.v+'</div></div>';}).join('');
+    var body='<div class="cat-detail">'+
+      '<div class="cd-hero">'+
+        '<div class="cd-icon-wrap">'+svg(ICON[p.icon]||ICON.box,3)+'</div>'+
+        '<div class="cd-head">'+
+          '<div class="cd-name">'+p.name+'</div>'+
+          '<div class="cd-tags">'+modeTag+'<span class="tag">'+pillarLabel(p.pillar)+'</span></div>'+
+          '<div class="cd-price">'+price+'</div>'+
+        '</div>'+
+      '</div>'+
+      nsReco+
+      '<div class="cd-spec-grid">'+rows+'</div>'+
+    '</div>';
+    openModal(p.name, body+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();openDetail(\''+pid+'\',\'catalog\')">Add to request →</button></div>');
+  }
   function openDetail(pid,kind){
     var p=byId(pid); if(!p) return;
     cfg={pid:pid,kind:kind,custom:null};
@@ -1280,7 +1349,18 @@
     {id:'ORD-3020',od:'2026-05-13',item:'Rigging & lift hardware',sub:'lot',pillar:'procurement',dates:'one-time',cost:'05 · Metals',stage:2,plan:null,latest:'Order acknowledged — fulfillment in progress'},
     {id:'ORD-3014',od:'2026-04-28',item:'L2 Headwall Assembly',sub:'per submittal',pillar:'prefab',dates:'one-time',cost:'03 · Concrete',stage:1,plan:'PF-021',latest:'Submittal under review with prefab'},
     {id:'ORD-3009',od:'2026-04-18',item:'Site survey crew',sub:'2 days',pillar:'profservices',dates:'Apr 18 – Apr 19',cost:'01 · General',stage:2,plan:null,latest:'Crew scheduled — 2-day survey window'},
-    {id:'ORD-2998',od:'2026-04-05',item:'SUV AWD',sub:'1 unit',pillar:'equipment',dates:'Apr 5 – May 18',cost:'01 · General',stage:5,plan:null,latest:'Off-rent — returned Apr 30'}
+    {id:'ORD-2998',od:'2026-04-05',item:'SUV AWD',sub:'1 unit',pillar:'equipment',dates:'Apr 5 – May 18',cost:'01 · General',stage:5,plan:null,latest:'Off-rent — returned Apr 30'},
+    {id:'ORD-3060',od:'2026-05-08',item:'MEP Pipe Rack Module',sub:'3 modules · Level 2–4',pillar:'prefab',dates:'one-time · deliver Jun 3',cost:'22 · Plumbing',stage:2,plan:'PF-021',latest:'Shop drawings approved — fabrication started'},
+    {id:'ORD-3061',od:'2026-05-15',item:'Modular Restroom Pod',sub:'1 unit · worker welfare',pillar:'prefab',dates:'one-time · deliver Jun 20',cost:'01 · General',stage:1,plan:null,latest:'Submittal submitted — awaiting prefab team review'},
+    {id:'ORD-3070',od:'2026-05-18',item:'Heavy haul transport — excavator',sub:'1 load · lowboy',pillar:'logistics',dates:'May 20 · one-time',cost:'03 · Concrete',stage:4,plan:null,latest:'Delivery confirmed — excavator on site May 20'},
+    {id:'ORD-3071',od:'2026-08-01',item:'Tower crane mobilization haul',sub:'1 move · permitted route',pillar:'logistics',dates:'Aug 3 · one-time',cost:'26-330 · BESS & Substation',stage:1,plan:null,latest:'Route permits in process — move scheduled Aug 3'},
+    {id:'ORD-3072',od:'2026-06-10',item:'Material staging & drayage',sub:'ongoing · laydown A',pillar:'logistics',dates:'Jun 10 – Sep 30',cost:'01 · General',stage:3,plan:null,latest:'Staging operations active at laydown A'},
+    {id:'ORD-3080',od:'2026-05-01',item:'PPE kit — crew of 20',sub:'hard hats, vests, gloves',pillar:'procurement',dates:'one-time',cost:'01 · General',stage:4,plan:null,latest:'Delivered and distributed to crew'},
+    {id:'ORD-3081',od:'2026-05-10',item:'Concrete form hardware — lot',sub:'snap ties, wedge bolts',pillar:'procurement',dates:'one-time',cost:'03 · Concrete',stage:3,plan:null,latest:'Order acknowledged — fulfillment in progress'},
+    {id:'ORD-3082',od:'2026-06-01',item:'Temporary fencing & gates',sub:'400 LF + 2 gates',pillar:'procurement',dates:'Jun 1 – project close',cost:'01 · General',stage:2,plan:null,latest:'Fabrication quote received — awaiting PO approval'},
+    {id:'ORD-3090',od:'2026-04-25',item:'Special inspections — concrete',sub:'IBC §1705 · 3rd party',pillar:'profservices',dates:'ongoing',cost:'03 · Concrete',stage:4,plan:null,latest:'Inspector on site as scheduled — reports filed weekly'},
+    {id:'ORD-3091',od:'2026-05-20',item:'Structural engineering — RFI support',sub:'8 hrs/wk · as needed',pillar:'profservices',dates:'May – Sep 2026',cost:'05 · Metals',stage:3,plan:null,latest:'3 RFIs responded this week — avg 24hr turnaround'},
+    {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'}
   ];
   var BILLS=[
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
@@ -1298,10 +1378,35 @@ charges:[
   {desc:'Rigging hardware — daily rental',qty:7,rate:680,amt:4760,cost:'05 · Metals'},
   {desc:'Setup / teardown labor',qty:1,rate:220,amt:220,cost:'05 · Metals'}
 ]},
+    {id:'BILL-9020',order:'ORD-3060',product:'MEP Pipe Rack Module (3)',amt:36600,cost:'22 · Plumbing',status:'Pending',date:'Jun 1',day:3,notes:1,
+      charges:[
+        {desc:'Fabrication — 3 module assemblies',qty:3,rate:9800,amt:29400,cost:'22 · Plumbing'},
+        {desc:'Shop drawings & engineering stamp',qty:1,rate:4200,amt:4200,cost:'01 · General'},
+        {desc:'Delivery & crane-in coordination',qty:1,rate:3000,amt:3000,cost:'22 · Plumbing'}
+      ]},
+    {id:'BILL-9021',order:'ORD-3070',product:'Heavy haul — excavator delivery',amt:3200,cost:'03 · Concrete',status:'Pending',date:'May 21',day:2,notes:0,
+      charges:[
+        {desc:'Lowboy transport — 85-mile haul',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'},
+        {desc:'Escort vehicle (required by permit)',qty:1,rate:800,amt:800,cost:'03 · Concrete'}
+      ]},
+    {id:'BILL-9022',order:'ORD-3090',product:'Special inspections — concrete (May)',amt:8400,cost:'03 · Concrete',status:'Pending',date:'Jun 1',day:5,notes:0,
+      charges:[
+        {desc:'IBC §1705 inspection — 21 days',qty:21,rate:350,amt:7350,cost:'03 · Concrete'},
+        {desc:'Inspection report preparation',qty:3,rate:350,amt:350,cost:'01 · General'},
+        {desc:'Travel & expense reimbursement',qty:1,rate:700,amt:700,cost:'03 · Concrete'}
+      ]},
+    {id:'BILL-9023',order:'ORD-3080',product:'PPE kit — crew of 20',amt:1700,cost:'01 · General',status:'Pending',date:'May 5',day:1,notes:0,
+      charges:[
+        {desc:'Hard hats, vests, gloves — 20 sets',qty:20,rate:65,amt:1300,cost:'01 · General'},
+        {desc:'Safety glasses & face shields',qty:20,rate:20,amt:400,cost:'01 · General'}
+      ]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
     {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24'},
-    {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20'}
+    {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20'},
+    {id:'BILL-8990',order:'ORD-3009',product:'Site survey crew — 2 days',amt:6200,cost:'01 · General',status:'Finalized',date:'Apr 22',audit:'M. Chen · approved Apr 22'},
+    {id:'BILL-8985',order:'ORD-3080',product:'PPE kit — initial order',amt:850,cost:'01 · General',status:'Finalized',date:'May 3',audit:'Auto-finalized May 3'},
+    {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19'}
   ];
   var COST_CODES=['01 · General','03 · Concrete','05 · Metals','09 · Finishes'];
   function stageStatus(o){var arr=o.pillar==='equipment'?STAGES_EQ:STAGES_OTHER;return arr[Math.min(o.stage,arr.length-1)];}
@@ -1462,7 +1567,7 @@ charges:[
       '<div class="eor-act">'+
         '<button class="btn btn-info-solid btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Extend rental\')">Extend rental</button>'+
         '<button class="btn btn-return btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Early off-rent / return\')">Initiate return</button>'+
-        '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'order\')">Different spec</button>'+
+        (ns?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'order\')">Different spec</button>':'')+
       '</div>'+
     '</div>';
   }
@@ -1588,7 +1693,17 @@ charges:[
         chargesHtml='<div class="pc-charges">'
           +b.charges.map(function(c,ci){
             var ccInput=(mode==='edit')
-              ?'<input class="rin" style="width:140px;font-size:11px;font-family:monospace" id="cc-'+b.id+'-'+ci+'" value="'+(c.cost||b.cost)+'" placeholder="Cost code">'
+              ?'<datalist id="ccl-'+b.id+'-'+ci+'">'+
+              '<option value="01-0540-0000-0001">01-0540-0000-0001 — General conditions</option>'+
+              '<option value="26-0330-0000-0001">26-0330-0000-0001 — BESS &amp; Substation</option>'+
+              '<option value="03-0000-0000-0001">03-0000-0000-0001 — Concrete</option>'+
+              '<option value="05-0000-0000-0001">05-0000-0000-0001 — Metals</option>'+
+              '<option value="09-0000-0000-0001">09-0000-0000-0001 — Finishes</option>'+
+              '<option value="31-0620-0000-0001">31-0620-0000-0001 — Earthwork / Piling</option>'+
+              '<option value="22-0000-0000-0001">22-0000-0000-0001 — Plumbing</option>'+
+              '<option value="16-0000-0000-0001">16-0000-0000-0001 — Electrical</option>'+
+              '</datalist>'+
+              '<input class="rin" style="width:180px;font-size:11px;font-family:monospace" id="cc-'+b.id+'-'+ci+'" list="ccl-'+b.id+'-'+ci+'" value="'+(c.cost||b.cost)+'" placeholder="16-digit code">'
               :'<span class="pch-cc">'+(c.cost||b.cost)+'</span>';
             return '<div class="pch-row"><span class="pch-d">'+c.desc+'</span>'+ccInput+'<span class="pch-a">'+fmt(c.amt)+'</span></div>';
           }).join('')
@@ -1600,7 +1715,20 @@ charges:[
       if(mode==='dispute'){
         inline='<div class="pc-inline">'+
           '<div class="pi-t">Reason for dispute <span class="pi-note">pauses auto-finalization until 02S responds</span></div>'+
-          '<textarea id="dr-'+b.id+'" class="pi-ta" placeholder="e.g. Billed 4 idle days with no badge-ins — request adjustment">'+((ns&&b.reason)?b.reason:'')+'</textarea>'+
+          '<div class="dispute-chips" id="dc-'+b.id+'">'+(ns?
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle-day overage — unit billing with no site activity\',this)">Idle-day overage</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate mismatch — billed rate exceeds contract rate\',this)">Rate mismatch</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code assignment\',this)">Wrong cost code</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period overlap or duplicate charge\',this)">Duplicate/overlap</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Equipment returned — billing continues after off-rent\',this)">Billing after return</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Quantity billed exceeds PO authorization\',this)">PO qty exceeded</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Unauthorized charge — no PO or work order\',this)">Unauthorized charge</span>':
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code — requesting reassignment\',this)">Correct cost code</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period error — dates do not match rental period\',this)">Billing period error</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate or quantity does not match order\',this)">Rate / qty mismatch</span>'+
+          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle days included — unit was not in active use\',this)">Idle days billed</span>'
+        )+'</div>'+
+          '<textarea id="dr-'+b.id+'" class="pi-ta" placeholder="'+(ns?'e.g. Billed 4 idle days with no badge-ins — request credit for idle period':'e.g. Incorrect cost code — should be 03-Concrete, not 09-Finishes')+'">'+(( b.reason&&ns)?b.reason:'')+'</textarea>'+
           '<div class="pi-act"><button class="btn btn-red btn-sm" onclick="disputeBill(\''+b.id+'\')">Submit dispute</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       } else if(mode==='edit'){
@@ -1634,19 +1762,30 @@ charges:[
   }
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
+  function setDChip(id,text,el){ var ta=document.getElementById('dr-'+id); if(ta) ta.value=text; var chips=el.parentElement.querySelectorAll('.dchip'); chips.forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); }
   function disputeBill(id){ var b=getBill(id); if(!b) return; var el=document.getElementById('dr-'+id); var r=(el&&el.value||'').trim()||'Amount exceeds order estimate'; b.status='Disputed'; b.disputeReason=r; b.audit='You · disputed just now — auto-finalization paused'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Dispute raised on '+id+' — auto-finalization paused until 02S responds'); }
   function saveCost(id){ var b=getBill(id); if(!b) return; if(b.charges){b.charges.forEach(function(c,i){var el=document.getElementById('cc-'+id+'-'+i);if(el)c.cost=el.value.trim()||c.cost;});} var el=document.getElementById('cc-'+id); if(el) b.cost=el.value; b.audit='You · edited cost codes just now'; billUI[id]=''; renderPending(); renderBills(); toast('Cost codes updated on '+id+' — logged to audit trail'); }
 
   function renderBillInsights(){
     var wrap=document.getElementById('billInsights'); if(!wrap) return;
-    if(CURRENT!=='ns'){wrap.classList.add('hide');return;}
+    var ns=CURRENT==='ns';
     var pend=BILLS.filter(function(b){return b.status==='Pending';});
+    var pendTotal=pend.reduce(function(s,b){return s+b.amt;},0);
     var anomalies=pend.filter(function(b){return b.anomaly;}).length;
+    var disputed=BILLS.filter(function(b){return b.status==='Disputed';}).length;
+    if(!ns){
+      wrap.classList.remove('hide');
+      wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span>'+
+        '<div><div class="ist">'+pend.length+' bill'+(pend.length===1?'':'s')+' pending your review &middot; Total pending: '+fmt(pendTotal)+'</div><div class="isd">'+
+        (disputed?disputed+' disputed bill'+(disputed===1?'':'s')+' paused for 02S response. ':'No disputed bills this period. ')+
+        'Review and approve or dispute within 10 days to prevent auto-finalization.</div></div></div>';
+      return;
+    }
     wrap.classList.remove('hide');
     wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span>'+
-      '<div><div class="ist">'+(anomalies?anomalies+' billing anomaly to review':'Billing on track')+' &middot; forecast $13.8M ($0.4M under plan)</div><div class="isd">'+
-      (anomalies?'<b>BILL-9012</b> is 12% above its order estimate — likely idle-day overage on the scissor lifts. 02S recommends a dispute. ':'')+
-      '<b>$3.2K/week</b> open exposure from idle fleet is eroding your forecast headroom — ending ORD-3031 early recovers ~$740.</div></div></div>';
+      '<div><div class="ist">'+(anomalies?anomalies+' billing anomaly to review':'Billing on track')+' &middot; '+fmt(pendTotal)+' pending across '+pend.length+' bills</div><div class="isd">'+
+      (anomalies?'<b>BILL-9012</b> is 12% above estimate — idle-day overage on scissor lifts, dispute recommended. ':'')+
+      'Returning ORD-3031 now saves ~$740. Cost code review recommended for <b>BILL-9016</b>.</div></div></div>';
   }
 
   // click-through: bill → originating order (now cross-tab: switch to Orders, expand + flash)
@@ -1660,11 +1799,20 @@ charges:[
     },70);
   }
   function renderOrdInsights(){
-    var wrap=document.getElementById('ordInsights');
-    if(CURRENT!=='ns'){wrap.classList.add('hide');return;}
+    var wrap=document.getElementById('ordInsights'); if(!wrap) return;
+    var ns=CURRENT==='ns';
+    var active=ORDERS.filter(function(o){return o.stage>=3&&o.stage<=4;}).length;
+    var pending=ORDERS.filter(function(o){return o.stage<=2;}).length;
+    if(!ns){
+      wrap.classList.remove('hide');
+      wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span>'+
+        '<div><div class="ist">'+active+' orders active &middot; '+pending+' pending delivery confirmation</div><div class="isd">'+
+        '1 billing anomaly awaiting review in Billing &amp; financials. Review open orders to confirm delivery schedules are on track.</div></div></div>';
+      return;
+    }
     wrap.classList.remove('hide');
     wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span>'+
-      '<div><div class="ist">2 orders need your attention</div><div class="isd"><b>ORD-3042</b> (excavator) is trending 2 days late and blocks the crane mobilization · <b>ORD-3031</b> (scissor lifts) has been idle 4 days — ending early saves ~$740. 1 billing anomaly is waiting in Billing &amp; financials.</div></div></div>';
+      '<div><div class="ist">2 orders need your attention</div><div class="isd"><b>ORD-3042</b> (excavator) is 2 days behind schedule and blocks crane mobilization · <b>ORD-3031</b> (scissor lifts) idle 9 days — estimated $3.8K/mo exposure · Tower crane mobilization confirmed for Aug 3</div></div></div>';
   }
 
   // ── toast ──
@@ -2265,7 +2413,7 @@ charges:[
     var h='<div class="phead"><div><h1>Asset lifecycle &amp; replacement</h1><div class="meta"><span class="chip">'+svg(IC.box)+'Owned fleet \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[{k:'Owned units',v:'486',sub:'22 classes',tone:'ok',icon:IC.box},{k:'Utilization',v:'82%',sub:'target 85%',tone:'warn',icon:IC.chart},{k:'Idle fleet',v:'$142K/mo',sub:'9 units idle',tone:'bad',icon:IC.warn},{k:'Replace soon',v:'6',sub:'past threshold',tone:'bad',icon:IC.clock}];
     h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
-    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">6 units are past their replacement threshold \u2014 a ~$4.2M Q3 CapEx ask. Meanwhile 9 idle units (incl. 3 excavators) can cover open October demand \u2014 redeploying lifts utilization to 86% and avoids ~$96K in re-rent.</div></div></div>'; }
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">11 units active across 3 projects &middot; 2 units idle &gt;5 days &middot; Fleet utilization: 73%</div><div class="isd">6 units are past their replacement threshold \u2014 a ~$4.2M Q3 CapEx ask. 9 idle units (incl. 3 excavators) can cover open October demand \u2014 redeploying avoids ~$96K in re-rent and lifts utilization to 86%. <b>Demand plan coverage:</b> 68% of Q3 2026 equipment needs planned \u00b7 4 unplanned demand spikes identified for Jul\u2013Aug.</div></div></div>'; }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Fleet status, hours, and condition are read from the EAM/OMS system of record (EquipmentShare T3). This view adds the Palantir intelligence \u2014 the replacement engine and idle-to-redeploy \u2014 on top.</span></div>';
     var segs=[['all','All'],['onrent','On-rent'],['idle','Idle'],['replace','Replace soon'],['maint','Maintenance']];
     h+='<div class="eq-toolbar"><div class="seg">';
