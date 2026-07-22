@@ -162,6 +162,25 @@
   }
   function togglePillar(k){ catOpen=(catOpen===k)?null:k; renderCatalog(); }
 
+  function onCatSearch(q){
+    var res=document.getElementById('catSearchResults'), acc=document.getElementById('catAccordion');
+    if(!q||!q.trim()){res.innerHTML='';res.classList.add('hide');acc.style.display='';return;}
+    var qt=q.toLowerCase().trim();
+    var hits=CATALOG.filter(function(p){return p.name.toLowerCase().indexOf(qt)>-1||p.cat.toLowerCase().indexOf(qt)>-1||(p.spec&&p.spec.toLowerCase().indexOf(qt)>-1);});
+    acc.style.display='none';
+    if(!hits.length){res.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:13px">No catalog items match "'+q+'"</div>';res.classList.remove('hide');return;}
+    res.innerHTML=hits.map(function(p){
+      return '<div class="cat-card" onclick="openDetail(\''+p.id+'\',\'catalog\')">'
+        +'<div class="cc-icon">'+svg(ICON[p.icon]||ICON.box,2)+'</div>'
+        +'<div class="cc-name">'+p.name+'</div>'
+        +'<div class="cc-spec">'+p.spec+'</div>'
+        +'<div class="cc-meta"><span class="tag neu">'+pillarLabel(p.pillar)+'</span><span class="cc-price">'+p.price+p.unit+'</span></div>'
+        +'<button class="btn btn-dark btn-sm cc-add" onclick="event.stopPropagation();openDetail(\''+p.id+'\',\'catalog\')">Add to cart</button>'
+        +'</div>';
+    }).join('');
+    res.classList.remove('hide');
+  }
+
   /* ═══════════ TYPE-AHEAD (empty until typing) ═══════════ */
   function onAskInput(){
     var raw=document.getElementById('askInput').value, q=raw.toLowerCase().trim();
@@ -668,7 +687,10 @@
     for(var i=0;i<items.length;i++){ opts+='<option value="'+items[i].id+'"'+(pick===items[i].id?' selected':'')+'>'+items[i].name+' \u2014 '+fmt(items[i].mrate)+'/mo</option>'; }
     opts+='<option value="__custom__"'+(pick==='__custom__'?' selected':'')+'>Other / not in the catalog\u2026</option>';
     var f='<div class="mform">';
-    f+='<div class="mf"><label>Equipment <span class="opt">rate is set by the 02S catalog</span></label><select id="eqfPick" class="acc-sel wfull" onchange="eqPickChange()">'+opts+'</select></div>';
+    f+='<div class="mf"><label>Equipment <span class="opt">rate is set by the 02S catalog</span></label>'
+     +'<div class="eq-search-wrap" style="margin-bottom:6px"><svg class="eq-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input class="rin eq-search-inp" id="eqCatSearch" placeholder="Search — excavator, crane…" oninput="eqCatFilter(this.value)"></div>'
+     +'<div id="eqCatHits" style="display:none;border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:6px;max-height:200px;overflow-y:auto"></div>';
+    f+='<select id="eqfPick" class="acc-sel wfull" onchange="eqPickChange()">'+opts+'</select></div>';
     f+='<div id="eqfDetail"></div>';
     f+='<div class="mf"><label>Cost code <span class="opt">your project budget line</span></label><select id="eqfCode" class="acc-sel wfull">'+eqCodeOptions(code)+'</select></div>';
     f+='<div class="mf3"><div class="mf"><label>Quantity</label><input id="eqfQty" class="rin" type="number" min="1" value="'+(l?l.qty:1)+'"></div><div class="mf"><label>Date needed</label><select id="eqfFrom" class="acc-sel wfull">'+eqMonthOptions(l?l.from:EQ_MONTHS[6])+'</select></div><div class="mf"><label>Projected off-rent</label><select id="eqfTo" class="acc-sel wfull">'+eqMonthOptions(l?l.to:EQ_MONTHS[9])+'</select></div></div>';
@@ -696,6 +718,21 @@
       if(sb&&!isEdit)sb.textContent='Add line';
     }
     eqBindHint();
+  }
+  function eqCatFilter(q){
+    var sel=gel('eqfPick'), wrap=gel('eqCatHits'); if(!sel||!wrap)return;
+    if(!q||!q.trim()){wrap.style.display='none';return;}
+    var qt=q.toLowerCase().trim();
+    var hits=eqCatalogItems().filter(function(p){return p.name.toLowerCase().indexOf(qt)>-1||(p.spec&&p.spec.toLowerCase().indexOf(qt)>-1)||(p.cat&&p.cat.toLowerCase().indexOf(qt)>-1);}).slice(0,8);
+    if(!hits.length){wrap.innerHTML='<div style="padding:10px 12px;font-size:12px;color:var(--g400)">No matches</div>';wrap.style.display='block';return;}
+    wrap.innerHTML=hits.map(function(p){return '<div style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--g100);display:flex;justify-content:space-between;align-items:center;font-size:12.5px" onmouseover="this.style.background=\'var(--g050)\'" onmouseout="this.style.background=\'\'" onclick="eqCatSelect(\''+p.id+'\')">'+'<span>'+p.name+'</span><span style="color:var(--g400);font-size:11.5px">'+p.price+p.unit+'</span></div>';}).join('');
+    wrap.style.display='block';
+  }
+  function eqCatSelect(pid){
+    var sel=gel('eqfPick'); if(!sel)return;
+    sel.value=pid; eqPickChange();
+    var inp=gel('eqCatSearch'); if(inp)inp.value=(byId(pid)||{}).name||'';
+    var wrap=gel('eqCatHits'); if(wrap)wrap.style.display='none';
   }
   function eqCurrentRate(){
     var v=(gel('eqfPick')||{}).value;
@@ -727,18 +764,19 @@
   function _openEqUnified(){
     var makeRow=function(){
       return '<tr>'
-        +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:190px"></td>'
+        +'<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:160px"></td>'
         +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:56px;text-align:center"></td>'
-        +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:130px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
+        +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:110px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
         +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
         +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
-        +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
+        +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:110px"></td>'
         +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"14\" height=\"14\"><path d=\"M18 6L6 18M6 6l12 12\"/></svg></button></td>'
         +'</tr>';
     };
     var cols=['Description','Qty','Cost code','Date needed','Off-rent','Schedule activity',''];
     var thead='<tr>'+cols.map(function(c){return '<th style="font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);padding:6px 8px;border-bottom:1px solid var(--g200);text-align:left;white-space:nowrap">'+c+'</th>';}).join('')+'</tr>';
-    var h='<div style="overflow-x:auto;margin-bottom:10px"><table style="border-collapse:collapse;font-size:12.5px" id="unifiedTbl">'+thead+makeRow()+'</table></div>'
+    var h='<div style="font-size:11.5px;color:var(--g500);margin-bottom:8px">Fill in descriptions — one row per equipment type. Add more rows as needed.</div>'
+      +'<div style="overflow-x:auto;margin-bottom:10px"><table style="border-collapse:collapse;font-size:12.5px" id="unifiedTbl">'+thead+makeRow()+'</table></div>'
       +'<button class="btn btn-ghost btn-sm" onclick="_addUnifiedRow()"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" width=\"13\" height=\"13\"><path d=\"M12 5v14M5 12h14\"/></svg> Add row</button>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_saveEqUnified()">Add lines</button></div>';
     openModal('Add demand lines', h);
@@ -746,12 +784,12 @@
   function _addUnifiedRow(){
     var t=document.getElementById('unifiedTbl'); if(!t)return;
     var r=t.insertRow(-1);
-    r.innerHTML='<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:190px"></td>'
+    r.innerHTML='<td style="padding:5px 4px"><input class="rin" placeholder="e.g. Excavator 20T" style="width:160px"></td>'
       +'<td style="padding:5px 4px"><input class="rin" type="number" min="1" placeholder="1" style="width:56px;text-align:center"></td>'
-      +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:130px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
+      +'<td style="padding:5px 4px"><select class="acc-sel" style="min-width:110px">'+EQ_CODES.map(function(c){return '<option value="'+c.code+'">'+c.code+' · '+c.name+'</option>';}).join('')+'</select></td>'
       +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
       +'<td style="padding:5px 4px"><select class="acc-sel">'+EQ_MONTHS.map(function(m){return '<option value="'+m+'">'+eqMonthLabel(m)+'</option>';}).join('')+'</select></td>'
-      +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:130px"></td>'
+      +'<td style="padding:5px 4px"><input class="rin" placeholder="Phase · activity" style="width:110px"></td>'
       +'<td style="padding:5px 4px"><button class="eq-ib danger" onclick="this.closest(\'tr\').remove()" title="Remove"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></td>';
   }
   function _saveEqUnified(){
@@ -1232,9 +1270,21 @@
     {id:'ORD-2998',od:'2026-04-05',item:'SUV AWD',sub:'1 unit',pillar:'equipment',dates:'Apr 5 – May 18',cost:'01 · General',stage:5,plan:null,latest:'Off-rent — returned Apr 30'}
   ];
   var BILLS=[
-    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2},
-    {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Pending',date:'May 12',day:4,notes:0},
-    {id:'BILL-9016',order:'ORD-3020',product:'Rigging & lift hardware',amt:4980,cost:'05 · Metals',status:'Pending',date:'May 13',day:2,notes:1},
+    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
+charges:[
+  {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400},
+  {desc:'Idle-day surcharge (4 days, 2 units)',qty:8,rate:52.5,amt:420}
+]},
+    {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Pending',date:'May 12',day:4,notes:0,
+charges:[
+  {desc:'Daily rate — 20T excavator + operator',qty:16,rate:2250,amt:36000},
+  {desc:'Fuel surcharge',qty:1,rate:2400,amt:2400}
+]},
+    {id:'BILL-9016',order:'ORD-3020',product:'Rigging & lift hardware',amt:4980,cost:'05 · Metals',status:'Pending',date:'May 13',day:2,notes:1,
+charges:[
+  {desc:'Rigging hardware — daily rental',qty:7,rate:680,amt:4760},
+  {desc:'Setup / teardown labor',qty:1,rate:220,amt:220}
+]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
     {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24'},
@@ -1375,7 +1425,7 @@
       return '<div class="step '+cls+'"><span class="dot">'+svg(ic, cls==='done'?3:2)+'</span><span class="slbl">'+lbl+'</span></div>';
     }).join('');
     var parts=[];
-    if(ns && o.rental) parts.push(eorHTML(o));                       // NS: proactive end-of-rental banner
+    if(o.rental) parts.push(eorHTML(o,ns));                          // show extend/return for all; NS adds savings banner
     parts.push('<div class="trk">'+steps+'</div>');                  // tracker (both versions)
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
@@ -1383,9 +1433,9 @@
     return parts.join('');
   }
 
-  function eorHTML(o){
+  function eorHTML(o,ns){
     var r=o.rental;
-    var save = (r.idle && r.save) ? ' Both units idle 4 days — <b>return now to save ~'+fmt(r.save)+'</b>.' : '';
+    var save = (ns && r.idle && r.save) ? ' Both units idle 4 days — <b>return now to save ~'+fmt(r.save)+'</b>.' : '';
     return '<div class="eor-banner">'+
       '<span class="eor-i">'+svg('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M5 3L2.5 5.5M22 6l-2.5-2.5"/>',2)+'</span>'+
       '<div class="eor-body"><b>Approaching end of rental</b> — '+r.daysLeft+' days remaining (off-rent: '+r.offRent+').'+save+'</div>'+
@@ -1471,6 +1521,13 @@
       var left = 10-b.day;
       var mode = billUI[b.id]||'';
       var anomCard = (ns && b.anomaly) ? '<div class="pc-anom">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div><b>'+b.anomaly+'</b> — '+(b.reason||'')+'. <span class="pc-rec">02S recommends you dispute.</span></div></div>' : '';
+      var chargesHtml='';
+      if(b.charges&&b.charges.length){
+        chargesHtml='<div class="pc-charges">'
+          +b.charges.map(function(c){return '<div class="pch-row"><span class="pch-d">'+c.desc+'</span><span class="pch-a">'+fmt(c.amt)+'</span></div>';}).join('')
+          +'<div class="pch-row pch-total"><span class="pch-d">Total</span><span class="pch-a">'+fmt(b.amt)+'</span></div>'
+          +'</div>';
+      }
       // inline panels
       var inline='';
       if(mode==='dispute'){
@@ -1480,10 +1537,9 @@
           '<div class="pi-act"><button class="btn btn-red btn-sm" onclick="disputeBill(\''+b.id+'\')">Submit dispute</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       } else if(mode==='edit'){
-        var opts=COST_CODES.map(function(c){return '<option'+(c===b.cost?' selected':'')+'>'+c+'</option>';}).join('');
         inline='<div class="pc-inline">'+
-          '<div class="pi-t">Dispute · correct cost code <span class="pi-note">every change is captured to the audit trail</span></div>'+
-          '<div style="margin-bottom:10px"><label style="font-size:10.5px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.02em;display:flex;flex-direction:column;gap:4px">Cost code<select style="border:1px solid var(--g250);border-radius:6px;padding:7px 8px;font:inherit;font-size:12px;color:var(--g800);background:#fff;font-weight:500;max-width:260px;margin-top:4px" id="cc-'+b.id+'">'+opts+'</select></label></div>'+
+          '<div class="pi-t">Correct cost code <span class="pi-note">every change is captured to the audit trail</span></div>'+
+          '<div style="margin-bottom:10px"><label style="font-size:10.5px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.02em;display:flex;flex-direction:column;gap:4px">Cost code (16-digit)<input class="rin" style="max-width:260px;margin-top:4px;font-family:monospace;letter-spacing:.03em" id="cc-'+b.id+'" value="'+b.cost+'" placeholder="e.g. 03-320-00-0000-00"></label></div>'+
           '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save correction</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       }
@@ -1496,6 +1552,7 @@
         '</div>'+
         '<div class="pc-prod">'+b.product+'<span class="pc-cc">'+b.cost+'</span></div>'+
         anomCard+
+        chargesHtml+
         '<div class="pc-window">'+
           '<div class="pw-meter"><span class="pw-'+urg+'" style="width:'+(b.day*10)+'%"></span></div>'+
           '<div class="pw-lbl">Day <b>'+b.day+'</b> of 10 &middot; <span class="pw-'+urg+'-t">'+(left<=2?'auto-finalizes in '+left+' day'+(left===1?'':'s'):left+' days left')+'</span></div>'+
@@ -1567,16 +1624,18 @@
   ];
   function initials(n){var p=n.trim().split(/\s+/);return ((p[0]||'')[0]||'')+((p[1]||'')[0]||'');}
   function accTag(a){var m={'Admin':'bad','Approver':'info','Editor':'neu','View only':'neu'};return m[a]||'neu';}
-  var SHIP_TO={addr:'',contact:''};
+  var SHIP_TO={addr:'22 W. Washington St, Ste 1500, Chicago IL 60602',contact:'Marcus Webb — (555) 482-3190'};
   function renderApprovers(){
     var mount=gel('profApprovers'); if(!mount)return;
     var ap=TEAM.filter(function(m){return m.access==='Approver'||m.access==='Admin';});
-    if(!ap.length){mount.innerHTML='<div style="font-size:12px;color:var(--g400)">No approvers assigned to this project.</div>';return;}
-    var h='';
-    ap.forEach(function(m){
-      h+='<div class="esc-row"><div class="er-role">'+m.role+'<span class="tag '+accTag(m.access)+'" style="margin-left:6px">'+m.access+'</span></div><div class="er-name">'+m.name+'</div><div class="er-ph">'+m.email+'</div></div>';
-    });
-    mount.innerHTML=h;
+    if(!ap.length){mount.innerHTML='<div style="font-size:12px;color:var(--g400)">No approvers — grant a team member Approver access on the Team tab.</div>';return;}
+    mount.innerHTML=ap.map(function(m){
+      return '<div class="esc-cell">'
+        +'<div class="esc-k">'+m.role+'<span class="tag '+accTag(m.access)+'" style="margin-left:6px">'+m.access+'</span></div>'
+        +'<div class="esc-n">'+m.name+'</div>'
+        +'<div class="esc-p">'+m.email+'</div>'
+        +'</div>';
+    }).join('');
   }
   function renderShipTo(){
     var mount=gel('profShipTo'); if(!mount)return;
@@ -1747,10 +1806,11 @@
   }
   // Schedule change — structured request (NS pre-fills a smart suggestion)
   function openShipToModal(){
-    openModal('Add ship-to location',
+    var title=SHIP_TO.addr?'Edit ship-to location':'Add ship-to location';
+    openModal(title,
       '<div class="mform">'
-      +'<div class="mf"><label>Delivery address</label><input class="rin" id="shipAddr" placeholder="Street address, city, state"></div>'
-      +'<div class="mf"><label>Site contact</label><input class="rin" id="shipContact" placeholder="Name and phone"></div>'
+      +'<div class="mf"><label>Delivery address</label><input class="rin" id="shipAddr" placeholder="Street address, city, state" value="'+SHIP_TO.addr+'"></div>'
+      +'<div class="mf"><label>Site contact</label><input class="rin" id="shipContact" placeholder="Name and phone" value="'+SHIP_TO.contact+'"></div>'
       +'</div>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
       +'<button class="btn btn-dark" onclick="var a=(document.getElementById(\'shipAddr\')||{}).value,c=(document.getElementById(\'shipContact\')||{}).value;if(!a||!a.trim()){toast(\'Enter an address\');return;}SHIP_TO.addr=a.trim();SHIP_TO.contact=(c||\'\').trim();closeModal();renderShipTo();toast(\'Ship-to location saved\')">Save</button></div>'

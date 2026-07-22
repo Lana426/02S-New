@@ -239,6 +239,9 @@
             <button class="btn" onclick="openRecert()">Review &amp; certify<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           </div>
           <div class="action-card" id="dashPlanRing">
+            <span class="acti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg></span>
+            <div class="actt">Plan vs. ad-hoc</div>
+            <div class="acts">Loading order mix…</div>
           </div>
           <div class="mini">
             <div class="mk">This week at a glance</div>
@@ -396,9 +399,14 @@
 
               <!-- ═══ CATALOG (deliberate path) ═══ -->
               <div class="cat-head">
-                <span class="ct">Browse by category</span>
-                <span class="cbread" id="catBread">Select a pillar to see its items</span>
+                <span class="ct">Browse catalog</span>
+                <span class="cbread" id="catBread">Search or select a category below</span>
               </div>
+              <div class="cat-search-wrap" id="catSearchWrap">
+                <svg class="cat-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input class="rin cat-search-inp" id="catSearchInp" oninput="onCatSearch(this.value)" placeholder="Search catalog — excavator, crane, scissor lift…">
+              </div>
+              <div id="catSearchResults" class="cat-grid hide"></div>
               <div class="cat-acc" id="catAccordion"></div>
             </div><!-- /browseState -->
 
