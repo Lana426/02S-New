@@ -1117,6 +1117,7 @@
     if(document.getElementById('eqBudget')){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
     if(dpActive)renderDP(dpActive);
     renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
+    if(ccActive)renderCcScreen(ccActive); ccSyncToggle();
   }
   function renderCopilot(){
     document.getElementById('copilot').innerHTML =
@@ -1800,388 +1801,812 @@
     );
   }
 
-  // ═══ COMMAND CENTER ═══
-  var CC_SCREEN = 'cc-dash';
+
+  /* ═══════════ COMMAND CENTER ═══════════ */
+  var ccActive=null;
+  var CC_KEYS=['ccdash','fulfill','fleet','gap','anomaly','margin','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; }
+  function ccGo(s){
+    CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
+    ccActive=s; renderCcScreen(s); window.scrollTo(0,0);
+  }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='fleet'){ renderFleet(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else { ccStub(s); } }
+  var CC_STUBS={
+    fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
+    fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
+    gap:{t:'Demand\u2013supply gap & CapEx plan',d:'Aggregated portfolio demand vs owned-fleet capacity \u2014 the gap \u2014 and the CapEx plan it drives. Coming next in this build.'},
+    anomaly:{t:'Billing anomaly detection',d:'Anomalies across every project: idle-but-billing, rate mismatches, AR/AP spread errors, double-billing. Ties back to the Portal\u2019s billing flags. Coming next in this build.'},
+    margin:{t:'02S project margin plan',d:'Margin by project and pillar \u2014 02S rate revenue vs owned + re-rent + services cost \u2014 plan vs actual. Coming next in this build.'}
+  };
+  function ccStub(s){
+    var mount=document.getElementById('cc'+s.charAt(0).toUpperCase()+s.slice(1)); if(!mount)return;
+    var c=CC_STUBS[s]||{t:'Section',d:''};
+    mount.innerHTML='<div class="phead"><div><h1>'+c.t+'</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(CURRENT==='ns'?'North Star':'V1 \u2014 standard')+'</span></div></div></div><div class="cc-stub">'+svg('<path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6.4 6.4a2.12 2.12 0 003 3l6.4-6.4a4 4 0 005.4-5.4l-2.6 2.6-2.6-.7-.7-2.6 2.5-2.6z"/>')+'<h3>Building this next</h3><p>'+c.d+'</p></div>';
+  }
+  function renderCcDash(){
+    var mount=document.getElementById('ccDash'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var ICO_SWAP='<path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/>';
+    var ICO_TAX='<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><path d="M7 7h.01"/>';
+    var h='';
+    var rc=(typeof recertItems==='function')?recertItems():[]; var rn=rc.length; var ret=0;
+    for(var ri=0;ri<rc.length;ri++){ if(rc[ri].nsReco&&rc[ri].nsReco.rec==='return')ret++; } var kp=rn-ret;
+    if(rn){
+      var shield='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>';
+      var bT, bS;
+      if(ns){ bT='On-rent recertification \u2014 '+rn+' items auto-renew Fri Jul 25 unless you act'; bS='02S pre-checked '+kp+' as still needed; flags '+ret+' (idle scissor lift) to return \u2014 recovers $3.8K/mo'; }
+      else { bT=rn+' on-rent items due for recertification (Jul 21\u201325)'; bS='Confirm what\u2019s still on rent \u2014 unconfirmed items auto-renew Friday'; }
+      h+='<div class="rc-banner">'+shield+'<div class="rcb-t"><b>'+bT+'</b><span>'+bS+'</span></div><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="openRecert()">Review &amp; certify</button></div>';
+    }
+    var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
+    var mgP=(typeof mgPortfolioRoll==='function')?mgPortfolioRoll():{act:{pct:0}};
+    var openReq=(typeof FQ!=='undefined'&&FQ.length)?FQ.length:20;
+    var kpis=[
+      {k:'Open requests',v:String(openReq),sub:'5 awaiting pricing',tone:'warn',icon:IC.cart,to:'fulfill'},
+      {k:'Owned vs re-rent',v:'3',sub:'decisions due',tone:'warn',icon:ICO_SWAP,to:'fulfill'},
+      {k:'Demand\u2013supply gap',v:'\u22127',sub:'peak \u00b7 October',tone:'bad',icon:IC.chart,to:'gap'},
+      {k:'Idle fleet',v:'$142K/mo',sub:'9 units idle',tone:'bad',icon:IC.warn,to:'fleet'},
+      {k:'Billing at risk',v:kfmt(mgR.t)+'/mo',sub:mgR.n+' open anomalies',tone:'bad',icon:IC.warn,to:'anomaly'},
+      {k:'Project margin',v:mgP.act.pct.toFixed(1)+'%',sub:'target 15%',tone:mgP.act.pct>=15?'ok':'warn',icon:IC.dollar,to:'margin'}
+    ];
+    var acts=[
+      {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
+      {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
+      {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',tag:{l:'Decision',tone:'info'},to:'fulfill',reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
+      {t:'TC-0012 past replacement threshold',s:'11,800 hrs \u00b7 9 yrs \u00b7 rising maintenance cost',tag:{l:'Replace',tone:'bad'},to:'fleet',reco:'Add to Q3 CapEx plan \u2014 est. $1.2M replacement',icon:IC.box},
+      {t:'Idle-but-billing \u2014 scissor lift',s:'Hercules \u00b7 $3.8K/mo \u00b7 BILL-9012 \u00b7 1 of 11 open anomalies ($27.2K/mo at risk)',tag:{l:'Anomaly',tone:'bad'},to:'anomaly',reco:'Call-off drafted \u2014 auto-applies in 2 days unless you hold \u00b7 recovers $3.8K/mo',icon:IC.warn},
+      {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart}
+    ];
+    h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    h+='<div class="vitals" style="grid-template-columns:repeat(6,1fr)">';
+    kpis.forEach(function(k){ h+='<div class="vital clk '+k.tone+'" onclick="ccGo(\''+k.to+'\')"><div class="vk">'+svg(k.icon)+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div><span class="vchev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>'; });
+    h+='</div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+SPARK+'</span><div><div class="ist">02S</div><div class="isd">3 idle excavators at Southern Yard can cover 2 open October requests (Hercules, Riverside). Redeploying instead of re-renting saves ~$96K this quarter and lifts utilization to 86%.</div></div></div>'; }
+    h+='<div class="cc-lower">';
+    h+='<div class="cc-queue"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S \u2014 recommended actions':'Needs you \u2014 across all projects')+'</div>';
+    acts.forEach(function(a){
+      h+='<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>';
+    });
+    h+='</div>';
+    var qlinks=[
+      {l:'Fulfillment queue',to:'fulfill',icon:IC.cart},
+      {l:'Asset lifecycle',to:'fleet',icon:IC.box},
+      {l:'Billing &amp; anomalies',to:'anomaly',icon:IC.warn}
+    ];
+    h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
+    qlinks.forEach(function(q){ h+='<div class="cc-qlink" onclick="ccGo(\''+q.to+'\')"><span>'+svg(q.icon)+'</span><span class="qll">'+q.l+'</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGo(\''+q.to+'\')">Open</button></div>'; });
+    h+='</div>';
+    h+='</div>';
+    mount.innerHTML=h;
+  }
+
+  /* ═══════════ FULFILLMENT QUEUE + OPTIMIZER ═══════════ */
+  var CC_SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+  var FQ_TONE={'New':'neu','Requested':'neu','Awaiting pricing':'warn','Acknowledged':'info','Allocated':'ok','Fulfilled':'ok','Scheduled':'info','At-risk':'bad','PO issued':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok'};
+  var FQ_DONE=['Allocated','Acknowledged','PO issued','Delivered','In fabrication','Scheduled','Fulfilled'];
+  function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
+  var FQ=[
+    {id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'Hoisting',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2},
+    {id:'fq2',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'02-320',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1},
+    {id:'fq3',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'26-330',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0},
+    {id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'01-100',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8},
+    {id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'02-320',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2},
+    {id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'01-500',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer'},
+    {id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (crane pick)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'01-500',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
+    {id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'01-500',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week'},
+    {id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'01-100',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)'},
+    {id:'fq7',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'01-100',kind:'service',status:'New'},
+    {id:'fqS1',ref:'REQ-S-2101',pillar:'services',item:'Owner\u2019s engineer / IE support',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'ongoing',code:'01-100',kind:'service',status:'Acknowledged'},
+    {id:'fqS2',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-330',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning'},
+    {id:'fqS3',ref:'REQ-S-2114',pillar:'services',item:'Structural special inspection',qty:'2 FTE',project:'Riverside Medical Center',needby:'Aug 2026',code:'01-100',kind:'service',status:'New'},
+    {id:'fqP1',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-100',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release now to recover the substation date'},
+    {id:'fqP2',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-330',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release to hold November energization'},
+    {id:'fqP3',ref:'REQ-P-0512',pillar:'procurement',item:'Main power transformer',qty:1,project:'Hercules Solar + BESS',needby:'Dec 2026',code:'26-100',kind:'flow',status:'PO issued',doneNote:'28 wk lead \u00b7 on order'},
+    {id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'26-540',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held'},
+    {id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'26-540',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization'},
+    {id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'26-540',kind:'flow',status:'Delivered',doneNote:'On site'},
+    {id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'26-540',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'}
+  ];
+  var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
+  var fqFP='all', fqFPr='all', fqFS='all';
+  function fqIsDone(r){ return FQ_DONE.indexOf(r.status)>=0; }
+  function fqVisible(r){ if(fqFP!=='all'&&r.pillar!==fqFP)return false; if(fqFPr!=='all'&&r.project!==fqFPr)return false; if(fqFS==='open'&&fqIsDone(r))return false; if(fqFS==='done'&&!fqIsDone(r))return false; return true; }
+  function fqSetFilter(k,v){ if(k==='p')fqFP=v; else if(k==='pr')fqFPr=v; else if(k==='s')fqFS=v; renderFulfill(); }
+  function fqClearFilters(){ fqFP='all'; fqFPr='all'; fqFS='all'; renderFulfill(); }
+  function fqAdvance(id){ var r=fqById(id); if(!r)return; if(r.nextStatus)r.status=r.nextStatus; renderFulfill(); toast(r.item+' \u2014 '+r.status.toLowerCase()); }
+  function fqById(id){ for(var i=0;i<FQ.length;i++){ if(FQ[i].id===id)return FQ[i]; } return null; }
+  function fqCompute(r,owned){ var q=r.qty; var maxOwned=Math.min(r.avail.length,q); owned=Math.max(0,Math.min(owned,maxOwned)); var rerent=q-owned; var ar=q*r.o2sRate; var oc=owned*r.ownedCost; var rc=rerent*r.reRentRate; var margin=ar-oc-rc; var pct=ar?(margin/ar*100):0; return {owned:owned,rerent:rerent,maxOwned:maxOwned,ar:ar,oc:oc,rc:rc,margin:margin,pct:pct}; }
+  function fqMarginPct(r){ return fqCompute(r,r.reco).pct.toFixed(0); }
+  function renderFulfill(){
+    var mount=gel('ccFulfill'); if(!mount)return; var ns=CURRENT==='ns';
+    var hlRef=ccHighlight; ccHighlight=null;
+    var openN=0,awaitN=0,readyN=0; FQ.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
+    var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
+    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">The optimizer can clear the '+readyN+' open equipment requests now \u2014 owned-first, then re-rent \u2014 at a blended ~22% margin. '+awaitN+' more need a price or quote, and the at-risk procurement lines should be released this week.</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
+    var PILLARS=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
+    var PROJECTS=[['all','All'],['Hercules Solar + BESS','Hercules'],['Riverside Medical Center','Riverside'],['Cimarron Data Center','Cimarron']];
+    var STATS=[['all','All'],['open','Open'],['done','Resolved']];
+    h+='<div class="fq-filters">';
+    h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(fqFPr===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='</div>';
+    var rows=FQ.filter(fqVisible);
+    var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all');
+    h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
+    if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
+    var gt='1fr 168px 92px 128px 300px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
+    rows.forEach(function(r){
+      var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
+      h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
+    });
+    h+='</div>';
+    mount.innerHTML=h;
+    if(hlRef){ setTimeout(function(){ var el=gel('fqrow-'+hlRef); if(el&&el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'center'}); } }, 80); }
+  }
+  function fqCell(r,ns){
+    if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
+    if(r.status==='Acknowledged'){ return '<div class="fq-done">'+(r.priced?('Priced '+r.priced):'Acknowledged')+'</div>'; }
+    if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; return (ns&&r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+r.actLabel+'</button>'; }
+    if(r.kind==='pending'){ return (ns&&r.suggest?'<div class="fq-hint">'+CC_SPARK+r.suggest+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqPriceModal(\''+r.id+'\')">'+(ns?'Price':'Set price')+'</button>'; }
+    if(r.kind==='service'){ return '<button class="btn btn-dark btn-sm" onclick="fqAck(\''+r.id+'\')">Acknowledge</button>'; }
+    if(ns){ return '<div class="fq-hint">'+CC_SPARK+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u00b7 ~'+fqMarginPct(r)+'% margin</div><button class="btn btn-red btn-sm" onclick="fqOptModal(\''+r.id+'\')">Review &amp; accept</button>'; }
+    return '<button class="btn btn-dark btn-sm" onclick="fqOptModal(\''+r.id+'\')">Allocate</button>';
+  }
+
+  function fqOptModal(id){
+    var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
+    fqPickOwned = ns ? Math.min(r.reco,Math.min(r.avail.length,r.qty)) : 0;
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'\u00d7 '+r.item+'</div><div class="sub">'+r.project+' \u00b7 need by '+r.needby+' \u00b7 billed to project at '+fmt(r.o2sRate)+'/mo per unit</div></div>';
+    if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+'Recommended: '+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u2014 maximizes margin given current availability</div>'; }
+    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" onclick="fqStep(-1)">\u2039</button><span id="fqOwnedN">0</span><button class="fq-sb" onclick="fqStep(1)">\u203a</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fqAccept()">Accept &amp; allocate</button></div></div>';
+    openModal('Fulfill \u2014 '+r.item, b); fqRefresh();
+  }
+  function fqRefresh(){
+    var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
+    if(gel('fqOwnedN'))gel('fqOwnedN').textContent=c.owned;
+    if(gel('fqRerentN'))gel('fqRerentN').textContent=c.rerent;
+    var used=r.avail.slice(0,c.owned);
+    var usedTxt = used.length ? (used.slice(0,4).map(function(u){return u.id+' \u00b7 '+u.yard;}).join('<br>')+(used.length>4?'<br>+'+(used.length-4)+' more':'')) : (r.avail.length?(r.avail.length+' units available (none selected)'):'No owned units available for this class');
+    if(gel('fqAvail'))gel('fqAvail').innerHTML=usedTxt;
+    if(gel('fqRerentLine'))gel('fqRerentLine').innerHTML=c.rerent>0?(r.vendor+' @ '+fmt(r.reRentRate)+'/mo (MSA)'):'\u2014';
+    if(gel('fqAR'))gel('fqAR').textContent=fmt(c.ar)+'/mo';
+    if(gel('fqOC'))gel('fqOC').textContent='\u2212'+fmt(c.oc)+'/mo';
+    if(gel('fqRC'))gel('fqRC').textContent='\u2212'+fmt(c.rc)+'/mo';
+    if(gel('fqMargin'))gel('fqMargin').innerHTML=fmt(c.margin)+'/mo<span class="fq-pct">'+c.pct.toFixed(1)+'%</span>';
+  }
+  function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
+  function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent \u00b7 '+fmt(c.margin)+'/mo margin'); }
+  function fqPriceModal(id){
+    var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.item+'</div><div class="sub">'+r.project+' \u00b7 '+r.qty+' \u00b7 need by '+r.needby+'</div></div>';
+    b+='<div class="mform"><div class="mf"><label>02S rate</label><input id="fqRate" class="rin" placeholder="e.g. $26,000/mo" value="'+((ns&&r.suggest)?r.suggest:'')+'"></div>';
+    if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+'Suggested from the 02S rate card / catalog \u2014 accept or adjust</div>'; }
+    b+='<div class="eqf-rate pending">'+svg(IC.clock,2)+'<span>This line came in as <b>pending pricing</b> from the demand plan. Set the rate to acknowledge it back to the project.</span></div></div>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fqPriceSave()">Set price &amp; acknowledge</button></div></div>';
+    openModal('Price \u2014 '+r.item, b);
+  }
+  function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
+  function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
+
+  /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
+  var FLEET=[
+    {id:'TC-0012',cls:'Tower crane',yard:'Southern Yard',status:'idle',idleDays:12,util:41,age:9,hours:'11,800',cond:'Fair',life:'replace',capex:'$1.2M',reco:'Replace \u2014 add to Q3 CapEx (~$1.2M)'},
+    {id:'TC-0018',cls:'Tower crane',yard:'Central Yard',status:'idle',idleDays:5,util:78,age:3,hours:'4,200',cond:'Good',life:'redeploy',covers:'Riverside REQ-4471',coversProject:'Riverside Medical Center',reco:'Redeploy \u2014 covers Riverside REQ-4471'},
+    {id:'EX-2201',cls:'Excavator, 45K',yard:'North Yard',status:'idle',idleDays:8,util:63,age:5,hours:'6,900',cond:'Good',life:'redeploy',covers:'Cimarron REQ-4472',coversProject:'Cimarron Data Center',save:'$9,500/mo',reco:'Redeploy \u2014 covers Cimarron REQ-4472'},
+    {id:'EX-2205',cls:'Excavator, 45K',yard:'West Yard',status:'idle',idleDays:21,util:38,age:6,hours:'8,100',cond:'Good',life:'redeploy',covers:'Cimarron REQ-4472',coversProject:'Cimarron Data Center',save:'$9,500/mo',reco:'Redeploy \u2014 covers Cimarron REQ-4472'},
+    {id:'EX-2208',cls:'Excavator, 45K',yard:'South Yard',status:'idle',idleDays:15,util:44,age:6,hours:'7,400',cond:'Fair',life:'redeploy',covers:'Cimarron demand',coversProject:'Cimarron Data Center',save:'$9,500/mo',reco:'Redeploy \u2014 covers Cimarron demand'},
+    {id:'SL-3301',cls:'Scissor lift, 32 ft',yard:'South Yard',status:'idle',idleDays:6,util:52,age:4,hours:'\u2014',cond:'Good',life:'redeploy',covers:'Riverside REQ-4474',coversProject:'Riverside Medical Center',note:'returned from Hercules (recert)',reco:'Redeploy \u2014 covers Riverside REQ-4474'},
+    {id:'DZ-0210',cls:'Dozer, D6',yard:'West Yard',status:'idle',idleDays:34,util:22,age:11,hours:'14,200',cond:'Poor',life:'replace',capex:'$0.9M',reco:'Replace \u2014 aging, low use (~$0.9M)'},
+    {id:'CR-0440',cls:'Crawler crane, 150T',yard:'\u2014',status:'onrent',project:'Cimarron Data Center',util:91,age:4,hours:'5,100',cond:'Good',life:'ok'},
+    {id:'TH-1120',cls:'Telehandler',yard:'\u2014',status:'onrent',project:'Hercules Solar + BESS',util:88,age:3,hours:'3,600',cond:'Good',life:'ok'},
+    {id:'GEN-0770',cls:'Generator, 45 kW',yard:'\u2014',status:'onrent',project:'Hercules Solar + BESS',util:95,age:2,hours:'2,100',cond:'Good',life:'ok'},
+    {id:'LB-0330',cls:'Loader backhoe',yard:'West Yard',status:'maint',util:0,age:7,hours:'9,300',cond:'Fair',life:'ok',note:'hydraulic repair'}
+  ];
+  var fleetFilter='all', fleetCurId=null;
+  var FL_STAT={onrent:{l:'On-rent',t:'ok'},idle:{l:'Idle',t:'warn'},maint:{l:'Maintenance',t:'neu'}};
+  var FL_COND={Good:'ok',Fair:'warn',Poor:'bad'};
+  function fleetById(id){ for(var i=0;i<FLEET.length;i++){ if(FLEET[i].id===id)return FLEET[i]; } return null; }
+  function fleetSetFilter(f){ fleetFilter=f; renderFleet(); }
+  function renderFleet(){
+    var mount=gel('ccFleet'); if(!mount)return; var ns=CURRENT==='ns';
+    var rows=FLEET.filter(function(r){ if(fleetFilter==='all')return true; if(fleetFilter==='replace')return r.life==='replace'; return r.status===fleetFilter; });
+    var h='<div class="phead"><div><h1>Asset lifecycle &amp; replacement</h1><div class="meta"><span class="chip">'+svg(IC.box)+'Owned fleet \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var vit=[{k:'Owned units',v:'486',sub:'22 classes',tone:'ok',icon:IC.box},{k:'Utilization',v:'82%',sub:'target 85%',tone:'warn',icon:IC.chart},{k:'Idle fleet',v:'$142K/mo',sub:'9 units idle',tone:'bad',icon:IC.warn},{k:'Replace soon',v:'6',sub:'past threshold',tone:'bad',icon:IC.clock}];
+    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">6 units are past their replacement threshold \u2014 a ~$4.2M Q3 CapEx ask. Meanwhile 9 idle units (incl. 3 excavators) can cover open October demand \u2014 redeploying lifts utilization to 86% and avoids ~$96K in re-rent.</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Fleet status, hours, and condition are read from the EAM/OMS system of record (EquipmentShare T3). This view adds the Palantir intelligence \u2014 the replacement engine and idle-to-redeploy \u2014 on top.</span></div>';
+    var segs=[['all','All'],['onrent','On-rent'],['idle','Idle'],['replace','Replace soon'],['maint','Maintenance']];
+    h+='<div class="eq-toolbar"><div class="seg">';
+    segs.forEach(function(s){ h+='<button class="seg-b'+(fleetFilter===s[0]?' on':'')+'" onclick="fleetSetFilter(\''+s[0]+'\')">'+s[1]+'</button>'; });
+    h+='</div><span class="spacer"></span><span class="fl-count">'+rows.length+' of '+FLEET.length+' shown</span></div>';
+    var gt='1fr 108px 168px 118px 150px 240px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Asset</span><span>Status</span><span>Deployment</span><span>Utilization</span><span>Health</span><span>Lifecycle</span></div>';
+    rows.forEach(function(r){
+      var st=FL_STAT[r.status];
+      var dep = r.status==='onrent'? r.project : (r.status==='idle'? ('Idle '+r.idleDays+'d'+(r.note?' \u00b7 '+r.note:'')) : (r.note||'In maintenance'));
+      var utl = r.status==='maint'? '<span class="fl-muted">\u2014</span>' : ('<div class="fl-utop">'+r.util+'%</div><div class="fl-bar '+(r.util<50?'low':(r.util<75?'mid':''))+'"><span style="width:'+r.util+'%"></span></div>');
+      var health = r.age+' yr \u00b7 '+r.hours+' hrs<div style="margin-top:5px"><span class="tag '+(FL_COND[r.cond]||'neu')+'">'+r.cond+'</span></div>';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.id+'<div class="sub">'+r.cls+(r.yard!=='\u2014'?' \u00b7 '+r.yard:'')+'</div></div><div><span class="tag '+st.t+'">'+st.l+'</span></div><div>'+dep+'</div><div>'+utl+'</div><div>'+health+'</div><div>'+fleetLife(r,ns)+'</div></div>';
+    });
+    h+='</div>';
+    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span><b>System of record:</b> the asset register, maintenance work orders, depreciation, and order records live in EquipmentShare T3 (EAM + OMS). The Command Center reads T3 via the ontology and layers on the intelligence \u2014 the replacement engine and idle-to-redeploy (Palantir).</span></div>';
+    mount.innerHTML=h;
+  }
+  function fleetLife(r,ns){
+    if(r.capexQueued) return '<div class="fq-done">Queued for Q3 CapEx</div>';
+    if(!ns){
+      if(r.life==='replace')return '<span class="fl-muted">High hours \u00b7 service due</span>';
+      if(r.life==='redeploy')return '<span class="fl-muted">Available to deploy</span>';
+      if(r.status==='onrent')return '<span class="fl-muted">On-rent \u00b7 healthy</span>';
+      if(r.status==='maint')return '<span class="fl-muted">In maintenance</span>';
+      return '<span class="fl-muted">Monitor</span>';
+    }
+    if(r.life==='replace')return '<div class="fq-hint">'+CC_SPARK+r.reco+'</div><button class="btn btn-red btn-sm" onclick="fleetReplaceModal(\''+r.id+'\')">Plan CapEx</button>';
+    if(r.life==='redeploy')return '<div class="fq-hint">'+CC_SPARK+r.reco+'</div><button class="btn btn-red btn-sm" onclick="fleetRedeployModal(\''+r.id+'\')">Redeploy</button>';
+    if(r.status==='onrent')return '<span class="fl-muted">On-rent \u00b7 healthy</span>';
+    if(r.status==='maint')return '<span class="fl-muted">In maintenance</span>';
+    return '<span class="fl-muted">Healthy</span>';
+  }
+  function fleetReplaceModal(id){
+    var r=fleetById(id); if(!r)return; fleetCurId=id;
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.id+' \u00b7 '+r.cls+'</div><div class="sub">'+(r.yard!=='\u2014'?r.yard+' \u00b7 ':'')+r.age+' years \u00b7 '+r.hours+' hrs \u00b7 '+r.cond+' condition</div></div>';
+    b+='<div class="fq-reco-badge">'+CC_SPARK+'Past replacement threshold \u2014 maintenance cost trending up; replace to avoid downtime risk</div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Age</span><span>'+r.age+' yr &middot; threshold 8 yr</span></div><div class="fq-crow"><span>Operating hours</span><span>'+r.hours+' &middot; threshold 10,000</span></div><div class="fq-crow"><span>Maintenance (last 12 mo)</span><span>rising \u2014 \u25b2 34% YoY</span></div><div class="fq-crow"><span>Condition</span><span>'+r.cond+'</span></div><div class="fq-margin"><span>Recommended CapEx</span><span>'+r.capex+'</span></div></div>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fleetReplaceSave()">Add to CapEx plan</button></div></div>';
+    openModal('Replacement review \u2014 '+r.id, b);
+  }
+  function fleetReplaceSave(){ var r=fleetById(fleetCurId); if(!r)return; r.capexQueued=true; closeModal(); renderFleet(); toast(r.id+' added to Q3 CapEx plan \u2014 '+r.capex+' \u00b7 flows to Demand\u2013supply & CapEx'); }
+  function fleetRedeployModal(id){
+    var r=fleetById(id); if(!r)return; fleetCurId=id;
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.id+' \u00b7 '+r.cls+'</div><div class="sub">'+r.yard+' \u00b7 idle '+r.idleDays+' days</div></div>';
+    b+='<div class="fq-reco-badge">'+CC_SPARK+'Idle unit matches open demand \u2014 redeploy instead of re-renting</div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Open request</span><span>'+r.covers+'</span></div><div class="fq-crow"><span>Currently planned</span><span>owned + re-rent (optimizer)</span></div><div class="fq-crow"><span>Redeploying this unit</span><span>+1 owned</span></div>'+(r.save?'<div class="fq-margin"><span>Re-rent avoided</span><span>'+r.save+'</span></div>':'<div class="fq-margin"><span>Effect</span><span>+1 owned unit</span></div>')+'</div>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fleetRedeploySave()">Redeploy</button></div></div>';
+    openModal('Redeploy \u2014 '+r.id, b);
+  }
+  function fleetRedeploySave(){ var r=fleetById(fleetCurId); if(!r)return; r.status='onrent'; r.project=r.coversProject||('Redeployed \u2014 '+r.covers); r.life='ok'; closeModal(); renderFleet(); toast(r.id+' redeployed to '+(r.coversProject||'project')+(r.save?' \u2014 avoids '+r.save+' re-rent':'')); }
+
+  /* ═══════════ DEMAND-SUPPLY GAP & CAPEX PLAN ═══════════ */
+  var HM_CLASSES=['Excavator, 45K','Tower crane','Telehandler','Dozer, D6','Crawler crane','Scissor lift'];
+  var HM_MONTHS=['Aug','Sep','Oct','Nov','Dec','Jan'];
+  var HM_GAP={'Excavator, 45K':[-1,-3,-3,-2,0,1],'Tower crane':[-2,-1,-1,0,1,1],'Telehandler':[0,-1,-2,-2,-1,0],'Dozer, D6':[1,0,-1,-1,-1,-1],'Crawler crane':[0,1,0,1,2,2],'Scissor lift':[4,3,2,3,4,5]};
+  var CAPEX_BUYS=[
+    {id:'buy-ex',cls:'Excavator, 45K',action:'Buy 2',rec:'buy',rationale:'$0.9M/yr re-rent across 3 jobs \u2014 exceeds purchase break-even (Sep\u2013Nov short 3)',capex:'$1.4M',capexN:1.4,rerent:'$0.9M/yr',rerentN:0.9,payback:'19 mo',reco:true,recoText:'Buy 2 \u2014 19-mo payback vs re-rent'},
+    {id:'buy-th',cls:'Telehandler',action:'Buy 2',rec:'buy',rationale:'$0.4M/yr re-rent \u00b7 41% utilization when active \u2014 buy gives utilization upside (Oct\u2013Dec short 2)',capex:'$0.6M',capexN:0.6,rerent:'$0.4M/yr',rerentN:0.4,payback:'18 mo',reco:true,recoText:'Buy 2 \u2014 18-mo payback vs re-rent'},
+    {id:'buy-sl',cls:'Scissor lift, 32 ft',action:'Redeploy',rec:'redeploy',rationale:'$0.3M/yr re-rent \u2014 but 12 owned units sit idle; fix allocation, don\u2019t buy',capex:'\u2014',capexN:0,rerent:'$0.3M/yr',rerentN:0.3,payback:'\u2014',reco:false,note:'Redeploy idle \u2014 no CapEx'},
+    {id:'buy-cr',cls:'Crawler crane, 150T',action:'Redeploy',rec:'redeploy',rationale:'Surplus through Q4 \u2014 owned units cover demand',capex:'\u2014',capexN:0,rerent:'$0.15M/yr',rerentN:0.15,payback:'\u2014',reco:false,note:'Surplus \u2014 no CapEx'},
+    {id:'buy-tc',cls:'Tower crane \u2014 self-erect',action:'Re-rent',rec:'rerent',rationale:'Specialty \u00b7 1\u20132 jobs/yr \u2014 capital not justified, re-rent preferred',capex:'\u2014',capexN:0,rerent:'$0.15M/yr',rerentN:0.15,payback:'\u2014',reco:false,note:'Re-rent preferred \u2014 specialty'}
+  ];
+  var capexBuyAdded={},capexReasonMap={},capexByMap={},capexWhenMap={},capexCurId=null; var CAPEX_NOW='Jul 21, 2026';
+  function hmColor(v){ if(v<=-4)return{bg:'rgba(220,29,52,.20)',fg:'#B81729'}; if(v<0)return{bg:'rgba(220,29,52,.09)',fg:'#B81729'}; if(v===0)return{bg:'transparent',fg:'var(--g400)'}; if(v<=3)return{bg:'rgba(47,122,67,.10)',fg:'var(--success)'}; return{bg:'rgba(47,122,67,.20)',fg:'var(--success)'}; }
+  function gapItems(){ var items=CAPEX_BUYS.slice(); FLEET.forEach(function(r){ if(r.life==='replace'){ items.push({id:r.id,cls:r.cls+' \u00b7 '+r.id,action:'Replace',rec:'replace',rationale:'Past replacement threshold \u00b7 '+r.hours+' hrs \u00b7 rising maintenance',capex:r.capex,capexN:(parseFloat(r.capex.replace(/[^0-9.]/g,''))||0),rerent:'\u2014',payback:'\u2014',reco:true,recoText:'Replace \u2014 aging fleet, rising maintenance',isReplace:true,queued:!!r.capexQueued}); } }); return items; }
+  function capexRecTag(it){ var m={buy:['BUY','ok'],replace:['REPLACE','warn'],redeploy:['REDEPLOY','info'],rerent:['RE-RENT','neu']}; var x=m[it.rec]||['\u2014','neu']; return '<span class="tag '+x[1]+'">'+x[0]+'</span>'; }
+  function capexModal(id){
+    var it=null,arr=gapItems(),i; for(i=0;i<arr.length;i++){ if(arr[i].id===id){it=arr[i];break;} } if(!it)return; capexCurId=id; var ns=CURRENT==='ns';
+    var b='<div class="fq-req"><div class="fq-req-t">'+it.cls+'</div><div class="sub">'+(it.rationale||'')+'</div></div>';
+    b+='<div class="fq-reco-badge">'+(ns?CC_SPARK+'02S recommends this \u2014 '+it.recoText+'. ':'')+'Validating adds it to the CapEx plan and captures your name, timestamp, and reasoning.</div>';
+    if(it.isReplace){ var r=fleetById(id); b+='<div class="fq-calc"><div class="fq-crow"><span>Age</span><span>'+(r?r.age:'\u2014')+' yr \u00b7 threshold 8 yr</span></div><div class="fq-crow"><span>Operating hours</span><span>'+(r?r.hours:'\u2014')+' \u00b7 threshold 10,000</span></div><div class="fq-crow"><span>Maintenance (last 12 mo)</span><span>rising \u2014 \u25b2 34% YoY</span></div><div class="fq-margin"><span>Recommended CapEx</span><span>'+it.capex+'</span></div></div>'; }
+    else { b+='<div class="fq-calc"><div class="fq-crow"><span>Annual re-rent</span><span>'+it.rerent+'</span></div><div class="fq-crow"><span>Buy price</span><span>'+it.capex+'</span></div><div class="fq-crow"><span>Payback</span><span>'+it.payback+'</span></div><div class="fq-margin"><span>Recommendation</span><span>Buy \u2014 '+it.payback+' payback vs re-rent</span></div></div>'; }
+    var draft=it.isReplace?'Unit past replacement threshold; rising maintenance justifies replacement.':('Gap confirmed across the pipeline; '+it.rerent+' recurring re-rent spend justifies the buy.');
+    b+='<div style="margin-top:14px;font-size:12px;font-weight:600;color:var(--g600)">Validation reasoning <span class="fl-muted" style="font-weight:400">(recommended)</span></div>';
+    b+='<textarea id="capexReason" class="ctext" style="width:100%;min-height:60px;margin-top:6px">'+(ns?draft:'')+'</textarea>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="capexValidate(\''+id+'\')">\u2713 Validate &amp; add to plan</button></div></div>';
+    openModal('Validate for CapEx \u2014 '+it.cls, b);
+  }
+  function capexValidate(id){
+    var el=gel('capexReason'); var reason=(el&&el.value)?el.value:'\u2014';
+    var it=null,arr=gapItems(),i; for(i=0;i<arr.length;i++){ if(arr[i].id===id){it=arr[i];break;} }
+    if(it&&it.isReplace){ var r=fleetById(id); if(r)r.capexQueued=true; } else { capexBuyAdded[id]=true; }
+    capexReasonMap[id]=reason; capexByMap[id]='Harsh Vardhan Singh'; capexWhenMap[id]=CAPEX_NOW;
+    closeModal(); renderGap(); toast('Validated \u2014 added to the CapEx plan');
+  }
+  function gapDecision(it,ns){
+    var inPlan = it.isReplace ? it.queued : !!capexBuyAdded[it.id];
+    if(inPlan) return '<div class="fq-done">In plan</div>';
+    if(!it.reco) return '<span class="fl-muted">'+(it.note||'No action')+'</span>';
+    if(!ns) return '<button class="btn btn-dark btn-sm" onclick="capexModal(\''+it.id+'\')">Validate</button>';
+    return '<div class="fq-hint">'+CC_SPARK+it.recoText+'</div><button class="btn btn-red btn-sm" onclick="capexModal(\''+it.id+'\')">Validate &amp; add</button>';
+  }
+  function renderGap(){
+    var mount=gel('ccGap'); if(!mount)return; var ns=CURRENT==='ns';
+    var items=gapItems();
+    items.sort(function(a,b){ var ra=(a.reco&&!a.isReplace)?0:(a.isReplace?1:2), rb=(b.reco&&!b.isReplace)?0:(b.isReplace?1:2); if(ra!==rb)return ra-rb; return (b.rerentN||0)-(a.rerentN||0); });
+    var recTotal=0,planTotal=0,recCount=0,planCount=0;
+    items.forEach(function(it){ if(it.reco){recTotal+=it.capexN;recCount++;} var inPlan=it.isReplace?it.queued:!!capexBuyAdded[it.id]; if(inPlan){planTotal+=it.capexN;planCount++;} });
+    var h='<div class="phead"><div><h1>Demand\u2013supply &amp; CapEx</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All classes \u00b7 next 6 months</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var vit=[{k:'Peak gap',v:'\u22127',sub:'units short \u00b7 Oct',tone:'bad',icon:IC.warn},{k:'Re-rent spend',v:'$2.4M/yr',sub:'flagged to cover gaps',tone:'warn',icon:IC.dollar},{k:'Recommended CapEx',v:'$'+recTotal.toFixed(1)+'M',sub:recCount+' items \u00b7 ranked by re-rent',tone:'ok',icon:IC.box},{k:'In plan',v:'$'+planTotal.toFixed(1)+'M',sub:planCount+' validated',tone:'ok',icon:IC.check}];
+    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Four classes run short through Q4 \u2014 excavators, telehandlers, tower cranes, and dozers (peak \u22127 units in October). A ~$4.1M CapEx plan (6 units) retires ~$1.3M/yr of re-rent and rising maintenance at a blended ~19-month payback. Scissor lifts and crawlers are in surplus \u2014 redeploy, don\u2019t buy.</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Owned covers ~88% of peak demand. Net owned position vs demand by class and month \u2014 persistent shortfalls become CapEx; surplus classes are redeployed, not bought.</span></div>';
+    var gth='160px repeat(6,1fr)';
+    h+='<div class="hm"><div class="hm-row hm-head" style="grid-template-columns:'+gth+'"><div class="hm-cell">Class</div>'+HM_MONTHS.map(function(mo){return '<div class="hm-cell">'+mo+'</div>';}).join('')+'</div>';
+    HM_CLASSES.forEach(function(cl){ var row=HM_GAP[cl]; h+='<div class="hm-row" style="grid-template-columns:'+gth+'"><div class="hm-cell">'+cl+'</div>'+row.map(function(v){ var c=hmColor(v); var lbl=v<0?('\u2212'+(-v)):(v>0?('+'+v):'0'); return '<div class="hm-cell" style="background:'+c.bg+';color:'+c.fg+'">'+lbl+'</div>'; }).join('')+'</div>'; });
+    h+='</div>';
+    h+='<div class="hm-legend">Net owned position vs demand by month \u00b7 <span class="hl-neg">red = short</span> \u00b7 <span class="hl-pos">green = surplus</span></div>';
+    h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t">'+svg(IC.box)+'Ranked buy list</span><span class="spacer"></span><span class="ff-hint">02S recommendation \u2014 ranked by recurring re-rent spend</span></div>';
+    var gt='1.5fr 104px 92px 118px 74px 150px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Asset</span><span>Rec</span><span class="r">Buy price</span><span>Annual re-rent</span><span>Payback</span><span>Decision</span></div>';
+    items.forEach(function(it){ h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+it.cls+'<div class="sub" style="white-space:normal">'+it.rationale+'</div></div><div>'+capexRecTag(it)+'</div><div class="r">'+it.capex+'</div><div>'+it.rerent+'</div><div>'+it.payback+'</div><div>'+gapDecision(it,ns)+'</div></div>'; });
+    h+='</div>';
+    var planned=items.filter(function(it){ return it.isReplace?it.queued:!!capexBuyAdded[it.id]; });
+    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.check)+'Your CapEx plan</span><span class="spacer"></span><span class="ff-hint">'+(planned.length?('$'+planTotal.toFixed(1)+'M \u00b7 '+planCount+' line'+(planCount===1?'':'s')):'validated items only')+'</span></div>';
+    if(!planned.length){ h+='<div class="fq-empty">No line items yet. Validate items from the ranked list above and they\u2019ll populate here.</div>'; }
+    else { var gtp='1.4fr 96px 118px 74px 1.5fr'; h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtp+'"><span>Asset</span><span class="r">Buy price</span><span>Annual re-rent</span><span>Payback</span><span>Validated</span></div>'; planned.forEach(function(it){ h+='<div class="dp-row" style="grid-template-columns:'+gtp+'"><div>'+it.cls+'</div><div class="r">'+it.capex+'</div><div>'+it.rerent+'</div><div>'+it.payback+'</div><div class="sub" style="white-space:normal">'+(capexByMap[it.id]||'\u2014')+' \u00b7 '+(capexWhenMap[it.id]||CAPEX_NOW)+'<br>\u201c'+(capexReasonMap[it.id]||'\u2014')+'\u201d</div></div>'; }); h+='</div>'; }
+    h+='<div class="cp-total">In plan: <b>$'+planTotal.toFixed(1)+'M</b> of $'+recTotal.toFixed(1)+'M recommended</div>';
+    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>Demand is aggregated from the project demand plans and the fulfillment queue; owned supply is read from the owned-fleet register. The approved CapEx plan flows to FP&amp;A (Anaplan) \u2014 extend layer.</span></div>';
+    mount.innerHTML=h;
+  }
+
+  /* ═══════════ BILLING ANOMALIES ═══════════ */
+  var AN_SEV={high:{l:'High',t:'bad'},med:{l:'Med',t:'warn'},low:{l:'Low',t:'neu'}};
+  var ANOM=[
+    {id:'BILL-9012',type:'Idle-but-billing',asset:'Scissor lift SL-2204',project:'Hercules Solar + BESS',code:'01-100',impact:3800,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['No telematics activity for 18 days','Still billing the project at $3,800/mo','Flagged by the project team (Dana Reyes)'],reco:'Draft call-off to stop billing + credit 18 idle days (~$2,280)',action:'Draft call-off'},
+    {id:'BILL-9021',type:'Billing after return',asset:'Excavator EX-1180',project:'Hercules Solar + BESS',code:'02-320',impact:5200,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['Unit returned to the yard 9 days ago','AR still accruing at $5,200/mo','Off-rent event never posted to CMiC'],reco:'Stop AR + credit 9 days ($1,560); post the off-rent to CMiC',action:'Issue credit'},
+    {id:'BILL-9038',type:'Rate mismatch',asset:'Telehandler TH-0904',project:'Cimarron Data Center',code:'02-220',impact:1400,dir:'Project overpay',sev:'med',status:'Open',bucket:'rate',stream:'ar',evidence:['Billed at $2,900/mo','02S catalog rate is $2,200/mo','$700/mo over catalog since June \u2014 12% above the contract rate'],reco:'Correct rate to catalog + credit the overage ($2,100)',action:'Correct rate'},
+    {id:'BILL-9047',type:'Duplicate charge',asset:'Scissor lift SL-2261',project:'Riverside Medical Center',code:'01-100',impact:900,dir:'Project overpay',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Same asset billed on two cost codes','Duplicate AR of $900/mo since July'],reco:'Remove the duplicate line + credit ($900)',action:'Remove dup'},
+    {id:'BILL-9052',type:'Idle-but-billing',asset:'Dozer DZ-0188',project:'Cimarron Data Center',code:'02-320',impact:1400,dir:'Project overpay',sev:'med',status:'Open',bucket:'idle',stream:'ar',evidence:['Utilization 4% over the last 21 days','Billing the project $1,400/mo'],reco:'Confirm need with the PM, or call off + credit',action:'Draft call-off'},
+    {id:'BILL-9058',type:'PO quantity mismatch',asset:'Telehandler TH-1150 \u00b7 billed 3, PO covers 2',project:'Riverside Medical Center',code:'02-220',impact:2900,dir:'Project overpay',sev:'med',status:'Open',bucket:'other',stream:'ar',evidence:['July invoice bills 3 units','PO-2214 authorizes 2 units','1 unit ($2,900/mo) has no PO coverage'],reco:'Correct the invoice to 2 units + credit the 3rd ($2,900)',action:'Correct qty'},
+    {id:'BILL-9061',type:'Late billing start',asset:'Crawler crane CR-0440',project:'Hercules Solar + BESS',code:'Hoisting',impact:1800,dir:'02S under-bill',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Unit went on-rent Jun 28','Billing started Jul 1 \u2014 3 days after on-rent','~$1,800 of billable time never invoiced'],reco:'Back-bill the 3-day gap to the project ($1,800)',action:'Back-bill'},
+    {id:'BILL-9034',type:'Margin-negative re-rent',asset:'Tower crane \u00b7 re-rent (ALL Crane)',project:'Riverside Medical Center',code:'Hoisting',impact:4100,dir:'02S loss',sev:'high',status:'Open',bucket:'margin',stream:'ap',evidence:['Vendor AP $36,100/mo vs 02S AR $35,000/mo','Vendor raised the MSA rate on renewal','Margin is \u2212$1,100/mo on this line'],reco:'Re-price to the project, or switch to owned TC-0018 (idle)',action:'Re-price'},
+    {id:'BILL-9041',type:'Missing AR',asset:'Generator GEN-0512 \u00b7 re-rent',project:'Cimarron Data Center',code:'26-330',impact:2600,dir:'02S leakage',sev:'high',status:'Open',bucket:'other',stream:'ap',evidence:['Vendor AP posted at $2,600/mo','No matching AR to the project','Re-rent never linked to a cost code'],reco:'Create the AR line to project cost code 26-330',action:'Create AR'},
+    {id:'BILL-9063',type:'Vendor rate above MSA',asset:'Excavator \u00b7 re-rent (Sunbelt)',project:'Cimarron Data Center',code:'02-320',impact:1000,dir:'02S loss',sev:'med',status:'Open',bucket:'rate',stream:'ap',evidence:['Vendor invoice $10,500/mo','Contracted MSA rate is $9,500/mo','$1,000/mo over MSA since June'],reco:'Dispute the vendor invoice down to the MSA rate + recover the overage',action:'Dispute invoice'},
+    {id:'BILL-9067',type:'Vendor billing after off-rent',asset:'Boom lift \u00b7 re-rent (United)',project:'Riverside Medical Center',code:'01-100',impact:2100,dir:'02S loss',sev:'high',status:'Open',bucket:'idle',stream:'ap',evidence:['Off-rent posted Jul 8 (returned to vendor)','Vendor AP still accruing $2,100/mo','12-day overlap billed in error'],reco:'Dispute the vendor invoice + stop AP; recover the overlap',action:'Dispute invoice'}
+  ];
+  var anomStream='all';
+  function anomSetStream(v){ anomStream=v; renderAnomaly(); }
+  var BILL_ST={Approved:'ok',Disputed:'bad',Pending:'warn',Finalized:'info'};
+  var CC_BILL=[
+    {id:'BILL-9018',item:'Excavator, 45K \u00d74',project:'Cimarron Data Center',amt:48000,period:'Jul 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9017',item:'Tower crane (owned)',project:'Riverside Medical Center',amt:22500,period:'Jul 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9015',item:'Boom lift 60ft \u00d72',project:'Riverside Medical Center',amt:15000,period:'Jul 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9014',item:'Dozer D6 \u00d72',project:'Cimarron Data Center',amt:32400,period:'Jul 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9013',item:'Generator 45kW \u00d73',project:'Hercules Solar + BESS',amt:12600,period:'Jul 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9011',item:'Light tower \u00d74',project:'Riverside Medical Center',amt:4800,period:'Jun 2026',status:'Approved',stream:'ar'},
+    {id:'BILL-9010',item:'Compaction roller',project:'Cimarron Data Center',amt:6800,period:'Jun 2026',status:'Disputed',stream:'ar'},
+    {id:'INV-5545',item:'Tower crane re-rent \u00b7 ALL Crane',project:'Riverside Medical Center',amt:36100,period:'Jul 2026',status:'Disputed',stream:'ap'},
+    {id:'INV-5521',item:'Crawler crane \u00b7 Maxim',project:'Hercules Solar + BESS',amt:58000,period:'Jul 2026',status:'Approved',stream:'ap'},
+    {id:'INV-5530',item:'Scissor lifts \u00d78 \u00b7 United',project:'Riverside Medical Center',amt:5600,period:'Jul 2026',status:'Approved',stream:'ap'},
+    {id:'INV-5540',item:'BESS commissioning \u00b7 vendor',project:'Hercules Solar + BESS',amt:18000,period:'Jul 2026',status:'Pending',stream:'ap'},
+    {id:'INV-5550',item:'Generator re-rent \u00b7 Sunbelt',project:'Cimarron Data Center',amt:2600,period:'Jul 2026',status:'Pending',stream:'ap'}
+  ];
+  var anomCurId=null;
+  function anomById(id){ for(var i=0;i<ANOM.length;i++){ if(ANOM[i].id===id)return ANOM[i]; } return null; }
+  function kfmt(n){ return '$'+(n/1000).toFixed(1).replace(/\.0$/,'')+'K'; }
+  function kfmt2(n){ if(n>=1000000){ return '$'+(n/1000000).toFixed(2).replace(/\.?0+$/,'')+'M'; } return kfmt(n); }
+  function anomCell(a,ns){
+    if(a.status==='Resolved') return '<div class="fq-done">Resolved</div>';
+    if(!ns) return '<button class="btn btn-dark btn-sm" onclick="anomModal(\''+a.id+'\')">Review</button>';
+    return '<div class="fq-hint">'+CC_SPARK+a.reco+'</div><button class="btn btn-red btn-sm" onclick="anomModal(\''+a.id+'\')">'+a.action+'</button>';
+  }
+  function renderAnomaly(){
+    var mount=gel('ccAnomaly'); if(!mount)return; var ns=CURRENT==='ns'; var st=anomStream;
+    var rows=ANOM.filter(function(a){ return st==='all'||a.stream===st; });
+    var openN=0,atRisk=0; rows.forEach(function(a){ if(a.status==='Open'){ openN++; atRisk+=a.impact; } });
+    var billedAR=1240000, spendAP=710000, recAll=14000, recAR=9000, recAP=5000;
+    var k1,k2lbl,k3lbl,recLbl,recV;
+    if(st==='ar'){ k1={k:'Billed to projects MTD',v:kfmt2(billedAR),sub:'AR \u00b7 02S rate'}; k2lbl='AR anomalies'; k3lbl='Project credits at risk'; recLbl='Credits issued MTD'; recV=recAR; }
+    else if(st==='ap'){ k1={k:'Vendor spend MTD',v:kfmt2(spendAP),sub:'AP \u00b7 MSA rate'}; k2lbl='AP anomalies'; k3lbl='Margin leakage at risk'; recLbl='Recovered MTD'; recV=recAP; }
+    else { k1={k:'Billed MTD',v:kfmt2(billedAR),sub:'AR \u00b7 portfolio'}; k2lbl='Open anomalies'; k3lbl='At risk'; recLbl='Recovered MTD'; recV=recAll; }
+    var vit=[{k:k1.k,v:k1.v,sub:k1.sub,tone:'ok',icon:IC.dollar},{k:k2lbl,v:''+openN,sub:'this cycle',tone:'bad',icon:IC.warn},{k:k3lbl,v:kfmt(atRisk)+'/mo',sub:'open items',tone:'warn',icon:IC.warn},{k:recLbl,v:kfmt(recV),sub:'resolved',tone:'ok',icon:IC.check}];
+    var h='<div class="phead"><div><h1>Billing &amp; anomalies</h1><div class="meta"><span class="chip">'+svg(IC.warn)+'All projects \u00b7 dual-stream AR/AP</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    var STREAMS=[['all','Combined'],['ar','Receivable (AR)'],['ap','Payable (AP)']];
+    h+='<div class="fq-filters"><div class="ff-grp"><span class="ff-lbl">Stream</span><div class="ff-seg">';
+    STREAMS.forEach(function(o){ h+='<button class="ff-b'+(st===o[0]?' on':'')+'" onclick="anomSetStream(\''+o[0]+'\')">'+o[1]+'</button>'; });
+    h+='</div></div><span class="ff-hint">'+(st==='ar'?'What we bill projects, at the 02S rate':(st==='ap'?'What we pay rental vendors, at the MSA rate':'Both streams \u2014 project billing (AR) and vendor cost (AP)'))+'</span></div>';
+    if(ns){ var ins; if(st==='ar'){ ins='Projects are being over-billed ~'+kfmt(atRisk)+'/mo \u2014 mostly idle or returned units still accruing, plus a PO-quantity and a rate mismatch. North Star has the credits and call-offs drafted; each needs one click to issue and stop the meter.'; } else if(st==='ap'){ ins='~'+kfmt(atRisk)+'/mo of 02S margin is leaking on the payable side \u2014 vendors billing above the MSA rate or after off-rent, plus a re-rent line renewed margin-negative. North Star has the vendor disputes drafted and can switch the margin-negative crane to the idle owned unit.'; } else { ins=openN+' anomalies across both streams put ~'+kfmt(atRisk)+'/mo at risk. On the receivable side, gear still charging projects after it went idle is the biggest bucket; on the payable side, two re-rent lines went margin-negative as vendor rates rose. Every anomaly has a drafted resolution \u2014 credits, call-offs, and vendor disputes \u2014 ready to send.'; } h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+ins+'</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Anomalies are detected across both billing streams \u2014 AR (billed to the project at the 02S rate) and AP (paid to the vendor at the MSA rate). Impact is monthly unless resolved.</span></div>';
+    var showChip=(st==='all');
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(IC.warn)+'Flagged anomalies</span><span class="spacer"></span><span class="ff-hint">'+openN+' open \u00b7 '+kfmt(atRisk)+'/mo at risk</span></div>';
+    var gt='1fr 150px 120px 92px 214px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Anomaly</span><span>Project</span><span>Impact</span><span>Severity</span><span>Resolution</span></div>';
+    if(!rows.length){ h+='<div class="fq-empty">No anomalies on this stream.</div>'; }
+    rows.forEach(function(a){ var sv=AN_SEV[a.sev]; var chip=showChip?('<span class="st-chip '+(a.stream==='ap'?'ap':'ar')+'">'+(a.stream==='ap'?'AP':'AR')+'</span>'):''; h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+chip+a.type+'<div class="sub">'+a.asset+' \u00b7 '+a.id+'</div></div><div>'+a.project+'</div><div>'+fmt(a.impact)+'/mo<div class="sub">'+a.dir+'</div></div><div><span class="tag '+sv.t+'">'+sv.l+'</span></div><div>'+anomCell(a,ns)+'</div></div>'; });
+    h+='</div>';
+    var led=CC_BILL.filter(function(b){ return st==='all'||b.stream===st; });
+    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(dpIcon('proj'))+'Recent billing activity</span><span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="toast(\'Billing ledger exported \u2014 CSV for client backup\')">Export</button></div>';
+    var gtl='150px 1fr 156px 116px 96px 96px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtl+'"><span>ID</span><span>Item</span><span>Project</span><span>Amount</span><span>Period</span><span>Status</span></div>';
+    led.forEach(function(b){ var chip=showChip?('<span class="st-chip '+(b.stream==='ap'?'ap':'ar')+'" style="margin-right:6px">'+(b.stream==='ap'?'AP':'AR')+'</span>'):''; h+='<div class="dp-row" style="grid-template-columns:'+gtl+'"><div>'+chip+b.id+'</div><div>'+b.item+'</div><div>'+b.project+'</div><div>'+fmt(b.amt)+'</div><div style="color:var(--g600)">'+b.period+'</div><div><span class="tag '+(BILL_ST[b.status]||'neu')+'">'+b.status+'</span></div></div>'; });
+    h+='</div>';
+    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>Detection is Palantir intelligence over the CMiC billing ledger and equipment telematics; resolutions \u2014 credits, call-offs, rate corrections, and vendor disputes \u2014 are written back to CMiC. Extend layer.</span></div>';
+    mount.innerHTML=h;
+  }
+  function anomModal(id){
+    var a=anomById(id); if(!a)return; anomCurId=id; var ns=CURRENT==='ns';
+    var ev=a.evidence.map(function(e){ return '<div class="an-ei">'+svg('<circle cx="12" cy="12" r="4"/>')+e+'</div>'; }).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">'+a.type+'</div><div class="sub">'+a.asset+' \u00b7 '+a.project+' \u00b7 '+a.id+'</div></div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Monthly impact</span><span>'+fmt(a.impact)+'/mo</span></div><div class="fq-crow"><span>Direction</span><span>'+a.dir+'</span></div><div class="fq-crow"><span>Cost code</span><span>'+a.code+'</span></div></div>';
+    b+='<div class="an-lbl">Evidence</div><div class="an-ev">'+ev+'</div>';
+    if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+a.reco+'</div>'; }
+    if(ns){ b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="anomResolve()">'+a.action+'</button></div></div>'; }
+    else { b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div></div>'; }
+    openModal('Anomaly \u2014 '+a.id, b);
+  }
+  function anomResolve(){ var a=anomById(anomCurId); if(!a)return; a.status='Resolved'; closeModal(); renderAnomaly(); toast(a.id+' resolved \u2014 '+a.action.toLowerCase()); }
+
+  /* ═══════════ PROJECT MARGIN ═══════════ */
+  var MARGIN_PILLARS=['Equipment','Logistics','Professional services','Procurement','Pre-fab'];
+  var MARGIN_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
+  var MARGIN_DATA={
+    'Hercules Solar + BESS':{
+      'Equipment':{arP:118000,costP:91000,arA:127000,costA:91000,note:'Actual AR includes $9.0K/mo from 2 open idle-billing anomalies (BILL-9012, BILL-9021) not yet credited \u2014 reported margin is overstated until they\u2019re resolved.'},
+      'Logistics':{arP:18000,costP:16500,arA:18000,costA:16500,note:'Move-coordination fee only \u2014 a future logistics-execution build will sharpen this pillar\u2019s economics.'},
+      'Professional services':{arP:62000,costP:56000,arA:62000,costA:56000,note:'3 active roles (owner\u2019s engineer, geotechnical, structural) billed at the 02S rate card \u2014 steady.'},
+      'Procurement':{arP:210000,costP:206000,arA:205000,costA:201500,note:'Pass-through spend on long-lead BESS/module items \u2014 thin admin margin by design.'},
+      'Pre-fab':{arP:58000,costP:55000,arA:56000,costA:53200,note:'Made-to-order assemblies quoted by 02S after submittal.'}
+    },
+    'Riverside Medical Center':{
+      'Equipment':{arP:186400,costP:147000,arA:186400,costA:151100,note:'Includes the 5\u00d7 tower crane (REQ-4471 \u2014 2 owned + 3 re-rent, plan 19.4%). One re-rent line renewed at a higher MSA rate (BILL-9034), cutting margin $4.1K/mo.'},
+      'Logistics':{arP:9000,costP:8300,arA:9000,costA:8300,note:''},
+      'Professional services':{arP:24000,costP:21800,arA:24000,costA:21800,note:''},
+      'Procurement':{arP:95000,costP:93200,arA:95000,costA:93200,note:''},
+      'Pre-fab':{arP:12000,costP:11500,arA:12000,costA:11500,note:''}
+    },
+    'Cimarron Data Center':{
+      'Equipment':{arP:188000,costP:149900,arA:140000,costA:109000,note:'Plan includes REQ-4472 (4\u00d7 excavator) \u2014 still open in the Fulfillment queue, so that margin isn\u2019t realized yet. A missing-AR anomaly (BILL-9041) also understates actual by $2.6K/mo.'},
+      'Logistics':{arP:11000,costP:10100,arA:11000,costA:10100,note:''},
+      'Professional services':{arP:19000,costP:17300,arA:19000,costA:17300,note:''},
+      'Procurement':{arP:76000,costP:74500,arA:76000,costA:74500,note:''},
+      'Pre-fab':{arP:9000,costP:8600,arA:9000,costA:8600,note:''}
+    }
+  };
+  var MG_LINK={
+    'Hercules Solar + BESS':{to:'anomaly',label:'Open in Billing anomalies',text:'2 idle-billing lines (BILL-9012, BILL-9021) are inflating reported margin by $9.0K/mo until credited.'},
+    'Riverside Medical Center':{to:'anomaly',label:'Open in Billing anomalies',text:'A re-rent tower crane renewed at a higher MSA rate (BILL-9034) \u2014 cutting this project\u2019s margin $4.1K/mo. Reconciles to the Fulfillment optimizer (2 owned + 3 re-rent, plan 19.4%).'},
+    'Cimarron Data Center':{to:'fulfill',label:'Open in Fulfillment queue',text:'REQ-4472 (4\u00d7 excavator, 1 owned + 3 re-rent) is still open \u2014 allocating it realizes ~$12.5K/mo of planned margin not yet in actuals.'}
+  };
+  function mgCalc(ar,cost){ var m=ar-cost; return {ar:ar,cost:cost,margin:m,pct:ar?(m/ar*100):0}; }
+  function mgProjRoll(p){
+    var d=MARGIN_DATA[p]; var arP=0,costP=0,arA=0,costA=0;
+    MARGIN_PILLARS.forEach(function(pl){ var x=d[pl]; arP+=x.arP; costP+=x.costP; arA+=x.arA; costA+=x.costA; });
+    return {plan:mgCalc(arP,costP),act:mgCalc(arA,costA)};
+  }
+  function mgPortfolioRoll(){
+    var arP=0,costP=0,arA=0,costA=0;
+    MARGIN_PROJECTS.forEach(function(p){ var r=mgProjRoll(p); arP+=r.plan.ar; costP+=r.plan.cost; arA+=r.act.ar; costA+=r.act.cost; });
+    return {plan:mgCalc(arP,costP),act:mgCalc(arA,costA)};
+  }
+  function mgPillarRoll(pl){
+    var arP=0,costP=0,arA=0,costA=0;
+    MARGIN_PROJECTS.forEach(function(p){ var x=MARGIN_DATA[p][pl]; arP+=x.arP; costP+=x.costP; arA+=x.arA; costA+=x.costA; });
+    return {plan:mgCalc(arP,costP),act:mgCalc(arA,costA)};
+  }
+  function mgAtRisk(){ var t=0,n=0; ANOM.forEach(function(a){ if(a.status==='Open'){ t+=a.impact; n++; } }); return {t:t,n:n}; }
+  function mgProjRisk(p){ var t=0,n=0; ANOM.forEach(function(a){ if(a.project===p&&a.status==='Open'){ t+=a.impact; n++; } }); return {t:t,n:n}; }
+  function mgHmColor(pct){ if(pct<8)return{bg:'rgba(220,29,52,.20)',fg:'#B81729'}; if(pct<12)return{bg:'rgba(220,29,52,.09)',fg:'#B81729'}; if(pct<18)return{bg:'transparent',fg:'var(--g600)'}; if(pct<25)return{bg:'rgba(47,122,67,.10)',fg:'var(--success)'}; return{bg:'rgba(47,122,67,.20)',fg:'var(--success)'}; }
+  function mgVar(spanId,v){ return (v>=0?'+':'\u2212')+fmt(Math.abs(v)); }
+  function renderMargin(){
+    var mount=gel('ccMargin'); if(!mount)return; var ns=CURRENT==='ns';
+    var port=mgPortfolioRoll(); var risk=mgAtRisk();
+    var varv=port.act.margin-port.plan.margin;
+    var h='<div class="phead"><div><h1>Project margin</h1><div class="meta"><span class="chip">'+svg(IC.dollar)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var vit=[
+      {k:'Portfolio margin',v:fmt(port.act.margin)+'/mo',sub:'plan '+fmt(port.plan.margin)+'/mo',tone:varv>=0?'ok':'warn',icon:IC.dollar},
+      {k:'Margin %',v:port.act.pct.toFixed(1)+'%',sub:'target 15%',tone:port.act.pct>=15?'ok':'warn',icon:IC.chart},
+      {k:'Variance to plan',v:mgVar(0,varv)+'/mo',sub:'net of anomalies',tone:varv>=0?'ok':'bad',icon:IC.warn},
+      {k:'Margin at risk',v:kfmt(risk.t)+'/mo',sub:risk.n+' open anomalies',tone:'bad',icon:IC.warn}
+    ];
+    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Portfolio margin looks roughly flat ('+mgVar(0,varv)+'/mo), but that hides two real headwinds and one overstatement. Riverside\u2019s tower crane re-rent renewed at a higher MSA rate (\u2212$4.1K/mo, BILL-9034). Cimarron\u2019s excavator request (REQ-4472) hasn\u2019t been allocated yet, so ~$12.5K/mo of planned margin isn\u2019t in actuals. And Hercules\u2019 reported margin is inflated $9.0K/mo by two idle-billing lines still awaiting credit.</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Margin = 02S rate revenue (AR, billed to the project) \u2212 owned fleet cost \u2212 re-rent AP (vendor MSA) \u2212 services/procurement vendor cost, by project and pillar. Reconciles to the Fulfillment optimizer and Billing anomaly detection.</span></div>';
+    h+='<div class="hm"><div class="hm-row hm-head" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">Pillar</div>'+MARGIN_PROJECTS.map(function(p){ return '<div class="hm-cell">'+p.split(' ')[0]+'</div>'; }).join('')+'</div>';
+    MARGIN_PILLARS.forEach(function(pl){
+      h+='<div class="hm-row" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">'+pl+'</div>';
+      MARGIN_PROJECTS.forEach(function(p){ var x=MARGIN_DATA[p][pl]; var a=mgCalc(x.arA,x.costA); var c=mgHmColor(a.pct); h+='<div class="hm-cell" style="background:'+c.bg+';color:'+c.fg+'">'+a.pct.toFixed(0)+'%</div>'; });
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="hm-legend">Actual margin % by pillar and project \u00b7 <span class="hl-neg">red = below 12%</span> \u00b7 <span class="hl-pos">green = 18%+</span></div>';
+    var gt='1fr 120px 120px 100px 84px 168px';
+    h+='<div class="dp-tbl" style="margin-top:18px"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Project</span><span class="r">Plan margin</span><span class="r">Actual margin</span><span class="r">Variance</span><span>Margin %</span><span>Detail</span></div>';
+    MARGIN_PROJECTS.forEach(function(p){
+      var r=mgProjRoll(p); var pr=mgProjRisk(p); var v=r.act.margin-r.plan.margin;
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+p+(pr.n?'<div class="sub">'+pr.n+' open anomal'+(pr.n===1?'y':'ies')+' \u00b7 '+kfmt(pr.t)+'/mo</div>':'')+'</div>';
+      h+='<div class="r">'+fmt(r.plan.margin)+'/mo</div><div class="r">'+fmt(r.act.margin)+'/mo</div>';
+      h+='<div class="r"><span class="tag '+(v>=0?'ok':'bad')+'">'+mgVar(0,v)+'/mo</span></div>';
+      h+='<div>'+r.act.pct.toFixed(1)+'%</div>';
+      h+='<div><button class="btn btn-dark btn-sm" onclick="mgModal(\''+p+'\')">By pillar</button></div></div>';
+    });
+    h+='</div>';
+    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>AR is billed to projects via CMiC at the 02S rate card; cost is read from EquipmentShare T3 (owned + re-rent) and vendor invoices (services/procurement). Margin reconciles to the Fulfillment optimizer and Billing anomaly detection \u2014 extend layer over Palantir intelligence.</span></div>';
+    mount.innerHTML=h;
+  }
+  function mgModal(p){
+    var d=MARGIN_DATA[p]; var roll=mgProjRoll(p); var ns=CURRENT==='ns'; var lk=MG_LINK[p];
+    var b='<div class="fq-req"><div class="fq-req-t">'+p+'</div><div class="sub">Plan '+fmt(roll.plan.margin)+'/mo ('+roll.plan.pct.toFixed(1)+'%) \u2192 Actual '+fmt(roll.act.margin)+'/mo ('+roll.act.pct.toFixed(1)+'%)</div></div>';
+    b+='<div class="fq-calc">';
+    MARGIN_PILLARS.forEach(function(pl){
+      var x=d[pl]; var a=mgCalc(x.arA,x.costA);
+      b+='<div class="fq-crow"><span>'+pl+'</span><span>'+fmt(a.margin)+'/mo<span class="fq-pct">'+a.pct.toFixed(1)+'%</span></span></div>';
+    });
+    b+='</div>';
+    MARGIN_PILLARS.forEach(function(pl){ var x=d[pl]; if(x.note){ b+='<div class="eq-cap"><b>'+pl+':</b>&nbsp;'+x.note+'</div>'; } });
+    if(ns&&lk){ b+='<div class="fq-reco-badge">'+CC_SPARK+lk.text+'</div>'; }
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'+((ns&&lk)?('<button class="btn btn-red" onclick="closeModal();ccGo(\''+lk.to+'\')">'+lk.label+'</button>'):'')+'</div></div>';
+    openModal('Margin \u2014 '+p, b);
+  }
+
+  /* ═══════════ COMMAND CENTER — PILLAR DEMAND PLANS (portfolio mirror of the portal plans) ═══════════ */
+  var DP_ST={'Ready':'ok','Needs map':'warn','Scheduled':'info','Requested':'neu','Projected':'info','Active':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok','At-risk':'bad','PO issued':'info'};
+  function dpIcon(name){ var M={proj:'<path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>',tax:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><path d="M7 7h.01"/>'}; return M[name]||IC[name]||IC.chart; }
+  var CC_DP={
+    equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
+      kpis:[{k:'Active projects',v:'14',sub:'with equipment demand',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
+      ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
+      cap:'Every project\u2019s equipment demand, aggregated. 02S confirms each request against the canonical taxonomy, then releases it to the Fulfillment queue for the owned vs re-rent decision.',
+      rows:[
+        {id:'REQ-4479',asset:'2\u00d7 excavator, 50-ton \u00b7 dual aux + GPS',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:false,mapLeaf:'50-ton',conf:'94',leafOpts:['30-ton','45-55T','50-ton','80-ton'],dec:'Use owned',decTone:'ok',status:'Needs map'},
+        {id:'REQ-4471',asset:'5\u00d7 tower crane \u00b7 self-erect, ~250 ft',project:'Riverside Medical Center',tax:'Asset \u203a Lifting \u203a Tower crane',taxOk:false,mapLeaf:'Self-erect',conf:'88',leafOpts:['Self-erect','Flat-top','Luffing-jib','Hammerhead'],dec:'Re-rent',decTone:'info',status:'Needs map'},
+        {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready'}
+      ],
+      rollCols:['Category','Peak units','Peak month','vs plan'],
+      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Lifting',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'bad'}],
+      varSummary:'Aerial running 14 units over plan for October \u2014 the main portfolio driver.',
+      consol:{save:'~$62K',cta:'Consolidate aerial',detail:'Aerial demand overlaps all three projects and peaks at 82 units in October, 14 over plan. Consolidate into one fleet re-rent rate instead of per-project spot rentals.'} },
+    logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
+      kpis:[{k:'Active projects',v:'12',sub:'with move demand',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
+      ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans. Three oversize heavy hauls need permits, and a north-gate conflict on Oct 15 (switchgear haul vs tower-crane mobilization) is flagged for resequencing.',
+      cap:'Every project\u2019s move demand, aggregated \u2014 deliveries, heavy hauls, and crane picks. 02S schedules windows, gates, and permits; the supply side is executed downstream in logistics.',
+      rows:[
+        {id:'REQ-L-3042',asset:'Excavator delivery + haul \u00b7 oversize',project:'Cimarron Data Center',tax:'Logistics \u203a Transport \u203a Heavy haul',taxOk:true,leaf:'Oversize',dec:'Self-perform',decTone:'ok',status:'Scheduled'},
+        {id:'REQ-L-3054',asset:'Tower crane mobilization \u00b7 crane pick',project:'Riverside Medical Center',tax:'Logistics \u203a Crane \u203a Mobilization',taxOk:true,leaf:'Crane pick',dec:'3PL',decTone:'info',status:'Scheduled'},
+        {id:'REQ-L-3061',asset:'BESS container placement \u00b7 haul + crane',project:'Hercules Solar + BESS',tax:'Logistics \u203a Transport \u203a Oversize',taxOk:true,leaf:'Haul + crane',dec:'3PL',decTone:'info',status:'Requested'}
+      ],
+      rollCols:['Move type','Peak count','Peak month','vs plan'],
+      roll:[{a:'Deliveries',b:'24',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'3',c:'Oct 2026',v:'+1 over',vt:'warn'},{a:'Crane picks',b:'2',c:'Aug 2026',v:'on plan',vt:'ok'}],
+      varSummary:'Heavy hauls one over plan \u2014 3 route to the same corridor within a week.',
+      consol:{save:'~$18K + 1 permit',cta:'Combine hauls',detail:'3 heavy hauls route to the same corridor (Cimarron + Riverside) within one week. Combine permits and carrier into a single mobilization.'} },
+    profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
+      kpis:[{k:'Active projects',v:'9',sub:'with services demand',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'14',sub:'across 6 firms',tone:'ok',icon:'people'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Committed',v:'$3.2M',sub:'services \u00b7 portfolio',tone:'ok',icon:'dollar'}],
+      ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule \u2014 the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they\u2019re needed on site.',
+      cap:'Every project\u2019s professional-services demand, aggregated. Roles are priced from the 02S rate card; specialty roles are quoted by 02S after confirmation.',
+      rows:[
+        {id:'REQ-S-2101',asset:'Owner\u2019s engineer / IE support \u00b7 2 FTE',project:'Hercules Solar + BESS',tax:'Services \u203a Engineering \u203a Owner\u2019s engineer',taxOk:true,leaf:'IE support',dec:'Rate card',decTone:'ok',status:'Active'},
+        {id:'REQ-S-2108',asset:'BESS commissioning agent \u00b7 2 FTE',project:'Hercules Solar + BESS',tax:'Services \u203a Commissioning \u203a BESS',taxOk:true,leaf:'BESS',dec:'Quoted',decTone:'info',status:'Projected'},
+        {id:'REQ-S-2114',asset:'Structural special inspection \u00b7 2 FTE',project:'Riverside Medical Center',tax:'Services \u203a Inspection \u203a Structural',taxOk:true,leaf:'Structural',dec:'Rate card',decTone:'ok',status:'Active'}
+      ],
+      rollCols:['Discipline','Peak FTE','Peak period','vs plan'],
+      roll:[{a:'Engineering',b:'6 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Inspection',b:'5 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'}],
+      varSummary:'Inspection one FTE over plan \u2014 overlapping scopes at two projects.',
+      consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and a second project. One firm can cover both at a blended rate instead of two separate MSAs.'} },
+    procurement:{ mount:'ccDpProc', title:'Procurement demand plan', icon:'cart', decCol:'Order-by (lead)',
+      kpis:[{k:'Active projects',v:'8',sub:'with long-lead demand',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'At-risk',v:'2',sub:'order-by passed',tone:'bad',icon:'warn'}],
+      ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items (switchgear, BESS containers) are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
+      cap:'Every project\u2019s long-lead procurement demand, aggregated. Order-by dates are computed from lead time and the schedule need-by; the pillar signal is order-by risk.',
+      rows:[
+        {id:'REQ-P-0501',asset:'MV switchgear \u00b7 15kV lineup \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Switchgear',taxOk:true,leaf:'15kV',dec:'May 1 \u00b7 24 wk',decTone:'bad',status:'At-risk'},
+        {id:'REQ-P-0508',asset:'BESS containers \u00b7 2.5 MWh \u00b7 qty 6',project:'Hercules Solar + BESS',tax:'Material \u203a Energy storage \u203a BESS',taxOk:true,leaf:'2.5 MWh',dec:'May 15 \u00b7 30 wk',decTone:'bad',status:'At-risk'},
+        {id:'REQ-P-0512',asset:'Main power transformer \u00b7 qty 1',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Transformer',taxOk:true,leaf:'MPT',dec:'Apr 15 \u00b7 28 wk',decTone:'neu',status:'PO issued'}
+      ],
+      rollCols:['Category','Committed','Order window','vs plan'],
+      roll:[{a:'Electrical',b:'$3.5M',c:'Q2 2026',v:'+$0.3M',vt:'warn'},{a:'Energy storage',b:'$2.4M',c:'Q2 2026',v:'on plan',vt:'ok'},{a:'Modules',b:'$4.6M',c:'Q3 2026',v:'on plan',vt:'ok'}],
+      varSummary:'Electrical spend $0.3M over plan \u2014 same OEM across two projects.',
+      consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'Switchgear and transformer share the same OEM across two projects. Combine POs to hit the next volume tier and shorten lead time.'} },
+    prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
+      kpis:[{k:'Active projects',v:'6',sub:'with prefab demand',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'32',sub:'5 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
+      ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
+      cap:'Every project\u2019s prefab demand, aggregated. Assemblies are made-to-order, so pricing is quoted by 02S after submittal; the pillar signal is fabrication stage.',
+      rows:[
+        {id:'REQ-F-021',asset:'Prefab pipe rack modules \u00b7 qty 12',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pipe rack',taxOk:true,leaf:'Pipe rack',dec:'In fab',decTone:'info',status:'In fabrication'},
+        {id:'REQ-F-034',asset:'Modular e-houses \u00b7 BESS \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Assembly \u203a Electrical \u203a E-house',taxOk:true,leaf:'E-house',dec:'Submittal',decTone:'info',status:'Submittal'},
+        {id:'REQ-F-041',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Riverside Medical Center',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'}
+      ],
+      rollCols:['Assembly type','Peak units','Need-by','vs plan'],
+      roll:[{a:'Mechanical',b:'12',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Electrical',b:'8',c:'Nov 2026',v:'on plan',vt:'ok'},{a:'Structural',b:'12',c:'Jul 2026',v:'+2 over',vt:'warn'}],
+      varSummary:'Structural 2 assemblies over plan \u2014 batchable in one fab slot.',
+      consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot. Batch the run to cut setup cost and protect the November date.'} }
+  };
+  var dpCur=null;
+  function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
+  function dpTaxCell(r){
+    var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
+    var BOLT='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>';
+    if(r.taxOk) return '<span class="dp-tax ok">'+CHK+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+'</span>';
+    return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
+  }
+  function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
+  function renderCcDemand(p){
+    var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
+    var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    h+='<div class="vitals">';
+    cfg.kpis.forEach(function(k){ var v=k.v, tone=k.tone; if(k.dyn==='tax'){ v=''+pending; tone=pending>0?'warn':'ok'; } h+='<div class="vital '+tone+'"><div class="vk">'+svg(dpIcon(k.icon))+k.k+'</div><div class="vv">'+v+'</div><div class="vsub">'+k.sub+'</div></div>'; });
+    h+='</div>';
+    if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Requests from project teams</span><span class="spacer"></span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') \u2192</button></div>';
+    var gt='1.15fr 1.5fr 118px 108px 84px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request ID / asset</span><span>Taxonomy match</span><span>'+cfg.decCol+'</span><span>Status</span><span></span></div>';
+    cfg.rows.forEach(function(r){
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.id+'<div class="sub" style="white-space:normal">'+r.asset+' \u00b7 '+r.project+'</div></div><div>'+dpTaxCell(r)+'</div><div><span class="tag '+(r.decTone||'neu')+'">'+r.dec+'</span></div><div><span class="tag '+(DP_ST[r.status]||'neu')+'">'+r.status+'</span></div><div>'+dpReviewCell(p,r,ns)+'</div></div>';
+    });
+    h+='</div>';
+    if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
+    h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+'Portfolio demand roll-up</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
+    var gt2='1fr 150px 1fr 120px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
+    cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
+    h+='</div>';
+    mount.innerHTML=h;
+  }
+  function dpReview(p,id){
+    var r=dpRowById(p,id); if(!r)return; dpCur={p:p,id:id}; var ns=CURRENT==='ns'; var cfg=CC_DP[p];
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.id+'</div><div class="sub">'+r.asset+' \u00b7 '+r.project+'</div></div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Requested taxonomy</span><span>'+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+'</span></div>';
+    if(!r.taxOk){
+      var opts=(r.leafOpts||[r.mapLeaf]).map(function(o){ return '<option'+(o===r.mapLeaf?' selected':'')+'>'+o+'</option>'; }).join('');
+      b+='<div class="fq-crow"><span>Class (L3)</span><span><select id="dpLeafSel" class="dp-sel">'+opts+'</select></span></div>';
+    }
+    b+='<div class="fq-crow"><span>'+cfg.decCol+'</span><span>'+r.dec+'</span></div><div class="fq-crow"><span>Status</span><span>'+r.status+'</span></div></div>';
+    if(!r.taxOk){
+      if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+'02S mapped this to <b>'+r.tax+(r.mapLeaf?(' \u203a '+r.mapLeaf):'')+'</b> ('+(r.conf||'92')+'% confidence) \u2014 confirm, or adjust the class above</div>'; }
+      else { b+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Pick the class this request maps to in the 02S taxonomy, then confirm to release it for pricing and allocation.</span></div>'; }
+      b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpConfirmTax()">Confirm taxonomy</button></div></div>';
+    } else {
+      b+='<div class="eq-cap">'+svg('<path d="M20 6L9 17l-5-5"/>')+'<span>Taxonomy confirmed \u2014 this request is released to the Fulfillment queue for the owned vs re-rent decision.</span></div>';
+      b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-dark" onclick="dpOpenFulfill(\''+r.id+'\')">Open in Fulfillment queue</button></div></div>';
+    }
+    openModal((r.taxOk?'Request':'Confirm class')+' \u2014 '+r.id, b);
+  }
+  function dpConfirmTax(){ var r=dpRowById(dpCur.p,dpCur.id); if(!r)return; var sel=gel('dpLeafSel'); var chosen=(sel&&sel.value)?sel.value:(r.mapLeaf||''); r.taxOk=true; if(chosen)r.leaf=chosen; r.status='Ready'; closeModal(); renderCcDemand(dpCur.p); toast(r.id+' confirmed as '+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+' \u2014 released to the Fulfillment queue'); }
+  function dpRelease(p){ var rs=CC_DP[p].rows; var n=0; for(var i=0;i<rs.length;i++){ if(rs[i].status==='Ready')n++; } if(!n){ toast('No ready requests \u2014 confirm taxonomy first'); return; } toast(n+' ready request'+(n===1?'':'s')+' released to the Fulfillment queue'); }
+  function dpConsolidate(p){ var cs=CC_DP[p].consol; if(!cs)return; toast('Consolidation queued \u2014 '+cs.cta.toLowerCase()+' \u00b7 est. '+cs.save+' saved'); }
+  function dpOpenFulfill(ref){ ccHighlight=ref; fqFP='all'; fqFPr='all'; fqFS='all'; closeModal(); ccGo('fulfill'); }
+
+  /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','In transit':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','At-risk':'bad'};
+  var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
+  var DP={
+    profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
+      vitals:[{label:'Plan budget',value:'$3.2M',sub:'services \u00b7 15-mo horizon',tone:'ok',icon:IC.dollar},{label:'Committed to date',value:'$1.9M',sub:'59% \u00b7 6 roles active',tone:'ok',icon:IC.check},{label:'Active headcount',value:'14 FTE',sub:'across 6 firms',tone:'ok',icon:IC.people},{label:'Projected at complete',value:'$3.1M',sub:'+$0.1M under plan',tone:'ok',icon:IC.chart}],
+      ns:'02S maps each role to the CPM schedule \u2014 the BESS commissioning agent mobilizes as the containers land, and the VDC role is flagged as unpriced before it\u2019s needed on site.',
+      cap:'Roles are priced from the 02S rate card; specialty roles are quoted by 02S. The team sets headcount, mobilization window, and cost code.',
+      cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
+      add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
+      rows:[
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'01-100 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'02-320 \u00b7 Site Earthwork',cost:'$18K/mo',state:'Active'},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'31-620 \u00b7 Solar Pile',cost:'$16K/mo',state:'Active'},
+        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'26-330 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'01-100 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'01-100 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'01-100 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
+      ]},
+    procurement:{ title:'Procurement demand plan', chip:'Long-lead equipment &amp; materials', icon:IC.cart, singular:'procurement',
+      vitals:[{label:'Committed',value:'$8.9M',sub:'materials &amp; equipment',tone:'ok',icon:IC.dollar},{label:'Long-lead items',value:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:IC.clock},{label:'At-risk',value:'2',sub:'order-by date passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'71%',sub:'5 of 7 tracking',tone:'warn',icon:IC.chart}],
+      ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
+      cap:'Order-by dates are computed from lead time and the schedule need-by. Prices come from the 02S catalog or vendor quote; specialty items are quoted by 02S.',
+      cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
+      add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
+      rows:[
+        {item:'Medium-voltage switchgear',itemSub:'15kV lineup',qty:'2',needby:'Oct 15',orderby:'May 1 \u00b7 24 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$1.4M',state:'At-risk'},
+        {item:'Main power transformer',qty:'1',needby:'Nov 1',orderby:'Apr 15 \u00b7 28 wk',code:'26-330 \u00b7 BESS',cost:'$2.1M',state:'PO issued'},
+        {item:'PV modules \u2014 tranche 1',qty:'40,000',needby:'Sep 1',orderby:'Jun 1 \u00b7 12 wk',code:'26-540 \u00b7 Module',cost:'$3.6M',state:'In transit'},
+        {item:'String inverters',qty:'24',needby:'Sep 15',orderby:'Jun 15 \u00b7 14 wk',code:'26-540 \u00b7 Module',cost:'$980K',state:'PO issued'},
+        {item:'BESS containers',itemSub:'2.5 MWh each',qty:'6',needby:'Dec 1',orderby:'May 15 \u00b7 30 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$2.4M',state:'At-risk'},
+        {item:'Structural steel \u2014 racking',qty:'lot',needby:'Aug 1',orderby:'Jun 15 \u00b7 7 wk',code:'26-540 \u00b7 Module',cost:'$620K',state:'Delivered'},
+        {item:'Cable &amp; conductors',qty:'lot',needby:'rolling',orderby:'rolling',code:'26-540 \u00b7 Module',cost:'$340K',state:'Draft'}
+      ]},
+    prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
+      vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
+      ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
+      cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
+      cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
+      add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
+      rows:[
+        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'26-540 \u00b7 Module',cost:'$146K',state:'In fabrication'},
+        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'26-540 \u00b7 Module',cost:'$147K',state:'Delivered'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'26-330 \u00b7 BESS',cost:'Pending',state:'Submittal'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'02-320 \u00b7 Site Earthwork',cost:'$88K',state:'In fabrication'},
+        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'26-540 \u00b7 Module',cost:'Pending',state:'Draft'}
+      ]},
+    logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
+      vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
+      ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
+      cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
+      cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
+      add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Crane pick \u2014 module racking'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane pick'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
+      rows:[
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled'},
+        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
+        {move:'Tower crane mobilization',type:'Crane pick',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
+        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
+        {move:'BESS container placement',type:'Haul + crane',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
+        {move:'Prefab pipe rack delivery',type:'Delivery',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
+        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active'}
+      ]}
+  };
+  var dpActive=null, dpAddPk=null;
+  function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
+  function dpCodeOpts(){ var c=['01-100 \u00b7 General conditions','02-320 \u00b7 Site Earthwork','31-620 \u00b7 Solar Pile','26-540 \u00b7 Module Racking','26-330 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
+  function renderDP(pk){
+    var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
+    var ns=CURRENT==='ns';
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    h+='<div class="vitals">';
+    cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
+    h+='</div>';
+    if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button></div>';
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
+    cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
+    h+='</div>';
+    cfg.rows.forEach(function(r){
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+      cfg.cols.forEach(function(c){
+        if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+    mount.innerHTML=h;
+  }
+  function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
+    var f='<div class="mform">';
+    f+='<div class="mf"><label>'+cfg.addName.label+'</label><input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'"></div>';
+    f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label><input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'"></div></div>';
+    f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
+    f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';
+    f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 the rate or quote is sourced from the 02S catalog or priced by 02S admin after you submit.</span></div>';
+    f+='</div>';
+    openModal('Add '+cfg.singular+' demand line', f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpAddSave()">Request &amp; add</button></div></div>');
+  }
+  function dpAddSave(){
+    var pk=dpAddPk, cfg=DP[pk], a=cfg.add;
+    var name=dpGv('dpaName').trim(); if(!name){ toast('Enter a name first'); return; }
+    var row={state:'Pending pricing'};
+    row[a.nameKey]=name;
+    if(a.subKey){ var sc=dpGv('dpaScope').trim(); if(sc)row[a.subKey]=sc; }
+    row[a.qtyKey]=dpGv('dpaQty')||'\u2014';
+    row[a.whenKey]=dpGv('dpaWhen')||'\u2014';
+    row.code=dpGv('dpaCode');
+    if(a.costKey)row[a.costKey]='Pending';
+    cfg.rows.push(row); closeModal(); renderDP(pk);
+    toast('Demand line added \u2014 pricing request routed to 02S admin');
+  }
+  function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'){ r.state='Requested'; n++; } }); if(!n){ var p=0; cfg.rows.forEach(function(r){if(r.state==='Pending pricing')p++;}); toast(p?(p+' line'+(p===1?'':'s')+' still awaiting 02S pricing \u2014 can\u2019t submit until priced'):'No draft lines to submit'); return; } renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
+  function go(screen){
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
+    document.getElementById('screen-'+screen).classList.add('active');
+    document.getElementById('nav-dashboard').classList.toggle('active',screen==='dashboard');
+    document.getElementById('nav-order').classList.toggle('active',screen==='order');
+    var neq=document.getElementById('nav-equip'); if(neq) neq.classList.toggle('active',screen==='equip');
+    var no=document.getElementById('nav-orders'); if(no) no.classList.toggle('active',screen==='orders');
+    var nb=document.getElementById('nav-billing'); if(nb) nb.classList.toggle('active',screen==='billing');
+    var npf=document.getElementById('nav-profile'); if(npf) npf.classList.toggle('active',screen==='profile');
+    var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
+    ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
+    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
+    if(screen==='order') backToCatalog();
+    window.scrollTo(0,0);
+  }
+
+  /* ═══════════ VERSION TOGGLE ═══════════ */
+
   function enterCC() {
     var uc=document.getElementById('uc'); if(uc)uc.style.display='none';
     var lp=document.getElementById('landing'); if(lp)lp.style.display='none';
     var ap=document.querySelector('.app'); if(ap)ap.style.display='none';
     var cc=document.getElementById('ccApp'); if(cc)cc.style.display='flex';
-    ccNav('cc-dash');
+    ccSyncToggle(); ccGo('ccdash'); window.scrollTo(0,0);
   }
   function backFromCC() {
     var cc=document.getElementById('ccApp'); if(cc)cc.style.display='none';
     var lp=document.getElementById('landing'); if(lp)lp.style.display='flex';
   }
-  function ccNav(id) {
-    CC_SCREEN = id;
-    document.querySelectorAll('#ccApp .sb-item').forEach(function(el) {
-      el.classList.toggle('active', el.dataset.screen === id);
-    });
-    document.querySelectorAll('#ccApp .cc-screen').forEach(function(el) {
-      el.style.display = el.id === id ? 'block' : 'none';
-    });
-    if(id==='cc-backlog') renderCcBacklog();
-    if(id==='cc-capex') renderCcCapex();
-    if(id==='cc-pillars'){ var el=document.getElementById('cpPillarAll'); if(el)ccPillFilter(el,'all'); }
-  }
-  function openCcReview(id) {
-    var data = {
-      'REQ-1058': {item:'2x excavator 45-55T',rec:'owned',ownedCost:'$8,400/mo',ownedMob:'+ $1,200 mob',ownedUtil:'34%',utilTarget:65,rentCost:'$12,400/mo',rentLead:'2-day lead',saving:'$4,000/mo',guardrails:[['Fleet availability','4 idle units at Riverside yard · 12 mi','ok'],['Transport cost','Est. $1,200 mob · 4-month duration justifies','ok'],['Utilization target','34% vs. 65% target — below threshold, idle fleet','ok'],['Near-term demand','No competing demand at Riverside through Aug','ok']]},
-      'REQ-2210': {item:'1x tower crane (self-erect)',rec:'rerent',ownedCost:'n/a',ownedMob:'',ownedUtil:'—',utilTarget:70,rentCost:'$12,400/mo',rentLead:'2-day lead',saving:'—',guardrails:[['Fleet availability','No owned tower cranes in portfolio','red'],['Transport cost','n/a — no owned inventory','warn'],['Utilization target','Class not owned — target N/A','warn'],['Near-term demand','n/a','warn']]},
-      'REQ-2244': {item:'4x scissor lift 32ft',rec:'owned',ownedCost:'$1,900/mo',ownedMob:'$0 mob',ownedUtil:'41%',utilTarget:75,rentCost:'$2,400/mo',rentLead:'3-day lead',saving:'$500/mo',guardrails:[['Fleet availability','8 idle units at West yard · 22 mi','ok'],['Transport cost','$0 mob — within service radius','ok'],['Utilization target','41% vs. 75% target — idle fleet flagged','ok'],['Near-term demand','No competing demand through Q3','ok']]}
-    };
-    var d = data[id]; if(!d) return;
-    var dotColor = function(s){return s==='ok'?'var(--success)':s==='warn'?'var(--warning)':'var(--red)';};
-    var h = '<div class="ovr-cost">'
-      + '<div class="ovr-opt'+(d.rec==='owned'?' rec':'')+'">'
-      + '<div class="oo-lbl">'+(d.rec==='owned'?'✓ ':'')+'Owned fleet</div>'
-      + '<div class="oo-val">'+d.ownedCost+'</div>'
-      + (d.ownedMob?'<div class="oo-sub">'+d.ownedMob+'</div>':'')
-      + (d.ownedUtil!=='—'?'<div class="oo-note">'+d.ownedUtil+' util · below '+d.utilTarget+'% target — idle</div>':'<div class="oo-note" style="color:var(--g500)">No owned inventory</div>')
-      + '</div>'
-      + '<div class="ovr-opt'+(d.rec==='rerent'?' rec':'')+'">'
-      + '<div class="oo-lbl">'+(d.rec==='rerent'?'✓ ':'')+'Re-rent</div>'
-      + '<div class="oo-val">'+d.rentCost+'</div>'
-      + '<div class="oo-sub">'+d.rentLead+'</div>'
-      + (d.saving!=='—'?'<div class="oo-note" style="color:var(--g500)">+'+d.saving+' vs. owned</div>':'<div class="oo-note" style="color:var(--success)">Recommended — no owned alternative</div>')
-      + '</div></div>'
-      + '<div class="util-note">Utilization target for this class: <b>'+d.utilTarget+'%</b> · Units below target are flagged as idle — policy requires own-fleet consideration first before going to market</div>'
-      + d.guardrails.map(function(g){return '<div class="ovr-gr"><span class="ovr-gr-dot" style="background:'+dotColor(g[2])+'"></span><div><b>'+g[0]+'</b><span class="gd">'+g[1]+'</span></div></div>';}).join('')
-      + '<div style="margin-top:12px;display:flex;gap:8px">'
-      + '<button class="btn btn-red btn-sm" onclick="closeModal();toast(\'' + id + ' OvR confirmed → routing to YardHub\')">'+(d.rec==='owned'?'Confirm — use owned':'Confirm — re-rent')+'</button>'
-      + '<button class="btn btn-ghost btn-sm" onclick="openCcOvrOverride(\'' + id + '\')">Override recommendation</button>'
-      + '</div>';
-    openModal(id+' — owned vs. re-rent', h);
-  }
-  function openCcOvrOverride(id) {
-    var body = '<div style="font-size:12.5px;color:var(--g600);margin-bottom:14px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px"><b>You\'re overriding the system recommendation.</b> Your reasoning is logged and feeds the fleet model over time.</div>'
-      + '<div class="mf" style="margin-bottom:10px"><label>New decision</label><div class="seg" style="margin-top:6px">'
-      + '<button class="seg-b on" id="ccOwnBtn" onclick="this.classList.add(\'on\');document.getElementById(\'ccRrBtn\').classList.remove(\'on\')">Use owned fleet</button>'
-      + '<button class="seg-b" id="ccRrBtn" onclick="this.classList.add(\'on\');document.getElementById(\'ccOwnBtn\').classList.remove(\'on\')">Re-rent from market</button>'
-      + '</div></div>'
-      + '<div class="mf"><label>Reasoning <span style="color:var(--red)">*</span></label><textarea class="rin" rows="3" id="ccOvrReason" placeholder="e.g. Owned unit in service hold until the 18th — re-renting to protect the crane window…" style="width:100%"></textarea></div>'
-      + '<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-      + '<button class="btn btn-red" onclick="ccSubmitOverride(\'' + id + '\')">Submit override</button></div>';
-    openModal('Override OvR recommendation', body);
-  }
-  function ccSubmitOverride(id) {
-    var r = (document.getElementById('ccOvrReason')||{}).value;
-    if(!r){ toast('Add reasoning first'); return; }
-    closeModal(); toast(id + ' override submitted — reasoning logged');
-  }
-  function openCcRecert() {
-    var items = [
-      {id:'ORD-3042',item:'2× ¾-Ton 4×4',on:'May 20',code:'13130000',note:'Civil support — active'},
-      {id:'ORD-3044',item:'1× tower crane',on:'Aug 3',code:'05100000',note:'Structure phase — in use'},
-      {id:'ORD-3047',item:'3× scissor lift 32ft',on:'May 1',code:'26260000',note:'MEP rough-in ongoing'}
-    ];
-    var rows = items.map(function(r,i){
-      return '<div style="border:1px solid var(--g200);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px">'
-        +'<div style="display:flex;justify-content:space-between;margin-bottom:6px">'
-        +'<div><div style="font-weight:600;font-size:13px">'+r.item+'</div><div style="font-size:11.5px;color:var(--g500)">'+r.id+' · on-rent '+r.on+' · <span style="font-family:var(--mono);font-size:10.5px">'+r.code+'</span></div></div>'
-        +'<span class="tag ok">On-rent</span></div>'
-        +'<div style="font-size:12px;color:var(--g600);margin-bottom:10px">'+r.note+'</div>'
-        +'<div style="display:flex;gap:8px">'
-        +'<button class="btn btn-red btn-sm" onclick="this.textContent=\'Confirmed ✓\';this.disabled=true;toast(\'' + r.id + ' — recertified for another week\')">Still needed</button>'
-        +'<button class="btn btn-ghost btn-sm" onclick="closeModal();toast(\'Call-off initiated for ' + r.item.replace(/'/g,"\\'") + '\')">Call off</button>'
-        +'</div></div>';
-    }).join('');
-    openModal('Weekly on-rent recertification', '<div style="font-size:12px;color:var(--g700);padding:8px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px;margin-bottom:14px">Confirm each item is still needed. Confirmed items auto-renew; called-off items trigger return logistics.</div>'+rows+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();toast(\'Recertification submitted — 02S notified · 3 items renewed\')">Submit all &amp; renew</button></div>');
-  }
 
-  /* ═══════════ INIT (after all data + functions are defined) ═══════════ */
-  renderPills(); renderCatalog(); onAskInput(); renderCart();
-  renderOrders(); renderBills(); renderOrdInsights();
-  renderPending(); renderBillInsights();
-  renderTeam(); renderEscalation(); renderProfileInsights();
-  renderTickets(); renderContactInsights();
-  renderEqBudget(); renderEqInsights(); setEqView('plan'); renderEqHistory(); updateEqSubmitBtn();
-  document.addEventListener('click',eqPopDocClick);
-  syncRecert();
-  (function(){
-    var lp=document.getElementById('landing'); if(!lp)return;
-    var dig=document.getElementById('lpDigger'), glow=document.getElementById('lpGlow'), hero=lp.querySelector('.lp-hero');
-    lp.addEventListener('mousemove',function(e){
-      var r=lp.getBoundingClientRect();
-      var nx=(e.clientX-r.left)/r.width-0.5, ny=(e.clientY-r.top)/r.height-0.5;
-      if(glow){ glow.style.left=(e.clientX-r.left)+'px'; glow.style.top=(e.clientY-r.top)+'px'; glow.style.opacity='1'; }
-      if(dig){ dig.style.transform='translate('+(nx*30).toFixed(1)+'px,'+(ny*22).toFixed(1)+'px)'; }
-      if(hero){ hero.style.transform='translate('+(nx*7).toFixed(1)+'px,'+(ny*5).toFixed(1)+'px)'; }
-    });
-    lp.addEventListener('mouseleave',function(){
-      if(glow) glow.style.opacity='0';
-      if(dig) dig.style.transform='';
-      if(hero) hero.style.transform='';
-    });
-  })();
-
-  // ══ CC BACKLOG DATA ══
-  var CC_BACKLOG_OVERRIDES={};
-  var CC_BACKLOG=[
-    {id:'REQ-1058',pillar:'Equipment',project:'Hercules Solar + BESS',item:'2× excavator 45–55T',qty:'2',need:'Jun 1',type:'Catalog',status:'New',
-     tax:'Asset › Earthmoving › Excavator › 45-55T',taxMapped:false,
-     ovr:{rec:'owned',summary:'4 idle units at Riverside yard (12 mi). 34% utilization — below 65% target. Owned fleet costs $8,400/mo vs. $12,400/mo re-rent.',
-       guardrails:[['Fleet availability','4 idle units at Riverside yard · 12 mi','ok'],['Transport cost','Est. $1,200 mob · 4-month duration justifies','ok'],['Utilization target','34% vs. 65% target — below threshold, idle fleet','ok'],['Near-term demand','No competing demand at Riverside through Aug','ok']]}},
-    {id:'REQ-1071',pillar:'Equipment',project:'Mercy Hospital Tower B',item:'1× tower crane (self-erect)',qty:'1',need:'Aug 3',type:'Catalog',status:'New',
-     tax:'Asset › Lifting › Tower Crane › Self-Erect',taxMapped:false,
-     ovr:{rec:'rerent',summary:'No owned tower cranes in fleet. Re-rent at $12,400/mo — only viable option.',
-       guardrails:[['Fleet availability','No owned tower cranes in portfolio','red'],['Transport cost','n/a — no owned inventory','warn'],['Utilization target','Class not owned — target N/A','warn'],['Near-term demand','n/a','warn']]}},
-    {id:'REQ-2244',pillar:'Equipment',project:'Downtown Medical Center',item:'4× scissor lift 32ft electric',qty:'4',need:'May 15',type:'Catalog',status:'Acknowledged',
-     tax:'Asset › Access › Scissor Lift › Electric › 30-35ft',taxMapped:true,
-     ovr:{rec:'owned',summary:'8 idle scissor lifts at West yard (22 mi). 41% utilization — below 75% target.',
-       guardrails:[['Fleet availability','8 idle units at West yard · 22 mi','ok'],['Transport cost','$0 mob — within service radius','ok'],['Utilization target','41% vs. 75% target — idle fleet flagged','ok'],['Near-term demand','No competing demand through Q3','ok']]}},
-    {id:'REQ-2210',pillar:'Equipment',project:'Hercules Solar + BESS',item:'3× telehandler 10K',qty:'3',need:'Jul 10',type:'Catalog',status:'New',
-     tax:'Asset › Material handling › Telehandler › 10K',taxMapped:false,
-     ovr:{rec:'owned',summary:'3 idle telehandlers at Central depot (8 mi). 52% utilization — below 60% target.',
-       guardrails:[['Fleet availability','3 idle at Central depot · 8 mi','ok'],['Transport cost','$0 mob · depot is on-route','ok'],['Utilization target','52% vs. 60% target — borderline','ok'],['Near-term demand','Competing demand from Riverside starts Sep','ok']]}},
-    {id:'REQ-2301',pillar:'Prefab',project:'Downtown Medical Center',item:'L2 headwall assemblies × 24',qty:'24',need:'Sep 1',type:'Custom',status:'New',tax:null,taxMapped:false,ovr:null},
-    {id:'REQ-2315',pillar:'Logistics',project:'Mercy Hospital Tower B',item:'Lowboy haul — crawler crane components',qty:'1',need:'Jul 28',type:'Custom',status:'Acknowledged',tax:null,taxMapped:false,ovr:null},
-    {id:'REQ-2320',pillar:'Procurement',project:'Hercules Solar + BESS',item:'Safety supplies bundle — Phase 2',qty:'1',need:'Jun 15',type:'Catalog',status:'New',tax:null,taxMapped:false,ovr:null},
-    {id:'REQ-2330',pillar:'Professional services',project:'Downtown Medical Center',item:'Commissioning agent — BESS',qty:'1',need:'Oct 1',type:'Custom',status:'New',tax:null,taxMapped:false,ovr:null}
-  ];
-  var CC_BACKLOG_FILTER='All';
-  var CC_TAX_OPTS={
-    'excavator':['Asset › Earthmoving › Excavator › 45-55T','Asset › Earthmoving › Excavator › 30-45T','Asset › Earthmoving › Excavator › 20-30T'],
-    'tower crane':['Asset › Lifting › Tower Crane › Self-Erect','Asset › Lifting › Tower Crane › Luffing Jib','Asset › Lifting › Tower Crane › Top-Slewing'],
-    'telehandler':['Asset › Material handling › Telehandler › 10K','Asset › Material handling › Telehandler › 6K','Asset › Material handling › Telehandler › Rotating'],
-    'scissor':['Asset › Access › Scissor Lift › Electric › 30-35ft','Asset › Access › Scissor Lift › Electric › 19-26ft','Asset › Access › Scissor Lift › Rough-Terrain']
-  };
-  function ccTaxKey(item){ var s=item.toLowerCase(); if(s.indexOf('excavator')>-1)return 'excavator'; if(s.indexOf('tower crane')>-1)return 'tower crane'; if(s.indexOf('telehandler')>-1)return 'telehandler'; if(s.indexOf('scissor')>-1)return 'scissor'; return ''; }
-  function ccSetStatus(id, val){
-    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
-    r.status=val; renderCcBacklog();
-  }
-  function renderCcBacklog(){
-    var el=document.getElementById('ccBacklogRows'); if(!el)return;
-    var f=CC_BACKLOG_FILTER;
-    var rows=CC_BACKLOG.filter(function(r){ return f==='All'||(f==='Equipment'&&r.pillar==='Equipment')||(f==='Other'&&r.pillar!=='Equipment'); });
-    if(!rows.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12.5px">No open requests.</div>';return;}
-    var pillarClr={Equipment:'var(--red)',Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'};
-    var dot=function(p){var c=pillarClr[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+c+';margin-right:5px;flex-shrink:0"></span>';};
-    var taxCell=function(r){
-      if(r.pillar!=='Equipment') return '<td colspan="2"><div style="display:flex;align-items:center;gap:6px">'+dot(r.pillar)+'<span style="font-size:12px;color:var(--g600)">'+r.pillar+'</span></div></td>';
-      var tax=r.taxMapped?'<span class="cc-badge ok" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">✓ Confirmed</span>':'<span class="cc-badge warn" style="cursor:pointer" onclick="ccReviewReq(\''+r.id+'\')">⚡ Needs confirm</span>';
-      var ov=CC_BACKLOG_OVERRIDES[r.id]; var rec=ov?ov.choice:r.ovr.rec;
-      var ovrBadge='<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned':'Re-rent')+(ov?' EM':'')+'</span>';
-      return '<td>'+tax+'</td><td>'+ovrBadge+'</td>';
-    };
-    var statCell=function(r){
-      if(r.pillar!=='Equipment'){
-        var opts=['New','Acknowledged','In fulfillment','Fulfilled'];
-        return '<td><select class="acc-sel" style="font-size:11.5px;padding:3px 6px;height:26px" onchange="ccSetStatus(\''+r.id+'\',this.value)">'+opts.map(function(o){return '<option'+(r.status===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select></td>';
-      }
-      var m={'New':'warn','Acknowledged':'info','In fulfillment':'ok','Fulfilled':'ok'};
-      return '<td><span class="cc-badge '+(m[r.status]||'neu')+'">'+r.status+'</span></td>';
-    };
-    var showEqCols = f!=='Other';
-    var thead = showEqCols
-      ? '<thead><tr><th style="width:86px">ID</th><th>Item</th><th style="width:118px">Taxonomy</th><th style="width:96px">OvR</th><th style="width:108px">Status</th><th style="width:82px"></th></tr></thead>'
-      : '<thead><tr><th style="width:86px">ID</th><th>Item</th><th colspan="2">Pillar</th><th style="width:150px">Status</th><th style="width:82px"></th></tr></thead>';
-    el.innerHTML='<table class="cc-table" style="width:100%">'+thead+'<tbody>'
-      +rows.map(function(r){
-        return '<tr>'
-          +'<td><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></td>'
-          +'<td><div style="font-weight:600;font-size:12.5px">'+r.item+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+dot(r.pillar)+r.project+'</div></td>'
-          +taxCell(r)
-          +statCell(r)
-          +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
-          +'</tr>';
-      }).join('')
-      +'</tbody></table>';
-  }
-  function ccFilterBacklog(el,f){ CC_BACKLOG_FILTER=f; document.querySelectorAll('#ccBacklogFilters .fpill').forEach(function(p){p.classList.toggle('on',p.dataset.f===f);}); renderCcBacklog(); }
-  function ccConfirmTax(id){
-    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
-    var el=document.getElementById('ccTaxChosen'); var chosen=(el&&el.value)||r.tax;
-    r.tax=chosen; r.taxMapped=true;
-    var sec=document.getElementById('ccTaxSection'); if(sec)sec.innerHTML='<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:var(--radius-sm)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2" width="14" height="14"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg><div><div style="font-size:11.5px;font-weight:600;color:var(--success)">Taxonomy confirmed</div><div style="font-size:11px;color:var(--g600);margin-top:2px">'+r.tax+'</div></div></div>';
-    renderCcBacklog(); toast(id+' taxonomy confirmed — ready to send to YardHub');
-  }
-  function ccSendToYardHub(id){
-    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
-    if(!r.taxMapped){toast('Confirm the taxonomy match first');return;}
-    r.status='In fulfillment'; closeModal(); toast(id+' → sent to YardHub · status In fulfillment · project notified'); renderCcBacklog();
-  }
-  function ccOvrOverride(id){
-    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r||!r.ovr)return;
-    var ov=CC_BACKLOG_OVERRIDES[id];
-    var altRec=ov?ov.choice:(r.ovr.rec==='owned'?'rerent':'owned');
-    openModal('Override OvR — '+id,
-      '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px;padding:10px 12px;background:var(--warning-tint);border:1px solid #c9a227;border-radius:6px">'
-      +'<b>You\'re overriding the system recommendation.</b> Your reasoning is logged and feeds the fleet model.</div>'
-      +'<div class="mf" style="margin-bottom:10px"><label>Your decision</label><div class="seg" style="margin-top:6px">'
-      +'<button class="seg-b'+(altRec==='owned'?' on':'')+'" id="ccOB" onclick="this.classList.add(\'on\');document.getElementById(\'ccRB\').classList.remove(\'on\')">Owned fleet</button>'
-      +'<button class="seg-b'+(altRec==='rerent'?' on':'')+'" id="ccRB" onclick="this.classList.add(\'on\');document.getElementById(\'ccOB\').classList.remove(\'on\')">Re-rent from market</button>'
-      +'</div></div>'
-      +'<div class="mf"><label>Reasoning <span style="color:var(--red)">*</span></label><textarea class="rin" rows="3" id="ccOvrR" style="width:100%" placeholder="e.g. Owned unit in service hold — re-renting to protect schedule…"></textarea></div>'
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-red" onclick="ccSubmitOvr(\''+id+'\')">Submit override</button></div>'
-    );
-  }
-  function ccSubmitOvr(id){
-    var r=(document.getElementById('ccOvrR')||{}).value; if(!r||!r.trim()){toast('Add reasoning first');return;}
-    var ch=document.getElementById('ccOB')&&document.getElementById('ccOB').classList.contains('on')?'owned':'rerent';
-    CC_BACKLOG_OVERRIDES[id]={choice:ch,reason:r};
-    closeModal(); toast(id+' OvR override submitted — reasoning logged'); renderCcBacklog();
-  }
-  function ccReviewReq(id){
-    var r=CC_BACKLOG.find(function(x){return x.id===id;}); if(!r)return;
-    var eq=r.pillar==='Equipment';
-    var grDot=function(s){return {ok:'var(--success)',warn:'var(--warning)',red:'var(--red)'}[s]||'var(--g300)';};
-    var taxHTML='';
-    if(eq){
-      var taxOpts=CC_TAX_OPTS[ccTaxKey(r.item)]||[];
-      var quickBtns=taxOpts.map(function(o){return '<button class="tax-chip '+(o===r.tax?'ok':'sug')+'" onclick="document.getElementById(\'ccTaxChosen\').value=\''+o+'\';this.parentElement.querySelectorAll(\'.tax-chip\').forEach(function(b){b.className=\'tax-chip sug\';});this.className=\'tax-chip ok\'">'+o+'</button>';}).join('');
-      if(r.taxMapped){
-        taxHTML='<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:var(--radius-sm);margin-bottom:12px" id="ccTaxSection"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--success);margin-bottom:4px">Taxonomy confirmed</div><div style="font-size:12.5px;color:var(--g700)">'+r.tax+'</div></div>';
-      } else {
-        taxHTML='<div style="border:1px solid var(--g200);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px" id="ccTaxSection">'
-          +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Taxonomy match</div><span class="cc-badge warn">Needs confirmation</span></div>'
-          +'<div style="font-size:11.5px;color:var(--g600);margin-bottom:6px">AI-recommended:</div>'
-          +'<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:10px">'+r.tax+'</div>'
-          +'<div style="font-size:11px;color:var(--g500);margin-bottom:6px">Quick options:</div>'
-          +'<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">'+quickBtns+'</div>'
-          +'<input id="ccTaxChosen" value="'+(r.tax||'')+'" style="display:none">'
-          +'<button class="btn btn-ghost btn-sm" onclick="ccConfirmTax(\''+id+'\')">✓ Confirm match</button>'
-          +'</div>';
-      }
-    }
-    var ovrHTML='';
-    if(eq&&r.ovr){
-      var ov=CC_BACKLOG_OVERRIDES[id];
-      var rec=ov?ov.choice:r.ovr.rec;
-      ovrHTML='<div class="ovr-panel" style="margin-bottom:12px">'
-        +'<div class="ovr-panel-h"><span class="ovr-panel-lbl">Owned vs. re-rent</span>'
-        +'<span class="cc-badge '+(rec==='owned'?'ok':'info')+'">'+(rec==='owned'?'Owned fleet':'Re-rent')+(ov?' · EM override':'')+'</span>'
-        +'<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="ccOvrOverride(\''+id+'\')">Override</button></div>'
-        +'<div style="font-size:12px;color:var(--g600);margin:6px 0 10px">'+r.ovr.summary+'</div>'
-        +r.ovr.guardrails.map(function(g){return '<div class="ovr-gr"><span class="ovr-gr-dot" style="background:'+grDot(g[2])+'"></span><div><b>'+g[0]+'</b><span class="gd"> · '+g[1]+'</span></div></div>';}).join('')
-        +(ov?'<div style="font-size:11px;margin-top:8px;padding:6px 10px;background:var(--warning-tint);border-radius:5px;color:var(--warning)">EM override: <b>'+(ov.choice==='owned'?'Owned':'Re-rent')+'</b> — "'+ov.reason+'"</div>':'')
-        +'</div>';
-    }
-    var noteHTML='';
-    if(!eq){
-      noteHTML='<div style="font-size:12px;padding:10px 12px;background:var(--info-tint);border:1px solid var(--info);border-radius:var(--radius-sm);margin-bottom:12px;color:var(--charcoal)">'
-        +'<b>Non-equipment — managed queue.</b> The '+r.pillar.toLowerCase()+' lead fulfills through the existing process; update status here and the project sees each change.</div>';
-    }
-    var body='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:4px">'+r.pillar+' · '+r.project+'</div>'
-      +'<div style="font-weight:600;font-size:14px;margin-bottom:12px">'+r.item+'</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">'
-      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Qty</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.qty+'</div></div>'
-      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Need by</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.need+'</div></div>'
-      +'<div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);font-weight:600">Type</div><div style="font-size:13px;font-weight:600;margin-top:3px">'+r.type+'</div></div>'
-      +'</div>'
-      +noteHTML+taxHTML+ovrHTML
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-      +(eq?'<button class="btn btn-red" onclick="ccSendToYardHub(\''+id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M5 12h14M12 5l7 7-7 7"/></svg> Send to YardHub</button>':'<button class="btn btn-dark btn-sm" onclick="closeModal();toast(\'Status updated · project notified\')">Update status</button>')
-      +'</div>';
-    openModal('Review '+id, body);
-  }
-
-  // ══ CC CAPEX DATA ══
-  var CC_CAPEX_BUYS=[
-    {id:'cb1',cat:'Rough-terrain crane 90T',why:'$504K/yr recurring re-rent across 3 jobs — exceeds purchase break-even',buy:'Buy',val:'$280K',yr:'$504K/yr re-rent',payback:'7 mo',rec:'buy'},
-    {id:'cb2',cat:'Scissor lift fleet — 32ft electric (6 units)',why:'$290K/yr recurring re-rent · high idle risk signals owned fleet expansion',buy:'Buy 6 units',val:'$145K',yr:'$290K/yr re-rent',payback:'6 mo',rec:'buy'},
-    {id:'cb3',cat:'Telehandler — 10K rotating (3 units)',why:'$210K/yr re-rent · utilization 41% when active — buy gives utilization upside',buy:'Buy 3 units',val:'$120K',yr:'$210K/yr re-rent',payback:'7 mo',rec:'buy'},
-    {id:'cb4',cat:'Tower crane — self-erect',why:'Specialty piece · 1-2 jobs/yr · re-rent preferred — capital not justified',buy:'Re-rent',val:'n/a',yr:'$148K/yr re-rent',payback:'—',rec:'rerent'}
-  ];
-  var CC_CAPEX_PLAN=[];
-  function renderCcCapex(){
-    var buyList=document.getElementById('ccCapexBuyList'); if(!buyList)return;
-    var planBody=document.getElementById('ccCapexPlanBody'); if(!planBody)return;
-    var total=0;
-    buyList.innerHTML=CC_CAPEX_BUYS.map(function(b){
-      var inPlan=CC_CAPEX_PLAN.indexOf(b.id)>-1;
-      var recChip=b.rec==='buy'?'<span class="cc-badge ok">Buy</span>':'<span class="cc-badge neu">Re-rent</span>';
-      return '<tr class="'+(inPlan?'done':'')+'"><td><div style="font-weight:600;font-size:12.5px">'+b.cat+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+b.why+'</div></td>'
-        +'<td style="white-space:nowrap">'+recChip+'</td>'
-        +'<td style="font-weight:600">'+b.buy+'</td>'
-        +'<td style="font-weight:700;font-size:13px">'+b.val+'</td>'
-        +'<td>'+b.yr+'</td>'
-        +'<td>'+b.payback+'</td>'
-        +'<td style="text-align:right">'+(b.rec==='rerent'?'<span style="font-size:11.5px;color:var(--g400)">Re-rent preferred</span>':(inPlan?'<span class="cc-badge ok">In plan</span>':'<button class="btn btn-red btn-sm" onclick="ccCapexValidate(\''+b.id+'\')">Validate</button> <button class="btn btn-ghost btn-sm" onclick="ccCapexDecline(\''+b.id+'\')">Decline</button>'))+'</td>'
-        +'</tr>';
-    }).join('');
-    var planItems=CC_CAPEX_BUYS.filter(function(b){return CC_CAPEX_PLAN.indexOf(b.id)>-1;});
-    planItems.forEach(function(b){var v=parseFloat(b.val.replace(/[^0-9.]/g,''))||0;total+=v;});
-    document.getElementById('ccCapexTotal').textContent=total?'$'+total+'K':'$0';
-    document.getElementById('ccCapexCount').textContent=planItems.length?planItems.length+' item'+(planItems.length>1?'s':''):'empty';
-    var sub=document.getElementById('ccCapexSubmitBtn'); if(sub)sub.style.display=planItems.length?'flex':'none';
-    if(!planItems.length){planBody.innerHTML='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12.5px"><b>No line items yet.</b><div style="margin-top:4px">Validate items from the ranked buy list above and they\'ll populate here.</div></div>';return;}
-    planBody.innerHTML='<table class="cc-table"><thead><tr><th>Asset</th><th>Purchase</th><th>Total</th><th></th></tr></thead><tbody>'
-      +planItems.map(function(b){return '<tr><td style="font-weight:600">'+b.cat+'</td><td>'+b.buy+'</td><td style="font-weight:700">'+b.val+'</td><td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ccCapexRemove(\''+b.id+'\')">Remove</button></td></tr>';}).join('')
-      +'</tbody></table>';
-  }
-  function ccCapexValidate(id){
-    var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;}); if(!b)return;
-    openModal('Validate for CAPEX — '+b.cat,
-      '<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:6px;margin-bottom:14px;font-size:12.5px">'
-      +'<b>Validating adds '+b.cat+' to the CAPEX plan</b> and captures your name, timestamp, and reasoning.</div>'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
-      +'<div style="border:1px solid var(--g200);border-radius:6px;padding:10px"><div style="font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--g500);margin-bottom:4px">Annual re-rent cost</div><div style="font-size:18px;font-weight:700;color:var(--g900)">'+b.yr+'</div></div>'
-      +'<div style="border:1px solid var(--success);border-radius:6px;padding:10px;background:var(--success-tint)"><div style="font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--success);margin-bottom:4px">Purchase price</div><div style="font-size:18px;font-weight:700;color:var(--g900)">'+b.val+'</div><div style="font-size:11px;color:var(--g600);margin-top:3px">Payback '+b.payback+'</div></div>'
-      +'</div>'
-      +'<div class="mf"><label>Validation reasoning <span style="font-weight:400;color:var(--g500)">(recommended)</span></label><textarea class="rin" rows="2" id="ccCapexR">Gap confirmed across pipeline; recurring re-rent spend justifies the buy.</textarea></div>'
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="ccCapexConfirm(\''+id+'\')">✓ Validate &amp; add to plan</button></div>'
-    );
-  }
-  function ccCapexConfirm(id){if(CC_CAPEX_PLAN.indexOf(id)<0)CC_CAPEX_PLAN.push(id);closeModal();renderCcCapex();var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;});if(b)toast(b.cat+' validated → added to CAPEX plan');}
-  function ccCapexRemove(id){CC_CAPEX_PLAN=CC_CAPEX_PLAN.filter(function(x){return x!==id;});renderCcCapex();toast('Removed from CAPEX plan');}
-  function ccCapexDecline(id){
-    var b=CC_CAPEX_BUYS.find(function(x){return x.id===id;}); if(!b)return;
-    openModal('Decline — '+b.cat,
-      '<div class="mf" style="margin-bottom:10px"><label>Reason</label><select class="acc-sel wfull"><option>One-off spike — not sustained demand</option><option>Re-rent more cost-effective</option><option>Capital constrained this cycle</option><option>Prefer to redeploy existing fleet</option><option>Other</option></select></div>'
-      +'<div class="mf"><label>Details</label><textarea class="rin" rows="2" placeholder="Captured for the record and the model"></textarea></div>'
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="closeModal();toast(\''+b.cat.replace(/'/g,"\\'")+" declined — reason captured\')"+'\">Decline &amp; record</button></div>'
-    );
-  }
-  function ccCapexSubmitPlan(){
-    openModal('Submit CAPEX plan',
-      '<div style="padding:10px 12px;background:var(--success-tint);border:1px solid var(--success);border-radius:6px;margin-bottom:14px;font-size:12.5px">'
-      +'<b>Plan captured.</b> Your validated buy list is saved and shown here for leadership review. In V1 the plan lives on this screen — export or share it manually.</div>'
-      +'<div style="display:flex;gap:8px;margin-top:4px"><button class="btn btn-ghost btn-sm" onclick="toast(\'Exported to PDF (demo)\')">Export PDF</button><button class="btn btn-ghost btn-sm" onclick="toast(\'Link copied (demo)\')">Copy link</button></div>'
-      +'<div class="modal-foot"><button class="btn btn-red" onclick="closeModal()">Done</button></div>'
-    );
-  }
-
-  function ccBillAction(id, action, anomaly){
-    if(action === 'dispute'){
-      openModal('Dispute bill — ' + id,
-        '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px">Flagged anomaly: <b>' + (anomaly||'Billing discrepancy') + '</b></div>'
-        +'<div class="mf"><label>Reason for dispute</label><textarea class="rin" rows="3" id="ccBillDisputeReason" placeholder="Describe the discrepancy…" style="width:100%"></textarea></div>'
-        +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-        +'<button class="btn btn-red" onclick="var v=(document.getElementById(\'ccBillDisputeReason\')||{}).value;closeModal();var r=v||\'Billing discrepancy\';toast(\'Dispute raised on ' + id + ' — auto-finalization paused · 02S notified\')">Submit dispute</button></div>'
-      );
-    } else {
-      openModal('Approve bill — ' + id,
-        '<div style="font-size:12.5px;color:var(--g600);margin-bottom:12px">Confirm approval of <b>' + id + '</b>. This bill will be routed to YardHub.</div>'
-        +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-        +'<button class="btn btn-approve" onclick="closeModal();this.closest(\'.modal-foot\').querySelectorAll(\'.btn\').forEach(function(b){b.disabled=true;});toast(\'' + id + ' approved — routed to YardHub\')">Approve</button></div>'
-      );
-    }
-  }
-
-  // ══ CC PILLARS ══
-  function ccPillFilter(el,f){
-    el.parentElement.querySelectorAll('.btn').forEach(function(b){b.classList.remove('on');});
-    el.classList.add('on');
-    var rows=CC_BACKLOG.filter(function(r){return r.pillar!=='Equipment'&&(f==='all'||r.pillar===f);});
-    var box=document.getElementById('ccPillRows'); if(!box)return;
-    if(!rows.length){box.innerHTML='<div style="padding:16px;color:var(--g400);font-size:12.5px">No open '+f+' demand right now.</div>';return;}
-    var pillarDot=function(p){var clr={Prefab:'#4B7B3F',Logistics:'#6E5AA6',Procurement:'#B4632B','Professional services':'#2E6E63'}[p]||'var(--g400)';return '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+clr+';margin-right:5px"></span>';};
-    box.innerHTML='<table class="cc-table"><thead><tr><th>ID</th><th>Pillar</th><th>Item</th><th>Qty</th><th>Need by</th><th>Status</th><th></th></tr></thead><tbody>'
-      +rows.map(function(r){
-        return '<tr><td><span style="font-size:10.5px;font-family:var(--mono)">'+r.id+'</span></td>'
-          +'<td>'+pillarDot(r.pillar)+r.pillar+'</td>'
-          +'<td><div style="font-weight:600">'+r.item+'</div><div style="font-size:11px;color:var(--g500)">'+r.project+'</div></td>'
-          +'<td>'+r.qty+'</td>'
-          +'<td>'+r.need+'</td>'
-          +'<td><span class="cc-badge '+(r.status==='New'?'warn':r.status==='Acknowledged'?'info':'ok')+'">'+r.status+'</span></td>'
-          +'<td style="white-space:nowrap"><button class="btn btn-ghost btn-sm" onclick="ccReviewReq(\''+r.id+'\')">Review</button></td>'
-          +'</tr>';
-      }).join('')+'</tbody></table>';
-  }
 
   /* ═══════════ CONTROL TOWER ═══════════ */
   function enterCT(){
