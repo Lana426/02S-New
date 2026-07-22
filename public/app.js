@@ -1123,7 +1123,8 @@
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button></div>';
+    var _baselined=PLAN_BASELINES[pk];
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -1178,7 +1179,7 @@
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
+    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }
@@ -1239,9 +1240,9 @@
   var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad'};
 
   var ORDERS=[
-    {id:'ORD-3051',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok'},
-    {id:'ORD-3054',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:'EQ-106',qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',anticipatedOff:'2026-09-30',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok'},
-    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:2,plan:'EQ-085',
+    {id:'ORD-3051',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok',rental:{offRent:'Oct 31, 2026',daysLeft:101,idle:false,save:0}},
+    {id:'ORD-3054',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:'EQ-106',qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',anticipatedOff:'2026-09-30',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok',rental:{offRent:'Sep 30, 2026',daysLeft:72,idle:false,save:0}},
+    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:2,plan:'EQ-085',rental:{offRent:'Aug 15, 2026',daysLeft:24,idle:false,save:0},
       latest:'Delivery rescheduled to May 20 after a 2-day yard delay',latestTone:'warn',
       risk:{type:'risk',text:'Trending <b>2 days late</b> — steel erection (ORD-3038) crane mob depends on this. 02S flagged the yard for expedite.'},
       recv:{status:'scheduled',window:'May 20, 6:00 AM – 10:00 AM CT',windowType:'Heavy haul — oversized load',carrier:'McCarthy Logistics (internal)',dispatch:'(555) 482-7700',coordinator:'Marcus Webb',coordPhone:'(555) 482-3190',vehicle:'3-axle lowboy trailer. Operating weight 46,000 lb. North gate access — verify road bearing.',
@@ -1284,18 +1285,18 @@
   var BILLS=[
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
-  {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400},
-  {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420}
+  {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400,cost:'09 · Finishes'},
+  {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420,cost:'09 · Finishes'}
 ]},
     {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Pending',date:'May 12',day:4,notes:0,
 charges:[
-  {desc:'Daily rate — 20T excavator + operator',qty:16,rate:2250,amt:36000},
-  {desc:'Fuel surcharge',qty:1,rate:2400,amt:2400}
+  {desc:'Daily rate — 20T excavator + operator',qty:16,rate:2250,amt:36000,cost:'03 · Concrete'},
+  {desc:'Fuel surcharge',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'}
 ]},
     {id:'BILL-9016',order:'ORD-3020',product:'Rigging & lift hardware',amt:4980,cost:'05 · Metals',status:'Pending',date:'May 13',day:2,notes:1,
 charges:[
-  {desc:'Rigging hardware — daily rental',qty:7,rate:680,amt:4760},
-  {desc:'Setup / teardown labor',qty:1,rate:220,amt:220}
+  {desc:'Rigging hardware — daily rental',qty:7,rate:680,amt:4760,cost:'05 · Metals'},
+  {desc:'Setup / teardown labor',qty:1,rate:220,amt:220,cost:'05 · Metals'}
 ]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
@@ -1382,9 +1383,11 @@ charges:[
       +'<div class="acts">'+plan+' of '+total+' orders sourced from the demand plan</div>'
       +'<button class="btn" onclick="go(\'orders\')">View orders<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>';
     // also populate the vitals row cards
-    var pv=gel('vitalPlanPct'); if(pv) pv.innerHTML=pct+'<span class="u">planned</span>';
+    var r2=16, circ2=2*Math.PI*r2, arc2=(circ2*plan/total).toFixed(1);
+    var miniRingHtml='<svg width="42" height="42" viewBox="0 0 42 42" style="display:block;margin:4px 0 6px"><circle cx="21" cy="21" r="'+r2+'" fill="none" stroke="var(--g150)" stroke-width="6"/><circle cx="21" cy="21" r="'+r2+'" fill="none" stroke="var(--success)" stroke-width="6" stroke-dasharray="'+arc2+' '+circ2.toFixed(1)+'" stroke-linecap="round" transform="rotate(-90 21 21)"/><text x="21" y="25" text-anchor="middle" font-size="10" font-weight="700" fill="var(--charcoal)">'+pct+'%</text></svg>';
+    var pv=gel('vitalPlanPct'); if(pv) pv.innerHTML=miniRingHtml;
     var ps=gel('vitalPlanSub'); if(ps) ps.textContent=plan+' of '+total+' orders from plan';
-    var pvn=gel('vitalPlanPctNS'); if(pvn) pvn.innerHTML=pct+'<span class="u">planned</span>';
+    var pvn=gel('vitalPlanPctNS'); if(pvn) pvn.innerHTML=miniRingHtml;
     var psn=gel('vitalPlanSubNS'); if(psn) psn.textContent=plan+' of '+total+' orders from plan';
   }
   function renderOrders(){
@@ -1494,9 +1497,51 @@ charges:[
   }
   function toggleOrder(id){document.getElementById('row-'+id).classList.toggle('open');document.getElementById('trk-'+id).classList.toggle('open');}
 
-  /* ═══════════ BILLING & BUDGET ═══════════ */
+  /* ═══════════ BILLING & FINANCIALS ═══════════ */
   function getBill(id){return BILLS.filter(function(b){return b.id===id;})[0];}
   var billUI={}; // id -> '' | 'dispute' | 'edit'
+  var BF_PILLAR='';
+  function setBfPillar(p){
+    BF_PILLAR=p;
+    document.querySelectorAll('.bf-tab').forEach(function(b){
+      var oc=b.getAttribute('onclick')||'';
+      var isAll=(b.textContent.trim()==='All pillars');
+      b.classList.toggle('on',(isAll&&!p)||(oc.indexOf("'"+p+"'")>-1&&!isAll&&p));
+    });
+    renderCostCodes(); renderBills(); renderPending();
+  }
+  function renderCostCodes(){
+    var mount=document.getElementById('costCodeTable'); if(!mount)return;
+    var codes=[
+      {code:'01-540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:2050000,pillar:'equipment'},
+      {code:'02-320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3150000,pillar:'equipment'},
+      {code:'26-330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4750000,pillar:'equipment'},
+      {code:'31-620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2380000,pillar:'equipment'},
+      {code:'09-000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:480000,pillar:'equipment'},
+      {code:'05-120',name:'Metals',budget:960000,committed:740000,billed:362000,forecast:950000,pillar:'equipment'},
+      {code:'01-100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1180000,pillar:'profservices'},
+      {code:'02-100',name:'Geotechnical inspection',budget:320000,committed:240000,billed:120000,forecast:315000,pillar:'profservices'}
+    ];
+    var list=BF_PILLAR?codes.filter(function(c){return c.pillar===BF_PILLAR;}):codes;
+    if(!list.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
+    var totB=0,totC=0,totA=0,totF=0;
+    list.forEach(function(c){totB+=c.budget;totC+=c.committed;totA+=c.billed;totF+=c.forecast;});
+    var head='<div class="cc-table-head"><span>Cost code</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">Billed (actual)</span><span class="r">Forecast</span><span>Status</span></div>';
+    var rows=list.map(function(c){
+      var pct=Math.round(c.committed/c.budget*100);
+      var tone=c.forecast>c.budget?'bad':(c.forecast>c.budget*.95?'warn':'ok');
+      return '<div class="cc-row">'
+        +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+'</div></div>'
+        +'<div class="r cc-num">'+fmtBig(c.budget)+'</div>'
+        +'<div class="r cc-num">'+fmtBig(c.committed)+'<span class="cc-pct">'+pct+'%</span></div>'
+        +'<div class="r cc-num">'+fmtBig(c.billed)+'</div>'
+        +'<div class="r cc-num">'+fmtBig(c.forecast)+'</div>'
+        +'<div><span class="tag '+tone+'">'+(tone==='ok'?'On track':tone==='warn'?'Near limit':'Over budget')+'</span></div>'
+        +'</div>';
+    }).join('');
+    var foot='<div class="cc-row cc-foot"><div><b>Total</b></div><div class="r cc-num"><b>'+fmtBig(totB)+'</b></div><div class="r cc-num"><b>'+fmtBig(totC)+'</b></div><div class="r cc-num"><b>'+fmtBig(totA)+'</b></div><div class="r cc-num"><b>'+fmtBig(totF)+'</b></div><div></div></div>';
+    mount.innerHTML=head+rows+foot;
+  }
 
   // ── Billing history table (moved here from Orders) ──
   function renderBills(){
@@ -1541,7 +1586,12 @@ charges:[
       var chargesHtml='';
       if(b.charges&&b.charges.length){
         chargesHtml='<div class="pc-charges">'
-          +b.charges.map(function(c){return '<div class="pch-row"><span class="pch-d">'+c.desc+'</span><span class="pch-a">'+fmt(c.amt)+'</span></div>';}).join('')
+          +b.charges.map(function(c,ci){
+            var ccInput=(mode==='edit')
+              ?'<input class="rin" style="width:140px;font-size:11px;font-family:monospace" id="cc-'+b.id+'-'+ci+'" value="'+(c.cost||b.cost)+'" placeholder="Cost code">'
+              :'<span class="pch-cc">'+(c.cost||b.cost)+'</span>';
+            return '<div class="pch-row"><span class="pch-d">'+c.desc+'</span>'+ccInput+'<span class="pch-a">'+fmt(c.amt)+'</span></div>';
+          }).join('')
           +'<div class="pch-row pch-total"><span class="pch-d">Total</span><span class="pch-a">'+fmt(b.amt)+'</span></div>'
           +'</div>';
       }
@@ -1555,9 +1605,8 @@ charges:[
         '</div>';
       } else if(mode==='edit'){
         inline='<div class="pc-inline">'+
-          '<div class="pi-t">Correct cost code <span class="pi-note">every change is captured to the audit trail</span></div>'+
-          '<div style="margin-bottom:10px"><label style="font-size:10.5px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.02em;display:flex;flex-direction:column;gap:4px">Cost code (16-digit)<input class="rin" style="max-width:260px;margin-top:4px;font-family:monospace;letter-spacing:.03em" id="cc-'+b.id+'" value="'+b.cost+'" placeholder="e.g. 03-320-00-0000-00"></label></div>'+
-          '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save correction</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
+          '<div class="pi-t">Correct cost codes per charge <span class="pi-note">edit in the charge rows above — every change is captured to the audit trail</span></div>'+
+          '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save corrections</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
         '</div>';
       }
       var notes = b.notes ? '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+b.notes+' note'+(b.notes===1?'':'s')+'</span>' : '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+'Discuss</span>';
@@ -1586,7 +1635,7 @@ charges:[
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
   function disputeBill(id){ var b=getBill(id); if(!b) return; var el=document.getElementById('dr-'+id); var r=(el&&el.value||'').trim()||'Amount exceeds order estimate'; b.status='Disputed'; b.disputeReason=r; b.audit='You · disputed just now — auto-finalization paused'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Dispute raised on '+id+' — auto-finalization paused until 02S responds'); }
-  function saveCost(id){ var b=getBill(id); if(!b) return; var el=document.getElementById('cc-'+id); if(el) b.cost=el.value; b.audit='You · edited cost code just now'; billUI[id]=''; renderPending(); renderBills(); toast('Cost code updated on '+id+' — logged to audit trail'); }
+  function saveCost(id){ var b=getBill(id); if(!b) return; if(b.charges){b.charges.forEach(function(c,i){var el=document.getElementById('cc-'+id+'-'+i);if(el)c.cost=el.value.trim()||c.cost;});} var el=document.getElementById('cc-'+id); if(el) b.cost=el.value; b.audit='You · edited cost codes just now'; billUI[id]=''; renderPending(); renderBills(); toast('Cost codes updated on '+id+' — logged to audit trail'); }
 
   function renderBillInsights(){
     var wrap=document.getElementById('billInsights'); if(!wrap) return;
@@ -1615,7 +1664,7 @@ charges:[
     if(CURRENT!=='ns'){wrap.classList.add('hide');return;}
     wrap.classList.remove('hide');
     wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span>'+
-      '<div><div class="ist">2 orders need your attention</div><div class="isd"><b>ORD-3042</b> (excavator) is trending 2 days late and blocks the crane mobilization · <b>ORD-3031</b> (scissor lifts) has been idle 4 days — ending early saves ~$740. 1 billing anomaly is waiting in Billing &amp; budget.</div></div></div>';
+      '<div><div class="ist">2 orders need your attention</div><div class="isd"><b>ORD-3042</b> (excavator) is trending 2 days late and blocks the crane mobilization · <b>ORD-3031</b> (scissor lifts) has been idle 4 days — ending early saves ~$740. 1 billing anomaly is waiting in Billing &amp; financials.</div></div></div>';
   }
 
   // ── toast ──
@@ -1642,6 +1691,30 @@ charges:[
   function initials(n){var p=n.trim().split(/\s+/);return ((p[0]||'')[0]||'')+((p[1]||'')[0]||'');}
   function accTag(a){var m={'Admin':'bad','Approver':'info','Editor':'neu','View only':'neu'};return m[a]||'neu';}
   var SHIP_TO={addr:'22 W. Washington St, Ste 1500, Chicago IL 60602',contact:'Marcus Webb — (555) 482-3190'};
+
+  /* ═══════════ BASELINE APPROVAL ═══════════ */
+  var PLAN_BASELINES={};
+  function openBaselineModal(planKey, planTitle){
+    if(!TEAM.some(function(t){return t.access==='Approver'||t.access==='Admin';})){
+      toast('Only an Approver or Admin can baseline a plan'); return;
+    }
+    var already=PLAN_BASELINES[planKey];
+    var body='<div class="mform">'
+      +'<div style="font-size:13px;color:var(--g700);margin-bottom:12px">Approving <b>'+planTitle+'</b> as the baseline locks the current plan as the version of record for forecasting and commitment tracking.</div>'
+      +(already?'<div class="pc-anom" style="margin-bottom:12px">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div>A baseline was previously approved on <b>'+already+'</b>. Approving again will replace it.</div></div>':'')
+      +'<div class="mf"><label>Approved by</label><select class="acc-sel wfull" id="baselineApprover">'+TEAM.filter(function(t){return t.access==="Approver"||t.access==="Admin";}).map(function(t){return "<option>"+t.name+"</option>";}).join("")+'</select></div>'
+      +'<div class="mf"><label>Notes <span class="opt">optional</span></label><input class="rin" id="baselineNote" placeholder="e.g. Approved for Phase 1 — reflects Aug 2026 schedule rev"></div>'
+      +'</div>';
+    openModal('Approve plan as baseline',body+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="confirmBaseline(\''+planKey+'\',\''+planTitle+'\')">Approve as baseline</button></div>');
+  }
+  function confirmBaseline(planKey, planTitle){
+    var approver=(document.getElementById('baselineApprover')||{}).value||'You';
+    var ts='Jul 22, 2026';
+    PLAN_BASELINES[planKey]=ts+' — '+approver;
+    closeModal();
+    toast(planTitle+' baselined by '+approver+' · '+ts);
+    eqRefresh();
+  }
   function renderApprovers(){
     var mount=gel('profApprovers'); if(!mount)return;
     var ap=TEAM.filter(function(m){return m.access==='Approver'||m.access==='Admin';});
@@ -1814,7 +1887,7 @@ charges:[
   function openModal(title,html){document.getElementById('modalTitle').innerHTML=title;document.getElementById('modalBody').innerHTML=html;document.getElementById('modal').classList.remove('hide');}
   function closeModal(){document.getElementById('modal').classList.add('hide');}
   function quickAction(cat){
-    if(cat==='Billing question'){ go('billing'); toast('Billing & budget — review or dispute a charge here'); return; }
+    if(cat==='Billing question'){ go('billing'); toast('Billing & financials — review or dispute a charge here'); return; }
     if(cat==='Track request'){ go('orders'); toast('Orders — track the status of every request'); return; }
     if(cat==='Emergency'){ openEmergency(); return; }
     if(cat==='Contact coordinator'){ openCoordinator(); return; }
@@ -1899,7 +1972,7 @@ charges:[
     document.getElementById('fbBody').value='';
     toast('Feedback sent to 02S — thank you');
   }
-  function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & budget'); }
+  function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
 
   function openBillDiscuss(id){
     openModal('Billing discussion — '+id,
@@ -2707,7 +2780,8 @@ charges:[
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button></div>';
+    var _baselined=PLAN_BASELINES[pk];
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -2762,7 +2836,7 @@ charges:[
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); }
+    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }
