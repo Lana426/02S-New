@@ -2689,7 +2689,41 @@ function ctForecastView(yr){
   +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">FY forecast by pillar</span><span class="sub">$ millions \xb7 '+(yr==='FY25'?'FY 2025 view':'FY 2026 view')+'</span></div><div class="ct-bars big">'+bars+'</div>'+CT_PILLAR_LEGEND+'<div class="cfs-note">'+FY.note+'</div></div>'
   +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By 02S pillar</span><span class="sub">'+(yr==='FY25'?'anchored on FY25F':'anchored on FY26F')+'</span></div><div class="list"><div class="lrow lhead" style="grid-template-columns:'+gtc+'"><div>Pillar</div>'+colHdr+'</div>'+rowHtml+'</div></div>';
 }
-function ctForecastYear(el,yr){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var c=document.getElementById('ctForecast');if(c)c.innerHTML=ctForecastView(yr);}
+function ctForecastYear(el,yr){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var c=document.getElementById('ctForecast');if(c)c.innerHTML=yr==='YTD'?ctForecastYTD():ctForecastView(yr);}
+function ctForecastYTD(){
+  var months=[['Jan','$44M',22],['Feb','$76M',38],['Mar','$112M',56],['Apr','$148M',74],['May','$180M',90]];
+  var bars=months.map(function(m){return '<div class="ctb"><div class="ctb-stack" style="height:'+m[2]+'%">'+CT_PILLAR_STACK+'</div><div class="ctb-l">'+m[0]+'</div></div>';}).join('');
+  var vals=months.map(function(m){return '<div class="ctbv">'+m[1]+'</div>';}).join('');
+  var rows=[['January','$17M','$12M','$7M','$3M','$5M','$44M'],['February','$29M','$21M','$13M','$5M','$8M','$76M'],['March','$44M','$31M','$18M','$7M','$12M','$112M'],['April','$57M','$41M','$25M','$9M','$16M','$148M'],['May','$69M','$50M','$31M','$12M','$18M','$180M']];
+  var gtc='1.4fr 1fr 1fr 1fr 1fr 1fr 1fr';
+  var hdr='<div class="lrow lhead" style="grid-template-columns:'+gtc+'"><div>Month</div><div>Equipment</div><div>Procurement</div><div>Logistics</div><div>Prefab</div><div>Prof. Svcs</div><div>Total</div></div>';
+  var rowHtml=rows.map(function(r){return '<div class="lrow" style="grid-template-columns:'+gtc+'">'+r.map(function(v,i){return '<div'+(i===6?' style="font-weight:700;color:var(--charcoal)"':'')+'>'+v+'</div>';}).join('')+'</div>';}).join('');
+  return '<div class="ct-fy-summary"><div class="cfs"><div class="cfs-n">$560M</div><div class="cfs-k">YTD revenue · Jan–May</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">43%</div><div class="cfs-k">of $1.31B FY25 annual</div></div><div class="cfs-div"></div><div class="cfs"><div class="cfs-n" style="color:var(--success)">On track</div><div class="cfs-k">vs. annual plan</div></div></div>'
+  +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">Monthly 02S revenue</span><span class="sub">FY25 YTD · Jan–May · by pillar</span></div><div class="ctb-values">'+vals+'</div><div class="ct-bars big">'+bars+'</div>'+CT_PILLAR_LEGEND+'</div>'
+  +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By month &amp; pillar</span><span class="sub">$ millions</span></div><div class="list">'+hdr+rowHtml+'</div></div>';
+}
+function openD2CModal(){
+  openModal('Direct-to-client flag',
+    '<div class="opp-flag" style="margin:0 0 14px;font-size:12px">The D2C flag classifies an opportunity as directly contracted with the end client — bypassing standard channel routing. This affects market split, cost allocation, and G&amp;A treatment.</div>'
+    +'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Flagged opportunities</div>'
+    +'<table class="mini ct-opp-tbl" style="margin-bottom:14px"><tr><th>Opportunity</th><th>Pillar</th><th>Value</th><th>Status</th></tr>'
+    +'<tr><td>Fountain Valley WTP</td><td>Equipment</td><td>$40.0M</td><td><span class="chip red" style="font-size:10px">Active</span></td></tr>'
+    +'<tr><td>Mercy Hospital</td><td>Prof. Svcs</td><td>$210.0M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
+    +'<tr><td>Route 9 Widening</td><td>Procurement</td><td>$28.5M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
+    +'</table>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
+    +'<div style="background:rgba(220,29,52,.04);border:1px solid rgba(220,29,52,.12);border-radius:6px;padding:10px 12px"><div class="stat-sub">Revenue impact</div><div style="font-size:18px;font-weight:800;color:var(--charcoal)">+$4.2M</div></div>'
+    +'<div style="background:rgba(220,29,52,.04);border:1px solid rgba(220,29,52,.12);border-radius:6px;padding:10px 12px"><div class="stat-sub">Margin impact</div><div style="font-size:18px;font-weight:800;color:var(--charcoal)">+2.1pp</div></div>'
+    +'</div>'
+    +'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">What changes</div>'
+    +'<div class="fpa-checks" style="margin-bottom:14px">'
+    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Market split reclassified to Direct segment</div>'
+    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>G&amp;A rate adjusted to direct-client tier</div>'
+    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Allocation flow bypasses standard regional split</div>'
+    +'</div>'
+    +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();ctNav(\'ct-allocation\')">View allocation flow →</button></div>'
+  );
+}
 
 /* Margin drill modal — uses existing openModal pattern */
 function ctDraftPlans(){
