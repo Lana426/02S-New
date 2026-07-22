@@ -1008,64 +1008,81 @@
       <div class="cc-screen" id="ct-main">
         <div class="phead"><div><h1>O2S Control Tower</h1><div class="meta">Strategic Planning &amp; Finance Dashboard</div></div></div>
 
-        <div class="ct-tagline">One source of truth &nbsp;·&nbsp; One plan &nbsp;·&nbsp; One return</div>
-
-        <div class="edp-stats" style="margin:0 0 16px">
+        <div class="edp-stats" style="margin:0 0 14px">
           <div class="edp-stat"><div class="k">Weighted pipeline</div><div class="n">$4.77B</div><div class="s">sales opportunity</div></div>
-          <div class="edp-stat cost"><div class="k">Target margin</div><div class="n">8.0%</div><div class="s">plan 7.6% · −40 bps</div></div>
+          <div class="edp-stat cost"><div class="k">Target margin</div><div class="n">8.0%</div><div class="s">plan 7.6% &mdash; &minus;40 bps</div></div>
           <div class="edp-stat"><div class="k">Margin plans</div><div class="n">226</div><div class="s">of 634 opportunities</div></div>
           <div class="edp-stat"><div class="k">At risk</div><div class="n">2</div><div class="s">pillars below target</div></div>
         </div>
 
-        <!-- Row 1: Cards 1–3 -->
-        <div class="grid g3" style="margin-bottom:14px">
+        <!-- Sync status bar -->
+        <div class="ct-sync-bar" onclick="toggleEl('ctSyncPanel')">
+          <div class="csb-left">
+            <span class="csb-dot"></span>
+            <span class="csb-label">Execution plan &harr; Project number</span>
+            <span class="csb-pipe">|</span>
+            <span class="csb-sub">226 plans linked &nbsp;&middot;&nbsp; Last sync 3 min ago</span>
+          </div>
+          <div class="csb-right">
+            <span class="chip ok" style="font-size:10.5px">In sync</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;color:var(--g400)"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div id="ctSyncPanel" class="ct-sync-panel" style="display:none">
+          <div class="csp-hd"><span>CRM Opportunity</span><span></span><span>Project</span><span>Status</span></div>
+          <div class="csp-row">
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-opp-list')" style="font-size:11.5px;font-weight:600;text-align:left">OPP-0001234</button>
+            <span class="csp-arrow">&harr;</span>
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-margin-plan')" style="font-size:11.5px;font-weight:600;text-align:left">PRJ-567890 &nbsp;&middot;&nbsp; McCarthy &amp; Sons</button>
+            <span class="chip ok" style="font-size:10px">Linked</span>
+          </div>
+          <div class="csp-row">
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-opp-list')" style="font-size:11.5px;font-weight:600;text-align:left">OPP-0005678</button>
+            <span class="csp-arrow">&harr;</span>
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-margin-plan')" style="font-size:11.5px;font-weight:600;text-align:left">PRJ-234567 &nbsp;&middot;&nbsp; Broadstone Capital</button>
+            <span class="chip ok" style="font-size:10px">Linked</span>
+          </div>
+          <div class="csp-row">
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-opp-list')" style="font-size:11.5px;font-weight:600;text-align:left">OPP-0009012</button>
+            <span class="csp-arrow">&harr;</span>
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-margin-plan')" style="font-size:11.5px;font-weight:600;text-align:left">PRJ-890123 &nbsp;&middot;&nbsp; Civic Center Ph.2</button>
+            <span class="chip ok" style="font-size:10px">Linked</span>
+          </div>
+          <div class="csp-note">Click CRM opportunity to view detail &nbsp;&middot;&nbsp; Click project to open its margin plan</div>
+        </div>
+
+        <!-- Row 1: Opportunity list + Margin plan (full-width g2) -->
+        <div class="grid g2" style="margin:14px 0">
           <div class="card ct-nav-card" onclick="ctNav('ct-opp-list')">
-            <div class="ch"><span class="ci"><span class="ct-num">1</span></span><span class="t">Opportunity list</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="ch"><span class="t">Opportunity list</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
             <table class="mini ct-opp-tbl" style="margin-top:6px"><tr><th>Opportunity</th><th>Pillar</th><th>Stage</th><th>Est. Value</th></tr>
-              <tr><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Fountain Valley WTP</td><td>Equipment</td><td><span class="chip warn" style="font-size:10px">Bid</span></td><td>$40.0M</td></tr>
+              <tr><td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Fountain Valley WTP</td><td>Equipment</td><td><span class="chip warn" style="font-size:10px">Bid</span></td><td>$40.0M</td></tr>
               <tr><td>1GPA JOC Sales</td><td>Equipment</td><td><span class="chip ok" style="font-size:10px">Won</span></td><td>$1.8M</td></tr>
               <tr><td>Mercy Hospital</td><td>Prof. Svcs</td><td><span class="chip" style="font-size:10px">Pursuit</span></td><td>$210M</td></tr>
             </table>
-            <div class="ct-card-foot"><span>634 opportunities · 226 plans</span><button class="clink" onclick="event.stopPropagation();ctNav('ct-opp-list')" style="font-size:11px">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+            <div class="ct-card-foot"><span>634 opportunities &nbsp;&middot;&nbsp; 226 plans</span><button class="clink" onclick="event.stopPropagation();ctNav('ct-opp-list')" style="font-size:11px">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div>
           </div>
           <div class="card ct-nav-card" onclick="ctNav('ct-margin-plan')">
-            <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Margin plan</span><span class="chip warn" style="margin-left:auto;font-size:11px">2 at risk</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div style="display:flex;gap:16px;margin:8px 0 10px;padding:6px 0;border-bottom:1px solid var(--g200)">
+            <div class="ch"><span class="t">Margin plan</span><span class="chip warn" style="margin-left:auto;font-size:11px">2 at risk</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="ct-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;flex-shrink:0;color:#b45309"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg><span>3 missing exceptions &mdash; Prof. Services, Mercy Hospital, Civic Center Ph.2</span></div>
+            <div style="display:flex;gap:20px;margin:10px 0;padding:8px 0;border-bottom:1px solid var(--g200)">
               <div><div class="stat-sub">Target Margin</div><div class="bignum" style="font-size:20px">8.0%</div></div>
               <div><div class="stat-sub">Weighted Margin</div><div class="bignum" style="font-size:20px">7.6%</div></div>
-              <div><div class="stat-sub">At Risk</div><div class="bignum" style="font-size:20px;color:var(--red)">$ ——</div></div>
+              <div><div class="stat-sub">At Risk</div><div class="bignum" style="font-size:20px;color:var(--red)">$28.4M</div></div>
             </div>
-            <table class="mini ct-opp-tbl"><tr><th>Pillar / Product Line</th><th>Target %</th><th>Plan %</th><th>Δ bps</th></tr>
-              <tr><td>Equipment</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--success)">▲ ——</span></td></tr>
-              <tr><td>Procurement</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">▲ ——</span></td></tr>
-              <tr><td>Prof. Services</td><td>12.0%</td><td>——</td><td><span style="color:var(--red)">▼ ——</span></td></tr>
+            <table class="mini ct-opp-tbl"><tr><th>Pillar / Product Line</th><th>Target %</th><th>Plan %</th><th>&Delta; bps</th></tr>
+              <tr><td>Equipment</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--success)">&#9650; +60</span></td></tr>
+              <tr><td>Procurement</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">&#9650; +30</span></td></tr>
+              <tr><td>Prof. Services</td><td>12.0%</td><td>10.8%</td><td><span style="color:var(--red)">&#9660; &minus;120</span></td></tr>
             </table>
             <div class="ct-card-foot"><span></span><button class="clink" onclick="event.stopPropagation();ctNav('ct-margin-plan')" style="font-size:11px">View margin plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div>
           </div>
-          <div class="card ct-nav-card" onclick="ctNav('ct-fpa')">
-            <div class="ch"><span class="ci"><span class="ct-num">3</span></span><span class="t">Execution plan handshake</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div class="ct-handshake" style="margin:14px 0">
-              <div class="hs-node"><div class="hs-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="11" width="3" height="8" rx="1"/><rect x="10.5" y="6" width="3" height="13" rx="1"/><rect x="16" y="14" width="3" height="5" rx="1"/></svg></div><div class="hs-l">Pursuit &amp; Estimating</div><div class="hs-s">Margin Plan Submittal</div></div>
-              <div class="hs-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-              <div class="hs-node"><div class="hs-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="hs-l">Finance &amp; Controls</div><div class="hs-s">Validated Execution Plan</div></div>
-            </div>
-            <div class="ct-card-foot"><span style="font-size:11px">Status</span><span class="chip ok" style="font-size:11px">IN SYNC</span></div>
-          </div>
         </div>
 
-        <!-- Row 2: Cards 4–6 -->
+        <!-- Row 2: Charts + D2C -->
         <div class="grid g3" style="margin-bottom:14px">
-          <div class="card ct-nav-card" onclick="toast('Project number handshake (demo)')">
-            <div class="ch"><span class="ci"><span class="ct-num">4</span></span><span class="t">Project number handshake</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div style="display:flex;flex-direction:column;gap:8px;margin:12px 0;align-items:center">
-              <div class="pnh-box" style="width:100%;text-align:center"><div class="pnh-k">Opportunity / Quote #</div><div class="pnh-v mono">OPP-0001234</div></div>
-              <div class="pnh-arrow" style="flex-direction:row;gap:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:var(--g400)"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg><span class="chip ok">Linked</span></div>
-              <div class="pnh-box" style="width:100%;text-align:center"><div class="pnh-k">McCarthy Project #</div><div class="pnh-v mono">PRJ-567890</div></div>
-            </div>
-            <div class="ct-card-foot"><span>Last updated May 20, 2025</span><span class="chip ok" style="font-size:10.5px">Linked</span></div>
-          </div>
           <div class="card ct-nav-card" onclick="ctNav('ct-forecast')">
-            <div class="ch"><span class="ci"><span class="ct-num">5</span></span><span class="t">YoY 02S sales forecast</span><span class="sub">by pillar &amp; product line</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="ch"><span class="t">YoY 02S sales forecast</span><span class="sub">by pillar &amp; product line</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="ct-bars" style="height:90px;margin:8px 0 4px">
               <div class="ctb"><div class="ctb-stack" style="height:60%"><div style="height:40%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:27%;background:var(--g400)"></div></div><div class="ctb-l">FY23A</div></div>
               <div class="ctb"><div class="ctb-stack" style="height:72%"><div style="height:40%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:27%;background:var(--g400)"></div></div><div class="ctb-l">FY24A</div></div>
@@ -1075,7 +1092,7 @@
             <div class="ct-legend"><span><i style="background:var(--red)"></i>Building</span><span><i style="background:var(--charcoal)"></i>Infrastructure</span><span><i style="background:var(--g400)"></i>Industrial</span></div>
           </div>
           <div class="card ct-nav-card" onclick="ctNav('ct-forecast')">
-            <div class="ch"><span class="ci"><span class="ct-num">6</span></span><span class="t">Sales to date</span><span class="sub">FY25 · by pillar &amp; product line</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="ch"><span class="t">Sales to date</span><span class="sub">FY25 &middot; by pillar &amp; product line</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="ct-bars" style="height:90px;margin:8px 0 4px">
               <div class="ctb"><div class="ctb-stack" style="height:22%"><div style="height:40%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:27%;background:var(--g400)"></div></div><div class="ctb-l">Jan</div></div>
               <div class="ctb"><div class="ctb-stack" style="height:38%"><div style="height:40%;background:var(--red)"></div><div style="height:33%;background:var(--charcoal)"></div><div style="height:27%;background:var(--g400)"></div></div><div class="ctb-l">Feb</div></div>
@@ -1085,87 +1102,39 @@
             </div>
             <div class="ct-legend"><span><i style="background:var(--red)"></i>Building</span><span><i style="background:var(--charcoal)"></i>Infrastructure</span><span><i style="background:var(--g400)"></i>Industrial</span></div>
           </div>
-        </div>
-
-        <!-- Card 7: FP&A / Anaplan Guardrail (full width) -->
-        <div class="card ct-nav-card" style="margin-bottom:14px" onclick="ctNav('ct-fpa')">
-          <div class="ch"><span class="ci"><span class="ct-num">7</span></span><span class="t">FP&amp;A / Anaplan guardrail</span><span class="sub" style="margin-left:8px">Model O2S_FY25_Plan_v3 · Last run May 20, 2025 8:15 AM</span><span class="chip ok" style="margin-left:auto;font-size:10.5px">On track</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
-          <div class="ct-guardrails" style="margin-top:12px">
-            <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Revenue Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:88%"></div></div></div>
-            <div class="grd"><div class="grd-ico warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="grd-l">Margin Guardrail</div><div class="grd-b"><div class="grd-fill warn" style="width:62%"></div></div></div>
-            <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">SG&amp;A Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:75%"></div></div></div>
-            <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Cash Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:80%"></div></div></div>
-            <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Working Capital Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:71%"></div></div></div>
+          <div class="card ct-nav-card" style="display:flex;flex-direction:column" onclick="ctNav('ct-allocation')">
+            <div class="ch"><span class="t">Direct-to-client flag</span><span class="chip red" style="margin-left:auto;font-size:10.5px">Active</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="d2c-clean">
+              <div class="d2c-opp">Fountain Valley WTP</div>
+              <div class="d2c-meta">3 opportunities flagged</div>
+              <div class="d2c-impact">+$4.2M revenue &nbsp;&middot;&nbsp; +2.1pp margin</div>
+            </div>
+            <button class="clink" onclick="event.stopPropagation();ctNav('ct-allocation')" style="font-size:11px;margin-top:auto;padding-top:8px">View allocation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
 
-        <!-- Row 3: Cards 8–12 (compact 5-col) -->
-        <div class="grid g5" style="margin-bottom:20px">
-          <div class="card ct-nav-card" onclick="ctNav('ct-margin-plan')">
-            <div class="ch"><span class="ci" style="width:24px;height:24px;flex-shrink:0"><span class="ct-num" style="font-size:10px">8</span></span><span class="t" style="font-size:11.5px;line-height:1.3">Missing margin plan exceptions</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div style="font-size:10.5px;color:var(--g500);margin:4px 0 8px">TAM defaults applied</div>
-            <div style="display:flex;flex-direction:column;gap:5px">
-              <div style="display:flex;align-items:center;gap:5px"><span style="flex:1;font-size:11.5px;font-weight:600;color:var(--charcoal);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Mercy Hospital</span><span class="chip warn" style="font-size:9.5px;flex-shrink:0">No plan</span></div>
-              <div style="display:flex;align-items:center;gap:5px"><span style="flex:1;font-size:11.5px;font-weight:600;color:var(--charcoal);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Civic Center Ph.2</span><span class="chip warn" style="font-size:9.5px;flex-shrink:0">No plan</span></div>
-              <div style="display:flex;align-items:center;gap:5px"><span style="flex:1;font-size:11.5px;font-weight:600;color:var(--charcoal);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Baystate Med</span><span class="chip warn" style="font-size:9.5px;flex-shrink:0">Stale</span></div>
+        <!-- FP&A: Guardrails + Enterprise checks combined -->
+        <div class="card ct-nav-card" style="margin-bottom:20px" onclick="ctNav('ct-fpa')">
+          <div class="ch"><span class="t">FP&amp;A / Anaplan guardrail</span><span class="sub" style="margin-left:8px">Model O2S_FY25_Plan_v3 &nbsp;&middot;&nbsp; Last run May 20, 2025</span><span class="chip ok" style="margin-left:auto;font-size:10.5px">5/5 on track</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px;margin-top:12px;align-items:start">
+            <div class="ct-guardrails">
+              <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Revenue Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:88%"></div></div></div>
+              <div class="grd"><div class="grd-ico warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="grd-l">Margin Guardrail</div><div class="grd-b"><div class="grd-fill warn" style="width:62%"></div></div></div>
+              <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">SG&amp;A Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:75%"></div></div></div>
+              <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Cash Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:80%"></div></div></div>
+              <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Working Capital Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:71%"></div></div></div>
             </div>
-            <button class="clink" onclick="event.stopPropagation();ctNav('ct-margin-plan')" style="margin-top:auto;padding-top:8px;font-size:11px">View exceptions <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <div class="card ct-nav-card" onclick="ctNav('ct-allocation')">
-            <div class="ch"><span class="ci" style="width:24px;height:24px;flex-shrink:0"><span class="ct-num" style="font-size:10px">9</span></span><span class="t" style="font-size:11.5px">Direct-to-client flag</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div class="d2c" style="margin:8px 0 4px">
-              <div class="d2c-row"><span class="d2c-k" style="width:65px;font-size:9px">Opportunity</span><span class="d2c-v" style="font-size:10.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Fountain Valley WTP</span></div>
-              <div class="d2c-row"><span class="d2c-k" style="width:65px;font-size:9px">Client type</span><span class="d2c-toggle"><span class="d2c-opt on" style="font-size:10px;padding:2px 6px">Direct-to-client</span><span class="d2c-opt" style="font-size:10px;padding:2px 6px">Indirect</span></span></div>
-              <div class="d2c-row"><span class="d2c-k" style="width:65px;font-size:9px">Flag status</span><span class="chip red" style="font-size:10px">ON</span></div>
+            <div style="border-left:1px solid var(--g200);padding-left:24px">
+              <div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Enterprise FP&amp;A</div>
+              <div class="fpa-checks">
+                <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Consolidated Plan</div>
+                <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Financial Reporting</div>
+                <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Scenario Modeling</div>
+                <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Performance Insights</div>
+              </div>
+              <button class="clink" onclick="event.stopPropagation();ctNav('ct-fpa')" style="margin-top:12px;font-size:11px">View FP&amp;A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
             </div>
-            <div class="d2c-impacts" style="margin-top:6px"><div class="d2c-ih" style="font-size:9px">Impacts</div><span class="chip" style="font-size:9.5px;padding:2px 6px">Market split</span><span class="chip" style="font-size:9.5px;padding:2px 6px">Allocation flow</span><span class="chip" style="font-size:9.5px;padding:2px 6px">G&amp;A</span></div>
           </div>
-          <div class="card ct-nav-card" onclick="ctNav('ct-allocation')">
-            <div class="ch"><span class="ci" style="width:24px;height:24px;flex-shrink:0"><span class="ct-num" style="font-size:10px">10</span></span><span class="t" style="font-size:11.5px">Allocation flow</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div class="mini-flow">
-              <div class="mf-step">Regional Utilization</div>
-              <div class="mf-arrow">↓</div>
-              <div class="mf-step">National Market Splits</div>
-              <div class="mf-arrow">↓</div>
-              <div class="mf-step">Resource / Cost Allocation</div>
-              <div class="mf-arrow">↓</div>
-              <div class="mf-step">Project / Opportunity</div>
-            </div>
-            <button class="clink" onclick="event.stopPropagation();ctNav('ct-allocation')" style="margin-top:auto;padding-top:8px;font-size:11px">View allocation <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <div class="card ct-nav-card" onclick="ctNav('ct-allocation')">
-            <div class="ch"><span class="ci" style="width:24px;height:24px;flex-shrink:0"><span class="ct-num" style="font-size:10px">11</span></span><span class="t" style="font-size:11.5px">G&amp;A waterfall</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div class="mini-wf">
-              <div class="mwf-row"><span class="mwf-l">Gross margin</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:100%;background:var(--charcoal)"></div></div><span class="mwf-amt">$472M</span></div>
-              <div class="mwf-row"><span class="mwf-l">− Project costs</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:28%;background:var(--g300);margin-left:72%"></div></div><span class="mwf-amt">−$132M</span></div>
-              <div class="mwf-row"><span class="mwf-l">− Market G&amp;A</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:14%;background:var(--g300);margin-left:86%"></div></div><span class="mwf-amt">−$66M</span></div>
-              <div class="mwf-row"><span class="mwf-l">− National G&amp;A</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:12%;background:var(--g300);margin-left:88%"></div></div><span class="mwf-amt">−$57M</span></div>
-              <div class="mwf-row"><span class="mwf-l">− Enterprise G&amp;A</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:10%;background:var(--g300);margin-left:90%"></div></div><span class="mwf-amt">−$47M</span></div>
-              <div class="mwf-row" style="margin-top:4px;padding-top:4px;border-top:1px solid var(--g200)"><span class="mwf-l" style="color:var(--success);font-weight:700">Op. profit</span><div class="mwf-bar-wrap"><div class="mwf-bar" style="width:36%;background:var(--success)"></div></div><span class="mwf-amt" style="color:var(--success);font-weight:700">$170M</span></div>
-            </div>
-            <button class="clink" onclick="event.stopPropagation();ctNav('ct-allocation')" style="margin-top:auto;padding-top:6px;font-size:11px">View G&amp;A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <div class="card ct-nav-card" onclick="ctNav('ct-fpa')">
-            <div class="ch"><span class="ci" style="width:24px;height:24px;flex-shrink:0"><span class="ct-num" style="font-size:10px">12</span></span><span class="t" style="font-size:11.5px">Return to enterprise FP&amp;A</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;flex-shrink:0;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
-            <div style="font-size:10.5px;color:var(--g500);margin:4px 0 8px;font-weight:600">Enterprise FP&amp;A</div>
-            <div class="fpa-checks">
-              <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Consolidated Plan</div>
-              <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Financial Reporting</div>
-              <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Scenario Modeling</div>
-              <div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Performance Insights</div>
-            </div>
-            <button class="clink" onclick="event.stopPropagation();ctNav('ct-fpa')" style="margin-top:auto;padding-top:8px;font-size:11px">View FP&amp;A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-        </div>
-
-        <!-- Data & Systems footer -->
-        <div class="data-sys">
-          <div class="ds-label">Data &amp; Systems</div>
-          <div class="ds-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>CRM / Pursuit</span></div>
-          <div class="ds-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span>Estimating</span></div>
-          <div class="ds-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>O2S / Anaplan</span></div>
-          <div class="ds-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>ERP / Financials</span></div>
-          <div class="ds-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="21" x2="21" y2="21"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="3 3 12 10 21 3"/></svg><span>BI / Reporting</span></div>
         </div>
       </div>
 

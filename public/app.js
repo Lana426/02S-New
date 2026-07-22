@@ -1472,6 +1472,7 @@
   }
 
   // ── toast ──
+  function toggleEl(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'':'none';}
   function toast(msg){ var t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');},2800); }
 
   /* ═══════════ PROJECT PROFILE ═══════════ */
