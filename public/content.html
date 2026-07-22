@@ -1029,10 +1029,10 @@
             <div class="ch"><span class="ci"><span class="ct-num">1</span></span><span class="t">Opportunity list</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div class="searchbar" style="margin-bottom:10px"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><circle cx="11" cy="11" r="7.5"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input placeholder="Search opportunities…"></div>
             <table class="mini ct-opp-tbl"><tr><th>Opportunity</th><th>Stage</th><th>Value</th></tr><tr onclick="ctNav('ct-opp-detail')" style="cursor:pointer"><td>Fountain Valley WTP</td><td><span class="chip warn">Bid</span></td><td>$40.0M</td></tr><tr onclick="ctNav('ct-opp-detail')" style="cursor:pointer"><td>1GPA JOC Sales</td><td><span class="chip ok">Won</span></td><td>$1.8M</td></tr><tr onclick="ctNav('ct-opp-detail')" style="cursor:pointer"><td>Mercy Hospital</td><td><span class="chip">Pursuit</span></td><td>$210M</td></tr></table>
-            <button class="clink" onclick="ctNav('ct-opp-list')">Open 02S Opportunities <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="clink" onclick="ctNav('ct-margin-plan')">Open margin plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
           <div class="card ct-nav-card" onclick="ctNav('ct-margin-plan')">
-            <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Margin plan</span><span class="chip warn" style="margin-left:auto;font-size:11px">2 at risk</span></div>
+            <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Margin plan</span><span class="chip warn" style="margin-left:auto;font-size:11px">2 at risk</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
             <div style="display:flex;gap:18px;margin-bottom:10px"><div><div class="stat-sub">Target margin</div><div class="bignum" style="font-size:24px">8.0%</div></div><div><div class="stat-sub">Weighted</div><div class="bignum" style="font-size:24px">7.6%</div></div></div>
             <table class="mini ct-opp-tbl"><tr><th>Pillar / line</th><th>Target</th><th>Plan</th><th>Δ bps</th></tr><tr onclick="event.stopPropagation();ctMarginDrill('Equipment')" style="cursor:pointer"><td>Equipment</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--red)">▼ 60</span></td></tr><tr onclick="event.stopPropagation();ctMarginDrill('Procurement')" style="cursor:pointer"><td>Procurement</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">▲ 30</span></td></tr><tr onclick="event.stopPropagation();ctMarginDrill('Prefab')" style="cursor:pointer"><td>Prefab</td><td>11.0%</td><td>10.2%</td><td><span style="color:var(--red)">▼ 80</span></td></tr></table>
           </div>
@@ -1134,48 +1134,104 @@
 
       <!-- ══ NORTH STAR: MARGIN PLAN ══ -->
       <div class="cc-screen" id="ct-margin-plan">
-        <div class="phead"><div><h1>Margin plan</h1><div class="meta">Portfolio margin plan — target vs. weighted plan by pillar, opportunity coverage, and at-risk gaps.</div></div><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-main')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Control Tower</button></div>
+        <div class="phead"><div><h1>Margin plan</h1><div class="meta">Portfolio margin plan &amp; opportunity pipeline — target vs. weighted plan by pillar.</div></div><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-main')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Control Tower</button></div>
 
-        <div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd" style="color:rgba(255,255,255,.78);font-size:12.5px">Equipment (−60 bps) and Prefab (−80 bps) are the two at-risk pillars. Drafting margin plans for the 12 uncovered opportunities would lift weighted margin from 7.6% to 7.9% — closing most of the 40 bps gap to target.</div></div></div>
-
-        <div class="edp-stats" style="margin-bottom:20px">
-          <div class="edp-stat cost"><div class="k">Target margin</div><div class="n">8.0%</div><div class="s">portfolio plan</div></div>
-          <div class="edp-stat"><div class="k">Weighted plan</div><div class="n">7.6%</div><div class="s">−40 bps vs target</div></div>
-          <div class="edp-stat"><div class="k">At risk</div><div class="n">2</div><div class="s">pillars below target</div></div>
-          <div class="edp-stat"><div class="k">Plans submitted</div><div class="n">226</div><div class="s">of 634 opportunities</div></div>
-        </div>
-
-        <div class="card" style="margin-bottom:16px">
-          <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Pillar margin — target vs. plan</span><span class="sub">FY25 plan · all pillars</span></div>
-          <table class="mini ct-opp-tbl">
-            <tr><th>Pillar</th><th>Mix</th><th>Target</th><th>Plan</th><th>Δ bps</th><th>Status</th></tr>
-            <tr><td><b>Equipment</b></td><td>40%</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--red)">▼ 60</span></td><td><span class="chip warn">At risk</span></td></tr>
-            <tr><td><b>Procurement</b></td><td>29%</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">▲ 30</span></td><td><span class="chip ok">On track</span></td></tr>
-            <tr><td><b>Logistics</b></td><td>17%</td><td>7.5%</td><td>7.6%</td><td><span style="color:var(--success)">▲ 10</span></td><td><span class="chip ok">On track</span></td></tr>
-            <tr><td><b>Prof. Services</b></td><td>7%</td><td>12.0%</td><td>12.1%</td><td><span style="color:var(--success)">▲ 10</span></td><td><span class="chip ok">On track</span></td></tr>
-            <tr><td><b>Prefab</b></td><td>7%</td><td>11.0%</td><td>10.2%</td><td><span style="color:var(--red)">▼ 80</span></td><td><span class="chip warn">At risk</span></td></tr>
-          </table>
-          <div style="font-size:11.5px;color:var(--g500);margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">Weighted average margin: <b style="color:var(--charcoal)">7.6%</b> · Target: <b style="color:var(--red)">8.0%</b> · Gap: <b style="color:var(--red)">−40 bps</b></div>
-        </div>
-
-        <div class="grid g2" style="margin-bottom:16px">
-          <div class="card">
-            <div class="ch"><span class="ci"><span class="ct-num">8</span></span><span class="t">Missing margin plan exceptions</span><span class="sub">12 opportunities · TAM defaults applied</span><button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="ctDraftPlans()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M12 3l1.6 5L18 9.5l-4.4 1.5L12 16l-1.6-5L6 9.5 10.4 8 12 3z"/></svg> Draft all with 02S</button></div>
-            <div class="list">
-              <div class="lrow lhead" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div>Opportunity</div><div>Issue</div><div>TAM default</div><div></div></div>
-              <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Mercy Hospital</div><div><span class="chip warn">No plan</span></div><div style="color:var(--g500);font-size:11.5px">9.0% (Building)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
-              <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Civic Center Ph.2</div><div><span class="chip warn">No plan</span></div><div style="color:var(--g500);font-size:11.5px">8.0% (Infra)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
-              <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Baystate Med</div><div><span class="chip warn">Stale</span></div><div style="color:var(--g500);font-size:11.5px">9.0% (Building)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-list')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
+        <div class="ns-enhance">
+          <div class="ns-enhance-hd"><svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>Illustrative North Star enhancements</div>
+          <div class="ns-enhance-body">
+            <div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd" style="color:rgba(255,255,255,.78);font-size:12.5px">Equipment (−60 bps) and Prefab (−80 bps) are the two at-risk pillars. Drafting margin plans for the 12 uncovered opportunities would lift weighted margin from 7.6% to 7.9% — closing most of the 40 bps gap to target.</div></div></div>
+            <div class="edp-stats" style="margin-bottom:20px">
+              <div class="edp-stat cost"><div class="k">Target margin</div><div class="n">8.0%</div><div class="s">portfolio plan</div></div>
+              <div class="edp-stat"><div class="k">Weighted plan</div><div class="n">7.6%</div><div class="s">−40 bps vs target</div></div>
+              <div class="edp-stat"><div class="k">At risk</div><div class="n">2</div><div class="s">pillars below target</div></div>
+              <div class="edp-stat"><div class="k">Plans submitted</div><div class="n">226</div><div class="s">of 634 opportunities</div></div>
             </div>
-            <div style="font-size:11px;color:var(--g500);margin-top:10px">9 more opportunities without a margin plan — each defaults to the TAM rate.</div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Pillar margin — target vs. plan</span><span class="sub">FY25 plan · all pillars</span></div>
+              <table class="mini ct-opp-tbl">
+                <tr><th>Pillar</th><th>Mix</th><th>Target</th><th>Plan</th><th>Δ bps</th><th>Status</th></tr>
+                <tr><td><b>Equipment</b></td><td>40%</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--red)">▼ 60</span></td><td><span class="chip warn">At risk</span></td></tr>
+                <tr><td><b>Procurement</b></td><td>29%</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">▲ 30</span></td><td><span class="chip ok">On track</span></td></tr>
+                <tr><td><b>Logistics</b></td><td>17%</td><td>7.5%</td><td>7.6%</td><td><span style="color:var(--success)">▲ 10</span></td><td><span class="chip ok">On track</span></td></tr>
+                <tr><td><b>Prof. Services</b></td><td>7%</td><td>12.0%</td><td>12.1%</td><td><span style="color:var(--success)">▲ 10</span></td><td><span class="chip ok">On track</span></td></tr>
+                <tr><td><b>Prefab</b></td><td>7%</td><td>11.0%</td><td>10.2%</td><td><span style="color:var(--red)">▼ 80</span></td><td><span class="chip warn">At risk</span></td></tr>
+              </table>
+              <div style="font-size:11.5px;color:var(--g500);margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">Weighted average margin: <b style="color:var(--charcoal)">7.6%</b> · Target: <b style="color:var(--red)">8.0%</b> · Gap: <b style="color:var(--red)">−40 bps</b></div>
+            </div>
+            <div class="grid g2" style="margin-bottom:8px">
+              <div class="card">
+                <div class="ch"><span class="ci"><span class="ct-num">8</span></span><span class="t">Missing margin plan exceptions</span><span class="sub">12 opportunities · TAM defaults applied</span><button class="btn btn-dark btn-sm" style="margin-left:auto" onclick="ctDraftPlans()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M12 3l1.6 5L18 9.5l-4.4 1.5L12 16l-1.6-5L6 9.5 10.4 8 12 3z"/></svg> Draft all with 02S</button></div>
+                <div class="list">
+                  <div class="lrow lhead" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div>Opportunity</div><div>Issue</div><div>TAM default</div><div></div></div>
+                  <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Mercy Hospital</div><div><span class="chip warn">No plan</span></div><div style="color:var(--g500);font-size:11.5px">9.0% (Building)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
+                  <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Civic Center Ph.2</div><div><span class="chip warn">No plan</span></div><div style="color:var(--g500);font-size:11.5px">8.0% (Infra)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
+                  <div class="lrow" style="grid-template-columns:1.6fr .9fr 1fr .7fr"><div class="lrow-pri">Baystate Med</div><div><span class="chip warn">Stale</span></div><div style="color:var(--g500);font-size:11.5px">9.0% (Building)</div><div style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="ctNav('ct-opp-detail')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div></div>
+                </div>
+                <div style="font-size:11px;color:var(--g500);margin-top:10px">9 more opportunities without a margin plan — each defaults to the TAM rate.</div>
+              </div>
+              <div class="card">
+                <div class="ch"><span class="ci k2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="t">At-risk pillar detail</span></div>
+                <div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:8px">Equipment — 60 bps below target</div>
+                <div style="font-size:12px;color:var(--g600);margin-bottom:12px">Primary drivers: 3 large opportunities priced at sub-target rates in Q4 RFP cycle. Re-pricing window closes Feb 28.</div>
+                <div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:8px">Prefab — 80 bps below target</div>
+                <div style="font-size:12px;color:var(--g600);margin-bottom:10px">Dallas shop at capacity + overtime premium driving margin erosion. Capacity constraint resolves Q2 with new line.</div>
+                <button class="clink" onclick="ctNav('ct-fpa')">Model recovery scenarios in FP&amp;A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
+              </div>
+            </div>
           </div>
-          <div class="card">
-            <div class="ch"><span class="ci k2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span><span class="t">At-risk pillar detail</span></div>
-            <div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:8px">Equipment — 60 bps below target</div>
-            <div style="font-size:12px;color:var(--g600);margin-bottom:12px">Primary drivers: 3 large opportunities priced at sub-target rates in Q4 RFP cycle. Re-pricing window closes Feb 28.</div>
-            <div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:8px">Prefab — 80 bps below target</div>
-            <div style="font-size:12px;color:var(--g600);margin-bottom:10px">Dallas shop at capacity + overtime premium driving margin erosion. Capacity constraint resolves Q2 with new line.</div>
-            <button class="clink" onclick="ctNav('ct-fpa')">Model recovery scenarios in FP&amp;A <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+
+        <div class="ns-v1-hd">
+          <span class="ns-v1-t">02S Opportunities</span>
+          <span class="chip ok" style="font-size:10.5px;margin-left:8px">Live in product today</span>
+          <span style="flex:1"></span>
+          <span style="font-size:11.5px;color:var(--g500)">Pipeline, margin plans &amp; pillar breakdowns</span>
+        </div>
+
+        <div class="opp-flag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div><b>02S Opportunities.</b> A high-level representation of the 02S Opportunities product, currently in Beta — pipeline, margin plans, and pillar breakdowns.</div>
+        </div>
+
+        <div class="opp-filter">
+          <span class="opp-fchip">Name <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Tier <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Business Unit <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Stage <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span><span class="opp-fchip">Has Margin Plan <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg></span>
+          <span style="margin-left:auto;font-size:11.5px;color:var(--info)">Award / construction date from <b>Thu, Jan 1, 2026</b></span>
+        </div>
+
+        <div class="opp-cards">
+          <div class="opp-sum"><div class="os-k">Revenue opportunity</div><div class="os-v">$6.47B</div><div class="os-s">$3.13B awarded</div></div>
+          <div class="opp-sum"><div class="os-k">Sales opportunity</div><div class="os-v">$4.77B</div><div class="os-s">$2.15B awarded</div></div>
+          <div class="opp-sum"><div class="os-k">Sales margin</div><div class="os-v">$946.98M</div><div class="os-s">$451.51M awarded</div></div>
+        </div>
+
+        <div class="opp-totals">
+          <div class="opp-tot"><div class="ot-k">Total opportunities</div><div class="ot-v">634</div></div>
+          <div class="opp-tot"><div class="ot-k">Margin plans</div><div class="ot-v">226</div></div>
+        </div>
+
+        <div class="card" style="border-top:3px solid var(--red)">
+          <div class="card-h">
+            <span class="card-title" style="color:var(--red)">All opportunities</span>
+            <span class="hcount">select one to open its margin plan</span>
+            <div class="hright"><button class="btn btn-ghost btn-sm" onclick="toast('New margin plan (demo)')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create margin plan</button></div>
+          </div>
+          <div class="opp-grid">
+            <div class="opp-item on" onclick="ctNav('ct-opp-detail')">
+              <div class="oi-head">
+                <div><b>Fountain Valley WTP Pretreatment</b><div class="oi-tags"><span class="opp-chip opp-chip-warn">Medium</span>Construction Management/General Contracting &nbsp;<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>&nbsp;Colorado Springs</div></div>
+                <span class="oi-val">$40.0M</span>
+              </div>
+              <div class="oi-tl"><div class="oi-tl-h">Construction timeline</div><div class="oi-tl-row"><span><i>Award</i>—</span><span><i>Start</i>12/01/2027</span><span><i>Complete</i>12/31/2029</span></div></div>
+              <div class="oi-nolink">No linked margin plans</div>
+            </div>
+            <div class="opp-item" onclick="ctNav('ct-opp-detail')">
+              <div class="oi-head">
+                <div><b>1GPA – 2026 Q1 JOC Sales</b><div class="oi-tags"><span class="opp-chip opp-chip-red">High</span>Construction Management/General Contracting &nbsp;<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>&nbsp;Phoenix</div></div>
+                <span class="oi-val">$1.8M</span>
+              </div>
+              <div class="oi-tl"><div class="oi-tl-h">Construction timeline</div><div class="oi-tl-row"><span><i>Award</i>—</span><span><i>Start</i>08/03/2026</span><span><i>Complete</i>03/31/2027</span></div></div>
+              <div class="oi-mp"><div class="oi-tl-h">Margin plan</div><div class="oi-tl-row"><span><i>Revenue opp.</i>$214.9K</span><span><i>TAM capture</i>29.4%</span><span><i>Sales opp.</i>$63.2K</span><span><i>Sales margin</i>$15.0K</span></div></div>
+            </div>
           </div>
         </div>
       </div>
