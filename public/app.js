@@ -2614,7 +2614,7 @@
     var ap=document.querySelector('.app'); if(ap)ap.style.display='none';
     var cc=document.getElementById('ccApp'); if(cc)cc.style.display='none';
     var ct=document.getElementById('ctApp'); if(ct)ct.style.display='flex';
-    ctNav('ct-opp-list');
+    ctSetVer('ns');
   }
   function backFromCT(){
     var ct=document.getElementById('ctApp'); if(ct)ct.style.display='none';
