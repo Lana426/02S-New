@@ -802,7 +802,6 @@
       <div class="sb-group">Operate</div>
       <a class="sb-item active" id="ccnav-ccdash" onclick="ccGo('ccdash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Ops dashboard</a>
       <a class="sb-item" id="ccnav-fulfill" onclick="ccGo('fulfill')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.5h13l3.5 6.5v5a2 2 0 01-2 2H4a2 2 0 01-2-2v-5z"/></svg>Fulfillment queue</a>
-      <a class="sb-item" id="ccnav-fleet" onclick="ccGo('fleet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/></svg>Asset lifecycle</a>
       <div class="sb-group">Plan &amp; finance</div>
       <a class="sb-item" id="ccnav-gap" onclick="ccGo('gap')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Demand&ndash;supply &amp; CapEx</a>
       <a class="sb-item" id="ccnav-anomaly" onclick="ccGo('anomaly')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>Billing &amp; anomalies</a>
@@ -827,7 +826,6 @@
     <main>
       <div class="screen active" id="ccscreen-ccdash"><div id="ccDash"></div></div>
       <div class="screen" id="ccscreen-fulfill"><div id="ccFulfill"></div></div>
-      <div class="screen" id="ccscreen-fleet"><div id="ccFleet"></div></div>
       <div class="screen" id="ccscreen-gap"><div id="ccGap"></div></div>
       <div class="screen" id="ccscreen-anomaly"><div id="ccAnomaly"></div></div>
       <div class="screen" id="ccscreen-margin"><div id="ccMargin"></div></div>
@@ -1032,7 +1030,7 @@
             <button class="clink" onclick="ctNav('ct-opp-list')">Open 02S Opportunities <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
           <div class="card">
-            <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Margin plan</span></div>
+            <div class="ch"><span class="ci"><span class="ct-num">2</span></span><span class="t">Margin plan</span><span class="chip warn" style="margin-left:auto;font-size:11px">2 at risk</span></div>
             <div style="display:flex;gap:18px;margin-bottom:10px"><div><div class="stat-sub">Target margin</div><div class="bignum" style="font-size:24px">8.0%</div></div><div><div class="stat-sub">Weighted</div><div class="bignum" style="font-size:24px">7.6%</div></div></div>
             <table class="mini ct-opp-tbl"><tr><th>Pillar / line</th><th>Target</th><th>Plan</th><th>Δ bps</th></tr><tr onclick="ctMarginDrill('Equipment')" style="cursor:pointer"><td>Equipment</td><td>9.0%</td><td>8.4%</td><td><span style="color:var(--red)">▼ 60</span></td></tr><tr onclick="ctMarginDrill('Procurement')" style="cursor:pointer"><td>Procurement</td><td>6.0%</td><td>6.3%</td><td><span style="color:var(--success)">▲ 30</span></td></tr><tr onclick="ctMarginDrill('Prefab')" style="cursor:pointer"><td>Prefab</td><td>11.0%</td><td>10.2%</td><td><span style="color:var(--red)">▼ 80</span></td></tr></table>
           </div>
@@ -1113,6 +1111,21 @@
             </div>
             <div class="d2c-impacts"><div class="d2c-ih">Impacts</div><span class="chip">Market split</span><span class="chip">Allocation flow</span><span class="chip">G&amp;A allocation</span></div>
             <div style="font-size:11px;color:var(--g500);margin-top:10px">Direct-to-client work allocates differently through market splits and G&amp;A — flagging it here keeps the waterfall and margin plan honest.</div>
+          </div>
+        </div>
+
+        <div class="grid g3" style="margin-top:8px">
+          <div class="card ct-dd-card" onclick="ctNav('ct-forecast')">
+            <div class="ch"><span class="ci" style="width:24px;height:24px"><span class="ct-num" style="font-size:11px">10</span></span><span class="t">YoY 02S forecast</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div style="font-size:11.5px;color:var(--g500)">Year-over-year by pillar — deep dive</div>
+          </div>
+          <div class="card ct-dd-card" onclick="ctNav('ct-allocation')">
+            <div class="ch"><span class="ci" style="width:24px;height:24px"><span class="ct-num" style="font-size:11px">11</span></span><span class="t">Allocation &amp; G&amp;A</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div style="font-size:11.5px;color:var(--g500)">Allocation flow &amp; G&amp;A waterfall — deep dive</div>
+          </div>
+          <div class="card ct-dd-card" onclick="ctNav('ct-fpa')">
+            <div class="ch"><span class="ci" style="width:24px;height:24px"><span class="ct-num" style="font-size:11px">12</span></span><span class="t">Enterprise FP&amp;A</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;margin-left:auto;color:var(--g400)"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div style="font-size:11.5px;color:var(--g500)">Consolidated plan, scenario &amp; insights — deep dive</div>
           </div>
         </div>
       </div>

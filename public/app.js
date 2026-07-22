@@ -1804,13 +1804,13 @@
 
   /* ═══════════ COMMAND CENTER ═══════════ */
   var ccActive=null;
-  var CC_KEYS=['ccdash','fulfill','fleet','gap','anomaly','margin','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; }
   function ccGo(s){
     CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
     ccActive=s; renderCcScreen(s); window.scrollTo(0,0);
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='fleet'){ renderFleet(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -1871,7 +1871,6 @@
     h+='</div>';
     var qlinks=[
       {l:'Fulfillment queue',to:'fulfill',icon:IC.cart},
-      {l:'Asset lifecycle',to:'fleet',icon:IC.box},
       {l:'Billing &amp; anomalies',to:'anomaly',icon:IC.warn}
     ];
     h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
