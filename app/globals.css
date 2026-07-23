@@ -1543,6 +1543,10 @@
 .eq-search-ico{position:absolute;left:8px;width:14px;height:14px;color:var(--g400);pointer-events:none;flex-shrink:0}
 
 /* catalog search bar + grid cards */
+  .cat-search-count{font-size:12px;color:var(--g500);padding:4px 0 12px;font-weight:500}
+  .cat-search-group{margin-bottom:20px}
+  .csg-label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+  .csg-label svg{width:14px;height:14px;color:var(--g500)}
   .cat-search-wrap{position:relative;display:flex;align-items:center;margin-bottom:14px}
   .cat-search-ico{position:absolute;left:10px;width:16px;height:16px;color:var(--g400);pointer-events:none;flex-shrink:0}
   .cat-search-inp{padding-left:36px!important;width:100%;font-size:13px}

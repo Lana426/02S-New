@@ -110,7 +110,81 @@
     {id:'log-container',pillar:'logistics',pcat:'Logistics › Staging',cat:'Staging',name:'Storage container — 40 ft',spec:'40 ft · lockable · delivery & pick-up incl.',price:'$220',unit:'/mo',icon:'proc',mode:'rental',rate:220,mrate:220},
     // Additional professional services
     {id:'ps-commissioning',pillar:'profservices',pcat:'Prof. services › Engineering',cat:'Engineering',name:'Commissioning Agent — MEP',spec:'3rd-party CxA · LEED / ASHRAE 202',price:'$3,400',unit:'/week',icon:'proc',mode:'rental',rate:680,mrate:3400},
-    {id:'ps-bim',pillar:'profservices',pcat:'Prof. services › VDC',cat:'VDC',name:'VDC / BIM Coordination',spec:'3D clash detection · RFI modeling · weekly meetings',price:'$280',unit:'/hr',icon:'proc',mode:'rental',rate:280,mrate:5600}
+    {id:'ps-bim',pillar:'profservices',pcat:'Prof. services › VDC',cat:'VDC',name:'VDC / BIM Coordination',spec:'3D clash detection · RFI modeling · weekly meetings',price:'$280',unit:'/hr',icon:'proc',mode:'rental',rate:280,mrate:5600},
+    // Logistics — additional
+    {id:'log-concrete-pump',pillar:'logistics',pcat:'Logistics › Concrete',cat:'Concrete',name:'Boom Pump — 47m',spec:'47m reach · 150 CY/hr · full setup incl.',price:'$1,800',unit:'/pour',icon:'proc',mode:'onetime',rate:null,unitPrice:1800},
+    {id:'log-trailer-drop',pillar:'logistics',pcat:'Logistics › Equipment moves',cat:'Equipment moves',name:'Trailer drop — equipment relocation',spec:'On-site equipment relocation · forklift or crane assist',price:'$480',unit:'/move',icon:'proc',mode:'onetime',rate:null,unitPrice:480},
+    {id:'log-hoist',pillar:'logistics',pcat:'Logistics › Vertical transport',cat:'Vertical transport',name:'Material hoist — 2,000 lb',spec:'2,000 lb · 200 ft · diesel · platform car',price:'$2,800',unit:'/mo',icon:'lift',mode:'rental',rate:93,mrate:2800},
+    {id:'log-elev',pillar:'logistics',pcat:'Logistics › Vertical transport',cat:'Vertical transport',name:'Personnel / material elevator',spec:'Rack-and-pinion · 6,000 lb · 400 ft height',price:'$5,200',unit:'/mo',icon:'lift',mode:'rental',rate:173,mrate:5200},
+    {id:'log-rolloff',pillar:'logistics',pcat:'Logistics › Waste & cleanup',cat:'Waste & cleanup',name:'Roll-off container — 30 CY',spec:'30 CY debris box · swap-out on call',price:'$420',unit:'/pull',icon:'proc',mode:'onetime',rate:null,unitPrice:420},
+    {id:'log-container-rental',pillar:'logistics',pcat:'Logistics › Staging',cat:'Staging',name:'Trash chute system — multi-floor',spec:'12″ chute · gravity feed · ground-level dumpster',price:'$1,400',unit:'/mo',icon:'proc',mode:'rental',rate:47,mrate:1400},
+    {id:'log-roadplate',pillar:'logistics',pcat:'Logistics › Site access',cat:'Site access',name:'Road plates — 4×8 steel',spec:'1/2″ plate · temp road surface · installed',price:'$18',unit:'/day/plate',icon:'proc',mode:'rental',rate:18,mrate:540},
+    {id:'log-matting',pillar:'logistics',pcat:'Logistics › Site access',cat:'Site access',name:'Ground protection matting',spec:'8×16 HDPE · swamp mat · 80,000 lb rated',price:'$12',unit:'/day/mat',icon:'proc',mode:'rental',rate:12,mrate:360},
+    {id:'log-traffic',pillar:'logistics',pcat:'Logistics › Site access',cat:'Site access',name:'Traffic control — flagging crew',spec:'Certified flagger(s) · haul route / gate control',price:'$580',unit:'/day',icon:'proc',mode:'rental',rate:580,mrate:11600},
+    {id:'log-fuel',pillar:'logistics',pcat:'Logistics › Fuel & fluids',cat:'Fuel & fluids',name:'On-site fuel delivery',spec:'Diesel & gasoline · mobile tank · weekly scheduled',price:'$0.08',unit:'/gal surcharge',icon:'proc',mode:'onetime',rate:null,unitPrice:200},
+    {id:'log-water',pillar:'logistics',pcat:'Logistics › Fuel & fluids',cat:'Fuel & fluids',name:'Potable water service',spec:'1,000 gal tank truck · job-site delivery',price:'$280',unit:'/delivery',icon:'proc',mode:'onetime',rate:null,unitPrice:280},
+    {id:'log-portapotty',pillar:'logistics',pcat:'Logistics › Worker welfare',cat:'Worker welfare',name:'Portable restroom — standard',spec:'Weekly service · ADA available',price:'$140',unit:'/mo',icon:'proc',mode:'rental',rate:5,mrate:140},
+    {id:'log-portapotty-vip',pillar:'logistics',pcat:'Logistics › Worker welfare',cat:'Worker welfare',name:'Portable restroom — VIP / flushing',spec:'Flushable · hand wash station · weekly service',price:'$320',unit:'/mo',icon:'proc',mode:'rental',rate:11,mrate:320},
+    {id:'log-site-office',pillar:'logistics',pcat:'Logistics › Temporary facilities',cat:'Temporary facilities',name:'Modular site office — 10×40',spec:'Office trailer · HVAC · electrical · weekly rate',price:'$780',unit:'/mo',icon:'proc',mode:'rental',rate:26,mrate:780},
+    {id:'log-conf-trailer',pillar:'logistics',pcat:'Logistics › Temporary facilities',cat:'Temporary facilities',name:'Conference / break room trailer',spec:'20×60 · tables, chairs, kitchenette',price:'$1,400',unit:'/mo',icon:'proc',mode:'rental',rate:47,mrate:1400},
+    {id:'log-security',pillar:'logistics',pcat:'Logistics › Site security',cat:'Site security',name:'Guard booth & barrier package',spec:'Prefab guard booth · drop arm · camera-ready',price:'$620',unit:'/mo',icon:'proc',mode:'rental',rate:21,mrate:620},
+    {id:'log-fence-rental',pillar:'logistics',pcat:'Logistics › Site security',cat:'Site security',name:'Temp chain-link fence — installed',spec:'6 ft galvanized · posts · installed & removed',price:'$4',unit:'/LF/mo',icon:'proc',mode:'rental',rate:4,mrate:4},
+    {id:'log-oversize-air',pillar:'logistics',pcat:'Logistics › Freight',cat:'Freight',name:'Air freight — expedited',spec:'Same-day / next-flight-out · parts & instruments',price:'Quote',unit:'',icon:'proc',mode:'onetime',rate:null,est:800},
+    {id:'log-rail',pillar:'logistics',pcat:'Logistics › Freight',cat:'Freight',name:'Rail freight coordination',spec:'Box car or flatcar · 48-hr loading window',price:'Quote',unit:'',icon:'proc',mode:'onetime',rate:null,est:4200},
+    {id:'log-signage',pillar:'logistics',pcat:'Logistics › Site access',cat:'Site access',name:'Construction signage package',spec:'Barricades, cones, warning signs · MUTCD compliant',price:'$340',unit:'/mo',icon:'proc',mode:'rental',rate:11,mrate:340},
+    // Professional services — additional
+    {id:'ps-scheduler',pillar:'profservices',pcat:'Prof. services › Planning',cat:'Planning',name:'Project scheduler — CPM',spec:'Primavera P6 · CPM build & maintain · weekly update',price:'$180',unit:'/hr',icon:'proc',mode:'rental',rate:180,mrate:7200},
+    {id:'ps-estimator',pillar:'profservices',pcat:'Prof. services › Planning',cat:'Planning',name:'Cost estimator / QS',spec:'Quantity take-off · bid leveling · change order eval',price:'$160',unit:'/hr',icon:'proc',mode:'rental',rate:160,mrate:6400},
+    {id:'ps-owners-rep',pillar:'profservices',pcat:'Prof. services › Oversight',cat:'Oversight',name:"Owner's representative",spec:'Full-time site oversight · RFI routing · meeting facilitation',price:'$2,800',unit:'/week',icon:'proc',mode:'rental',rate:560,mrate:11200},
+    {id:'ps-mep-eng',pillar:'profservices',pcat:'Prof. services › Engineering',cat:'Engineering',name:'MEP engineer — field support',spec:'Mechanical / electrical / plumbing coordination',price:'$195',unit:'/hr',icon:'proc',mode:'rental',rate:195,mrate:7800},
+    {id:'ps-civil-eng',pillar:'profservices',pcat:'Prof. services › Engineering',cat:'Engineering',name:'Civil engineer — site support',spec:'Grading, drainage, utilities · RFI & inspection',price:'$185',unit:'/hr',icon:'proc',mode:'rental',rate:185,mrate:7400},
+    {id:'ps-leed',pillar:'profservices',pcat:'Prof. services › Sustainability',cat:'Sustainability',name:'LEED / sustainability consultant',spec:'LEED BD+C · documentation · submittals',price:'$175',unit:'/hr',icon:'proc',mode:'rental',rate:175,mrate:7000},
+    {id:'ps-code',pillar:'profservices',pcat:'Prof. services › Compliance',cat:'Compliance',name:'Code consultant — IBC / fire',spec:'Building code analysis · AHJ coordination',price:'$280',unit:'/hr',icon:'proc',mode:'rental',rate:280,mrate:5600},
+    {id:'ps-wp',pillar:'profservices',pcat:'Prof. services › Specialty',cat:'Specialty',name:'Waterproofing consultant',spec:'Below-grade & plaza systems · mock-up review',price:'$220',unit:'/hr',icon:'proc',mode:'rental',rate:220,mrate:8800},
+    {id:'ps-fp',pillar:'profservices',pcat:'Prof. services › Specialty',cat:'Specialty',name:'Fire protection engineer',spec:'Hydraulic calcs · system review · AHJ meetings',price:'$240',unit:'/hr',icon:'proc',mode:'rental',rate:240,mrate:9600},
+    {id:'ps-acoustics',pillar:'profservices',pcat:'Prof. services › Specialty',cat:'Specialty',name:'Acoustical consultant',spec:'IIC/STC analysis · mechanical noise review',price:'$210',unit:'/hr',icon:'proc',mode:'rental',rate:210,mrate:8400},
+    {id:'ps-testing-lab',pillar:'profservices',pcat:'Prof. services › Testing',cat:'Testing',name:'Testing laboratory — materials',spec:'Concrete, soil, steel · AASHTO / ASTM certified',price:'$1,200',unit:'/week',icon:'proc',mode:'rental',rate:240,mrate:4800},
+    {id:'ps-ndt',pillar:'profservices',pcat:'Prof. services › Testing',cat:'Testing',name:'Non-destructive testing — welds',spec:'UT, MT, PT · AWS D1.1 · weld inspection',price:'$480',unit:'/day',icon:'proc',mode:'rental',rate:480,mrate:9600},
+    {id:'ps-air-balance',pillar:'profservices',pcat:'Prof. services › Commissioning',cat:'Commissioning',name:'Test & balance — HVAC',spec:'TAB certification · AABC / NEBB · full report',price:'$4,800',unit:'/system',icon:'proc',mode:'onetime',rate:null,est:4800},
+    {id:'ps-cx-hvac',pillar:'profservices',pcat:'Prof. services › Commissioning',cat:'Commissioning',name:'Commissioning agent — HVAC/MEP',spec:'Systems cx · functional testing · Cx report',price:'$3,200',unit:'/week',icon:'proc',mode:'rental',rate:640,mrate:3200},
+    {id:'ps-electrical-eng',pillar:'profservices',pcat:'Prof. services › Engineering',cat:'Engineering',name:'Electrical engineer — site support',spec:'Power systems · arc flash · coordination study',price:'$210',unit:'/hr',icon:'proc',mode:'rental',rate:210,mrate:8400},
+    {id:'ps-drone',pillar:'profservices',pcat:'Prof. services › Survey',cat:'Survey',name:'Drone / aerial survey',spec:'FAA Part 107 · photogrammetry · weekly progress scan',price:'$680',unit:'/flight',icon:'proc',mode:'onetime',rate:null,unitPrice:680},
+    {id:'ps-as-built',pillar:'profservices',pcat:'Prof. services › Survey',cat:'Survey',name:'As-built survey — floor-by-floor',spec:'3D laser scan · point cloud · AutoCAD deliverable',price:'$1,800',unit:'/floor',icon:'proc',mode:'onetime',rate:null,unitPrice:1800},
+    {id:'ps-photo',pillar:'profservices',pcat:'Prof. services › Documentation',cat:'Documentation',name:'Construction photography',spec:'Weekly progress photos · Matterport 3D tour option',price:'$480',unit:'/week',icon:'proc',mode:'rental',rate:96,mrate:480},
+    {id:'ps-pm-support',pillar:'profservices',pcat:'Prof. services › Planning',cat:'Planning',name:'Project controls — weekly reporting',spec:'Cost/schedule integration · variance report · EVM',price:'$140',unit:'/hr',icon:'proc',mode:'rental',rate:140,mrate:5600},
+    {id:'ps-enviro-consult',pillar:'profservices',pcat:'Prof. services › Environmental',cat:'Environmental',name:'Environmental compliance consultant',spec:'Permit compliance · agency liaison · SWPPP review',price:'$195',unit:'/hr',icon:'proc',mode:'rental',rate:195,mrate:7800},
+    // Procurement — additional
+    {id:'proc-rebar',pillar:'procurement',pcat:'Procurement › Concrete',cat:'Concrete',name:'Rebar — #4 through #8',spec:'ASTM A615 Gr. 60 · cut & bent · per ton',price:'Quote',unit:'/ton',icon:'proc',mode:'onetime',rate:null,est:1100},
+    {id:'proc-cmu',pillar:'procurement',pcat:'Procurement › Masonry',cat:'Masonry',name:'CMU block — 8×8×16',spec:'Standard weight · 2,000 psi · per unit',price:'$2.80',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:3},
+    {id:'proc-lumber',pillar:'procurement',pcat:'Procurement › Wood',cat:'Wood',name:'Dimensional lumber — 2×6 KD',spec:'SPF · kiln-dried · random lengths',price:'Quote',unit:'/MBF',icon:'proc',mode:'onetime',rate:null,est:820},
+    {id:'proc-plywood',pillar:'procurement',pcat:'Procurement › Wood',cat:'Wood',name:'Plywood — 3/4″ CDX',spec:'4×8 sheet · exterior glue · sheathing',price:'$46',unit:'/sheet',icon:'proc',mode:'onetime',rate:null,unitPrice:46},
+    {id:'proc-geotext',pillar:'procurement',pcat:'Procurement › Site',cat:'Site',name:'Geotextile fabric — 4oz non-woven',spec:'Separation & filtration · 300 ft roll',price:'$280',unit:'/roll',icon:'proc',mode:'onetime',rate:null,unitPrice:280},
+    {id:'proc-drain-pipe',pillar:'procurement',pcat:'Procurement › Site',cat:'Site',name:'Corrugated HDPE drain pipe — 12″',spec:'12″ diameter · perforated · 20 ft stick',price:'$38',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:38},
+    {id:'proc-wp-materials',pillar:'procurement',pcat:'Procurement › Waterproofing',cat:'Waterproofing',name:'Below-grade waterproofing membrane',spec:'Self-adhering · HDPE-backed · 200 SF roll',price:'$420',unit:'/roll',icon:'proc',mode:'onetime',rate:null,unitPrice:420},
+    {id:'proc-sealant',pillar:'procurement',pcat:'Procurement › Sealants',cat:'Sealants',name:'Polyurethane sealant — 20 oz sausage',spec:'1-part moisture-cure · non-sag · joints up to 1.5″',price:'$14',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:14},
+    {id:'proc-safety-net',pillar:'procurement',pcat:'Procurement › Safety',cat:'Safety',name:'Fall protection net system',spec:'4″ mesh · 5,000 lb min. break strength · per panel',price:'$680',unit:'/panel',icon:'proc',mode:'onetime',rate:null,unitPrice:680},
+    {id:'proc-firstaid',pillar:'procurement',pcat:'Procurement › Safety',cat:'Safety',name:'First aid cabinet — OSHA Class A',spec:'Stocked · 25-person job site · wall-mount',price:'$185',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:185},
+    {id:'proc-cones',pillar:'procurement',pcat:'Procurement › Safety',cat:'Safety',name:'Traffic cones — 28″ fluorescent',spec:'28″ MUTCD-compliant · reflective collar · lot of 10',price:'$95',unit:'/lot',icon:'proc',mode:'onetime',rate:null,unitPrice:95},
+    {id:'proc-barricade',pillar:'procurement',pcat:'Procurement › Safety',cat:'Safety',name:'Interlocking plastic barricade',spec:'Water-ballasted · 6.5 ft · MUTCD Type III',price:'$38',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:38},
+    {id:'proc-form-ply',pillar:'procurement',pcat:'Procurement › Formwork',cat:'Formwork',name:'Concrete form ply — 3/4″ HDO',spec:'High-density overlay · reusable · 4×8',price:'$82',unit:'/sheet',icon:'proc',mode:'onetime',rate:null,unitPrice:82},
+    {id:'proc-snapties',pillar:'procurement',pcat:'Procurement › Formwork',cat:'Formwork',name:'Snap ties — 6″ wall',spec:'Steel snap ties · 3,000 lb · lot of 100',price:'$48',unit:'/lot',icon:'proc',mode:'onetime',rate:null,unitPrice:48},
+    {id:'proc-wedge',pillar:'procurement',pcat:'Procurement › Formwork',cat:'Formwork',name:'Wedge bolts & clamps',spec:'Plate clamps · coil ties · assorted lot',price:'$180',unit:'/lot',icon:'proc',mode:'onetime',rate:null,unitPrice:180},
+    {id:'proc-epoxy',pillar:'procurement',pcat:'Procurement › Adhesives',cat:'Adhesives',name:'Hilti epoxy anchor system',spec:'HIT-HY 270 · 16.9 fl oz · with nozzle',price:'$42',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:42},
+    {id:'proc-expansion',pillar:'procurement',pcat:'Procurement › Sealants',cat:'Sealants',name:'Expansion joint filler — 1/2″',spec:'Closed-cell polyethylene · compressible · 50 LF roll',price:'$28',unit:'/roll',icon:'proc',mode:'onetime',rate:null,unitPrice:28},
+    {id:'proc-asphalt-patch',pillar:'procurement',pcat:'Procurement › Site',cat:'Site',name:'Cold-patch asphalt — 50 lb bag',spec:'Ready-to-use · pothole & trench repair',price:'$24',unit:'/bag',icon:'proc',mode:'onetime',rate:null,unitPrice:24},
+    {id:'proc-handtools',pillar:'procurement',pcat:'Procurement › Tools',cat:'Tools',name:'Hand tool kit — carpenter',spec:'Hammers, levels, squares, tape · crew of 4',price:'$380',unit:'/kit',icon:'proc',mode:'onetime',rate:null,unitPrice:380},
+    {id:'proc-extension-cords',pillar:'procurement',pcat:'Procurement › Electrical',cat:'Electrical',name:'GFCI extension cord — 12/3 50 ft',spec:'Lighted end · outdoor rated · OSHA compliant',price:'$65',unit:'/ea',icon:'proc',mode:'onetime',rate:null,unitPrice:65},
+    // Prefab — additional
+    {id:'pf-bathroom-pod',pillar:'prefab',pcat:'Prefab › Architectural',cat:'Architectural',name:'Prefab bathroom pod',spec:'Factory-built · plumbing roughed · ADA or standard',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:22000},
+    {id:'pf-elec-room',pillar:'prefab',pcat:'Prefab › MEP',cat:'MEP',name:'Electrical room module',spec:'Shop-built switchgear room · conduit bundled · crane-set',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:48000},
+    {id:'pf-mech-room',pillar:'prefab',pcat:'Prefab › MEP',cat:'MEP',name:'Mechanical room module',spec:'Pre-assembled AHU & piping skid · test-run factory',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:62000},
+    {id:'pf-guardrail',pillar:'prefab',pcat:'Prefab › Safety',cat:'Safety',name:'Prefab guard rail system',spec:'Shop-welded posts & rails · OSHA 1926.502 compliant',price:'Quote',unit:'/LF',icon:'prefab',mode:'onetime',rate:null,est:180},
+    {id:'pf-canopy',pillar:'prefab',pcat:'Prefab › Architectural',cat:'Architectural',name:'Prefab canopy / sunshade',spec:'Steel tube frame · polycarbonate panels · crane-set',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:18500},
+    {id:'pf-wall-panel',pillar:'prefab',pcat:'Prefab › Architectural',cat:'Architectural',name:'Prefab wall panel system',spec:'Insulated metal panel · factory-finished · per SF',price:'Quote',unit:'/SF',icon:'prefab',mode:'onetime',rate:null,est:38},
+    {id:'pf-precast',pillar:'prefab',pcat:'Prefab › Structural',cat:'Structural',name:'Precast concrete panels',spec:'Architectural precast · custom finish · per panel',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:14000},
+    {id:'pf-mech-skid',pillar:'prefab',pcat:'Prefab › MEP',cat:'MEP',name:'Prefab mechanical piping skid',spec:'Pre-piped pump & valve assembly · shop-tested',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:28000},
+    {id:'pf-roof-hatch',pillar:'prefab',pcat:'Prefab › Architectural',cat:'Architectural',name:'Prefab roof access hatch',spec:'48×96 aluminum · insulated · OSHA ladder-up guard',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:3800},
+    {id:'pf-modular-util',pillar:'prefab',pcat:'Prefab › MEP',cat:'MEP',name:'Modular utility room',spec:'Pre-assembled utility connections · UL listed · lift-in',price:'Quote',unit:'',icon:'prefab',mode:'onetime',rate:null,est:35000}
   ];
   var KW={crane:'crane40',scissor:'scissor32',lift:'boom60',boom:'boom60',tele:'tele10',telehandler:'tele10',forklift:'tele10',generator:'gen45',power:'gen45',genset:'gen45',excavator:'excav20',dig:'excav20',light:'lighttower',compressor:'aircomp',air:'aircomp',headwall:'headwall',prefab:'headwall',pipe:'piperack',rack:'piperack',restroom:'restroom',rigging:'rigging',sling:'rigging',ppe:'ppe',safety:'ppe',bolt:'fasteners',fastener:'fasteners',dozer:'dozer-d6',compactor:'compactor',grader:'motorgrader',skid:'skidsteer','skid steer':'skidsteer',pump:'pump4in',dewater:'pump4in',welder:'weldgen',auger:'att-auger',breaker:'att-breaker',grapple:'att-grapple',trencher:'att-trencher',broom:'att-broom',forks:'att-forks',tamper:'att-plate',ripper:'att-ripper',mulcher:'att-mulcher',lowboy:'log-lowboy',flatbed:'log-flatbed',survey:'ps-survey',inspect:'ps-inspect',geotech:'ps-geotech',environmental:'ps-env',staging:'log-staging'};
 
@@ -239,18 +313,29 @@
     var res=document.getElementById('catSearchResults'), acc=document.getElementById('catAccordion');
     if(!q||!q.trim()){res.innerHTML='';res.classList.add('hide');acc.style.display='';return;}
     var qt=q.toLowerCase().trim();
-    var hits=CATALOG.filter(function(p){return p.name.toLowerCase().indexOf(qt)>-1||p.cat.toLowerCase().indexOf(qt)>-1||(p.spec&&p.spec.toLowerCase().indexOf(qt)>-1);});
+    var hits=CATALOG.filter(function(p){return p.name.toLowerCase().indexOf(qt)>-1||p.cat.toLowerCase().indexOf(qt)>-1||(p.pcat&&p.pcat.toLowerCase().indexOf(qt)>-1)||(p.spec&&p.spec.toLowerCase().indexOf(qt)>-1);});
     acc.style.display='none';
     if(!hits.length){res.innerHTML='<div style="padding:24px;text-align:center;color:var(--g400);font-size:13px">No catalog items match "'+q+'"</div>';res.classList.remove('hide');return;}
-    res.innerHTML=hits.map(function(p){
-      return '<div class="cat-card" onclick="openCatDetail(\''+p.id+'\')">'  
-        +'<div class="cc-icon">'+svg(ICON[p.icon]||ICON.box,2)+'</div>'
-        +'<div class="cc-name">'+p.name+'</div>'
-        +'<div class="cc-spec">'+p.spec+'</div>'
-        +'<div class="cc-meta"><span class="tag neu">'+pillarLabel(p.pillar)+'</span><span class="cc-price">'+p.price+p.unit+'</span></div>'
-        +'<button class="btn btn-dark btn-sm cc-add" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add to cart</button>'
-        +'</div>';
-    }).join('');
+    // Group by pillar for cleaner display
+    var byPillar={};
+    hits.forEach(function(p){if(!byPillar[p.pillar])byPillar[p.pillar]=[];byPillar[p.pillar].push(p);});
+    var html='<div class="cat-search-count">'+hits.length+' result'+(hits.length===1?'':'s')+' for &ldquo;'+q+'&rdquo;</div>';
+    Object.keys(byPillar).forEach(function(pKey){
+      var items=byPillar[pKey];
+      html+='<div class="cat-search-group">'+
+        '<div class="csg-label">'+svg(pillarIcon(pKey),2)+pillarLabel(pKey)+'</div>'+
+        '<div class="cat-grid">'+items.map(function(p){
+          var lead=p.mode==='rental'?'Lead 24–48 hr':(p.pillar==='prefab'?'Lead 2–3 wk':'Ships 3–5 days');
+          return '<div class="cat-card" onclick="openCatDetail(\''+p.id+'\')">'
+            +'<div class="cc-icon">'+svg(ICON[p.icon]||ICON.box,2)+'</div>'
+            +'<div class="cc-name">'+p.name+'</div>'
+            +'<div class="cc-spec">'+p.spec+'</div>'
+            +'<div class="cc-meta"><span class="tag neu">'+p.cat+'</span><span class="cc-price">'+p.price+p.unit+'</span></div>'
+            +'<button class="btn btn-dark btn-sm cc-add" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add to request</button>'
+            +'</div>';
+        }).join('')+'</div></div>';
+    });
+    res.innerHTML=html;
     res.classList.remove('hide');
   }
 
@@ -1287,7 +1372,7 @@
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
+    if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }
@@ -1645,6 +1730,64 @@ charges:[
   function getBill(id){return BILLS.filter(function(b){return b.id===id;})[0];}
   var billUI={}; // id -> '' | 'dispute' | 'edit'
   var BF_PILLAR='';
+  var COST_CODES=[
+    {code:'01-0540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:2050000,pillar:'equipment'},
+    {code:'02-0320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3150000,pillar:'equipment'},
+    {code:'26-0330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4750000,pillar:'equipment'},
+    {code:'31-0620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2380000,pillar:'equipment'},
+    {code:'09-0000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:480000,pillar:'equipment'},
+    {code:'05-0120',name:'Metals & structural steel',budget:960000,committed:740000,billed:362000,forecast:950000,pillar:'equipment'},
+    {code:'22-0000',name:'Prefab MEP — pipe racks & headwalls',budget:1840000,committed:1120000,billed:420000,forecast:1800000,pillar:'prefab'},
+    {code:'03-0100',name:'Prefab concrete formwork',budget:580000,committed:340000,billed:120000,forecast:570000,pillar:'prefab'},
+    {code:'05-0500',name:'Prefab structural assemblies',budget:920000,committed:480000,billed:96000,forecast:910000,pillar:'prefab'},
+    {code:'01-5100',name:'Logistics — heavy haul & crane mob',budget:640000,committed:280000,billed:84000,forecast:625000,pillar:'logistics'},
+    {code:'01-5200',name:'Logistics — freight & staging',budget:320000,committed:180000,billed:52000,forecast:315000,pillar:'logistics'},
+    {code:'06-0100',name:'Procurement — bulk materials',budget:1240000,committed:860000,billed:410000,forecast:1220000,pillar:'procurement'},
+    {code:'06-0200',name:'Procurement — hardware & safety',budget:380000,committed:220000,billed:98000,forecast:375000,pillar:'procurement'},
+    {code:'01-0100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1180000,pillar:'profservices'},
+    {code:'02-0100',name:'Geotechnical & special inspection',budget:320000,committed:240000,billed:120000,forecast:315000,pillar:'profservices'},
+    {code:'01-0800',name:'Environmental monitoring',budget:180000,committed:80000,billed:28000,forecast:175000,pillar:'profservices'}
+  ];
+  function setPillarLabel(k){ var m={equipment:'Equipment',prefab:'Prefab',logistics:'Logistics',procurement:'Procurement',profservices:'Prof. services'}; return m[k]||k; }
+  function renderBudget(){
+    var mount=document.getElementById('budgetViz'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var list=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
+    if(!list.length){mount.innerHTML='';return;}
+    var totB=0,totC=0,totA=0,totF=0;
+    list.forEach(function(c){totB+=c.budget;totC+=c.committed;totA+=c.billed;totF+=c.forecast;});
+    var pLabel=BF_PILLAR?setPillarLabel(BF_PILLAR):'All pillars';
+    var commitPct=Math.round(totC/totB*100);
+    var pendTotal=BILLS.filter(function(b){return b.status==='Pending'&&(!BF_PILLAR||b.cost.toLowerCase().indexOf(COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;})[0]&&COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;})[0].code||'__')>-1);}).reduce(function(s,b){return s+b.amt;},0);
+    var pendPct=Math.min(Math.round(pendTotal/totB*100),3);
+    var tone=totF>totB?'bad':(totF>totB*.97?'warn':'ok');
+    var toneLabel=tone==='ok'?fmtBig(totB-totF)+' under plan':tone==='warn'?'Near budget limit':'Over budget';
+    var h='<div class="budget-card'+(ns?' ns':'')+'">'+
+      '<div class="bc-head">'+
+        '<div><div class="bc-k">'+pLabel+' budget</div>'+
+        '<div class="bc-plan">'+fmtBig(totB)+' plan'+(ns?' &middot; forecast at completion <b>'+fmtBig(totF)+'</b>':'')+'</div></div>'+
+        '<span class="tag '+tone+'">'+toneLabel+'</span>'+
+      '</div>'+
+      '<div class="budget-bar">'+
+        '<span class="bseg-committed" style="width:'+commitPct+'%"></span>'+
+        (pendPct?'<span class="bseg-pending" style="width:'+pendPct+'%;min-width:4px"></span>':'')+
+        (ns?'<span class="bfac" style="left:'+Math.round(totF/totB*100)+'%" title="Forecast at completion"></span>':'')+
+      '</div>'+
+      '<div class="budget-legend">'+
+        '<span class="lg"><span class="sw" style="background:var(--success)"></span>Committed <b>'+fmtBig(totC)+'</b> &middot; '+commitPct+'%</span>'+
+        '<span class="lg"><span class="sw" style="background:var(--warning)"></span>Billed (actual) <b>'+fmtBig(totA)+'</b></span>'+
+        (ns?'<span class="lg"><span class="sw facsw"></span>Forecast <b>'+fmtBig(totF)+'</b></span>':
+           '<span class="lg"><span class="sw" style="background:var(--g200)"></span>Uncommitted <b>'+fmtBig(totB-totC)+'</b></span>')+
+      '</div>';
+    if(ns){
+      var overBudget=list.filter(function(c){return c.forecast>c.budget;});
+      if(overBudget.length){h+='<div class="bc-flags"><div class="bc-flag bad">'+svg('<path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/>',2)+'<div><b>'+overBudget.length+' cost code'+(overBudget.length===1?'':'s')+' over budget:</b> '+overBudget.map(function(c){return c.code;}).join(', ')+'</div></div></div>';}
+      var idleExp=ORDERS.filter(function(o){return o.recert==='pending'&&o.nsReco&&o.nsReco.rec==='return';});
+      if(idleExp.length){h+='<div class="bc-flags"><div class="bc-flag warn">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div><b>'+fmtBig(idleExp.reduce(function(s,o){return s+(o.mrate||0);},0))+'/mo idle exposure</b> — '+idleExp.length+' unit'+(idleExp.length===1?'':'s')+' flagged for early call-off</div></div></div>';}
+    }
+    h+='</div>';
+    mount.innerHTML=h;
+  }
   function setBfPillar(p){
     BF_PILLAR=p;
     document.querySelectorAll('.bf-tab').forEach(function(b){
@@ -1652,29 +1795,11 @@ charges:[
       var isAll=(b.textContent.trim()==='All pillars');
       b.classList.toggle('on',(isAll&&!p)||(oc.indexOf("'"+p+"'")>-1&&!isAll&&p));
     });
-    renderCostCodes(); renderBills(); renderPending();
+    renderBudget(); renderCostCodes(); renderBills(); renderPending();
   }
   function renderCostCodes(){
     var mount=document.getElementById('costCodeTable'); if(!mount)return;
-    var codes=[
-      {code:'01-0540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:2050000,pillar:'equipment'},
-      {code:'02-0320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3150000,pillar:'equipment'},
-      {code:'26-0330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4750000,pillar:'equipment'},
-      {code:'31-0620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2380000,pillar:'equipment'},
-      {code:'09-0000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:480000,pillar:'equipment'},
-      {code:'05-0120',name:'Metals & structural steel',budget:960000,committed:740000,billed:362000,forecast:950000,pillar:'equipment'},
-      {code:'22-0000',name:'Prefab MEP — pipe racks & headwalls',budget:1840000,committed:1120000,billed:420000,forecast:1800000,pillar:'prefab'},
-      {code:'03-0100',name:'Prefab concrete formwork',budget:580000,committed:340000,billed:120000,forecast:570000,pillar:'prefab'},
-      {code:'05-0500',name:'Prefab structural assemblies',budget:920000,committed:480000,billed:96000,forecast:910000,pillar:'prefab'},
-      {code:'01-5100',name:'Logistics — heavy haul & crane mob',budget:640000,committed:280000,billed:84000,forecast:625000,pillar:'logistics'},
-      {code:'01-5200',name:'Logistics — freight & staging',budget:320000,committed:180000,billed:52000,forecast:315000,pillar:'logistics'},
-      {code:'06-0100',name:'Procurement — bulk materials',budget:1240000,committed:860000,billed:410000,forecast:1220000,pillar:'procurement'},
-      {code:'06-0200',name:'Procurement — hardware & safety',budget:380000,committed:220000,billed:98000,forecast:375000,pillar:'procurement'},
-      {code:'01-0100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1180000,pillar:'profservices'},
-      {code:'02-0100',name:'Geotechnical & special inspection',budget:320000,committed:240000,billed:120000,forecast:315000,pillar:'profservices'},
-      {code:'01-0800',name:'Environmental monitoring',budget:180000,committed:80000,billed:28000,forecast:175000,pillar:'profservices'}
-    ];
-    var list=BF_PILLAR?codes.filter(function(c){return c.pillar===BF_PILLAR;}):codes;
+    var list=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
     if(!list.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
     var totB=0,totC=0,totA=0,totF=0;
     list.forEach(function(c){totB+=c.budget;totC+=c.committed;totA+=c.billed;totF+=c.forecast;});
@@ -3049,7 +3174,7 @@ charges:[
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
+    if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); }

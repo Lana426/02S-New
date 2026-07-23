@@ -531,49 +531,7 @@
 
         <!-- ── BUDGET PICTURE ── -->
         <div class="sec-title">Budget picture</div>
-
-        <!-- V1: static budget snapshot -->
-        <div id="budgetV1">
-          <div class="budget-card">
-            <div class="bc-head">
-              <div><div class="bc-k">Equipment budget</div><div class="bc-plan">$14.2M plan &middot; this project</div></div>
-              <span class="tag ok">On track</span>
-            </div>
-            <div class="budget-bar">
-              <span class="bseg-committed" style="width:78%"></span>
-              <span class="bseg-pending" style="width:0.4%;min-width:4px"></span>
-            </div>
-            <div class="budget-legend">
-              <span class="lg"><span class="sw" style="background:var(--success)"></span>Committed <b>$11.1M</b> &middot; 78%</span>
-              <span class="lg"><span class="sw" style="background:var(--warning)"></span>Pending in window <b>$48.2K</b></span>
-              <span class="lg"><span class="sw" style="background:var(--g200)"></span>Uncommitted <b>$3.05M</b></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- NS: budget as forecast + exposure -->
-        <div id="budgetNS" class="hide">
-          <div class="budget-card ns">
-            <div class="bc-head">
-              <div><div class="bc-k">Equipment budget</div><div class="bc-plan">$14.2M plan &middot; forecast at completion <b>$13.8M</b></div></div>
-              <span class="tag ok">$0.4M under plan</span>
-            </div>
-            <div class="budget-bar">
-              <span class="bseg-committed" style="width:78%"></span>
-              <span class="bseg-pending" style="width:0.4%;min-width:4px"></span>
-              <span class="bfac" style="left:97.2%" title="Forecast at completion"></span>
-            </div>
-            <div class="budget-legend">
-              <span class="lg"><span class="sw" style="background:var(--success)"></span>Committed <b>$11.1M</b></span>
-              <span class="lg"><span class="sw" style="background:var(--warning)"></span>Pending <b>$48.2K</b></span>
-              <span class="lg"><span class="sw facsw"></span>Forecast <b>$13.8M</b></span>
-            </div>
-            <div class="bc-flags">
-              <div class="bc-flag bad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/></svg><div><b>$3.2K/week open exposure</b> — 2 scissor lifts (ORD-3031) idle 4 days. Ending early recovers ~$740 this cycle.</div></div>
-              <div class="bc-flag warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg><div><b>1 anomaly on a pending bill</b> — BILL-9012 is 12% above its order estimate. Review below before it auto-finalizes.</div></div>
-            </div>
-          </div>
-        </div>
+        <div id="budgetViz"></div>
 
         <!-- ── COST CODE BREAKDOWN ── -->
         <div class="sec-title" style="margin-top:20px">By cost code <span class="sec-sub">commitments vs. actuals</span></div>
