@@ -1120,20 +1120,31 @@
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px"><div class="ct-legend"><span><i style="background:var(--red)"></i>Building</span><span><i style="background:var(--charcoal)"></i>Procurement</span></div><span style="font-size:10px;color:var(--success);font-weight:700">$560M YTD · 43% of plan</span></div>
           </div>
-          <div class="card" style="display:flex;flex-direction:column;cursor:pointer" onclick="openD2CModal()">
-            <div class="ch"><span class="t">Direct-to-client flag</span><span class="chip red" style="margin-left:auto;font-size:10.5px">Active</span></div>
-            <div class="d2c-clean">
-              <div class="d2c-opp">Fountain Valley WTP</div>
-              <div class="d2c-meta">3 opportunities flagged</div>
-              <div class="d2c-impact">+$4.2M revenue &nbsp;&middot;&nbsp; +2.1pp margin</div>
+          <div class="d2c-callout" onclick="openD2CModal()">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="width:28px;height:28px;border-radius:8px;background:rgba(138,109,31,.15);display:grid;place-items:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+              <span style="font-size:12.5px;font-weight:700;color:var(--warning)">Direct-to-client flag</span>
+              <span class="chip warn" style="margin-left:auto;font-size:10px">3 active</span>
             </div>
-            <button class="clink" onclick="event.stopPropagation();openD2CModal()" style="font-size:11px;margin-top:auto;padding-top:8px">See detail <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <div class="d2c-bridge">
+              <div class="d2c-node">
+                <div class="d2c-node-l">Opportunity</div>
+                <div class="d2c-node-v">Fountain Valley WTP</div>
+              </div>
+              <div class="d2c-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="9 18 15 12 9 6"/></svg></div>
+              <div class="d2c-node">
+                <div class="d2c-node-l">Margin impact</div>
+                <div class="d2c-node-v ok">+2.1pp · $4.2M rev</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--warning);margin-top:10px;font-weight:500">Client engaged directly — bypasses standard channel. Requires margin plan exception.</div>
+            <button class="d2c-cta" onclick="event.stopPropagation();openD2CModal()">Review flag <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
 
         <!-- FP&A: Guardrails + Enterprise checks combined -->
         <div class="card ct-nav-card" style="margin-bottom:20px" onclick="ctNav('ct-fpa')">
-          <div class="ch"><span class="t">FP&amp;A / Anaplan guardrail</span><span class="sub" style="margin-left:8px">Model O2S_FY25_Plan_v3 &nbsp;&middot;&nbsp; Last run May 20, 2025</span><span class="chip ok" style="margin-left:auto;font-size:10.5px">5/5 on track</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
+          <div class="ch"><span class="t">FP&amp;A / Anaplan guardrail</span><span class="sub" style="margin-left:8px">Model O2S_FY25_Plan_v3 &nbsp;&middot;&nbsp; Last run May 20, 2025</span><span class="chip warn" style="margin-left:auto;font-size:10.5px">4 need attention</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0;color:var(--g400);margin-left:8px"><polyline points="9 18 15 12 9 6"/></svg></div>
           <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px;margin-top:12px;align-items:start">
             <div class="ct-guardrails">
               <div class="grd"><div class="grd-ico ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></div><div class="grd-l">Revenue Guardrail</div><div class="grd-b"><div class="grd-fill ok" style="width:88%"></div></div></div>
@@ -1322,14 +1333,46 @@
           <div class="card clink" style="text-align:center" onclick="ctFpaFeature('insights')"><div class="ci k4" style="margin:0 auto 8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg></div><b style="font-size:12.5px;color:var(--charcoal)">Performance insights</b></div>
         </div>
         <div class="card" style="margin-top:16px">
-          <div class="ch"><span class="ci k2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></span><span class="t">Guardrail status</span><span class="chip ok" style="margin-left:auto">On track</span></div>
-          <table class="mini"><tr><th>Guardrail</th><th>Plan</th><th>Actual</th><th>Status</th></tr><tr><td>Revenue</td><td>$4.77B</td><td>$4.71B</td><td><span class="chip ok">On plan</span></td></tr><tr><td>Margin</td><td>8.0%</td><td>7.6%</td><td><span class="chip warn">−40 bps</span></td></tr><tr><td>SG&amp;A</td><td>$310M</td><td>$302M</td><td><span class="chip ok">Under</span></td></tr></table>
+          <div class="ch"><span class="ci k2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg></span><span class="t">Guardrail status</span><span class="sub" style="margin-left:8px">O2S_FY25_Plan_v3</span><span class="chip warn" style="margin-left:auto">4 need attention</span></div>
+          <table class="mini"><tr><th>Guardrail</th><th>Plan</th><th>Actual</th><th>Status</th></tr>
+            <tr><td>Revenue</td><td>$4.77B</td><td>$4.71B</td><td><span class="chip ok">On plan</span></td></tr>
+            <tr><td>EBITDA</td><td>12.5%</td><td>12.1%</td><td><span class="chip warn">−40 bps</span></td></tr>
+            <tr><td>Gross margin</td><td>9.0%</td><td>8.6%</td><td><span class="chip warn">−40 bps</span></td></tr>
+            <tr><td>SG&amp;A</td><td>$98M cap</td><td>$91M</td><td><span class="chip ok">Under</span></td></tr>
+            <tr><td>Working capital</td><td>$240M</td><td>$284M</td><td><span class="chip warn">Above target</span></td></tr>
+            <tr><td>Cash from ops</td><td>$400M</td><td>$388M YTD</td><td><span class="chip ok">On track</span></td></tr>
+            <tr><td>CapEx</td><td>$52M</td><td>$47M</td><td><span class="chip ok">Within plan</span></td></tr>
+            <tr><td>Equipment util. impact</td><td>—</td><td>+$6.2M re-rent</td><td><span class="chip warn">Over</span></td></tr>
+            <tr><td>Subcontractor spend</td><td>$1.18B</td><td>$1.14B</td><td><span class="chip ok">On plan</span></td></tr>
+            <tr><td>DSO</td><td>44 days</td><td>38 days</td><td><span class="chip ok">Improved</span></td></tr>
+          </table>
+          <div style="font-size:10.5px;color:var(--g500);margin-top:8px">Model: O2S_FY25_Plan_v3 &nbsp;·&nbsp; Last sync: May 20, 2025 &nbsp;·&nbsp; <span style="color:var(--warning);font-weight:600">4 guardrails require attention</span></div>
         </div>
-        <div class="card" style="margin-top:16px">
-          <div class="ch"><span class="ci k4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="11" width="3" height="8" rx="1"/><rect x="10.5" y="6" width="3" height="13" rx="1"/><rect x="16" y="14" width="3" height="5" rx="1"/></svg></span><span class="t">Scenario modeling</span><span class="sub">flex the plan and see the return move</span><span class="illus-tag" style="margin-left:auto">Illustrative</span></div>
-          <div class="scn-toggle"><button class="on" onclick="runScenario(this,'base')">Base plan</button><button onclick="runScenario(this,'up')">Upside · +2 wins</button><button onclick="runScenario(this,'down')">Downside · slippage</button></div>
-          <div class="scn-grid" id="scnGrid"></div>
-          <div style="font-size:11px;color:var(--g500);margin-top:10px">Scenarios reweight the pipeline and roll the change through margin, G&amp;A, and the return — so leadership can pressure-test the plan before committing.</div>
+        <div class="grid g2" style="margin-top:16px;gap:16px">
+          <div class="card">
+            <div class="ch"><span class="ci k2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M3.5 13a8.5 8.5 0 1 1 17 0"/><line x1="12" y1="13" x2="8.5" y2="9.5"/><circle cx="12" cy="13" r="1.2"/></svg></span><span class="t">Allocation flow</span><span class="sub">02S → Anaplan</span></div>
+            <div class="alloc-flow" style="margin-top:12px">
+              <div class="af-step on"><span class="af-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M3.5 13a8.5 8.5 0 1 1 17 0"/><line x1="12" y1="13" x2="8.5" y2="9.5"/><circle cx="12" cy="13" r="1.2"/></svg></span><span class="af-l">Regional utilization</span><span class="af-val">Bay 88% · Mt 72% · SW 91%</span></div>
+              <div class="af-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="af-step"><span class="af-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><line x1="3" y1="21" x2="21" y2="21"/><rect x="5" y="11" width="3" height="8" rx="1"/><rect x="10.5" y="6" width="3" height="13" rx="1"/><rect x="16" y="14" width="3" height="5" rx="1"/></svg></span><span class="af-l">National market splits</span><span class="af-val">3 markets · weighted</span></div>
+              <div class="af-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="af-step"><span class="af-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span><span class="af-l">Resource / cost allocation</span><span class="af-val">$132M project costs</span></div>
+              <div class="af-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><polyline points="6 9 12 15 18 9"/></svg></div>
+              <div class="af-step"><span class="af-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M21 8v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16V8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8z"/></svg></span><span class="af-l">Project / opportunity</span><span class="af-val">634 opportunities</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="ch"><span class="ci k4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span><span class="t">G&amp;A waterfall</span><span class="sub">gross margin → operating profit</span></div>
+            <div class="waterfall" style="margin-top:12px">
+              <div class="wf-row"><div class="wf-l">Gross margin</div><div class="wf-track"><div class="wf-bar" style="width:100%;background:var(--charcoal)"></div></div><div class="wf-amt">$472M</div></div>
+              <div class="wf-row"><div class="wf-l">Less: project costs</div><div class="wf-track"><div class="wf-bar" style="width:28%;background:var(--g300);margin-left:72%"></div></div><div class="wf-amt">−$132M</div></div>
+              <div class="wf-row"><div class="wf-l">Less: market G&amp;A</div><div class="wf-track"><div class="wf-bar" style="width:14%;background:var(--g300);margin-left:86%"></div></div><div class="wf-amt">−$66M</div></div>
+              <div class="wf-row"><div class="wf-l">Less: national G&amp;A</div><div class="wf-track"><div class="wf-bar" style="width:12%;background:var(--g300);margin-left:88%"></div></div><div class="wf-amt">−$57M</div></div>
+              <div class="wf-row"><div class="wf-l">Less: enterprise G&amp;A</div><div class="wf-track"><div class="wf-bar" style="width:10%;background:var(--g300);margin-left:90%"></div></div><div class="wf-amt">−$47M</div></div>
+              <div class="wf-row"><div class="wf-l" style="font-weight:700">Operating profit</div><div class="wf-track"><div class="wf-bar" style="width:36%;background:var(--success)"></div></div><div class="wf-amt" style="color:var(--success);font-weight:700">$170M</div></div>
+            </div>
+            <div style="text-align:right;font-size:11.5px;font-weight:700;margin-top:8px;color:var(--charcoal)">Operating margin <span style="color:var(--success)">7.6%</span> &nbsp;·&nbsp; <button class="clink" onclick="ctNav('ct-alloc-ga')" style="font-size:11px">Full view <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+          </div>
         </div>
       </div>
 
