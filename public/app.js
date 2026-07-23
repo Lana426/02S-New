@@ -1858,6 +1858,8 @@ charges:[
     var pend=BILLS.filter(function(b){return b.status==='Pending';});
     pend.sort(function(a,b){ if(ns){var ra=(a.anomaly?1:0),rb=(b.anomaly?1:0); if(rb-ra!==0) return rb-ra;} return b.day-a.day; });
     if(!pend.length){ host.innerHTML='<div class="pc-empty">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'<div><b>All caught up.</b> No bills in the 10-day window right now.</div></div>'; return; }
+    var extra=pend.length>3?pend.length-3:0;
+    pend=pend.slice(0,3);
     host.innerHTML = pend.map(function(b){
       var urg = b.day>=8?'red':(b.day>=5?'gold':'neu');
       var left = 10-b.day;
@@ -1947,7 +1949,7 @@ charges:[
         '</div>'+
         inline+
       '</div>';
-    }).join('');
+    }).join('')+(extra?'<div style="grid-column:1/-1;font-size:12px;color:var(--g500);padding:6px 2px">+'+extra+' more pending — <span class="oc-link" onclick="document.getElementById(\'billStatus\').value=\'Pending\';renderBills();document.getElementById(\'billHist\').scrollIntoView({behavior:\'smooth\'})">view all in billing history</span></div>':'');
   }
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
@@ -2050,6 +2052,7 @@ charges:[
     var ts='Jul 22, 2026';
     PLAN_BASELINES[planKey]=ts+' — '+approver;
     closeModal();
+    eqLog('Approved '+planTitle+' as baseline — '+approver+' · '+ts);
     toast(planTitle+' baselined by '+approver+' · '+ts);
     eqRefresh();
   }
