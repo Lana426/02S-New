@@ -295,7 +295,9 @@
   .pacc-body{padding:14px 15px 16px}
   .pacc-body.hide{display:none}
 
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
   .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cat-search-res{margin-bottom:8px}
   .prod{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);overflow:hidden;transition:box-shadow .15s,border-color .15s;display:flex;flex-direction:column}
   .prod:hover{box-shadow:var(--shadow-hover);border-color:var(--g300)}
   .prod .pimg{height:104px;background:var(--g100);display:grid;place-items:center;color:var(--g300);border-bottom:1px solid var(--g150);position:relative}
@@ -1567,7 +1569,7 @@
   .cat-search-wrap{position:relative;display:flex;align-items:center;margin-bottom:14px}
   .cat-search-ico{position:absolute;left:10px;width:16px;height:16px;color:var(--g400);pointer-events:none;flex-shrink:0}
   .cat-search-inp{padding-left:36px!important;width:100%;font-size:13px}
-  .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+  .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
   .cat-card{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:16px;cursor:pointer;transition:box-shadow .15s;display:flex;flex-direction:column;gap:6px}
   .cat-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.10);border-color:var(--g300)}
   .cc-icon{width:36px;height:36px;border-radius:8px;background:var(--g100);display:grid;place-items:center;color:var(--charcoal)}

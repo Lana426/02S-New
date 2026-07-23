@@ -292,24 +292,30 @@
   }
   function renderCatalog(){
     var acc=document.getElementById('catAccordion'); if(!acc)return;
-    var html='';
-    for(var i=0;i<PILLARS.length;i++){
-      var pil=PILLARS[i];
-      var items=CATALOG.filter(function(p){return p.pillar===pil.key;});
-      var open=(catOpen===pil.key);
-      html+='<div class="pacc'+(open?' open':'')+'">'+
-        '<button class="pacc-head" onclick="togglePillar(\''+pil.key+'\')">'+
-          '<span class="pacc-ic">'+svg(pillarIcon(pil.key),2)+'</span>'+
-          '<span class="pacc-t"><span class="pacc-name">'+pil.label+'</span></span>'+
-          '<span class="depth '+pil.depth+'">'+pil.dtext+'</span>'+
-          '<span class="pacc-chev">'+svg('<path d="M6 9l6 6 6-6"/>',2)+'</span>'+
-        '</button>'+
-        '<div class="pacc-body'+(open?'':' hide')+'">'+(open?pillarBody(pil,items):'')+'</div>'+
-      '</div>';
+    var pil=PILLARS.filter(function(p){return p.key===state.pillar;})[0];
+    if(!pil){ acc.innerHTML=''; return; }
+    if(pil.depth==='thin'){
+      acc.innerHTML='<div class="thin-panel">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',2)+
+        '<div class="tp-t">'+pil.label+' is ordered by request in v1</div>'+
+        '<div class="tp-d">This pillar isn\'t in the self-serve catalog yet. Describe what you need and 02S routes it to the '+pil.label.toLowerCase()+' team.</div>'+
+        '<button class="btn btn-dark" onclick="openCustom(\''+pil.label+'\')">Create custom request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div>';
+      return;
     }
-    acc.innerHTML=html;
+    var items=CATALOG.filter(function(p){return p.pillar===pil.key;});
+    var cards=items.map(function(p){
+      var lead=p.mode==='rental'?'Lead 24–48 hr':(p.pillar==='prefab'?'Lead 2–3 wk':'Ships 3–5 days');
+      return '<div class="prod" onclick="openCatDetail(\''+p.id+'\')" style="cursor:pointer"><div class="pimg"><span class="pcat">'+p.cat+'</span>'+svg(ICON[p.icon]||ICON.box)+'</div>'+
+        '<div class="pbody"><div class="pname">'+p.name+'</div><div class="pspec">'+p.spec+'</div>'+
+        '<div class="pfoot"><div><div class="pprice">'+p.price+'<span class="pu">'+p.unit+'</span></div><div class="plead">'+lead+'</div></div>'+
+        '<button class="padd txt" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add</button></div></div></div>';
+    }).join('');
+    if(pil.depth==='part'){
+      cards+='<div class="prod custom"><div class="pimg">'+svg('<path d="M12 5v14M5 12h14"/><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 3"/>')+'</div>'+
+        '<div class="pbody"><div class="pname">Need something else?</div><div class="pspec">Request anything else via form.</div>'+
+        '<div class="pfoot"><span class="cflag">Custom request</span><button class="padd" onclick="openCustom(\'Procurement\')">'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div></div></div>';
+    }
+    acc.innerHTML='<div class="cat-grid">'+cards+'</div>';
   }
-  function togglePillar(k){ catOpen=(catOpen===k)?null:k; renderCatalog(); }
 
   function onCatSearch(q){
     var res=document.getElementById('catSearchResults'), acc=document.getElementById('catAccordion');
