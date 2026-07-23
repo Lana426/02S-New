@@ -327,7 +327,7 @@
         +'<div class="pfoot"><div><div class="pprice">'+p.price+'<span class="pu">'+p.unit+'</span></div><div class="plead">'+lead+'</div></div>'
         +'<button class="padd txt" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add</button></div></div></div>';
     }).join('')+'</div>';
-    html+='<div class="cat-not-found">Don\'t see what you need? <button class="clink" onclick="onCatSearch(\'\');document.getElementById(\'catSearchInp\').value=\'\';openCustom(\'Equipment\')">Send a custom request &rsaquo;</button></div>';
+    html+='<div class="cat-not-found">Don\'t see what you need? <button class="clink" onclick="(function(){var _q=document.getElementById(\'catSearchInp\').value;onCatSearch(\'\');document.getElementById(\'catSearchInp\').value=\'\';openCustom(inferPillar(_q));})()">Send a custom request &rsaquo;</button></div>';
     res.innerHTML=html;
     res.classList.remove('hide');
   }
@@ -386,7 +386,7 @@
   function openDetail(pid,kind){
     var p=byId(pid); if(!p) return;
     cfg={pid:pid,kind:kind,custom:null};
-    document.getElementById('fPillar').value = optExists('fPillar',p.pcat)?p.pcat:document.getElementById('fPillar').value;
+    var _plab=pillarLabel(p.pillar); document.getElementById('fPillar').value = optExists('fPillar',_plab)?_plab:document.getElementById('fPillar').value;
     document.getElementById('fDesc').value = p.name+' — '+p.spec;
     var ns=CURRENT==='ns';
     // rental vs one-time field visibility
@@ -415,6 +415,16 @@
     document.getElementById('fQtyOnly').value=1;
     recalc();
     showCompose();
+  }
+  function inferPillar(term){
+    if(!term) return 'Equipment';
+    var q=(term||'').toLowerCase();
+    var eqK=['crane','lift','excavat','dozer','grader','compactor','forklift','tele','generator','boom','scissor','skid','pump','welder','auger','breaker','roller','paver','ripper','loader','scraper','trencher','drill','pile','grapple','rigging','compressor','mulcher','lowboy','flatbed'];
+    for(var ei=0;ei<eqK.length;ei++){ if(q.indexOf(eqK[ei])>-1) return 'Equipment'; }
+    var ck=Object.keys(CUSTOM_KW); for(var ci=0;ci<ck.length;ci++){ if(q.indexOf(ck[ci])>-1) return CUSTOM_KW[ck[ci]]; }
+    var hits=CATALOG.filter(function(p){return p.name.toLowerCase().indexOf(q)>-1||p.cat.toLowerCase().indexOf(q)>-1;});
+    if(hits.length) return pillarLabel(hits[0].pillar);
+    return 'Equipment';
   }
   function openCustom(pillar){
     cfg={pid:null,kind:'custom',custom:pillar};
@@ -479,11 +489,10 @@
     if(catHits.length){
       var inp=document.getElementById('catSearchInp'); if(inp) inp.value=catTerm;
       onCatSearch(catTerm);
-      var understood=document.getElementById('understood'); if(understood){understood.classList.add('hide');understood.innerHTML='';}
       document.getElementById('typeahead').innerHTML=''; document.getElementById('taWrap').classList.add('hide');
       var res=document.getElementById('catSearchResults');
       if(res) setTimeout(function(){res.scrollIntoView({behavior:'smooth',block:'start'});},50);
-      return;
+      // fall through — also show the "understood" panel so user can submit a request directly
     }
     // same mapping parseReq uses — keyword → catalog item / custom pillar
     var matchId=null; Object.keys(KW).forEach(function(k){ if(q.indexOf(k)>-1 && !matchId) matchId=KW[k]; });
@@ -523,7 +532,7 @@
         '<button class="btn btn-ghost" onclick="refineUnderstood()">Refine details</button>'+
         '<button class="btn btn-red" onclick="sendUnderstood()">Send as request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div>';
     el.classList.remove('hide');
-    if(el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    if(!catHits.length && el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
   function dismissUnderstood(){ var el=document.getElementById('understood'); el.classList.add('hide'); el.innerHTML=''; document.getElementById('askInput').value=''; onAskInput(); }
   function refineUnderstood(){ parseReq(); }
