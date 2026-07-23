@@ -1402,14 +1402,14 @@
     var vco2=document.getElementById('verChipOrders'); if(vco2) vco2.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     // billing & budget
     var vcb=document.getElementById('verChipBilling'); if(vcb) vcb.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
-    var bv1=document.getElementById('budgetV1'); if(bv1) bv1.classList.toggle('hide',ns);
-    var bns=document.getElementById('budgetNS'); if(bns) bns.classList.toggle('hide',!ns);
     var psub=document.getElementById('pendSub'); if(psub) psub.textContent = ns?'ranked by risk · 02S flags anomalies before you approve':'act before the 10-day window closes';
     var vcp=document.getElementById('verChipProfile'); if(vcp) vcp.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     var vcc=document.getElementById('verChipContact'); if(vcc) vcc.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     renderCart();
+    renderPills(); renderCatalog();
     renderOrders(); renderBills(); renderOrdInsights();
     renderPending(); renderBillInsights();
+    renderBudget();
     renderTeam(); renderEscalation(); renderProfileInsights();
     var cv1=document.getElementById('composeV1'); if(cv1) cv1.classList.toggle('hide',ns);
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
