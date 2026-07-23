@@ -1596,14 +1596,23 @@
   .bf-tab.on{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}
 
   /* cost code breakdown table */
-  .cc-table-head{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;gap:8px;padding:8px 12px;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);border-bottom:1px solid var(--g200);background:var(--g050);border-radius:8px 8px 0 0}
-  .cc-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;gap:8px;padding:10px 12px;border-bottom:1px solid var(--g150);align-items:center;font-size:12.5px}
+  .cc-table-head{display:grid;grid-template-columns:2fr 1fr .8fr 1fr 1.2fr .9fr .9fr;gap:6px;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);border-bottom:1px solid var(--g200);background:var(--g050);border-radius:8px 8px 0 0}
+  .cc-row{display:grid;grid-template-columns:2fr 1fr .8fr 1fr 1.2fr .9fr .9fr;gap:6px;padding:9px 12px;border-bottom:1px solid var(--g150);align-items:center;font-size:12px}
   .cc-row:hover{background:var(--g050)}
-  .cc-foot{background:var(--g050);font-weight:700;border-radius:0 0 8px 8px;border-bottom:none}
-  .cc-code{font-size:12px;font-weight:700;font-family:monospace;color:var(--g800)}
-  .cc-cname{font-size:11.5px;color:var(--g500);margin-top:2px}
+  .cc-foot{background:var(--g050);font-weight:700;border-radius:0 0 8px 8px;border-bottom:none;border-top:1px solid var(--g300)}
+  .cc-pillar-hdr{padding:8px 12px 4px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--g400);background:var(--g050);border-bottom:1px solid var(--g150)}
+  .cc-code{font-size:11.5px;font-weight:700;font-family:monospace;color:var(--g800)}
+  .cc-cname{font-size:11px;color:var(--g500);margin-top:1px}
+  .cc-pend-flag{color:var(--warning);font-style:italic}
   .cc-num{font-variant-numeric:tabular-nums}
-  .cc-pct{font-size:10.5px;color:var(--g400);margin-left:4px}
+  .cc-curr{font-weight:700;color:var(--g900)}
+  .cc-pct{font-size:10px;color:var(--g400);margin-left:3px}
+  .cc-co-pos{color:var(--success);font-size:11.5px}
+  .cc-co-neg{color:var(--red);font-size:11.5px}
+  .cc-co-nil{color:var(--g300);font-size:11.5px}
+  .cc-bar-wrap{height:3px;background:var(--g150);border-radius:2px;margin-bottom:3px}
+  .cc-mini-bar{height:100%;border-radius:2px;transition:width .3s}
+  .bc-co{font-size:11.5px;color:var(--success);margin-left:8px;font-weight:600}
   .r{text-align:right}
 
   /* vital card min-height for plan ring */

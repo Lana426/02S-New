@@ -1756,56 +1756,62 @@ charges:[
   var billUI={}; // id -> '' | 'dispute' | 'edit'
   var BF_PILLAR='';
   var COST_CODES=[
-    {code:'01-0540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:1820000,pillar:'equipment'},
-    {code:'02-0320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3380000,pillar:'equipment'},
-    {code:'26-0330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4710000,pillar:'equipment'},
-    {code:'31-0620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2160000,pillar:'equipment'},
-    {code:'09-0000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:435000,pillar:'equipment'},
-    {code:'05-0120',name:'Metals & structural steel',budget:960000,committed:740000,billed:362000,forecast:1020000,pillar:'equipment'},
-    {code:'22-0000',name:'Prefab MEP — pipe racks & headwalls',budget:1840000,committed:1120000,billed:420000,forecast:1790000,pillar:'prefab'},
-    {code:'03-0100',name:'Prefab concrete formwork',budget:580000,committed:340000,billed:120000,forecast:520000,pillar:'prefab'},
-    {code:'05-0500',name:'Prefab structural assemblies',budget:920000,committed:480000,billed:96000,forecast:975000,pillar:'prefab'},
-    {code:'01-5100',name:'Logistics — heavy haul & crane mob',budget:640000,committed:280000,billed:84000,forecast:590000,pillar:'logistics'},
-    {code:'01-5200',name:'Logistics — freight & staging',budget:320000,committed:180000,billed:52000,forecast:295000,pillar:'logistics'},
-    {code:'06-0100',name:'Procurement — bulk materials',budget:1240000,committed:860000,billed:410000,forecast:1295000,pillar:'procurement'},
-    {code:'06-0200',name:'Procurement — hardware & safety',budget:380000,committed:220000,billed:98000,forecast:345000,pillar:'procurement'},
-    {code:'01-0100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1075000,pillar:'profservices'},
-    {code:'02-0100',name:'Geotechnical & special inspection',budget:320000,committed:240000,billed:120000,forecast:312000,pillar:'profservices'},
-    {code:'01-0800',name:'Environmental monitoring',budget:180000,committed:80000,billed:28000,forecast:156000,pillar:'profservices'}
+    // Equipment pillar
+    {code:'01-0540',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment'},
+    {code:'02-0320',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment'},
+    {code:'26-0330',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment'},
+    {code:'31-0620',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment'},
+    {code:'05-0120',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment'},
+    // Prefab pillar
+    {code:'22-0000',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab'},
+    {code:'03-0100',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab'},
+    {code:'05-0500',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab'},
+    // Logistics pillar
+    {code:'01-5100',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,   committed:280000,spent:84000, pillar:'logistics'},
+    {code:'01-5200',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,   committed:180000,spent:52000, pillar:'logistics'},
+    // Procurement pillar
+    {code:'06-0100',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,   committed:1295000,spent:410000,pillar:'procurement'},
+    {code:'06-0200',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,   committed:220000, spent:98000, pillar:'procurement'},
+    // Prof services pillar
+    {code:'01-0100',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,    pendingCO:0,    committed:980000,spent:480000,pillar:'profservices'},
+    {code:'02-0100',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,    pendingCO:25000,committed:240000,spent:120000,pillar:'profservices'},
+    {code:'01-0800',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,    pendingCO:0,    committed:80000, spent:28000, pillar:'profservices'}
   ];
+  function ccBudget(c){return c.originalBudget+(c.approvedCO||0);}
+  function ccProjected(c){return ccBudget(c)+(c.pendingCO||0);}
+  function ccTone(c){var b=ccBudget(c);return c.committed>b?'bad':c.committed>b*.95?'warn':'ok';}
   function setPillarLabel(k){ var m={equipment:'Equipment',prefab:'Prefab',logistics:'Logistics',procurement:'Procurement',profservices:'Prof. services'}; return m[k]||k; }
   function renderBudget(){
     var mount=document.getElementById('budgetViz'); if(!mount)return;
     var ns=CURRENT==='ns';
     var list=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
     if(!list.length){mount.innerHTML='';return;}
-    var totB=0,totC=0,totA=0,totF=0;
-    list.forEach(function(c){totB+=c.budget;totC+=c.committed;totA+=c.billed;totF+=c.forecast;});
+    var totB=0,totCO=0,totPend=0,totC=0,totA=0;
+    list.forEach(function(c){totB+=c.originalBudget;totCO+=(c.approvedCO||0);totPend+=(c.pendingCO||0);totC+=c.committed;totA+=c.spent;});
+    var totCurr=totB+totCO, totProj=totCurr+totPend;
     var pLabel=BF_PILLAR?setPillarLabel(BF_PILLAR):'All pillars';
-    var commitPct=Math.round(totC/totB*100);
-    var pendTotal=BILLS.filter(function(b){return b.status==='Pending'&&(!BF_PILLAR||b.cost.toLowerCase().indexOf(COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;})[0]&&COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;})[0].code||'__')>-1);}).reduce(function(s,b){return s+b.amt;},0);
-    var pendPct=Math.min(Math.round(pendTotal/totB*100),3);
-    var tone=totF>totB?'bad':(totF>totB*.97?'warn':'ok');
-    var toneLabel=tone==='ok'?fmtBig(totB-totF)+' under plan':tone==='warn'?'Near budget limit':'Over budget';
+    var commitPct=Math.round(totC/totCurr*100);
+    var pendPct=Math.min(Math.round(totPend/totCurr*100),4);
+    var tone=totC>totCurr?'bad':totC>totCurr*.95?'warn':'ok';
+    var toneLabel=tone==='ok'?fmtBig(totCurr-totC)+' remaining':tone==='warn'?'Near budget limit':'Over budget';
     var h='<div class="budget-card'+(ns?' ns':'')+'">'+
       '<div class="bc-head">'+
         '<div><div class="bc-k">'+pLabel+' budget</div>'+
-        '<div class="bc-plan">'+fmtBig(totB)+' plan'+(ns?' &middot; forecast at completion <b>'+fmtBig(totF)+'</b>':'')+'</div></div>'+
+        '<div class="bc-plan">Current budget <b>'+fmtBig(totCurr)+'</b>'+(totCO?'<span class="bc-co"> +'+fmtBig(totCO)+' approved CO</span>':'')+(ns?' &middot; projected <b>'+fmtBig(totProj)+'</b>':'')+'</div></div>'+
         '<span class="tag '+tone+'">'+toneLabel+'</span>'+
       '</div>'+
       '<div class="budget-bar">'+
-        '<span class="bseg-committed" style="width:'+commitPct+'%"></span>'+
+        '<span class="bseg-committed" style="width:'+Math.min(commitPct,100)+'%"></span>'+
         (pendPct?'<span class="bseg-pending" style="width:'+pendPct+'%;min-width:4px"></span>':'')+
-        (ns?'<span class="bfac" style="left:'+Math.round(totF/totB*100)+'%" title="Forecast at completion"></span>':'')+
       '</div>'+
       '<div class="budget-legend">'+
         '<span class="lg"><span class="sw" style="background:var(--success)"></span>Committed <b>'+fmtBig(totC)+'</b> &middot; '+commitPct+'%</span>'+
-        '<span class="lg"><span class="sw" style="background:var(--warning)"></span>Billed (actual) <b>'+fmtBig(totA)+'</b></span>'+
-        (ns?'<span class="lg"><span class="sw facsw"></span>Forecast <b>'+fmtBig(totF)+'</b></span>':
-           '<span class="lg"><span class="sw" style="background:var(--g200)"></span>Uncommitted <b>'+fmtBig(totB-totC)+'</b></span>')+
+        '<span class="lg"><span class="sw" style="background:var(--warning)"></span>Spent (billed) <b>'+fmtBig(totA)+'</b></span>'+
+        (totPend?'<span class="lg"><span class="sw" style="background:var(--amber,#f59e0b)"></span>Pending CO <b>'+fmtBig(totPend)+'</b></span>':'')+''+
+        '<span class="lg"><span class="sw" style="background:var(--g200)"></span>Remaining <b>'+fmtBig(totCurr-totC)+'</b></span>'+
       '</div>';
     if(ns){
-      var overBudget=list.filter(function(c){return c.forecast>c.budget;});
+      var overBudget=list.filter(function(c){return ccTone(c)==='bad';});
       if(overBudget.length){h+='<div class="bc-flags"><div class="bc-flag bad">'+svg('<path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/>',2)+'<div><b>'+overBudget.length+' cost code'+(overBudget.length===1?'':'s')+' over budget:</b> '+overBudget.map(function(c){return c.code;}).join(', ')+'</div></div></div>';}
       var idleExp=ORDERS.filter(function(o){return o.recert==='pending'&&o.nsReco&&o.nsReco.rec==='return';});
       if(idleExp.length){h+='<div class="bc-flags"><div class="bc-flag warn">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div><b>'+fmtBig(idleExp.reduce(function(s,o){return s+(o.mrate||0);},0))+'/mo idle exposure</b> — '+idleExp.length+' unit'+(idleExp.length===1?'':'s')+' flagged for early call-off</div></div></div>';}
@@ -1831,25 +1837,57 @@ charges:[
   }
   function renderCostCodes(){
     var mount=document.getElementById('costCodeTable'); if(!mount||mount.style.display==='none')return;
-    var list=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
-    if(!list.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
-    var totB=0,totC=0,totA=0,totF=0;
-    list.forEach(function(c){totB+=c.budget;totC+=c.committed;totA+=c.billed;totF+=c.forecast;});
-    var head='<div class="cc-table-head"><span>Cost code</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">Billed (actual)</span><span class="r">Forecast</span><span>Status</span></div>';
-    var rows=list.map(function(c){
-      var pct=Math.round(c.committed/c.budget*100);
-      var tone=c.forecast>c.budget?'bad':(c.forecast>c.budget*.95?'warn':'ok');
-      return '<div class="cc-row">'
-        +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+'</div></div>'
-        +'<div class="r cc-num">'+fmtBig(c.budget)+'</div>'
-        +'<div class="r cc-num">'+fmtBig(c.committed)+'<span class="cc-pct">'+pct+'%</span></div>'
-        +'<div class="r cc-num">'+fmtBig(c.billed)+'</div>'
-        +'<div class="r cc-num">'+fmtBig(c.forecast)+'</div>'
-        +'<div><span class="tag '+tone+'">'+(tone==='ok'?'On track':tone==='warn'?'Near limit':'Over budget')+'</span></div>'
-        +'</div>';
-    }).join('');
-    var foot='<div class="cc-row cc-foot"><div><b>Total</b></div><div class="r cc-num"><b>'+fmtBig(totB)+'</b></div><div class="r cc-num"><b>'+fmtBig(totC)+'</b></div><div class="r cc-num"><b>'+fmtBig(totA)+'</b></div><div class="r cc-num"><b>'+fmtBig(totF)+'</b></div><div></div></div>';
-    mount.innerHTML=head+rows+foot;
+    var fullList=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
+    if(!fullList.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
+    // group by pillar when viewing all
+    var pillarsShown=BF_PILLAR?[BF_PILLAR]:['equipment','prefab','logistics','procurement','profservices'];
+    var head='<div class="cc-table-head">'
+      +'<span>Cost code</span>'
+      +'<span class="r">Orig. budget</span>'
+      +'<span class="r">Approved CO</span>'
+      +'<span class="r">Curr. budget</span>'
+      +'<span class="r">Committed</span>'
+      +'<span class="r">Spent</span>'
+      +'<span>Status</span>'
+      +'</div>';
+    var body='';
+    var gTotOrig=0,gTotCO=0,gTotCurr=0,gTotC=0,gTotS=0;
+    pillarsShown.forEach(function(pil){
+      var grp=fullList.filter(function(c){return c.pillar===pil;});
+      if(!grp.length) return;
+      if(!BF_PILLAR) body+='<div class="cc-pillar-hdr">'+setPillarLabel(pil)+'</div>';
+      grp.forEach(function(c){
+        var curr=ccBudget(c), pct=Math.min(Math.round(c.committed/curr*100),999), tone=ccTone(c);
+        var barW=Math.min(pct,100);
+        var barCol=tone==='bad'?'var(--red)':tone==='warn'?'var(--warning)':'var(--success)';
+        var coTxt=c.approvedCO>0?'+'+fmtBig(c.approvedCO):c.approvedCO<0?'−'+fmtBig(-c.approvedCO):'—';
+        var coClass=c.approvedCO>0?'cc-co-pos':c.approvedCO<0?'cc-co-neg':'cc-co-nil';
+        body+='<div class="cc-row">'
+          +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+(c.pendingCO?'<span class="cc-pend-flag"> · '+fmtBig(c.pendingCO)+' pending CO</span>':'')+'</div></div>'
+          +'<div class="r cc-num">'+fmtBig(c.originalBudget)+'</div>'
+          +'<div class="r cc-num"><span class="'+coClass+'">'+coTxt+'</span></div>'
+          +'<div class="r cc-num cc-curr">'+fmtBig(curr)+'</div>'
+          +'<div class="r cc-num">'
+            +'<div class="cc-bar-wrap"><div class="cc-mini-bar" style="width:'+barW+'%;background:'+barCol+'"></div></div>'
+            +'<span>'+fmtBig(c.committed)+'</span><span class="cc-pct">'+pct+'%</span>'
+          +'</div>'
+          +'<div class="r cc-num">'+fmtBig(c.spent)+'</div>'
+          +'<div><span class="tag '+tone+'">'+(tone==='ok'?'On track':tone==='warn'?'Near limit':'Over budget')+'</span></div>'
+          +'</div>';
+        gTotOrig+=c.originalBudget; gTotCO+=(c.approvedCO||0); gTotCurr+=curr; gTotC+=c.committed; gTotS+=c.spent;
+      });
+    });
+    var footPct=Math.min(Math.round(gTotC/gTotCurr*100),999);
+    var foot='<div class="cc-row cc-foot">'
+      +'<div><b>Total</b></div>'
+      +'<div class="r cc-num"><b>'+fmtBig(gTotOrig)+'</b></div>'
+      +'<div class="r cc-num"><b class="cc-co-pos">+'+fmtBig(gTotCO)+'</b></div>'
+      +'<div class="r cc-num cc-curr"><b>'+fmtBig(gTotCurr)+'</b></div>'
+      +'<div class="r cc-num"><b>'+fmtBig(gTotC)+'</b><span class="cc-pct">'+footPct+'%</span></div>'
+      +'<div class="r cc-num"><b>'+fmtBig(gTotS)+'</b></div>'
+      +'<div></div>'
+      +'</div>';
+    mount.innerHTML=head+body+foot;
   }
 
   // ── Billing history table (moved here from Orders) ──
