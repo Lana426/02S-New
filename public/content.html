@@ -410,14 +410,14 @@
               <!-- ═══ CATALOG (deliberate path) ═══ -->
               <div class="cat-head">
                 <span class="ct">Browse catalog</span>
+                <span class="cbread" id="catBread">Search or select a category below</span>
               </div>
               <div class="cat-search-wrap" id="catSearchWrap">
                 <svg class="cat-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                 <input class="rin cat-search-inp" id="catSearchInp" oninput="onCatSearch(this.value)" placeholder="Search catalog — excavator, crane, scissor lift…">
               </div>
-              <div id="pillRow" class="pill-row"></div>
-              <div id="catSearchResults" class="cat-search-res hide"></div>
-              <div id="catAccordion"></div>
+              <div id="catSearchResults" class="hide"></div>
+              <div class="cat-acc" id="catAccordion"></div>
             </div><!-- /browseState -->
 
             <!-- ═══ COMPOSE: AI-parsed request form ═══ -->
