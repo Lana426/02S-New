@@ -1847,31 +1847,16 @@ charges:[
     var rows=list.map(function(b){
       var anom = (ns && b.anomaly) ? '<span class="anomaly-flag">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+b.anomaly+'</span>' : '';
       var isPend=b.status==='Pending';
-      var mode=isPend?(billUI[b.id]||''):'';
       var statusCell=isPend
-        ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="toggleBillReview(\''+b.id+'\')">'+(mode?'Close':'Review')+'</button></div>'
+        ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="openBillModal(\''+b.id+'\')">Review</button></div>'
         :'<div><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span></div>';
-      var expansion='';
-      if(isPend && mode){
-        expansion='<div style="grid-column:1/-1;border-top:1px solid var(--g150);margin:0 -16px;padding:10px 16px 6px">'+
-          '<div class="pc-actions">'+
-            '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
-            '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
-            '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Correct code</button>'+
-            '<span class="pc-audit">'+(b.audit||'Awaiting your review')+'</span>'+
-          '</div>'+
-          (mode==='dispute'?billDisputeInline(b,ns):'')+
-          (mode==='edit'?billEditInline(b):'')+
-        '</div>';
-      }
-      return '<div class="brow'+(isPend&&mode?' brow-open':'')+'">'+
+      return '<div class="brow">'+
         '<div class="oc-id">'+b.id+'</div>'+
         '<div><span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span></div>'+
         '<div class="oc-item" style="font-weight:500">'+b.product+anom+'</div>'+
         '<div class="oc-amt r">'+fmt(b.amt)+'</div>'+
         '<div class="oc-cost hide-sm">'+b.cost+'</div>'+
         statusCell+
-        expansion+
         '</div>';
     }).join('');
     host.innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No bills match these filters.</div>');
@@ -1954,8 +1939,63 @@ charges:[
       '</div>';
     }).join('')+(extra?'<div style="grid-column:1/-1;font-size:12px;color:var(--g500);padding:6px 2px">+'+extra+' more pending — <span class="oc-link" onclick="document.getElementById(\'billHist\').scrollIntoView({behavior:\'smooth\'})">view all in billing history ↓</span></div>':'');
   }
-  function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); }
-  function toggleBillReview(id){ setBillUI(id, billUI[id]?'':'review'); }
+  var activeBillModal=null;
+  function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); if(activeBillModal===id) openBillModal(id); }
+  function openBillModal(id){
+    var b=getBill(id); if(!b) return;
+    var ns=CURRENT==='ns';
+    var mode=billUI[id]||'';
+    activeBillModal=id;
+    var urg=b.day>=8?'red':(b.day>=5?'gold':'neu');
+    var left=10-b.day;
+    var anomCard=(ns&&b.anomaly)?'<div class="pc-anom">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div><b>'+b.anomaly+'</b> — '+(b.reason||'')+'. <span class="pc-rec">02S recommends you dispute.</span></div></div>':'';
+    var chargesHtml='';
+    if(b.charges&&b.charges.length){
+      var ccOpts=[
+        {v:'01-0540-0000-0001',l:'01-0540-0000-0001 \xb7 General conditions'},
+        {v:'26-0330-0000-0001',l:'26-0330-0000-0001 \xb7 BESS &amp; Substation'},
+        {v:'03-0000-0000-0001',l:'03-0000-0000-0001 \xb7 Concrete'},
+        {v:'05-0000-0000-0001',l:'05-0000-0000-0001 \xb7 Metals'},
+        {v:'31-0620-0000-0001',l:'31-0620-0000-0001 \xb7 Earthwork / Piling'},
+        {v:'22-0000-0000-0001',l:'22-0000-0000-0001 \xb7 Plumbing'},
+        {v:'16-0000-0000-0001',l:'16-0000-0000-0001 \xb7 Electrical'},
+        {v:'01-5100-0000-0001',l:'01-5100-0000-0001 \xb7 Logistics — heavy haul'},
+        {v:'06-0100-0000-0001',l:'06-0100-0000-0001 \xb7 Procurement — materials'}
+      ];
+      chargesHtml='<div class="pc-charges">'
+        +b.charges.map(function(c,ci){
+          var curCost=c.cost||b.cost;
+          var knownVals=ccOpts.map(function(o){return o.v;});
+          var isKnown=knownVals.some(function(v){return curCost&&curCost.indexOf(v.substring(0,7))>-1;});
+          var selVal=isKnown?curCost:'';
+          var ccInput=(mode==='edit')
+            ?'<div class="cc-pick-wrap"><select class="rin cc-sel" id="cc-'+id+'-'+ci+'" onchange="ccSelChange(this,\''+id+'\','+ci+')" style="width:100%;font-size:11px;margin-bottom:0">'
+              +'<option value="">— select cost code —</option>'
+              +ccOpts.map(function(o){return '<option value="'+o.v+'"'+(selVal===o.v?' selected':'')+'>'+o.l+'</option>';}).join('')
+              +'<option value="__new__">+ Add new cost code...</option>'
+              +'</select>'
+              +'<input class="rin" id="cc-new-'+id+'-'+ci+'" style="display:none;width:100%;font-size:11px;font-family:monospace;margin-top:4px" placeholder="Enter 16-digit code">'
+              +'</div>'
+            :'<span class="pch-cc">'+(c.cost||b.cost)+'</span>';
+          return '<div class="pch-row"><span class="pch-d">'+c.desc+'</span>'+ccInput+'<span class="pch-a">'+fmt(c.amt)+'</span></div>';
+        }).join('')
+        +'<div class="pch-row pch-total"><span class="pch-d">Total</span><span class="pch-a">'+fmt(b.amt)+'</span></div>'
+        +'</div>';
+    }
+    var windowBar='<div class="pc-window"><div class="pw-meter"><span class="pw-'+urg+'" style="width:'+(b.day*10)+'%"></span></div><div class="pw-lbl">Day <b>'+b.day+'</b> of 10 &middot; <span class="pw-'+urg+'-t">'+(left<=2?'auto-finalizes in '+left+' day'+(left===1?'':'s'):left+' days left')+'</span></div></div>';
+    var actions='<div class="pc-actions" style="margin-bottom:8px">'
+      +'<button class="btn btn-approve btn-sm" onclick="approveBill(\''+id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'
+      +'<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'dispute\')">Dispute</button>'
+      +'<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'edit\')">Correct code</button>'
+      +'<span class="pc-audit">'+(b.audit||'Awaiting your review')+'</span>'
+      +'</div>';
+    var inline='';
+    if(mode==='dispute') inline=billDisputeInline(b,ns);
+    else if(mode==='edit') inline=billEditInline(b);
+    var body=anomCard+chargesHtml+windowBar+actions+inline
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="activeBillModal=null;closeModal()">Close</button></div>';
+    openModal('<div><h3 style="margin:0 0 2px">'+b.id+'</h3><div class="sub">'+b.product+' &middot; from <span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span> &middot; '+fmt(b.amt)+'</div></div>',body);
+  }
   function billDisputeInline(b,ns){
     return '<div class="pc-inline">'+
       '<div class="pi-t">Reason for dispute <span class="pi-note">pauses auto-finalization until 02S responds</span></div>'+
@@ -1982,10 +2022,10 @@ charges:[
       '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save corrections</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
     '</div>';
   }
-  function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
+  function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; if(activeBillModal===id){activeBillModal=null;closeModal();} renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
   function setDChip(id,text,el){ var ta=document.getElementById('dr-'+id); if(ta) ta.value=text; var chips=el.parentElement.querySelectorAll('.dchip'); chips.forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); }
   function ccSelChange(sel,id,ci){ var inp=document.getElementById('cc-new-'+id+'-'+ci); if(!inp)return; if(sel.value==='__new__'){inp.style.display='';inp.focus();}else{inp.style.display='none';} }
-  function disputeBill(id){ var b=getBill(id); if(!b) return; var el=document.getElementById('dr-'+id); var r=(el&&el.value||'').trim()||'Amount exceeds order estimate'; b.status='Disputed'; b.disputeReason=r; b.audit='You · disputed just now — auto-finalization paused'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Dispute raised on '+id+' — auto-finalization paused until 02S responds'); }
+  function disputeBill(id){ var b=getBill(id); if(!b) return; var el=document.getElementById('dr-'+id); var r=(el&&el.value||'').trim()||'Amount exceeds order estimate'; b.status='Disputed'; b.disputeReason=r; b.audit='You · disputed just now — auto-finalization paused'; billUI[id]=''; if(activeBillModal===id){activeBillModal=null;closeModal();} renderPending(); renderBills(); renderBillInsights(); toast('Dispute raised on '+id+' — auto-finalization paused until 02S responds'); }
   function saveCost(id){ var b=getBill(id); if(!b) return; if(b.charges){b.charges.forEach(function(c,i){ var sel=document.getElementById('cc-'+id+'-'+i); var custom=document.getElementById('cc-new-'+id+'-'+i); var val=sel?(sel.value==='__new__'?(custom&&custom.value.trim()||c.cost):(sel.value||c.cost)):c.cost; if(val)c.cost=val; });} b.audit='You · edited cost codes just now'; billUI[id]=''; renderPending(); renderBills(); toast('Cost codes updated on '+id+' — logged to audit trail'); }
 
   function renderBillInsights(){
@@ -3403,6 +3443,10 @@ function scenarioCards(k){
   return '<div class="scn-cell"><div class="scn-k">Revenue</div><div class="scn-v">'+s.rev+'</div></div><div class="scn-cell"><div class="scn-k">Operating margin</div><div class="scn-v'+(s.tone?' '+s.tone:'')+'">'+s.mgn+'</div></div><div class="scn-cell"><div class="scn-k">Operating profit</div><div class="scn-v">'+s.op+'</div></div><div class="scn-note">'+s.note+'</div>';
 }
 function runScenario(el,k){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');var g=document.getElementById('scnGrid');if(g)g.innerHTML=scenarioCards(k);}
+function runFpaScenario(k,el){
+  if(el){el.parentElement.querySelectorAll('button').forEach(function(b){b.classList.remove('on');});el.classList.add('on');}
+  var g=document.getElementById('fpaScnGrid');if(g)g.innerHTML=scenarioCards(k);
+}
 
 /* Enterprise FP&A feature cards */
 function ctFpaFeature(k){
@@ -3421,7 +3465,13 @@ function ctFpaFeature(k){
 '<div class="grd"><div class="grd-ico ok">'+ctIc('check',16)+'</div><div class="grd-l"><b>DSO</b> — improved vs prior year <span class="grd-val">38 days vs 44 days</span></div><div class="grd-b"><div class="grd-fill ok" style="width:91%"></div></div></div>'+
 '<div style="margin-top:10px;padding:8px 10px;background:var(--cream);border-radius:6px;font-size:11px;color:var(--g500)">Model: O2S_FY25_Plan_v3 &nbsp;·&nbsp; Last sync: May 20, 2025 &nbsp;·&nbsp; 2 guardrails require attention</div>'+
 '</div>'},
-    scenario:{title:'Scenario modeling',sub:'FY 2025',body:'<div class="scn-toggle" style="margin-bottom:12px"><button class="on" onclick="this.parentElement.querySelectorAll(\'button\').forEach(function(b){b.classList.remove(\'on\')});this.classList.add(\'on\');document.getElementById(\'fpaScnGrid\').innerHTML=\'<div class=\'scn-cell\'><div class=\'scn-k\'>Revenue</div><div class=\'scn-v\'>$4.77B</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. margin</div><div class=\'scn-v\'>7.6%</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. profit</div><div class=\'scn-v\'>$362M</div></div><div class=\'scn-note\'>Weighted pipeline as planned.</div>\'">Base</button><button onclick="this.parentElement.querySelectorAll(\'button\').forEach(function(b){b.classList.remove(\'on\')});this.classList.add(\'on\');document.getElementById(\'fpaScnGrid\').innerHTML=\'<div class=\'scn-cell\'><div class=\'scn-k\'>Revenue</div><div class=\'scn-v\'>$5.02B</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. margin</div><div class=\'scn-v ok\'>8.1%</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. profit</div><div class=\'scn-v ok\'>$407M</div></div><div class=\'scn-note\'>Fountain Valley + 1 pursuit convert.</div>\'">Upside</button><button onclick="this.parentElement.querySelectorAll(\'button\').forEach(function(b){b.classList.remove(\'on\')});this.classList.add(\'on\');document.getElementById(\'fpaScnGrid\').innerHTML=\'<div class=\'scn-cell\'><div class=\'scn-k\'>Revenue</div><div class=\'scn-v\'>$4.41B</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. margin</div><div class=\'scn-v red\'>7.0%</div></div><div class=\'scn-cell\'><div class=\'scn-k\'>Op. profit</div><div class=\'scn-v red\'>$309M</div></div><div class=\'scn-note\'>Two jobs slip; re-rent costs rise.</div>\'">Downside</button></div><div class="scn-grid" id="fpaScnGrid"><div class="scn-cell"><div class="scn-k">Revenue</div><div class="scn-v">$4.77B</div></div><div class="scn-cell"><div class="scn-k">Op. margin</div><div class="scn-v">7.6%</div></div><div class="scn-cell"><div class="scn-k">Op. profit</div><div class="scn-v">$362M</div></div><div class="scn-note">Weighted pipeline as planned.</div></div>'},
+    scenario:{title:'Scenario modeling',sub:'FY 2025',body:
+      '<div class="scn-toggle" style="margin-bottom:12px">'
+      +'<button class="on" onclick="runFpaScenario(\'base\',this)">Base</button>'
+      +'<button onclick="runFpaScenario(\'up\',this)">Upside</button>'
+      +'<button onclick="runFpaScenario(\'down\',this)">Downside</button>'
+      +'</div>'
+      +'<div class="scn-grid" id="fpaScnGrid">'+scenarioCards('base')+'</div>'},
     insights:{title:'Performance insights',sub:'FY 2025 · as of May 2025',body:'<div class="edp-stats"><div class="edp-stat"><div class="k">Win rate</div><div class="n">62%</div><div class="s">vs 58% last year</div></div><div class="edp-stat cost"><div class="k">Margin gap</div><div class="n">−40 bps</div><div class="s">vs plan · Equipment</div></div><div class="edp-stat"><div class="k">Pipeline coverage</div><div class="n">3.6×</div><div class="s">vs target 3.0×</div></div><div class="edp-stat"><div class="k">Plans submitted</div><div class="n">226</div><div class="s">of 634 opps</div></div></div>'}
   }[k];
   if(!M)return;
