@@ -940,7 +940,7 @@
   function _eqMenuBtn(icon,title,sub,fn){
     return '<button class="btn btn-ghost" style="height:auto;padding:12px 14px;text-align:left;display:flex;align-items:center;gap:12px;border-radius:var(--radius);width:100%" onclick="closeModal();'+fn+'">'
       +'<span style="width:34px;height:34px;border-radius:8px;background:var(--g100);color:var(--charcoal);display:grid;place-items:center;flex-shrink:0">'+icon+'</span>'
-      +'<span style="flex:1;min-width:0"><span style="font-size:13px;font-weight:650;color:var(--g900);display:block">'+title+'</span><span style="font-size:11.5px;color:var(--g500)">'+sub+'</span></span>'
+      +'<span style="flex:1;min-width:0;overflow:hidden"><span style="font-size:13px;font-weight:650;color:var(--g900);display:block">'+title+'</span><span style="font-size:11.5px;color:var(--g500);display:block;white-space:normal">'+sub+'</span></span>'
       +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--g400);flex-shrink:0"><path d="M9 18l6-6-6-6"/></svg>'
       +'</button>';
   }
