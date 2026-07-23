@@ -192,51 +192,54 @@
   var EQ_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
   var EQ_TODAY='2026-08';
   var EQ_CODES=[
-    {code:'02-320',task:'02-320.14',name:'Site Earthwork & Grading',phase:'Phase 1',budget:6100000,committed:5400000},
-    {code:'31-620',task:'31-620.02',name:'Solar Pile Installation',phase:'Phase 2',budget:2500000,committed:2500000},
-    {code:'26-540',task:'26-540.30',name:'Module Racking & Install',phase:'Phase 3',budget:2900000,committed:1900000},
-    {code:'26-330',task:'26-330.05',name:'BESS & Substation',phase:'Phase 4',budget:1300000,committed:600000},
-    {code:'01-540',task:'01-540.00',name:'Temporary Power & Site',phase:'Gen. conditions',budget:1400000,committed:700000}
+    {code:'01-500',name:'Temporary Facilities & Controls',phase:'General conditions',budget:3200000,committed:3200000},
+    {code:'02-410',name:'Demolition & Hazmat Abatement',phase:'Phase 1 \u00b7 Demo',budget:1100000,committed:1100000},
+    {code:'31-200',name:'Earthwork & Grading',phase:'Phase 1 \u00b7 Civil',budget:2400000,committed:2050000},
+    {code:'03-300',name:'Cast-in-Place Concrete',phase:'Phase 2 \u00b7 Structure',budget:5800000,committed:2620000},
+    {code:'05-120',name:'Structural Steel Framing',phase:'Phase 3 \u00b7 Structure',budget:4600000,committed:2180000},
+    {code:'23-000',name:'HVAC & Mechanical',phase:'Phase 4 \u00b7 MEP',budget:980000,committed:0},
+    {code:'32-100',name:'Bases, Ballasts & Paving',phase:'Phase 5 \u00b7 Site',budget:620000,committed:0}
   ];
   var EQ_TASKS=[
-    {task:'02-320.14',name:'Mass grading',code:'02-320',phase:'Phase 1'},
-    {task:'02-320.16',name:'Earthmoving & hauling',code:'02-320',phase:'Phase 1'},
-    {task:'02-320.18',name:'Fine grade & compaction',code:'02-320',phase:'Phase 1'},
-    {task:'31-620.02',name:'Pile driving',code:'31-620',phase:'Phase 2'},
-    {task:'31-620.04',name:'Pile logistics',code:'31-620',phase:'Phase 2'},
-    {task:'26-540.30',name:'Module install',code:'26-540',phase:'Phase 3'},
-    {task:'26-540.32',name:'Module racking',code:'26-540',phase:'Phase 3'},
-    {task:'26-540.34',name:'Module logistics',code:'26-540',phase:'Phase 3'},
-    {task:'26-330.05',name:'BESS set',code:'26-330',phase:'Phase 4'},
-    {task:'26-330.07',name:'Substation',code:'26-330',phase:'Phase 4'},
-    {task:'01-540.00',name:'General conditions',code:'01-540',phase:'Gen. conditions'}
+    {task:'A1000',name:'Site Mobilization & Laydown',code:'01-500',phase:'General conditions'},
+    {task:'A1010',name:'Temporary Power & Site Utilities',code:'01-500',phase:'General conditions'},
+    {task:'A2010',name:'Demolition \u2014 North Wing & Annex',code:'02-410',phase:'Phase 1 \u00b7 Demo'},
+    {task:'A2020',name:'Hazmat Abatement',code:'02-410',phase:'Phase 1 \u00b7 Demo'},
+    {task:'A2030',name:'Mass Excavation \u2014 Basement Level',code:'31-200',phase:'Phase 1 \u00b7 Civil'},
+    {task:'A2040',name:'Caissons & Foundation Prep',code:'31-200',phase:'Phase 1 \u00b7 Civil'},
+    {task:'A3010',name:'Foundation Concrete & Grade Beams',code:'03-300',phase:'Phase 2 \u00b7 Structure'},
+    {task:'A3020',name:'Concrete Superstructure \u2014 Floors 2\u20135',code:'03-300',phase:'Phase 2 \u00b7 Structure'},
+    {task:'A3030',name:'Steel Erection \u2014 Levels 1\u20134',code:'05-120',phase:'Phase 3 \u00b7 Structure'},
+    {task:'A3040',name:'Steel Erection \u2014 Levels 5\u20138 & Roof',code:'05-120',phase:'Phase 3 \u00b7 Structure'},
+    {task:'A4010',name:'MEP Rough-In \u2014 Below Grade',code:'23-000',phase:'Phase 4 \u00b7 MEP'},
+    {task:'A5010',name:'Hardscape & Site Paving',code:'32-100',phase:'Phase 5 \u00b7 Site'}
   ];
   var EQ_LINES=[
-    {id:'e1',task:'02-320.14',code:'02-320',desc:'Excavator \u2014 20T',cat:'Earthmoving \u203a Excavators',qty:20,rate:13500,from:'2026-03',to:'2026-10',status:'on-rent',submitted:true,scope:'Phase 1 \u00b7 Mass grading',catId:'excav20'},
-    {id:'e2',task:'02-320.14',code:'02-320',desc:'Dozer \u2014 D6',cat:'Earthmoving \u203a Dozers',qty:12,rate:16200,from:'2026-03',to:'2026-09',status:'on-rent',submitted:true,scope:'Phase 1 \u00b7 Mass grading'},
-    {id:'e3',task:'02-320.16',code:'02-320',desc:'Off-highway hauler',cat:'Earthmoving \u203a Hauling',qty:24,rate:7200,from:'2026-03',to:'2026-09',status:'on-rent',submitted:true,scope:'Phase 1 \u00b7 Earthmoving'},
-    {id:'e4',task:'02-320.18',code:'02-320',desc:'Motor grader',cat:'Earthmoving \u203a Grading',qty:6,rate:14000,from:'2026-04',to:'2026-08',status:'off-rent',submitted:true,scope:'Phase 1 \u00b7 Fine grading'},
-    {id:'e5',task:'02-320.18',code:'02-320',desc:'Compaction roller',cat:'Earthmoving \u203a Compaction',qty:12,rate:6800,from:'2026-04',to:'2026-10',status:'on-rent',submitted:true,scope:'Phase 1 \u00b7 Subgrade'},
-    {id:'e6',task:'31-620.02',code:'31-620',desc:'Pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-06',to:'2027-01',status:'on-rent',submitted:true,scope:'Phase 2 \u00b7 Pile install'},
-    {id:'e7',task:'31-620.04',code:'31-620',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:16,rate:8800,from:'2026-06',to:'2026-12',status:'on-rent',submitted:true,scope:'Phase 2 \u00b7 Pile logistics',catId:'tele10'},
-    {id:'e8',task:'26-540.30',code:'26-540',desc:'Scissor lift \u2014 32ft',cat:'Access \u203a Scissor lifts',qty:64,rate:1900,from:'2026-09',to:'2027-04',status:'projected',submitted:true,scope:'Phase 3 \u00b7 Module install',catId:'scissor32'},
-    {id:'e9',task:'26-540.32',code:'26-540',desc:'Boom lift \u2014 60ft',cat:'Access \u203a Boom lifts',qty:18,rate:7500,from:'2026-09',to:'2027-03',status:'projected',submitted:true,scope:'Phase 3 \u00b7 Racking',catId:'boom60'},
-    {id:'e10',task:'26-540.34',code:'26-540',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:12,rate:8800,from:'2026-09',to:'2027-04',status:'projected',submitted:false,scope:'Phase 3 \u00b7 Module logistics',catId:'tele10'},
-    {id:'e11',task:'26-330.05',code:'26-330',desc:'Rough-terrain crane \u2014 90T',cat:'Cranes \u203a Rough-terrain',qty:3,rate:42000,from:'2026-12',to:'2027-05',status:'projected',submitted:false,scope:'Phase 4 \u00b7 BESS set'},
-    {id:'e12',task:'26-330.07',code:'26-330',desc:'Boom lift \u2014 80ft',cat:'Access \u203a Boom lifts',qty:10,rate:9200,from:'2027-01',to:'2027-05',status:'projected',submitted:false,scope:'Phase 4 \u00b7 Substation'},
-    {id:'e13',task:'01-540.00',code:'01-540',desc:'Towable generator \u2014 45kW',cat:'Power \u203a Generators',qty:16,rate:4200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'General conditions',catId:'gen45'},
-    {id:'e14',task:'01-540.00',code:'01-540',desc:'Light tower',cat:'Power \u203a Lighting',qty:26,rate:1200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'General conditions',catId:'lighttower'},
-    {id:'e15',task:'26-330.05',code:'26-330',desc:'Crawler crane \u2014 230T',cat:'Cranes \u203a Crawler (non-catalog)',qty:1,rate:null,from:'2027-01',to:'2027-03',status:'projected',submitted:false,scope:'Phase 4 \u00b7 BESS heavy lift',catId:null}
+    {id:'e1',task:'A1000',code:'01-500',desc:'Tower crane \u2014 Luffing jib 16T',cat:'Cranes \u203a Tower cranes',qty:2,rate:44000,from:'2026-04',to:'2027-04',status:'on-rent',submitted:true,scope:'Site Mobilization & Laydown'},
+    {id:'e2',task:'A1000',code:'01-500',desc:'Material hoist \u2014 dual-car',cat:'Material handling \u203a Personnel hoists',qty:2,rate:9200,from:'2026-05',to:'2027-03',status:'on-rent',submitted:true,scope:'Site Mobilization & Laydown'},
+    {id:'e3',task:'A1010',code:'01-500',desc:'Generator \u2014 125 kW',cat:'Power \u203a Generators',qty:4,rate:6200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Temporary Power & Site Utilities',catId:'gen45'},
+    {id:'e4',task:'A1010',code:'01-500',desc:'Light tower',cat:'Power \u203a Lighting',qty:18,rate:1200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Temporary Power & Site Utilities',catId:'lighttower'},
+    {id:'e5',task:'A2010',code:'02-410',desc:'Excavator \u2014 20T (demo)',cat:'Earthmoving \u203a Excavators',qty:3,rate:14500,from:'2026-03',to:'2026-06',status:'off-rent',submitted:true,scope:'Demolition \u2014 North Wing & Annex'},
+    {id:'e6',task:'A2030',code:'31-200',desc:'Excavator \u2014 30T',cat:'Earthmoving \u203a Excavators',qty:6,rate:16500,from:'2026-04',to:'2026-09',status:'on-rent',submitted:true,scope:'Mass Excavation \u2014 Basement Level'},
+    {id:'e7',task:'A2040',code:'31-200',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:4,rate:8800,from:'2026-05',to:'2026-10',status:'on-rent',submitted:true,scope:'Caissons & Foundation Prep',catId:'tele10'},
+    {id:'e8',task:'A3010',code:'03-300',desc:'Concrete pump \u2014 52M boom',cat:'Concrete equipment \u203a Pumps',qty:2,rate:18500,from:'2026-06',to:'2026-12',status:'on-rent',submitted:true,scope:'Foundation Concrete & Grade Beams'},
+    {id:'e9',task:'A3020',code:'03-300',desc:'Concrete pump \u2014 52M boom',cat:'Concrete equipment \u203a Pumps',qty:2,rate:18500,from:'2026-09',to:'2027-03',status:'projected',submitted:true,scope:'Concrete Superstructure \u2014 Floors 2\u20135'},
+    {id:'e10',task:'A3020',code:'03-300',desc:'Scissor lift \u2014 32ft',cat:'Access equipment \u203a Scissor lifts',qty:28,rate:1900,from:'2026-09',to:'2027-04',status:'projected',submitted:true,scope:'Concrete Superstructure \u2014 Floors 2\u20135',catId:'scissor32'},
+    {id:'e11',task:'A3030',code:'05-120',desc:'Telehandler \u2014 15K',cat:'Material handling \u203a Telehandlers',qty:6,rate:10500,from:'2026-07',to:'2026-12',status:'on-rent',submitted:true,scope:'Steel Erection \u2014 Levels 1\u20134',catId:'tele10'},
+    {id:'e12',task:'A3030',code:'05-120',desc:'Boom lift \u2014 60ft',cat:'Access equipment \u203a Boom lifts',qty:10,rate:7500,from:'2026-07',to:'2026-12',status:'on-rent',submitted:true,scope:'Steel Erection \u2014 Levels 1\u20134',catId:'boom60'},
+    {id:'e13',task:'A3040',code:'05-120',desc:'Telehandler \u2014 15K',cat:'Material handling \u203a Telehandlers',qty:6,rate:10500,from:'2026-10',to:'2027-03',status:'projected',submitted:false,scope:'Steel Erection \u2014 Levels 5\u20138 & Roof'},
+    {id:'e14',task:'A3040',code:'05-120',desc:'Boom lift \u2014 80ft',cat:'Access equipment \u203a Boom lifts',qty:8,rate:9200,from:'2027-01',to:'2027-04',status:'projected',submitted:false,scope:'Steel Erection \u2014 Levels 5\u20138 & Roof'},
+    {id:'e15',task:'A5010',code:'32-100',desc:'Skid steer \u2014 tracked',cat:'Earthmoving \u203a Compact equipment',qty:4,rate:null,from:'2027-02',to:'2027-05',status:'projected',submitted:false,scope:'Hardscape & Site Paving'}
   ];
   var eqState={view:'plan'};
   var eqEditId=null, eqSeq=15, eqAddCode=null, ordSeq=3042, eqRefSeq=200;
   var EQ_HISTORY=[
-    {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Increased scissor lift qty 56 \u2192 64 for the Phase 3 racking redesign'},
-    {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Added Phase 4 BESS crane + substation lifts (draft, not yet submitted)'},
-    {date:'Jul 15, 2026',who:'M. Alvarez (Supt.)',desc:'Extended excavator off-rent Sep \u2192 Oct after the grading delay'},
-    {date:'Jun 1, 2026',who:'Dana Reyes',desc:'Submitted Phase 2 pile installation to 02S \u2014 6 pile drivers, 16 telehandlers'},
-    {date:'Mar 3, 2026',who:'Dana Reyes',desc:'Submitted Phase 1 earthwork to 02S \u2014 74 assets across 5 line items'},
-    {date:'Mar 3, 2026',who:'Dana Reyes',desc:'Created plan from the estimate \u2014 5 cost codes, $14.2M equipment budget'}
+    {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Increased scissor lift qty 24 \u2192 28 for expanded concrete deck pours on Floors 3\u20135'},
+    {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Added Levels 5\u20138 steel lines (A3040) \u2014 draft, not yet submitted to 02S'},
+    {date:'Jul 15, 2026',who:'C. Navarrete (Supt.)',desc:'Extended basement excavation off-rent Aug \u2192 Sep after caisson scope added'},
+    {date:'Jun 1, 2026',who:'Dana Reyes',desc:'Submitted Phase 2 structure to 02S \u2014 concrete pumps + scissor lifts, 32 assets'},
+    {date:'May 10, 2026',who:'Dana Reyes',desc:'Submitted steel erection equipment to 02S \u2014 telehandlers + boom lifts Levels 1\u20134'},
+    {date:'Mar 3, 2026',who:'Dana Reyes',desc:'Created plan from the GMP estimate \u2014 7 cost codes, $18.7M equipment budget'}
   ];
   var CUSTOM_KW={warehouse:'Logistics',warehousing:'Logistics',freight:'Logistics',hauling:'Logistics',trucking:'Logistics',storage:'Logistics','lift plan':'Professional services',survey:'Professional services',inspection:'Professional services',engineer:'Professional services',consult:'Professional services',crew:'Professional services'};
 
@@ -636,7 +639,7 @@
   function eqMonthYear(m){return m.split('-')[0];}
   function fmtBig(n){var a=Math.abs(n),s=(n<0?'-':'');if(a>=1000000)return s+'$'+(a/1000000).toFixed(1)+'M';if(a>=1000)return s+'$'+Math.round(a/1000)+'K';return s+'$'+a;}
 
-  var eqGroupBy='task';
+  var eqGroupBy='code';
   var eqSearchStr='';
   function eqSetSearch(v){ eqSearchStr=(v||'').toLowerCase().trim(); eqPopClose(); setEqView(eqState.view); }
   function eqTaskInfo(t){ for(var i=0;i<EQ_TASKS.length;i++){if(EQ_TASKS[i].task===t)return EQ_TASKS[i];} return null; }
@@ -736,7 +739,8 @@
       var yrStart=(i===0)||(eqMonthYear(m)!==eqMonthYear(EQ_MONTHS[i-1]));
       mh+='<div class="gh-m">'+eqMonthLabel(m)+(yrStart?'<span class="ghy">\u2019'+m.slice(2,4)+'</span>':'')+'</div>';
     }
-    var head='<div class="g-head"><div class="gh-label">Cost code / equipment</div><div class="gh-months">'+mh+'</div></div>';
+    var modeLabel=eqGroupBy==='code'?'Cost code':eqGroupBy==='task'?'Schedule activity':'Equipment class';
+    var head='<div class="g-head"><div class="gh-label">'+modeLabel+' / equipment</div><div class="gh-months">'+mh+'</div></div>';
     var grid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
     var rows='';
     var GS=eqGroups();
@@ -848,15 +852,15 @@
     for(var i=0;i<EQ_CODES.length;i++){var c=EQ_CODES[i];var p=eqCodeProjected(c.code);if(p>c.budget)overs.push({c:c,d:p-c.budget});}
     var overTxt='';
     for(var k=0;k<overs.length;k++){overTxt+=(k>0?(k===overs.length-1?' and ':', '):'')+overs[k].c.code+' '+overs[k].c.name+' (<b>'+fmtBig(overs[k].d)+' over</b>)';}
-    var p3=0; for(var j=0;j<EQ_LINES.length;j++){if(EQ_LINES[j].code==='26-540')p3+=EQ_LINES[j].qty;}
-    var craneCost=0; for(var m=0;m<EQ_LINES.length;m++){if(EQ_LINES[m].desc.indexOf('crane')>-1)craneCost+=eqLineTotal(EQ_LINES[m]);}
+    var concAssets=0; for(var j=0;j<EQ_LINES.length;j++){if(EQ_LINES[j].code==='03-300')concAssets+=EQ_LINES[j].qty;}
+    var craneCost=0; for(var m=0;m<EQ_LINES.length;m++){if(EQ_LINES[m].cat&&EQ_LINES[m].cat.indexOf('Tower crane')>-1)craneCost+=eqLineTotal(EQ_LINES[m]);}
     var h='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg></span>'
-      +'<div><div class="ist">02S is actively managing this plan</div><div class="isd">Projection rebuilt from the current CPM schedule \u00b7 '+(overs.length+3)+' things to weigh before Phase 3 mobilizes.</div></div></div>';
+      +'<div><div class="ist">02S is actively managing this plan</div><div class="isd">Projection rebuilt from the current CPM schedule \u00b7 '+(overs.length+3)+' things to weigh before Phase 3 structural steel mobilizes.</div></div></div>';
     h+='<div class="eq-callouts">';
-    if(overs.length){ h+=eqCallout('risk','Cost codes trending over',overTxt+' at the current spread. Both are still mostly in-flight \u2014 rebalance now, not at closeout.'); }
-    h+=eqCallout('risk','Schedule slip cascades into the plan','The CPM update moved <b>Phase 3 racking +3 weeks</b>. 02S re-dated '+p3+' access assets (scissor + boom + telehandler) and flagged the knock-on to the Phase 4 crane mobilization.');
-    h+=eqCallout('opp','Telehandler overlap \u2014 pool instead of double-rent','You\u2019ll run 16 telehandlers on Phase 2 and 12 on Phase 3 at the same time through the fall. Hold 12 on transfer instead of off-rent + re-rent \u2192 <b>save ~$106K</b>.');
-    h+=eqCallout('opp','Own-vs-rent candidate','3\u00d7 90-ton cranes for 6 months (Phase 4 BESS) is <b>'+fmtBig(craneCost)+'</b> in rental. McCarthy owns 2 comparable units freeing up in the region in March \u2014 02S flags this for an own-vs-rent call.');
+    if(overs.length){ h+=eqCallout('risk','Cost codes trending over',overTxt+' at the current spread. Still in-flight \u2014 rebalance now, not at closeout.'); }
+    h+=eqCallout('risk','Schedule slip cascades into the plan','The CPM update pushed <b>A3020 concrete superstructure +2 weeks</b>. 02S re-dated '+concAssets+' access assets (scissor lifts + concrete pumps) and flagged the knock-on to steel erection mobilization.');
+    h+=eqCallout('opp','Telehandler overlap \u2014 pool instead of double-rent','You\u2019ll run 4 telehandlers on Phase 1 civil and 6 on Phase 3 steel at the same time this fall. Transfer 4 instead of off-rent + re-rent \u2192 <b>save ~$70K</b>.');
+    h+=eqCallout('opp','Tower crane duration \u2014 review release date','2 luffing-jib cranes running 13 months is <b>'+fmtBig(craneCost)+'</b>. A3040 steel erection ends Mar \u201927 \u2014 02S flags a potential early release if the curtainwall package shifts.');
     h+='</div>';
     box.innerHTML=h;
   }

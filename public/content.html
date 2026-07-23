@@ -765,7 +765,7 @@
             <button class="seg-b on" id="eqSegPlan" onclick="setEqView('plan')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Table</button>
             <button class="seg-b" id="eqSegGantt" onclick="setEqView('gantt')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="15" y2="12"/><line x1="10" y1="18" x2="19" y2="18"/></svg>Timeline</button>
           </div>
-          <div class="eq-groupby"><span class="egb-l">Group by</span><select id="eqGroupSel" onchange="setEqGroup(this.value)"><option value="task" selected>Cost code</option><option value="class">Equipment class</option><option value="scope">Schedule activities</option></select></div>
+          <div class="eq-groupby"><span class="egb-l">Group by</span><select id="eqGroupSel" onchange="setEqGroup(this.value)"><option value="code" selected>Cost code</option><option value="task">Schedule activity</option><option value="class">Equipment class</option></select></div>
           <div class="eq-search-wrap"><input class="rin eq-search-inp" id="eqSearchInp" placeholder="Search demand lines…" oninput="eqSetSearch(this.value)"><svg class="eq-search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
           <span class="spacer"></span>
           <button class="btn btn-dark btn-sm" onclick="openEqAdd()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>
