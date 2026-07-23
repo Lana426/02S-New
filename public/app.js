@@ -1791,6 +1791,13 @@ charges:[
     h+='</div>';
     mount.innerHTML=h;
   }
+  function toggleCostCodes(){
+    var t=gel('costCodeTable'),ch=gel('ccChevron'); if(!t||!ch)return;
+    var open=t.style.display!=='none';
+    t.style.display=open?'none':'';
+    ch.textContent=open?'▼ show':'▲ hide';
+    if(!open) renderCostCodes();
+  }
   function setBfPillar(p){
     BF_PILLAR=p;
     document.querySelectorAll('.bf-tab').forEach(function(b){
@@ -1801,7 +1808,7 @@ charges:[
     renderBudget(); renderCostCodes(); renderBills(); renderPending();
   }
   function renderCostCodes(){
-    var mount=document.getElementById('costCodeTable'); if(!mount)return;
+    var mount=document.getElementById('costCodeTable'); if(!mount||mount.style.display==='none')return;
     var list=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
     if(!list.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
     var totB=0,totC=0,totA=0,totF=0;
@@ -1949,7 +1956,7 @@ charges:[
         '</div>'+
         inline+
       '</div>';
-    }).join('')+(extra?'<div style="grid-column:1/-1;font-size:12px;color:var(--g500);padding:6px 2px">+'+extra+' more pending — <span class="oc-link" onclick="document.getElementById(\'billStatus\').value=\'Pending\';renderBills();document.getElementById(\'billHist\').scrollIntoView({behavior:\'smooth\'})">view all in billing history</span></div>':'');
+    }).join('')+(extra?'<div style="grid-column:1/-1;font-size:12px;color:var(--g500);padding:6px 2px">+'+extra+' more pending — <span class="oc-link" onclick="document.getElementById(\'billHist\').scrollIntoView({behavior:\'smooth\'})">view all in billing history ↓</span></div>':'');
   }
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
