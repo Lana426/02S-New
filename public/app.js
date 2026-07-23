@@ -3292,25 +3292,58 @@ function ctForecastYTD(){
 }
 function openD2CModal(){
   openModal('Direct-to-client flag',
-    '<div class="opp-flag" style="margin:0 0 14px;font-size:12px">The D2C flag classifies an opportunity as directly contracted with the end client — bypassing standard channel routing. This affects market split, cost allocation, and G&amp;A treatment.</div>'
-    +'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Flagged opportunities</div>'
-    +'<table class="mini ct-opp-tbl" style="margin-bottom:14px"><tr><th>Opportunity</th><th>Pillar</th><th>Value</th><th>Status</th></tr>'
-    +'<tr><td>Fountain Valley WTP</td><td>Equipment</td><td>$40.0M</td><td><span class="chip red" style="font-size:10px">Active</span></td></tr>'
-    +'<tr><td>Mercy Hospital</td><td>Prof. Svcs</td><td>$210.0M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
-    +'<tr><td>Route 9 Widening</td><td>Procurement</td><td>$28.5M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
+    '<div class="opp-flag" style="margin:0 0 14px;font-size:12.5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
+    +'<div><b>O2S serving the owner directly</b> — not routed through the project team or GC. Revenue from these opportunities is <b>not reflected</b> in the standard market split or share reporting.</div></div>'
+    +'<table class="mini ct-opp-tbl" style="margin-bottom:14px"><tr><th>Opportunity</th><th>Value</th><th>Status</th></tr>'
+    +'<tr><td>Fountain Valley WTP</td><td>$40.0M</td><td><span class="chip red" style="font-size:10px">Active</span></td></tr>'
+    +'<tr><td>Mercy General Hospital</td><td>$210.0M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
+    +'<tr><td>Route 9 Widening</td><td>$28.5M</td><td><span class="chip warn" style="font-size:10px">Pending</span></td></tr>'
     +'</table>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
-    +'<div style="background:rgba(220,29,52,.04);border:1px solid rgba(220,29,52,.12);border-radius:6px;padding:10px 12px"><div class="stat-sub">Revenue impact</div><div style="font-size:18px;font-weight:800;color:var(--charcoal)">+$4.2M</div></div>'
-    +'<div style="background:rgba(220,29,52,.04);border:1px solid rgba(220,29,52,.12);border-radius:6px;padding:10px 12px"><div class="stat-sub">Margin impact</div><div style="font-size:18px;font-weight:800;color:var(--charcoal)">+2.1pp</div></div>'
-    +'</div>'
-    +'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">What changes</div>'
-    +'<div class="fpa-checks" style="margin-bottom:14px">'
-    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Market split reclassified to Direct segment</div>'
-    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>G&amp;A rate adjusted to direct-client tier</div>'
-    +'<div class="fpa-check"><span class="fc-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Allocation flow bypasses standard regional split</div>'
-    +'</div>'
-    +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();ctNav(\'ct-allocation\')">View allocation flow →</button></div>'
+    +'<div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">Combined direct revenue: <b style="color:var(--charcoal)">$278.5M</b> &nbsp;·&nbsp; Not in market split &nbsp;·&nbsp; Margin plan required per opportunity</div>'
+    +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-dark" onclick="closeModal();ctNav(\'ct-allocation\')">View allocation flow</button></div>'
   );
+}
+
+var OPP_DATA={
+  joc:{title:'1GPA – 2026 Q1 JOC Sales',oppNum:'OPP-0001234',value:'$1,812,212',market:'Commercial / Building',region:'Southwest · Phoenix',stage:'Won',stageC:'ok',revOpp:'$214.9K',tamPct:'29.4%',salesOpp:'$63.2K',salesMgn:'$15.0K · 9.0%',planStatus:'Active plan',planC:'ok',risks:[],pillars:['Equipment','Logistics','Procurement'],lines:[['Fleet & Personnel Assets','$4.5K','$4.5K','100.0%','$4.5K','60.0%','$2.7K','100.0%'],['Equipment Management Program','$24.5K','$24.5K','100.0%','$24.5K','30.0%','$7.3K','100.0%']]},
+  fountain:{title:'Fountain Valley WTP Pretreatment',oppNum:'OPP-0005678',value:'$40,000,000',market:'Public / Infrastructure',region:'Southwest · Colorado Springs',stage:'Bid',stageC:'warn',revOpp:'$4.0M',tamPct:'10.0%',salesOpp:'$3.8M',salesMgn:'$380K · 10.0%',planStatus:'No plan · TAM default 8.0%',planC:'warn',risks:['Project award delayed Q1→Q3 — construction start at risk','Equipment rate exposure on cranes if bid window extends'],pillars:['Equipment','Logistics'],lines:[['Tower Crane (3×)','$2.1M','$2.1M','100.0%','$2.1M','8.2%','$172K','100.0%'],['Telehandler Fleet','$780K','$780K','100.0%','$780K','7.8%','$61K','100.0%'],['Mobilization / Haul','$420K','$420K','100.0%','$420K','8.5%','$36K','80.0%']]},
+  mercy:{title:'Mercy General Hospital Expansion',oppNum:'OPP-0003421',value:'$210,000,000',market:'Healthcare / Building',region:'Southwest',stage:'Pursuit',stageC:'',revOpp:'$21.4M',tamPct:'10.2%',salesOpp:'$19.8M',salesMgn:'$1.78M · 9.0% (TAM default)',planStatus:'No plan · TAM default 9.0%',planC:'warn',risks:['Margin plan missing — TAM default applied; custom plan could unlock −$420K savings','VDC/BIM scope undefined — Prof. Services estimate not yet locked','Special inspection scope pending final structural drawings'],pillars:['Prof. Services','Equipment','Prefabrication'],lines:[['VDC / BIM Services','$4.8M','—','—','—','—','—','—'],['Special Inspection','$1.2M','$1.2M','100.0%','$1.2M','9.0%','$108K','85.0%'],['Commissioning Support','$2.1M','$2.1M','100.0%','$2.1M','9.2%','$193K','90.0%']]},
+  civic:{title:'City Civic Center — Phase 2',oppNum:'OPP-0009012',value:'$85,000,000',market:'Public / Infrastructure',region:'Mountain',stage:'Bid',stageC:'warn',revOpp:'$8.5M',tamPct:'10.0%',salesOpp:'$8.5M',salesMgn:'$680K · 8.0% (TAM default)',planStatus:'No plan · TAM default 8.0%',planC:'warn',risks:['Margin plan missing — TAM default applied','Subcontractor pricing volatile in Mountain region','Equipment mobilization altitude premium not modeled'],pillars:['Equipment','Logistics','Procurement'],lines:[['Tower Crane (2×)','$2.4M','$2.4M','100.0%','$2.4M','8.0%','$192K','100.0%'],['Telehandlers (4×)','$960K','$960K','100.0%','$960K','7.8%','$75K','100.0%'],['Haul Road & Mobilization','$480K','$480K','100.0%','$480K','8.5%','$41K','80.0%']]},
+  baystate:{title:'Baystate Medical Center Modernization',oppNum:'OPP-0007845',value:'$62,000,000',market:'Healthcare / Building',region:'Northeast',stage:'Won',stageC:'ok',revOpp:'$6.2M',tamPct:'10.0%',salesOpp:'$6.2M',salesMgn:'$558K · 9.0%',planStatus:'Stale plan · last updated 6 months ago',planC:'warn',risks:['Margin plan stale — re-price required before execution start','Equipment rates have increased +8% since plan was set','Prefab scope added post-plan — margin not reflected'],pillars:['Equipment','Procurement','Prefabrication'],lines:[['Fleet & Personnel Assets','$3.1M','$3.1M','100.0%','$3.1M','9.0%','$279K','100.0%'],['Equipment Management Program','$2.2M','$2.2M','100.0%','$2.2M','9.1%','$200K','100.0%']]}
+};
+function ctOppDetail(id){
+  var d=OPP_DATA[id]||OPP_DATA['joc'];
+  var hd=document.getElementById('oppDetHead');
+  if(hd)hd.innerHTML='<h1 style="font-size:22px">'+d.title+'</h1><div class="meta"><span class="chip">Margin plan · opportunity detail</span> &nbsp;<span style="color:var(--g400)">· '+d.oppNum+'</span></div>';
+  var wIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;flex-shrink:0;color:var(--warning)"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+  var rHtml=d.risks.length?d.risks.map(function(r){return '<div style="font-size:12px;color:var(--g600);padding:5px 2px;display:flex;align-items:flex-start;gap:8px">'+wIco+r+'</div>';}).join(''):'<div style="font-size:12px;color:var(--g500);padding:6px 2px">No risks captured yet.</div>';
+  var pTabs=d.pillars.map(function(p,i){return '<span class="opp-tab'+(i===0?' active':'')+'" onclick="ctPillarTab(this)">'+p+'</span>';}).join('');
+  var lRows=d.lines.map(function(l){return '<div class="opp-lrow opp-lrow-cols"><div class="opp-lrow-pri" style="color:var(--info)">'+l[0]+'</div><div>'+l[1]+'</div><div>'+l[2]+'</div><div>'+l[3]+'</div><div>'+l[4]+'</div><div>'+l[5]+'</div><div><b>'+l[6]+'</b></div><div>'+l[7]+'</div></div>';}).join('');
+  var sc=d.stageC?'<span class="chip '+d.stageC+'">'+d.stage+'</span>':'<span class="chip">'+d.stage+'</span>';
+  var ct=document.getElementById('oppDetContent');
+  if(!ct)return;
+  ct.innerHTML=
+    '<div class="opp-flag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><div><b>02S Opportunities — margin plan detail.</b> Opportunity-level margin plan, pillar breakdown, and execution handshake.</div></div>'
+    +'<div class="card" style="margin-bottom:14px"><div class="opp-detail-top">'
+    +'<div><div class="odt-k">Estimated value</div><div class="odt-v">'+d.value+'</div></div>'
+    +'<div><div class="odt-k">Market</div><div class="odt-v">'+d.market+'</div></div>'
+    +'<div><div class="odt-k">Region</div><div class="odt-v">'+d.region+'</div></div>'
+    +'<div><div class="odt-k">Stage</div><div class="odt-v">'+sc+'</div></div>'
+    +'</div></div>'
+    +'<div class="opp-metric-row">'
+    +'<div class="omr"><div class="omr-k">Revenue opportunity</div><div class="omr-v">'+d.revOpp+'</div></div>'
+    +'<div class="omr"><div class="omr-k">TAM capture %</div><div class="omr-v">'+d.tamPct+'</div></div>'
+    +'<div class="omr"><div class="omr-k">Sales opportunity</div><div class="omr-v">'+d.salesOpp+'</div></div>'
+    +'<div class="omr"><div class="omr-k">Sales margin</div><div class="omr-v">'+d.salesMgn+'</div></div>'
+    +'</div>'
+    +'<div class="card" style="margin:14px 0"><div class="card-h"><span class="card-title">Margin plan</span><span class="chip '+d.planC+'" style="margin-left:8px;font-size:10.5px">'+d.planStatus+'</span><div class="hright"><button class="btn btn-ghost btn-sm" onclick="toast(\'Edit margin plan (demo)\')">Edit plan</button><button class="btn btn-dark btn-sm" onclick="toast(\'Draft with 02S (demo)\')">'+ctIc('sparkle',13)+' 02S draft</button></div></div>'
+    +rHtml+'</div>'
+    +'<div class="card"><div class="card-h"><span class="card-title">Pillar breakdown</span><span class="hcount">edit product-line detail in each pillar</span></div>'
+    +'<div class="opp-tabs" id="ctPillarTabs">'+pTabs+'</div>'
+    +'<div class="opp-pillar-sum"><span style="font-weight:700">'+d.pillars[0]+'</span><span>Revenue opp. <b>'+d.revOpp+'</b></span><span>Sales margin <b>'+d.salesMgn.split('·')[0].trim()+'</b></span><button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="toast(\'Add product line (demo)\')">'+ctIc('send',13)+' Product lines</button></div>'
+    +'<div class="opp-llist"><div class="opp-lrow opp-lrow-head opp-lrow-cols"><div>Product line</div><div>Rev. opp.</div><div>Rev. est.</div><div>Capture %</div><div>Sales opp.</div><div>Profit %</div><div>Sales margin</div><div>Prob. %</div></div>'
+    +lRows+'</div></div>';
+  ctNav('ct-opp-detail');
 }
 
 /* Margin drill modal — uses existing openModal pattern */
