@@ -327,6 +327,7 @@
         +'<div class="pfoot"><div><div class="pprice">'+p.price+'<span class="pu">'+p.unit+'</span></div><div class="plead">'+lead+'</div></div>'
         +'<button class="padd txt" onclick="event.stopPropagation();openCatDetail(\''+p.id+'\')">Add</button></div></div></div>';
     }).join('')+'</div>';
+    html+='<div class="cat-not-found">Don\'t see what you need? <button class="clink" onclick="onCatSearch(\'\');document.getElementById(\'catSearchInp\').value=\'\';openCustom(\'Equipment\')">Send a custom request &rsaquo;</button></div>';
     res.innerHTML=html;
     res.classList.remove('hide');
   }
@@ -462,6 +463,28 @@
     var raw=document.getElementById('askInput').value.trim();
     if(!raw){ document.getElementById('askInput').focus(); return; }
     var q=raw.toLowerCase();
+    // Try to surface catalog results instead of jumping straight to a request form
+    var catHits=CATALOG.filter(function(p){
+      return p.name.toLowerCase().indexOf(q)>-1||p.cat.toLowerCase().indexOf(q)>-1||(p.pcat&&p.pcat.toLowerCase().indexOf(q)>-1)||(p.spec&&p.spec.toLowerCase().indexOf(q)>-1);
+    });
+    var catTerm=raw;
+    if(!catHits.length){
+      var tokens=q.split(/\s+/).filter(function(t){return t.length>2;});
+      for(var ti=0;ti<tokens.length;ti++){
+        var tok=tokens[ti];
+        var tokHits=CATALOG.filter(function(p){return p.name.toLowerCase().indexOf(tok)>-1||p.cat.toLowerCase().indexOf(tok)>-1||(p.spec&&p.spec.toLowerCase().indexOf(tok)>-1);});
+        if(tokHits.length){catHits=tokHits;catTerm=tok;break;}
+      }
+    }
+    if(catHits.length){
+      var inp=document.getElementById('catSearchInp'); if(inp) inp.value=catTerm;
+      onCatSearch(catTerm);
+      var understood=document.getElementById('understood'); if(understood){understood.classList.add('hide');understood.innerHTML='';}
+      document.getElementById('typeahead').innerHTML=''; document.getElementById('taWrap').classList.add('hide');
+      var res=document.getElementById('catSearchResults');
+      if(res) setTimeout(function(){res.scrollIntoView({behavior:'smooth',block:'start'});},50);
+      return;
+    }
     // same mapping parseReq uses — keyword → catalog item / custom pillar
     var matchId=null; Object.keys(KW).forEach(function(k){ if(q.indexOf(k)>-1 && !matchId) matchId=KW[k]; });
     var custHit=null; Object.keys(CUSTOM_KW).forEach(function(k){ if(q.indexOf(k)>-1) custHit=CUSTOM_KW[k]; });
