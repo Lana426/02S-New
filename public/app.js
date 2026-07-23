@@ -1848,6 +1848,7 @@ charges:[
   }
   function renderCostCodes(){
     var mount=document.getElementById('costCodeTable'); if(!mount||mount.style.display==='none')return;
+    var ns=CURRENT==='ns';
     var fullList=BF_PILLAR?COST_CODES.filter(function(c){return c.pillar===BF_PILLAR;}):COST_CODES;
     if(!fullList.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
     // group by pillar when viewing all
