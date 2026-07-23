@@ -1591,6 +1591,9 @@
   .dchip{display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;color:var(--g600);background:#fff;border:1px solid var(--g250);border-radius:99px;padding:4px 11px;cursor:pointer;transition:all .15s}
   .dchip:hover{border-color:var(--red);color:var(--red);background:var(--red-tint)}
   .dchip.on{background:var(--red-tint);color:var(--red);border-color:var(--red);font-weight:600}
+  .cc-pick-wrap{display:flex;flex-direction:column;gap:0;min-width:200px}
+  .cc-sel{font-family:inherit;font-size:11px;color:var(--g800);background:#fff;border:1px solid var(--g250);border-radius:6px;padding:4px 6px;cursor:pointer;width:100%}
+  .cc-sel:focus{border-color:var(--red);outline:none}
 
   /* ── Catalog detail modal ── */
   .cat-detail{padding:0 0 4px}
