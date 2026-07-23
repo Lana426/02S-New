@@ -1755,31 +1755,42 @@ charges:[
   function getBill(id){return BILLS.filter(function(b){return b.id===id;})[0];}
   var billUI={}; // id -> '' | 'dispute' | 'edit'
   var BF_PILLAR='';
+  var NS_SUB_JOBS=[
+    {id:'SJ-001',name:'General Conditions',spw:true},
+    {id:'SJ-002',name:'Site Preparation',  spw:true},
+    {id:'SJ-003',name:'Demo & Clearing',   spw:false}, // no SPW commitment issued yet
+    {id:'SJ-004',name:'Solar Installation',spw:true},
+    {id:'SJ-005',name:'BESS & Electrical', spw:true},
+    {id:'SJ-006',name:'Professional Support',spw:true}
+  ];
   var COST_CODES=[
     // Equipment pillar
-    {code:'01-0540',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment'},
-    {code:'02-0320',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment'},
-    {code:'26-0330',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment'},
-    {code:'31-0620',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment'},
-    {code:'05-0120',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment'},
+    {code:'01-0540',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment',subJob:'SJ-001'},
+    {code:'02-0320',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'02-0310',name:'Demo & site clearing',   originalBudget:420000, approvedCO:0,      pendingCO:0,     committed:0,      spent:0,      pillar:'equipment',subJob:'SJ-003'},
+    {code:'26-0330',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment',subJob:'SJ-005'},
+    {code:'31-0620',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment',subJob:'SJ-002'},
+    {code:'05-0120',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment',subJob:'SJ-004'},
     // Prefab pillar
-    {code:'22-0000',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab'},
-    {code:'03-0100',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab'},
-    {code:'05-0500',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab'},
+    {code:'22-0000',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab',subJob:'SJ-004'},
+    {code:'03-0100',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab',subJob:'SJ-002'},
+    {code:'05-0500',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab',subJob:'SJ-004'},
     // Logistics pillar
-    {code:'01-5100',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,   committed:280000,spent:84000, pillar:'logistics'},
-    {code:'01-5200',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,   committed:180000,spent:52000, pillar:'logistics'},
+    {code:'01-5100',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:84000, pillar:'logistics',subJob:'SJ-002'},
+    {code:'01-5200',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:52000, pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
-    {code:'06-0100',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,   committed:1295000,spent:410000,pillar:'procurement'},
-    {code:'06-0200',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,   committed:220000, spent:98000, pillar:'procurement'},
+    {code:'06-0100',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,committed:1295000,spent:410000,pillar:'procurement',subJob:'SJ-004'},
+    {code:'06-0200',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:98000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
-    {code:'01-0100',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,    pendingCO:0,    committed:980000,spent:480000,pillar:'profservices'},
-    {code:'02-0100',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,    pendingCO:25000,committed:240000,spent:120000,pillar:'profservices'},
-    {code:'01-0800',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,    pendingCO:0,    committed:80000, spent:28000, pillar:'profservices'}
+    {code:'01-0100',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:480000,pillar:'profservices',subJob:'SJ-001'},
+    {code:'02-0100',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:120000,pillar:'profservices',subJob:'SJ-006'},
+    {code:'01-0800',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,pendingCO:0,    committed:80000, spent:28000, pillar:'profservices',subJob:'SJ-006'}
   ];
   function ccBudget(c){return c.originalBudget+(c.approvedCO||0);}
   function ccProjected(c){return ccBudget(c)+(c.pendingCO||0);}
   function ccTone(c){var b=ccBudget(c);return c.committed>b?'bad':c.committed>b*.95?'warn':'ok';}
+  function ccEAC(c){var b=ccBudget(c); if(!c.committed||!c.spent) return b; var cpi=c.spent/c.committed; return Math.round(b/Math.max(cpi,0.5));}
+  function sjById(id){return NS_SUB_JOBS.filter(function(s){return s.id===id;})[0]||null;}
   function setPillarLabel(k){ var m={equipment:'Equipment',prefab:'Prefab',logistics:'Logistics',procurement:'Procurement',profservices:'Prof. services'}; return m[k]||k; }
   function renderBudget(){
     var mount=document.getElementById('budgetViz'); if(!mount)return;
@@ -1841,6 +1852,12 @@ charges:[
     if(!fullList.length){mount.innerHTML='<div style="padding:20px;color:var(--g400);font-size:13px">No cost codes for this pillar.</div>';return;}
     // group by pillar when viewing all
     var pillarsShown=BF_PILLAR?[BF_PILLAR]:['equipment','prefab','logistics','procurement','profservices'];
+    // NS mode: 8-col table with sub-job grouping + EAC/variance
+    // V1 mode: 7-col table grouped by pillar only
+    var nsColSpec='2fr 1fr .8fr 1fr 1.1fr .85fr .85fr .85fr';
+    var v1ColSpec='2fr 1fr .8fr 1fr 1.2fr .9fr .9fr';
+    var colSpec=ns?nsColSpec:v1ColSpec;
+    mount.style.setProperty('--cc-cols',colSpec);
     var head='<div class="cc-table-head">'
       +'<span>Cost code</span>'
       +'<span class="r">Orig. budget</span>'
@@ -1848,36 +1865,76 @@ charges:[
       +'<span class="r">Curr. budget</span>'
       +'<span class="r">Committed</span>'
       +'<span class="r">Spent</span>'
-      +'<span>Status</span>'
+      +(ns?'<span class="r">EAC</span><span class="r">Variance</span>':'<span>Status</span>')
       +'</div>';
     var body='';
-    var gTotOrig=0,gTotCO=0,gTotCurr=0,gTotC=0,gTotS=0;
+    var gTotOrig=0,gTotCO=0,gTotCurr=0,gTotC=0,gTotS=0,gTotEAC=0;
     pillarsShown.forEach(function(pil){
       var grp=fullList.filter(function(c){return c.pillar===pil;});
       if(!grp.length) return;
       if(!BF_PILLAR) body+='<div class="cc-pillar-hdr">'+setPillarLabel(pil)+'</div>';
-      grp.forEach(function(c){
-        var curr=ccBudget(c), pct=Math.min(Math.round(c.committed/curr*100),999), tone=ccTone(c);
-        var barW=Math.min(pct,100);
-        var barCol=tone==='bad'?'var(--red)':tone==='warn'?'var(--warning)':'var(--success)';
-        var coTxt=c.approvedCO>0?'+'+fmtBig(c.approvedCO):c.approvedCO<0?'−'+fmtBig(-c.approvedCO):'—';
-        var coClass=c.approvedCO>0?'cc-co-pos':c.approvedCO<0?'cc-co-neg':'cc-co-nil';
-        body+='<div class="cc-row">'
-          +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+(c.pendingCO?'<span class="cc-pend-flag"> · '+fmtBig(c.pendingCO)+' pending CO</span>':'')+'</div></div>'
-          +'<div class="r cc-num">'+fmtBig(c.originalBudget)+'</div>'
-          +'<div class="r cc-num"><span class="'+coClass+'">'+coTxt+'</span></div>'
-          +'<div class="r cc-num cc-curr">'+fmtBig(curr)+'</div>'
-          +'<div class="r cc-num">'
-            +'<div class="cc-bar-wrap"><div class="cc-mini-bar" style="width:'+barW+'%;background:'+barCol+'"></div></div>'
-            +'<span>'+fmtBig(c.committed)+'</span><span class="cc-pct">'+pct+'%</span>'
-          +'</div>'
-          +'<div class="r cc-num">'+fmtBig(c.spent)+'</div>'
-          +'<div><span class="tag '+tone+'">'+(tone==='ok'?'On track':tone==='warn'?'Near limit':'Over budget')+'</span></div>'
-          +'</div>';
-        gTotOrig+=c.originalBudget; gTotCO+=(c.approvedCO||0); gTotCurr+=curr; gTotC+=c.committed; gTotS+=c.spent;
-      });
+
+      if(ns){
+        // group by sub-job within pillar
+        var sjIds=[]; grp.forEach(function(c){if(sjIds.indexOf(c.subJob)<0) sjIds.push(c.subJob);});
+        sjIds.forEach(function(sjId){
+          var sjMeta=sjById(sjId);
+          var sjCodes=grp.filter(function(c){return c.subJob===sjId;});
+          var sjB=0,sjC=0,sjS=0; sjCodes.forEach(function(c){sjB+=ccBudget(c);sjC+=c.committed;sjS+=c.spent;});
+          var noSpw=sjMeta&&!sjMeta.spw;
+          body+='<div class="cc-sj-hdr">'
+            +'<span class="cc-sj-id">'+(sjMeta?sjMeta.id:sjId)+'</span>'
+            +'<span class="cc-sj-name">'+(sjMeta?sjMeta.name:sjId)+'</span>'
+            +(noSpw?'<span class="tag warn cc-sj-spw">No SPW commitment</span>':'')
+            +'<span class="cc-sj-sum">'+fmtBig(sjB)+' budget · '+fmtBig(sjC)+' committed · '+fmtBig(sjS)+' spent</span>'
+            +'</div>';
+          sjCodes.forEach(function(c){
+            var curr=ccBudget(c), pct=Math.min(Math.round(c.committed/Math.max(curr,1)*100),999), tone=ccTone(c);
+            var barW=Math.min(pct,100);
+            var barCol=tone==='bad'?'var(--red)':tone==='warn'?'var(--warning)':'var(--success)';
+            var coTxt=c.approvedCO>0?'+'+fmtBig(c.approvedCO):c.approvedCO<0?'−'+fmtBig(-c.approvedCO):'—';
+            var coClass=c.approvedCO>0?'cc-co-pos':c.approvedCO<0?'cc-co-neg':'cc-co-nil';
+            var eac=ccEAC(c), variance=curr-eac;
+            var varClass=variance<0?'cc-var-bad':variance<curr*.05?'cc-var-warn':'cc-var-ok';
+            var noCommit=!c.committed&&noSpw;
+            body+='<div class="cc-row'+(noCommit?' cc-row-dim':'')+'">'
+              +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+(c.pendingCO?'<span class="cc-pend-flag"> · '+fmtBig(c.pendingCO)+' pending CO</span>':'')+(noCommit?'<span class="cc-pend-flag"> · awaiting commitment</span>':'')+'</div></div>'
+              +'<div class="r cc-num">'+fmtBig(c.originalBudget)+'</div>'
+              +'<div class="r cc-num"><span class="'+coClass+'">'+coTxt+'</span></div>'
+              +'<div class="r cc-num cc-curr">'+fmtBig(curr)+'</div>'
+              +'<div class="r cc-num">'+(noCommit?'<span class="cc-co-nil">—</span>':'<div class="cc-bar-wrap"><div class="cc-mini-bar" style="width:'+barW+'%;background:'+barCol+'"></div></div><span>'+fmtBig(c.committed)+'</span><span class="cc-pct">'+pct+'%</span>')+'</div>'
+              +'<div class="r cc-num">'+(noCommit?'<span class="cc-co-nil">—</span>':fmtBig(c.spent))+'</div>'
+              +'<div class="r cc-num">'+(noCommit?'<span class="cc-co-nil">—</span>':fmtBig(eac))+'</div>'
+              +'<div class="r cc-num"><span class="'+varClass+'">'+(noCommit?'—':(variance>=0?'+':'')+fmtBig(variance))+'</span></div>'
+              +'</div>';
+            gTotOrig+=c.originalBudget; gTotCO+=(c.approvedCO||0); gTotCurr+=curr; gTotC+=c.committed; gTotS+=c.spent; gTotEAC+=eac;
+          });
+        });
+      } else {
+        grp.forEach(function(c){
+          var curr=ccBudget(c), pct=Math.min(Math.round(c.committed/Math.max(curr,1)*100),999), tone=ccTone(c);
+          var barW=Math.min(pct,100);
+          var barCol=tone==='bad'?'var(--red)':tone==='warn'?'var(--warning)':'var(--success)';
+          var coTxt=c.approvedCO>0?'+'+fmtBig(c.approvedCO):c.approvedCO<0?'−'+fmtBig(-c.approvedCO):'—';
+          var coClass=c.approvedCO>0?'cc-co-pos':c.approvedCO<0?'cc-co-neg':'cc-co-nil';
+          body+='<div class="cc-row">'
+            +'<div><div class="cc-code">'+c.code+'</div><div class="cc-cname">'+c.name+(c.pendingCO?'<span class="cc-pend-flag"> · '+fmtBig(c.pendingCO)+' pending CO</span>':'')+'</div></div>'
+            +'<div class="r cc-num">'+fmtBig(c.originalBudget)+'</div>'
+            +'<div class="r cc-num"><span class="'+coClass+'">'+coTxt+'</span></div>'
+            +'<div class="r cc-num cc-curr">'+fmtBig(curr)+'</div>'
+            +'<div class="r cc-num">'
+              +'<div class="cc-bar-wrap"><div class="cc-mini-bar" style="width:'+barW+'%;background:'+barCol+'"></div></div>'
+              +'<span>'+fmtBig(c.committed)+'</span><span class="cc-pct">'+pct+'%</span>'
+            +'</div>'
+            +'<div class="r cc-num">'+fmtBig(c.spent)+'</div>'
+            +'<div><span class="tag '+tone+'">'+(tone==='ok'?'On track':tone==='warn'?'Near limit':'Over budget')+'</span></div>'
+            +'</div>';
+          gTotOrig+=c.originalBudget; gTotCO+=(c.approvedCO||0); gTotCurr+=curr; gTotC+=c.committed; gTotS+=c.spent;
+        });
+      }
     });
-    var footPct=Math.min(Math.round(gTotC/gTotCurr*100),999);
+    var footPct=Math.min(Math.round(gTotC/Math.max(gTotCurr,1)*100),999);
+    var totalVar=gTotCurr-gTotEAC;
     var foot='<div class="cc-row cc-foot">'
       +'<div><b>Total</b></div>'
       +'<div class="r cc-num"><b>'+fmtBig(gTotOrig)+'</b></div>'
@@ -1885,7 +1942,7 @@ charges:[
       +'<div class="r cc-num cc-curr"><b>'+fmtBig(gTotCurr)+'</b></div>'
       +'<div class="r cc-num"><b>'+fmtBig(gTotC)+'</b><span class="cc-pct">'+footPct+'%</span></div>'
       +'<div class="r cc-num"><b>'+fmtBig(gTotS)+'</b></div>'
-      +'<div></div>'
+      +(ns?'<div class="r cc-num"><b>'+fmtBig(gTotEAC)+'</b></div><div class="r cc-num"><span class="'+(totalVar<0?'cc-var-bad':'cc-var-ok')+'">'+(totalVar>=0?'+':'')+fmtBig(totalVar)+'</span></div>':'<div></div>')
       +'</div>';
     mount.innerHTML=head+body+foot;
   }

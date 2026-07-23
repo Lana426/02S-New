@@ -1596,11 +1596,20 @@
   .bf-tab.on{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}
 
   /* cost code breakdown table */
-  .cc-table-head{display:grid;grid-template-columns:2fr 1fr .8fr 1fr 1.2fr .9fr .9fr;gap:6px;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);border-bottom:1px solid var(--g200);background:var(--g050);border-radius:8px 8px 0 0}
-  .cc-row{display:grid;grid-template-columns:2fr 1fr .8fr 1fr 1.2fr .9fr .9fr;gap:6px;padding:9px 12px;border-bottom:1px solid var(--g150);align-items:center;font-size:12px}
+  .cc-table-head{display:grid;grid-template-columns:var(--cc-cols,2fr 1fr .8fr 1fr 1.2fr .9fr .9fr);gap:6px;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);border-bottom:1px solid var(--g200);background:var(--g050);border-radius:8px 8px 0 0}
+  .cc-row{display:grid;grid-template-columns:var(--cc-cols,2fr 1fr .8fr 1fr 1.2fr .9fr .9fr);gap:6px;padding:9px 12px;border-bottom:1px solid var(--g150);align-items:center;font-size:12px}
   .cc-row:hover{background:var(--g050)}
+  .cc-row-dim{opacity:.55}
   .cc-foot{background:var(--g050);font-weight:700;border-radius:0 0 8px 8px;border-bottom:none;border-top:1px solid var(--g300)}
   .cc-pillar-hdr{padding:8px 12px 4px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--g400);background:var(--g050);border-bottom:1px solid var(--g150)}
+  .cc-sj-hdr{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--g100);border-bottom:1px solid var(--g200);font-size:11px}
+  .cc-sj-id{font-family:monospace;font-weight:700;font-size:10.5px;color:var(--g600);background:var(--g200);padding:1px 5px;border-radius:4px}
+  .cc-sj-name{font-weight:600;color:var(--g800)}
+  .cc-sj-spw{font-size:10px;padding:1px 6px}
+  .cc-sj-sum{margin-left:auto;font-size:10.5px;color:var(--g500);font-variant-numeric:tabular-nums}
+  .cc-var-ok{color:var(--success);font-weight:600}
+  .cc-var-warn{color:var(--warning);font-weight:600}
+  .cc-var-bad{color:var(--red);font-weight:600}
   .cc-code{font-size:11.5px;font-weight:700;font-family:monospace;color:var(--g800)}
   .cc-cname{font-size:11px;color:var(--g500);margin-top:1px}
   .cc-pend-flag{color:var(--warning);font-style:italic}
