@@ -514,6 +514,7 @@
   .brow{display:grid;align-items:center;gap:14px;padding:0 16px;min-height:52px;border-bottom:1px solid var(--g150);transition:background .12s}
   .brow:last-child{border-bottom:none}
   .brow:hover{background:var(--g50)}
+  .brow.brow-open,.brow.brow-open:hover{background:var(--g50)}
   .oc-link{font-size:12.5px;font-weight:600;color:var(--info);font-variant-numeric:tabular-nums;cursor:pointer}
   .oc-link:hover{text-decoration:underline}
   .oc-amt{font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums}

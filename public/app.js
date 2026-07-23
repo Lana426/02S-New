@@ -1734,22 +1734,22 @@ charges:[
   var billUI={}; // id -> '' | 'dispute' | 'edit'
   var BF_PILLAR='';
   var COST_CODES=[
-    {code:'01-0540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:2050000,pillar:'equipment'},
-    {code:'02-0320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3150000,pillar:'equipment'},
-    {code:'26-0330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4750000,pillar:'equipment'},
-    {code:'31-0620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2380000,pillar:'equipment'},
-    {code:'09-0000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:480000,pillar:'equipment'},
-    {code:'05-0120',name:'Metals & structural steel',budget:960000,committed:740000,billed:362000,forecast:950000,pillar:'equipment'},
-    {code:'22-0000',name:'Prefab MEP — pipe racks & headwalls',budget:1840000,committed:1120000,billed:420000,forecast:1800000,pillar:'prefab'},
-    {code:'03-0100',name:'Prefab concrete formwork',budget:580000,committed:340000,billed:120000,forecast:570000,pillar:'prefab'},
-    {code:'05-0500',name:'Prefab structural assemblies',budget:920000,committed:480000,billed:96000,forecast:910000,pillar:'prefab'},
-    {code:'01-5100',name:'Logistics — heavy haul & crane mob',budget:640000,committed:280000,billed:84000,forecast:625000,pillar:'logistics'},
-    {code:'01-5200',name:'Logistics — freight & staging',budget:320000,committed:180000,billed:52000,forecast:315000,pillar:'logistics'},
-    {code:'06-0100',name:'Procurement — bulk materials',budget:1240000,committed:860000,billed:410000,forecast:1220000,pillar:'procurement'},
-    {code:'06-0200',name:'Procurement — hardware & safety',budget:380000,committed:220000,billed:98000,forecast:375000,pillar:'procurement'},
-    {code:'01-0100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1180000,pillar:'profservices'},
-    {code:'02-0100',name:'Geotechnical & special inspection',budget:320000,committed:240000,billed:120000,forecast:315000,pillar:'profservices'},
-    {code:'01-0800',name:'Environmental monitoring',budget:180000,committed:80000,billed:28000,forecast:175000,pillar:'profservices'}
+    {code:'01-0540',name:'General conditions',budget:2100000,committed:1840000,billed:980000,forecast:1820000,pillar:'equipment'},
+    {code:'02-0320',name:'Site earthwork',budget:3200000,committed:2900000,billed:1760000,forecast:3380000,pillar:'equipment'},
+    {code:'26-0330',name:'BESS & Substation',budget:4800000,committed:2400000,billed:480000,forecast:4710000,pillar:'equipment'},
+    {code:'31-0620',name:'Solar pile foundations',budget:2400000,committed:1960000,billed:840000,forecast:2160000,pillar:'equipment'},
+    {code:'09-0000',name:'Finishes',budget:480000,committed:120000,billed:48200,forecast:435000,pillar:'equipment'},
+    {code:'05-0120',name:'Metals & structural steel',budget:960000,committed:740000,billed:362000,forecast:1020000,pillar:'equipment'},
+    {code:'22-0000',name:'Prefab MEP — pipe racks & headwalls',budget:1840000,committed:1120000,billed:420000,forecast:1790000,pillar:'prefab'},
+    {code:'03-0100',name:'Prefab concrete formwork',budget:580000,committed:340000,billed:120000,forecast:520000,pillar:'prefab'},
+    {code:'05-0500',name:'Prefab structural assemblies',budget:920000,committed:480000,billed:96000,forecast:975000,pillar:'prefab'},
+    {code:'01-5100',name:'Logistics — heavy haul & crane mob',budget:640000,committed:280000,billed:84000,forecast:590000,pillar:'logistics'},
+    {code:'01-5200',name:'Logistics — freight & staging',budget:320000,committed:180000,billed:52000,forecast:295000,pillar:'logistics'},
+    {code:'06-0100',name:'Procurement — bulk materials',budget:1240000,committed:860000,billed:410000,forecast:1295000,pillar:'procurement'},
+    {code:'06-0200',name:'Procurement — hardware & safety',budget:380000,committed:220000,billed:98000,forecast:345000,pillar:'procurement'},
+    {code:'01-0100',name:'General conditions — services',budget:1200000,committed:980000,billed:480000,forecast:1075000,pillar:'profservices'},
+    {code:'02-0100',name:'Geotechnical & special inspection',budget:320000,committed:240000,billed:120000,forecast:312000,pillar:'profservices'},
+    {code:'01-0800',name:'Environmental monitoring',budget:180000,committed:80000,billed:28000,forecast:156000,pillar:'profservices'}
   ];
   function setPillarLabel(k){ var m={equipment:'Equipment',prefab:'Prefab',logistics:'Logistics',procurement:'Procurement',profservices:'Prof. services'}; return m[k]||k; }
   function renderBudget(){
@@ -1846,13 +1846,32 @@ charges:[
     var head='<div class="ot-head bt-head"><span>Bill</span><span>Order</span><span>Product</span><span class="r">Amount</span><span class="hide-sm">Cost code</span><span>Status</span></div>';
     var rows=list.map(function(b){
       var anom = (ns && b.anomaly) ? '<span class="anomaly-flag">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+b.anomaly+'</span>' : '';
-      return '<div class="brow">'+
+      var isPend=b.status==='Pending';
+      var mode=isPend?(billUI[b.id]||''):'';
+      var statusCell=isPend
+        ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="toggleBillReview(\''+b.id+'\')">'+(mode?'Close':'Review')+'</button></div>'
+        :'<div><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span></div>';
+      var expansion='';
+      if(isPend && mode){
+        expansion='<div style="grid-column:1/-1;border-top:1px solid var(--g150);margin:0 -16px;padding:10px 16px 6px">'+
+          '<div class="pc-actions">'+
+            '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
+            '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
+            '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Correct code</button>'+
+            '<span class="pc-audit">'+(b.audit||'Awaiting your review')+'</span>'+
+          '</div>'+
+          (mode==='dispute'?billDisputeInline(b,ns):'')+
+          (mode==='edit'?billEditInline(b):'')+
+        '</div>';
+      }
+      return '<div class="brow'+(isPend&&mode?' brow-open':'')+'">'+
         '<div class="oc-id">'+b.id+'</div>'+
         '<div><span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span></div>'+
         '<div class="oc-item" style="font-weight:500">'+b.product+anom+'</div>'+
         '<div class="oc-amt r">'+fmt(b.amt)+'</div>'+
         '<div class="oc-cost hide-sm">'+b.cost+'</div>'+
-        '<div><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span></div>'+
+        statusCell+
+        expansion+
         '</div>';
     }).join('');
     host.innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No bills match these filters.</div>');
@@ -1909,31 +1928,8 @@ charges:[
       }
       // inline panels
       var inline='';
-      if(mode==='dispute'){
-        inline='<div class="pc-inline">'+
-          '<div class="pi-t">Reason for dispute <span class="pi-note">pauses auto-finalization until 02S responds</span></div>'+
-          '<div class="dispute-chips" id="dc-'+b.id+'">'+(ns?
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle-day overage — unit billing with no site activity\',this)">Idle-day overage</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate mismatch — billed rate exceeds contract rate\',this)">Rate mismatch</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code assignment\',this)">Wrong cost code</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period overlap or duplicate charge\',this)">Duplicate/overlap</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Equipment returned — billing continues after off-rent\',this)">Billing after return</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Quantity billed exceeds PO authorization\',this)">PO qty exceeded</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Unauthorized charge — no PO or work order\',this)">Unauthorized charge</span>':
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code — requesting reassignment\',this)">Correct cost code</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period error — dates do not match rental period\',this)">Billing period error</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate or quantity does not match order\',this)">Rate / qty mismatch</span>'+
-          '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle days included — unit was not in active use\',this)">Idle days billed</span>'
-        )+'</div>'+
-          '<textarea id="dr-'+b.id+'" class="pi-ta" placeholder="'+(ns?'e.g. Billed 4 idle days with no badge-ins — request credit for idle period':'e.g. Incorrect cost code — should be 03-Concrete, not 09-Finishes')+'">'+(( b.reason&&ns)?b.reason:'')+'</textarea>'+
-          '<div class="pi-act"><button class="btn btn-red btn-sm" onclick="disputeBill(\''+b.id+'\')">Submit dispute</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
-        '</div>';
-      } else if(mode==='edit'){
-        inline='<div class="pc-inline">'+
-          '<div class="pi-t">Correct cost codes per charge <span class="pi-note">edit in the charge rows above — every change is captured to the audit trail</span></div>'+
-          '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save corrections</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
-        '</div>';
-      }
+      if(mode==='dispute'){ inline=billDisputeInline(b,ns); }
+      else if(mode==='edit'){ inline=billEditInline(b); }
       var notes = b.notes ? '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+b.notes+' note'+(b.notes===1?'':'s')+'</span>' : '<span class="pc-notes" onclick="openBillDiscuss(\''+b.id+'\')">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+'Discuss</span>';
       var audit = b.audit ? '<span class="pc-audit">'+b.audit+'</span>' : '<span class="pc-audit">Awaiting your review</span>';
       return '<div class="pcard'+(urg==='red'?' urg':'')+'" id="pc-'+b.id+'">'+
@@ -1958,7 +1954,34 @@ charges:[
       '</div>';
     }).join('')+(extra?'<div style="grid-column:1/-1;font-size:12px;color:var(--g500);padding:6px 2px">+'+extra+' more pending — <span class="oc-link" onclick="document.getElementById(\'billHist\').scrollIntoView({behavior:\'smooth\'})">view all in billing history ↓</span></div>':'');
   }
-  function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); }
+  function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); }
+  function toggleBillReview(id){ setBillUI(id, billUI[id]?'':'review'); }
+  function billDisputeInline(b,ns){
+    return '<div class="pc-inline">'+
+      '<div class="pi-t">Reason for dispute <span class="pi-note">pauses auto-finalization until 02S responds</span></div>'+
+      '<div class="dispute-chips" id="dc-'+b.id+'">'+(ns?
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle-day overage — unit billing with no site activity\',this)">Idle-day overage</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate mismatch — billed rate exceeds contract rate\',this)">Rate mismatch</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code assignment\',this)">Wrong cost code</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period overlap or duplicate charge\',this)">Duplicate/overlap</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Equipment returned — billing continues after off-rent\',this)">Billing after return</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Quantity billed exceeds PO authorization\',this)">PO qty exceeded</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Unauthorized charge — no PO or work order\',this)">Unauthorized charge</span>':
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Incorrect cost code — requesting reassignment\',this)">Correct cost code</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Billing period error — dates do not match rental period\',this)">Billing period error</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Rate or quantity does not match order\',this)">Rate / qty mismatch</span>'+
+        '<span class="dchip" onclick="setDChip(\''+b.id+'\',\'Idle days included — unit was not in active use\',this)">Idle days billed</span>'
+      )+'</div>'+
+      '<textarea id="dr-'+b.id+'" class="pi-ta" placeholder="'+(ns?'e.g. Billed 4 idle days with no badge-ins — request credit for idle period':'e.g. Incorrect cost code — should be 03-Concrete, not 09-Finishes')+'">'+(b.reason&&ns?b.reason:'')+'</textarea>'+
+      '<div class="pi-act"><button class="btn btn-red btn-sm" onclick="disputeBill(\''+b.id+'\')">Submit dispute</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
+    '</div>';
+  }
+  function billEditInline(b){
+    return '<div class="pc-inline">'+
+      '<div class="pi-t">Correct cost codes per charge <span class="pi-note">edit in the charge rows above — every change is captured to the audit trail</span></div>'+
+      '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save corrections</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
+    '</div>';
+  }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
   function setDChip(id,text,el){ var ta=document.getElementById('dr-'+id); if(ta) ta.value=text; var chips=el.parentElement.querySelectorAll('.dchip'); chips.forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); }
   function ccSelChange(sel,id,ci){ var inp=document.getElementById('cc-new-'+id+'-'+ci); if(!inp)return; if(sel.value==='__new__'){inp.style.display='';inp.focus();}else{inp.style.display='none';} }
