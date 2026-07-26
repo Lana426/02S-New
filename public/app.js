@@ -1334,15 +1334,16 @@
   var dpActive=null, dpAddPk=null;
 
   var logPlanView='gcgr';
+  var gcgrView='table';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active'},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active'},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active'},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active'},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled'},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active'},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active'},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled'}
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active',sa:0,ea:8},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active',sa:1,ea:9},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active',sa:1,ea:9},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled',sa:2,ea:6}
   ];
   var MOBDEMOB_EVENTS=[
     {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
@@ -1364,7 +1365,8 @@
     {item:'Modular e-houses (BESS, 2)',pillar:'Prefab',needby:'Nov 1',vendor:'Eaton Power',order:'PF-022',status:'Submittal'},
     {item:'Cable &amp; conductors',pillar:'Procurement',needby:'Rolling',vendor:'Anixter',order:'PO-4421',status:'Draft'}
   ];
-  function setLogPlanView(v){ logPlanView=v; renderLogPlan(); }
+  function setLogPlanView(v){ logPlanView=v; gcgrView='table'; renderLogPlan(); }
+  function setGcgrView(v){ gcgrView=v; renderLogPlan(); }
   function renderLogPlan(){
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
@@ -1377,13 +1379,36 @@
     if(logPlanView==='gcgr'){
       h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
-      var gt='1fr 160px 80px 80px 130px 96px 100px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-      GCGR_SERVICES.forEach(function(r){
-        var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
-        h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
+      if(gcgrView==='table'){
+        var gt='1fr 160px 80px 80px 130px 96px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        GCGR_SERVICES.forEach(function(r){
+          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+        });
+        h+='</div>';
+      } else {
+        var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
+        var N=LGM.length, todayIdx=3;
+        var todayPct=((todayIdx+0.8)/N)*100;
+        var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
+        var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
+        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
+        h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        GCGR_SERVICES.forEach(function(r){
+          var a=r.sa, b=r.ea;
+          var left=(a/N)*100, width=((b-a+1)/N)*100;
+          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'?'submitted':'draft');
+          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
+            +'<div class="g-track" style="background-image:'+gridBg+'">'
+            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+' · '+r.monthly+'/mo">'+r.monthly+'</div>'
+            +'</div></div>';
+        });
+        h+='</div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+        h+='</div>';
+      }
     } else if(logPlanView==='mobdemob'){
       h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
@@ -2666,7 +2691,7 @@ charges:[
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    equip: ['ccdash','dpequip','gap','margin'],
+    equip: ['ccdash','fulfill','gap','anomaly','fleet','dpequip','margin'],
     logistics: ['ccdash','dplog','margin'],
     prefab: ['ccdash','dpprefab','margin'],
     procurement: ['ccdash','dpproc','margin'],
@@ -3442,15 +3467,16 @@ charges:[
   var dpActive=null, dpAddPk=null;
 
   var logPlanView='gcgr';
+  var gcgrView='table';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active'},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active'},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active'},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active'},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled'},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active'},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active'},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled'}
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active',sa:0,ea:8},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active',sa:1,ea:9},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active',sa:1,ea:9},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled',sa:2,ea:6}
   ];
   var MOBDEMOB_EVENTS=[
     {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
@@ -3472,7 +3498,8 @@ charges:[
     {item:'Modular e-houses (BESS, 2)',pillar:'Prefab',needby:'Nov 1',vendor:'Eaton Power',order:'PF-022',status:'Submittal'},
     {item:'Cable &amp; conductors',pillar:'Procurement',needby:'Rolling',vendor:'Anixter',order:'PO-4421',status:'Draft'}
   ];
-  function setLogPlanView(v){ logPlanView=v; renderLogPlan(); }
+  function setLogPlanView(v){ logPlanView=v; gcgrView='table'; renderLogPlan(); }
+  function setGcgrView(v){ gcgrView=v; renderLogPlan(); }
   function renderLogPlan(){
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
@@ -3485,13 +3512,36 @@ charges:[
     if(logPlanView==='gcgr'){
       h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
-      var gt='1fr 160px 80px 80px 130px 96px 100px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-      GCGR_SERVICES.forEach(function(r){
-        var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
-        h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
+      if(gcgrView==='table'){
+        var gt='1fr 160px 80px 80px 130px 96px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        GCGR_SERVICES.forEach(function(r){
+          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+        });
+        h+='</div>';
+      } else {
+        var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
+        var N=LGM.length, todayIdx=3;
+        var todayPct=((todayIdx+0.8)/N)*100;
+        var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
+        var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
+        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
+        h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        GCGR_SERVICES.forEach(function(r){
+          var a=r.sa, b=r.ea;
+          var left=(a/N)*100, width=((b-a+1)/N)*100;
+          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'?'submitted':'draft');
+          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
+            +'<div class="g-track" style="background-image:'+gridBg+'">'
+            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+' · '+r.monthly+'/mo">'+r.monthly+'</div>'
+            +'</div></div>';
+        });
+        h+='</div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+        h+='</div>';
+      }
     } else if(logPlanView==='mobdemob'){
       h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
