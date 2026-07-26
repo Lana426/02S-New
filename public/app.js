@@ -1332,6 +1332,82 @@
       ]}
   };
   var dpActive=null, dpAddPk=null;
+
+  var logPlanView='gcgr';
+  var GCGR_SERVICES=[
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active'},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active'},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active'},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active'},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled'},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active'},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active'},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled'}
+  ];
+  var MOBDEMOB_EVENTS=[
+    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
+    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'01-5100',notes:'Temporary power during grid interconnect'},
+    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'01-0100',notes:'Completed · in service'},
+    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'01-5100',notes:'Permit required · North gate · TBD window'},
+    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'01-5100',notes:'Pad 3 · rigging crew required'},
+    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'01-5100',notes:'After structure phase completion'},
+    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'01-5100',notes:'Pending grid interconnect confirmation'},
+    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'01-0100',notes:'Post-substantial completion'}
+  ];
+  var DELIVERIES=[
+    {item:'Excavator — 20T',pillar:'Equipment',needby:'May 20',vendor:'Sunbelt Rentals',order:'ORD-3042',status:'Scheduled'},
+    {item:'PV module deliveries (recurring)',pillar:'Procurement',needby:'Sep · daily',vendor:'First Solar',order:'PO-4412',status:'Requested'},
+    {item:'Prefab pipe rack modules',pillar:'Prefab',needby:'Aug 15',vendor:'Steel Fab Inc.',order:'PF-021',status:'In fabrication'},
+    {item:'MV switchgear',pillar:'Procurement',needby:'Oct 15',vendor:'Eaton',order:'PO-4391',status:'Requested'},
+    {item:'¾-Ton Crew Truck (2 units)',pillar:'Equipment',needby:'May 20',vendor:'Enterprise Fleet',order:'ORD-3051',status:'Delivered'},
+    {item:'Structural steel — racking',pillar:'Procurement',needby:'Aug 1',vendor:'Nucor Steel',order:'PO-4398',status:'Requested'},
+    {item:'Modular e-houses (BESS, 2)',pillar:'Prefab',needby:'Nov 1',vendor:'Eaton Power',order:'PF-022',status:'Submittal'},
+    {item:'Cable &amp; conductors',pillar:'Procurement',needby:'Rolling',vendor:'Anixter',order:'PO-4421',status:'Draft'}
+  ];
+  function setLogPlanView(v){ logPlanView=v; renderLogPlan(); }
+  function renderLogPlan(){
+    var mount=document.getElementById('dp-logistics'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var tabs=[['gcgr','GC/GR Services'],['mobdemob','Mob / Demob'],['delivery','Delivery Dashboard']];
+    var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="log-tabs">';
+    tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
+    h+='</div>';
+    if(logPlanView==='gcgr'){
+      h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
+      var gt='1fr 160px 80px 80px 130px 96px 100px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+      GCGR_SERVICES.forEach(function(r){
+        var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    } else if(logPlanView==='mobdemob'){
+      h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
+      var gt2='1fr 160px 96px 80px 130px 1fr';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Event</span><span>Vendor</span><span>Need-by</span><span>Type</span><span>Cost code</span><span>Notes</span></div>';
+      MOBDEMOB_EVENTS.forEach(function(r){
+        var tone=r.type==='Mob'?'info':'warn';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
+      });
+      h+='</div>';
+    } else {
+      h+='<div class="eq-cap"><span>Upcoming deliveries across all pillars — equipment, procurement, prefab, and logistics.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">3 procurement deliveries are pending order confirmation. Reserve laydown space at Yard B for pipe racks (Aug 15).</div></div></div>'; }
+      var gt3='1fr 110px 100px 160px 130px 110px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
+      DELIVERIES.forEach(function(r){
+        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
+        var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
+        h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    }
+    mount.innerHTML=h;
+  }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['01-100 \u00b7 General conditions','02-320 \u00b7 Site Earthwork','31-620 \u00b7 Solar Pile','26-540 \u00b7 Module Racking','26-330 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
@@ -1396,7 +1472,7 @@
     var npf=document.getElementById('nav-profile'); if(npf) npf.classList.toggle('active',screen==='profile');
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
-    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
+    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
@@ -1442,7 +1518,7 @@
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
     var vce=document.getElementById('verChipEquip'); if(vce) vce.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     if(document.getElementById('eqBudget')){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
-    if(dpActive)renderDP(dpActive);
+    if(dpActive){if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);}}
     renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
     if(ccActive)renderCcScreen(ccActive); ccSyncToggle();
   }
@@ -2586,9 +2662,29 @@ charges:[
 
   /* ═══════════ COMMAND CENTER ═══════════ */
   var ccActive=null;
+  var ccPersona='fsm';
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
-  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&ccActive==='fleet'){ccGo('ccdash');} }
+  var CC_PERSONA_ACCESS={
+    fsm:   ['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    equip: ['ccdash','dpequip','gap','margin'],
+    logistics: ['ccdash','dplog','margin'],
+    prefab: ['ccdash','dpprefab','margin'],
+    procurement: ['ccdash','dpproc','margin'],
+    services: ['ccdash','dpsvc','margin']
+  };
+  function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
+  function ccSetPersona(p){ ccPersona=p; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
+  function ccUpdateNavForPersona(){
+    CC_KEYS.forEach(function(k){
+      var nv=document.getElementById('ccnav-'+k); if(!nv)return;
+      var ok=ccPersonaCanAccess(k);
+      nv.classList.toggle('sb-locked',!ok);
+      if(!ok){ nv.setAttribute('onclick','return false;'); } else { nv.setAttribute('onclick','ccGo(\''+k+'\')'); }
+    });
+  }
+  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&ccActive==='fleet'){ccGo('ccdash');} ccUpdateNavForPersona(); }
   function ccGo(s){
+    if(!ccPersonaCanAccess(s)) return;
     CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
     ccActive=s; renderCcScreen(s); window.scrollTo(0,0);
   }
@@ -2628,7 +2724,6 @@ charges:[
       {k:'Open requests',v:String(openReq),sub:'5 awaiting pricing',tone:'warn',icon:IC.cart,to:'fulfill'},
       {k:'Owned vs re-rent',v:'3',sub:'decisions due',tone:'warn',icon:ICO_SWAP,to:'fulfill'},
       {k:'Demand\u2013supply gap',v:'\u22127',sub:'peak \u00b7 October',tone:'bad',icon:IC.chart,to:'gap'},
-      {k:'Idle fleet',v:'$142K/mo',sub:'9 units idle',tone:'bad',icon:IC.warn,to:'fleet'},
       {k:'Billing at risk',v:kfmt(mgR.t)+'/mo',sub:mgR.n+' open anomalies',tone:'bad',icon:IC.warn,to:'anomaly'},
       {k:'Project margin',v:mgP.act.pct.toFixed(1)+'%',sub:'target 15%',tone:mgP.act.pct>=15?'ok':'warn',icon:IC.dollar,to:'margin'}
     ];
@@ -2641,7 +2736,7 @@ charges:[
       {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart}
     ];
     h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
-    h+='<div class="vitals" style="grid-template-columns:repeat(6,1fr)">';
+    h+='<div class="vitals" style="grid-template-columns:repeat(5,1fr)">';
     kpis.forEach(function(k){ h+='<div class="vital clk '+k.tone+'" onclick="ccGo(\''+k.to+'\')"><div class="vk">'+svg(k.icon)+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div><span class="vchev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>'; });
     h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+SPARK+'</span><div><div class="ist">02S</div><div class="isd">3 idle excavators at Southern Yard can cover 2 open October requests (Hercules, Riverside). Redeploying instead of re-renting saves ~$96K this quarter and lifts utilization to 86%.</div></div></div>'; }
@@ -2705,7 +2800,7 @@ charges:[
     var openN=0,awaitN=0,readyN=0; FQ.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
     var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
-    h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
+    h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">The optimizer can clear the '+readyN+' open equipment requests now \u2014 owned-first, then re-rent \u2014 at a blended ~22% margin. '+awaitN+' more need a price or quote, and the at-risk procurement lines should be released this week.</div></div></div>'; }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
     var PILLARS=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
@@ -3345,6 +3440,82 @@ charges:[
       ]}
   };
   var dpActive=null, dpAddPk=null;
+
+  var logPlanView='gcgr';
+  var GCGR_SERVICES=[
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active'},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active'},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active'},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active'},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled'},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active'},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active'},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled'}
+  ];
+  var MOBDEMOB_EVENTS=[
+    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
+    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'01-5100',notes:'Temporary power during grid interconnect'},
+    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'01-0100',notes:'Completed · in service'},
+    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'01-5100',notes:'Permit required · North gate · TBD window'},
+    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'01-5100',notes:'Pad 3 · rigging crew required'},
+    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'01-5100',notes:'After structure phase completion'},
+    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'01-5100',notes:'Pending grid interconnect confirmation'},
+    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'01-0100',notes:'Post-substantial completion'}
+  ];
+  var DELIVERIES=[
+    {item:'Excavator — 20T',pillar:'Equipment',needby:'May 20',vendor:'Sunbelt Rentals',order:'ORD-3042',status:'Scheduled'},
+    {item:'PV module deliveries (recurring)',pillar:'Procurement',needby:'Sep · daily',vendor:'First Solar',order:'PO-4412',status:'Requested'},
+    {item:'Prefab pipe rack modules',pillar:'Prefab',needby:'Aug 15',vendor:'Steel Fab Inc.',order:'PF-021',status:'In fabrication'},
+    {item:'MV switchgear',pillar:'Procurement',needby:'Oct 15',vendor:'Eaton',order:'PO-4391',status:'Requested'},
+    {item:'¾-Ton Crew Truck (2 units)',pillar:'Equipment',needby:'May 20',vendor:'Enterprise Fleet',order:'ORD-3051',status:'Delivered'},
+    {item:'Structural steel — racking',pillar:'Procurement',needby:'Aug 1',vendor:'Nucor Steel',order:'PO-4398',status:'Requested'},
+    {item:'Modular e-houses (BESS, 2)',pillar:'Prefab',needby:'Nov 1',vendor:'Eaton Power',order:'PF-022',status:'Submittal'},
+    {item:'Cable &amp; conductors',pillar:'Procurement',needby:'Rolling',vendor:'Anixter',order:'PO-4421',status:'Draft'}
+  ];
+  function setLogPlanView(v){ logPlanView=v; renderLogPlan(); }
+  function renderLogPlan(){
+    var mount=document.getElementById('dp-logistics'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var tabs=[['gcgr','GC/GR Services'],['mobdemob','Mob / Demob'],['delivery','Delivery Dashboard']];
+    var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="log-tabs">';
+    tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
+    h+='</div>';
+    if(logPlanView==='gcgr'){
+      h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
+      var gt='1fr 160px 80px 80px 130px 96px 100px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+      GCGR_SERVICES.forEach(function(r){
+        var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    } else if(logPlanView==='mobdemob'){
+      h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
+      var gt2='1fr 160px 96px 80px 130px 1fr';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Event</span><span>Vendor</span><span>Need-by</span><span>Type</span><span>Cost code</span><span>Notes</span></div>';
+      MOBDEMOB_EVENTS.forEach(function(r){
+        var tone=r.type==='Mob'?'info':'warn';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
+      });
+      h+='</div>';
+    } else {
+      h+='<div class="eq-cap"><span>Upcoming deliveries across all pillars — equipment, procurement, prefab, and logistics.</span></div>';
+      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">3 procurement deliveries are pending order confirmation. Reserve laydown space at Yard B for pipe racks (Aug 15).</div></div></div>'; }
+      var gt3='1fr 110px 100px 160px 130px 110px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
+      DELIVERIES.forEach(function(r){
+        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
+        var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
+        h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    }
+    mount.innerHTML=h;
+  }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['01-100 \u00b7 General conditions','02-320 \u00b7 Site Earthwork','31-620 \u00b7 Solar Pile','26-540 \u00b7 Module Racking','26-330 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
@@ -3409,7 +3580,7 @@ charges:[
     var npf=document.getElementById('nav-profile'); if(npf) npf.classList.toggle('active',screen==='profile');
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
-    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); renderDP(dpActive); } else dpActive=null;
+    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
