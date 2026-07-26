@@ -571,23 +571,25 @@
   }
 
   function addConfiguredToCart(){
+    var costCode=(document.getElementById('fCostCode')||{}).value||'';
+    if(!costCode){ toast('Select a cost code before adding'); document.getElementById('fCostCode').focus(); return; }
     var line;
     if(cfg.kind==='custom'){
-      line={cid:++CID, pid:null, name:(document.getElementById('fDesc').value.split('\n')[0]||'Custom request').slice(0,60), icon:'box', pillarKey:pillarKeyFromLabel(cfg.custom), pcat:cfg.custom, mode:'custom', qtyText:(function(){var f=document.getElementById('fFrom').value,t=document.getElementById('fTo').value,q=Math.max(1,parseInt(document.getElementById('fQty').value||1,10));return (f&&t?fmtDate(f)+'–'+fmtDate(t)+' · '+daysBetween(f,t)+'d':'timing TBD')+(q>1?' × '+q:'')+' · quote';})(), total:null, plan:null};
+      line={cid:++CID, pid:null, name:(document.getElementById('fDesc').value.split('\n')[0]||'Custom request').slice(0,60), icon:'box', pillarKey:pillarKeyFromLabel(cfg.custom), pcat:cfg.custom, mode:'custom', costCode:costCode, qtyText:(function(){var f=document.getElementById('fFrom').value,t=document.getElementById('fTo').value,q=Math.max(1,parseInt(document.getElementById('fQty').value||1,10));return (f&&t?fmtDate(f)+'–'+fmtDate(t)+' · '+daysBetween(f,t)+'d':'timing TBD')+(q>1?' × '+q:'')+' · quote';})(), total:null, plan:null};
     } else {
       var p=byId(cfg.pid);
       if(p.mode==='rental'){
         var from=document.getElementById('fFrom').value,to=document.getElementById('fTo').value;
         var qty=Math.max(1,parseInt(document.getElementById('fQty').value||1,10));
         var days=daysBetween(from,to);
-        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'rental',
+        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'rental',costCode:costCode,
               qtyText:fmtDate(from)+'–'+fmtDate(to)+' · '+days+'d'+(qty>1?' × '+qty:''),total:days*p.rate*qty,plan:p.plan||null};
       } else if(p.price==='Quote'){
         var q2=Math.max(1,parseInt(document.getElementById('fQtyOnly').value||1,10));
-        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'quote',qtyText:(q2>1?q2+' units · ':'')+'quote',total:p.est*q2,plan:p.plan||null,isQuote:true};
+        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'quote',costCode:costCode,qtyText:(q2>1?q2+' units · ':'')+'quote',total:p.est*q2,plan:p.plan||null,isQuote:true};
       } else {
         var q3=Math.max(1,parseInt(document.getElementById('fQtyOnly').value||1,10));
-        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'onetime',qtyText:(q3>1?q3+' units':'one-time'),total:p.unitPrice*q3,plan:p.plan||null};
+        line={cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:'onetime',costCode:costCode,qtyText:(q3>1?q3+' units':'one-time'),total:p.unitPrice*q3,plan:p.plan||null};
       }
     }
     state.cart.push(line);
@@ -626,7 +628,7 @@
       var priceStr = c.total? (c.isQuote?('<span class="ri-price">Quote</span>'):('<span class="ri-price">'+fmt(c.total)+'</span>')) : '<span class="ri-price">Quote</span>';
       return '<div class="ri-row"><span class="ri-thumb">'+svg(ICON[c.icon]||ICON.box)+'</span>'+
         '<div class="ri-body"><div class="ri-name">'+c.name+'</div>'+
-        '<div class="ri-meta"><span class="ri-pillar'+(c.pillarKey==='equipment'?' eq':'')+'">'+pillarLabel(c.pillarKey)+'</span> '+c.qtyText+'</div>'+planline+'</div>'+
+        '<div class="ri-meta"><span class="ri-pillar'+(c.pillarKey==='equipment'?' eq':'')+'">'+pillarLabel(c.pillarKey)+'</span> '+c.qtyText+(c.costCode?'<span class="ri-cc"> · '+c.costCode+'</span>':'')+'</div>'+planline+'</div>'+
         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">'+priceStr+
         '<button class="ri-rm" title="Remove" onclick="removeFromCart('+c.cid+')">'+svg('<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',2)+'</button></div></div>';
     }).join('');
@@ -1549,6 +1551,11 @@ charges:[
         {desc:'Hard hats, vests, gloves — 20 sets',qty:20,rate:65,amt:1300,cost:'01 · General'},
         {desc:'Safety glasses & face shields',qty:20,rate:20,amt:400,cost:'01 · General'}
       ]},
+    {id:'BILL-9025',order:'ORD-3091',product:'Warehouse & material staging — on demand',amt:5400,cost:'012900.1010 · Warehouse Services',status:'Pending',date:'Jul 22',day:4,notes:1,anomaly:'Cost code mismatch — on demand order',
+      charges:[
+        {desc:'Warehouse staging area — 18 days',qty:18,rate:240,amt:4320,cost:'012900.1010 · Warehouse Services'},
+        {desc:'Forklift operator — 3 half-days',qty:3,rate:360,amt:1080,cost:'012900.1010 · Warehouse Services'}
+      ]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
     {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24'},
@@ -2059,6 +2066,7 @@ charges:[
   }
   var activeBillModal=null;
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); if(activeBillModal===id) openBillModal(id); }
+  function openBillFromDash(id){ go('billing'); setTimeout(function(){ openBillModal(id); }, 320); }
   function openBillModal(id){
     var b=getBill(id); if(!b) return;
     var ns=CURRENT==='ns';

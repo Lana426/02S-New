@@ -248,6 +248,13 @@
             <div class="acts" id="dashRecertSub">1 overdue &mdash; scissor lift anticipated off May 15, no return filed.</div>
             <button class="btn" onclick="openRecert()">Review &amp; certify<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           </div>
+          <div class="action-card action-card-alert">
+            <div class="ac-notif-dot"></div>
+            <span class="acti acti-warn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></span>
+            <div class="actt">Billing code needs review</div>
+            <div class="acts">ORD-3091 &middot; <code class="ac-code">012900.1010 · Warehouse Services</code> — on demand order, cost code may be incorrect for this project.</div>
+            <button class="btn btn-warn" onclick="openBillFromDash('BILL-9025')">Review &amp; correct<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+          </div>
           <div class="action-card" id="dashPlanRing" style="display:none"></div>
           <div class="mini">
             <div class="mk">This week at a glance</div>
@@ -432,6 +439,27 @@
                   <div class="fld">
                     <div class="fld-label">Describe the need <span class="parsed-tag" id="tagDesc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg><span class="ptl">parsed</span></span></div>
                     <textarea class="ftext" id="fDesc"></textarea>
+                  </div>
+                  <div class="fld">
+                    <div class="fld-label">Cost code <span class="req-star">Required</span></div>
+                    <select class="fsel" id="fCostCode">
+                      <option value="">— Select cost code —</option>
+                      <option value="01-0540">01-0540 · General conditions</option>
+                      <option value="02-0320">02-0320 · Site earthwork</option>
+                      <option value="26-0330">26-0330 · BESS &amp; Substation</option>
+                      <option value="31-0620">31-0620 · Solar pile foundations</option>
+                      <option value="05-0120">05-0120 · Metals &amp; structural</option>
+                      <option value="22-0000">22-0000 · MEP pipe racks &amp; headwalls</option>
+                      <option value="03-0100">03-0100 · Prefab concrete formwork</option>
+                      <option value="05-0500">05-0500 · Prefab structural assemblies</option>
+                      <option value="01-5100">01-5100 · Heavy haul &amp; crane mobilization</option>
+                      <option value="01-5200">01-5200 · Freight &amp; site staging</option>
+                      <option value="06-0100">06-0100 · Bulk materials</option>
+                      <option value="06-0200">06-0200 · Hardware &amp; safety</option>
+                      <option value="01-0100">01-0100 · General conditions — services</option>
+                      <option value="02-0100">02-0100 · Geotechnical &amp; special inspection</option>
+                      <option value="01-0800">01-0800 · Environmental monitoring</option>
+                    </select>
                   </div>
                   <div class="frow" id="rentalRow">
                     <div class="fld" style="margin:0"><div class="fld-label">From <span class="req-star">Required</span></div><input class="finput" id="fFrom" type="date" value="2026-08-04" onchange="recalc()"></div>
