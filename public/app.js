@@ -2860,6 +2860,27 @@ charges:[
     {id:'buy-tc',cls:'Tower crane \u2014 self-erect',action:'Re-rent',rec:'rerent',rationale:'Specialty \u00b7 1\u20132 jobs/yr \u2014 capital not justified, re-rent preferred',capex:'\u2014',capexN:0,rerent:'$0.15M/yr',rerentN:0.15,payback:'\u2014',reco:false,note:'Re-rent preferred \u2014 specialty'}
   ];
   var capexBuyAdded={},capexReasonMap={},capexByMap={},capexWhenMap={},capexCurId=null; var CAPEX_NOW='Jul 21, 2026';
+  var CAPEX_MANUAL=[]; var capexManualNext=1;
+  function capexAddManualModal(){
+    var b='<div class="fq-reco-badge">Add a line that isn’t in the ranked list — it will appear in your CapEx plan below.</div>';
+    b+='<div class="fq-calc" style="display:grid;grid-template-columns:1fr 1fr;gap:10px 16px">'
+      +'<div style="grid-column:1/-1"><label class="fld-label">Asset / description</label><input id="cm-cls" class="fsel" style="width:100%" placeholder="e.g. Compactor, 10T"></div>'
+      +'<div><label class="fld-label">Action</label><select id="cm-rec" class="fsel" style="width:100%"><option value="buy">Buy</option><option value="replace">Replace</option><option value="rerent">Re-rent</option><option value="redeploy">Redeploy</option></select></div>'
+      +'<div><label class="fld-label">CapEx / price</label><input id="cm-capex" class="fsel" style="width:100%" placeholder="e.g. $0.8M"></div>'
+      +'<div><label class="fld-label">Annual re-rent (if replacing)</label><input id="cm-rerent" class="fsel" style="width:100%" placeholder="e.g. $0.3M/yr"></div>'
+      +'<div><label class="fld-label">Payback</label><input id="cm-payback" class="fsel" style="width:100%" placeholder="e.g. 24 mo"></div>'
+      +'<div style="grid-column:1/-1"><label class="fld-label">Rationale</label><textarea id="cm-reason" class="ctext" style="width:100%;min-height:56px" placeholder="Why is this needed?"></textarea></div>'
+      +'</div>';
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="capexSaveManual()">Add to plan</button></div></div>';
+    openModal('Add line to CapEx plan', b);
+  }
+  function capexSaveManual(){
+    var cls=(gel('cm-cls')||{}).value||''; if(!cls.trim()){toast('Enter an asset description');return;}
+    CAPEX_MANUAL.push({id:'manual-'+(capexManualNext++),cls:cls.trim(),rec:(gel('cm-rec')||{}).value||'buy',capex:(gel('cm-capex')||{}).value||'—',rerent:(gel('cm-rerent')||{}).value||'—',payback:(gel('cm-payback')||{}).value||'—',reason:(gel('cm-reason')||{}).value||'—',by:'You',when:CAPEX_NOW,manual:true});
+    closeModal(); renderGap(); toast('Line added to CapEx plan');
+  }
+  var capexPlanApproved=false;
+  function approveCapexPlan(){ capexPlanApproved=true; renderGap(); toast('CapEx plan approved — sent to Anaplan as performance baseline'); }
   function hmColor(v){ if(v<=-4)return{bg:'rgba(220,29,52,.20)',fg:'#B81729'}; if(v<0)return{bg:'rgba(220,29,52,.09)',fg:'#B81729'}; if(v===0)return{bg:'transparent',fg:'var(--g400)'}; if(v<=3)return{bg:'rgba(47,122,67,.10)',fg:'var(--success)'}; return{bg:'rgba(47,122,67,.20)',fg:'var(--success)'}; }
   function gapItems(){ var items=CAPEX_BUYS.slice(); FLEET.forEach(function(r){ if(r.life==='replace'){ items.push({id:r.id,cls:r.cls+' \u00b7 '+r.id,action:'Replace',rec:'replace',rationale:'Past replacement threshold \u00b7 '+r.hours+' hrs \u00b7 rising maintenance',capex:r.capex,capexN:(parseFloat(r.capex.replace(/[^0-9.]/g,''))||0),rerent:'\u2014',payback:'\u2014',reco:true,recoText:'Replace \u2014 aging fleet, rising maintenance',isReplace:true,queued:!!r.capexQueued}); } }); return items; }
   function capexRecTag(it){ var m={buy:['BUY','ok'],replace:['REPLACE','warn'],redeploy:['REDEPLOY','info'],rerent:['RE-RENT','neu']}; var x=m[it.rec]||['\u2014','neu']; return '<span class="tag '+x[1]+'">'+x[0]+'</span>'; }
@@ -2911,11 +2932,26 @@ charges:[
     items.forEach(function(it){ h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+it.cls+'<div class="sub" style="white-space:normal">'+it.rationale+'</div></div><div>'+capexRecTag(it)+'</div><div class="r">'+it.capex+'</div><div>'+it.rerent+'</div><div>'+it.payback+'</div><div>'+gapDecision(it,ns)+'</div></div>'; });
     h+='</div>';
     var planned=items.filter(function(it){ return it.isReplace?it.queued:!!capexBuyAdded[it.id]; });
-    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.check)+'Your CapEx plan</span><span class="spacer"></span><span class="ff-hint">'+(planned.length?('$'+planTotal.toFixed(1)+'M \u00b7 '+planCount+' line'+(planCount===1?'':'s')):'validated items only')+'</span></div>';
-    if(!planned.length){ h+='<div class="fq-empty">No line items yet. Validate items from the ranked list above and they\u2019ll populate here.</div>'; }
-    else { var gtp='1.4fr 96px 118px 74px 1.5fr'; h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtp+'"><span>Asset</span><span class="r">Buy price</span><span>Annual re-rent</span><span>Payback</span><span>Validated</span></div>'; planned.forEach(function(it){ h+='<div class="dp-row" style="grid-template-columns:'+gtp+'"><div>'+it.cls+'</div><div class="r">'+it.capex+'</div><div>'+it.rerent+'</div><div>'+it.payback+'</div><div class="sub" style="white-space:normal">'+(capexByMap[it.id]||'\u2014')+' \u00b7 '+(capexWhenMap[it.id]||CAPEX_NOW)+'<br>\u201c'+(capexReasonMap[it.id]||'\u2014')+'\u201d</div></div>'; }); h+='</div>'; }
-    h+='<div class="cp-total">In plan: <b>$'+planTotal.toFixed(1)+'M</b> of $'+recTotal.toFixed(1)+'M recommended</div>';
-    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>Demand is aggregated from the project demand plans and the fulfillment queue; owned supply is read from the owned-fleet register. The approved CapEx plan flows to FP&amp;A (Anaplan) \u2014 extend layer.</span></div>';
+    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.check)+'Your CapEx plan</span><span class="spacer"></span>'+(planned.length?('<span class="ff-hint">$'+planTotal.toFixed(1)+'M \u00b7 '+planCount+' line'+(planCount===1?'':'s')+'</span>'):'')+'<button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="capexAddManualModal()">+ Add line manually</button></div>';
+    var allPlanned=planned.concat(CAPEX_MANUAL);
+    var allTotal=planTotal+CAPEX_MANUAL.reduce(function(s,m){var n=parseFloat((m.capex||'').replace(/[^0-9.]/g,''))||0;return s+n;},0);
+    if(!allPlanned.length){ h+='<div class="fq-empty">No line items yet. Validate items from the ranked list above or add a line manually.</div>'; }
+    else {
+      var gtp='1.4fr 96px 118px 74px 1.5fr';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtp+'"><span>Asset</span><span class="r">Buy price</span><span>Annual re-rent</span><span>Payback</span><span>Added by</span></div>';
+      planned.forEach(function(it){ h+='<div class="dp-row" style="grid-template-columns:'+gtp+'"><div>'+it.cls+'</div><div class="r">'+it.capex+'</div><div>'+it.rerent+'</div><div>'+it.payback+'</div><div class="sub" style="white-space:normal">'+(capexByMap[it.id]||'\u2014')+' \u00b7 '+(capexWhenMap[it.id]||CAPEX_NOW)+'<br>\u201c'+(capexReasonMap[it.id]||'\u2014')+'\u201d</div></div>'; });
+      CAPEX_MANUAL.forEach(function(m){ h+='<div class="dp-row" style="grid-template-columns:'+gtp+'"><div>'+m.cls+'<span class="tag neu" style="margin-left:6px;font-size:10px">Manual</span></div><div class="r">'+m.capex+'</div><div>'+m.rerent+'</div><div>'+m.payback+'</div><div class="sub" style="white-space:normal">'+m.by+' \u00b7 '+m.when+'<br>\u201c'+m.reason+'\u201d</div></div>'; });
+      h+='</div>';
+    }
+    h+='<div class="cp-total">In plan: <b>$'+allTotal.toFixed(1)+'M</b> of $'+recTotal.toFixed(1)+'M recommended</div>';
+    if(ns){
+      if(capexPlanApproved){
+        h+='<div class="ns-capex-approved">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'CapEx plan approved \u2014 sent to Anaplan as the performance baseline. Actuals will be tracked against this plan.</div>';
+      } else {
+        h+='<div class="ns-capex-strip"><div class="ncs-body"><span class="ncs-icon">'+CC_SPARK+'</span><div><div class="ncs-t">North Star: capital expense approval</div><div class="ncs-d">Approve this plan to send it to Anaplan as the baseline for performance measurement. Actuals will track against the approved plan line by line \u2014 budget vs. committed vs. spent, by asset class.</div></div><button class="btn btn-red" onclick="approveCapexPlan()"'+(allPlanned.length?'':' disabled')+'>Approve &amp; send to Anaplan</button></div></div>';
+      }
+    }
+    h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>Demand is aggregated from the project demand plans and the fulfillment queue; owned supply is read from the owned-fleet register.</span></div>';
     mount.innerHTML=h;
   }
 
