@@ -4199,94 +4199,104 @@ function ctForecastYTD(){
 }
 function renderCtBudget(){
   var mount=document.getElementById('ct-budget'); if(!mount)return;
-  var PILLARS=[
-    {name:'Equipment',
-     planned:'$18.4M',committed:'$12.3M',draft:'2 requests',
-     tone:'ok',lbl:'On track',
-     detail:'67% owned fleet coverage · 2 requests pending taxonomy confirmation'},
-    {name:'Professional services',
-     planned:'$3.2M',committed:'$1.9M',draft:'2 roles',
-     tone:'ok',lbl:'On track',
-     detail:'14 FTE active across 6 firms · 1 pending pricing (VDC/BIM) · 1 draft role (SWPPP)'},
-    {name:'Prefab assemblies',
-     planned:'$527K+',committed:'$381K',draft:'2 pending quotes',
-     tone:'warn',lbl:'Pending quotes',
-     detail:'$234K in fabrication · $147K delivered · 2 assemblies awaiting 02S quote'},
-    {name:'Procurement',
-     planned:'$87K',committed:'$55K',draft:'$14K',
-     tone:'bad',lbl:'At-risk',
-     detail:'$26K PO issued · $29K delivered · $18K at-risk (tone shear wrenches)'},
-    {name:'Logistics',
-     planned:'Ongoing',committed:'Active',draft:'—',
-     tone:'ok',lbl:'On track',
-     detail:'GC/GR service contracts active · 6 moves/week · 3 oversize hauls in permit queue'}
-  ];
+
+  /* ── Portfolio-level vitals ── */
   var vit=[
-    {k:'Total demand plan',v:'$22.6M',sub:'across 5 pillars · 1 project',tone:'ok'},
-    {k:'Committed · active',v:'$14.6M',sub:'PO issued · on-rent · in fab',tone:'ok'},
-    {k:'Pending · draft',v:'4 items',sub:'needs quote or confirmation',tone:'warn'},
-    {k:'At-risk',v:'3 items',sub:'need action this week',tone:'bad'}
+    {k:'Demand under management',v:'$26.4M',sub:'3 active projects · 5 pillar types',tone:'ok'},
+    {k:'Committed / active',v:'$16.2M',sub:'PO issued · on-rent · in fabrication',tone:'ok'},
+    {k:'Pending · open items',v:'6 items',sub:'needs quote or GC confirmation',tone:'warn'},
+    {k:'At-risk across portfolio',v:'3 items',sub:'require action this week',tone:'bad'}
   ];
-  var h='<div class="phead"><div><h1>Budget overview</h1><div class="meta"><span class="chip">Hercules Solar + BESS · all pillars</span><span class="chip ver">V1 — standard</span></div></div></div>';
-  h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">';
-  vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; });
-  h+='</div>';
-  h+='<div class="eq-cap" style="margin-bottom:20px"><span>Aggregated from the project’s five pillar demand plans — equipment, professional services, prefab, procurement, and logistics. Committed = PO issued / active contracts / in fabrication. Draft / pending = items not yet confirmed or quoted by 02S.</span></div>';
-  var gt='1fr 100px 110px 130px 110px';
-  h+='<div class="dp-tbl" style="margin-bottom:24px">';
-  h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Pillar</span><span class="r">Planned</span><span class="r">Committed</span><span class="r">Draft / pending</span><span>Status</span></div>';
-  PILLARS.forEach(function(p){
-    h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
-    h+='<div><div style="font-weight:600">'+p.name+'</div><div class="sub">'+p.detail+'</div></div>';
-    h+='<div class="r">'+p.planned+'</div><div class="r">'+p.committed+'</div><div class="r">'+p.draft+'</div>';
-    h+='<div><span class="tag '+p.tone+'">'+p.lbl+'</span></div></div>';
-  });
-  h+='</div>';
-  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Order ingestion funnel</span> <span class="sub" style="font-size:11.5px">demand plan entry → delivery</span></div>';
-  var FUNNEL=[
-    {stage:'Draft',val:'$28K+',sub:'3+ items not yet submitted',col:'var(--g100)',border:'var(--g250)'},
-    {stage:'Pending quote',val:'3 items',sub:'awaiting 02S pricing',col:'#fffbeb',border:'var(--warning)'},
-    {stage:'PO · Active',val:'$14.6M',sub:'committed · in execution',col:'#f0fdf4',border:'var(--success)'},
-    {stage:'In progress',val:'$381K',sub:'in fab · on-rent · mobilized',col:'#eff6ff',border:'var(--info)'},
-    {stage:'Delivered',val:'$176K',sub:'complete · closed',col:'var(--g50)',border:'var(--g250)'}
+
+  /* ── Active project portfolio ── */
+  var PROJECTS=[
+    {name:'Hercules Solar + BESS',type:'Construction active',pillars:'5 pillars',budget:'$22.6M',committed:'$14.6M',tone:'bad',lbl:'1 at-risk'},
+    {name:'1GPA JOC – 2026 Q1',type:'Contract active',pillars:'3 pillars',budget:'$1.2M',committed:'$1.1M',tone:'ok',lbl:'On track'},
+    {name:'Eastside Stormwater',type:'Mobilizing',pillars:'2 pillars',budget:'$2.6M',committed:'$0.5M',tone:'warn',lbl:'2 pending'}
   ];
-  h+='<div style="display:flex;align-items:stretch;gap:0;margin-bottom:24px">';
-  FUNNEL.forEach(function(f,i){
-    h+='<div style="flex:1;background:'+f.col+';border:1px solid '+f.border+';border-right:'+(i<FUNNEL.length-1?'none':'1px solid '+f.border)+';border-radius:'+(i===0?'8px 0 0 8px':i===FUNNEL.length-1?'0 8px 8px 0':'0')+';padding:12px 10px;text-align:center">';
-    h+='<div style="font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">'+f.stage+'</div>';
-    h+='<div style="font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1">'+f.val+'</div>';
-    h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">'+f.sub+'</div></div>';
-  });
-  h+='</div>';
-  var MO=['Aug','Sep','Oct','Nov','Dec','Jan'];
-  var SPEND=[
-    {pillar:'Equipment',     vals:['$1.8M','$2.1M','$2.4M','$2.2M','$1.9M','$1.5M']},
-    {pillar:'Prof. services',vals:['$62K', '$62K', '$62K', '$96K', '$96K', '$96K']},
-    {pillar:'Prefab',        vals:['$234K','$88K', '—','—','—','—']},
-    {pillar:'Procurement',   vals:['$4K',  '$18K', '—','—','$8K', '—']},
-    {pillar:'Logistics',     vals:['Active','Active','Active','Active','Active','Active']}
+
+  /* ── Cross-project pillar rollup ── */
+  var PILLARS=[
+    {name:'Equipment',projects:'3 projects',budget:'$21.5M',open:'2 items pending taxonomy',tone:'ok'},
+    {name:'Professional services',projects:'1 project',budget:'$3.2M',open:'1 item pending pricing',tone:'warn'},
+    {name:'Prefab assemblies',projects:'1 project',budget:'$527K+',open:'2 awaiting 02S quote',tone:'warn'},
+    {name:'Procurement',projects:'2 projects',budget:'$1.1M',open:'1 at-risk',tone:'bad'},
+    {name:'Logistics',projects:'2 projects',budget:'Ongoing',open:'—',tone:'ok'}
   ];
-  var gtm='130px '+MO.map(function(){return '1fr';}).join(' ');
-  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Monthly spend outlook</span> <span class="sub" style="font-size:11.5px">Aug 2026 – Jan 2027 · by pillar</span></div>';
-  h+='<div class="dp-tbl" style="margin-bottom:24px">';
-  h+='<div class="dp-head" style="grid-template-columns:'+gtm+'"><span>Pillar</span>';
-  MO.forEach(function(m){ h+='<span class="c">'+m+'</span>'; });
-  h+='</div>';
-  SPEND.forEach(function(r){
-    h+='<div class="dp-row" style="grid-template-columns:'+gtm+'"><div>'+r.pillar+'</div>';
-    r.vals.forEach(function(v){ h+='<div class="c" style="font-size:12px">'+v+'</div>'; });
+
+  var h='';
+  h+='<div style="margin-bottom:20px">';
+  h+='<h1 style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0 0 10px">Demand plan budget</h1>';
+  h+='<div style="display:flex;gap:7px;flex-wrap:wrap">';
+  h+='<span class="chip">02S field operations · all active projects</span>';
+  h+='<span class="chip ver">V1 — standard</span>';
+  h+='</div></div>';
+
+  /* vitals */
+  h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">';
+  vit.forEach(function(x){
+    h+='<div class="vital '+x.tone+'">';
+    h+='<div class="vk">'+x.k+'</div>';
+    h+='<div class="vv">'+x.v+'</div>';
+    h+='<div class="vsub">'+x.sub+'</div>';
     h+='</div>';
   });
   h+='</div>';
-  var EX=[
-    {tone:'bad', msg:'<b>Tone shear wrenches (Procurement)</b> — at-risk · order-by date Jul 18 passed · needed for structural bolt tensioning Aug 15'},
-    {tone:'warn',msg:'<b>VDC / BIM coordination (Prof. services)</b> — pending pricing · role needed Apr – Oct · firm not in rate card'},
-    {tone:'warn',msg:'<b>BESS e-houses + cable tray runs (Prefab)</b> — 2 assemblies awaiting 02S quote · submittal for e-houses still in review'}
-  ];
-  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Items needing attention</span></div>';
-  EX.forEach(function(e){
-    h+='<div class="eqf-rate '+e.tone+'" style="margin-bottom:8px"><span>'+e.msg+'</span></div>';
+
+  /* project portfolio table */
+  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">Active project portfolio</div>';
+  var gp='1fr 90px 80px 100px 90px 110px';
+  h+='<div class="dp-tbl" style="margin-bottom:28px">';
+  h+='<div class="dp-head" style="grid-template-columns:'+gp+'">';
+  h+='<span>Project</span><span>Type</span><span>Pillars</span><span class="r">Budget</span><span class="r">Committed</span><span>Status</span></div>';
+  PROJECTS.forEach(function(p){
+    h+='<div class="dp-row" style="grid-template-columns:'+gp+'">';
+    h+='<div style="font-weight:600">'+p.name+'</div>';
+    h+='<div class="sub">'+p.type+'</div>';
+    h+='<div class="sub">'+p.pillars+'</div>';
+    h+='<div class="r">'+p.budget+'</div>';
+    h+='<div class="r">'+p.committed+'</div>';
+    h+='<div><span class="tag '+p.tone+'">'+p.lbl+'</span></div>';
+    h+='</div>';
   });
+  h+='</div>';
+
+  /* cross-project pillar rollup */
+  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">By pillar — all projects</div>';
+  var gx='140px 90px 100px 1fr 110px';
+  h+='<div class="dp-tbl" style="margin-bottom:28px">';
+  h+='<div class="dp-head" style="grid-template-columns:'+gx+'">';
+  h+='<span>Pillar</span><span>Projects</span><span class="r">Budget</span><span>Open items</span><span>Status</span></div>';
+  PILLARS.forEach(function(p){
+    h+='<div class="dp-row" style="grid-template-columns:'+gx+'">';
+    h+='<div style="font-weight:600">'+p.name+'</div>';
+    h+='<div class="sub">'+p.projects+'</div>';
+    h+='<div class="r">'+p.budget+'</div>';
+    h+='<div class="sub">'+p.open+'</div>';
+    h+='<div><span class="tag '+p.tone+'">'+(['ok','On track','warn','Pending','bad','At-risk'].indexOf(p.tone)>=0?{'ok':'On track','warn':'Pending','bad':'At-risk'}[p.tone]:p.tone)+'</span></div>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  /* items needing attention */
+  var EX=[
+    {tone:'bad', title:'Tone shear wrenches',proj:'Procurement · Hercules Solar',msg:'At-risk · order-by Jul 18 passed · needed for structural bolt tensioning Aug 15'},
+    {tone:'warn',title:'VDC / BIM coordination',proj:'Professional services · Hercules Solar',msg:'Pending pricing · role needed Apr–Oct · firm not in rate card'},
+    {tone:'warn',title:'BESS e-houses + cable tray runs',proj:'Prefab · Hercules Solar',msg:'2 assemblies awaiting 02S quote · e-house submittal still in review'}
+  ];
+  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:10px">Items needing attention</div>';
+  h+='<div style="display:flex;flex-direction:column;gap:8px">';
+  EX.forEach(function(e){
+    var bc=e.tone==='bad'?'#fef2f2':'#fffbeb';
+    var bdr=e.tone==='bad'?'#fca5a5':'#fde68a';
+    h+='<div style="background:'+bc+';border:1px solid '+bdr+';border-radius:8px;padding:11px 14px">';
+    h+='<div style="font-size:12.5px;font-weight:600;color:#0f172a;margin-bottom:2px">'+e.title+'</div>';
+    h+='<div style="font-size:11px;color:var(--g500);margin-bottom:4px">'+e.proj+'</div>';
+    h+='<div style="font-size:12px;color:#374151">'+e.msg+'</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+
   mount.innerHTML=h;
 }
 
