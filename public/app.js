@@ -1911,7 +1911,7 @@ charges:[
       h+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0'+(i<PLANS.length-1?';border-bottom:1px solid var(--g150)':'')+'">';
       h+='<div style="width:28px;height:28px;border-radius:7px;background:var(--g100);display:grid;place-items:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">'+p.icon+'</svg></div>';
       h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+p.name+'</div><div style="font-size:12px;color:var(--g500);margin-top:1px">'+p.stat+'</div></div>';
-      h+='<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="go(''+p.to+'')">View plan</button>';
+      h+='<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="go(\''+p.to+'\')">View plan</button>';
       h+='</div>';
     });
     h+='</div>';
