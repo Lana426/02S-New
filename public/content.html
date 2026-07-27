@@ -125,26 +125,29 @@
           <button style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--g400);padding:2px 6px" onclick="document.getElementById('whatsNewPanel').style.display='none'">Dismiss</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12);cursor:pointer;transition:box-shadow .15s" onclick="openWhatsNewModal(0)" onmouseenter="this.style.boxShadow='0 2px 8px rgba(38,93,159,.12)'" onmouseleave="this.style.boxShadow=''">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
               <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--info,#265D9F);border-radius:3px;padding:1px 5px">New</span>
               <span style="font-size:12px;font-weight:600;color:var(--g900)">Prefab Pod Express</span>
             </div>
             <div style="font-size:11.5px;color:var(--g600)">Modular restroom pods now available with 3-week lead times &mdash; faster than traditional procurement.</div>
+            <div style="font-size:11px;color:var(--info);margin-top:6px;font-weight:600">Read more &rsaquo;</div>
           </div>
-          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12);cursor:pointer;transition:box-shadow .15s" onclick="openWhatsNewModal(1)" onmouseenter="this.style.boxShadow='0 2px 8px rgba(38,93,159,.12)'" onmouseleave="this.style.boxShadow=''">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
               <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--success,#2F7A43);border-radius:3px;padding:1px 5px">Win</span>
               <span style="font-size:12px;font-weight:600;color:var(--g900)">$96K saved on Riverside</span>
             </div>
             <div style="font-size:11.5px;color:var(--g600)">Redeployed 3 idle excavators vs. re-renting, lifting fleet utilization to 86% on that project.</div>
+            <div style="font-size:11px;color:var(--info);margin-top:6px;font-weight:600">Read more &rsaquo;</div>
           </div>
-          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12);cursor:pointer;transition:box-shadow .15s" onclick="openWhatsNewModal(2)" onmouseenter="this.style.boxShadow='0 2px 8px rgba(38,93,159,.12)'" onmouseleave="this.style.boxShadow=''">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
               <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--charcoal,#26241F);border-radius:3px;padding:1px 5px">Update</span>
               <span style="font-size:12px;font-weight:600;color:var(--g900)">Telematics on yellow iron</span>
             </div>
             <div style="font-size:11.5px;color:var(--g600)">Utilization data now live for heavy equipment &mdash; idle alerts and weekly usage stats in your plan.</div>
+            <div style="font-size:11px;color:var(--info);margin-top:6px;font-weight:600">Read more &rsaquo;</div>
           </div>
         </div>
       </div>
@@ -211,6 +214,9 @@
           <div class="vsub"><span class="tag warn">2 units idle &gt;5 days</span></div>
         </div>
       </div>
+
+      <!-- ══ GROSS MARGIN KPI ══ -->
+      <div id="gmDashKPI"></div>
 
       <!-- ══ TIER 1: attention + action rail ══ -->
       <div class="t1grid">
@@ -317,22 +323,9 @@
             <span class="ssum"><span class="flagdot" style="background:var(--warning)"></span>5 touchpoints &middot; 2 this week <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></span>
           </button>
           <div class="sec-body">
-            <!-- V1: plain list -->
-            <div class="look lookV1">
-              <div class="col">
-                <div class="clabel"><span>This week</span><span>May 12&ndash;18</span></div>
-                <div class="li"><div class="lt">Excavator delivery</div><div class="ls">ORD-3042 &middot; gate 3 &middot; Mon</div></div>
-                <div class="li"><div class="lt">Billing needs approval</div><div class="ls">BILL-9012 &middot; 2 days left</div></div>
-              </div>
-              <div class="col">
-                <div class="clabel"><span>Next week</span><span>May 19&ndash;25</span></div>
-                <div class="li"><div class="lt">Rental ending</div><div class="ls">Scissor lift &middot; off-rent May 15</div></div>
-                <div class="li"><div class="lt">Order acknowledged</div><div class="ls">SUV AWD &middot; on-rent May 18</div></div>
-              </div>
-              <div class="col">
-                <div class="clabel"><span>In 2 weeks</span><span>May 26&ndash;Jun 1</span></div>
-                <div class="li"><div class="lt">Tower crane mob</div><div class="ls">Planned &middot; structure phase</div></div>
-              </div>
+            <!-- V1: Gantt lookahead (populated by renderLookahead()) -->
+            <div class="look lookV1" style="padding:4px 0">
+              <div id="lookaheadGantt" style="min-height:80px"><div style="font-size:12px;color:var(--g400);padding:8px 0">Loading…</div></div>
             </div>
             <!-- NS: schedule-tied Gantt -->
             <div class="lookNS hide">
