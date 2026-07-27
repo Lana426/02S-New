@@ -1311,7 +1311,7 @@
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
@@ -1545,6 +1545,7 @@
       h+='</div>';
     });
     h+='</div>';
+    if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
     mount.innerHTML=h;
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
@@ -3755,7 +3756,7 @@ charges:[
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
@@ -3988,6 +3989,7 @@ charges:[
       h+='</div>';
     });
     h+='</div>';
+    if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
     mount.innerHTML=h;
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
