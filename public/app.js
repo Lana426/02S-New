@@ -1371,7 +1371,8 @@
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services'],['mobdemob','Mob / Demob'],['delivery','Delivery Dashboard']];
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]).concat([['delivery','Delivery Dashboard']]);
+    if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
@@ -2167,7 +2168,49 @@ charges:[
   }
   var activeBillModal=null;
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); if(activeBillModal===id) openBillModal(id); }
-  function openBillFromDash(id){ go('billing'); setTimeout(function(){ openBillModal(id); }, 320); }
+  function whDisputeClose(){ var el=document.getElementById('wh-dispute-overlay'); if(el)el.remove(); }
+  function whDisputeSubmit(){
+    var sel=document.getElementById('wh-dispute-code');
+    var label=sel?sel.options[sel.selectedIndex].text:'012900.1010 · Warehousing services';
+    whDisputeClose();
+    toast('Cost code corrected — ORD-3091 reclassified to '+label);
+  }
+  function openWarehousingDispute(){
+    var existing=document.getElementById('wh-dispute-overlay');
+    if(existing){ existing.remove(); return; }
+    var ov=document.createElement('div');
+    ov.id='wh-dispute-overlay';
+    ov.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(2px);z-index:9999;display:flex;align-items:center;justify-content:center';
+    var html='<div style="background:#fff;border-radius:12px;box-shadow:0 24px 64px rgba(0,0,0,.18);width:600px;max-width:92vw;max-height:80vh;overflow:auto">';
+    html+='<div style="padding:20px 24px;border-bottom:1px solid #e8ecf0;display:flex;justify-content:space-between;align-items:center">';
+    html+='<div><div style="font-size:13px;font-weight:700;color:#0f172a">Billing code review</div>';
+    html+='<div style="font-size:12px;color:#64748b;margin-top:2px">ORD-3091 · Warehousing services</div></div>';
+    html+='<button onclick="whDisputeClose()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;line-height:1">&times;</button>';
+    html+='</div><div style="padding:20px 24px">';
+    html+='<div style="background:#fffbf0;border:1px solid #f5d87a;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:12.5px;color:#7a5a00">';
+    html+='<b>Flagged:</b> Order ORD-3091 was auto-tagged to cost code <b>012900.1010 · Warehousing services</b>. 02S detected this may not match the work type for this line.';
+    html+='</div><table style="width:100%;border-collapse:collapse;font-size:12.5px">';
+    html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b;width:140px">Order</td><td style="padding:8px 0;font-weight:600;color:#0f172a">ORD-3091</td></tr>';
+    html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Description</td><td style="padding:8px 0">Warehousing services — Hercules, CA site</td></tr>';
+    html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Tagged to</td>';
+    html+='<td style="padding:8px 0"><span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:4px;font-weight:600;font-size:11.5px">012900.1010 · Warehousing services</span></td></tr>';
+    html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Tagged by</td><td style="padding:8px 0">02S auto-classification · Jul 18, 2026</td></tr>';
+    html+='<tr><td style="padding:8px 0;color:#64748b">Amount</td><td style="padding:8px 0;font-weight:600">$3,200</td></tr></table>';
+    html+='<div style="margin-top:18px;font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Correct cost code</div>';
+    html+='<select id="wh-dispute-code" style="width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;font-size:13px;color:#0f172a;background:#fff">';
+    html+='<option value="012900.1010">012900.1010 · Warehousing services (current)</option>';
+    html+='<option value="015000.1000">015000.1000 · Temporary facilities &amp; controls</option>';
+    html+='<option value="010000.5500">010000.5500 · Site logistics &amp; staging</option>';
+    html+='<option value="013200.0100">013200.0100 · Construction layout &amp; survey</option>';
+    html+='</select></div>';
+    html+='<div style="padding:16px 24px;border-top:1px solid #e8ecf0;display:flex;gap:10px;justify-content:flex-end">';
+    html+='<button onclick="whDisputeClose()" style="border:1px solid #d1d5db;background:#fff;border-radius:6px;padding:7px 16px;font-size:13px;cursor:pointer;color:#374151">Cancel</button>';
+    html+='<button onclick="whDisputeSubmit()" style="background:#0f172a;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer">Submit correction</button>';
+    html+='</div></div>';
+    ov.innerHTML=html;
+    document.body.appendChild(ov);
+    ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  }
   function openBillModal(id){
     var b=getBill(id); if(!b) return;
     var ns=CURRENT==='ns';
@@ -2690,8 +2733,8 @@ charges:[
   var ccPersona='fsm';
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
-    fsm:   ['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    equip: ['ccdash','fulfill','gap','anomaly','fleet','dpequip','margin'],
+    fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    equip: ['ccdash','fulfill','gap','fleet','dpequip','margin'],
     logistics: ['ccdash','dplog','margin'],
     prefab: ['ccdash','dpprefab','margin'],
     procurement: ['ccdash','dpproc','margin'],
@@ -2707,13 +2750,95 @@ charges:[
       if(!ok){ nv.setAttribute('onclick','return false;'); } else { nv.setAttribute('onclick','ccGo(\''+k+'\')'); }
     });
   }
-  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&ccActive==='fleet'){ccGo('ccdash');} ccUpdateNavForPersona(); }
+  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; ccUpdateNavForPersona(); }
   function ccGo(s){
     if(!ccPersonaCanAccess(s)) return;
     CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
     ccActive=s; renderCcScreen(s); window.scrollTo(0,0);
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  var SVC_SPECS=[
+    {code:'SUM',name:'Subsurface Utility Mapping',items:[
+      {svc:'Underground utility scan — pre-excavation',vendor:'GPRS',scope:'Site-wide',start:'May 15',end:'Jun 30',status:'Scheduled'},
+      {svc:'Vacuum excavation support',vendor:'GPRS',scope:'Laydown A & B',start:'Jun 1',end:'Sep 30',status:'Requested'},
+      {svc:'As-found utility documentation',vendor:'Geosetta',scope:'Site',start:'Jun 15',end:'Jul 15',status:'Draft'}
+    ]},
+    {code:'GEO',name:'Geospatial Services',items:[
+      {svc:'Survey control & benchmarks',vendor:'HMH Engineers',scope:'Site perimeter',start:'Apr 15',end:'Ongoing',status:'Active'},
+      {svc:'Progress drone survey (bi-weekly)',vendor:'DroneBase',scope:'Full site',start:'May 1',end:'Jan 2027',status:'Active'},
+      {svc:'As-built survey — foundation',vendor:'HMH Engineers',scope:'Building pad',start:'Aug 1',end:'Sep 30',status:'Scheduled'}
+    ]},
+    {code:'BAS',name:'Building Automation Systems',items:[
+      {svc:'BAS controls pre-programming',vendor:'Siemens',scope:'Electrical bldg',start:'Oct 1',end:'Dec 15',status:'Draft'},
+      {svc:'Commissioning support',vendor:'Siemens',scope:'BESS & switchgear',start:'Dec 1',end:'Jan 2027',status:'Draft'}
+    ]},
+    {code:'OFE',name:'Owner-Furnished Equipment Planning',items:[
+      {svc:'Equipment delivery coordination',vendor:'McCarthy OFE Mgr',scope:'All OFE',start:'Aug 1',end:'Dec 31',status:'Scheduled'},
+      {svc:'Loading dock & rigging oversight',vendor:'McCarthy OFE Mgr',scope:'Dock C',start:'Sep 1',end:'Nov 30',status:'Scheduled'}
+    ]},
+    {code:'IRT',name:'Infrared Thermography',items:[
+      {svc:'Electrical panel thermal scan',vendor:'Intertek',scope:'MV switchgear',start:'Jan 15, 2027',end:'Jan 20, 2027',status:'Draft'},
+      {svc:'Thermal envelope survey',vendor:'Intertek',scope:'E-house & BESS',start:'Dec 1',end:'Dec 15',status:'Draft'}
+    ]},
+    {code:'VIZ',name:'Enhanced Visualization',items:[
+      {svc:'BIM/VDC coordination',vendor:'Skanska VDC',scope:'Structural & MEP',start:'May 1',end:'Ongoing',status:'Active'},
+      {svc:'3D progress capture (monthly)',vendor:'Matterport',scope:'Full site',start:'Jun 1',end:'Dec 31',status:'Scheduled'},
+      {svc:'Clash detection support',vendor:'Skanska VDC',scope:'MEP coordination',start:'Jul 1',end:'Oct 31',status:'Scheduled'}
+    ]}
+  ];
+  var SVC_PEOPLE=[
+    {name:'Site Survey Lead',vendor:'HMH Engineers',role:'GEO',sa:0,ea:9},
+    {name:'Utility Mapping Specialist',vendor:'GPRS',role:'SUM',sa:1,ea:5},
+    {name:'VDC Coordinator',vendor:'Skanska VDC',role:'VIZ',sa:1,ea:8},
+    {name:'Progress Drone Operator',vendor:'DroneBase',role:'GEO',sa:1,ea:9},
+    {name:'BAS Controls Engineer',vendor:'Siemens',role:'BAS',sa:6,ea:9},
+    {name:'OFE Manager',vendor:'McCarthy',role:'OFE',sa:4,ea:8},
+    {name:'Commissioning Specialist',vendor:'Siemens',role:'BAS',sa:8,ea:9},
+    {name:'IRT Thermographer',vendor:'Intertek',role:'IRT',sa:9,ea:9}
+  ];
+  function renderSvcPlan(){
+    var mount=document.getElementById('ccDpSvc'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var h='<div class="phead"><div><h1>Professional services plan</h1><div class="meta"><span class="chip">Specialty services scoped to this project</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    if(ns){
+      h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">BAS commissioning specialist starts Dec 1 — confirm BESS and switchgear readiness by Nov 15. VDC coordinator and drone operator have overlapping site windows through Dec.</div></div></div>';
+      var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
+      var N=LGM.length, todayIdx=3;
+      var todayPct=((todayIdx+0.8)/N)*100;
+      var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
+      var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
+      h+='<div class="eq-cap"><span>Resources scheduled on site — people and specialists across all service categories.</span></div>';
+      var roleColors={GEO:'onrent',SUM:'submitted',VIZ:'onrent',BAS:'submitted',OFE:'draft',IRT:'draft'};
+      h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Resource / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
+      h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')">' + '<span class="gt-lbl">Today</span></div>';
+      SVC_PEOPLE.forEach(function(r){
+        var a=r.sa, b=r.ea;
+        var left=(a/N)*100, width=((b-a+1)/N)*100;
+        var barCls=roleColors[r.role]||'draft';
+        h+='<div class="grow"><div class="g-label">'+r.name+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
+          +'<div class="g-track" style="background-image:'+gridBg+'">'  
+          +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.role+' · '+r.vendor+'">'+r.role+'</div>'
+          +'</div></div>';
+      });
+      h+='</div>';
+      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>GEO / VIZ</span><span class="lg"><span class="gl-sw submitted"></span>SUM / BAS</span><span class="lg"><span class="gl-sw draft"></span>OFE / IRT</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+      h+='</div>';
+    } else {
+      h+='<div class="eq-cap"><span>Specialty services grouped by RSI service type — scope, vendor, and scheduling status for each engagement.</span></div>';
+      var gt='1fr 140px 140px 80px 80px 100px';
+      SVC_SPECS.forEach(function(spec){
+        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t"><span class="tag info" style="font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;margin-right:6px">'+spec.code+'</span>'+spec.name+'</span></div>';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Scope</span><span>Start</span><span>End</span><span>Status</span></div>';
+        spec.items.forEach(function(r){
+          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':(r.status==='Requested'?'warn':'neu'));
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div class="sub">'+r.scope+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+        });
+        h+='</div></div>';
+      });
+    }
+    mount.innerHTML=h;
+  }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderSvcPlan(); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -3504,7 +3629,8 @@ charges:[
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services'],['mobdemob','Mob / Demob'],['delivery','Delivery Dashboard']];
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]).concat([['delivery','Delivery Dashboard']]);
+    if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
