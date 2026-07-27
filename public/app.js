@@ -4121,6 +4121,7 @@ function renderProfServicesDP(){
     document.querySelectorAll('#ctApp .sb-item').forEach(function(b){b.classList.remove('active');});
     var screen=document.getElementById(id); if(screen)screen.style.display='block';
     var btn=document.querySelector('#ctApp .sb-item[data-screen="'+id+'"]'); if(btn)btn.classList.add('active');
+    if(id==='ct-budget') renderCtBudget();
     if(typeof ctNavNsInit==='function')ctNavNsInit(id);
   }
   function ctSetVer(v){
@@ -4196,6 +4197,109 @@ function ctForecastYTD(){
   +'<div class="card" style="margin-top:14px"><div class="ch"><span class="t">Monthly 02S revenue</span><span class="sub">FY25 YTD · Jan–May · by pillar</span></div><div class="ctb-values">'+vals+'</div><div class="ct-bars big">'+bars+'</div>'+CT_PILLAR_LEGEND+'</div>'
   +'<div class="card" style="margin-top:16px"><div class="ch"><span class="t">By month &amp; pillar</span><span class="sub">$ millions</span></div><div class="list">'+hdr+rowHtml+'</div></div>';
 }
+function renderCtBudget(){
+  var mount=document.getElementById('ct-budget'); if(!mount)return;
+  /* ── Pillar summary data ── */
+  var PILLARS=[
+    {name:'Equipment',icon:IC.box,
+     planned:'$18.4M',committed:'$12.3M',draft:'2 requests',
+     tone:'ok',lbl:'On track',
+     detail:'67% owned fleet coverage · 2 requests pending taxonomy confirmation'},
+    {name:'Professional services',icon:IC.people,
+     planned:'$3.2M',committed:'$1.9M',draft:'2 roles',
+     tone:'ok',lbl:'On track',
+     detail:'14 FTE active across 6 firms · 1 pending pricing (VDC/BIM) · 1 draft role (SWPPP)'},
+    {name:'Prefab assemblies',icon:IC.layers,
+     planned:'$527K+',committed:'$381K',draft:'2 pending quotes',
+     tone:'warn',lbl:'Pending quotes',
+     detail:'$234K in fabrication · $147K delivered · 2 assemblies awaiting 02S quote'},
+    {name:'Procurement',icon:IC.cart,
+     planned:'$87K',committed:'$55K',draft:'$14K',
+     tone:'bad',lbl:'At-risk',
+     detail:'$26K PO issued · $29K delivered · $18K at-risk (tone shear wrenches)'},
+    {name:'Logistics',icon:IC.truck,
+     planned:'Ongoing',committed:'Active',draft:'—',
+     tone:'ok',lbl:'On track',
+     detail:'GC/GR service contracts active · 6 moves/week · 3 oversize hauls in permit queue'}
+  ];
+  /* ── Vitals ── */
+  var vit=[
+    {k:'Total demand plan',v:'$22.6M',sub:'across 5 pillars · 1 project',tone:'ok',icon:IC.dollar},
+    {k:'Committed · active',v:'$14.6M',sub:'PO issued · on-rent · in fab',tone:'ok',icon:IC.check},
+    {k:'Pending · draft',v:'4 items',sub:'needs quote or confirmation',tone:'warn',icon:IC.clock},
+    {k:'At-risk',v:'3 items',sub:'need action this week',tone:'bad',icon:IC.warn}
+  ];
+  var h='<div class="phead"><div><h1>Budget overview</h1><div class="meta"><span class="chip">'+svg(IC.dollar)+'Hercules Solar + BESS · all pillars</span><span class="chip ver">V1 — standard</span></div></div></div>';
+  /* vitals */
+  h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">';
+  vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; });
+  h+='</div>';
+  /* info strip */
+  h+='<div class="eq-cap" style="margin-bottom:20px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Aggregated from the project’s five pillar demand plans — equipment, professional services, prefab, procurement, and logistics. Committed = PO issued / active contracts / in fabrication. Draft / pending = items not yet confirmed or quoted by 02S.</span></div>';
+  /* pillar table */
+  var gt='1fr 110px 110px 130px 124px';
+  h+='<div class="dp-tbl" style="margin-bottom:24px">';
+  h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Pillar</span><span class="r">Planned</span><span class="r">Committed</span><span class="r">Draft / pending</span><span>Status</span></div>';
+  PILLARS.forEach(function(p){
+    h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+svg(p.icon)+'<span style="margin-left:6px">'+p.name+'</span><div class="sub" style="margin-left:22px">'+p.detail+'</div></div>';
+    h+='<div class="r">'+p.planned+'</div><div class="r">'+p.committed+'</div><div class="r">'+p.draft+'</div>';
+    h+='<div><span class="tag '+p.tone+'">'+p.lbl+'</span></div></div>';
+  });
+  h+='</div>';
+  /* order funnel */
+  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Order ingestion funnel</span> <span class="sub" style="font-size:11.5px">demand plan entry → delivery</span></div>';
+  var FUNNEL=[
+    {stage:'Draft',val:'$28K+',sub:'3+ items not yet submitted',col:'var(--g100)',border:'var(--g250)'},
+    {stage:'Pending quote',val:'3 items',sub:'awaiting 02S pricing',col:'#fffbeb',border:'var(--warning)'},
+    {stage:'PO · Active',val:'$14.6M',sub:'committed · in execution',col:'#f0fdf4',border:'var(--success)'},
+    {stage:'In progress',val:'$381K',sub:'in fab · on-rent · mobilized',col:'#eff6ff',border:'var(--info)'},
+    {stage:'Delivered',val:'$176K',sub:'complete · closed',col:'var(--g50)',border:'var(--g250)'}
+  ];
+  h+='<div style="display:flex;align-items:stretch;gap:6px;margin-bottom:24px">';
+  FUNNEL.forEach(function(f,i){
+    h+='<div style="flex:1;background:'+f.col+';border:1px solid '+f.border+';border-radius:8px;padding:12px 10px;text-align:center">';
+    h+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">'+f.stage+'</div>';
+    h+='<div style="font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1">'+f.val+'</div>';
+    h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">'+f.sub+'</div></div>';
+    if(i<FUNNEL.length-1) h+='<div style="display:flex;align-items:center;color:var(--g300);flex-shrink:0">'+svg('<polyline points="9 18 15 12 9 6"/>')+'</div>';
+  });
+  h+='</div>';
+  /* monthly outlook */
+  var MO=['Aug','Sep','Oct','Nov','Dec','Jan'];
+  var SPEND=[
+    {pillar:'Equipment',    vals:['$1.8M','$2.1M','$2.4M','$2.2M','$1.9M','$1.5M'],tone:''},
+    {pillar:'Prof. services',vals:['$62K', '$62K', '$62K', '$96K', '$96K', '$96K'],tone:''},
+    {pillar:'Prefab',       vals:['$234K','$88K', '—','—','—','—'],tone:''},
+    {pillar:'Procurement',  vals:['$4K',  '$18K', '—','—','$8K', '—'],tone:'bad'},
+    {pillar:'Logistics',    vals:['Active','Active','Active','Active','Active','Active'],tone:'ok'}
+  ];
+  var gtm='130px '+MO.map(function(){return '1fr';}).join(' ');
+  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Monthly spend outlook</span> <span class="sub" style="font-size:11.5px">Aug 2026 – Jan 2027 · by pillar</span></div>';
+  h+='<div class="dp-tbl" style="margin-bottom:24px">';
+  h+='<div class="dp-head" style="grid-template-columns:'+gtm+'"><span>Pillar</span>';
+  MO.forEach(function(m){ h+='<span class="c">'+m+'</span>'; });
+  h+='</div>';
+  SPEND.forEach(function(r){
+    h+='<div class="dp-row" style="grid-template-columns:'+gtm+'"><div>'+r.pillar+'</div>';
+    r.vals.forEach(function(v){
+      h+='<div class="c" style="font-size:12px">'+v+'</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  /* exceptions */
+  var EX=[
+    {tone:'bad', msg:'<b>Tone shear wrenches (Procurement)</b> — at-risk · order-by date Jul 18 passed · needed for structural bolt tensioning Aug 15'},
+    {tone:'warn',msg:'<b>VDC / BIM coordination (Prof. services)</b> — pending pricing · role needed Apr – Oct · firm not in rate card'},
+    {tone:'warn',msg:'<b>BESS e-houses + cable tray runs (Prefab)</b> — 2 assemblies awaiting 02S quote · submittal for e-houses still in review'}
+  ];
+  h+='<div style="margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em">Items needing attention</span></div>';
+  EX.forEach(function(e){
+    h+='<div class="eqf-rate '+e.tone+'" style="margin-bottom:8px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>'+e.msg+'</span></div>';
+  });
+  mount.innerHTML=h;
+}
+
 function openD2CModal(){
   openModal('Direct-to-client flag',
     '<div class="opp-flag" style="margin:0 0 14px;font-size:12.5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
