@@ -1276,13 +1276,13 @@
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active'},
-        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
-        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
+        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Long-lead equipment &amp; materials', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$8.9M',sub:'materials &amp; equipment',tone:'ok',icon:IC.dollar},{label:'Long-lead items',value:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:IC.clock},{label:'At-risk',value:'2',sub:'order-by date passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'71%',sub:'5 of 7 tracking',tone:'warn',icon:IC.chart}],
@@ -1483,6 +1483,7 @@
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
+    if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
@@ -1533,6 +1534,57 @@
     toast('Demand line added \u2014 pricing request routed to 02S admin');
   }
   function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'){ r.state='Requested'; n++; } }); if(!n){ var p=0; cfg.rows.forEach(function(r){if(r.state==='Pending pricing')p++;}); toast(p?(p+' line'+(p===1?'':'s')+' still awaiting 02S pricing \u2014 can\u2019t submit until priced'):'No draft lines to submit'); return; } renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
+function renderProfServicesDP(){
+    var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
+    var ns=CURRENT==='ns';
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
+    if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
+    else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
+    var _baselined=PLAN_BASELINES[pk];
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    if(ns){
+      var LGM=['Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27'];
+      var N=LGM.length, todayIdx=3;
+      var todayPct=((todayIdx+0.8)/N)*100;
+      var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
+      var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
+      var stateBar={Active:'onrent',Projected:'submitted','Pending pricing':'draft',Draft:'draft',Demobilized:'offrent'};
+      h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Role / firm</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
+      h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+      cfg.rows.forEach(function(r){
+        if(typeof r.sa==='undefined') return;
+        var a=r.sa, b=r.ea;
+        var left=(a/N)*100, width=((b-a+1)/N)*100;
+        var barCls=stateBar[r.state]||'draft';
+        h+='<div class="grow"><div class="g-label">'+r.role+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.firm+'</span></div>'
+          +'<div class="g-track" style="background-image:'+gridBg+'">'
+          +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
+          +'</div></div>';
+      });
+      h+='</div>';
+      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Projected</span><span class="lg"><span class="gl-sw draft"></span>Draft / pending</span><span class="lg"><span class="gl-sw offrent"></span>Demobilized</span><span class="lg"><span class="gl-today"></span>Today · Jul 26</span></div>';
+      h+='</div>';
+    } else {
+      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
+      var scopes=[],scopeMap={};
+      cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
+      var gt='1fr 92px 176px 150px 100px 118px';
+      scopes.forEach(function(sc){
+        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t">'+sc+'</span></div>';
+        if(PS_SCOPE_DESCS[sc]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+PS_SCOPE_DESCS[sc]+'</span></div>';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        scopeMap[sc].forEach(function(r){
+          var t=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+        });
+        h+='</div></div>';
+      });
+    }
+    mount.innerHTML=h;
+  }
   function go(screen){
     document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
     document.getElementById('screen-'+screen).classList.add('active');
@@ -2807,7 +2859,6 @@ charges:[
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    fsi:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
     equip: ['ccdash','fulfill','gap','fleet','dpequip','margin'],
     logistics: ['ccdash','fulfill','dplog','margin'],
     prefab: ['ccdash','fulfill','dpprefab','margin'],
@@ -2899,11 +2950,9 @@ charges:[
       h+='</div>';
     } else {
       h+='<div class="eq-cap"><span>Specialty services grouped by RSI service type — scope, vendor, and scheduling status for each engagement.</span></div>';
-      var SVC_DESCS={SUM:'Identifying and mapping underground utilities to prevent damage during excavation.',GEO:'Survey control, progress documentation, and as-built data collection across site phases.',BAS:'Building automation and controls pre-programming and commissioning support.',OFE:'Owner-furnished equipment coordination, delivery tracking, and rigging oversight.',IRT:'Thermal imaging for electrical systems, building envelope, and structural integrity checks.',VIZ:'BIM/VDC coordination, 3D progress capture, and clash detection support.'};
       var gt='1fr 140px 140px 80px 80px 100px';
       SVC_SPECS.forEach(function(spec){
-        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t"><span class="tag info" style="font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;margin-right:6px">'+spec.code+'</span>'+spec.name+'</span></div>';
-        if(SVC_DESCS[spec.code]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+SVC_DESCS[spec.code]+'</span></div>';
+        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t"><span class="tag info" style="font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;margin-right:6px">'+spec.code+'</span>'+spec.name+'</span></div>';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Scope</span><span>Start</span><span>End</span><span>Status</span></div>';
         spec.items.forEach(function(r){
           var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':(r.status==='Requested'?'warn':'neu'));
@@ -3053,6 +3102,20 @@ charges:[
       h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
     });
     h+='</div>';
+    var _tl=FQ.filter(function(r){return r.tasked;});
+    if(_tl.length){
+      h+='<div class="cc-queue" style="margin-top:24px">';
+      h+='<div class="cc-qhead">\u2713 Task list \u2014 pending actions in source systems</div>';
+      _tl.forEach(function(r){
+        h+='<div class="cc-act">';
+        h+='<div class="cc-ab"><div class="cc-at">'+r.item+'</div>';
+        h+='<div class="cc-as">'+r.ref+' \u00b7 '+r.actLabel+' \u00b7 complete in source system</div></div>';
+        h+='<span class="tag info">Tasked</span>';
+        h+='<button class="btn btn-ghost btn-sm" onclick="fqUntask(\''+r.id+'\')" style="margin-left:8px">Dismiss</button>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
     mount.innerHTML=h;
     if(hlRef){ setTimeout(function(){ var el=gel('fqrow-'+hlRef); if(el&&el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'center'}); } }, 80); }
   }
@@ -3103,6 +3166,7 @@ charges:[
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
   function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; renderFulfill(); toast(r.item+' added to task list'); }
+  function fqUntask(id){ var r=fqById(id); if(!r)return; r.tasked=false; renderFulfill(); toast(r.item+' removed from task list'); }
 
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
@@ -3619,13 +3683,13 @@ charges:[
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active'},
-        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
-        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
+        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Long-lead equipment &amp; materials', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$8.9M',sub:'materials &amp; equipment',tone:'ok',icon:IC.dollar},{label:'Long-lead items',value:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:IC.clock},{label:'At-risk',value:'2',sub:'order-by date passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'71%',sub:'5 of 7 tracking',tone:'warn',icon:IC.chart}],
@@ -3823,6 +3887,7 @@ charges:[
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
+    if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
@@ -3873,6 +3938,57 @@ charges:[
     toast('Demand line added \u2014 pricing request routed to 02S admin');
   }
   function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'){ r.state='Requested'; n++; } }); if(!n){ var p=0; cfg.rows.forEach(function(r){if(r.state==='Pending pricing')p++;}); toast(p?(p+' line'+(p===1?'':'s')+' still awaiting 02S pricing \u2014 can\u2019t submit until priced'):'No draft lines to submit'); return; } renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
+function renderProfServicesDP(){
+    var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
+    var ns=CURRENT==='ns';
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
+    if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
+    else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
+    var _baselined=PLAN_BASELINES[pk];
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    if(ns){
+      var LGM=['Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27'];
+      var N=LGM.length, todayIdx=3;
+      var todayPct=((todayIdx+0.8)/N)*100;
+      var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
+      var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
+      var stateBar={Active:'onrent',Projected:'submitted','Pending pricing':'draft',Draft:'draft',Demobilized:'offrent'};
+      h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Role / firm</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
+      h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+      cfg.rows.forEach(function(r){
+        if(typeof r.sa==='undefined') return;
+        var a=r.sa, b=r.ea;
+        var left=(a/N)*100, width=((b-a+1)/N)*100;
+        var barCls=stateBar[r.state]||'draft';
+        h+='<div class="grow"><div class="g-label">'+r.role+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.firm+'</span></div>'
+          +'<div class="g-track" style="background-image:'+gridBg+'">'
+          +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
+          +'</div></div>';
+      });
+      h+='</div>';
+      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Projected</span><span class="lg"><span class="gl-sw draft"></span>Draft / pending</span><span class="lg"><span class="gl-sw offrent"></span>Demobilized</span><span class="lg"><span class="gl-today"></span>Today · Jul 26</span></div>';
+      h+='</div>';
+    } else {
+      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
+      var scopes=[],scopeMap={};
+      cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
+      var gt='1fr 92px 176px 150px 100px 118px';
+      scopes.forEach(function(sc){
+        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t">'+sc+'</span></div>';
+        if(PS_SCOPE_DESCS[sc]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+PS_SCOPE_DESCS[sc]+'</span></div>';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        scopeMap[sc].forEach(function(r){
+          var t=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+        });
+        h+='</div></div>';
+      });
+    }
+    mount.innerHTML=h;
+  }
   function go(screen){
     document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});
     document.getElementById('screen-'+screen).classList.add('active');
