@@ -115,6 +115,40 @@
         <span class="dnb-cta">Review &amp; correct <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;vertical-align:-1px"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
       </div>
 
+      <!-- ══ WHAT'S NEW WITH O2S ══ -->
+      <div id="whatsNewPanel" style="background:linear-gradient(135deg,#e8f4fd 0%,#dbeafe 100%);border:1px solid rgba(38,93,159,.2);border-radius:var(--radius,8px);padding:14px 16px;margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--info,#265D9F)">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg>
+            What&apos;s New with 02S
+          </div>
+          <button style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--g400);padding:2px 6px" onclick="document.getElementById('whatsNewPanel').style.display='none'">Dismiss</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--info,#265D9F);border-radius:3px;padding:1px 5px">New</span>
+              <span style="font-size:12px;font-weight:600;color:var(--g900)">Prefab Pod Express</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--g600)">Modular restroom pods now available with 3-week lead times &mdash; faster than traditional procurement.</div>
+          </div>
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--success,#2F7A43);border-radius:3px;padding:1px 5px">Win</span>
+              <span style="font-size:12px;font-weight:600;color:var(--g900)">$96K saved on Riverside</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--g600)">Redeployed 3 idle excavators vs. re-renting, lifting fleet utilization to 86% on that project.</div>
+          </div>
+          <div style="background:#fff;border-radius:6px;padding:10px 12px;border:1px solid rgba(38,93,159,.12)">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+              <span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;background:var(--charcoal,#26241F);border-radius:3px;padding:1px 5px">Update</span>
+              <span style="font-size:12px;font-weight:600;color:var(--g900)">Telematics on yellow iron</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--g600)">Utilization data now live for heavy equipment &mdash; idle alerts and weekly usage stats in your plan.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ VITALS ROW ══ -->
       <!-- V1: operational status counts — passive, each backed by a real feature -->
       <div class="vitals" id="vitalsV1">
@@ -145,7 +179,7 @@
         </div>
       </div>
       <!-- NS: risk-intelligence metrics — the proactive layer -->
-      <div class="vitals hide" id="vitalsNS">
+      <div class="vitals hide" id="vitalsNS" style="grid-template-columns:repeat(6,1fr)">
         <div class="vital warn">
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>Active orders</div>
           <div class="vv">5<span class="u">active</span></div>
@@ -170,6 +204,11 @@
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/></svg>Plan vs. ad-hoc</div>
           <div class="vv" id="vitalPlanPctNS">—</div>
           <div class="vsub" id="vitalPlanSubNS">Loading…</div>
+        </div>
+        <div class="vital warn" id="vitalTelematics">
+          <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Fleet utilization</div>
+          <div class="vv">62%<span class="u">active</span></div>
+          <div class="vsub"><span class="tag warn">2 units idle &gt;5 days</span></div>
         </div>
       </div>
 
@@ -369,6 +408,23 @@
           </button>
           <div class="sec-body"><div class="placeholder">North Star supplementary panels render here.</div></div>
         </div>
+      </div>
+
+      <!-- ══ ALL ACTIVITY ══ -->
+      <div style="margin-top:24px">
+        <div class="sec-title" style="display:flex;align-items:center">
+          All activity
+          <span class="sec-sub" style="margin-left:6px">everything active on your project right now</span>
+          <div style="margin-left:auto;display:flex;gap:7px">
+            <button class="btn btn-ghost btn-sm" onclick="toast('Rental roll exported — check Downloads')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Rental roll
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Project status summary exported — check Downloads')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>Status summary
+            </button>
+          </div>
+        </div>
+        <div id="allActivityMount"></div>
       </div>
       </div><!-- /screen-dashboard -->
 
@@ -573,7 +629,7 @@
           <div class="fsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><input id="billSearch" oninput="renderBills()" placeholder="Search bills by ID, order, or product"></div>
           <select class="fdrop-sel" id="billStatus" onchange="renderBills()"><option value="">All statuses</option><option>Pending</option><option>Approved</option><option>Disputed</option><option>Finalized</option></select>
           <select class="fdrop-sel" id="billCost" onchange="renderBills()"><option value="">All cost codes</option><option>01 · General</option><option>03 · Concrete</option><option>05 · Metals</option><option>09 · Finishes</option></select>
-          <button class="btn btn-ghost" title="Export for client billing backup" onclick="toast('Billing history exported — CSV for client backup')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export</button>
+          <button class="btn btn-ghost" title="Export invoices as PDF" onclick="openBillExportModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export PDF</button>
         </div>
         <div class="otable" id="billHist"></div>
         <div class="bill-note">Click any order number to jump to that order in <b>Orders</b>. Bills route to YardHub on approval; unactioned bills auto-finalize at day 10.</div>

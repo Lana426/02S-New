@@ -536,12 +536,40 @@
   }
   function dismissUnderstood(){ var el=document.getElementById('understood'); el.classList.add('hide'); el.innerHTML=''; document.getElementById('askInput').value=''; onAskInput(); }
   function refineUnderstood(){ parseReq(); }
-  function sendUnderstood(){
+  function showNSActivities(){
+    var el=document.getElementById('understood'); if(!el) return;
+    var acts=[
+      'Site prep: access road and laydown area clearance',
+      'Equipment walk inspection on delivery',
+      'Operator orientation and site safety brief',
+      'Daily operator log — photo + hours report',
+      'Material receiving report (MRR) on each delivery',
+      'Off-rent equipment inspection and documentation'
+    ];
+    var rows=acts.map(function(a,i){
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--g50);border-radius:6px;border:1px solid var(--g200);margin-bottom:5px">'
+        +'<span style="min-width:18px;height:18px;background:var(--info-tint);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700;color:var(--info)">'+(i+1)+'</span>'
+        +'<div style="flex:1;font-size:12px;color:var(--g800)">'+a+'</div>'
+        +'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;flex-shrink:0" onclick="toast(\'Document attached\')">Attach doc</button>'
+        +'</div>';
+    }).join('');
+    el.innerHTML+='<div style="margin-top:14px;border-top:1px solid var(--g200);padding-top:12px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Auto-populated sub-activities</div>'
+      +rows
+      +'<div style="font-size:11px;color:var(--g500);margin-top:6px">These appear in your 3-week schedule and command center. Attach documents per activity as work progresses.</div>'
+      +'</div>';
+  }
+    function sendUnderstood(){
     var el=document.getElementById('understood'); el.className='understood sent';
     el.innerHTML='<div class="un-done">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+'<div>Request sent to 02S<div class="udsub">You\'ll get a quote within ~2 hours — track it under Orders, and we\'ll notify you when it\'s ready.</div></div></div>';
-    toast('Request sent to 02S — quote incoming'); document.getElementById('askInput').value='';
+    toast('Request sent to 02S — quote incoming'); document.getElementById('askInput').value=''; if(CURRENT==='ns') showNSActivities();
   }
 
+  function sendRFQ(){
+    var el=document.getElementById('understood'); el.className='understood sent';
+    el.innerHTML='<div class="un-done">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'<div>Request for Quote submitted<div class="udsub">Our team will review your specs and send a formal quote within 1 business day. Track it under Orders once it is ready.</div></div></div>';
+    toast('RFQ submitted — formal quote within 1 business day'); document.getElementById('askInput').value='';
+  }
   function recalc(){
     var pl=document.getElementById('priceLine');
     if(cfg.kind==='custom' || (cfg.pid && byId(cfg.pid).mode==='onetime' && byId(cfg.pid).rate===null && byId(cfg.pid).price==='Quote')){
@@ -639,10 +667,14 @@
       (eq>0?'<div class="rr">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'Equipment &rarr; <b>YardHub</b> ('+eq+')</div>':'')+
       (other>0?'<div class="rr">'+svg('<path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/>',2)+'Other pillars &rarr; <b>02S ops backlog</b> ('+other+')</div>':'')+'</div>';
     body.innerHTML='<div class="req-items">'+rows+'</div>'+recon+
+      (ns?'<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius);padding:10px 14px;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',1.5)+'<div style="font-size:11.5px;color:var(--g700)"><div style="font-weight:700;color:var(--info);margin-bottom:2px">AI-powered cost code suggestions</div>Based on your past orders, cost codes have been pre-matched to these items. Review each line and click to change if needed.</div></div>':'')+
       '<div class="req-upload" onclick="toast(\'Photo upload — attach specs or images\')">'+svg('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',2)+'Attach specs or drawings</div>'+
       '<div class="req-foot">'+route+
       '<div class="req-total"><span class="tl">Est. total · 02S rates</span><span class="tv">'+fmt(total)+'<span class="per"> /project</span></span></div>'+
-      '<button class="btn btn-red req-submit" onclick="sendUnderstood()">Submit request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button></div>';
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
+      '<button class="btn btn-red req-submit" onclick="sendUnderstood()">Submit request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button>'+
+      '<button class="btn btn-ghost req-submit" onclick="sendRFQ()">Request for Quote'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'</button>'+
+      '</div></div>';
   }
 
   /* ═══════════ compose show/hide ═══════════ */
@@ -1640,7 +1672,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); }
     window.scrollTo(0,0);
   }
 
@@ -1687,8 +1719,7 @@ function renderProfServicesDP(){
   function renderCopilot(){
     document.getElementById('copilot').innerHTML =
       '<div class="cop hero"><span class="copi">'+svg('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',2)+'</span><div class="copbody"><div class="copt">Structural steel starts in 3 weeks</div><div class="copd">Your plan needs a <b>40T crane</b>, a <b>telehandler</b>, and <b>temp power</b>. I\'ve pre-built the request — review dates and add.</div><div class="copact"><button class="btn btn-red btn-sm" onclick="openDetail(\'crane40\',\'plan\')">Review pre-built request</button></div></div></div>'+
-      '<div class="cop"><span class="copi">'+svg('<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/>',2)+'</span><div class="copbody"><div class="copt">Bundle what jobs like this need</div><div class="copd">Crane orders on similar steel packages also add <b>rigging</b>. Add it to keep pillars in sync?</div><div class="copact"><button class="btn btn-dark btn-sm" onclick="openDetail(\'rigging\',\'plan\')">Add rigging</button></div></div></div>'+
-      '<div class="cop"><span class="copi">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+'</span><div class="copbody"><div class="copt">Owned fleet is cheaper here</div><div class="copd">A telehandler is idle in-region wks 2–4. Using owned saves <b>~$4.1K</b> vs renting.</div><div class="copact"><button class="btn btn-dark btn-sm" onclick="openDetail(\'tele10\',\'plan\')">Configure telehandler</button></div></div></div>';
+      '<div class="cop"><span class="copi">'+svg('<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4"/>',2)+'</span><div class="copbody"><div class="copt">Bundle what jobs like this need</div><div class="copd">Crane orders on similar steel packages also add <b>rigging</b>. Add it to keep pillars in sync?</div><div class="copact"><button class="btn btn-dark btn-sm" onclick="openDetail(\'rigging\',\'plan\')">Add rigging</button></div></div></div>';
   }
 
   /* ═══════════ INIT ═══════════ */
@@ -1751,6 +1782,21 @@ function renderProfServicesDP(){
     {id:'ORD-3091',od:'2026-05-20',item:'Structural engineering — RFI support',sub:'8 hrs/wk · as needed',pillar:'profservices',dates:'May – Sep 2026',cost:'05 · Metals',stage:3,plan:null,latest:'3 RFIs responded this week — avg 24hr turnaround'},
     {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'}
   ];
+  var ORDER_NOTES={
+    'ORD-3042':[
+      {who:'Marcus Webb · 02S',when:'May 18',text:'Yard cleared for departure. ETA May 20, 6 AM. Heavy haul permit confirmed.'},
+      {who:'Dana Reyes · You',when:'May 17',text:'Site crew briefed on delivery window. North gate access road secured.'},
+      {who:'02S Dispatch',when:'May 16',text:'Delivery rescheduled to May 20 due to yard delay at origin. Carrier notified.'}
+    ],
+    'ORD-3051':[
+      {who:'02S Ops',when:'May 22',text:'Both crew trucks active daily. Fuel logs confirm 8-10 hrs use per day per unit.'},
+      {who:'Dana Reyes · You',when:'May 20',text:'Confirmed rental extension through Oct 31. Civil support scope continuing.'}
+    ],
+    'ORD-3054':[
+      {who:'02S Logistics',when:'Aug 1',text:'Crane assembly confirmed on site Aug 3 per schedule. Rigger crew en route.'},
+      {who:'Dana Reyes · You',when:'Jul 30',text:'North gate reserved. Coordinated with structural foreman for Aug 3 mob window.'}
+    ]
+  };
   var BILLS=[
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
@@ -1917,6 +1963,32 @@ charges:[
     h+='</div>';
     mount.innerHTML=h;
   }
+  function renderAllActivity(){
+    var mount=document.getElementById('allActivityMount'); if(!mount) return;
+    var eqOnRent=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.stage===4;}).length;
+    var pillars=[
+      {k:'Equipment',    icon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>',
+       summary:eqOnRent+' units on-rent',stat:'7 active lines · Aug 2026',tone:'ok'},
+      {k:'Prof. services',icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',
+       summary:'14 FTE active',stat:'6 firms · Apr–Oct scope',tone:'ok'},
+      {k:'Prefab',icon:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',
+       summary:'$234K in fabrication',stat:'2 pending 02S quote',tone:'warn'},
+      {k:'Logistics',icon:'<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M10 17h7M17 17l2 5-4-1.5"/>',
+       summary:'6 moves/week',stat:'3 oversize permits',tone:'ok'},
+      {k:'Procurement',icon:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>',
+       summary:'$55K committed',stat:'1 item at-risk',tone:'bad'}
+    ];
+    var h='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">';
+    pillars.forEach(function(p){
+      h+='<div class="vital '+p.tone+'">';
+      h+='<div class="vk">'+svg(p.icon,2)+p.k+'</div>';
+      h+='<div class="vv" style="font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+p.summary+'</div>';
+      h+='<div class="vsub">'+p.stat+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    mount.innerHTML=h;
+  }
   function renderOrders(){
     var _rb=document.getElementById('recertBanner');
     if(_rb){ var _rc=recertItems(); _rb.innerHTML=_rc.length?('<div class="rc-banner">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div class="rcb-t"><b>Overdue off-rent</b><span>'+_rc.length+' item'+(_rc.length===1?'':'s')+' past anticipated return date \u2014 no return request on file</span></div><button class="btn btn-red btn-sm" onclick="openRecert()">Review</button></div>'):''; }
@@ -1977,9 +2049,32 @@ charges:[
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
     if(ns && o.recv) parts.push(recvHTML(o));                        // NS: rich receiving details
+    var _nts=ORDER_NOTES[o.id]; if(_nts&&_nts.length) parts.push(notesHTML(o,_nts));
     return parts.join('');
   }
 
+  function notesHTML(o,notes){
+    var h='<div style="border-top:1px solid var(--g200);padding:12px 0 4px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px;display:flex;align-items:center;gap:5px">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+' Notes &amp; history</div>';
+    notes.forEach(function(n){
+      h+='<div style="margin-bottom:10px">';
+      h+='<div style="display:flex;gap:8px;align-items:baseline;margin-bottom:3px">';
+      h+='<span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span>';
+      h+='<span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
+      h+='<div style="font-size:12.5px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
+    });
+    h+='<div style="display:flex;gap:6px;margin-top:4px">';
+    h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note or question to 02S…" id="note-'+o.id+'"/>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="postNote(\''+o.id+'\')">Send</button></div>';
+    h+='</div>';
+    return h;
+  }
+  function postNote(id){
+    var inp=document.getElementById('note-'+id);
+    if(!inp||!inp.value.trim()) return;
+    toast('Note sent to 02S ops — you will be notified when they reply');
+    inp.value='';
+  }
   function eorHTML(o,ns){
     var r=o.rental;
     var save = (ns && r.idle && r.save) ? ' Both units idle 4 days — <b>return now to save ~'+fmt(r.save)+'</b>.' : '';
@@ -2101,6 +2196,24 @@ charges:[
       if(idleExp.length){h+='<div class="bc-flags"><div class="bc-flag warn">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div><b>'+fmtBig(idleExp.reduce(function(s,o){return s+(o.mrate||0);},0))+'/mo idle exposure</b> — '+idleExp.length+' unit'+(idleExp.length===1?'':'s')+' flagged for early call-off</div></div></div>';}
     }
     h+='</div>';
+    if(!BF_PILLAR){
+      var gmPlan=16.5,gmCurr=14.2;
+      var gmTone=gmCurr<gmPlan-1.0?'bad':gmCurr<gmPlan?'warn':'ok';
+      var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
+      h+='<div style="margin-top:16px;padding:14px 16px;background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius)">';
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Project contribution to enterprise gross margin</div>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="toast(\'Margin plan — enterprise view (demo)\')">View margin plan</button>';
+      h+='</div>';
+      h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px">';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S revenue opp.</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$1.8M</div><div style="font-size:11px;color:var(--g500)">~8% of $22.6M project</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">vs '+gmPlan+'% plan target</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S throughput</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$14.6M</div><div style="font-size:11px;color:var(--g500)">committed of $22.6M project</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Expected return</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">O2S gross profit opp.</div></div>';
+      h+='</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)"><b>Gap to plan:</b> '+fmtBig(Math.round((gmPlan-gmCurr)/100*1800000))+' — driven by equipment re-rent premium on cranes. <span class="lk" onclick="toast(\'Drill into O2S opportunity (demo)\')">View O2S opportunity</span> &middot; <span class="lk" onclick="toast(\'Link to margin plan (demo)\')">Link to margin plan</span></div>';
+      h+='</div>';
+    }
     mount.innerHTML=h;
   }
   function toggleCostCodes(){
@@ -2253,6 +2366,25 @@ charges:[
     host.innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No bills match these filters.</div>');
   }
 
+  function openBillExportModal(){
+    var fin=BILLS.filter(function(b){return b.status==='Finalized';});
+    var rows=fin.map(function(b){
+      return '<label style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--g100,var(--g200));cursor:pointer"><input type="checkbox" class="bill-ex-cb" value="'+b.id+'" checked style="accent-color:var(--red);width:14px;height:14px"/><span style="flex:1;font-size:12px;color:var(--g800)">'+b.id+' · '+b.product+'</span><span style="font-size:12px;color:var(--g500);white-space:nowrap">'+fmt(b.amt)+'</span></label>';
+    }).join('');
+    var body='<div style="margin-bottom:12px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Quick month export</div>'
+      +'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">'
+      +'<button class="btn btn-ghost btn-sm" onclick="toast(\'Filtered to May 2026\')">May 2026</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="toast(\'Filtered to Jun 2026\')">Jun 2026</button>'
+      +'<button class="btn btn-ghost btn-sm on" onclick="toast(\'Showing all finalized\')">All finalized</button>'
+      +'</div>'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Select invoices <span style="text-transform:none;font-weight:400;color:var(--g400)">(finalized only — auto-approved at day 10)</span></div>'
+      +(rows||'<div style="font-size:12.5px;color:var(--g400);padding:8px 0">No finalized invoices yet.</div>')
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-red" onclick="closeModal();toast(\'PDF exported — check Downloads\')">'+svg('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>',2)+' Export PDF</button></div>';
+    openModal('<div><b>Export invoices as PDF</b><div style="font-size:12px;font-weight:400;color:var(--g500);margin-top:2px">Select invoices to include in the export</div></div>',body);
+  }
   // ── Pending review & approval (10-day window) ──
   function renderPending(){
     var host=document.getElementById('pendingWrap'); if(!host) return;
@@ -4112,7 +4244,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); }
     window.scrollTo(0,0);
   }
 
