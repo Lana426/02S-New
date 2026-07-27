@@ -2055,7 +2055,7 @@ charges:[
 
   function notesHTML(o,notes){
     var h='<div style="border-top:1px solid var(--g200);padding:12px 0 4px">';
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px;display:flex;align-items:center;gap:5px">'+svg('<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',2)+' Notes &amp; history</div>';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px">Notes &amp; history</div>';
     notes.forEach(function(n){
       h+='<div style="margin-bottom:10px">';
       h+='<div style="display:flex;gap:8px;align-items:baseline;margin-bottom:3px">';
