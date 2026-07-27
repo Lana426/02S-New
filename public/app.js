@@ -1891,47 +1891,27 @@ charges:[
   }
   function renderFleetDemand(){
     var mount=document.getElementById('fleetDemandMount'); if(!mount)return;
-    var today=EQ_TODAY;
-    var active=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=today&&l.to>=today;});
-    var upcoming=EQ_LINES.filter(function(l){return l.status==='projected'&&l.from>today;});
-    var totalUnits=active.reduce(function(s,l){return s+l.qty;},0);
-    var totalMo=active.reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
-    function moFmt(n){var k=Math.round(n/1000);return k>=1000?'$'+(k/1000).toFixed(1)+'M/mo':'$'+k+'K/mo';}
-    function dateFmt(ym){var p=ym.split('-');var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return ms[parseInt(p[1],10)-1]+'\u2019'+p[0].slice(2);}
-    var h='';
-    h+='<div style="display:flex;gap:24px;margin-bottom:14px;padding-top:4px">';
-    h+='<div><div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)">Active units</div><div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px">'+totalUnits+'</div><div class="sub" style="margin-top:2px">'+active.length+' equipment lines on-rent</div></div>';
-    h+='<div style="width:1px;background:var(--g200)"></div>';
-    h+='<div><div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)">Monthly rental spend</div><div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px">'+moFmt(totalMo)+'</div><div class="sub" style="margin-top:2px">equipment only \u00b7 Aug 2026</div></div>';
-    h+='<div style="width:1px;background:var(--g200)"></div>';
-    h+='<div><div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)">Upcoming requests</div><div style="font-size:22px;font-weight:700;line-height:1.1;margin-top:3px">'+upcoming.length+'</div><div class="sub" style="margin-top:2px">projected \u00b7 not yet on-rent</div></div>';
-    h+='</div>';
-    h+='<div style="font-size:11.5px;font-weight:700;color:var(--charcoal);margin-bottom:6px">Active rental roll <span style="font-weight:400;color:var(--g400)">\u00b7 on-rent as of Aug 2026</span></div>';
-    var gt='1fr 44px 72px 80px 64px';
-    h+='<div class="dp-tbl" style="margin-bottom:16px">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Equipment</span><span class="c">Qty</span><span class="r">Rate/mo</span><span class="r">Monthly</span><span>Off-rent</span></div>';
-    active.forEach(function(l){
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
-      h+='<div>'+l.desc+'<div class="sub">'+l.cat+'</div></div>';
-      h+='<div class="c">'+l.qty+'</div>';
-      h+='<div class="r">'+(l.rate?'$'+(l.rate/1000).toFixed(1)+'K':'\u2014')+'</div>';
-      h+='<div class="r" style="font-weight:600">'+(l.rate?'$'+(l.qty*l.rate/1000).toFixed(0)+'K':'\u2014')+'</div>';
-      h+='<div class="sub">'+dateFmt(l.to)+'</div>';
-      h+='</div>';
-    });
-    h+='</div>';
-    h+='<div style="font-size:11.5px;font-weight:700;color:var(--charcoal);margin-bottom:6px">Upcoming demand <span style="font-weight:400;color:var(--g400)">\u00b7 projected \u00b7 to be submitted to 02S</span></div>';
-    var gt2='1fr 44px 62px 92px 92px';
-    h+='<div class="dp-tbl">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Equipment</span><span class="c">Qty</span><span>Start</span><span>Rate / mo</span><span>Status</span></div>';
-    upcoming.forEach(function(l){
-      var tone=l.submitted?'info':'neu'; var lbl=l.submitted?'Submitted':'Draft';
-      h+='<div class="dp-row" style="grid-template-columns:'+gt2+'">';
-      h+='<div>'+l.desc+'<div class="sub">'+l.scope+'</div></div>';
-      h+='<div class="c">'+l.qty+'</div>';
-      h+='<div>'+dateFmt(l.from)+'</div>';
-      h+='<div>'+(l.rate?'$'+(l.rate/1000).toFixed(1)+'K':'<span class="sub">Quote pending</span>')+'</div>';
-      h+='<div><span class="tag '+tone+'">'+lbl+'</span></div>';
+    /* equipment stat: computed from EQ_LINES so it reconciles with the equip DP */
+    var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
+    var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
+    var PLANS=[
+      {icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+       name:'Equipment plan',stat:actU+' units on-rent · $'+Math.round(actMo/1000)+'K/mo',to:'equip'},
+      {icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',
+       name:'Professional services',stat:DP.profservices.vitals[0].value+' planned · '+DP.profservices.vitals[2].value+' active',to:'dp-profservices'},
+      {icon:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',
+       name:'Prefab assemblies',stat:DP.prefab.vitals[0].value+' assemblies · '+DP.prefab.vitals[2].value+' committed',to:'dp-prefab'},
+      {icon:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',
+       name:'Procurement',stat:DP.procurement.vitals[0].value+' committed · '+DP.procurement.vitals[2].value+' item at-risk',to:'dp-procurement'},
+      {icon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',
+       name:'Logistics',stat:DP.logistics.vitals[0].value+' moves this week · '+DP.logistics.vitals[1].value+' oversize hauls',to:'dp-logistics'}
+    ];
+    var h='<div style="display:flex;flex-direction:column">';
+    PLANS.forEach(function(p,i){
+      h+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0'+(i<PLANS.length-1?';border-bottom:1px solid var(--g150)':'')+'">';
+      h+='<div style="width:28px;height:28px;border-radius:7px;background:var(--g100);display:grid;place-items:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px">'+p.icon+'</svg></div>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600">'+p.name+'</div><div style="font-size:12px;color:var(--g500);margin-top:1px">'+p.stat+'</div></div>';
+      h+='<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="go(''+p.to+'')">View plan</button>';
       h+='</div>';
     });
     h+='</div>';
