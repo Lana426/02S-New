@@ -2807,11 +2807,12 @@ charges:[
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    fsi:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
     equip: ['ccdash','fulfill','gap','fleet','dpequip','margin'],
-    logistics: ['ccdash','dplog','margin'],
-    prefab: ['ccdash','dpprefab','margin'],
-    procurement: ['ccdash','dpproc','margin'],
-    services: ['ccdash','dpsvc','margin']
+    logistics: ['ccdash','fulfill','dplog','margin'],
+    prefab: ['ccdash','fulfill','dpprefab','margin'],
+    procurement: ['ccdash','fulfill','dpproc','margin'],
+    services: ['ccdash','fulfill','dpequip','dplog','dpsvc','dpproc','dpprefab','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   function ccSetPersona(p){ ccPersona=p; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
@@ -2898,9 +2899,11 @@ charges:[
       h+='</div>';
     } else {
       h+='<div class="eq-cap"><span>Specialty services grouped by RSI service type — scope, vendor, and scheduling status for each engagement.</span></div>';
+      var SVC_DESCS={SUM:'Identifying and mapping underground utilities to prevent damage during excavation.',GEO:'Survey control, progress documentation, and as-built data collection across site phases.',BAS:'Building automation and controls pre-programming and commissioning support.',OFE:'Owner-furnished equipment coordination, delivery tracking, and rigging oversight.',IRT:'Thermal imaging for electrical systems, building envelope, and structural integrity checks.',VIZ:'BIM/VDC coordination, 3D progress capture, and clash detection support.'};
       var gt='1fr 140px 140px 80px 80px 100px';
       SVC_SPECS.forEach(function(spec){
-        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t"><span class="tag info" style="font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;margin-right:6px">'+spec.code+'</span>'+spec.name+'</span></div>';
+        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t"><span class="tag info" style="font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:2px 7px;margin-right:6px">'+spec.code+'</span>'+spec.name+'</span></div>';
+        if(SVC_DESCS[spec.code]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+SVC_DESCS[spec.code]+'</span></div>';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Scope</span><span>Start</span><span>End</span><span>Status</span></div>';
         spec.items.forEach(function(r){
           var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':(r.status==='Requested'?'warn':'neu'));
@@ -2943,6 +2946,9 @@ charges:[
     var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
     var mgP=(typeof mgPortfolioRoll==='function')?mgPortfolioRoll():{act:{pct:0}};
     var openReq=(typeof FQ!=='undefined'&&FQ.length)?FQ.length:20;
+    var fIdle=FLEET.filter(function(r){return r.status==='idle';}).length;
+    var fOR=FLEET.filter(function(r){return r.status==='onrent';}).length;
+    var fRepl=FLEET.filter(function(r){return r.life==='replace';}).length;
     var kpis=[
       {k:'Open requests',v:String(openReq),sub:'5 awaiting pricing',tone:'warn',icon:IC.cart,to:'fulfill'},
       {k:'Owned vs re-rent',v:'3',sub:'decisions due',tone:'warn',icon:ICO_SWAP,to:'fulfill'},
@@ -2950,6 +2956,7 @@ charges:[
       {k:'Billing at risk',v:kfmt(mgR.t)+'/mo',sub:mgR.n+' open anomalies',tone:'bad',icon:IC.warn,to:'anomaly'},
       {k:'Project margin',v:mgP.act.pct.toFixed(1)+'%',sub:'target 15%',tone:mgP.act.pct>=15?'ok':'warn',icon:IC.dollar,to:'margin'}
     ];
+    if(ns) kpis.push({k:'Asset lifecycle',v:fRepl+' flags',sub:fOR+'\u00a0on-rent\u00a0\u00b7\u00a0'+fIdle+'\u00a0idle',tone:fRepl>0?'bad':fIdle>0?'warn':'ok',icon:IC.box,to:'fleet'});
     var acts=[
       {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
       {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
@@ -2959,7 +2966,7 @@ charges:[
       {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart}
     ];
     h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
-    h+='<div class="vitals" style="grid-template-columns:repeat(5,1fr)">';
+    h+='<div class="vitals" style="grid-template-columns:repeat('+(ns?6:5)+',1fr)">';
     kpis.forEach(function(k){ h+='<div class="vital clk '+k.tone+'" onclick="ccGo(\''+k.to+'\')"><div class="vk">'+svg(k.icon)+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div><span class="vchev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>'; });
     h+='</div>';
     if(!ns){ h+='<style>#ccDash .vitals .vital:nth-child(4){opacity:.42;pointer-events:none;cursor:default;filter:grayscale(.6)}</style>'; }
@@ -2977,23 +2984,6 @@ charges:[
     h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
     qlinks.forEach(function(q){ h+='<div class="cc-qlink" onclick="ccGo(\''+q.to+'\')"><span>'+svg(q.icon)+'</span><span class="qll">'+q.l+'</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGo(\''+q.to+'\')">Open</button></div>'; });
     h+='</div>';
-    if(ns){
-      var fIdle=FLEET.filter(function(r){return r.status==='idle';}).length;
-      var fOR=FLEET.filter(function(r){return r.status==='onrent';}).length;
-      var fRepl=FLEET.filter(function(r){return r.life==='replace';}).length;
-      var fRedep=FLEET.filter(function(r){return r.life==='redeploy';}).length;
-      h+='<div class="cc-fleet-sum">';
-      h+='<div class="cc-qhead">'+svg(IC.box)+'Asset lifecycle</div>';
-      h+='<div class="fsum-row">';
-      h+='<div class="fsum-kpi"><div class="fk-v">'+FLEET.length+'</div><div class="fk-l">Owned</div></div>';
-      h+='<div class="fsum-kpi"><div class="fk-v ok">'+fOR+'</div><div class="fk-l">On-rent</div></div>';
-      h+='<div class="fsum-kpi"><div class="fk-v warn">'+fIdle+'</div><div class="fk-l">Idle</div></div>';
-      h+='<div class="fsum-kpi"><div class="fk-v bad">'+fRepl+'</div><div class="fk-l">Replace</div></div>';
-      h+='</div>';
-      if(fRedep){h+='<div class="fsum-hint">'+SPARK+fRedep+' idle unit'+(fRedep===1?'':'s')+' available to redeploy</div>';}
-      h+='<button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%" onclick="ccGo(\'fleet\')">Open asset lifecycle →</button>';
-      h+='</div>';
-    }
     h+='</div>';
     mount.innerHTML=h;
   }
@@ -3069,7 +3059,7 @@ charges:[
   function fqCell(r,ns){
     if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
     if(r.status==='Acknowledged'){ return '<div class="fq-done">'+(r.priced?('Priced '+r.priced):'Acknowledged')+'</div>'; }
-    if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; return (ns&&r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+r.actLabel+'</button>'; }
+    if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; if(!ns){ if(r.tasked) return '<div class="fq-done"><span style="color:var(--success)">✓</span> On task list<div class="sub">'+r.actLabel+' · action in source system</div></div>'; return '<div class="fq-reco-badge" style="margin-bottom:4px">Recommended: '+r.actLabel+'</div><button class="btn btn-ghost btn-sm" onclick="fqTask(\''+r.id+'\')">Add to list</button>'; } return (r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn btn-red btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+r.actLabel+'</button>'; }
     if(r.kind==='pending'){ return (ns&&r.suggest?'<div class="fq-hint">'+CC_SPARK+r.suggest+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqPriceModal(\''+r.id+'\')">'+(ns?'Price':'Set price')+'</button>'; }
     if(r.kind==='service'){ return '<button class="btn btn-dark btn-sm" onclick="fqAck(\''+r.id+'\')">Acknowledge</button>'; }
     if(ns){ return '<div class="fq-hint">'+CC_SPARK+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u00b7 ~'+fqMarginPct(r)+'% margin</div><button class="btn btn-red btn-sm" onclick="fqOptModal(\''+r.id+'\')">Review &amp; accept</button>'; }
@@ -3112,6 +3102,7 @@ charges:[
   }
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
+  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; renderFulfill(); toast(r.item+' added to task list'); }
 
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
