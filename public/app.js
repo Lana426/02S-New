@@ -1379,13 +1379,13 @@
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     if(ns){
+      h+='<div class="eq-toolbar" style="margin-bottom:0"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
       h+='<div class="log-tabs">';
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:14px"><span style="font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
@@ -3822,13 +3822,13 @@ charges:[
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     if(ns){
+      h+='<div class="eq-toolbar" style="margin-bottom:0"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
       h+='<div class="log-tabs">';
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:14px"><span style="font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
