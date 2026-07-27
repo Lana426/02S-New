@@ -1335,6 +1335,7 @@
 
   var logPlanView='gcgr';
   var gcgrView='table';
+  var deliveryFilter='active';
   var GCGR_SERVICES=[
     {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
     {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
@@ -1367,6 +1368,7 @@
   ];
   function setLogPlanView(v){ logPlanView=v; gcgrView='table'; renderLogPlan(); }
   function setGcgrView(v){ gcgrView=v; renderLogPlan(); }
+  function setDeliveryFilter(f){ deliveryFilter=f; renderLogPlan(); }
   function renderLogPlan(){
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
@@ -1422,15 +1424,23 @@
       });
       h+='</div>';
     }
-    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+    var DLF=deliveryFilter;
+    var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
+    var dlFiltered=DLF==='all'?DELIVERIES:(DLF==='delivered'?DELIVERIES.filter(function(r){return r.status==='Delivered';}):DELIVERIES.filter(function(r){return ACTIVE_ST.indexOf(r.status)>-1;}));
+    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
     h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">'+DELIVERIES.length+' items across all pillars</span>';
+    h+='<div style="display:flex;gap:4px;margin-left:4px">';
+    [['active','In progress'],['delivered','Delivered'],['all','All']].forEach(function(f){
+      var on=DLF===f[0];
+      h+='<button onclick="setDeliveryFilter(\''+f[0]+'\')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid '+(on?'#0f172a':'#d1d5db')+';background:'+(on?'#0f172a':'#fff')+';color:'+(on?'#fff':'#64748b')+';cursor:pointer;font-weight:'+(on?'600':'400')+'">'+f[1]+'</button>';
+    });
+    h+='</div><span style="font-size:11.5px;color:var(--g400)">'+dlFiltered.length+' item'+(dlFiltered.length===1?'':'s')+'</span>';
     h+='</div>';
     if(ns){
       var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
       var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
       h+='<div style="display:flex;flex-direction:column;gap:10px">';
-      DELIVERIES.forEach(function(r){
+      dlFiltered.forEach(function(r){
         var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var pct=step/(STEPS.length-1)*100;
@@ -1461,7 +1471,7 @@
     } else {
       var gt3='1fr 110px 100px 160px 130px 110px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
-      DELIVERIES.forEach(function(r){
+      dlFiltered.forEach(function(r){
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
@@ -2108,7 +2118,7 @@ charges:[
     var lbl=document.getElementById('billCountLbl'); if(lbl) lbl.textContent='· '+list.length+' bill'+(list.length===1?'':'s');
     var head='<div class="ot-head bt-head"><span>Bill</span><span>Order</span><span>Product</span><span class="r">Amount</span><span class="hide-sm">Cost code</span><span>Status</span></div>';
     var rows=list.map(function(b){
-      var anom = (ns && b.anomaly) ? '<span class="anomaly-flag">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+b.anomaly+'</span>' : '';
+      var anom = '';
       var isPend=b.status==='Pending';
       var statusCell=isPend
         ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="openBillModal(\''+b.id+'\')">Review</button></div>'
@@ -2130,7 +2140,7 @@ charges:[
     var host=document.getElementById('pendingWrap'); if(!host) return;
     var ns=CURRENT==='ns';
     var pend=BILLS.filter(function(b){return b.status==='Pending';});
-    pend.sort(function(a,b){ if(ns){var ra=(a.anomaly?1:0),rb=(b.anomaly?1:0); if(rb-ra!==0) return rb-ra;} return b.day-a.day; });
+    pend.sort(function(a,b){ return b.day-a.day; });
     if(!pend.length){ host.innerHTML='<div class="pc-empty">'+svg('<path d="M20 6L9 17l-5-5"/>',2)+'<div><b>All caught up.</b> No bills in the 10-day window right now.</div></div>'; return; }
     var extra=pend.length>3?pend.length-3:0;
     pend=pend.slice(0,3);
@@ -2244,7 +2254,6 @@ charges:[
     html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Description</td><td style="padding:8px 0">Warehousing services — Hercules, CA site</td></tr>';
     html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Tagged to</td>';
     html+='<td style="padding:8px 0"><span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:4px;font-weight:600;font-size:11.5px">012900.1010 · Warehousing services</span></td></tr>';
-    html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Tagged by</td><td style="padding:8px 0">02S auto-classification · Jul 18, 2026</td></tr>';
     html+='<tr><td style="padding:8px 0;color:#64748b">Amount</td><td style="padding:8px 0;font-weight:600">$3,200</td></tr></table>';
     html+='<div style="margin-top:18px;font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Correct cost code</div>';
     html+='<select id="wh-dispute-code" onchange="whDisputeNewCodeToggle()" style="width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;font-size:13px;color:#0f172a;background:#fff">';
@@ -2282,7 +2291,7 @@ charges:[
     activeBillModal=id;
     var urg=b.day>=8?'red':(b.day>=5?'gold':'neu');
     var left=10-b.day;
-    var anomCard=(ns&&b.anomaly)?'<div class="pc-anom">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div><b>'+b.anomaly+'</b> — '+(b.reason||'')+'. <span class="pc-rec">02S recommends you dispute.</span></div></div>':'';
+    var anomCard='';
     var chargesHtml='';
     if(b.charges&&b.charges.length){
       var ccOpts=[
@@ -2367,7 +2376,7 @@ charges:[
     var ns=CURRENT==='ns';
     var pend=BILLS.filter(function(b){return b.status==='Pending';});
     var pendTotal=pend.reduce(function(s,b){return s+b.amt;},0);
-    var anomalies=pend.filter(function(b){return b.anomaly;}).length;
+    var anomalies=0;
     var disputed=BILLS.filter(function(b){return b.status==='Disputed';}).length;
     if(!ns){
       wrap.classList.remove('hide');
@@ -2379,8 +2388,8 @@ charges:[
     }
     wrap.classList.remove('hide');
     wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span>'+
-      '<div><div class="ist">'+(anomalies?anomalies+' billing anomaly to review':'Billing on track')+' &middot; '+fmt(pendTotal)+' pending across '+pend.length+' bills</div><div class="isd">'+
-      (anomalies?'<b>BILL-9012</b> is 12% above estimate — idle-day overage on scissor lifts, dispute recommended. ':'')+
+      '<div><div class="ist">Billing on track &middot; '+fmt(pendTotal)+' pending across '+pend.length+' bills</div><div class="isd">'+
+      
       'Returning ORD-3031 now saves ~$740. Cost code review recommended for <b>BILL-9016</b>.</div></div></div>';
   }
 
@@ -2403,7 +2412,7 @@ charges:[
       wrap.classList.remove('hide');
       wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span>'+
         '<div><div class="ist">'+active+' orders active &middot; '+pending+' pending delivery confirmation</div><div class="isd">'+
-        '1 billing anomaly awaiting review in Billing &amp; financials. Review open orders to confirm delivery schedules are on track.</div></div></div>';
+        'Review open orders to confirm delivery schedules are on track.</div></div></div>';
       return;
     }
     wrap.classList.remove('hide');
@@ -2814,7 +2823,7 @@ charges:[
       if(!ok){ nv.setAttribute('onclick','return false;'); } else { nv.setAttribute('onclick','ccGo(\''+k+'\')'); }
     });
   }
-  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; ccUpdateNavForPersona(); }
+  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
   function ccGo(s){
     if(!ccPersonaCanAccess(s)) return;
     CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
@@ -3657,6 +3666,7 @@ charges:[
 
   var logPlanView='gcgr';
   var gcgrView='table';
+  var deliveryFilter='active';
   var GCGR_SERVICES=[
     {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
     {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
@@ -3689,6 +3699,7 @@ charges:[
   ];
   function setLogPlanView(v){ logPlanView=v; gcgrView='table'; renderLogPlan(); }
   function setGcgrView(v){ gcgrView=v; renderLogPlan(); }
+  function setDeliveryFilter(f){ deliveryFilter=f; renderLogPlan(); }
   function renderLogPlan(){
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
@@ -3744,15 +3755,23 @@ charges:[
       });
       h+='</div>';
     }
-    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+    var DLF=deliveryFilter;
+    var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
+    var dlFiltered=DLF==='all'?DELIVERIES:(DLF==='delivered'?DELIVERIES.filter(function(r){return r.status==='Delivered';}):DELIVERIES.filter(function(r){return ACTIVE_ST.indexOf(r.status)>-1;}));
+    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
     h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">'+DELIVERIES.length+' items across all pillars</span>';
+    h+='<div style="display:flex;gap:4px;margin-left:4px">';
+    [['active','In progress'],['delivered','Delivered'],['all','All']].forEach(function(f){
+      var on=DLF===f[0];
+      h+='<button onclick="setDeliveryFilter(\''+f[0]+'\')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid '+(on?'#0f172a':'#d1d5db')+';background:'+(on?'#0f172a':'#fff')+';color:'+(on?'#fff':'#64748b')+';cursor:pointer;font-weight:'+(on?'600':'400')+'">'+f[1]+'</button>';
+    });
+    h+='</div><span style="font-size:11.5px;color:var(--g400)">'+dlFiltered.length+' item'+(dlFiltered.length===1?'':'s')+'</span>';
     h+='</div>';
     if(ns){
       var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
       var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
       h+='<div style="display:flex;flex-direction:column;gap:10px">';
-      DELIVERIES.forEach(function(r){
+      dlFiltered.forEach(function(r){
         var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var pct=step/(STEPS.length-1)*100;
@@ -3783,7 +3802,7 @@ charges:[
     } else {
       var gt3='1fr 110px 100px 160px 130px 110px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
-      DELIVERIES.forEach(function(r){
+      dlFiltered.forEach(function(r){
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
