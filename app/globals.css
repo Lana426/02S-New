@@ -1038,7 +1038,7 @@
   .gl-today{width:2px;height:13px;background:var(--red);display:inline-block}
   .gantt{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);overflow:hidden}
   .g-head{display:flex;border-bottom:1px solid var(--g200);background:var(--g50)}
-  .g-head .gh-label{width:200px;flex-shrink:0;padding:9px 14px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)}
+  .g-head .gh-label{width:220px;flex-shrink:0;padding:9px 14px;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g500)}
   .g-head .gh-months{flex:1;display:flex}
   .g-head .gh-m{flex:1;text-align:center;font-size:10px;color:var(--g500);padding:8px 0;border-left:1px solid var(--g200);line-height:1.3}
   .g-head .gh-m .ghy{display:block;font-size:8.5px;color:var(--g400);font-weight:700}
@@ -1050,7 +1050,7 @@
   .g-grp .gg-flag svg{width:11px;height:11px}
   .grow{display:flex;align-items:center;min-height:36px;border-bottom:1px solid var(--g150)}
   .grow:last-child{border-bottom:none}
-  .g-label{width:200px;flex-shrink:0;padding:0 14px;font-size:12px;font-weight:500;color:var(--g700);display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden}
+  .g-label{width:220px;flex-shrink:0;padding:0 14px;font-size:12px;font-weight:500;color:var(--g700);display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .g-label .gqty{font-size:10.5px;color:var(--g400);font-weight:600}
   .g-track{flex:1;position:relative;height:36px}
   .g-bar{position:absolute;top:8px;height:20px;border-radius:4px;display:flex;align-items:center;padding:0 5px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;box-sizing:border-box}
@@ -1674,7 +1674,7 @@
   @media(min-width:640px){.content{padding:24px 28px 48px}}
 
   /* ── Dashboard notification bar ── */
-  .dash-notif-bar{display:flex;align-items:center;gap:10px;background:#fffbf0;border-bottom:1px solid #f5d87a;padding:9px 20px;cursor:pointer;font-size:12.5px;color:#7a5a00;transition:background .15s;flex-shrink:0;margin:12px -28px 0}
+  .dash-notif-bar{display:flex;align-items:center;gap:10px;background:#fffbf0;border-bottom:1px solid #f5d87a;padding:9px 20px;cursor:pointer;font-size:12.5px;color:#7a5a00;transition:background .15s;flex-shrink:0;margin:12px -28px 20px}
   .dash-notif-bar:hover{background:#fff8e0}
   .dnb-dot{width:7px;height:7px;border-radius:50%;background:#e53935;flex-shrink:0;box-shadow:0 0 0 2px #fff2f2}
   .dnb-icon{width:15px;height:15px;color:#b08000;flex-shrink:0}

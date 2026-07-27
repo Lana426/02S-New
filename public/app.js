@@ -785,7 +785,7 @@
           +'</div></div>';
       }
     }
-    var today='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+    var today='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
     var leg='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>On-rent</span><span class="lg"><span class="gl-sw submitted"></span>Submitted</span><span class="lg"><span class="gl-sw draft"></span>Draft</span><span class="lg"><span class="gl-sw pending"></span>Pending</span><span class="lg"><span class="gl-sw offrent"></span>Off-rent</span><span class="lg"><span class="gl-today"></span>Today \u00b7 '+eqMonthLabel(EQ_TODAY)+' \u2019'+EQ_TODAY.slice(2,4)+'</span></div>';
     gel('eqGantt').innerHTML='<div class="gantt">'+head+'<div class="g-body">'+today+rows+'</div></div>'+leg;
   }
@@ -1371,8 +1371,9 @@
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]).concat([['delivery','Delivery Dashboard']]);
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]);
     if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
+    if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
@@ -1396,7 +1397,7 @@
         var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
         var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
         h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
         GCGR_SERVICES.forEach(function(r){
           var a=r.sa, b=r.ea;
           var left=(a/N)*100, width=((b-a+1)/N)*100;
@@ -1420,9 +1421,44 @@
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
       });
       h+='</div>';
+    }
+    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+    h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">'+DELIVERIES.length+' items across all pillars</span>';
+    h+='</div>';
+    if(ns){
+      var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
+      var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
+      h+='<div style="display:flex;flex-direction:column;gap:10px">';
+      DELIVERIES.forEach(function(r){
+        var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
+        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
+        var pct=step/(STEPS.length-1)*100;
+        h+='<div style="background:#fff;border:1px solid var(--g150);border-radius:10px;padding:14px 18px">';
+        h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
+        h+='<div style="flex:1;font-size:13px;font-weight:600;color:#0f172a">'+r.item+'</div>';
+        h+='<span class="tag '+ptone+'">'+r.pillar+'</span></div>';
+        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">'+r.vendor+' · '+r.order+' · Need by <b>'+r.needby+'</b></div>';
+        h+='<div style="position:relative;padding:0 11px">';
+        h+='<div style="position:absolute;top:11px;left:11px;right:11px;height:2px;background:#e2e8f0"></div>';
+        h+='<div style="position:absolute;top:11px;left:11px;width:'+pct.toFixed(1)+'%;height:2px;background:#16a34a"></div>';
+        h+='<div style="display:flex;justify-content:space-between;position:relative">';
+        STEPS.forEach(function(s,i){
+          var done=i<step,active=i===step;
+          var bg=done?'#16a34a':(active?'#0f172a':'#f1f5f9');
+          var fg=(done||active)?'#fff':'#94a3b8';
+          var bd=(!done&&!active)?';border:1.5px solid #e2e8f0':'';
+          var lc=(done||active)?'#0f172a':'#94a3b8';
+          var fw=active?'600':'400';
+          h+='<div style="display:flex;flex-direction:column;align-items:center">';
+          h+='<div style="width:22px;height:22px;border-radius:50%;background:'+bg+';color:'+fg+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700'+bd+'">'+(done?'✓':(i+1))+'</div>';
+          h+='<div style="font-size:10px;color:'+lc+';font-weight:'+fw+';margin-top:5px;text-align:center;white-space:nowrap">'+s+'</div>';
+          h+='</div>';
+        });
+        h+='</div></div></div>';
+      });
+      h+='</div>';
     } else {
-      h+='<div class="eq-cap"><span>Upcoming deliveries across all pillars — equipment, procurement, prefab, and logistics.</span></div>';
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">3 procurement deliveries are pending order confirmation. Reserve laydown space at Yard B for pipe racks (Aug 15).</div></div></div>'; }
       var gt3='1fr 110px 100px 160px 130px 110px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
       DELIVERIES.forEach(function(r){
@@ -2169,9 +2205,23 @@ charges:[
   var activeBillModal=null;
   function setBillUI(id,mode){ billUI[id]=(billUI[id]===mode?'':mode); renderPending(); renderBills(); if(activeBillModal===id) openBillModal(id); }
   function whDisputeClose(){ var el=document.getElementById('wh-dispute-overlay'); if(el)el.remove(); }
+  function whDisputeNewCodeToggle(){
+    var sel=document.getElementById('wh-dispute-code');
+    var inp=document.getElementById('wh-dispute-new');
+    var lbl=document.getElementById('wh-dispute-new-lbl');
+    var isNew=sel&&sel.value==='__new__';
+    if(inp)inp.style.display=isNew?'block':'none';
+    if(lbl)lbl.style.display=isNew?'block':'none';
+  }
   function whDisputeSubmit(){
     var sel=document.getElementById('wh-dispute-code');
-    var label=sel?sel.options[sel.selectedIndex].text:'012900.1010 · Warehousing services';
+    var inp=document.getElementById('wh-dispute-new');
+    var label;
+    if(sel&&sel.value==='__new__'){
+      label=(inp&&inp.value.trim())||'new code';
+    } else {
+      label=sel?sel.options[sel.selectedIndex].text:'012900.1010 · Warehousing services';
+    }
     whDisputeClose();
     toast('Cost code corrected — ORD-3091 reclassified to '+label);
   }
@@ -2197,12 +2247,26 @@ charges:[
     html+='<tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px 0;color:#64748b">Tagged by</td><td style="padding:8px 0">02S auto-classification · Jul 18, 2026</td></tr>';
     html+='<tr><td style="padding:8px 0;color:#64748b">Amount</td><td style="padding:8px 0;font-weight:600">$3,200</td></tr></table>';
     html+='<div style="margin-top:18px;font-size:11.5px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Correct cost code</div>';
-    html+='<select id="wh-dispute-code" style="width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;font-size:13px;color:#0f172a;background:#fff">';
+    html+='<select id="wh-dispute-code" onchange="whDisputeNewCodeToggle()" style="width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;font-size:13px;color:#0f172a;background:#fff">';
     html+='<option value="012900.1010">012900.1010 · Warehousing services (current)</option>';
     html+='<option value="015000.1000">015000.1000 · Temporary facilities &amp; controls</option>';
     html+='<option value="010000.5500">010000.5500 · Site logistics &amp; staging</option>';
     html+='<option value="013200.0100">013200.0100 · Construction layout &amp; survey</option>';
-    html+='</select></div>';
+    html+='<option value="01-0540-0000-0001">01-0540-0000-0001 · General conditions</option>';
+    html+='<option value="26-0330-0000-0001">26-0330-0000-0001 · BESS &amp; Substation</option>';
+    html+='<option value="03-0000-0000-0001">03-0000-0000-0001 · Concrete</option>';
+    html+='<option value="05-0000-0000-0001">05-0000-0000-0001 · Metals</option>';
+    html+='<option value="09-0000-0000-0001">09-0000-0000-0001 · Finishes</option>';
+    html+='<option value="31-0620-0000-0001">31-0620-0000-0001 · Earthwork / Piling</option>';
+    html+='<option value="22-0000-0000-0001">22-0000-0000-0001 · Plumbing</option>';
+    html+='<option value="16-0000-0000-0001">16-0000-0000-0001 · Electrical</option>';
+    html+='<option value="01-5100-0000-0001">01-5100-0000-0001 · Logistics — heavy haul</option>';
+    html+='<option value="06-0100-0000-0001">06-0100-0000-0001 · Procurement — materials</option>';
+    html+='<option value="__new__">+ Add net new cost code…</option>';
+    html+='</select>';
+    html+='<div id="wh-dispute-new-lbl" style="display:none;font-size:11.5px;color:#64748b;font-weight:600;margin-top:12px;margin-bottom:4px">New cost code</div>';
+    html+='<input id="wh-dispute-new" type="text" placeholder="e.g. 01-0540-0000-0002 · Description" style="display:none;width:100%;border:1px solid #d1d5db;border-radius:6px;padding:8px 10px;font-size:13px;color:#0f172a;box-sizing:border-box;font-family:monospace">';
+    html+='</div>';
     html+='<div style="padding:16px 24px;border-top:1px solid #e8ecf0;display:flex;gap:10px;justify-content:flex-end">';
     html+='<button onclick="whDisputeClose()" style="border:1px solid #d1d5db;background:#fff;border-radius:6px;padding:7px 16px;font-size:13px;cursor:pointer;color:#374151">Cancel</button>';
     html+='<button onclick="whDisputeSubmit()" style="background:#0f172a;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer">Submit correction</button>';
@@ -2810,7 +2874,7 @@ charges:[
       h+='<div class="eq-cap"><span>Resources scheduled on site — people and specialists across all service categories.</span></div>';
       var roleColors={GEO:'onrent',SUM:'submitted',VIZ:'onrent',BAS:'submitted',OFE:'draft',IRT:'draft'};
       h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Resource / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-      h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')">' + '<span class="gt-lbl">Today</span></div>';
+      h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')">' + '<span class="gt-lbl">Today</span></div>';
       SVC_PEOPLE.forEach(function(r){
         var a=r.sa, b=r.ea;
         var left=(a/N)*100, width=((b-a+1)/N)*100;
@@ -3629,8 +3693,9 @@ charges:[
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]).concat([['delivery','Delivery Dashboard']]);
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]);
     if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
+    if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
@@ -3654,7 +3719,7 @@ charges:[
         var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
         var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
         h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
         GCGR_SERVICES.forEach(function(r){
           var a=r.sa, b=r.ea;
           var left=(a/N)*100, width=((b-a+1)/N)*100;
@@ -3678,9 +3743,44 @@ charges:[
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
       });
       h+='</div>';
+    }
+    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+    h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">'+DELIVERIES.length+' items across all pillars</span>';
+    h+='</div>';
+    if(ns){
+      var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
+      var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
+      h+='<div style="display:flex;flex-direction:column;gap:10px">';
+      DELIVERIES.forEach(function(r){
+        var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
+        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
+        var pct=step/(STEPS.length-1)*100;
+        h+='<div style="background:#fff;border:1px solid var(--g150);border-radius:10px;padding:14px 18px">';
+        h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
+        h+='<div style="flex:1;font-size:13px;font-weight:600;color:#0f172a">'+r.item+'</div>';
+        h+='<span class="tag '+ptone+'">'+r.pillar+'</span></div>';
+        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">'+r.vendor+' · '+r.order+' · Need by <b>'+r.needby+'</b></div>';
+        h+='<div style="position:relative;padding:0 11px">';
+        h+='<div style="position:absolute;top:11px;left:11px;right:11px;height:2px;background:#e2e8f0"></div>';
+        h+='<div style="position:absolute;top:11px;left:11px;width:'+pct.toFixed(1)+'%;height:2px;background:#16a34a"></div>';
+        h+='<div style="display:flex;justify-content:space-between;position:relative">';
+        STEPS.forEach(function(s,i){
+          var done=i<step,active=i===step;
+          var bg=done?'#16a34a':(active?'#0f172a':'#f1f5f9');
+          var fg=(done||active)?'#fff':'#94a3b8';
+          var bd=(!done&&!active)?';border:1.5px solid #e2e8f0':'';
+          var lc=(done||active)?'#0f172a':'#94a3b8';
+          var fw=active?'600':'400';
+          h+='<div style="display:flex;flex-direction:column;align-items:center">';
+          h+='<div style="width:22px;height:22px;border-radius:50%;background:'+bg+';color:'+fg+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700'+bd+'">'+(done?'✓':(i+1))+'</div>';
+          h+='<div style="font-size:10px;color:'+lc+';font-weight:'+fw+';margin-top:5px;text-align:center;white-space:nowrap">'+s+'</div>';
+          h+='</div>';
+        });
+        h+='</div></div></div>';
+      });
+      h+='</div>';
     } else {
-      h+='<div class="eq-cap"><span>Upcoming deliveries across all pillars — equipment, procurement, prefab, and logistics.</span></div>';
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">3 procurement deliveries are pending order confirmation. Reserve laydown space at Yard B for pipe racks (Aug 15).</div></div></div>'; }
       var gt3='1fr 110px 100px 160px 130px 110px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
       DELIVERIES.forEach(function(r){
