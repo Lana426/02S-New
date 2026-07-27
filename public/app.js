@@ -4130,7 +4130,7 @@ function renderProfServicesDP(){
     var bns=document.getElementById('ctBtnNS'); if(bns)bns.classList.toggle('on',ns);
     var nv1=document.getElementById('ctNavV1'); if(nv1)nv1.style.display=ns?'none':'';
     var nns=document.getElementById('ctNavNS'); if(nns)nns.style.display=ns?'':'none';
-    ctNav(ns?'ct-main':'ct-opp-list');
+    ctNav(ns?'ct-main':'ct-budget');
   }
   function ctPillarTab(el){
     el.parentElement.querySelectorAll('.opp-tab').forEach(function(t){t.classList.remove('active');});
@@ -4199,86 +4199,83 @@ function ctForecastYTD(){
 }
 function renderCtBudget(){
   var mount=document.getElementById('ct-budget'); if(!mount)return;
-
-  /* ── Portfolio-level vitals ── */
-  var vit=[
-    {k:'Demand under management',v:'$26.4M',sub:'3 active projects · 5 pillar types',tone:'ok'},
-    {k:'Committed / active',v:'$16.2M',sub:'PO issued · on-rent · in fabrication',tone:'ok'},
-    {k:'Pending · open items',v:'6 items',sub:'needs quote or GC confirmation',tone:'warn'},
-    {k:'At-risk across portfolio',v:'3 items',sub:'require action this week',tone:'bad'}
-  ];
-
-  /* ── Active project portfolio ── */
-  var PROJECTS=[
-    {name:'Hercules Solar + BESS',type:'Construction active',pillars:'5 pillars',budget:'$22.6M',committed:'$14.6M',tone:'bad',lbl:'1 at-risk'},
-    {name:'1GPA JOC – 2026 Q1',type:'Contract active',pillars:'3 pillars',budget:'$1.2M',committed:'$1.1M',tone:'ok',lbl:'On track'},
-    {name:'Eastside Stormwater',type:'Mobilizing',pillars:'2 pillars',budget:'$2.6M',committed:'$0.5M',tone:'warn',lbl:'2 pending'}
-  ];
-
-  /* ── Cross-project pillar rollup ── */
-  var PILLARS=[
-    {name:'Equipment',projects:'3 projects',budget:'$21.5M',open:'2 items pending taxonomy',tone:'ok'},
-    {name:'Professional services',projects:'1 project',budget:'$3.2M',open:'1 item pending pricing',tone:'warn'},
-    {name:'Prefab assemblies',projects:'1 project',budget:'$527K+',open:'2 awaiting 02S quote',tone:'warn'},
-    {name:'Procurement',projects:'2 projects',budget:'$1.1M',open:'1 at-risk',tone:'bad'},
-    {name:'Logistics',projects:'2 projects',budget:'Ongoing',open:'—',tone:'ok'}
-  ];
-
   var h='';
-  h+='<div style="margin-bottom:20px">';
-  h+='<h1 style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0 0 10px">Demand plan budget</h1>';
+
+  /* ── Header ── */
+  h+='<div style="margin-bottom:22px">';
+  h+='<h1 style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0 0 10px">Financial overview</h1>';
   h+='<div style="display:flex;gap:7px;flex-wrap:wrap">';
   h+='<span class="chip">02S field operations · all active projects</span>';
   h+='<span class="chip ver">V1 — standard</span>';
   h+='</div></div>';
 
-  /* vitals */
-  h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">';
-  vit.forEach(function(x){
-    h+='<div class="vital '+x.tone+'">';
-    h+='<div class="vk">'+x.k+'</div>';
-    h+='<div class="vv">'+x.v+'</div>';
-    h+='<div class="vsub">'+x.sub+'</div>';
+  /* ── Lineage strip: Opportunities → Planned → In-flight → Tracking ── */
+  var STAGES=[
+    {label:'Opportunities',val:'$42M+',sub:'pipeline · 2 active',bg:'#f0fdf4',bdr:'#86efac',lc:'#16a34a',act:'ctNav(\'ct-opp-list\')'},
+    {label:'Demand plans',val:'$26.4M',sub:'planned · 3 projects',bg:'#eff6ff',bdr:'#93c5fd',lc:'#2563eb',act:''},
+    {label:'In-flight',val:'$16.2M',sub:'committed · 94 units on-rent',bg:'#f5f3ff',bdr:'#c4b5fd',lc:'#7c3aed',act:''},
+    {label:'Tracking',val:'$929K/mo',sub:'equipment burn · 3 at-risk',bg:'#fff7ed',bdr:'#fdba74',lc:'#ea580c',act:''}
+  ];
+  h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:28px">';
+  STAGES.forEach(function(s,i){
+    h+='<div style="flex:1;background:'+s.bg+';border:1px solid '+s.bdr+';border-radius:9px;padding:14px 16px'+(s.act?';cursor:pointer':'')+'"'+(s.act?' onclick="'+s.act+'"':'')+' >';
+    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+s.lc+';margin-bottom:6px">'+s.label+'</div>';
+    h+='<div style="font-size:20px;font-weight:700;line-height:1;letter-spacing:-.01em">'+s.val+'</div>';
+    h+='<div style="font-size:11.5px;color:#6b7280;margin-top:4px">'+s.sub+'</div>';
     h+='</div>';
+    if(i<STAGES.length-1) h+='<div style="font-size:18px;color:#d1d5db;flex-shrink:0">→</div>';
   });
   h+='</div>';
 
-  /* project portfolio table */
-  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">Active project portfolio</div>';
-  var gp='1fr 90px 80px 100px 90px 110px';
+  /* ── Project · opportunity linkage ── */
+  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">Projects &middot; opportunity linkage</div>';
+  var PROJECTS=[
+    {name:'Hercules Solar + BESS',type:'Construction active',budget:'$22.6M',committed:'$14.6M',pct:'65%',tone:'bad',lbl:'1 at-risk'},
+    {name:'1GPA JOC – 2026 Q1',type:'Contract active',budget:'$1.2M',committed:'$1.1M',pct:'92%',tone:'ok',lbl:'On track'},
+    {name:'Eastside Stormwater',type:'Mobilizing',budget:'$2.6M',committed:'$0.5M',pct:'19%',tone:'warn',lbl:'2 pending'}
+  ];
+  var gp='1fr 130px 90px 100px 80px 100px 80px';
   h+='<div class="dp-tbl" style="margin-bottom:28px">';
   h+='<div class="dp-head" style="grid-template-columns:'+gp+'">';
-  h+='<span>Project</span><span>Type</span><span>Pillars</span><span class="r">Budget</span><span class="r">Committed</span><span>Status</span></div>';
+  h+='<span>Project</span><span>Type</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">%</span><span>Status</span><span></span></div>';
   PROJECTS.forEach(function(p){
     h+='<div class="dp-row" style="grid-template-columns:'+gp+'">';
     h+='<div style="font-weight:600">'+p.name+'</div>';
     h+='<div class="sub">'+p.type+'</div>';
-    h+='<div class="sub">'+p.pillars+'</div>';
     h+='<div class="r">'+p.budget+'</div>';
     h+='<div class="r">'+p.committed+'</div>';
+    h+='<div class="r" style="color:var(--g500)">'+p.pct+'</div>';
     h+='<div><span class="tag '+p.tone+'">'+p.lbl+'</span></div>';
+    h+='<div><button class="btn btn-ghost btn-sm" onclick="ctNav(\'ct-opp-list\')">View opp</button></div>';
     h+='</div>';
   });
   h+='</div>';
 
-  /* cross-project pillar rollup */
-  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">By pillar — all projects</div>';
-  var gx='140px 90px 100px 1fr 110px';
+  /* ── In-flight by pillar ── */
+  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">In-flight &middot; active now</div>';
+  var INFLIGHT=[
+    {pillar:'Equipment',active:'94 units on-rent',rate:'$929K/mo',stat:'7 active lines · Aug 2026',tone:'ok'},
+    {pillar:'Professional services',active:'14 FTE active',rate:'$62K/mo',stat:'6 firms · Apr–Oct scope',tone:'ok'},
+    {pillar:'Prefab assemblies',active:'$234K in fabrication',rate:'—',stat:'2 assemblies pending 02S quote',tone:'warn'},
+    {pillar:'Procurement',active:'$55K committed',rate:'—',stat:'1 item at-risk · action needed',tone:'bad'},
+    {pillar:'Logistics',active:'Active contracts',rate:'6 moves/wk',stat:'3 oversize permits in queue',tone:'ok'}
+  ];
+  var gi='140px 1fr 90px 1fr 90px';
   h+='<div class="dp-tbl" style="margin-bottom:28px">';
-  h+='<div class="dp-head" style="grid-template-columns:'+gx+'">';
-  h+='<span>Pillar</span><span>Projects</span><span class="r">Budget</span><span>Open items</span><span>Status</span></div>';
-  PILLARS.forEach(function(p){
-    h+='<div class="dp-row" style="grid-template-columns:'+gx+'">';
-    h+='<div style="font-weight:600">'+p.name+'</div>';
-    h+='<div class="sub">'+p.projects+'</div>';
-    h+='<div class="r">'+p.budget+'</div>';
-    h+='<div class="sub">'+p.open+'</div>';
-    h+='<div><span class="tag '+p.tone+'">'+(['ok','On track','warn','Pending','bad','At-risk'].indexOf(p.tone)>=0?{'ok':'On track','warn':'Pending','bad':'At-risk'}[p.tone]:p.tone)+'</span></div>';
+  h+='<div class="dp-head" style="grid-template-columns:'+gi+'">';
+  h+='<span>Pillar</span><span>What\'s active</span><span class="r">Rate</span><span>Key stat</span><span>Status</span></div>';
+  INFLIGHT.forEach(function(p){
+    h+='<div class="dp-row" style="grid-template-columns:'+gi+'">';
+    h+='<div style="font-weight:600">'+p.pillar+'</div>';
+    h+='<div>'+p.active+'</div>';
+    h+='<div class="r">'+p.rate+'</div>';
+    h+='<div class="sub">'+p.stat+'</div>';
+    h+='<div><span class="tag '+p.tone+'">'+{'ok':'Active','warn':'Pending','bad':'At-risk'}[p.tone]+'</span></div>';
     h+='</div>';
   });
   h+='</div>';
 
-  /* items needing attention */
+  /* ── Items needing attention ── */
   var EX=[
     {tone:'bad', title:'Tone shear wrenches',proj:'Procurement · Hercules Solar',msg:'At-risk · order-by Jul 18 passed · needed for structural bolt tensioning Aug 15'},
     {tone:'warn',title:'VDC / BIM coordination',proj:'Professional services · Hercules Solar',msg:'Pending pricing · role needed Apr–Oct · firm not in rate card'},
