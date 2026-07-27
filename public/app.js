@@ -4201,95 +4201,119 @@ function renderCtBudget(){
   var mount=document.getElementById('ct-budget'); if(!mount)return;
   var h='';
 
-  /* ── Header ── */
+  /* ─ Header ─────────────────────────────────────────────────── */
   h+='<div style="margin-bottom:22px">';
-  h+='<h1 style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0 0 10px">Financial overview</h1>';
+  h+='<h1 style="font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1.1;color:var(--g900);margin:0 0 10px">Financial overview</h1>';
   h+='<div style="display:flex;gap:7px;flex-wrap:wrap">';
-  h+='<span class="chip">02S field operations · all active projects</span>';
-  h+='<span class="chip ver">V1 — standard</span>';
+  h+='<span class="chip">02S field operations &middot; all active projects</span>';
+  h+='<span class="chip ver">V1 &mdash; standard</span>';
   h+='</div></div>';
 
-  /* ── Lineage strip: Opportunities → Planned → In-flight → Tracking ── */
+  /* ─ Lineage strip — uses .vital class for MC-consistent styling ─ */
   var STAGES=[
-    {label:'Opportunities',val:'$42M+',sub:'pipeline · 2 active',bg:'#f0fdf4',bdr:'#86efac',lc:'#16a34a',act:'ctNav(\'ct-opp-list\')'},
-    {label:'Demand plans',val:'$26.4M',sub:'planned · 3 projects',bg:'#eff6ff',bdr:'#93c5fd',lc:'#2563eb',act:''},
-    {label:'In-flight',val:'$16.2M',sub:'committed · 94 units on-rent',bg:'#f5f3ff',bdr:'#c4b5fd',lc:'#7c3aed',act:''},
-    {label:'Tracking',val:'$929K/mo',sub:'equipment burn · 3 at-risk',bg:'#fff7ed',bdr:'#fdba74',lc:'#ea580c',act:''}
+    {k:'Opportunities',v:'$42M+',sub:'pipeline &middot; 2 active',tone:'ok',click:"ctNav('ct-opp-list')"},
+    {k:'Demand plans',  v:'$26.4M',sub:'planned &middot; 3 projects',tone:'',click:''},
+    {k:'In-flight',    v:'$16.2M',sub:'committed &middot; 94 units on-rent',tone:'',click:''},
+    {k:'Tracking',     v:'$929K/mo',sub:'equip burn &middot; 3 at-risk',tone:'bad',click:''}
   ];
-  h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:28px">';
+  h+='<div style="display:flex;align-items:stretch;gap:8px;margin-bottom:28px">';
   STAGES.forEach(function(s,i){
-    h+='<div style="flex:1;background:'+s.bg+';border:1px solid '+s.bdr+';border-radius:9px;padding:14px 16px'+(s.act?';cursor:pointer':'')+'"'+(s.act?' onclick="'+s.act+'"':'')+' >';
-    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+s.lc+';margin-bottom:6px">'+s.label+'</div>';
-    h+='<div style="font-size:20px;font-weight:700;line-height:1;letter-spacing:-.01em">'+s.val+'</div>';
-    h+='<div style="font-size:11.5px;color:#6b7280;margin-top:4px">'+s.sub+'</div>';
+    h+='<div class="vital'+( s.tone?' '+s.tone:'')+(s.click?' ct-stage-link':'')+'" style="flex:1'+(s.click?';cursor:pointer':'')+'"'+(s.click?' onclick="'+s.click+'"':'')+' >';
+    h+='<div class="vk">'+s.k+'</div>';
+    h+='<div class="vv">'+s.v+'</div>';
+    h+='<div class="vsub">'+s.sub+'</div>';
     h+='</div>';
-    if(i<STAGES.length-1) h+='<div style="font-size:18px;color:#d1d5db;flex-shrink:0">→</div>';
+    if(i<STAGES.length-1) h+='<div style="display:flex;align-items:center;color:var(--g300);flex-shrink:0;font-size:16px;padding:0 2px">&rarr;</div>';
   });
   h+='</div>';
 
-  /* ── Project · opportunity linkage ── */
-  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">Projects &middot; opportunity linkage</div>';
-  var PROJECTS=[
-    {name:'Hercules Solar + BESS',type:'Construction active',budget:'$22.6M',committed:'$14.6M',pct:'65%',tone:'bad',lbl:'1 at-risk'},
-    {name:'1GPA JOC – 2026 Q1',type:'Contract active',budget:'$1.2M',committed:'$1.1M',pct:'92%',tone:'ok',lbl:'On track'},
-    {name:'Eastside Stormwater',type:'Mobilizing',budget:'$2.6M',committed:'$0.5M',pct:'19%',tone:'warn',lbl:'2 pending'}
+  /* ─ Opportunity → demand plan handshake ─────────────────────── */
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);margin-bottom:6px">Opportunity &rarr; demand plan linkage</div>';
+  var LINK=[
+    {proj:'Hercules Solar + BESS',oppVal:'$22.6M project',oppStage:'Active',oppTone:'ok',
+     dpPillars:'5 pillars',dpBudget:'$22.6M',committed:'$14.6M',pct:'65%',dpTone:'bad',dpLbl:'1 at-risk'},
+    {proj:'1GPA JOC &ndash; 2026 Q1',oppVal:'$1.8M',oppStage:'Won',oppTone:'ok',
+     dpPillars:'3 pillars',dpBudget:'$1.2M',committed:'$1.1M',pct:'92%',dpTone:'ok',dpLbl:'On track'},
+    {proj:'Eastside Stormwater',oppVal:'&mdash;',oppStage:'Mobilizing',oppTone:'neu',
+     dpPillars:'2 pillars',dpBudget:'$2.6M',committed:'$0.5M',pct:'19%',dpTone:'warn',dpLbl:'2 pending'}
   ];
-  var gp='1fr 130px 90px 100px 80px 100px 80px';
-  h+='<div class="dp-tbl" style="margin-bottom:28px">';
-  h+='<div class="dp-head" style="grid-template-columns:'+gp+'">';
-  h+='<span>Project</span><span>Type</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">%</span><span>Status</span><span></span></div>';
-  PROJECTS.forEach(function(p){
-    h+='<div class="dp-row" style="grid-template-columns:'+gp+'">';
-    h+='<div style="font-weight:600">'+p.name+'</div>';
-    h+='<div class="sub">'+p.type+'</div>';
-    h+='<div class="r">'+p.budget+'</div>';
+  /* Two-section header: OPP side | divider | DP side */
+  var gl='1fr 100px 72px 28px 80px 90px 100px 80px 84px';
+  h+='<div class="dp-tbl" style="margin-bottom:26px">';
+  h+='<div style="display:grid;grid-template-columns:'+gl+';gap:12px;padding:8px 16px 0;background:var(--g50)">';
+  h+='<div style="font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--info);padding-bottom:5px;border-bottom:2px solid var(--info)">Opportunity</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--info);padding-bottom:5px;border-bottom:2px solid var(--info);text-align:right">Value</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--info);padding-bottom:5px;border-bottom:2px solid var(--info)">Stage</div>';
+  h+='<div style="padding-bottom:5px;border-bottom:1px solid var(--g200)"></div>';
+  h+='<div style="font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--success);padding-bottom:5px;border-bottom:2px solid var(--success)">Pillars</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--success);padding-bottom:5px;border-bottom:2px solid var(--success);text-align:right">DP budget</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--success);padding-bottom:5px;border-bottom:2px solid var(--success);text-align:right">Committed</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--success);padding-bottom:5px;border-bottom:2px solid var(--success);text-align:right">%</div>';
+  h+='<div style="font-size:9.5px;font-weight:700;color:var(--success);padding-bottom:5px;border-bottom:2px solid var(--success)">Status</div>';
+  h+='</div>';
+  /* column header row */
+  h+='<div class="dp-head" style="grid-template-columns:'+gl+';background:transparent;border-bottom:1px solid var(--g200)">';
+  h+='<span>Project</span><span class="r">Opp value</span><span>Opp stage</span><span></span>';
+  h+='<span>Pillars</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">%</span><span>Status</span>';
+  h+='</div>';
+  LINK.forEach(function(p){
+    h+='<div class="dp-row" style="grid-template-columns:'+gl+'">';
+    h+='<div>'+p.proj+'</div>';
+    h+='<div class="r" style="color:var(--g600);font-weight:400">'+p.oppVal+'</div>';
+    h+='<div><span class="tag '+p.oppTone+'">'+p.oppStage+'</span></div>';
+    h+='<div style="text-align:center;color:var(--g300);font-size:14px">&rarr;</div>';
+    h+='<div class="sub">'+p.dpPillars+'</div>';
+    h+='<div class="r">'+p.dpBudget+'</div>';
     h+='<div class="r">'+p.committed+'</div>';
-    h+='<div class="r" style="color:var(--g500)">'+p.pct+'</div>';
-    h+='<div><span class="tag '+p.tone+'">'+p.lbl+'</span></div>';
-    h+='<div><button class="btn btn-ghost btn-sm" onclick="ctNav(\'ct-opp-list\')">View opp</button></div>';
+    h+='<div class="r" style="color:var(--g500);font-weight:400">'+p.pct+'</div>';
+    h+='<div><span class="tag '+p.dpTone+'">'+p.dpLbl+'</span></div>';
     h+='</div>';
   });
   h+='</div>';
 
-  /* ── In-flight by pillar ── */
-  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:8px">In-flight &middot; active now</div>';
-  var INFLIGHT=[
-    {pillar:'Equipment',active:'94 units on-rent',rate:'$929K/mo',stat:'7 active lines · Aug 2026',tone:'ok'},
-    {pillar:'Professional services',active:'14 FTE active',rate:'$62K/mo',stat:'6 firms · Apr–Oct scope',tone:'ok'},
-    {pillar:'Prefab assemblies',active:'$234K in fabrication',rate:'—',stat:'2 assemblies pending 02S quote',tone:'warn'},
-    {pillar:'Procurement',active:'$55K committed',rate:'—',stat:'1 item at-risk · action needed',tone:'bad'},
-    {pillar:'Logistics',active:'Active contracts',rate:'6 moves/wk',stat:'3 oversize permits in queue',tone:'ok'}
+  /* ─ In-flight by pillar ──────────────────────────────────────── */
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);margin-bottom:6px">In-flight &middot; active now</div>';
+  var IF=[
+    {p:'Equipment',      active:'94 units on-rent',rate:'$929K/mo',stat:'7 lines &middot; Aug 2026',tone:'ok'},
+    {p:'Prof. services', active:'14 FTE active',   rate:'$62K/mo', stat:'6 firms &middot; Apr&ndash;Oct',tone:'ok'},
+    {p:'Prefab',         active:'$234K in fab',     rate:'&mdash;', stat:'2 awaiting 02S quote',tone:'warn'},
+    {p:'Procurement',    active:'$55K committed',   rate:'&mdash;', stat:'1 item at-risk',tone:'bad'},
+    {p:'Logistics',      active:'Active contracts', rate:'6 moves/wk',stat:'3 oversize in permits',tone:'ok'}
   ];
-  var gi='140px 1fr 90px 1fr 90px';
-  h+='<div class="dp-tbl" style="margin-bottom:28px">';
-  h+='<div class="dp-head" style="grid-template-columns:'+gi+'">';
-  h+='<span>Pillar</span><span>What\'s active</span><span class="r">Rate</span><span>Key stat</span><span>Status</span></div>';
-  INFLIGHT.forEach(function(p){
+  var gi='130px 1fr 90px 1fr 80px';
+  h+='<div class="dp-tbl" style="margin-bottom:26px">';
+  h+='<div class="dp-head" style="grid-template-columns:'+gi+'"><span>Pillar</span><span>What\'s active</span><span class="r">Rate</span><span>Key stat</span><span>Status</span></div>';
+  IF.forEach(function(p){
     h+='<div class="dp-row" style="grid-template-columns:'+gi+'">';
-    h+='<div style="font-weight:600">'+p.pillar+'</div>';
-    h+='<div>'+p.active+'</div>';
+    h+='<div>'+p.p+'</div>';
+    h+='<div style="color:var(--g700)">'+p.active+'</div>';
     h+='<div class="r">'+p.rate+'</div>';
     h+='<div class="sub">'+p.stat+'</div>';
-    h+='<div><span class="tag '+p.tone+'">'+{'ok':'Active','warn':'Pending','bad':'At-risk'}[p.tone]+'</span></div>';
+    h+='<div><span class="tag '+p.tone+'">'+{ok:'Active',warn:'Pending',bad:'At-risk'}[p.tone]+'</span></div>';
     h+='</div>';
   });
   h+='</div>';
 
-  /* ── Items needing attention ── */
+  /* ─ Attention items ──────────────────────────────────────────── */
+  h+='<div style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);margin-bottom:8px">Items needing attention</div>';
   var EX=[
-    {tone:'bad', title:'Tone shear wrenches',proj:'Procurement · Hercules Solar',msg:'At-risk · order-by Jul 18 passed · needed for structural bolt tensioning Aug 15'},
-    {tone:'warn',title:'VDC / BIM coordination',proj:'Professional services · Hercules Solar',msg:'Pending pricing · role needed Apr–Oct · firm not in rate card'},
-    {tone:'warn',title:'BESS e-houses + cable tray runs',proj:'Prefab · Hercules Solar',msg:'2 assemblies awaiting 02S quote · e-house submittal still in review'}
+    {tone:'bad', title:'Tone shear wrenches',proj:'Procurement &middot; Hercules Solar',
+     msg:'At-risk &middot; order-by Jul 18 passed &middot; needed for structural bolt tensioning Aug 15'},
+    {tone:'warn',title:'VDC / BIM coordination',proj:'Professional services &middot; Hercules Solar',
+     msg:'Pending pricing &middot; role needed Apr&ndash;Oct &middot; firm not in rate card'},
+    {tone:'warn',title:'BESS e-houses + cable tray runs',proj:'Prefab &middot; Hercules Solar',
+     msg:'2 assemblies awaiting 02S quote &middot; e-house submittal still in review'}
   ];
-  h+='<div style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:.01em;margin-bottom:10px">Items needing attention</div>';
   h+='<div style="display:flex;flex-direction:column;gap:8px">';
   EX.forEach(function(e){
-    var bc=e.tone==='bad'?'#fef2f2':'#fffbeb';
-    var bdr=e.tone==='bad'?'#fca5a5':'#fde68a';
-    h+='<div style="background:'+bc+';border:1px solid '+bdr+';border-radius:8px;padding:11px 14px">';
-    h+='<div style="font-size:12.5px;font-weight:600;color:#0f172a;margin-bottom:2px">'+e.title+'</div>';
-    h+='<div style="font-size:11px;color:var(--g500);margin-bottom:4px">'+e.proj+'</div>';
-    h+='<div style="font-size:12px;color:#374151">'+e.msg+'</div>';
+    var bg=e.tone==='bad'?'var(--red-tint)':'var(--warning-tint)';
+    var bd=e.tone==='bad'?'rgba(220,29,52,.25)':'rgba(138,109,31,.25)';
+    h+='<div style="background:'+bg+';border:1px solid '+bd+';border-radius:var(--radius);padding:11px 14px">';
+    h+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:3px">';
+    h+='<span style="font-size:12.5px;font-weight:600;color:var(--g900)">'+e.title+'</span>';
+    h+='<span style="font-size:11px;color:var(--g500)">'+e.proj+'</span>';
+    h+='</div>';
+    h+='<div style="font-size:12px;color:var(--g700)">'+e.msg+'</div>';
     h+='</div>';
   });
   h+='</div>';
