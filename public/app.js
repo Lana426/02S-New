@@ -1483,6 +1483,7 @@
   }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
+  var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
     if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
@@ -1500,7 +1501,8 @@
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
-    cfg.rows.forEach(function(r){
+    var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    _srows.forEach(function(r){
       h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
@@ -1560,7 +1562,7 @@ function renderProfServicesDP(){
         var a=r.sa, b=r.ea;
         var left=(a/N)*100, width=((b-a+1)/N)*100;
         var barCls=stateBar[r.state]||'draft';
-        h+='<div class="grow"><div class="g-label">'+r.role+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.firm+'</span></div>'
+        h+='<div class="grow" style="min-height:46px">'+'<div class="g-label" style="flex-direction:column;align-items:flex-start;gap:1px;white-space:normal;overflow:visible">'+'<span style="line-height:1.3">'+r.role+'</span>'+'<span style="font-size:10.5px;font-weight:400;color:var(--g400);line-height:1.2">'+r.firm+'</span></div>'
           +'<div class="g-track" style="background-image:'+gridBg+'">'
           +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
           +'</div></div>';
@@ -3098,6 +3100,8 @@ charges:[
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
     var gt='1fr 168px 92px 128px 300px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
+    var _fq_pri={'At-risk':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
+    rows=rows.slice().sort(function(a,b){var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
     rows.forEach(function(r){
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
@@ -3888,6 +3892,7 @@ charges:[
   }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
+  var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
     if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
@@ -3905,7 +3910,8 @@ charges:[
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
-    cfg.rows.forEach(function(r){
+    var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    _srows.forEach(function(r){
       h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
@@ -3965,7 +3971,7 @@ function renderProfServicesDP(){
         var a=r.sa, b=r.ea;
         var left=(a/N)*100, width=((b-a+1)/N)*100;
         var barCls=stateBar[r.state]||'draft';
-        h+='<div class="grow"><div class="g-label">'+r.role+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.firm+'</span></div>'
+        h+='<div class="grow" style="min-height:46px">'+'<div class="g-label" style="flex-direction:column;align-items:flex-start;gap:1px;white-space:normal;overflow:visible">'+'<span style="line-height:1.3">'+r.role+'</span>'+'<span style="font-size:10.5px;font-weight:400;color:var(--g400);line-height:1.2">'+r.firm+'</span></div>'
           +'<div class="g-track" style="background-image:'+gridBg+'">'
           +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
           +'</div></div>';
