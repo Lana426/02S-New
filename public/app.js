@@ -1285,21 +1285,21 @@
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
-      vitals:[{label:'Committed',value:'$143K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'4 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'4 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
       v1:'8 items on plan · 1 at-risk · Tone shear wrenches overdue — needed for structural bolt tensioning.',
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$38K',state:'PO issued'},
-        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$22K',state:'Delivered'},
-        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$18K',state:'Delivered'},
-        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$24K',state:'At-risk'},
-        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$8K',state:'Delivered'},
-        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$12K',state:'Draft'},
-        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$7K',state:'PO issued'},
-        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$14K',state:'Draft'}
+        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued'},
+        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered'},
+        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered'},
+        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk'},
+        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered'},
+        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
+        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued'},
+        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -1383,7 +1383,6 @@
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
     h+='</div>';
     if(logPlanView==='gcgr'){
-      h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
       h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
       if(gcgrView==='table'){
@@ -1423,17 +1422,6 @@
       MOBDEMOB_EVENTS.forEach(function(r){
         var tone=r.type==='Mob'?'info':'warn';
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
-      });
-      h+='</div>';
-    }
-    var _lrows=DP.logistics.rows;
-    if(_lrows&&_lrows.length){
-      h+='<div style="margin-top:28px;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand lines</span></div>';
-      var gt4='1fr 150px 160px 190px 100px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt4+'"><span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Cost code</span><span>Status</span></div>';
-      _lrows.forEach(function(r){
-        var t=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt4+'"><div>'+r.move+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div><div class="sub">'+(r.type||'')+'</div><div>'+(r.when||'')+'</div><div class="sub">'+(r.code||'')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
       });
       h+='</div>';
     }
@@ -3709,20 +3697,20 @@ charges:[
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
-      vitals:[{label:'Committed',value:'$143K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'4 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'4 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$38K',state:'PO issued'},
-        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$22K',state:'Delivered'},
-        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$18K',state:'Delivered'},
-        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$24K',state:'At-risk'},
-        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$8K',state:'Delivered'},
-        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$12K',state:'Draft'},
-        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$7K',state:'PO issued'},
-        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$14K',state:'Draft'}
+        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued'},
+        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered'},
+        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered'},
+        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk'},
+        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered'},
+        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
+        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued'},
+        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -3804,7 +3792,6 @@ charges:[
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
     h+='</div>';
     if(logPlanView==='gcgr'){
-      h+='<div class="eq-cap"><span>Ongoing GC/GR services — recurring, duration-based contracts billed monthly through the project.</span></div>';
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
       h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
       if(gcgrView==='table'){
@@ -3844,17 +3831,6 @@ charges:[
       MOBDEMOB_EVENTS.forEach(function(r){
         var tone=r.type==='Mob'?'info':'warn';
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
-      });
-      h+='</div>';
-    }
-    var _lrows=DP.logistics.rows;
-    if(_lrows&&_lrows.length){
-      h+='<div style="margin-top:28px;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand lines</span></div>';
-      var gt4='1fr 150px 160px 190px 100px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt4+'"><span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Cost code</span><span>Status</span></div>';
-      _lrows.forEach(function(r){
-        var t=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt4+'"><div>'+r.move+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div><div class="sub">'+(r.type||'')+'</div><div>'+(r.when||'')+'</div><div class="sub">'+(r.code||'')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
       });
       h+='</div>';
     }
