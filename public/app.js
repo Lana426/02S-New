@@ -1374,8 +1374,9 @@
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]);
-    if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['trnwh','Transportation &amp; Warehousing']]:[]);
+    if(logPlanView==='mobdemob') logPlanView='gcgr';
+    if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
@@ -1418,16 +1419,45 @@
         h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
         h+='</div>';
       }
-    } else if(logPlanView==='mobdemob'){
-      h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
-      var gt2='1fr 160px 96px 80px 130px 1fr';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Event</span><span>Vendor</span><span>Need-by</span><span>Type</span><span>Cost code</span><span>Notes</span></div>';
-      MOBDEMOB_EVENTS.forEach(function(r){
-        var tone=r.type==='Mob'?'info':'warn';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
-      });
-      h+='</div>';
+    } else if(logPlanView==='trnwh'){
+      var TRNWH=[
+        {svc:'National freight brokerage',vendor:'Coyote Logistics',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$8K',status:'Active',sa:0,ea:9},
+        {svc:'Warehouse &amp; staging — regional hub',vendor:'ProLogis',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$14K',status:'Active',sa:0,ea:9},
+        {svc:'Heavy haul carrier program',vendor:'Landstar System',start:'Jul 2026',end:'Oct 2026',cost:'3100-6200-0000-0001',monthly:'$28K',status:'Scheduled',sa:3,ea:6},
+        {svc:'OFCI receiving &amp; coordination',vendor:'Ryder Supply Chain',start:'May 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$11K',status:'Active',sa:1,ea:9},
+        {svc:'Prefab flow logistics',vendor:'XPO Logistics',start:'Aug 2026',end:'Dec 2026',cost:'2600-3300-0000-0001',monthly:'$16K',status:'Projected',sa:4,ea:8}
+      ];
+      h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Heavy haul ramp-up aligned to module racking schedule — confirm Landstar capacity 6 weeks ahead of Jul 15.</div></div></div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
+      if(gcgrView==='table'){
+        var gt2='1fr 160px 80px 80px 130px 96px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        TRNWH.forEach(function(r){
+          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'||r.status==='Projected'?'info':'neu');
+          h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+        });
+        h+='</div>';
+      } else {
+        var LGMt=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
+        var Nt=LGMt.length, todayIdxt=3;
+        var todayPctt=((todayIdxt+0.8)/Nt)*100;
+        var mht=''; for(var mit=0;mit<Nt;mit++){ mht+='<div class="gh-m">'+LGMt[mit]+'</div>'; }
+        var gridBgt='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'%))';
+        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mht+'</div></div><div class="g-body">';
+        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPctt/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        TRNWH.forEach(function(r){
+          var a=r.sa, b=r.ea;
+          var left=(a/Nt)*100, width=((b-a+1)/Nt)*100;
+          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'||r.status==='Projected'?'submitted':'draft');
+          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
+            +'<div class="g-track" style="background-image:'+gridBgt+'">'
+            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+'">'+r.monthly+'</div>'
+            +'</div></div>';
+        });
+        h+='</div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled / Projected</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+        h+='</div>';
+      }
     }
     var DLF=deliveryFilter;
     var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
@@ -3787,8 +3817,9 @@ charges:[
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['mobdemob','Mob / Demob']]:[]);
-    if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
+    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['trnwh','Transportation &amp; Warehousing']]:[]);
+    if(logPlanView==='mobdemob') logPlanView='gcgr';
+    if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
@@ -3831,16 +3862,45 @@ charges:[
         h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
         h+='</div>';
       }
-    } else if(logPlanView==='mobdemob'){
-      h+='<div class="eq-cap"><span>Mobilization and demobilization events — one-time, date-specific. Each requires coordination with site logistics.</span></div>';
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Tower crane mob and MV switchgear haul may conflict at North gate. Confirm gate scheduling 3 weeks ahead of each event.</div></div></div>'; }
-      var gt2='1fr 160px 96px 80px 130px 1fr';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Event</span><span>Vendor</span><span>Need-by</span><span>Type</span><span>Cost code</span><span>Notes</span></div>';
-      MOBDEMOB_EVENTS.forEach(function(r){
-        var tone=r.type==='Mob'?'info':'warn';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
-      });
-      h+='</div>';
+    } else if(logPlanView==='trnwh'){
+      var TRNWH=[
+        {svc:'National freight brokerage',vendor:'Coyote Logistics',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$8K',status:'Active',sa:0,ea:9},
+        {svc:'Warehouse &amp; staging — regional hub',vendor:'ProLogis',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$14K',status:'Active',sa:0,ea:9},
+        {svc:'Heavy haul carrier program',vendor:'Landstar System',start:'Jul 2026',end:'Oct 2026',cost:'3100-6200-0000-0001',monthly:'$28K',status:'Scheduled',sa:3,ea:6},
+        {svc:'OFCI receiving &amp; coordination',vendor:'Ryder Supply Chain',start:'May 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$11K',status:'Active',sa:1,ea:9},
+        {svc:'Prefab flow logistics',vendor:'XPO Logistics',start:'Aug 2026',end:'Dec 2026',cost:'2600-3300-0000-0001',monthly:'$16K',status:'Projected',sa:4,ea:8}
+      ];
+      h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Heavy haul ramp-up aligned to module racking schedule — confirm Landstar capacity 6 weeks ahead of Jul 15.</div></div></div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
+      if(gcgrView==='table'){
+        var gt2='1fr 160px 80px 80px 130px 96px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        TRNWH.forEach(function(r){
+          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'||r.status==='Projected'?'info':'neu');
+          h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+        });
+        h+='</div>';
+      } else {
+        var LGMt=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
+        var Nt=LGMt.length, todayIdxt=3;
+        var todayPctt=((todayIdxt+0.8)/Nt)*100;
+        var mht=''; for(var mit=0;mit<Nt;mit++){ mht+='<div class="gh-m">'+LGMt[mit]+'</div>'; }
+        var gridBgt='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'%))';
+        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mht+'</div></div><div class="g-body">';
+        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPctt/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        TRNWH.forEach(function(r){
+          var a=r.sa, b=r.ea;
+          var left=(a/Nt)*100, width=((b-a+1)/Nt)*100;
+          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'||r.status==='Projected'?'submitted':'draft');
+          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
+            +'<div class="g-track" style="background-image:'+gridBgt+'">'
+            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+'">'+r.monthly+'</div>'
+            +'</div></div>';
+        });
+        h+='</div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled / Projected</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+        h+='</div>';
+      }
     }
     var DLF=deliveryFilter;
     var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
