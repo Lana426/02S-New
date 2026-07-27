@@ -1378,6 +1378,7 @@
     if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
     h+='</div>';
@@ -1422,6 +1423,17 @@
       MOBDEMOB_EVENTS.forEach(function(r){
         var tone=r.type==='Mob'?'info':'warn';
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
+      });
+      h+='</div>';
+    }
+    var _lrows=DP.logistics.rows;
+    if(_lrows&&_lrows.length){
+      h+='<div style="margin-top:28px;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand lines</span></div>';
+      var gt4='1fr 150px 160px 190px 100px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt4+'"><span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Cost code</span><span>Status</span></div>';
+      _lrows.forEach(function(r){
+        var t=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt4+'"><div>'+r.move+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div><div class="sub">'+(r.type||'')+'</div><div>'+(r.when||'')+'</div><div class="sub">'+(r.code||'')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
       });
       h+='</div>';
     }
@@ -1533,7 +1545,7 @@
     row[a.whenKey]=dpGv('dpaWhen')||'\u2014';
     row.code=dpGv('dpaCode');
     if(a.costKey)row[a.costKey]='Pending';
-    cfg.rows.push(row); closeModal(); renderDP(pk);
+    cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
     toast('Demand line added \u2014 pricing request routed to 02S admin');
   }
   function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'){ r.state='Requested'; n++; } }); if(!n){ var p=0; cfg.rows.forEach(function(r){if(r.state==='Pending pricing')p++;}); toast(p?(p+' line'+(p===1?'':'s')+' still awaiting 02S pricing \u2014 can\u2019t submit until priced'):'No draft lines to submit'); return; } renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
@@ -1575,16 +1587,16 @@ function renderProfServicesDP(){
       var scopes=[],scopeMap={};
       cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
       var gt='1fr 92px 176px 150px 100px 118px';
+      h+='<div class="dp-tbl">';
+      h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
       scopes.forEach(function(sc){
-        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t">'+sc+'</span></div>';
-        if(PS_SCOPE_DESCS[sc]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+PS_SCOPE_DESCS[sc]+'</span></div>';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
           h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
         });
-        h+='</div></div>';
       });
+      h+='</div>';
     }
     mount.innerHTML=h;
   }
@@ -3787,6 +3799,7 @@ charges:[
     if(!ns&&logPlanView==='mobdemob') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     h+='<div class="log-tabs">';
     tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
     h+='</div>';
@@ -3831,6 +3844,17 @@ charges:[
       MOBDEMOB_EVENTS.forEach(function(r){
         var tone=r.type==='Mob'?'info':'warn';
         h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.evt+'</div><div>'+r.vendor+'</div><div style="font-weight:600">'+r.needby+'</div><div><span class="tag '+tone+'">'+r.type+'</span></div><div class="sub">'+r.cost+'</div><div class="sub" style="white-space:normal">'+r.notes+'</div></div>';
+      });
+      h+='</div>';
+    }
+    var _lrows=DP.logistics.rows;
+    if(_lrows&&_lrows.length){
+      h+='<div style="margin-top:28px;margin-bottom:8px"><span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand lines</span></div>';
+      var gt4='1fr 150px 160px 190px 100px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt4+'"><span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Cost code</span><span>Status</span></div>';
+      _lrows.forEach(function(r){
+        var t=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt4+'"><div>'+r.move+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div><div class="sub">'+(r.type||'')+'</div><div>'+(r.when||'')+'</div><div class="sub">'+(r.code||'')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
       });
       h+='</div>';
     }
@@ -3942,7 +3966,7 @@ charges:[
     row[a.whenKey]=dpGv('dpaWhen')||'\u2014';
     row.code=dpGv('dpaCode');
     if(a.costKey)row[a.costKey]='Pending';
-    cfg.rows.push(row); closeModal(); renderDP(pk);
+    cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
     toast('Demand line added \u2014 pricing request routed to 02S admin');
   }
   function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'){ r.state='Requested'; n++; } }); if(!n){ var p=0; cfg.rows.forEach(function(r){if(r.state==='Pending pricing')p++;}); toast(p?(p+' line'+(p===1?'':'s')+' still awaiting 02S pricing \u2014 can\u2019t submit until priced'):'No draft lines to submit'); return; } renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
@@ -3984,16 +4008,16 @@ function renderProfServicesDP(){
       var scopes=[],scopeMap={};
       cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
       var gt='1fr 92px 176px 150px 100px 118px';
+      h+='<div class="dp-tbl">';
+      h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
       scopes.forEach(function(sc){
-        h+='<div style="margin-top:20px"><div class="eq-toolbar" style="margin-bottom:4px"><span class="dp-sec-t">'+sc+'</span></div>';
-        if(PS_SCOPE_DESCS[sc]) h+='<div class="eq-cap" style="margin-top:2px;margin-bottom:10px"><span>'+PS_SCOPE_DESCS[sc]+'</span></div>';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Role</span><span class="c">HC</span><span>Window</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
           h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
         });
-        h+='</div></div>';
       });
+      h+='</div>';
     }
     mount.innerHTML=h;
   }
