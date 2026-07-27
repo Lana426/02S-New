@@ -1384,7 +1384,7 @@
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">Recurring GC/GR service contracts only — mob/demob events, crane picks, and delivery tracking available in North Star.</div>';
+      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</div>';
     }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
@@ -3797,7 +3797,7 @@ charges:[
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">Recurring GC/GR service contracts only — mob/demob events, crane picks, and delivery tracking available in North Star.</div>';
+      h+='<div style="margin-bottom:16px;font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</div>';
     }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
