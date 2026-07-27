@@ -192,43 +192,43 @@
   var EQ_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
   var EQ_TODAY='2026-08';
   var EQ_CODES=[
-    {code:'01-500',name:'Temporary Facilities & Controls',phase:'General conditions',budget:2600000,committed:2600000},
-    {code:'02-200',name:'Site Clearing & Grubbing',phase:'Phase 1 \u00b7 Site prep',budget:720000,committed:720000},
-    {code:'31-200',name:'Mass Grading & Drainage',phase:'Phase 1 \u00b7 Site prep',budget:4800000,committed:4200000},
-    {code:'31-630',name:'Solar Pile Foundations',phase:'Phase 2 \u00b7 Piles',budget:3100000,committed:3100000},
-    {code:'26-560',name:'PV Racking & Module Install',phase:'Phase 3 \u00b7 Solar',budget:5200000,committed:1900000},
-    {code:'26-330',name:'BESS, Inverters & Substation',phase:'Phase 4 \u00b7 Electrical',budget:2800000,committed:600000}
+    {code:'0100-5000-0000-0001',name:'Temporary Facilities & Controls',phase:'General conditions',budget:2600000,committed:2600000},
+    {code:'0200-2000-0000-0001',name:'Site Clearing & Grubbing',phase:'Phase 1 \u00b7 Site prep',budget:720000,committed:720000},
+    {code:'3100-2000-0000-0001',name:'Mass Grading & Drainage',phase:'Phase 1 \u00b7 Site prep',budget:4800000,committed:4200000},
+    {code:'3100-6300-0000-0001',name:'Solar Pile Foundations',phase:'Phase 2 \u00b7 Piles',budget:3100000,committed:3100000},
+    {code:'2600-5600-0000-0001',name:'PV Racking & Module Install',phase:'Phase 3 \u00b7 Solar',budget:5200000,committed:1900000},
+    {code:'2600-3300-0000-0001',name:'BESS, Inverters & Substation',phase:'Phase 4 \u00b7 Electrical',budget:2800000,committed:600000}
   ];
   var EQ_TASKS=[
-    {task:'A1000',name:'Site Mobilization & Laydown Area',code:'01-500',phase:'General conditions'},
-    {task:'A1010',name:'Temporary Access Roads & Site Fencing',code:'01-500',phase:'General conditions'},
-    {task:'A2010',name:'Vegetation Clearing & Grubbing',code:'02-200',phase:'Phase 1 \u00b7 Site prep'},
-    {task:'A2020',name:'Mass Grading & Cut/Fill Operations',code:'31-200',phase:'Phase 1 \u00b7 Site prep'},
-    {task:'A2030',name:'Stormwater Drainage & Erosion Control',code:'31-200',phase:'Phase 1 \u00b7 Site prep'},
-    {task:'A3010',name:'Solar Pile Driving \u2014 Sector 1 (NW/NE)',code:'31-630',phase:'Phase 2 \u00b7 Piles'},
-    {task:'A3020',name:'Solar Pile Driving \u2014 Sector 2 (SW/SE)',code:'31-630',phase:'Phase 2 \u00b7 Piles'},
-    {task:'A4010',name:'Single-Axis Tracker Assembly \u2014 Sector 1',code:'26-560',phase:'Phase 3 \u00b7 Solar'},
-    {task:'A4020',name:'Module Installation & String Wiring \u2014 Sector 1',code:'26-560',phase:'Phase 3 \u00b7 Solar'},
-    {task:'A4030',name:'Tracker & Module Install \u2014 Sector 2',code:'26-560',phase:'Phase 3 \u00b7 Solar'},
-    {task:'A5010',name:'Inverter & Transformer Setting',code:'26-330',phase:'Phase 4 \u00b7 Electrical'},
-    {task:'A6010',name:'BESS Block Install & Commissioning',code:'26-330',phase:'Phase 4 \u00b7 Electrical'}
+    {task:'A1000',name:'Site Mobilization & Laydown Area',code:'0100-5000-0000-0001',phase:'General conditions'},
+    {task:'A1010',name:'Temporary Access Roads & Site Fencing',code:'0100-5000-0000-0001',phase:'General conditions'},
+    {task:'A2010',name:'Vegetation Clearing & Grubbing',code:'0200-2000-0000-0001',phase:'Phase 1 \u00b7 Site prep'},
+    {task:'A2020',name:'Mass Grading & Cut/Fill Operations',code:'3100-2000-0000-0001',phase:'Phase 1 \u00b7 Site prep'},
+    {task:'A2030',name:'Stormwater Drainage & Erosion Control',code:'3100-2000-0000-0001',phase:'Phase 1 \u00b7 Site prep'},
+    {task:'A3010',name:'Solar Pile Driving \u2014 Sector 1 (NW/NE)',code:'3100-6300-0000-0001',phase:'Phase 2 \u00b7 Piles'},
+    {task:'A3020',name:'Solar Pile Driving \u2014 Sector 2 (SW/SE)',code:'3100-6300-0000-0001',phase:'Phase 2 \u00b7 Piles'},
+    {task:'A4010',name:'Single-Axis Tracker Assembly \u2014 Sector 1',code:'2600-5600-0000-0001',phase:'Phase 3 \u00b7 Solar'},
+    {task:'A4020',name:'Module Installation & String Wiring \u2014 Sector 1',code:'2600-5600-0000-0001',phase:'Phase 3 \u00b7 Solar'},
+    {task:'A4030',name:'Tracker & Module Install \u2014 Sector 2',code:'2600-5600-0000-0001',phase:'Phase 3 \u00b7 Solar'},
+    {task:'A5010',name:'Inverter & Transformer Setting',code:'2600-3300-0000-0001',phase:'Phase 4 \u00b7 Electrical'},
+    {task:'A6010',name:'BESS Block Install & Commissioning',code:'2600-3300-0000-0001',phase:'Phase 4 \u00b7 Electrical'}
   ];
   var EQ_LINES=[
-    {id:'e1',task:'A1000',code:'01-500',desc:'Generator \u2014 125 kW',cat:'Power \u203a Generators',qty:16,rate:4200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Site Mobilization & Laydown Area',catId:'gen45'},
-    {id:'e2',task:'A1010',code:'01-500',desc:'Light tower',cat:'Power \u203a Lighting',qty:26,rate:1200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Temporary Access Roads & Site Fencing',catId:'lighttower'},
-    {id:'e3',task:'A2010',code:'02-200',desc:'Excavator \u2014 20T',cat:'Earthmoving \u203a Excavators',qty:6,rate:13500,from:'2026-03',to:'2026-05',status:'off-rent',submitted:true,scope:'Vegetation Clearing & Grubbing',catId:'excav20'},
-    {id:'e4',task:'A2020',code:'31-200',desc:'Dozer \u2014 D6',cat:'Earthmoving \u203a Dozers',qty:12,rate:16200,from:'2026-03',to:'2026-09',status:'on-rent',submitted:true,scope:'Mass Grading & Cut/Fill Operations'},
-    {id:'e5',task:'A2020',code:'31-200',desc:'Motor grader',cat:'Earthmoving \u203a Graders',qty:6,rate:14000,from:'2026-04',to:'2026-08',status:'off-rent',submitted:true,scope:'Mass Grading & Cut/Fill Operations'},
-    {id:'e6',task:'A2030',code:'31-200',desc:'Compaction roller',cat:'Earthmoving \u203a Compaction',qty:12,rate:6800,from:'2026-04',to:'2026-10',status:'on-rent',submitted:true,scope:'Stormwater Drainage & Erosion Control'},
-    {id:'e7',task:'A3010',code:'31-630',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-06',to:'2026-10',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)'},
-    {id:'e8',task:'A3020',code:'31-630',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-08',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 2 (SW/SE)'},
-    {id:'e9',task:'A3010',code:'31-630',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:16,rate:8800,from:'2026-06',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)',catId:'tele10'},
-    {id:'e10',task:'A4010',code:'26-560',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:24,rate:8800,from:'2026-09',to:'2027-04',status:'projected',submitted:true,scope:'Single-Axis Tracker Assembly \u2014 Sector 1',catId:'tele10'},
-    {id:'e11',task:'A4020',code:'26-560',desc:'Boom lift \u2014 60ft',cat:'Access equipment \u203a Boom lifts',qty:18,rate:7500,from:'2026-09',to:'2027-03',status:'projected',submitted:true,scope:'Module Installation & String Wiring \u2014 Sector 1',catId:'boom60'},
-    {id:'e12',task:'A4030',code:'26-560',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:12,rate:8800,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'tele10'},
-    {id:'e13',task:'A4030',code:'26-560',desc:'Scissor lift \u2014 32ft',cat:'Access equipment \u203a Scissor lifts',qty:64,rate:1900,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'scissor32'},
-    {id:'e14',task:'A5010',code:'26-330',desc:'Rough-terrain crane \u2014 90T',cat:'Cranes \u203a Rough-terrain',qty:3,rate:42000,from:'2026-12',to:'2027-05',status:'projected',submitted:false,scope:'Inverter & Transformer Setting'},
-    {id:'e15',task:'A6010',code:'26-330',desc:'Crawler crane \u2014 230T',cat:'Cranes \u203a Crawler (non-catalog)',qty:1,rate:null,from:'2027-01',to:'2027-03',status:'projected',submitted:false,scope:'BESS Block Install & Commissioning'}
+    {id:'e1',task:'A1000',code:'0100-5000-0000-0001',desc:'Generator \u2014 125 kW',cat:'Power \u203a Generators',qty:16,rate:4200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Site Mobilization & Laydown Area',catId:'gen45'},
+    {id:'e2',task:'A1010',code:'0100-5000-0000-0001',desc:'Light tower',cat:'Power \u203a Lighting',qty:26,rate:1200,from:'2026-03',to:'2027-05',status:'on-rent',submitted:true,scope:'Temporary Access Roads & Site Fencing',catId:'lighttower'},
+    {id:'e3',task:'A2010',code:'0200-2000-0000-0001',desc:'Excavator \u2014 20T',cat:'Earthmoving \u203a Excavators',qty:6,rate:13500,from:'2026-03',to:'2026-05',status:'off-rent',submitted:true,scope:'Vegetation Clearing & Grubbing',catId:'excav20'},
+    {id:'e4',task:'A2020',code:'3100-2000-0000-0001',desc:'Dozer \u2014 D6',cat:'Earthmoving \u203a Dozers',qty:12,rate:16200,from:'2026-03',to:'2026-09',status:'on-rent',submitted:true,scope:'Mass Grading & Cut/Fill Operations'},
+    {id:'e5',task:'A2020',code:'3100-2000-0000-0001',desc:'Motor grader',cat:'Earthmoving \u203a Graders',qty:6,rate:14000,from:'2026-04',to:'2026-08',status:'off-rent',submitted:true,scope:'Mass Grading & Cut/Fill Operations'},
+    {id:'e6',task:'A2030',code:'3100-2000-0000-0001',desc:'Compaction roller',cat:'Earthmoving \u203a Compaction',qty:12,rate:6800,from:'2026-04',to:'2026-10',status:'on-rent',submitted:true,scope:'Stormwater Drainage & Erosion Control'},
+    {id:'e7',task:'A3010',code:'3100-6300-0000-0001',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-06',to:'2026-10',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)'},
+    {id:'e8',task:'A3020',code:'3100-6300-0000-0001',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-08',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 2 (SW/SE)'},
+    {id:'e9',task:'A3010',code:'3100-6300-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:16,rate:8800,from:'2026-06',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)',catId:'tele10'},
+    {id:'e10',task:'A4010',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:24,rate:8800,from:'2026-09',to:'2027-04',status:'projected',submitted:true,scope:'Single-Axis Tracker Assembly \u2014 Sector 1',catId:'tele10'},
+    {id:'e11',task:'A4020',code:'2600-5600-0000-0001',desc:'Boom lift \u2014 60ft',cat:'Access equipment \u203a Boom lifts',qty:18,rate:7500,from:'2026-09',to:'2027-03',status:'projected',submitted:true,scope:'Module Installation & String Wiring \u2014 Sector 1',catId:'boom60'},
+    {id:'e12',task:'A4030',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:12,rate:8800,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'tele10'},
+    {id:'e13',task:'A4030',code:'2600-5600-0000-0001',desc:'Scissor lift \u2014 32ft',cat:'Access equipment \u203a Scissor lifts',qty:64,rate:1900,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'scissor32'},
+    {id:'e14',task:'A5010',code:'2600-3300-0000-0001',desc:'Rough-terrain crane \u2014 90T',cat:'Cranes \u203a Rough-terrain',qty:3,rate:42000,from:'2026-12',to:'2027-05',status:'projected',submitted:false,scope:'Inverter & Transformer Setting'},
+    {id:'e15',task:'A6010',code:'2600-3300-0000-0001',desc:'Crawler crane \u2014 230T',cat:'Cranes \u203a Crawler (non-catalog)',qty:1,rate:null,from:'2027-01',to:'2027-03',status:'projected',submitted:false,scope:'BESS Block Install & Commissioning'}
   ];
   var eqState={view:'plan'};
   var eqEditId=null, eqSeq=15, eqAddCode=null, ordSeq=3042, eqRefSeq=200;
@@ -1276,13 +1276,13 @@
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'01-100 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'02-320 \u00b7 Site Earthwork',cost:'$18K/mo',state:'Active'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'31-620 \u00b7 Solar Pile',cost:'$16K/mo',state:'Active'},
-        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'26-330 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'01-100 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'01-100 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
-        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'01-100 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active'},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active'},
+        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Long-lead equipment &amp; materials', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$8.9M',sub:'materials &amp; equipment',tone:'ok',icon:IC.dollar},{label:'Long-lead items',value:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:IC.clock},{label:'At-risk',value:'2',sub:'order-by date passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'71%',sub:'5 of 7 tracking',tone:'warn',icon:IC.chart}],
@@ -1292,13 +1292,13 @@
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Medium-voltage switchgear',itemSub:'15kV lineup',qty:'2',needby:'Oct 15',orderby:'May 1 \u00b7 24 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$1.4M',state:'At-risk'},
-        {item:'Main power transformer',qty:'1',needby:'Nov 1',orderby:'Apr 15 \u00b7 28 wk',code:'26-330 \u00b7 BESS',cost:'$2.1M',state:'PO issued'},
-        {item:'PV modules \u2014 tranche 1',qty:'40,000',needby:'Sep 1',orderby:'Jun 1 \u00b7 12 wk',code:'26-540 \u00b7 Module',cost:'$3.6M',state:'In transit'},
-        {item:'String inverters',qty:'24',needby:'Sep 15',orderby:'Jun 15 \u00b7 14 wk',code:'26-540 \u00b7 Module',cost:'$980K',state:'PO issued'},
-        {item:'BESS containers',itemSub:'2.5 MWh each',qty:'6',needby:'Dec 1',orderby:'May 15 \u00b7 30 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$2.4M',state:'At-risk'},
-        {item:'Structural steel \u2014 racking',qty:'lot',needby:'Aug 1',orderby:'Jun 15 \u00b7 7 wk',code:'26-540 \u00b7 Module',cost:'$620K',state:'Delivered'},
-        {item:'Cable &amp; conductors',qty:'lot',needby:'rolling',orderby:'rolling',code:'26-540 \u00b7 Module',cost:'$340K',state:'Draft'}
+        {item:'Medium-voltage switchgear',itemSub:'15kV lineup',qty:'2',needby:'Oct 15',orderby:'May 1 \u00b7 24 wk',risk:true,code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$1.4M',state:'At-risk'},
+        {item:'Main power transformer',qty:'1',needby:'Nov 1',orderby:'Apr 15 \u00b7 28 wk',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$2.1M',state:'PO issued'},
+        {item:'PV modules \u2014 tranche 1',qty:'40,000',needby:'Sep 1',orderby:'Jun 1 \u00b7 12 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$3.6M',state:'In transit'},
+        {item:'String inverters',qty:'24',needby:'Sep 15',orderby:'Jun 15 \u00b7 14 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$980K',state:'PO issued'},
+        {item:'BESS containers',itemSub:'2.5 MWh each',qty:'6',needby:'Dec 1',orderby:'May 15 \u00b7 30 wk',risk:true,code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$2.4M',state:'At-risk'},
+        {item:'Structural steel \u2014 racking',qty:'lot',needby:'Aug 1',orderby:'Jun 15 \u00b7 7 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$620K',state:'Delivered'},
+        {item:'Cable &amp; conductors',qty:'lot',needby:'rolling',orderby:'rolling',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$340K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -1308,11 +1308,11 @@
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'26-540 \u00b7 Module',cost:'$146K',state:'In fabrication'},
-        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'26-540 \u00b7 Module',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'26-330 \u00b7 BESS',cost:'Pending',state:'Submittal'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'02-320 \u00b7 Site Earthwork',cost:'$88K',state:'In fabrication'},
-        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'26-540 \u00b7 Module',cost:'Pending',state:'Draft'}
+        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
+        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
+        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
       vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
@@ -1337,24 +1337,24 @@
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active',sa:0,ea:8},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active',sa:1,ea:9},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active',sa:1,ea:9},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled',sa:2,ea:6}
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6}
   ];
   var MOBDEMOB_EVENTS=[
-    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
-    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'01-5100',notes:'Temporary power during grid interconnect'},
-    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'01-0100',notes:'Completed · in service'},
-    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'01-5100',notes:'Permit required · North gate · TBD window'},
-    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'01-5100',notes:'Pad 3 · rigging crew required'},
-    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'01-5100',notes:'After structure phase completion'},
-    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'01-5100',notes:'Pending grid interconnect confirmation'},
-    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'01-0100',notes:'Post-substantial completion'}
+    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'0100-5100-0000-0001',notes:'Self-erect · Laydown A · 5 AM window'},
+    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'0100-5100-0000-0001',notes:'Temporary power during grid interconnect'},
+    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'0100-0100-0000-0001',notes:'Completed · in service'},
+    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'0100-5100-0000-0001',notes:'Permit required · North gate · TBD window'},
+    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'0100-5100-0000-0001',notes:'Pad 3 · rigging crew required'},
+    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'0100-5100-0000-0001',notes:'After structure phase completion'},
+    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'0100-5100-0000-0001',notes:'Pending grid interconnect confirmation'},
+    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'0100-0100-0000-0001',notes:'Post-substantial completion'}
   ];
   var DELIVERIES=[
     {item:'Excavator — 20T',pillar:'Equipment',needby:'May 20',vendor:'Sunbelt Rentals',order:'ORD-3042',status:'Scheduled'},
@@ -1481,7 +1481,7 @@
     mount.innerHTML=h;
   }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
-  function dpCodeOpts(){ var c=['01-100 \u00b7 General conditions','02-320 \u00b7 Site Earthwork','31-620 \u00b7 Solar Pile','26-540 \u00b7 Module Racking','26-330 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
+  function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
@@ -1920,26 +1920,26 @@ charges:[
   ];
   var COST_CODES=[
     // Equipment pillar
-    {code:'01-0540',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment',subJob:'SJ-001'},
-    {code:'02-0320',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment',subJob:'SJ-002'},
-    {code:'02-0310',name:'Demo & site clearing',   originalBudget:420000, approvedCO:0,      pendingCO:0,     committed:0,      spent:0,      pillar:'equipment',subJob:'SJ-003'},
-    {code:'26-0330',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment',subJob:'SJ-005'},
-    {code:'31-0620',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment',subJob:'SJ-002'},
-    {code:'05-0120',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment',subJob:'SJ-004'},
+    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment',subJob:'SJ-001'},
+    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:420000, approvedCO:0,      pendingCO:0,     committed:0,      spent:0,      pillar:'equipment',subJob:'SJ-003'},
+    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment',subJob:'SJ-005'},
+    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment',subJob:'SJ-002'},
+    {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment',subJob:'SJ-004'},
     // Prefab pillar
-    {code:'22-0000',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab',subJob:'SJ-004'},
-    {code:'03-0100',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab',subJob:'SJ-002'},
-    {code:'05-0500',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab',subJob:'SJ-004'},
+    {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab',subJob:'SJ-004'},
+    {code:'0300-0100-0000-0001',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab',subJob:'SJ-002'},
+    {code:'0500-0500-0000-0001',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab',subJob:'SJ-004'},
     // Logistics pillar
-    {code:'01-5100',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:84000, pillar:'logistics',subJob:'SJ-002'},
-    {code:'01-5200',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:52000, pillar:'logistics',subJob:'SJ-004'},
+    {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:84000, pillar:'logistics',subJob:'SJ-002'},
+    {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:52000, pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
-    {code:'06-0100',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,committed:1295000,spent:410000,pillar:'procurement',subJob:'SJ-004'},
-    {code:'06-0200',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:98000, pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0100-0000-0001',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,committed:1295000,spent:410000,pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0200-0000-0001',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:98000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
-    {code:'01-0100',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:480000,pillar:'profservices',subJob:'SJ-001'},
-    {code:'02-0100',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:120000,pillar:'profservices',subJob:'SJ-006'},
-    {code:'01-0800',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,pendingCO:0,    committed:80000, spent:28000, pillar:'profservices',subJob:'SJ-006'}
+    {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:480000,pillar:'profservices',subJob:'SJ-001'},
+    {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:120000,pillar:'profservices',subJob:'SJ-006'},
+    {code:'0100-0800-0000-0001',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,pendingCO:0,    committed:80000, spent:28000, pillar:'profservices',subJob:'SJ-006'}
   ];
   function ccBudget(c){return c.originalBudget+(c.approvedCO||0);}
   function ccProjected(c){return ccBudget(c)+(c.pendingCO||0);}
@@ -2962,6 +2962,7 @@ charges:[
     h+='<div class="vitals" style="grid-template-columns:repeat(5,1fr)">';
     kpis.forEach(function(k){ h+='<div class="vital clk '+k.tone+'" onclick="ccGo(\''+k.to+'\')"><div class="vk">'+svg(k.icon)+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div><span class="vchev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>'; });
     h+='</div>';
+    if(!ns){ h+='<style>#ccDash .vitals .vital:nth-child(4){opacity:.42;pointer-events:none;cursor:default;filter:grayscale(.6)}</style>'; }
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+SPARK+'</span><div><div class="ist">02S</div><div class="isd">3 idle excavators at Southern Yard can cover 2 open October requests (Hercules, Riverside). Redeploying instead of re-renting saves ~$96K this quarter and lifts utilization to 86%.</div></div></div>'; }
     h+='<div class="cc-lower">';
     h+='<div class="cc-queue"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S \u2014 recommended actions':'Needs you \u2014 across all projects')+'</div>';
@@ -2976,6 +2977,23 @@ charges:[
     h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
     qlinks.forEach(function(q){ h+='<div class="cc-qlink" onclick="ccGo(\''+q.to+'\')"><span>'+svg(q.icon)+'</span><span class="qll">'+q.l+'</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGo(\''+q.to+'\')">Open</button></div>'; });
     h+='</div>';
+    if(ns){
+      var fIdle=FLEET.filter(function(r){return r.status==='idle';}).length;
+      var fOR=FLEET.filter(function(r){return r.status==='onrent';}).length;
+      var fRepl=FLEET.filter(function(r){return r.life==='replace';}).length;
+      var fRedep=FLEET.filter(function(r){return r.life==='redeploy';}).length;
+      h+='<div class="cc-fleet-sum">';
+      h+='<div class="cc-qhead">'+svg(IC.box)+'Asset lifecycle</div>';
+      h+='<div class="fsum-row">';
+      h+='<div class="fsum-kpi"><div class="fk-v">'+FLEET.length+'</div><div class="fk-l">Owned</div></div>';
+      h+='<div class="fsum-kpi"><div class="fk-v ok">'+fOR+'</div><div class="fk-l">On-rent</div></div>';
+      h+='<div class="fsum-kpi"><div class="fk-v warn">'+fIdle+'</div><div class="fk-l">Idle</div></div>';
+      h+='<div class="fsum-kpi"><div class="fk-v bad">'+fRepl+'</div><div class="fk-l">Replace</div></div>';
+      h+='</div>';
+      if(fRedep){h+='<div class="fsum-hint">'+SPARK+fRedep+' idle unit'+(fRedep===1?'':'s')+' available to redeploy</div>';}
+      h+='<button class="btn btn-ghost btn-sm" style="margin-top:10px;width:100%" onclick="ccGo(\'fleet\')">Open asset lifecycle →</button>';
+      h+='</div>';
+    }
     h+='</div>';
     mount.innerHTML=h;
   }
@@ -2986,26 +3004,26 @@ charges:[
   var FQ_DONE=['Allocated','Acknowledged','PO issued','Delivered','In fabrication','Scheduled','Fulfilled'];
   function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
-    {id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'Hoisting',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2},
-    {id:'fq2',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'02-320',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1},
-    {id:'fq3',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'26-330',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0},
-    {id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'01-100',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8},
-    {id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'02-320',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2},
-    {id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'01-500',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer'},
-    {id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (crane pick)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'01-500',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
-    {id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'01-500',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week'},
-    {id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'01-100',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)'},
-    {id:'fq7',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'01-100',kind:'service',status:'New'},
-    {id:'fqS1',ref:'REQ-S-2101',pillar:'services',item:'Owner\u2019s engineer / IE support',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'ongoing',code:'01-100',kind:'service',status:'Acknowledged'},
-    {id:'fqS2',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-330',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning'},
-    {id:'fqS3',ref:'REQ-S-2114',pillar:'services',item:'Structural special inspection',qty:'2 FTE',project:'Riverside Medical Center',needby:'Aug 2026',code:'01-100',kind:'service',status:'New'},
-    {id:'fqP1',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-100',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release now to recover the substation date'},
-    {id:'fqP2',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'26-330',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release to hold November energization'},
-    {id:'fqP3',ref:'REQ-P-0512',pillar:'procurement',item:'Main power transformer',qty:1,project:'Hercules Solar + BESS',needby:'Dec 2026',code:'26-100',kind:'flow',status:'PO issued',doneNote:'28 wk lead \u00b7 on order'},
-    {id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'26-540',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held'},
-    {id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'26-540',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization'},
-    {id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'26-540',kind:'flow',status:'Delivered',doneNote:'On site'},
-    {id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'26-540',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'}
+    {id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2},
+    {id:'fq2',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1},
+    {id:'fq3',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0},
+    {id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8},
+    {id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2},
+    {id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer'},
+    {id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (crane pick)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
+    {id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week'},
+    {id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)'},
+    {id:'fq7',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'0100-0100-0000-0001',kind:'service',status:'New'},
+    {id:'fqS1',ref:'REQ-S-2101',pillar:'services',item:'Owner\u2019s engineer / IE support',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'ongoing',code:'0100-0100-0000-0001',kind:'service',status:'Acknowledged'},
+    {id:'fqS2',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning'},
+    {id:'fqS3',ref:'REQ-S-2114',pillar:'services',item:'Structural special inspection',qty:'2 FTE',project:'Riverside Medical Center',needby:'Aug 2026',code:'0100-0100-0000-0001',kind:'service',status:'New'},
+    {id:'fqP1',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0100-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release now to recover the substation date'},
+    {id:'fqP2',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release to hold November energization'},
+    {id:'fqP3',ref:'REQ-P-0512',pillar:'procurement',item:'Main power transformer',qty:1,project:'Hercules Solar + BESS',needby:'Dec 2026',code:'2600-0100-0000-0001',kind:'flow',status:'PO issued',doneNote:'28 wk lead \u00b7 on order'},
+    {id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held'},
+    {id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization'},
+    {id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Delivered',doneNote:'On site'},
+    {id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'}
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all';
@@ -3284,17 +3302,17 @@ charges:[
   /* ═══════════ BILLING ANOMALIES ═══════════ */
   var AN_SEV={high:{l:'High',t:'bad'},med:{l:'Med',t:'warn'},low:{l:'Low',t:'neu'}};
   var ANOM=[
-    {id:'BILL-9012',type:'Idle-but-billing',asset:'Scissor lift SL-2204',project:'Hercules Solar + BESS',code:'01-100',impact:3800,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['No telematics activity for 18 days','Still billing the project at $3,800/mo','Flagged by the project team (Dana Reyes)'],reco:'Draft call-off to stop billing + credit 18 idle days (~$2,280)',action:'Draft call-off'},
-    {id:'BILL-9021',type:'Billing after return',asset:'Excavator EX-1180',project:'Hercules Solar + BESS',code:'02-320',impact:5200,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['Unit returned to the yard 9 days ago','AR still accruing at $5,200/mo','Off-rent event never posted to CMiC'],reco:'Stop AR + credit 9 days ($1,560); post the off-rent to CMiC',action:'Issue credit'},
+    {id:'BILL-9012',type:'Idle-but-billing',asset:'Scissor lift SL-2204',project:'Hercules Solar + BESS',code:'0100-0100-0000-0001',impact:3800,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['No telematics activity for 18 days','Still billing the project at $3,800/mo','Flagged by the project team (Dana Reyes)'],reco:'Draft call-off to stop billing + credit 18 idle days (~$2,280)',action:'Draft call-off'},
+    {id:'BILL-9021',type:'Billing after return',asset:'Excavator EX-1180',project:'Hercules Solar + BESS',code:'0200-0320-0000-0001',impact:5200,dir:'Project overpay',sev:'high',status:'Open',bucket:'idle',stream:'ar',evidence:['Unit returned to the yard 9 days ago','AR still accruing at $5,200/mo','Off-rent event never posted to CMiC'],reco:'Stop AR + credit 9 days ($1,560); post the off-rent to CMiC',action:'Issue credit'},
     {id:'BILL-9038',type:'Rate mismatch',asset:'Telehandler TH-0904',project:'Cimarron Data Center',code:'02-220',impact:1400,dir:'Project overpay',sev:'med',status:'Open',bucket:'rate',stream:'ar',evidence:['Billed at $2,900/mo','02S catalog rate is $2,200/mo','$700/mo over catalog since June \u2014 12% above the contract rate'],reco:'Correct rate to catalog + credit the overage ($2,100)',action:'Correct rate'},
-    {id:'BILL-9047',type:'Duplicate charge',asset:'Scissor lift SL-2261',project:'Riverside Medical Center',code:'01-100',impact:900,dir:'Project overpay',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Same asset billed on two cost codes','Duplicate AR of $900/mo since July'],reco:'Remove the duplicate line + credit ($900)',action:'Remove dup'},
-    {id:'BILL-9052',type:'Idle-but-billing',asset:'Dozer DZ-0188',project:'Cimarron Data Center',code:'02-320',impact:1400,dir:'Project overpay',sev:'med',status:'Open',bucket:'idle',stream:'ar',evidence:['Utilization 4% over the last 21 days','Billing the project $1,400/mo'],reco:'Confirm need with the PM, or call off + credit',action:'Draft call-off'},
+    {id:'BILL-9047',type:'Duplicate charge',asset:'Scissor lift SL-2261',project:'Riverside Medical Center',code:'0100-0100-0000-0001',impact:900,dir:'Project overpay',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Same asset billed on two cost codes','Duplicate AR of $900/mo since July'],reco:'Remove the duplicate line + credit ($900)',action:'Remove dup'},
+    {id:'BILL-9052',type:'Idle-but-billing',asset:'Dozer DZ-0188',project:'Cimarron Data Center',code:'0200-0320-0000-0001',impact:1400,dir:'Project overpay',sev:'med',status:'Open',bucket:'idle',stream:'ar',evidence:['Utilization 4% over the last 21 days','Billing the project $1,400/mo'],reco:'Confirm need with the PM, or call off + credit',action:'Draft call-off'},
     {id:'BILL-9058',type:'PO quantity mismatch',asset:'Telehandler TH-1150 \u00b7 billed 3, PO covers 2',project:'Riverside Medical Center',code:'02-220',impact:2900,dir:'Project overpay',sev:'med',status:'Open',bucket:'other',stream:'ar',evidence:['July invoice bills 3 units','PO-2214 authorizes 2 units','1 unit ($2,900/mo) has no PO coverage'],reco:'Correct the invoice to 2 units + credit the 3rd ($2,900)',action:'Correct qty'},
-    {id:'BILL-9061',type:'Late billing start',asset:'Crawler crane CR-0440',project:'Hercules Solar + BESS',code:'Hoisting',impact:1800,dir:'02S under-bill',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Unit went on-rent Jun 28','Billing started Jul 1 \u2014 3 days after on-rent','~$1,800 of billable time never invoiced'],reco:'Back-bill the 3-day gap to the project ($1,800)',action:'Back-bill'},
-    {id:'BILL-9034',type:'Margin-negative re-rent',asset:'Tower crane \u00b7 re-rent (ALL Crane)',project:'Riverside Medical Center',code:'Hoisting',impact:4100,dir:'02S loss',sev:'high',status:'Open',bucket:'margin',stream:'ap',evidence:['Vendor AP $36,100/mo vs 02S AR $35,000/mo','Vendor raised the MSA rate on renewal','Margin is \u2212$1,100/mo on this line'],reco:'Re-price to the project, or switch to owned TC-0018 (idle)',action:'Re-price'},
-    {id:'BILL-9041',type:'Missing AR',asset:'Generator GEN-0512 \u00b7 re-rent',project:'Cimarron Data Center',code:'26-330',impact:2600,dir:'02S leakage',sev:'high',status:'Open',bucket:'other',stream:'ap',evidence:['Vendor AP posted at $2,600/mo','No matching AR to the project','Re-rent never linked to a cost code'],reco:'Create the AR line to project cost code 26-330',action:'Create AR'},
-    {id:'BILL-9063',type:'Vendor rate above MSA',asset:'Excavator \u00b7 re-rent (Sunbelt)',project:'Cimarron Data Center',code:'02-320',impact:1000,dir:'02S loss',sev:'med',status:'Open',bucket:'rate',stream:'ap',evidence:['Vendor invoice $10,500/mo','Contracted MSA rate is $9,500/mo','$1,000/mo over MSA since June'],reco:'Dispute the vendor invoice down to the MSA rate + recover the overage',action:'Dispute invoice'},
-    {id:'BILL-9067',type:'Vendor billing after off-rent',asset:'Boom lift \u00b7 re-rent (United)',project:'Riverside Medical Center',code:'01-100',impact:2100,dir:'02S loss',sev:'high',status:'Open',bucket:'idle',stream:'ap',evidence:['Off-rent posted Jul 8 (returned to vendor)','Vendor AP still accruing $2,100/mo','12-day overlap billed in error'],reco:'Dispute the vendor invoice + stop AP; recover the overlap',action:'Dispute invoice'}
+    {id:'BILL-9061',type:'Late billing start',asset:'Crawler crane CR-0440',project:'Hercules Solar + BESS',code:'0140-0000-0000-0001',impact:1800,dir:'02S under-bill',sev:'low',status:'Open',bucket:'other',stream:'ar',evidence:['Unit went on-rent Jun 28','Billing started Jul 1 \u2014 3 days after on-rent','~$1,800 of billable time never invoiced'],reco:'Back-bill the 3-day gap to the project ($1,800)',action:'Back-bill'},
+    {id:'BILL-9034',type:'Margin-negative re-rent',asset:'Tower crane \u00b7 re-rent (ALL Crane)',project:'Riverside Medical Center',code:'0140-0000-0000-0001',impact:4100,dir:'02S loss',sev:'high',status:'Open',bucket:'margin',stream:'ap',evidence:['Vendor AP $36,100/mo vs 02S AR $35,000/mo','Vendor raised the MSA rate on renewal','Margin is \u2212$1,100/mo on this line'],reco:'Re-price to the project, or switch to owned TC-0018 (idle)',action:'Re-price'},
+    {id:'BILL-9041',type:'Missing AR',asset:'Generator GEN-0512 \u00b7 re-rent',project:'Cimarron Data Center',code:'2600-3300-0000-0001',impact:2600,dir:'02S leakage',sev:'high',status:'Open',bucket:'other',stream:'ap',evidence:['Vendor AP posted at $2,600/mo','No matching AR to the project','Re-rent never linked to a cost code'],reco:'Create the AR line to project cost code 26-330',action:'Create AR'},
+    {id:'BILL-9063',type:'Vendor rate above MSA',asset:'Excavator \u00b7 re-rent (Sunbelt)',project:'Cimarron Data Center',code:'0200-0320-0000-0001',impact:1000,dir:'02S loss',sev:'med',status:'Open',bucket:'rate',stream:'ap',evidence:['Vendor invoice $10,500/mo','Contracted MSA rate is $9,500/mo','$1,000/mo over MSA since June'],reco:'Dispute the vendor invoice down to the MSA rate + recover the overage',action:'Dispute invoice'},
+    {id:'BILL-9067',type:'Vendor billing after off-rent',asset:'Boom lift \u00b7 re-rent (United)',project:'Riverside Medical Center',code:'0100-0100-0000-0001',impact:2100,dir:'02S loss',sev:'high',status:'Open',bucket:'idle',stream:'ap',evidence:['Off-rent posted Jul 8 (returned to vendor)','Vendor AP still accruing $2,100/mo','12-day overlap billed in error'],reco:'Dispute the vendor invoice + stop AP; recover the overlap',action:'Dispute invoice'}
   ];
   var anomStream='all';
   function anomSetStream(v){ anomStream=v; renderAnomaly(); }
@@ -3610,13 +3628,13 @@ charges:[
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'01-100 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'02-320 \u00b7 Site Earthwork',cost:'$18K/mo',state:'Active'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'31-620 \u00b7 Solar Pile',cost:'$16K/mo',state:'Active'},
-        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'26-330 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'01-100 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'01-100 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
-        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'01-100 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active'},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active'},
+        {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected'},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft'},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing'},
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized'}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Long-lead equipment &amp; materials', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$8.9M',sub:'materials &amp; equipment',tone:'ok',icon:IC.dollar},{label:'Long-lead items',value:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:IC.clock},{label:'At-risk',value:'2',sub:'order-by date passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'71%',sub:'5 of 7 tracking',tone:'warn',icon:IC.chart}],
@@ -3625,13 +3643,13 @@ charges:[
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Medium-voltage switchgear',itemSub:'15kV lineup',qty:'2',needby:'Oct 15',orderby:'May 1 \u00b7 24 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$1.4M',state:'At-risk'},
-        {item:'Main power transformer',qty:'1',needby:'Nov 1',orderby:'Apr 15 \u00b7 28 wk',code:'26-330 \u00b7 BESS',cost:'$2.1M',state:'PO issued'},
-        {item:'PV modules \u2014 tranche 1',qty:'40,000',needby:'Sep 1',orderby:'Jun 1 \u00b7 12 wk',code:'26-540 \u00b7 Module',cost:'$3.6M',state:'In transit'},
-        {item:'String inverters',qty:'24',needby:'Sep 15',orderby:'Jun 15 \u00b7 14 wk',code:'26-540 \u00b7 Module',cost:'$980K',state:'PO issued'},
-        {item:'BESS containers',itemSub:'2.5 MWh each',qty:'6',needby:'Dec 1',orderby:'May 15 \u00b7 30 wk',risk:true,code:'26-330 \u00b7 BESS',cost:'$2.4M',state:'At-risk'},
-        {item:'Structural steel \u2014 racking',qty:'lot',needby:'Aug 1',orderby:'Jun 15 \u00b7 7 wk',code:'26-540 \u00b7 Module',cost:'$620K',state:'Delivered'},
-        {item:'Cable &amp; conductors',qty:'lot',needby:'rolling',orderby:'rolling',code:'26-540 \u00b7 Module',cost:'$340K',state:'Draft'}
+        {item:'Medium-voltage switchgear',itemSub:'15kV lineup',qty:'2',needby:'Oct 15',orderby:'May 1 \u00b7 24 wk',risk:true,code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$1.4M',state:'At-risk'},
+        {item:'Main power transformer',qty:'1',needby:'Nov 1',orderby:'Apr 15 \u00b7 28 wk',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$2.1M',state:'PO issued'},
+        {item:'PV modules \u2014 tranche 1',qty:'40,000',needby:'Sep 1',orderby:'Jun 1 \u00b7 12 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$3.6M',state:'In transit'},
+        {item:'String inverters',qty:'24',needby:'Sep 15',orderby:'Jun 15 \u00b7 14 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$980K',state:'PO issued'},
+        {item:'BESS containers',itemSub:'2.5 MWh each',qty:'6',needby:'Dec 1',orderby:'May 15 \u00b7 30 wk',risk:true,code:'2600-3300-0000-0001 \u00b7 BESS',cost:'$2.4M',state:'At-risk'},
+        {item:'Structural steel \u2014 racking',qty:'lot',needby:'Aug 1',orderby:'Jun 15 \u00b7 7 wk',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$620K',state:'Delivered'},
+        {item:'Cable &amp; conductors',qty:'lot',needby:'rolling',orderby:'rolling',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$340K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -3640,11 +3658,11 @@ charges:[
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'26-540 \u00b7 Module',cost:'$146K',state:'In fabrication'},
-        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'26-540 \u00b7 Module',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'26-330 \u00b7 BESS',cost:'Pending',state:'Submittal'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'02-320 \u00b7 Site Earthwork',cost:'$88K',state:'In fabrication'},
-        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'26-540 \u00b7 Module',cost:'Pending',state:'Draft'}
+        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
+        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
+        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
       vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
@@ -3668,24 +3686,24 @@ charges:[
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$3,200',status:'Active',sa:1,ea:9},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'01-0100',monthly:'$1,800',status:'Active',sa:1,ea:7},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'01-0100',monthly:'$4,600',status:'Active',sa:0,ea:8},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$18,400',status:'Active',sa:1,ea:9},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'02-0320',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'01-0100',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'01-0100',monthly:'$2,800',status:'Active',sa:1,ea:9},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'03-0100',monthly:'$900',status:'Scheduled',sa:2,ea:6}
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6}
   ];
   var MOBDEMOB_EVENTS=[
-    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'01-5100',notes:'Self-erect · Laydown A · 5 AM window'},
-    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'01-5100',notes:'Temporary power during grid interconnect'},
-    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'01-0100',notes:'Completed · in service'},
-    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'01-5100',notes:'Permit required · North gate · TBD window'},
-    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'01-5100',notes:'Pad 3 · rigging crew required'},
-    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'01-5100',notes:'After structure phase completion'},
-    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'01-5100',notes:'Pending grid interconnect confirmation'},
-    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'01-0100',notes:'Post-substantial completion'}
+    {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'0100-5100-0000-0001',notes:'Self-erect · Laydown A · 5 AM window'},
+    {evt:'Generator set — 500 kW',vendor:'AGGREKO',needby:'May 20',type:'Mob',cost:'0100-5100-0000-0001',notes:'Temporary power during grid interconnect'},
+    {evt:'Site office trailer delivery (4 units)',vendor:'WillScot',needby:'Apr 15',type:'Mob',cost:'0100-0100-0000-0001',notes:'Completed · in service'},
+    {evt:'MV switchgear haul — oversize',vendor:'Landstar',needby:'Oct 15',type:'Mob',cost:'0100-5100-0000-0001',notes:'Permit required · North gate · TBD window'},
+    {evt:'BESS container placement',vendor:'Barnhart Crane',needby:'Dec 1',type:'Mob',cost:'0100-5100-0000-0001',notes:'Pad 3 · rigging crew required'},
+    {evt:'Tower crane demobilization',vendor:'Maxim Crane Works',needby:'Oct 15',type:'Demob',cost:'0100-5100-0000-0001',notes:'After structure phase completion'},
+    {evt:'Generator demob after grid tie-in',vendor:'AGGREKO',needby:'Sep 1',type:'Demob',cost:'0100-5100-0000-0001',notes:'Pending grid interconnect confirmation'},
+    {evt:'Office trailer removal',vendor:'WillScot',needby:'Jan 15, 2027',type:'Demob',cost:'0100-0100-0000-0001',notes:'Post-substantial completion'}
   ];
   var DELIVERIES=[
     {item:'Excavator — 20T',pillar:'Equipment',needby:'May 20',vendor:'Sunbelt Rentals',order:'ORD-3042',status:'Scheduled'},
@@ -3812,7 +3830,7 @@ charges:[
     mount.innerHTML=h;
   }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
-  function dpCodeOpts(){ var c=['01-100 \u00b7 General conditions','02-320 \u00b7 Site Earthwork','31-620 \u00b7 Solar Pile','26-540 \u00b7 Module Racking','26-330 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
+  function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   function renderDP(pk){
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
