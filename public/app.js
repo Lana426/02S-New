@@ -2445,7 +2445,7 @@ charges:[
     var prev=_eqDrillOpen;
     if(prev){var p=document.getElementById('eq-drill-'+prev);if(p)p.style.display='none';}
     if(prev===id){_eqDrillOpen=null;return;}
-    var t=document.getElementById('eq-drill-'+id);if(t)t.style.display='';
+    var t=document.getElementById('eq-drill-'+id);if(t)t.style.display='block';
     _eqDrillOpen=id;
   }
   var _dpDrillOpen={};
@@ -2453,7 +2453,7 @@ charges:[
     var prev=_dpDrillOpen[pk];
     if(prev!=null){var p=document.getElementById('dp-drill-'+pk+'-'+prev);if(p)p.style.display='none';}
     if(prev===idx){_dpDrillOpen[pk]=null;return;}
-    var t=document.getElementById('dp-drill-'+pk+'-'+idx);if(t)t.style.display='';
+    var t=document.getElementById('dp-drill-'+pk+'-'+idx);if(t)t.style.display='block';
     _dpDrillOpen[pk]=idx;
   }
   function postPlanNote(id){
