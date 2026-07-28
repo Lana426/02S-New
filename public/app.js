@@ -861,13 +861,13 @@
         var mo=eqMonths(l.from,l.to), lt=eqLineTotal(l);
         var stt=eqLineState(l);
         var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Submitted':stt==='pending'?'Pending pricing':'Draft';
-        var editBtn='<button class="eq-ib" onclick="openEqEdit(\''+l.id+'\')" title="'+(stt==='submitted'?'Request change':'Edit line')+'">'+svg('<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>',2)+'</button>';
-        var delBtn='<button class="eq-ib danger" onclick="delEqLine(\''+l.id+'\')" title="'+(stt==='pending'?'Withdraw request':'Remove draft')+'">'+svg('<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',2)+'</button>';
+        var editBtn='<button class="eq-ib" onclick="event.stopPropagation();openEqEdit(\''+l.id+'\')" title="'+(stt==='submitted'?'Request change':'Edit line')+'">'+svg('<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>',2)+'</button>';
+        var delBtn='<button class="eq-ib danger" onclick="event.stopPropagation();delEqLine(\''+l.id+'\')" title="'+(stt==='pending'?'Withdraw request':'Remove draft')+'">'+svg('<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',2)+'</button>';
         var act;
         if(stt==='draft'||stt==='pending') act=editBtn+delBtn;
         else if(stt==='submitted') act=editBtn;
         else act='<span class="eq-lock" title="On rent \u2014 locked">'+svg('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',2)+'</span>';
-        body+='<div class="eqrow">'
+        body+='<div class="eqrow" onclick="openEqLineDrill(\''+l.id+'\')" style="cursor:pointer" title="View full details">'
           +'<div class="eq-desc">'+l.desc+'<div class="sub">'+l.cat+' \u00b7 '+l.scope+(l.ref?' \u00b7 <span class="eq-ref">'+l.ref+'</span>':'')+'</div></div>'
           +'<div class="eq-dates">'+eqMonthLabel(l.from)+' \u2019'+l.from.slice(2,4)+' \u2192 '+eqMonthLabel(l.to)+' \u2019'+l.to.slice(2,4)+'<div class="sub">'+mo+' billable months</div></div>'
           +'<div class="eq-qty">\u00d7'+l.qty+'</div>'
@@ -1667,7 +1667,8 @@
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+      var origIdx=cfg.rows.indexOf(r);
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="openDPLineDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
@@ -2210,9 +2211,7 @@ charges:[
   }
   function renderLookahead(){
     var v1m=document.getElementById('lookaheadGantt'); if(!v1m)return;
-    var ns=CURRENT==='ns';
-    /* 3-week window: May 12 - Jun 1 (21 days). Day 0 = May 12 */
-    var WIN_START='2026-05-12', WIN_DAYS=21;
+    var WIN_DAYS=21;
     function dayOffset(dateStr){
       var parts=dateStr.split('-');
       var d=new Date(+parts[0],+parts[1]-1,+parts[2]);
@@ -2221,17 +2220,22 @@ charges:[
     }
     function pct(d){return Math.max(0,Math.min(100,Math.round(d/WIN_DAYS*100)))+'%';}
     var ITEMS=[
-      {label:'Excavator delivery',     ref:'ORD-3042',type:'delivery', start:'2026-05-12',end:'2026-05-16',tone:'ok',   note:'Gate 3 · 20T + operator'},
-      {label:'Billing approval due',   ref:'BILL-9012',type:'billing', start:'2026-05-12',end:'2026-05-18',tone:'warn', note:'Auto-finalizes May 18 • 2 days left'},
-      {label:'Scissor lift off-rent',  ref:'ORD-3031',type:'return',   start:'2026-05-12',end:'2026-05-15',tone:'warn', note:'Return window · coordinate pickup'},
-      {label:'Excavator on-rent',      ref:'ORD-3042',type:'active',   start:'2026-05-16',end:'2026-06-01',tone:'ok',   note:'Active through Jun · site earthwork'},
-      {label:'Tower crane mob (plan)', ref:'ORD-3071',type:'plan',     start:'2026-05-26',end:'2026-06-01',tone:'info', note:'Permits in process · Aug 3 final mob'}
+      {label:'Billing approval due',    pillar:'Billing',       ref:'BILL-9012',start:'2026-05-12',end:'2026-05-18',tone:'warn', note:'Auto-finalizes May 18 · action required'},
+      {label:'Scissor lift off-rent',   pillar:'Equipment',     ref:'ORD-3031', start:'2026-05-12',end:'2026-05-15',tone:'warn', note:'2 units · return window · coordinate pickup'},
+      {label:'Env. monitoring demob',   pillar:'Prof. services',ref:'DP-SWPPP', start:'2026-05-16',end:'2026-05-16',tone:'ok',   note:'SWPPP monitoring · Mar–May scope closing'},
+      {label:'Excavator delivery',      pillar:'Logistics',     ref:'ORD-3042', start:'2026-05-20',end:'2026-05-20',tone:'warn', note:'Heavy haul · north gate · 6 AM window'},
+      {label:'Excavator on-rent',       pillar:'Equipment',     ref:'ORD-3042', start:'2026-05-20',end:'2026-06-01',tone:'ok',   note:'Active through Jun · site earthwork'},
+      {label:'Nut runners order-by',    pillar:'Procurement',   ref:'PO-4401',  start:'2026-05-22',end:'2026-05-22',tone:'info',note:'6-wk lead · Jul 15 need-by · solar pile'},
+      {label:'Pipe rack fab milestone', pillar:'Prefab',        ref:'PF-021',   start:'2026-05-25',end:'2026-05-25',tone:'info',note:'Shop drawings approved · Aug 15 need on-site'},
+      {label:'Crane mob permits',       pillar:'Logistics',     ref:'ORD-3071', start:'2026-05-26',end:'2026-06-01',tone:'info',note:'Route permits in process · Aug 3 final mob'}
     ];
-    if(ns){
-      ITEMS.push({label:'BESS submittal due',ref:'NS-SCH',type:'plan',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
+    if(CURRENT==='ns'){
+      ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
+      ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     }
-    var toneColor={ok:'var(--success)',warn:'var(--warning)',info:'var(--info)',plan:'var(--g400)',delivery:'var(--info)',billing:'var(--warning)',return:'var(--red)',active:'var(--success)'};
-    var head='<div style="display:grid;grid-template-columns:160px 1fr;gap:0;margin-bottom:2px">'
+    var pillarTone={'Equipment':'info','Billing':'warn','Prof. services':'ok','Logistics':'neu','Procurement':'neu','Prefab':'info'};
+    var toneColor={ok:'var(--success)',warn:'var(--warning)',info:'var(--info)',neu:'var(--g400)'};
+    var head='<div style="display:grid;grid-template-columns:190px 1fr;gap:0;margin-bottom:2px">'
       +'<div></div>'
       +'<div style="display:grid;grid-template-columns:repeat(3,1fr)">'
       +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">May 12–18</div>'
@@ -2241,9 +2245,13 @@ charges:[
     var rows=ITEMS.map(function(item){
       var s=dayOffset(item.start), e=dayOffset(item.end)+1;
       var left=pct(s), width=pct(Math.max(1,e-s));
-      var bc=toneColor[item.tone]||toneColor[item.type]||'var(--g400)';
-      return '<div style="display:grid;grid-template-columns:160px 1fr;gap:0;margin-bottom:4px;align-items:center">'
-        +'<div style="font-size:11.5px;color:var(--g800);padding-right:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+item.ref+' · '+item.note+'">'+item.label+'</div>'
+      var bc=toneColor[item.tone]||'var(--g400)';
+      var ptone=pillarTone[item.pillar]||'neu';
+      return '<div style="display:grid;grid-template-columns:190px 1fr;gap:0;margin-bottom:4px;align-items:center">'
+        +'<div style="display:flex;align-items:center;gap:4px;padding-right:8px;min-width:0">'
+        +'<span class="tag '+ptone+'" style="font-size:9px;padding:1px 5px;white-space:nowrap;flex-shrink:0">'+item.pillar+'</span>'
+        +'<span style="font-size:11px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+item.ref+' · '+item.note+'">'+item.label+'</span>'
+        +'</div>'
         +'<div style="position:relative;height:22px;background:var(--g100);border-radius:4px">'
         +'<div style="position:absolute;left:'+left+';width:'+width+';height:100%;background:'+bc+';border-radius:4px;opacity:.85;display:flex;align-items:center;padding:0 6px;overflow:hidden">'
         +'<span style="font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.ref+'</span>'
@@ -2251,9 +2259,8 @@ charges:[
         +'</div>'
         +'</div>';
     }).join('');
-    /* today line: day 0 = May 12 on our fixed demo timeline */
     var todayNote='<div style="font-size:11px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px solid var(--g150)">'
-      +(ns?'Lookahead tied to CPM · Structural steel is crane-dependent — crane arrives 4 days ahead of need. <span class="lk" onclick="go(\'equip\')">Adjust mobilization</span>':'5 touchpoints across 3 weeks · 2 require action this week')
+      +(CURRENT==='ns'?'Lookahead tied to CPM · Structural steel is crane-dependent — crane arrives 4 days ahead of need. <span class="lk" onclick="go(\'equip\')">Adjust mobilization</span>':'8 touchpoints · 5 pillars · 2 require action this week. <span class="lk" onclick="go(\'equip\')">View equipment plan</span>')
       +'</div>';
     v1m.innerHTML=head+rows+todayNote;
   }
@@ -2282,6 +2289,118 @@ charges:[
     });
     h+='</div>';
     mount.innerHTML=h;
+  }
+  function openEqLineDrill(id){
+    var l=EQ_LINES.filter(function(x){return x.id===id;})[0]; if(!l)return;
+    var stt=eqLineState(l);
+    var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Submitted':stt==='pending'?'Pending pricing':'Draft';
+    var mo=eqMonths(l.from,l.to), lt=l.rate?eqLineTotal(l):0;
+    var dn=l.desc.replace(/—.*/,'').trim().toLowerCase().slice(0,8);
+    var ord=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.item&&o.item.toLowerCase().indexOf(dn)>=0;})[0];
+    var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
+    var data={
+      title:l.desc,pillar:'Equipment',statusText:stTxt,statusCls:stt,
+      category:l.cat,scope:l.scope,task:l.task,
+      dates:eqMonthLabel(l.from)+' ’'+l.from.slice(2,4)+' → '+eqMonthLabel(l.to)+' ’'+l.to.slice(2,4),
+      qty:'×'+l.qty+' units · '+mo+' billable months',
+      costDisplay:l.rate?fmt(l.rate)+'/mo · '+fmtBig(lt)+' projected total':'Pending 02S pricing',
+      costCode:l.code,
+      order:ord?{ref:ord.id,stage:stageLabels[ord.stage-1]||('Stage '+ord.stage),latest:ord.latest,latestTone:ord.latestTone||'ok',
+        delivery:ord.recv?{window:ord.recv.window,carrier:ord.recv.carrier,status:ord.recv.status}:null}:null,
+      billing:{committed:l.rate?fmtBig(lt):null},
+      docs:ord&&ord.recv&&ord.recv.docs?ord.recv.docs:['Equipment specification sheet (PDF)','Delivery receipt (PDF)']
+    };
+    renderPlanDrillModal(data);
+  }
+  function openDPLineDrill(pk,rowIdx){
+    var cfg=DP[pk]; if(!cfg)return;
+    var r=cfg.rows[rowIdx]; if(!r)return;
+    var a=cfg.add||{};
+    var name=r[a.nameKey]||r.role||r.asm||r.item||r.move||'—';
+    var sub=r[a.subKey]||r.firm||r.moveSub||'';
+    var qty=r[a.qtyKey]||r.qty||'—';
+    var when=r[a.whenKey]||r.window||r.need||r.when||r.needby||'—';
+    var cost=r[a.costKey]||r.cost||'—';
+    var code=r.code||'—';
+    var state=r.state||'—';
+    var src=r.src||null;
+    var ord=null;
+    if(src) ord=ORDERS.filter(function(o){return o.id===src;})[0];
+    if(!ord){var dn2=name.replace(/[— ].*/,'').trim().toLowerCase().slice(0,8); ord=ORDERS.filter(function(o){return o.pillar===pk&&o.item&&o.item.toLowerCase().indexOf(dn2)>=0;})[0];}
+    var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
+    var pillarNames={profservices:'Prof. services',procurement:'Procurement',prefab:'Prefab',logistics:'Logistics'};
+    var docsByPillar={profservices:['Service agreement (PDF)','SOW & deliverables (PDF)'],procurement:['Purchase order (PDF)','Product specification (PDF)'],prefab:['Submittal drawings (PDF)','Shop drawings (PDF)','Fabrication schedule (PDF)'],logistics:['Delivery route map (PDF)','Permit documentation (PDF)']};
+    var data={
+      title:name,pillar:pillarNames[pk]||pk,statusText:state,
+      category:sub,scope:when,task:null,
+      dates:when,qty:qty,
+      costDisplay:cost,costCode:code,
+      order:ord?{ref:ord.id,stage:stageLabels[ord.stage-1]||('Stage '+ord.stage),latest:ord.latest,latestTone:ord.latestTone||'ok',delivery:null}:null,
+      billing:{committed:(cost&&cost!=='Pending'&&cost!=='—')?cost:null},
+      docs:docsByPillar[pk]||['Documentation (PDF)']
+    };
+    renderPlanDrillModal(data);
+  }
+  function renderPlanDrillModal(data){
+    var ICO_DOC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;display:inline;margin-right:3px;vertical-align:middle"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
+    var ICO_ORD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>';
+    var ICO_BILL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>';
+    var b='';
+    b+='<div class="fq-req" style="margin-bottom:12px">';
+    b+='<div class="fq-req-t">'+data.title+'</div>';
+    if(data.category) b+='<div class="sub">'+data.category+(data.scope?' · '+data.scope:'')+'</div>';
+    b+='</div>';
+    b+='<div class="fq-calc" style="margin-bottom:14px">';
+    b+='<div class="fq-crow"><span>Dates / window</span><span>'+data.dates+'</span></div>';
+    b+='<div class="fq-crow"><span>Quantity</span><span>'+data.qty+'</span></div>';
+    b+='<div class="fq-crow"><span>Pricing</span><span>'+data.costDisplay+'</span></div>';
+    b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px;font-family:monospace">'+data.costCode+'</span></div>';
+    if(data.task) b+='<div class="fq-crow"><span>Schedule activity</span><span>'+data.task+'</span></div>';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
+    b+='<div>';
+    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_ORD+'Order &amp; fulfillment</div>';
+    if(data.order){
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">';
+      b+='<span style="font-size:12px;font-weight:700;color:var(--g900)">'+data.order.ref+'</span>';
+      b+='<span class="tag ok" style="font-size:10px">'+data.order.stage+'</span>';
+      b+='</div>';
+      b+='<div style="font-size:11.5px;color:var(--g700)'+(data.order.delivery?';margin-bottom:6px':'')+'">' +data.order.latest+'</div>';
+      if(data.order.delivery){
+        b+='<div style="font-size:11px;color:var(--g500);border-top:1px solid var(--g150);padding-top:6px">';
+        b+='Delivery: '+data.order.delivery.window+'<br>'+data.order.delivery.carrier+' · <span class="tag info" style="font-size:9.5px">'+data.order.delivery.status+'</span>';
+        b+='</div>';
+      }
+      b+='</div>';
+    } else {
+      b+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">No order on file yet — this line is draft or projected. Submit to 02S to generate an order.</div>';
+    }
+    b+='</div>';
+    b+='<div>';
+    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_BILL+'Billing &amp; cost code</div>';
+    b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+    if(data.billing&&data.billing.committed){
+      b+='<div style="font-size:11px;color:var(--g600);margin-bottom:2px">Projected total</div>';
+      b+='<div style="font-size:18px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+data.billing.committed+'</div>';
+    }
+    var shortCode=data.costCode?data.costCode.split('·')[0].trim():'—';
+    b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:8px">'+shortCode+'</div>';
+    b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();go(\'billing\')">View billing →</button>';
+    b+='</div>';
+    b+='</div>';
+    b+='</div>';
+    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
+    b+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">';
+    data.docs.forEach(function(d){
+      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="toast(\'Opening: '+d.replace(/'/g,'\\'+'\'')+'\')" >'+ICO_DOC+d+'</button>';
+    });
+    b+='</div>';
+    b+='<div class="modal-foot" style="margin-top:16px">';
+    b+='<button onclick="closeModal()">Close</button>';
+    if(data.order){b+='<button class="btn btn-ghost" onclick="closeModal();ordSetView(\'orders\');go(\'orders\')">View orders →</button>';}
+    b+='</div>';
+    openModal(data.pillar+' plan line — '+data.title, b);
   }
   var ordView='orders';
   function ordSetView(v){
@@ -4804,7 +4923,8 @@ charges:[
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+      var origIdx=cfg.rows.indexOf(r);
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="openDPLineDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
