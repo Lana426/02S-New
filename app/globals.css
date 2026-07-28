@@ -56,7 +56,7 @@
   .tb-roles{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--g600);font-weight:500;padding:6px 11px;border:1px solid var(--g250);border-radius:7px}
 
   /* content */
-  .content{padding:24px 28px 48px;max-width:1400px;width:100%;margin:0 auto;overflow-x:hidden}
+  .content{padding:24px 28px 48px;max-width:none;width:100%;overflow-x:hidden}
 
   /* page head */
   .phead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
@@ -180,6 +180,7 @@
 
   /* mini lookahead inside expanded */
   .look{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding-top:16px}
+  .lookV1{display:block;padding-top:12px}
   .look .col .clabel{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--g400);margin-bottom:8px;display:flex;justify-content:space-between}
   .look .li{border:1px solid var(--g200);border-radius:7px;padding:9px 11px;margin-bottom:8px}
   .look .li .lt{font-size:12.5px;font-weight:600}

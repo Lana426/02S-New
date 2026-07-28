@@ -1705,6 +1705,7 @@ function renderProfServicesDP(){
     var vcc=document.getElementById('verChipContact'); if(vcc) vcc.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     renderCart();
     renderPills(); renderCatalog();
+    _billMonthFilter='all'; document.querySelectorAll('.bill-mo').forEach(function(b){b.classList.toggle('on',b.dataset.m==='all');});
     renderOrders(); renderBills(); renderOrdInsights();
     renderPending(); renderBillInsights();
     renderBudget();
@@ -2450,6 +2451,12 @@ charges:[
   }
 
   // ── Billing history table (moved here from Orders) ──
+  var _billMonthFilter='all';
+  function setBillMonth(m){
+    _billMonthFilter=m;
+    document.querySelectorAll('.bill-mo').forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
+    renderBills();
+  }
   function renderBills(){
     var host=document.getElementById('billHist'); if(!host) return;
     var ns=CURRENT==='ns';
@@ -2458,6 +2465,7 @@ charges:[
     var list=BILLS.filter(function(b){
       if(fs && b.status!==fs) return false;
       if(fc && b.cost!==fc) return false;
+      if(_billMonthFilter && _billMonthFilter!=='all' && (!b.date || b.date.indexOf(_billMonthFilter)<0)) return false;
       if(q && (b.id.toLowerCase().indexOf(q)<0 && b.order.toLowerCase().indexOf(q)<0 && b.product.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
@@ -2571,7 +2579,7 @@ charges:[
       +'</div>'
       +'<div style="font-size:13px;color:var(--g700);line-height:1.65;margin-bottom:14px">'+item.body+'</div>'
       +'<div style="background:var(--g50);border-radius:7px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--g700);line-height:1.6">'
-      +'<b style="color:var(--g900)">Why it matters for you:</b> '+item.why
+      +item.why
       +'</div>'
       +(ns?'<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:7px;padding:9px 12px;margin-bottom:14px;font-size:12px;color:var(--g700)"><b>North Star note:</b> This feature is fully integrated with your CPM schedule and demand plan data. 02S will surface relevant recommendations automatically as project conditions change.</div>':'')
       +'<div style="border-top:1px solid var(--g150);padding-top:13px;display:flex;align-items:center;gap:14px">'
@@ -2583,8 +2591,9 @@ charges:[
       +'<a href="mailto:'+item.contact.email+'" style="font-size:12px;color:var(--info);text-decoration:none;display:flex;align-items:center;gap:5px">'+svg('<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>',2)+item.contact.email+'</a>'
       +'</div>'
       +'</div>'
-      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
-      +'<button class="btn btn-red" onclick="closeModal();go(\'order\')">Request related service</button></div>';
+      +(idx===0?'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
+      +'<button class="btn btn-red" onclick="closeModal();go(\'order\')">Request Prefab Pod Express</button></div>'
+      :'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>');
     openModal(item.title,body);
   }
   // ── Pending review & approval (10-day window) ──
