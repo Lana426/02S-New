@@ -867,7 +867,7 @@
         if(stt==='draft'||stt==='pending') act=editBtn+delBtn;
         else if(stt==='submitted') act=editBtn;
         else act='<span class="eq-lock" title="On rent \u2014 locked">'+svg('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',2)+'</span>';
-        body+='<div class="eqrow" onclick="openEqLineDrill(\''+l.id+'\')" style="cursor:pointer" title="View full details">'
+        body+='<div class="eqrow" onclick="toggleEqDrill(\''+l.id+'\')" style="cursor:pointer" title="View full details">'
           +'<div class="eq-desc">'+l.desc+'<div class="sub">'+l.cat+' \u00b7 '+l.scope+(l.ref?' \u00b7 <span class="eq-ref">'+l.ref+'</span>':'')+'</div></div>'
           +'<div class="eq-dates">'+eqMonthLabel(l.from)+' \u2019'+l.from.slice(2,4)+' \u2192 '+eqMonthLabel(l.to)+' \u2019'+l.to.slice(2,4)+'<div class="sub">'+mo+' billable months</div></div>'
           +'<div class="eq-qty">\u00d7'+l.qty+'</div>'
@@ -875,6 +875,7 @@
           +'<div class="eq-status"><span class="eq-st '+stt+'"><span class="d"></span>'+stTxt+'</span></div>'
           +'<div class="eq-actions">'+act+'</div>'
           +'</div>';
+      body+='<div id="eq-drill-'+l.id+'" class="otrack" style="display:none">'+buildEqTrack(l)+'</div>';
       }
       body+='</div>';
     }
@@ -1668,12 +1669,13 @@
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="openDPLineDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
+      h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
     if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
@@ -1915,6 +1917,41 @@ function renderProfServicesDP(){
       {who:'Dana Reyes · You',when:'Jul 30',text:'North gate reserved. Coordinated with structural foreman for Aug 3 mob window.'}
     ]
   };
+
+  var EQ_ORD_MAP={'e3':'ORD-3042','e9':'ORD-3029'};
+  var EQ_LINE_NOTES={
+    'e3':[
+      {who:'Dana Reyes · You',when:'May 10',text:'Submitted Phase 1 earthwork package — 6 excavators across A2010/A2020. Rate confirmed at $13,500/mo from 02S rate card.'},
+      {who:'02S Ops',when:'May 12',text:'Phase 1 earthwork allocation confirmed. ORD-3042 issued. Excavator delivering May 20 per heavy haul schedule.'}
+    ],
+    'e7':[
+      {who:'Dana Reyes · You',when:'May 10',text:'Submitted Phase 2 pile driving package — 6 hydraulic pile drivers for Sectors 1+2. Start tied to A3010 activity.'},
+      {who:'02S Ops',when:'May 11',text:'Pile driver package received. Equipment reserved from 02S fleet for Jun 2026 mob. Confirming logistics window.'}
+    ],
+    'e13':[
+      {who:'Dana Reyes · You',when:'Aug 2',text:'Increased qty 48 → 64 after Sector 2 module footprint expanded per rev. drawings. Draft — not yet submitted.'},
+      {who:'02S Admin',when:'Aug 3',text:'Noted. Confirm final qty once Sector 2 layout is locked before submitting to 02S.'}
+    ],
+    'e15':[
+      {who:'Dana Reyes · You',when:'Aug 2',text:'Added 230T crawler crane for BESS block install (A6010). Not in rate card — pending 02S specialty quote. Jan–Mar 2027.'},
+      {who:'02S Admin',when:'Aug 3',text:'Crawler crane RFQ issued to 3 specialty vendors. Expect quotes within 5 business days.'}
+    ]
+  };
+  var DP_LINE_NOTES={
+    'prefab-2':[
+      {who:'Dana Reyes · You',when:'Jul 20',text:'Submittal package sent for BESS e-houses — 2 units, Nov 1 need-on-site. Approval needed this week to protect Nov energization.'},
+      {who:'02S Prefab',when:'Jul 21',text:'Submittal received. Engineering review in progress — expect approval or RFI within 5 business days.'}
+    ],
+    'procurement-3':[
+      {who:'Dana Reyes · You',when:'Jul 20',text:'Tone shear wrenches at-risk — order-by Jul 18 has passed. Need to expedite PO now or risk Aug 15 bolt tensioning window.'},
+      {who:'02S Procurement',when:'Jul 21',text:'Expedite request acknowledged. Emergency PO being issued — 4-week rush delivery. Confirm receipt by Aug 10.'}
+    ],
+    'logistics-0':[
+      {who:'02S Logistics',when:'May 18',text:'Heavy haul permit confirmed for May 20 delivery. Lowboy dispatched from depot. ETA site 6:00 AM.'},
+      {who:'Dana Reyes · You',when:'May 17',text:'North gate cleared and access road inspected. Superintendent will sign delivery receipt on arrival.'}
+    ]
+  };
+
   var BILLS=[
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
@@ -2402,6 +2439,203 @@ charges:[
     b+='</div>';
     openModal(data.pillar+' plan line — '+data.title, b);
   }
+
+  var _eqDrillOpen=null;
+  function toggleEqDrill(id){
+    var prev=_eqDrillOpen;
+    if(prev){var p=document.getElementById('eq-drill-'+prev);if(p)p.style.display='none';}
+    if(prev===id){_eqDrillOpen=null;return;}
+    var t=document.getElementById('eq-drill-'+id);if(t)t.style.display='';
+    _eqDrillOpen=id;
+  }
+  var _dpDrillOpen={};
+  function toggleDPDrill(pk,idx){
+    var prev=_dpDrillOpen[pk];
+    if(prev!=null){var p=document.getElementById('dp-drill-'+pk+'-'+prev);if(p)p.style.display='none';}
+    if(prev===idx){_dpDrillOpen[pk]=null;return;}
+    var t=document.getElementById('dp-drill-'+pk+'-'+idx);if(t)t.style.display='';
+    _dpDrillOpen[pk]=idx;
+  }
+  function postPlanNote(id){
+    var inp=document.getElementById('plan-note-'+id);
+    if(!inp||!inp.value.trim())return;
+    toast('Note sent to 02S — you will be notified when they reply');
+    inp.value='';
+  }
+  var DP_CHAIN={
+    procurement:{
+      labels:['Plan line','PO submitted','PO issued','Delivered'],
+      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>','<path d="M20 6L9 17l-5-5"/>'],
+      stageOf:function(r){var m={Draft:0,'Pending pricing':0,Requested:1,Acknowledged:1,'PO issued':2,Delivered:3,'At-risk':1};return m[r.state]!=null?m[r.state]:1;}
+    },
+    prefab:{
+      labels:['Plan line','Submittal','In fabrication','Delivered'],
+      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>','<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/>'],
+      stageOf:function(r){var m={Draft:0,Requested:0,'Pending pricing':0,Submittal:1,'In fabrication':2,Delivered:3};return m[r.state]!=null?m[r.state]:0;}
+    },
+    logistics:{
+      labels:['Plan line','Requested','Scheduled','Active'],
+      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<path d="M20 6L9 17l-5-5"/>'],
+      stageOf:function(r){var m={Draft:0,Requested:1,Scheduled:2,Active:3,Complete:3,'At-risk':1};return m[r.state]!=null?m[r.state]:1;}
+    }
+  };
+  var DP_LINE_DOCS={
+    procurement:['Purchase order (PDF)','Product specification (PDF)','Safety data sheet (PDF)'],
+    prefab:['Submittal drawings (PDF)','Shop drawings (PDF)','Fabrication schedule (PDF)'],
+    logistics:['Delivery route map (PDF)','Permit documentation (PDF)','Site access plan (PDF)']
+  };
+  function buildEqTrack(l){
+    var stt=eqLineState(l);
+    var mo=eqMonths(l.from,l.to);
+    var lt=l.rate?eqLineTotal(l):0;
+    var ordId=EQ_ORD_MAP[l.id];
+    var ord=ordId?ORDERS.filter(function(o){return o.id===ordId;})[0]:null;
+    var bill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
+    var chainStage=0;
+    if(bill) chainStage=4;
+    else if(stt==='onrent'||stt==='offrent'||(ord&&ord.stage>=4)) chainStage=3;
+    else if(ord) chainStage=2;
+    else if(l.submitted) chainStage=1;
+    var chainLabels=['Plan line','Submitted to 02S','Order placed','On-rent / active','Billing'];
+    var chainIcons=[
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',
+      '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',
+      '<path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>',
+      '<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>',
+      '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'
+    ];
+    var stageLabels=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
+    var steps=chainLabels.map(function(lbl,i){
+      var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
+      var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chainIcons[i];
+      var clickAttr='';
+      if(i===2&&ord) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')" title="View '+ord.id+'"';
+      if(i===4) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();go(\'billing\')" title="Go to billing"';
+      var sub='';
+      if(i===2&&ord) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>';
+      if(i===4&&bill) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+bill.id+'</div>';
+      return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+    }).join('');
+    var h='';
+    h+='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    if(ord&&ord.latest){
+      h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
+    }
+    if(ord){
+      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px">';
+      h+='<div><span style="font-size:12.5px;font-weight:700;color:var(--charcoal)">'+ord.id+'</span>';
+      h+='<span class="tag ok" style="font-size:10px;margin-left:6px">'+(stageLabels[ord.stage-1]||'Stage '+ord.stage)+'</span></div>';
+      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+      h+='</div>';
+      h+='<div style="font-size:12px;color:var(--g700)">'+(ord.item||'')+(ord.sub?' · '+ord.sub:'')+'</div>';
+      if(ord.recv&&ord.recv.window){
+        h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">Delivery: '+ord.recv.window+' · '+ord.recv.carrier+'</div>';
+      }
+      if(bill){
+        h+='<div style="border-top:1px solid var(--g150);margin-top:8px;padding-top:8px;display:flex;align-items:center;justify-content:space-between">';
+        h+='<div style="font-size:11.5px;color:var(--g700)">'+bill.id+' · $'+bill.amt.toLocaleString()+' · <span class="tag '+(bill.status==='Finalized'?'ok':bill.status==='Approved'?'ok':'warn')+'">'+bill.status+'</span></div>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+        h+='</div>';
+      }
+      h+='</div>';
+    } else if(l.submitted){
+      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g500)">Submitted to 02S — order pending allocation. You’ll be notified when an order is created.</div>';
+    } else {
+      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">Draft or projected line — submit to 02S to begin the fulfillment process.</div>';
+    }
+    var notes=EQ_LINE_NOTES[l.id]||[];
+    if(notes.length){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      notes.forEach(function(n){
+        h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
+        h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
+      });
+      h+='<div style="display:flex;gap:6px;margin-top:4px">';
+      h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+l.id+'">';
+      h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+l.id+'\')">Send</button>';
+      h+='</div></div>';
+    }
+    var docs=ord&&ord.recv&&ord.recv.docs?ord.recv.docs:['Equipment specification (PDF)','Delivery receipt (PDF)'];
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+    docs.forEach(function(d){
+      h+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+d.replace(/'/g,"\\'")+'\')" >'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
+    });
+    h+='</div></div>';
+    h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
+    h+='</div>';
+    return h;
+  }
+  function buildDPTrack(pk,r,rowIdx){
+    var chain=DP_CHAIN[pk]; if(!chain)return '';
+    var chainStage=chain.stageOf(r);
+    var ord=r.src?ORDERS.filter(function(o){return o.id===r.src;})[0]:null;
+    var steps=chain.labels.map(function(lbl,i){
+      var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
+      var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chain.icons[i];
+      var clickAttr='';
+      if(i===chain.labels.length-1) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();go(\'billing\')" title="Go to billing"';
+      else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')" title="View '+ord.id+'"';
+      var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
+      return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+    }).join('');
+    var stageLabels=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
+    var h='';
+    h+='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    if(ord&&ord.latest){
+      h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
+    }
+    if(ord){
+      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px">';
+      h+='<div><span style="font-size:12.5px;font-weight:700;color:var(--charcoal)">'+ord.id+'</span>';
+      h+='<span class="tag ok" style="font-size:10px;margin-left:6px">'+(stageLabels[ord.stage-1]||'Stage '+ord.stage)+'</span></div>';
+      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+      h+='</div>';
+      h+='<div style="font-size:12px;color:var(--g700)">'+(ord.item||'')+(ord.sub?' · '+ord.sub:'')+'</div>';
+      if(ord.recv&&ord.recv.window){
+        h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">Delivery: '+ord.recv.window+' · '+ord.recv.carrier+'</div>';
+      }
+      h+='</div>';
+    } else {
+      var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
+      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(r.state==='At-risk'?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(r.state==='At-risk'?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
+    }
+    var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
+    if(notes.length){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      notes.forEach(function(n){
+        h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
+        h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
+      });
+      h+='<div style="display:flex;gap:6px;margin-top:4px">';
+      h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+pk+'-'+rowIdx+'">';
+      h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')">Send</button>';
+      h+='</div></div>';
+    }
+    var docs=DP_LINE_DOCS[pk]||['Documentation (PDF)'];
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+    docs.forEach(function(d){
+      h+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+d.replace(/'/g,"\\'")+'\')" >'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
+    });
+    h+='</div></div>';
+    h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
+    h+='</div>';
+    return h;
+  }
+
   var ordView='orders';
   function ordSetView(v){
     ordView=v;
@@ -4924,12 +5158,13 @@ charges:[
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="openDPLineDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
+      h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
     if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
