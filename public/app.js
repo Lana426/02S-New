@@ -611,11 +611,11 @@
     toast('Request sent to 02S — quote incoming'); document.getElementById('askInput').value=''; if(CURRENT==='ns') showNSActivities();
   }
 
-  var _rfqRef='';
+  var _rfqRef=''; var _rfqHasPending=false;
 
   function openRFQModal(){
     if(!state.cart.length){ toast('Add items to your request first'); return; }
-    _rfqRef='Q-'+String(Math.floor(Math.random()*90000)+10000);
+    _rfqRef='Q-'+String(Math.floor(Math.random()*90000)+10000); _rfqHasPending=false;
     var ICO_DOWN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-left:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
     var tblHead='<div style="display:grid;grid-template-columns:1fr 110px 100px;gap:0;padding:6px 0;border-bottom:2px solid var(--g200)">'
       +'<span style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em">Item</span>'
@@ -642,6 +642,7 @@
     if(pendingN){
       tblFoot+='<div style="font-size:11.5px;color:var(--g500);padding-bottom:2px">'+pendingN+' item'+(pendingN===1?'':'s')+' pending 02S pricing \u2014 finalizes once confirmed (24\u00a0hrs)</div>';
     }
+    _rfqHasPending=pendingN>0;
     var ns=CURRENT==='ns';
     var nsNote=ns?'<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:11.5px;color:var(--g700)"><b>02S context:</b> Hercules Solar + BESS \u00b7 BESS substation phase \u00b7 rate card applied to standard items.</div>':'';
     var useNote='<div style="background:var(--g50);border-radius:6px;padding:10px 12px;margin-top:14px;font-size:11.5px;color:var(--g700);line-height:1.55">'
@@ -650,19 +651,22 @@
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">'
       +'<div><div style="font-size:14px;font-weight:700;color:var(--charcoal)">02S Equipment &amp; Services Quote</div>'
       +'<div style="font-size:11.5px;color:var(--g500);margin-top:3px">Ref <b>'+_rfqRef+'</b>&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Jul 28, 2026&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Hercules Solar + BESS</div></div>'
-      +'<span class="tag info" style="font-size:10px;white-space:nowrap">PDF export</span></div>'
-      +tblHead+tblRows+tblFoot+useNote
+      +'<span class="tag '+(pendingN?'warn':'ok')+'" style="font-size:10px;white-space:nowrap">'+(pendingN?'Draft':'Full quote')+'</span></div>'
+      +tblHead+tblRows+tblFoot
+      +(pendingN?'<div style="background:rgba(217,119,6,.08);border:1px solid rgba(217,119,6,.22);border-radius:6px;padding:9px 12px;margin-top:12px;font-size:11.5px;color:var(--g700)"><b>Draft quote — '+pendingN+' item'+(pendingN===1?'':'s')+' pending 02S pricing.</b> You can download this now as a draft. Once 02S confirms pricing, a complete quote is available for CO documentation.</div>':'')
+      +useNote
       +'<div class="modal-foot"><button onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-red" onclick="closeModal();sendRFQ()">Download quote PDF'+ICO_DOWN+'</button></div>';
+      +'<button class="btn '+(pendingN?'btn-dark':'btn-red')+'" onclick="closeModal();sendRFQ()">'+(pendingN?'Download draft PDF':'Download full quote PDF')+ICO_DOWN+'</button></div>';
     openModal('Request for Quote', body);
   }
 
   function sendRFQ(){
     var el=document.getElementById('understood'); if(!el)return; el.className='understood sent';
     var ref=_rfqRef||'Q-pending';
-    el.innerHTML='<div class="un-done">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'<div>Quote PDF generated<div class="udsub">Ref '+ref+' \u2014 attach to your Change Order or cost-plus submission. 02S will confirm any pending pricing within 24 hrs.</div></div></div>';
+    var isDraftQ=_rfqHasPending;
+    el.innerHTML='<div class="un-done">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'<div>'+(isDraftQ?'Draft PDF generated':'Full quote PDF generated')+'<div class="udsub">Ref '+ref+(isDraftQ?' \u2014 pending 02S pricing confirmation. A complete quote will be emailed once all items are confirmed.':' \u2014 all items priced. Attach to Change Order or cost-plus reimbursement submission.')+'</div></div></div>';
     if(CURRENT==='ns'){ var rfqEl=document.getElementById('understood'); if(rfqEl) rfqEl.innerHTML+='<div style="margin-top:8px;font-size:11.5px;color:var(--g700);background:var(--info-tint);border-radius:5px;padding:6px 9px"><b>CPM context attached:</b> Hercules Solar + BESS \u00b7 BESS substation phase \u00b7 rate card rates applied.</div>'; }
-    toast('Quote PDF generated \u2014 ref '+ref); document.getElementById('askInput').value='';
+    toast(isDraftQ?'Draft PDF generated \u2014 ref '+ref+' (awaiting 02S pricing)':'Full quote PDF \u2014 ref '+ref+' · attach to CO or cost-plus docs'); document.getElementById('askInput').value='';
   }
   function recalc(){
     var pl=document.getElementById('priceLine');
@@ -1766,7 +1770,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); }
     window.scrollTo(0,0);
   }
 
@@ -1877,6 +1881,23 @@ function renderProfServicesDP(){
     {id:'ORD-3090',od:'2026-04-25',item:'Special inspections — concrete',sub:'IBC §1705 · 3rd party',pillar:'profservices',dates:'ongoing',cost:'03 · Concrete',stage:4,plan:null,latest:'Inspector on site as scheduled — reports filed weekly'},
     {id:'ORD-3091',od:'2026-05-20',item:'Structural engineering — RFI support',sub:'8 hrs/wk · as needed',pillar:'profservices',dates:'May – Sep 2026',cost:'05 · Metals',stage:3,plan:null,latest:'3 RFIs responded this week — avg 24hr turnaround'},
     {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'}
+  ];
+  var PORTAL_QUOTES=[
+    {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
+     lineItems:[
+       {name:'Scissor lift, 32 ft \u00d7 8',pillar:'Equipment',qty:'8 units \u00b7 8 weeks',amount:'$15,200'},
+       {name:'Owner\'s engineer / IE support \u00d7 2 FTE',pillar:'Prof. services',qty:'2 FTE \u00b7 3 months',amount:'$84,000'},
+       {name:'Tower crane mobilization (oversize)',pillar:'Logistics',qty:'1 move',amount:'$18,500'}
+     ]},
+    {ref:'Q-63411',submitted:'Jul 25, 2026',project:'Hercules Solar + BESS',items:2,status:'Draft',pendingN:1,note:'MEWP (pending 02S) + structural inspection',
+     lineItems:[
+       {name:'Mobile elevated work platform \u00d7 3',pillar:'Equipment',qty:'3 units \u00b7 8 weeks',amount:null},
+       {name:'Structural special inspection \u00d7 2 FTE',pillar:'Prof. services',qty:'2 FTE \u00b7 4 months',amount:'$64,000'}
+     ]},
+    {ref:'Q-63412',submitted:'Jul 26, 2026',project:'Cimarron Data Center',items:1,status:'Draft',pendingN:1,note:'Custom cable tray brackets — not in rate card',
+     lineItems:[
+       {name:'Cable tray bracket assemblies',pillar:'Prefab',qty:'lot',amount:null}
+     ]}
   ];
   var ORDER_NOTES={
     'ORD-3042':[
@@ -2262,9 +2283,27 @@ charges:[
     h+='</div>';
     mount.innerHTML=h;
   }
+  var ordView='orders';
+  function ordSetView(v){
+    ordView=v;
+    var fb=document.getElementById('ordFilterBar'); if(fb)fb.style.display=v==='orders'?'':'none';
+    var st=document.getElementById('ordSecTitle'); if(st)st.style.display=v==='orders'?'':'none';
+    var ins=document.getElementById('ordInsights'); if(ins)ins.style.display=v==='orders'?'':'none';
+    var to=document.getElementById('ordTabOrders'); if(to)to.classList.toggle('on',v==='orders');
+    var tq=document.getElementById('ordTabQuotes'); if(tq)tq.classList.toggle('on',v==='quotes');
+    var badge=document.getElementById('ordQuotesBadge');
+    if(badge)badge.textContent=PORTAL_QUOTES.filter(function(q){return q.status==='Draft';}).length||'';
+    renderOrders();
+  }
   function renderOrders(){
     var _rb=document.getElementById('recertBanner');
     if(_rb){ var _rc=recertItems(); _rb.innerHTML=_rc.length?('<div class="rc-banner">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<div class="rcb-t"><b>Overdue off-rent</b><span>'+_rc.length+' item'+(_rc.length===1?'':'s')+' past anticipated return date \u2014 no return request on file</span></div><button class="btn btn-red btn-sm" onclick="openRecert()">Review</button></div>'):''; }
+    var _badge=document.getElementById('ordQuotesBadge');
+    if(_badge)_badge.textContent=PORTAL_QUOTES.filter(function(q){return q.status==='Draft';}).length||'';
+    var _fbar=document.getElementById('ordFilterBar'); if(_fbar)_fbar.style.display=ordView==='orders'?'':'none';
+    var _stitle=document.getElementById('ordSecTitle'); if(_stitle)_stitle.style.display=ordView==='orders'?'':'none';
+    var _oi=document.getElementById('ordInsights'); if(_oi&&ordView==='quotes')_oi.style.display='none';
+    if(ordView==='quotes'){ renderPortalQuotes(); return; }
     var q=(document.getElementById('ordSearch').value||'').toLowerCase().trim();
     var fp=document.getElementById('ordPillar').value, fs=document.getElementById('ordStatus').value, fc=document.getElementById('ordCost').value;
     var fo=(document.getElementById('ordOrigin')||{}).value||'';
@@ -2306,6 +2345,67 @@ charges:[
         '<div class="otrack" id="trk-'+o.id+'">'+trk+'</div>';
     }).join('');
     document.getElementById('ordTable').innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No orders match these filters.</div>');
+  }
+
+  function renderPortalQuotes(){
+    var tbl=document.getElementById('ordTable'); if(!tbl)return;
+    var gt='1fr 110px 140px 160px 150px';
+    var h='<div class="ot-head" style="grid-template-columns:'+gt+'"><span>Quote ref</span><span>Submitted</span><span>Project</span><span>Status</span><span></span></div>';
+    PORTAL_QUOTES.forEach(function(q){
+      var isDraft=q.status==='Draft';
+      var btn=isDraft
+        ?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();downloadDraftQuote(\''+q.ref+'\')">Draft PDF</button>'
+        :'<button class="btn btn-red btn-sm" onclick="event.stopPropagation();downloadFullQuote(\''+q.ref+'\')">Download PDF</button>';
+      h+='<div class="orow" onclick="togglePortalQuote(\''+q.ref+'\')">'+
+        '<div class="oc-id">'+q.ref+'</div>'+
+        '<div class="sub" style="font-size:11.5px;color:var(--g600)">'+q.submitted+'</div>'+
+        '<div>'+q.project+'</div>'+
+        '<div><span class="tag '+(isDraft?'warn':'ok')+'">'+q.status+'</span><div class="sub" style="font-size:10.5px;margin-top:3px">'+q.note+'</div></div>'+
+        '<div>'+btn+'</div>'+
+        '</div>'+
+        '<div class="otrack" id="qtrk-'+q.ref+'" style="display:none">'+quoteTrackerHTML(q)+'</div>';
+    });
+    h+='<div style="font-size:11.5px;color:var(--g500);padding:14px 0 4px">'+PORTAL_QUOTES.filter(function(q){return q.status==='Draft';}).length+' draft · '+PORTAL_QUOTES.filter(function(q){return q.status==='Complete';}).length+' complete. Drafts have items pending 02S pricing confirmation — full PDF is available once all items are confirmed.</div>';
+    tbl.innerHTML=h;
+  }
+  function quoteTrackerHTML(q){
+    var gt='1fr 130px 110px';
+    var h='<div style="padding:12px 16px;background:var(--g50);border-top:1px solid var(--g100)">';
+    h+='<div style="display:grid;grid-template-columns:'+gt+';gap:4px;font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;padding:4px 0;border-bottom:1px solid var(--g200);margin-bottom:6px"><span>Item</span><span>Period / qty</span><span style="text-align:right">Amount</span></div>';
+    q.lineItems.forEach(function(li){
+      h+='<div style="display:grid;grid-template-columns:'+gt+';gap:4px;padding:6px 0;border-bottom:1px solid var(--g100)">'+
+        '<div><div style="font-size:12px;font-weight:500;color:var(--g900)">'+li.name+'</div><div style="font-size:11px;color:var(--g500)">'+li.pillar+'</div></div>'+
+        '<div style="font-size:11.5px;color:var(--g700)">'+li.qty+'</div>'+
+        '<div style="text-align:right;font-size:12px;font-weight:600;color:'+(li.amount?'var(--charcoal)':'var(--g400)')+'">'+( li.amount||'Pending 02S')+'</div>'+
+        '</div>';
+    });
+    if(q.totalPriced){ h+='<div style="display:flex;justify-content:space-between;padding:8px 0 0;border-top:1px solid var(--g200);margin-top:4px"><span style="font-size:12px;font-weight:600">Total (confirmed pricing)</span><span style="font-size:13px;font-weight:700">'+q.totalPriced+'</span></div>'; }
+    else { h+='<div style="font-size:11.5px;color:var(--g400);padding-top:6px">Total pending — complete once 02S confirms all line items.</div>'; }
+    h+='</div>';
+    return h;
+  }
+  function togglePortalQuote(ref){ var t=document.getElementById('qtrk-'+ref); if(t)t.style.display=t.style.display==='none'?'':'none'; }
+  function downloadDraftQuote(ref){
+    var q=PORTAL_QUOTES.filter(function(x){return x.ref===ref;})[0];
+    toast('Draft PDF for '+ref+' — '+(q&&q.pendingN||'some')+' item(s) pending 02S pricing. Full quote will be emailed once 02S confirms.');
+  }
+  function downloadFullQuote(ref){ toast('Full quote PDF for '+ref+' — all items confirmed. Attach to Change Order or cost-plus reimbursement submission.'); }
+  function renderPortalQuotesWidget(){
+    var mount=document.getElementById('quotesWidgetMount'); if(!mount)return;
+    var pending=PORTAL_QUOTES.filter(function(q){return q.status==='Draft';}).length;
+    var complete=PORTAL_QUOTES.filter(function(q){return q.status==='Complete';}).length;
+    var ICO_DOC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6M9 7h3"/></svg>';
+    var h='<div style="margin-top:12px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:13px 16px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+    h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">'+ICO_DOC+' &nbsp;Quotes</div>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="ordSetView(\'quotes\');go(\'orders\')">View all</button>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    h+='<div class="vital warn" style="padding:10px 12px;cursor:pointer" onclick="ordSetView(\'quotes\');go(\'orders\')"><div class="vk">Awaiting 02S pricing</div><div class="vv">'+pending+'</div><div class="vsub">draft quote'+(pending===1?'':'s')+'</div></div>';
+    h+='<div class="vital ok" style="padding:10px 12px;cursor:pointer" onclick="ordSetView(\'quotes\');go(\'orders\')"><div class="vk">Ready to download</div><div class="vv">'+complete+'</div><div class="vsub">full quote'+(complete===1?'':'s')+'</div></div>';
+    h+='</div>';
+    h+='</div>';
+    mount.innerHTML=h;
   }
 
   function trackerHTML(o, ns){
@@ -3543,9 +3643,10 @@ charges:[
   }
   function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
   function ccGo(s){
-    if(!ccPersonaCanAccess(s)) return;
-    CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===s); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===s); });
-    ccActive=s; renderCcScreen(s); window.scrollTo(0,0);
+    var sk=s==='fulfill-quotes'?'fulfill':s;
+    if(!ccPersonaCanAccess(sk)) return;
+    CC_KEYS.forEach(function(k){ var sc=document.getElementById('ccscreen-'+k); if(sc)sc.classList.toggle('active',k===sk); var nv=document.getElementById('ccnav-'+k); if(nv)nv.classList.toggle('active',k===sk); });
+    ccActive=sk; renderCcScreen(s); window.scrollTo(0,0);
   }
   var SVC_SPECS=[
     {code:'SUM',name:'Subsurface Utility Mapping',items:[
@@ -3665,11 +3766,12 @@ charges:[
     var fsmFQ=(typeof FQ!=='undefined'&&FQ.length)?FQ:[];
     var scopedFQ=isFSM&&fsmScope?fsmFQ.filter(function(r){return fsmScope.indexOf(r.project)>=0;}):fsmFQ;
     var openReq=scopedFQ.length||20;
+    var awaitReq=scopedFQ.filter(function(r){return r.status==='Awaiting pricing';}).length+CC_QUOTES.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
     var fIdle=FLEET.filter(function(r){return r.status==='idle';}).length;
     var fOR=FLEET.filter(function(r){return r.status==='onrent';}).length;
     var fRepl=FLEET.filter(function(r){return r.life==='replace';}).length;
     var kpis=[
-      {k:'Open requests',v:String(openReq),sub:'5 awaiting pricing',tone:'warn',icon:IC.cart,to:'fulfill'},
+      {k:'Open requests',v:String(openReq),sub:awaitReq+' awaiting pricing',tone:'warn',icon:IC.cart,to:'fulfill'},
       {k:'Owned vs re-rent',v:'3',sub:'decisions due',tone:'warn',icon:ICO_SWAP,to:'fulfill'},
       {k:'Demand\u2013supply gap',v:'\u22127',sub:'peak \u00b7 October',tone:'bad',icon:IC.chart,to:'gap'},
       {k:'Billing at risk',v:kfmt(mgR.t)+'/mo',sub:mgR.n+' open anomalies',tone:'bad',icon:IC.warn,to:'anomaly'},
@@ -3788,6 +3890,7 @@ charges:[
     var FQ_scoped=fsmFQScope?FQ.filter(function(r){return fsmFQScope.indexOf(r.project)>=0;}):FQ;
     var hlRef=ccHighlight; ccHighlight=null;
     var openN=0,awaitN=0,readyN=0; FQ_scoped.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
+    awaitN+=CC_QUOTES.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
     var fqScopeLabel=isFSMFQ?(fsmFQScope&&fsmFQScope.length===1?fsmFQScope[0]:(fsmFQScope?'My projects \u00b7 2 assigned':'All projects \u00b7 portfolio')):'All projects \u00b7 portfolio';
     var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+fqScopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
@@ -4804,7 +4907,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); }
     window.scrollTo(0,0);
   }
 

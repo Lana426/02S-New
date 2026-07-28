@@ -417,6 +417,7 @@
           </div>
         </div>
         <div id="allActivityMount"></div>
+        <div id="quotesWidgetMount"></div>
       </div>
       </div><!-- /screen-dashboard -->
 
@@ -559,8 +560,14 @@
 
         <div id="recertBanner"></div>
 
+        <!-- orders / quotes tab toggle -->
+        <div style="display:flex;align-items:center;gap:2px;padding:6px 0 10px">
+          <button class="ff-b on" id="ordTabOrders" onclick="ordSetView('orders')">Orders</button>
+          <button class="ff-b" id="ordTabQuotes" onclick="ordSetView('quotes')">Quotes <span id="ordQuotesBadge" class="tag warn" style="font-size:10px;padding:1px 5px;margin-left:3px"></span></button>
+        </div>
+
         <!-- filter bar -->
-        <div class="filterbar">
+        <div class="filterbar" id="ordFilterBar">
           <div class="fsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><input id="ordSearch" oninput="renderOrders()" placeholder="Search orders by ID, product, or cost code"></div>
           <select class="fdrop-sel" id="ordPillar" onchange="renderOrders()"><option value="">All pillars</option><option value="equipment">Equipment</option><option value="prefab">Prefab</option><option value="procurement">Procurement</option><option value="profservices">Prof. services</option><option value="logistics">Logistics</option></select>
           <select class="fdrop-sel" id="ordStatus" onchange="renderOrders()"><option value="">All statuses</option><option>Requested</option><option>Acknowledged</option><option>In fulfillment</option><option>Delivered</option><option>On-Rent</option><option>Off-Rent</option><option>Fulfilled</option></select>
@@ -574,7 +581,7 @@
         <div id="ordInsights" class="hide"></div>
 
         <!-- order history -->
-        <div class="sec-title">Order history <span id="ordCountLbl"></span></div>
+        <div class="sec-title" id="ordSecTitle">Order history <span id="ordCountLbl"></span></div>
         <div class="otable" id="ordTable"></div>
       </div><!-- /screen-orders -->
 
