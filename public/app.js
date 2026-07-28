@@ -1705,7 +1705,8 @@ function renderProfServicesDP(){
     var vcc=document.getElementById('verChipContact'); if(vcc) vcc.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     renderCart();
     renderPills(); renderCatalog();
-    _billMonthFilter='all'; document.querySelectorAll('.bill-mo').forEach(function(b){b.classList.toggle('on',b.dataset.m==='all');});
+    var _bfEl=document.getElementById('billFrom'); if(_bfEl)_bfEl.value='';
+    var _btEl=document.getElementById('billTo'); if(_btEl)_btEl.value='';
     renderOrders(); renderBills(); renderOrdInsights();
     renderPending(); renderBillInsights();
     renderBudget();
@@ -2073,7 +2074,6 @@ charges:[
     }).join('');
     /* today line: day 0 = May 12 on our fixed demo timeline */
     var todayNote='<div style="font-size:11px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px solid var(--g150)">'
-      +svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)
       +(ns?'Lookahead tied to CPM · Structural steel is crane-dependent — crane arrives 4 days ahead of need. <span class="lk" onclick="go(\'equip\')">Adjust mobilization</span>':'5 touchpoints across 3 weeks · 2 require action this week')
       +'</div>';
     v1m.innerHTML=head+rows+todayNote;
@@ -2451,21 +2451,21 @@ charges:[
   }
 
   // ── Billing history table (moved here from Orders) ──
-  var _billMonthFilter='all';
-  function setBillMonth(m){
-    _billMonthFilter=m;
-    document.querySelectorAll('.bill-mo').forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
-    renderBills();
-  }
+  var _BMONS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function _billDateISO(s){ if(!s)return ''; var pts=s.split(' '); var m=_BMONS.indexOf(pts[0])+1; if(m<1)return ''; return '2026-'+('0'+m).slice(-2)+'-'+('0'+(pts[1]||'1')).slice(-2); }
+  function billClearDates(){ var a=document.getElementById('billFrom'); if(a)a.value=''; var b=document.getElementById('billTo'); if(b)b.value=''; renderBills(); }
   function renderBills(){
     var host=document.getElementById('billHist'); if(!host) return;
     var ns=CURRENT==='ns';
     var q=(document.getElementById('billSearch').value||'').toLowerCase().trim();
     var fs=document.getElementById('billStatus').value, fc=document.getElementById('billCost').value;
+    var bf=(document.getElementById('billFrom')||{}).value||'';
+    var bt=(document.getElementById('billTo')||{}).value||'';
     var list=BILLS.filter(function(b){
       if(fs && b.status!==fs) return false;
       if(fc && b.cost!==fc) return false;
-      if(_billMonthFilter && _billMonthFilter!=='all' && (!b.date || b.date.indexOf(_billMonthFilter)<0)) return false;
+      if(bf && b.date && _billDateISO(b.date)<bf) return false;
+      if(bt && b.date && _billDateISO(b.date)>bt) return false;
       if(q && (b.id.toLowerCase().indexOf(q)<0 && b.order.toLowerCase().indexOf(q)<0 && b.product.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
@@ -4038,7 +4038,7 @@ charges:[
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
-    h+='<div class="vitals">';
+    h+='<div class="vitals" style="grid-template-columns:repeat('+cfg.kpis.length+',1fr)">';
     cfg.kpis.forEach(function(k){ var v=k.v, tone=k.tone; if(k.dyn==='tax'){ v=''+pending; tone=pending>0?'warn':'ok'; } h+='<div class="vital '+tone+'"><div class="vk">'+svg(dpIcon(k.icon))+k.k+'</div><div class="vv">'+v+'</div><div class="vsub">'+k.sub+'</div></div>'; });
     h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }

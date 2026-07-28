@@ -621,13 +621,7 @@
           <div class="fsearch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><input id="billSearch" oninput="renderBills()" placeholder="Search bills by ID, order, or product"></div>
           <select class="fdrop-sel" id="billStatus" onchange="renderBills()"><option value="">All statuses</option><option>Pending</option><option>Approved</option><option>Disputed</option><option>Finalized</option></select>
           <select class="fdrop-sel" id="billCost" onchange="renderBills()"><option value="">All cost codes</option><option>01 · General</option><option>03 · Concrete</option><option>05 · Metals</option><option>09 · Finishes</option></select>
-          <div style="display:flex;gap:5px;align-items:center;border-left:1px solid var(--g200);padding-left:8px;margin-left:2px">
-            <span style="font-size:11px;color:var(--g400);white-space:nowrap">Period:</span>
-            <button class="btn btn-ghost btn-sm bill-mo on" data-m="all" onclick="setBillMonth('all')">All</button>
-            <button class="btn btn-ghost btn-sm bill-mo" data-m="Apr" onclick="setBillMonth('Apr')">Apr</button>
-            <button class="btn btn-ghost btn-sm bill-mo" data-m="May" onclick="setBillMonth('May')">May</button>
-            <button class="btn btn-ghost btn-sm bill-mo" data-m="Jun" onclick="setBillMonth('Jun')">Jun</button>
-          </div>
+          <div class="date-range"><span class="dr-lbl">Period</span><input type="date" id="billFrom" class="fdate" onchange="renderBills()" title="From date"><span class="dr-sep">&rarr;</span><input type="date" id="billTo" class="fdate" onchange="renderBills()" title="To date"><button class="dr-clear" onclick="billClearDates()" title="Clear dates">&times;</button></div>
           <button class="btn btn-ghost" title="Export invoices as PDF" onclick="openBillExportModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Export PDF</button>
         </div>
         <div class="otable" id="billHist"></div>
