@@ -2367,13 +2367,12 @@ charges:[
       h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Project contribution to enterprise gross margin</div>';
       h+='<button class="btn btn-ghost btn-sm" onclick="toast(\'Margin plan — enterprise view (demo)\')">View margin plan</button>';
       h+='</div>';
-      h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px">';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S revenue opp.</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$1.8M</div><div style="font-size:11px;color:var(--g500)">~8% of $22.6M project</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">vs '+gmPlan+'% plan target</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S throughput</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$14.6M</div><div style="font-size:11px;color:var(--g500)">committed of $22.6M project</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Expected return</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">O2S gross profit opp.</div></div>';
+      h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' below plan</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*22600000))+'</div><div style="font-size:11px;color:var(--g500)">gross profit · '+gmCurr+'% of $22.6M</div></div>';
       h+='</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)"><b>Key gap identified:</b> '+fmtBig(Math.round((gmPlan-gmCurr)/100*1800000))+' below plan — crane re-rent premium. O2S original estimate: <b style="color:var(--charcoal)">$240K</b> return · <b style="color:var(--charcoal)">$14.6M</b> throughput. <span class="lk" onclick="toast(\'View O2S opportunity — original anticipated return and throughput tracking\')">View O2S opportunity</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)">Tracking against budget &amp; financials — '+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' gap driven by crane re-rent premium on BESS. <span class="lk" onclick="go(\'billing\')">View cost breakdown</span></div>';
       h+='</div>';
     }
     mount.innerHTML=h;
@@ -3350,7 +3349,7 @@ charges:[
     logistics: ['ccdash','fulfill','dplog','margin'],
     prefab: ['ccdash','fulfill','dpprefab','margin'],
     procurement: ['ccdash','fulfill','dpproc','margin'],
-    services: ['ccdash','fulfill','gap','anomaly','dpequip','dplog','dpsvc','dpproc','dpprefab','margin']
+    services: ['ccdash','fulfill','dpsvc','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   function ccSetPersona(p){ ccPersona=p; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
