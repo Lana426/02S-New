@@ -1891,12 +1891,17 @@ charges:[
       ]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
-    {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24'},
-    {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20'},
+    {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24',co:'CO-001'},
+    {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20',co:'CO-002'},
     {id:'BILL-8990',order:'ORD-3009',product:'Site survey crew — 2 days',amt:6200,cost:'01 · General',status:'Finalized',date:'Apr 22',audit:'M. Chen · approved Apr 22'},
     {id:'BILL-8985',order:'ORD-3080',product:'PPE kit — initial order',amt:850,cost:'01 · General',status:'Finalized',date:'May 3',audit:'Auto-finalized May 3'},
-    {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19'}
+    {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19',co:'CO-001'}
   ];
+  var CHANGE_ORDERS=[
+    {id:'CO-001',desc:'Crane extension — BESS mobilization delay',status:'Approved',amt:148000,costCode:'26-0330-CO001'},
+    {id:'CO-002',desc:'Earthwork scope expansion — unforeseen subsurface conditions',status:'Pending',amt:62000,costCode:'31-0620-CO002'}
+  ];
+  var _billExCO='';
   var COST_CODES=['01 · General','03 · Concrete','05 · Metals','09 · Finishes'];
   function stageStatus(o){var arr=o.pillar==='equipment'?STAGES_EQ:STAGES_OTHER;return arr[Math.min(o.stage,arr.length-1)];}
 
@@ -2613,6 +2618,7 @@ charges:[
         fin=fin.filter(function(b){return b.date&&b.date.indexOf(filter)>=0;});
       }
     }
+    if(_billExCO) fin=fin.filter(function(b){return b.co===_billExCO;});
     if(!fin.length) return '<div style="font-size:12.5px;color:var(--g400);padding:8px 0">No invoices match this filter.</div>';
     return fin.map(function(b){
       var anomBadge=anomIds.indexOf(b.id)>=0?'<span class="tag bad" style="font-size:10px;margin-left:4px">Anomaly</span>':'';
@@ -2626,6 +2632,12 @@ charges:[
     if(mount) mount.innerHTML=_billExRows(f);
     var cr=document.getElementById('billExCustom');
     if(cr) cr.style.display=f==='custom'?'flex':'none';
+  }
+  function setBillExCO(coId){
+    _billExCO=(_billExCO===coId?'':coId);
+    document.querySelectorAll('.bex-co').forEach(function(b){b.classList.toggle('on',b.dataset.co===_billExCO);});
+    var mount=document.getElementById('billExRows');
+    if(mount) mount.innerHTML=_billExRows(_billExFilter);
   }
   function doExportPDF(){
     var cbs=document.querySelectorAll('.bill-ex-cb:checked');
@@ -2681,6 +2693,12 @@ charges:[
       +'<input type="date" id="billExFrom" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="'+initFrom+'" onchange="setBillExFilter(\'custom\')">'
       +'<span style="font-size:12px;color:var(--g500)">–</span>'
       +'<input type="date" id="billExTo" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="'+initTo+'" onchange="setBillExFilter(\'custom\')">'
+      +'</div>'
+      +'<div style="margin-bottom:12px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Filter by change order</div>'
+      +'<div style="display:flex;gap:7px;flex-wrap:wrap">'
+      +CHANGE_ORDERS.map(function(co){var badge=co.status==='Approved'?'<span style="font-size:9px;background:var(--success);color:#fff;border-radius:3px;padding:1px 5px;margin-left:4px">APR</span>':'<span style="font-size:9px;background:var(--warning);color:#fff;border-radius:3px;padding:1px 5px;margin-left:4px">PEND</span>';return '<button class="btn btn-ghost btn-sm bex-co" data-co="'+co.id+'" onclick="setBillExCO(\''+co.id+'\')" title="'+co.desc+'">'+co.id+badge+'</button>';}).join('')
+      +'</div>'
       +'</div>'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
       +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Select invoices <span style="text-transform:none;font-weight:400;color:var(--g400)">(finalized only — auto-approved at day 10)</span></div>'
@@ -2804,6 +2822,7 @@ charges:[
           '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Correct code</button>'+
+      +'<button class="btn btn-ghost btn-sm'+(mode==='remap'?' on':'')+' onclick="setBillUI(\''+id+'\',\'remap\')"' +'>Remap to CO</button>'
           notes+audit+
         '</div>'+
         inline+
@@ -2933,6 +2952,7 @@ charges:[
     var inline='';
     if(mode==='dispute') inline=billDisputeInline(b,ns);
     else if(mode==='edit') inline=billEditInline(b);
+    else if(mode==='remap') inline=billCOInline(b);
     var body=anomCard+chargesHtml+windowBar+actions+inline
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="activeBillModal=null;closeModal()">Close</button></div>';
     openModal('<div><h3 style="margin:0 0 2px">'+b.id+'</h3><div class="sub">'+b.product+' &middot; from <span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span> &middot; '+fmt(b.amt)+'</div></div>',body);
@@ -2962,6 +2982,39 @@ charges:[
       '<div class="pi-t">Correct cost codes per charge <span class="pi-note">edit in the charge rows above — every change is captured to the audit trail</span></div>'+
       '<div class="pi-act"><button class="btn btn-dark btn-sm" onclick="saveCost(\''+b.id+'\')">Save corrections</button><button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\')">Cancel</button></div>'+
     '</div>';
+  }
+  function billCOInline(b){
+    var opts=CHANGE_ORDERS.map(function(co){
+      var badge=co.status==='Approved'?'<span class="tag ok" style="font-size:10px">Approved</span>':'<span class="tag warn" style="font-size:10px">Pending</span>';
+      return '<label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--g200);border-radius:6px;cursor:pointer;margin-bottom:6px">'
+        +'<input type="radio" name="co-pick-'+b.id+'" value="'+co.id+'" style="accent-color:var(--charcoal)">'
+        +'<span style="flex:1"><b style="font-size:12px">'+co.id+'</b> '+badge+'<div style="font-size:11.5px;color:var(--g600);margin-top:2px">'+co.desc+'</div></span>'
+        +'<span style="font-size:12px;color:var(--g500)">'+fmt(co.amt)+'</span>'
+        +'</label>';
+    }).join('');
+    return '<div class="pc-inline">'
+      +'<div class="pi-t">Remap to change order <span class="pi-note">reassigns cost code — logged to audit trail</span></div>'
+      +opts
+      +'<div class="pi-act">'
+      +'<button class="btn btn-dark btn-sm" onclick="remapToCO(\''+b.id+'\');">Confirm remap</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\');">Cancel</button>'
+      +'</div>'
+      +'</div>';
+  }
+  function remapToCO(id){
+    var b=getBill(id); if(!b) return;
+    var sel=document.querySelector('input[name="co-pick-'+id+'"]:checked');
+    if(!sel){toast('Select a change order first');return;}
+    var coId=sel.value;
+    var co=CHANGE_ORDERS.filter(function(c){return c.id===coId;})[0];
+    if(!co) return;
+    b.co=coId; b.cost=co.costCode;
+    if(b.charges) b.charges.forEach(function(c){c.cost=co.costCode;});
+    b.audit='You · remapped to '+coId+' just now';
+    billUI[id]='';
+    if(activeBillModal===id){activeBillModal=null;closeModal();}
+    renderPending(); renderBills(); renderBillInsights();
+    toast('Bill '+id+' remapped to '+coId+' — cost code updated');
   }
   function approveBill(id){ var b=getBill(id); if(!b) return; b.status='Approved'; b.audit='You · approved just now'; billUI[id]=''; if(activeBillModal===id){activeBillModal=null;closeModal();} renderPending(); renderBills(); renderBillInsights(); toast('Bill '+id+' approved → routed to YardHub'); }
   function setDChip(id,text,el){ var ta=document.getElementById('dr-'+id); if(ta) ta.value=text; var chips=el.parentElement.querySelectorAll('.dchip'); chips.forEach(function(c){c.classList.remove('on');}); el.classList.add('on'); }
