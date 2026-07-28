@@ -3582,7 +3582,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderSvcPlan(); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -4199,7 +4199,7 @@ charges:[
         {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready'}
       ],
       rollCols:['Category','Peak units','Peak month','vs plan'],
-      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Lifting',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'bad'}],
+      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Cranes',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'bad'}],
       varSummary:'Aerial running 14 units over plan for October \u2014 the main portfolio driver.',
       consol:{save:'~$62K',cta:'Consolidate aerial',detail:'Aerial demand overlaps all three projects and peaks at 82 units in October, 14 over plan. Consolidate into one fleet re-rent rate instead of per-project spot rentals.'} },
     logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
@@ -4216,18 +4216,22 @@ charges:[
       varSummary:'Heavy hauls one over plan \u2014 3 route to the same corridor within a week.',
       consol:{save:'~$18K + 1 permit',cta:'Combine hauls',detail:'3 heavy hauls route to the same corridor (Cimarron + Riverside) within one week. Combine permits and carrier into a single mobilization.'} },
     profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
-      kpis:[{k:'Active projects',v:'9',sub:'with services demand',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'14',sub:'across 6 firms',tone:'ok',icon:'people'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Committed',v:'$3.2M',sub:'services \u00b7 portfolio',tone:'ok',icon:'dollar'}],
-      ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule \u2014 the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they\u2019re needed on site.',
-      cap:'Every project\u2019s professional-services demand, aggregated. Roles are priced from the 02S rate card; specialty roles are quoted by 02S after confirmation.',
+      kpis:[{k:'Active projects',v:'9',sub:'with services demand',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'18',sub:'across 8 firms',tone:'ok',icon:'people'},{k:'Needs pricing',v:'2',sub:'specialty roles unquoted',tone:'warn',icon:'tax'},{k:'Committed',v:'$3.2M',sub:'services · portfolio',tone:'ok',icon:'dollar'}],
+      ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule — the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they’re needed on site.',
+      cap:'Every project’s professional-services demand, aggregated by discipline. Standard roles are priced from the 02S rate card; specialty roles are quoted before mobilization.',
       rows:[
-        {id:'REQ-S-2101',asset:'Owner\u2019s engineer / IE support \u00b7 2 FTE',project:'Hercules Solar + BESS',tax:'Services \u203a Engineering \u203a Owner\u2019s engineer',taxOk:true,leaf:'IE support',dec:'Rate card',decTone:'ok',status:'Active'},
-        {id:'REQ-S-2108',asset:'BESS commissioning agent \u00b7 2 FTE',project:'Hercules Solar + BESS',tax:'Services \u203a Commissioning \u203a BESS',taxOk:true,leaf:'BESS',dec:'Quoted',decTone:'info',status:'Projected'},
-        {id:'REQ-S-2114',asset:'Structural special inspection \u00b7 2 FTE',project:'Riverside Medical Center',tax:'Services \u203a Inspection \u203a Structural',taxOk:true,leaf:'Structural',dec:'Rate card',decTone:'ok',status:'Active'}
+        {id:'REQ-S-2101',asset:'Owner’s engineer / IE support · 2 FTE',project:'Hercules Solar + BESS',tax:'Services › Engineering › Owner’s engineer',taxOk:true,leaf:'IE support',dec:'Rate card',decTone:'ok',status:'Active'},
+        {id:'REQ-S-2116',asset:'VDC / BIM coordination · 3 FTE',project:'Hercules Solar + BESS',tax:'Services › VDC › BIM coordination',taxOk:true,leaf:'BIM',dec:'Needs quote',decTone:'warn',status:'Awaiting pricing'},
+        {id:'REQ-S-2108',asset:'BESS commissioning agent · 2 FTE',project:'Hercules Solar + BESS',tax:'Services › Commissioning › BESS',taxOk:true,leaf:'BESS',dec:'Quoted',decTone:'info',status:'Projected'},
+        {id:'REQ-S-2114',asset:'Structural special inspection · 2 FTE',project:'Riverside Medical Center',tax:'Services › Inspection › Structural',taxOk:true,leaf:'Structural',dec:'Rate card',decTone:'ok',status:'Active'},
+        {id:'REQ-S-2117',asset:'Safety officer — dedicated · 1 FTE',project:'Riverside Medical Center',tax:'Services › Safety › Dedicated officer',taxOk:true,leaf:'Dedicated',dec:'Rate card',decTone:'ok',status:'Active'},
+        {id:'REQ-S-2115',asset:'Construction survey crew · 2 FTE',project:'Cimarron Data Center',tax:'Services › Survey › Construction survey',taxOk:true,leaf:'Licensed PLS',dec:'Rate card',decTone:'ok',status:'Active'},
+        {id:'REQ-S-2118',asset:'Environmental compliance · 1 FTE',project:'Cimarron Data Center',tax:'Services › Environmental › SWPPP',taxOk:true,leaf:'SWPPP',dec:'Rate card',decTone:'ok',status:'Active'}
       ],
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],
-      roll:[{a:'Engineering',b:'6 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Inspection',b:'5 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'}],
-      varSummary:'Inspection one FTE over plan \u2014 overlapping scopes at two projects.',
-      consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and a second project. One firm can cover both at a blended rate instead of two separate MSAs.'} },
+      roll:[{a:'Engineering',b:'5 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'4 FTE',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'3 FTE',c:'ongoing',v:'on plan',vt:'ok'}],
+      varSummary:'VDC / BIM one FTE over plan — two projects have overlapping coordination windows.',
+      consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and Cimarron. One firm can cover both projects at a blended MSA rate.'} },
     procurement:{ mount:'ccDpProc', title:'Procurement demand plan', icon:'cart', decCol:'Order-by (lead)',
       kpis:[{k:'Active projects',v:'8',sub:'with long-lead demand',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'At-risk',v:'2',sub:'order-by passed',tone:'bad',icon:'warn'}],
       ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items (switchgear, BESS containers) are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
