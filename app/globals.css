@@ -538,6 +538,7 @@
   .ins-strip .ist{font-size:13.5px;font-weight:650;color:#fff;letter-spacing:-.01em}
   .ins-strip .isd{font-size:12.5px;color:rgba(255,255,255,.72);margin-top:3px;line-height:1.5}
   .ins-strip .isd b{color:#fff;font-weight:600}
+  [data-ver='ns'] .ins-strip{background:linear-gradient(135deg,#1a2a42 0%,var(--charcoal) 65%);border-left:3px solid var(--red)}
 
   @media(max-width:1080px){.ot-head,.orow{grid-template-columns:80px 1fr 96px 116px 110px 26px}.ot-head span.hide-sm,.orow .hide-sm{display:none}}
   .oc-origin{display:flex;flex-direction:column;gap:2px;align-items:flex-start}

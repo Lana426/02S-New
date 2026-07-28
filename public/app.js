@@ -536,6 +536,47 @@
   }
   function dismissUnderstood(){ var el=document.getElementById('understood'); el.classList.add('hide'); el.innerHTML=''; document.getElementById('askInput').value=''; onAskInput(); }
   function refineUnderstood(){ parseReq(); }
+  function renderNSMilestones(){
+    var mount=document.getElementById('nsMilestonesMount'); if(!mount) return;
+    var milestones=[
+      {date:'Jun 1',label:'Demob phase begins',tone:'warn',recos:[
+        'Issue off-rent notices for all equipment 2 weeks ahead',
+        'Schedule final site walk and off-rent inspections',
+        'Confirm damage waivers and return logistics with 02S',
+        'Notify 02S of early call-off candidates to avoid idle billing'
+      ]},
+      {date:'Jun 15',label:'BESS commissioning window',tone:'info',recos:[
+        'Confirm BAS commissioning specialist start date',
+        'Verify BESS and switchgear readiness by Nov 15',
+        'Ensure VDC coordinator and drone operator site windows aligned'
+      ]},
+      {date:'Jul 15',label:'Module racking mobilization',tone:'ok',recos:[
+        'Confirm Landstar heavy haul capacity 6 weeks ahead',
+        'Verify prefab headwall submittals are approved',
+        'Coordinate crane handoff from pile drive to racking schedule'
+      ]}
+    ];
+    var toneColor={warn:'var(--warning)',info:'var(--info)',ok:'var(--success)'};
+    var rows=milestones.map(function(m){
+      var recoRows=m.recos.map(function(r,i){
+        return '<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 8px;background:var(--g50);border-radius:5px;border:1px solid var(--g200);margin-bottom:4px">'
+          +'<span style="min-width:16px;height:16px;background:var(--info-tint);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700;color:var(--info)">'+(i+1)+'</span>'
+          +'<div style="flex:1;font-size:11.5px;color:var(--g700)">'+r+'</div>'
+          +'</div>';
+      }).join('');
+      var tc=toneColor[m.tone];
+      return '<div style="border:1px solid var(--g200);border-left:3px solid '+tc+';border-radius:var(--radius);padding:12px 14px;margin-bottom:10px;background:#fff">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+        +'<span style="font-size:11px;font-weight:700;color:'+tc+';background:var(--g100);padding:2px 7px;border-radius:4px;flex-shrink:0">'+m.date+'</span>'
+        +'<div style="font-size:13px;font-weight:650;color:var(--g900)">'+m.label+'</div>'
+        +'</div>'
+        +'<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:5px">02S recommendations</div>'
+        +recoRows
+        +'</div>';
+    }).join('');
+    var SPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
+    mount.innerHTML='<div class="ins-strip" style="margin-bottom:14px"><span class="isi">'+SPARK+'</span><div><div class="ist">02S sees what\'s coming</div><div class="isd">3 milestones in the next 6 weeks — actions pre-loaded from your CPM schedule and demand plan.</div></div></div>'+rows;
+  }
   function showNSActivities(){
     var el=document.getElementById('understood'); if(!el) return;
     var acts=[
@@ -553,10 +594,15 @@
         +'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;flex-shrink:0" onclick="toast(\'Document attached\')">Attach doc</button>'
         +'</div>';
     }).join('');
+    var _SPARK02='<svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
     el.innerHTML+='<div style="margin-top:14px;border-top:1px solid var(--g200);padding-top:12px">'
-      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Auto-populated sub-activities</div>'
+      +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:10px;padding:8px 10px;background:var(--info-tint);border-radius:6px;border:1px solid rgba(38,93,159,.18)">'
+      +'<span style="color:var(--info)">'+_SPARK02+'</span>'
+      +'<div style="font-size:12px;font-weight:650;color:var(--info)">Auto-populated sub-activities</div>'
+      +'<span style="font-size:11px;color:var(--g500);margin-left:4px">— from your demand plan and CPM schedule</span>'
+      +'</div>'
       +rows
-      +'<div style="font-size:11px;color:var(--g500);margin-top:6px">These appear in your 3-week schedule and command center. Attach documents per activity as work progresses.</div>'
+      +'<div style="font-size:11px;color:var(--g500);margin-top:6px">Attach documents per activity as work progresses. These flow into your 3-week schedule and command center.</div>'
       +'</div>';
   }
     function sendUnderstood(){
@@ -1679,7 +1725,7 @@ function renderProfServicesDP(){
 
   /* ═══════════ VERSION TOGGLE ═══════════ */
   function setVer(v){
-    var ns=v==='ns'; CURRENT=v;
+    var ns=v==='ns'; CURRENT=v; document.body.setAttribute('data-ver',v);
     document.getElementById('btnV1').classList.toggle('on',!ns);
     document.getElementById('btnNS').classList.toggle('on',ns);
     document.getElementById('vitalsV1').classList.toggle('hide',ns);
@@ -1709,7 +1755,7 @@ function renderProfServicesDP(){
     var _btEl=document.getElementById('billTo'); if(_btEl)_btEl.value='';
     renderOrders(); renderBills(); renderOrdInsights();
     renderPending(); renderBillInsights();
-    renderBudget();
+    renderBudget(); renderGMDashKPI(); renderNSMilestones();
     renderTeam(); renderEscalation(); renderProfileInsights();
     var cv1=document.getElementById('composeV1'); if(cv1) cv1.classList.toggle('hide',ns);
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
@@ -1947,17 +1993,17 @@ charges:[
     var gap=Math.round((gmPlan-gmCurr)/100*gmRev);
     var h='<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius,8px);padding:13px 16px;margin-bottom:18px">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div style="font-size:12px;font-weight:700;color:var(--info,#265D9F)">Project → enterprise gross margin contribution</div>'
+      +'<div style="font-size:12px;font-weight:700;color:var(--info,#265D9F)">Project → enterprise gross margin<span style="font-weight:400;color:var(--g400);margin-left:6px">· benchmarked vs. original O2S opportunity</span></div>'
       +'<div style="display:flex;gap:8px">'
       +(ns?'<button class="btn btn-ghost btn-sm" onclick="toast(\'Scenario analysis — demo\')">Scenarios</button>':'')
       +'<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">Full detail</button>'
       +'</div>'
       +'</div>'
       +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px">'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S revenue opp.</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$1.8M</div><div style="font-size:11px;color:var(--g500)">~8% of $22.6M project</div></div>'
+      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S opportunity est.</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$1.8M</div><div style="font-size:11px;color:var(--g500)">original basis · 8% of project</div></div>'
       +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">vs '+gmPlan+'% plan target</div></div>'
       +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S throughput</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$14.6M</div><div style="font-size:11px;color:var(--g500)">committed of $22.6M total</div></div>'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin at stake</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">gross profit opportunity</div></div>'
+      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Expected return</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">original O2S estimate</div></div>'
       +'</div>'
       +'<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'
       +'<span><b>Gap to plan:</b> '+fmtBig(gap)+' — driven by equipment re-rent premium on cranes &amp; BESS substation mobilization</span>'
@@ -2327,7 +2373,7 @@ charges:[
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S throughput</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$14.6M</div><div style="font-size:11px;color:var(--g500)">committed of $22.6M project</div></div>';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Expected return</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">O2S gross profit opp.</div></div>';
       h+='</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)"><b>Gap to plan:</b> '+fmtBig(Math.round((gmPlan-gmCurr)/100*1800000))+' — driven by equipment re-rent premium on cranes. <span class="lk" onclick="toast(\'Drill into O2S opportunity (demo)\')">View O2S opportunity</span> &middot; <span class="lk" onclick="toast(\'Link to margin plan (demo)\')">Link to margin plan</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)"><b>Key gap identified:</b> '+fmtBig(Math.round((gmPlan-gmCurr)/100*1800000))+' below plan — crane re-rent premium. O2S original estimate: <b style="color:var(--charcoal)">$240K</b> return · <b style="color:var(--charcoal)">$14.6M</b> throughput. <span class="lk" onclick="toast(\'View O2S opportunity — original anticipated return and throughput tracking\')">View O2S opportunity</span></div>';
       h+='</div>';
     }
     mount.innerHTML=h;
@@ -2474,9 +2520,10 @@ charges:[
     var rows=list.map(function(b){
       var anom = '';
       var isPend=b.status==='Pending';
+      var isFin=b.status==='Finalized';
       var statusCell=isPend
         ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="openBillModal(\''+b.id+'\')">Review</button></div>'
-        :'<div><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span></div>';
+        :'<div style="display:flex;align-items:center;gap:5px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span>'+(isFin?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px" onclick="openBillPDFModal(\''+b.id+'\')" title="View PDF">PDF</button>':'')+'</div>';
       return '<div class="brow">'+
         '<div class="oc-id">'+b.id+'</div>'+
         '<div><span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span></div>'+
@@ -2528,6 +2575,22 @@ charges:[
     closeModal();
     toast('PDF exported — '+ids.length+' invoice'+(ids.length===1?'':'s')+' · check Downloads');
   }
+  function openBillPDFModal(id){
+    openModal('<div><b>Bill PDF</b><div style="font-size:12px;font-weight:400;color:var(--g500);margin-top:2px">'+id+'</div></div>',
+      '<div style="text-align:center;padding:32px 16px">'
+      +'<div style="width:48px;height:48px;background:var(--g100);border-radius:10px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'</div>'
+      +'<div style="font-size:14px;font-weight:650;color:var(--g900);margin-bottom:8px">Bill PDF</div>'
+      +'<div style="font-size:12.5px;color:var(--g500);max-width:280px;margin:0 auto">This is where your bill PDF for <b style="color:var(--g800)">'+id+'</b> would show — once connected to the billing system the finalized invoice will be available for download.</div>'
+      +'</div>'
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>');
+  }
+  function selectAllBillEx(){
+    var cbs=document.querySelectorAll('.bill-ex-cb');
+    var allChecked=Array.from(cbs).every(function(c){return c.checked;});
+    cbs.forEach(function(c){c.checked=!allChecked;});
+    var btn=document.getElementById('billExSelAll');
+    if(btn) btn.textContent=allChecked?'Select all':'Deselect all';
+  }
   function openBillExportModal(){
     var ns=CURRENT==='ns';
     var anomCount=ns?BILLS.filter(function(b){return b.anomaly&&b.status==='Finalized';}).length:0;
@@ -2560,7 +2623,10 @@ charges:[
       +'<span style="font-size:12px;color:var(--g500)">–</span>'
       +'<input type="date" id="billExTo" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="'+initTo+'" onchange="setBillExFilter(\'custom\')">'
       +'</div>'
-      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Select invoices <span style="text-transform:none;font-weight:400;color:var(--g400)">(finalized only — auto-approved at day 10)</span></div>'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Select invoices <span style="text-transform:none;font-weight:400;color:var(--g400)">(finalized only — auto-approved at day 10)</span></div>'
+      +'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" id="billExSelAll" onclick="selectAllBillEx()">Select all</button>'
+      +'</div>'
       +'<div id="billExRows">'+_billExRows(initFilter)+'</div>'
       +'</div>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
@@ -3284,7 +3350,7 @@ charges:[
     logistics: ['ccdash','fulfill','dplog','margin'],
     prefab: ['ccdash','fulfill','dpprefab','margin'],
     procurement: ['ccdash','fulfill','dpproc','margin'],
-    services: ['ccdash','fulfill','dpequip','dplog','dpsvc','dpproc','dpprefab','margin']
+    services: ['ccdash','fulfill','gap','anomaly','dpequip','dplog','dpsvc','dpproc','dpprefab','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   function ccSetPersona(p){ ccPersona=p; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
