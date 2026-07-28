@@ -2822,7 +2822,6 @@ charges:[
           '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Correct code</button>'+
-      +'<button class="btn btn-ghost btn-sm'+(mode==='remap'?' on':'')+' onclick="setBillUI(\''+id+'\',\'remap\')"' +'>Remap to CO</button>'
           notes+audit+
         '</div>'+
         inline+
@@ -2947,6 +2946,7 @@ charges:[
       +'<button class="btn btn-approve btn-sm" onclick="approveBill(\''+id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'
       +'<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'dispute\')">Dispute</button>'
       +'<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'edit\')">Correct code</button>'
+      +'<button class="btn btn-ghost btn-sm'+(mode==='remap'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'remap\')">Remap to CO</button>'
       +'<span class="pc-audit">'+(b.audit||'Awaiting your review')+'</span>'
       +'</div>';
     var inline='';
