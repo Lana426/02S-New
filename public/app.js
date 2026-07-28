@@ -3485,7 +3485,7 @@ charges:[
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
-  function setCCFSMProj(proj){ _ccFSMProj=proj; renderCCDash(); }
+  function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
       var nv=document.getElementById('ccnav-'+k); if(!nv)return;
