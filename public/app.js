@@ -611,11 +611,58 @@
     toast('Request sent to 02S — quote incoming'); document.getElementById('askInput').value=''; if(CURRENT==='ns') showNSActivities();
   }
 
+  var _rfqRef='';
+
+  function openRFQModal(){
+    if(!state.cart.length){ toast('Add items to your request first'); return; }
+    _rfqRef='Q-'+String(Math.floor(Math.random()*90000)+10000);
+    var ICO_DOWN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-left:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
+    var tblHead='<div style="display:grid;grid-template-columns:1fr 110px 100px;gap:0;padding:6px 0;border-bottom:2px solid var(--g200)">'
+      +'<span style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em">Item</span>'
+      +'<span style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em">Period / qty</span>'
+      +'<span style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.05em;text-align:right">Estimate</span></div>';
+    var tblRows='';
+    var totalPriced=0, pendingN=0;
+    state.cart.forEach(function(c){
+      var needsQ=c.isQuote||!c.total;
+      if(!needsQ) totalPriced+=c.total; else pendingN++;
+      var amt=needsQ
+        ?'<span style="font-size:11.5px;color:var(--g400);font-style:italic">Pending 02S</span>'
+        :'<span style="font-size:12.5px;font-weight:600;color:var(--charcoal)">'+fmt(c.total)+'</span>';
+      tblRows+='<div style="display:grid;grid-template-columns:1fr 110px 100px;gap:3px;padding:9px 0;border-bottom:1px solid var(--g100);align-items:start">'
+        +'<div><div style="font-size:12.5px;font-weight:500;color:var(--g900)">'+c.name+'</div>'
+        +'<div style="font-size:11px;color:var(--g500);margin-top:1px">'+pillarLabel(c.pillarKey)+(c.costCode?' \u00b7 '+c.costCode:'')+'</div>'
+        +(c.plan?'<div style="font-size:10.5px;color:var(--success);margin-top:2px">On plan \u00b7 '+c.plan+'</div>':'')+'</div>'
+        +'<div style="font-size:11.5px;color:var(--g700);padding-top:2px">'+c.qtyText+'</div>'
+        +'<div style="text-align:right;padding-top:2px">'+amt+'</div></div>';
+    });
+    var tblFoot='<div style="display:flex;justify-content:space-between;align-items:baseline;padding:10px 0 2px;border-top:1px solid var(--g200);margin-top:4px">'
+      +'<span style="font-size:12px;font-weight:600;color:var(--g900)">Confirmed pricing</span>'
+      +'<span style="font-size:14px;font-weight:700;color:var(--charcoal)">'+fmt(totalPriced)+'<span style="font-size:11px;font-weight:400;color:var(--g400)"> est.</span></span></div>';
+    if(pendingN){
+      tblFoot+='<div style="font-size:11.5px;color:var(--g500);padding-bottom:2px">'+pendingN+' item'+(pendingN===1?'':'s')+' pending 02S pricing \u2014 finalizes once confirmed (24\u00a0hrs)</div>';
+    }
+    var ns=CURRENT==='ns';
+    var nsNote=ns?'<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:11.5px;color:var(--g700)"><b>02S context:</b> Hercules Solar + BESS \u00b7 BESS substation phase \u00b7 rate card applied to standard items.</div>':'';
+    var useNote='<div style="background:var(--g50);border-radius:6px;padding:10px 12px;margin-top:14px;font-size:11.5px;color:var(--g700);line-height:1.55">'
+      +'<b>Documentation use only.</b> Attach to Change Order authorizations or cost-plus reimbursement submissions to the owner. Does not trigger fulfillment \u2014 for that, use <b>Submit request</b> in your cart.</div>';
+    var body=nsNote
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px">'
+      +'<div><div style="font-size:14px;font-weight:700;color:var(--charcoal)">02S Equipment &amp; Services Quote</div>'
+      +'<div style="font-size:11.5px;color:var(--g500);margin-top:3px">Ref <b>'+_rfqRef+'</b>&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Jul 28, 2026&nbsp;&nbsp;\u00b7&nbsp;&nbsp;Hercules Solar + BESS</div></div>'
+      +'<span class="tag info" style="font-size:10px;white-space:nowrap">PDF export</span></div>'
+      +tblHead+tblRows+tblFoot+useNote
+      +'<div class="modal-foot"><button onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-red" onclick="closeModal();sendRFQ()">Download quote PDF'+ICO_DOWN+'</button></div>';
+    openModal('Request for Quote', body);
+  }
+
   function sendRFQ(){
-    var el=document.getElementById('understood'); el.className='understood sent';
-    el.innerHTML='<div class="un-done">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'<div>Request for Quote submitted<div class="udsub">Your RFQ is submitted — 02S will review and get back to you. Track it under Orders.</div></div></div>';
-    if(CURRENT==='ns'){ var rfqEl=document.getElementById('understood'); if(rfqEl) rfqEl.innerHTML+='<div style="margin-top:10px;font-size:11.5px;color:var(--g700);background:var(--info-tint);border-radius:5px;padding:6px 9px"><b>CPM context attached:</b> Hercules Solar + BESS · BESS substation phase · need-by Jun 28</div>'; }
-    toast('RFQ submitted — you\'ll be notified when your quote is ready'); document.getElementById('askInput').value='';
+    var el=document.getElementById('understood'); if(!el)return; el.className='understood sent';
+    var ref=_rfqRef||'Q-pending';
+    el.innerHTML='<div class="un-done">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'<div>Quote PDF generated<div class="udsub">Ref '+ref+' \u2014 attach to your Change Order or cost-plus submission. 02S will confirm any pending pricing within 24 hrs.</div></div></div>';
+    if(CURRENT==='ns'){ var rfqEl=document.getElementById('understood'); if(rfqEl) rfqEl.innerHTML+='<div style="margin-top:8px;font-size:11.5px;color:var(--g700);background:var(--info-tint);border-radius:5px;padding:6px 9px"><b>CPM context attached:</b> Hercules Solar + BESS \u00b7 BESS substation phase \u00b7 rate card rates applied.</div>'; }
+    toast('Quote PDF generated \u2014 ref '+ref); document.getElementById('askInput').value='';
   }
   function recalc(){
     var pl=document.getElementById('priceLine');
@@ -720,7 +767,7 @@
       '<div class="req-total"><span class="tl">Est. total · 02S rates</span><span class="tv">'+fmt(total)+'<span class="per"> /project</span></span></div>'+
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+
       '<button class="btn btn-red req-submit" onclick="sendUnderstood()">Submit request'+svg('<path d="M5 12h14M12 5l7 7-7 7"/>',2)+'</button>'+
-      '<button class="btn btn-ghost req-submit" onclick="sendRFQ()">Request for Quote'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'</button>'+
+      '<button class="btn btn-ghost req-submit" onclick="openRFQModal()">Request for Quote'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15h6"/>',2)+'</button>'+
       '</div></div>';
   }
 
