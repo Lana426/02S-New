@@ -1390,21 +1390,21 @@
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
-      vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane mobilizations',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
       v1:'6 moves this week · 3 oversize hauls pending permits · Tower crane mobilization confirmed Aug 3.',
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
-      add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Crane pick \u2014 module racking'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane pick'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
+      add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Tower crane mobilization'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane mobilization'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
         {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane pick',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
         {move:'BESS container placement',type:'Haul + crane',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
         {move:'Prefab pipe rack delivery',type:'Delivery',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
@@ -4232,10 +4232,10 @@ charges:[
       roll:[{a:'Engineering',b:'5 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'4 FTE',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'3 FTE',c:'ongoing',v:'on plan',vt:'ok'}],
       varSummary:'VDC / BIM one FTE over plan — two projects have overlapping coordination windows.',
       consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and Cimarron. One firm can cover both projects at a blended MSA rate.'} },
-    procurement:{ mount:'ccDpProc', title:'Procurement demand plan', icon:'cart', decCol:'Order-by (lead)',
+    procurement:{ mount:'ccDpProc', title:'Long-lead procurement', icon:'cart', decCol:'Order-by (lead)',
       kpis:[{k:'Active projects',v:'8',sub:'with long-lead demand',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'At-risk',v:'2',sub:'order-by passed',tone:'bad',icon:'warn'}],
       ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items (switchgear, BESS containers) are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
-      cap:'Every project\u2019s long-lead procurement demand, aggregated. Order-by dates are computed from lead time and the schedule need-by; the pillar signal is order-by risk.',
+      cap:'Major materials with 12\u201330-week lead times, aggregated across the portfolio. Distinct from field small-tools procurement (managed in each project portal). Order-by dates are back-calculated from schedule need-by; the pillar signal is order-by risk.',
       rows:[
         {id:'REQ-P-0501',asset:'MV switchgear \u00b7 15kV lineup \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Switchgear',taxOk:true,leaf:'15kV',dec:'May 1 \u00b7 24 wk',decTone:'bad',status:'At-risk'},
         {id:'REQ-P-0508',asset:'BESS containers \u00b7 2.5 MWh \u00b7 qty 6',project:'Hercules Solar + BESS',tax:'Material \u203a Energy storage \u203a BESS',taxOk:true,leaf:'2.5 MWh',dec:'May 15 \u00b7 30 wk',decTone:'bad',status:'At-risk'},
@@ -4252,7 +4252,8 @@ charges:[
       rows:[
         {id:'REQ-F-021',asset:'Prefab pipe rack modules \u00b7 qty 12',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pipe rack',taxOk:true,leaf:'Pipe rack',dec:'In fab',decTone:'info',status:'In fabrication'},
         {id:'REQ-F-034',asset:'Modular e-houses \u00b7 BESS \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Assembly \u203a Electrical \u203a E-house',taxOk:true,leaf:'E-house',dec:'Submittal',decTone:'info',status:'Submittal'},
-        {id:'REQ-F-041',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Riverside Medical Center',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'}
+        {id:'REQ-F-041',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Riverside Medical Center',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'},
+        {id:'REQ-F-042',asset:'Skid-mounted pump assemblies \u00b7 qty 4',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pump skid',taxOk:true,leaf:'Pump skid',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Peak units','Need-by','vs plan'],
       roll:[{a:'Mechanical',b:'12',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Electrical',b:'8',c:'Nov 2026',v:'on plan',vt:'ok'},{a:'Structural',b:'12',c:'Jul 2026',v:'+2 over',vt:'warn'}],
