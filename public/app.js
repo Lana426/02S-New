@@ -1984,33 +1984,93 @@ charges:[
     var pvn=gel('vitalPlanPctNS'); if(pvn) pvn.innerHTML=miniRingHtml;
     var psn=gel('vitalPlanSubNS'); if(psn) psn.textContent=plan+' of '+total+' orders from plan';
   }
+  function openMarginPlanModal(){
+    var gmPlan=16.5,gmCurr=14.2,gmProj=22600000;
+    var GP=[
+      {l:'Equipment',     p:18.0,a:15.2,note:'Re-rent crane premium on BESS — primary gap driver'},
+      {l:'Prefab',        p:14.0,a:13.5,note:'Headwall fabrication slightly behind forecast'},
+      {l:'Logistics',     p:12.0,a:12.4,note:''},
+      {l:'Procurement',   p:8.0, a:7.8, note:''},
+      {l:'Prof. services',p:22.0,a:21.0,note:''}
+    ];
+    var gt='1fr 72px 72px 84px';
+    var b='<div style="background:var(--g50);border-radius:7px;padding:10px 13px;margin-bottom:14px">'
+      +'<div style="font-size:12.5px;font-weight:600;color:var(--g900)">Hercules Solar + BESS</div>'
+      +'<div style="font-size:12px;color:var(--g500);margin-top:2px">Plan '+gmPlan+'% GM &rarr; actual '+gmCurr+'% &mdash; '
+      +fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' gap to plan</div></div>';
+    b+='<div style="display:grid;grid-template-columns:'+gt+';font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);padding-bottom:5px;border-bottom:1px solid var(--g200);margin-bottom:2px">'
+      +'<span>Pillar</span><span style="text-align:right">Plan %</span><span style="text-align:right">Actual %</span><span style="text-align:right">Variance</span></div>';
+    GP.forEach(function(r){
+      var v=(r.a-r.p).toFixed(1); var vtone=r.a<r.p-1?'var(--red)':r.a<r.p?'var(--warning)':'var(--success)';
+      b+='<div style="display:grid;grid-template-columns:'+gt+';padding:8px 0;border-bottom:1px solid var(--g100);align-items:start">'
+        +'<div><div style="font-size:13px;color:var(--g800);font-weight:500">'+r.l+'</div>'
+        +(r.note?'<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.note+'</div>':'')
+        +'</div>'
+        +'<div style="font-size:13px;color:var(--g500);text-align:right;padding-top:2px">'+r.p.toFixed(1)+'%</div>'
+        +'<div style="font-size:13px;font-weight:700;color:var(--g900);text-align:right;padding-top:2px">'+r.a.toFixed(1)+'%</div>'
+        +'<div style="font-size:13px;font-weight:700;color:'+vtone+';text-align:right;padding-top:2px">'+(r.a>=r.p?'+':'')+v+' pts</div>'
+        +'</div>';
+    });
+    b+='<div style="display:grid;grid-template-columns:'+gt+';padding:9px 0 2px">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--g900)">Total project GM</div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--g500);text-align:right">'+gmPlan.toFixed(1)+'%</div>'
+      +'<div style="font-size:14px;font-weight:700;color:var(--red);text-align:right">'+gmCurr.toFixed(1)+'%</div>'
+      +'<div style="font-size:14px;font-weight:700;color:var(--red);text-align:right">−'+(gmPlan-gmCurr).toFixed(1)+' pts</div>'
+      +'</div>';
+    b+='<div style="margin-top:12px;padding:9px 11px;background:var(--g50);border-radius:6px;font-size:12px;color:var(--g600)">'
+      +'<b style="color:var(--g800)">Enterprise contribution:</b> '
+      +fmtBig(Math.round(gmCurr/100*gmProj))+' gross profit from this project ('
+      +gmCurr+'% of $22.6M). McCarthy portfolio target is 15% GM — this project is currently 0.8 pts below that benchmark.</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
+      +'<button class="btn btn-dark" onclick="closeModal();go(\'billing\')">View cost breakdown &rarr;</button></div>';
+    openModal('Margin plan — Hercules Solar + BESS', b);
+  }
   function renderGMDashKPI(){
     var mount=document.getElementById('gmDashKPI'); if(!mount)return;
     var ns=CURRENT==='ns';
-    var gmPlan=16.5,gmCurr=14.2,gmRev=1800000,gmThru=14600000,gmProj=22600000;
+    var gmPlan=16.5,gmCurr=14.2,gmProj=22600000;
     var gmTone=gmCurr<gmPlan-1?'bad':gmCurr<gmPlan?'warn':'ok';
     var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
-    var gap=Math.round((gmPlan-gmCurr)/100*gmRev);
-    var h='<div style="background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius,8px);padding:13px 16px;margin-bottom:18px">'
+    var view=window._gmDashView||'summary';
+    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:var(--radius,8px);padding:13px 16px;margin-bottom:18px">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
-      +'<div style="font-size:12px;font-weight:700;color:var(--info,#265D9F)">Project → enterprise gross margin<span style="font-weight:400;color:var(--g400);margin-left:6px">· benchmarked vs. original O2S opportunity</span></div>'
-      +'<div style="display:flex;gap:8px">'
-      +(ns?'<button class="btn btn-ghost btn-sm" onclick="toast(\'Scenario analysis — demo\')">Scenarios</button>':'')
+      +'<div style="font-size:12px;font-weight:700;color:var(--g900)">Project gross margin</div>'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+      +'<select style="font-size:11px;border:1px solid var(--g200);border-radius:4px;padding:2px 6px;color:var(--g700);background:#fff" onchange="window._gmDashView=this.value;renderGMDashKPI()">'
+      +'<option value="summary"'+(view==='summary'?' selected':'')+'>Summary</option>'
+      +'<option value="pillar"'+(view==='pillar'?' selected':'')+'>By pillar</option>'
+      +'</select>'
+      +'<button class="btn btn-ghost btn-sm" onclick="openMarginPlanModal()">Margin plan</button>'
       +'<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">Full detail</button>'
       +'</div>'
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:8px">'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S opportunity est.</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$1.8M</div><div style="font-size:11px;color:var(--g500)">original basis · 8% of project</div></div>'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">vs '+gmPlan+'% plan target</div></div>'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">O2S throughput</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$14.6M</div><div style="font-size:11px;color:var(--g500)">committed of $22.6M total</div></div>'
-      +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Expected return</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">$240K</div><div style="font-size:11px;color:var(--g500)">original O2S estimate</div></div>'
-      +'</div>'
-      +'<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.15);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'
-      +'<span><b>Gap to plan:</b> '+fmtBig(gap)+' — driven by equipment re-rent premium on cranes &amp; BESS substation mobilization</span>'
-      +'<div style="display:flex;gap:8px"><span class="lk" onclick="toast(\'View O2S opportunity — demo\')">View opportunity</span><span style="color:var(--g300)">&middot;</span><span class="lk" onclick="toast(\'Link to margin plan — demo\')">Margin plan</span></div>'
-      +'</div>'
-      +(ns?'<div style="margin-top:8px;font-size:11.5px;color:var(--g700);background:rgba(38,93,159,.06);border-radius:5px;padding:7px 10px"><b>02S forecast:</b> Equipment re-rent premium is recoverable if crane extension is converted to a planned demand plan line by Jul 30. Projected GM recovery: +0.8 pts to 15.0%.</div>':'')
       +'</div>';
+    if(view==='summary'){
+      h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">'
+        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>'
+        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
+        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $22.6M</div></div>'
+        +'</div>'
+        +'<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid var(--g100)">'
+        +'Gap: '+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan — crane re-rent premium on BESS</div>';
+    } else {
+      var GP=[{l:'Equipment',p:18.0,a:15.2},{l:'Prefab',p:14.0,a:13.5},{l:'Logistics',p:12.0,a:12.4},{l:'Procurement',p:8.0,a:7.8},{l:'Prof. services',p:22.0,a:21.0}];
+      h+='<div style="font-size:11px">'
+        +'<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:4px 8px;padding:4px 0;border-bottom:1px solid var(--g100);color:var(--g500);font-weight:600;text-transform:uppercase;letter-spacing:.04em">'
+        +'<span>Pillar</span><span style="text-align:right">Plan%</span><span style="text-align:right">Actual%</span><span style="text-align:right">Var</span></div>';
+      GP.forEach(function(r){
+        var tone=r.a<r.p-1?'var(--red)':r.a<r.p?'var(--warning)':'var(--success)';
+        var vr=(r.a-r.p).toFixed(1);
+        h+='<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:4px 8px;padding:5px 0;border-bottom:1px solid var(--g50)">'
+          +'<span style="color:var(--g900)">'+r.l+'</span>'
+          +'<span style="text-align:right;color:var(--g600)">'+r.p+'%</span>'
+          +'<span style="text-align:right;font-weight:600;color:'+tone+'">'+r.a+'%</span>'
+          +'<span style="text-align:right;color:'+tone+'">'+(r.a>=r.p?'+':'')+vr+'pp</span>'
+          +'</div>';
+      });
+      h+='</div>';
+    }
+    if(ns) h+='<div style="margin-top:8px;font-size:11.5px;color:var(--g700);background:var(--g50);border-radius:5px;padding:7px 10px"><b>02S forecast:</b> Equipment re-rent premium is recoverable if crane extension is converted to a planned demand plan line by Jul 30. Projected GM recovery: +0.8 pts to 15.0%.</div>';
+    h+='</div>';
     mount.innerHTML=h;
   }
   function renderFleetDemand(){
@@ -2364,8 +2424,8 @@ charges:[
       var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
       h+='<div style="margin-top:16px;padding:14px 16px;background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius)">';
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Project contribution to enterprise gross margin</div>';
-      h+='<button class="btn btn-ghost btn-sm" onclick="toast(\'Margin plan — enterprise view (demo)\')">View margin plan</button>';
+      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Project gross margin</div>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="openMarginPlanModal()">Margin plan</button>';
       h+='</div>';
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>';
