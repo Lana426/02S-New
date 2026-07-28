@@ -3683,7 +3683,7 @@ charges:[
     {id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8},
     {id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2},
     {id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer'},
-    {id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (crane pick)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
+    {id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (oversize transport)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
     {id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week'},
     {id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)'},
     {id:'fq7',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'0100-0100-0000-0001',kind:'service',status:'New'},
@@ -3710,24 +3710,29 @@ charges:[
   function fqMarginPct(r){ return fqCompute(r,r.reco).pct.toFixed(0); }
   function renderFulfill(){
     var mount=gel('ccFulfill'); if(!mount)return; var ns=CURRENT==='ns';
+    var isFSMFQ=ccPersona==='fsm'; var fsmFQScope=isFSMFQ&&_ccFSMProj!=='all'?(_ccFSMProj===''?CC_FSM_PROJECTS:[_ccFSMProj]):null;
+    var FQ_scoped=fsmFQScope?FQ.filter(function(r){return fsmFQScope.indexOf(r.project)>=0;}):FQ;
     var hlRef=ccHighlight; ccHighlight=null;
-    var openN=0,awaitN=0,readyN=0; FQ.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
-    var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var openN=0,awaitN=0,readyN=0; FQ_scoped.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
+    var fqScopeLabel=isFSMFQ?(fsmFQScope&&fsmFQScope.length===1?fsmFQScope[0]:(fsmFQScope?'My projects \u00b7 2 assigned':'All projects \u00b7 portfolio')):'All projects \u00b7 portfolio';
+    var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+fqScopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">The optimizer can clear the '+readyN+' open equipment requests now \u2014 owned-first, then re-rent \u2014 at a blended ~22% margin. '+awaitN+' more need a price or quote, and the at-risk procurement lines should be released this week.</div></div></div>'; }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
     var PILLARS=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
-    var PROJECTS=[['all','All'],['Hercules Solar + BESS','Hercules'],['Riverside Medical Center','Riverside'],['Cimarron Data Center','Cimarron']];
+    var ALL_PROJ_OPTS=[['Hercules Solar + BESS','Hercules'],['Riverside Medical Center','Riverside'],['Cimarron Data Center','Cimarron']];
+    var FSM_PROJ_OPTS=CC_FSM_PROJECTS.map(function(pr){return [pr,pr.indexOf('Hercules')>=0?'Hercules':'Riverside'];});
+    var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
     var STATS=[['all','All'],['open','Open'],['done','Resolved']];
     h+='<div class="fq-filters">';
     h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(fqFPr===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='</div>';
-    var rows=FQ.filter(fqVisible);
+    var rows=FQ_scoped.filter(fqVisible);
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all');
-    h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
+    h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
     var gt='1fr 168px 92px 128px 300px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
@@ -4200,14 +4205,14 @@ charges:[
     logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
       kpis:[{k:'Active projects',v:'12',sub:'with move demand',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans. Three oversize heavy hauls need permits, and a north-gate conflict on Oct 15 (switchgear haul vs tower-crane mobilization) is flagged for resequencing.',
-      cap:'Every project\u2019s move demand, aggregated \u2014 deliveries, heavy hauls, and crane picks. 02S schedules windows, gates, and permits; the supply side is executed downstream in logistics.',
+      cap:'Every project\u2019s move demand, aggregated \u2014 deliveries, heavy hauls, and crane mobilizations. 02S schedules windows, gates, and permits; the supply side is executed downstream in logistics.',
       rows:[
         {id:'REQ-L-3042',asset:'Excavator delivery + haul \u00b7 oversize',project:'Cimarron Data Center',tax:'Logistics \u203a Transport \u203a Heavy haul',taxOk:true,leaf:'Oversize',dec:'Self-perform',decTone:'ok',status:'Scheduled'},
-        {id:'REQ-L-3054',asset:'Tower crane mobilization \u00b7 crane pick',project:'Riverside Medical Center',tax:'Logistics \u203a Crane \u203a Mobilization',taxOk:true,leaf:'Crane pick',dec:'3PL',decTone:'info',status:'Scheduled'},
+        {id:'REQ-L-3054',asset:'Tower crane mobilization \u00b7 oversize transport',project:'Riverside Medical Center',tax:'Logistics \u203a Transport \u203a Mobilization',taxOk:true,leaf:'Oversize transport',dec:'3PL',decTone:'info',status:'Scheduled'},
         {id:'REQ-L-3061',asset:'BESS container placement \u00b7 haul + crane',project:'Hercules Solar + BESS',tax:'Logistics \u203a Transport \u203a Oversize',taxOk:true,leaf:'Haul + crane',dec:'3PL',decTone:'info',status:'Requested'}
       ],
       rollCols:['Move type','Peak count','Peak month','vs plan'],
-      roll:[{a:'Deliveries',b:'24',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'3',c:'Oct 2026',v:'+1 over',vt:'warn'},{a:'Crane picks',b:'2',c:'Aug 2026',v:'on plan',vt:'ok'}],
+      roll:[{a:'Deliveries',b:'24',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'3',c:'Oct 2026',v:'+1 over',vt:'warn'},{a:'Crane mobilizations',b:'2',c:'Aug 2026',v:'on plan',vt:'ok'}],
       varSummary:'Heavy hauls one over plan \u2014 3 route to the same corridor within a week.',
       consol:{save:'~$18K + 1 permit',cta:'Combine hauls',detail:'3 heavy hauls route to the same corridor (Cimarron + Riverside) within one week. Combine permits and carrier into a single mobilization.'} },
     profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
