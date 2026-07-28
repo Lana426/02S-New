@@ -2529,27 +2529,39 @@ charges:[
     toast('PDF exported — '+ids.length+' invoice'+(ids.length===1?'':'s')+' · check Downloads');
   }
   function openBillExportModal(){
-    _billExFilter='all';
     var ns=CURRENT==='ns';
     var anomCount=ns?BILLS.filter(function(b){return b.anomaly&&b.status==='Finalized';}).length:0;
     var anomStrip=ns&&anomCount?'<div style="background:var(--warning-tint);border:1px solid rgba(138,109,31,.25);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--g800);margin-bottom:12px;display:flex;align-items:center;gap:8px">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'<span><b>'+anomCount+' invoice'+(anomCount===1?' has':'s have')+' a flagged anomaly</b> — review before exporting</span></div>':'';
+    var pageFrom=(document.getElementById('billFrom')||{}).value||'';
+    var pageTo=(document.getElementById('billTo')||{}).value||'';
+    var _MNS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var monthLabel='';
+    if(pageFrom&&pageTo){
+      var _fd=new Date(pageFrom),_td=new Date(pageTo);
+      if(!isNaN(_fd)&&!isNaN(_td)&&_fd.getMonth()===_td.getMonth()&&_fd.getFullYear()===_td.getFullYear()){
+        var _ld=new Date(_fd.getFullYear(),_fd.getMonth()+1,0).getDate();
+        if(_fd.getDate()===1&&_td.getDate()===_ld) monthLabel=_MNS[_fd.getMonth()]+' '+_fd.getFullYear();
+      }
+    }
+    var initFilter=(pageFrom&&pageTo)?'custom':'all';
+    var initFrom=pageFrom||'';
+    var initTo=pageTo||'';
+    _billExFilter=initFilter;
+    var customLbl=monthLabel||'Custom range';
     var body=anomStrip
       +'<div style="margin-bottom:12px">'
       +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Filter by period</div>'
       +'<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px">'
-      +'<button class="btn btn-ghost btn-sm bex-quick on" data-f="all" onclick="setBillExFilter(\'all\')">All finalized</button>'
-      +'<button class="btn btn-ghost btn-sm bex-quick" data-f="Apr" onclick="setBillExFilter(\'Apr\')">Apr 2026</button>'
-      +'<button class="btn btn-ghost btn-sm bex-quick" data-f="May" onclick="setBillExFilter(\'May\')">May 2026</button>'
-      +'<button class="btn btn-ghost btn-sm bex-quick" data-f="Jun" onclick="setBillExFilter(\'Jun\')">Jun 2026</button>'
-      +'<button class="btn btn-ghost btn-sm bex-quick" data-f="custom" onclick="setBillExFilter(\'custom\')">Custom range</button>'
+      +'<button class="btn btn-ghost btn-sm bex-quick'+(initFilter==='all'?' on':'')+'" data-f="all" onclick="setBillExFilter(\'all\')">All finalized</button>'
+      +'<button class="btn btn-ghost btn-sm bex-quick'+(initFilter==='custom'?' on':'')+'" data-f="custom" onclick="setBillExFilter(\'custom\')">'+customLbl+'</button>'
       +'</div>'
-      +'<div id="billExCustom" style="display:none;gap:8px;align-items:center;margin-bottom:10px">'
-      +'<input type="date" id="billExFrom" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="2026-04-01" onchange="setBillExFilter(\'custom\')">'
+      +'<div id="billExCustom" style="display:'+(initFilter==='custom'?'flex':'none')+';gap:8px;align-items:center;margin-bottom:10px">'
+      +'<input type="date" id="billExFrom" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="'+initFrom+'" onchange="setBillExFilter(\'custom\')">'
       +'<span style="font-size:12px;color:var(--g500)">–</span>'
-      +'<input type="date" id="billExTo" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="2026-06-30" onchange="setBillExFilter(\'custom\')">'
+      +'<input type="date" id="billExTo" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:12px;font-family:inherit" value="'+initTo+'" onchange="setBillExFilter(\'custom\')">'
       +'</div>'
       +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Select invoices <span style="text-transform:none;font-weight:400;color:var(--g400)">(finalized only — auto-approved at day 10)</span></div>'
-      +'<div id="billExRows">'+_billExRows('all')+'</div>'
+      +'<div id="billExRows">'+_billExRows(initFilter)+'</div>'
       +'</div>'
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
       +'<button class="btn btn-red" onclick="doExportPDF()">'+svg('<path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>',2)+' Export PDF</button></div>';
