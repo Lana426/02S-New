@@ -3629,7 +3629,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'){ renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -3677,6 +3677,7 @@ charges:[
     ];
     if(ns) kpis.push({k:'Asset lifecycle',v:fRepl+' flags',sub:fOR+'\u00a0on-rent\u00a0\u00b7\u00a0'+fIdle+'\u00a0idle',tone:fRepl>0?'bad':fIdle>0?'warn':'ok',icon:IC.box,to:'fleet'});
     var acts=[
+      {t:CC_QUOTES.filter(function(q){return q.status==='Needs pricing';}).length+' portal RFQs — pricing not set',s:'Equipment, prefab &amp; prof services · submitted this week',proj:null,tag:{l:'Quotes',tone:'warn'},to:'fulfill-quotes',reco:'MEWP matches the rate card — auto-price; cable tray brackets and MEP commissioning need fabrication &amp; specialty quotes',icon:IC.cart},
       {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',proj:'Cimarron Data Center',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
       {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
       {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',proj:'Riverside Medical Center',tag:{l:'Decision',tone:'info'},to:'fulfill',reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
@@ -3722,6 +3723,32 @@ charges:[
   var CC_SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
   var FQ_TONE={'New':'neu','Requested':'neu','Awaiting pricing':'warn','Acknowledged':'info','Allocated':'ok','Fulfilled':'ok','Scheduled':'info','At-risk':'bad','PO issued':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok'};
   var FQ_DONE=['Allocated','Acknowledged','PO issued','Delivered','In fabrication','Scheduled','Fulfilled'];
+  var CC_QUOTES=[
+    {id:'fqQ1',ref:'RFQ-4801',pillar:'equipment',item:'Mobile elevated work platform · 40 ft',qty:3,project:'Hercules Solar + BESS',needby:'Sep 15',code:'0100-0100-0000-0001',status:'Needs pricing',requestDate:'Jul 25',submittedBy:'J. Nakamura',note:'Panel installation · 8-week window · not on current demand plan'},
+    {id:'fqQ2',ref:'RFQ-4802',pillar:'prefab',item:'Cable tray bracket assemblies',qty:'lot',project:'Cimarron Data Center',needby:'Oct 1',code:'2600-0540-0000-0001',status:'Needs pricing',requestDate:'Jul 26',submittedBy:'Site procurement',note:'Not in rate card — custom fabrication quote required'},
+    {id:'fqQ3',ref:'RFQ-4803',pillar:'profservices',item:'MEP commissioning lead · 1 FTE',qty:'1 FTE',project:'Riverside Medical Center',needby:'Nov 2026',code:'0100-0100-0000-0001',status:'Quote in progress',requestDate:'Jul 22',submittedBy:'R. Okafor',note:'Specialty role — checking rate card and 3 vendors'}
+  ];
+  var fqView='orders';
+  function fqSetView(v){ fqView=v; renderFulfill(); }
+  function ccSetQuotePrice(id){
+    var q=CC_QUOTES.filter(function(x){return x.id===id;})[0]; if(!q)return;
+    var b='<div class="fq-req"><div class="fq-req-t">'+q.item+'</div><div class="sub">'+q.ref+' · '+q.project+' · need-by '+q.needby+'</div></div>'
+      +'<div class="fq-calc"><div class="fq-crow"><span>Submitted by</span><span>'+q.submittedBy+'</span></div>'
+      +'<div class="fq-crow"><span>Request date</span><span>'+q.requestDate+'</span></div>'
+      +'<div class="fq-crow"><span>Note</span><span>'+q.note+'</span></div></div>'
+      +'<div style="margin:14px 0 4px"><label style="font-size:11.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px">02S price</label>'
+      +'<input id="quotePrice" type="text" class="dp-sel" style="width:190px" placeholder="e.g. $4,200/mo or $28K" /></div>'
+      +'<div class="modal-foot"><button onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-red" onclick="ccConfirmQuotePrice(\'' +q.id+ '\')">Confirm &amp; send to project</button></div>';
+    openModal('Set price — '+q.ref, b);
+  }
+  function ccConfirmQuotePrice(id){
+    var q=CC_QUOTES.filter(function(x){return x.id===id;})[0]; if(!q)return;
+    var inp=document.getElementById('quotePrice'); var val=inp&&inp.value&&inp.value.trim();
+    if(!val){ toast('Enter a price first'); return; }
+    q.status='Priced'; q.pricedAt=val;
+    closeModal(); renderFulfill(); toast(q.ref+' priced at '+val+' — quote sent to project team');
+  }
   function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
     {id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2},
@@ -3766,6 +3793,29 @@ charges:[
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">The optimizer can clear the '+readyN+' open equipment requests now \u2014 owned-first, then re-rent \u2014 at a blended ~22% margin. '+awaitN+' more need a price or quote, and the at-risk procurement lines should be released this week.</div></div></div>'; }
+    var quotesNeedP=CC_QUOTES.filter(function(q){return q.status==='Needs pricing';}).length;
+    h+='<div style="display:flex;align-items:center;gap:2px;padding:10px 0 4px">'
+      +'<button class="ff-b'+(fqView==='orders'?' on':'')+'" onclick="fqSetView(\'orders\')">Orders</button>'
+      +'<button class="ff-b'+(fqView==='quotes'?' on':'')+'" onclick="fqSetView(\'quotes\')">Quotes'+(quotesNeedP?' <span class="tag warn" style="font-size:10px;padding:1px 5px;margin-left:3px">'+quotesNeedP+'</span>':'')+'</button>'
+      +'</div>';
+    if(fqView==='quotes'){
+      var qScope=fsmFQScope?CC_QUOTES.filter(function(q){return fsmFQScope.indexOf(q.project)>=0;}):CC_QUOTES;
+      var qt='1fr 168px 90px 130px 170px';
+      h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+qScope.length+' portal RFQs received — submitted via the customer portal Request for Quote flow. Set a price to convert to a fulfillment order.</span></div>';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+qt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Action</span></div>';
+      if(!qScope.length){ h+='<div class="fq-empty">No quotes in scope.</div>'; }
+      qScope.forEach(function(q){
+        var isPriced=q.status==='Priced'; var isIP=q.status==='Quote in progress';
+        var tone=isPriced?'ok':isIP?'info':'warn';
+        h+='<div class="dp-row" style="grid-template-columns:'+qt+'"><div>'+q.item+'<div class="sub">'+q.ref+' · '+q.note+'</div></div>'
+          +'<div>'+q.project+'<div class="sub">by '+q.submittedBy+' · '+q.requestDate+'</div></div>'
+          +'<div>'+q.needby+'</div>'
+          +'<div><span class="tag '+tone+'">'+q.status+'</span></div>'
+          +'<div>'+(isPriced?'<div class="fq-done">Priced · '+q.pricedAt+'</div>':'<button class="btn '+(isIP?'btn-dark':'btn-red')+' btn-sm" onclick="ccSetQuotePrice(\''+q.id+'\')">Set price</button>')+'</div></div>';
+      });
+      h+='</div>';
+      mount.innerHTML=h; return;
+    }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
     var PILLARS=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
     var ALL_PROJ_OPTS=[['Hercules Solar + BESS','Hercules'],['Riverside Medical Center','Riverside'],['Cimarron Data Center','Cimarron']];
@@ -4339,9 +4389,26 @@ charges:[
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
+    var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
+    if(pillarQ.length){
+      h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.cart)+'Portal quotes — pending pricing</span><span class="spacer"></span></div>';
+      var gtq='1fr 168px 90px 130px 160px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtq+'"><span>Request / item</span><span>Project</span><span>Need-by</span><span>Status</span><span>Action</span></div>';
+      pillarQ.forEach(function(q){
+        var isPriced=q.status==='Priced'; var isIP=q.status==='Quote in progress';
+        var tone=isPriced?'ok':isIP?'info':'warn';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtq+'"><div>'+q.item+'<div class="sub">'+q.ref+' · by '+q.submittedBy+'</div></div>'
+          +'<div>'+q.project+'</div>'
+          +'<div>'+q.needby+'</div>'
+          +'<div><span class="tag '+tone+'">'+q.status+'</span></div>'
+          +'<div>'+(isPriced?'<div class="fq-done">Priced · '+q.pricedAt+'</div>':'<button class="btn '+(isIP?'btn-dark':'btn-red')+' btn-sm" onclick="ccSetQuotePrice(\''+q.id+'\')">Set price</button>')+'</div></div>';
+      });
+      h+='</div>';
+    }
     mount.innerHTML=h;
   }
   function dpReview(p,id){
+
     var r=dpRowById(p,id); if(!r)return; dpCur={p:p,id:id}; var ns=CURRENT==='ns'; var cfg=CC_DP[p];
     var b='<div class="fq-req"><div class="fq-req-t">'+r.id+'</div><div class="sub">'+r.asset+' \u00b7 '+r.project+'</div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Requested taxonomy</span><span>'+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+'</span></div>';
