@@ -2422,7 +2422,7 @@ charges:[
       var gmPlan=16.5,gmCurr=14.2;
       var gmTone=gmCurr<gmPlan-1.0?'bad':gmCurr<gmPlan?'warn':'ok';
       var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
-      h+='<div style="margin-top:16px;padding:14px 16px;background:var(--info-tint);border:1px solid rgba(38,93,159,.18);border-radius:var(--radius)">';
+      h+='<div style="margin-top:16px;padding:14px 16px;background:#fff;border:1px solid var(--g200);border-radius:var(--radius)">';
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
       h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Project gross margin</div>';
       h+='<button class="btn btn-ghost btn-sm" onclick="openMarginPlanModal()">Margin plan</button>';
