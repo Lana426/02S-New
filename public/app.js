@@ -3472,6 +3472,8 @@ charges:[
   /* ═══════════ COMMAND CENTER ═══════════ */
   var ccActive=null;
   var ccPersona='fsm';
+  var CC_FSM_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center'];
+  var _ccFSMProj='';
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
@@ -3482,7 +3484,8 @@ charges:[
     services: ['ccdash','fulfill','dpsvc','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
-  function ccSetPersona(p){ ccPersona=p; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
+  function setCCFSMProj(proj){ _ccFSMProj=proj; renderCCDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
       var nv=document.getElementById('ccnav-'+k); if(!nv)return;
@@ -3610,7 +3613,11 @@ charges:[
     }
     var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
     var mgP=(typeof mgPortfolioRoll==='function')?mgPortfolioRoll():{act:{pct:0}};
-    var openReq=(typeof FQ!=='undefined'&&FQ.length)?FQ.length:20;
+    var isFSM=ccPersona==='fsm';
+    var fsmScope=_ccFSMProj===''?CC_FSM_PROJECTS:(_ccFSMProj==='all'?null:[_ccFSMProj]);
+    var fsmFQ=(typeof FQ!=='undefined'&&FQ.length)?FQ:[];
+    var scopedFQ=isFSM&&fsmScope?fsmFQ.filter(function(r){return fsmScope.indexOf(r.project)>=0;}):fsmFQ;
+    var openReq=scopedFQ.length||20;
     var fIdle=FLEET.filter(function(r){return r.status==='idle';}).length;
     var fOR=FLEET.filter(function(r){return r.status==='onrent';}).length;
     var fRepl=FLEET.filter(function(r){return r.life==='replace';}).length;
@@ -3623,14 +3630,25 @@ charges:[
     ];
     if(ns) kpis.push({k:'Asset lifecycle',v:fRepl+' flags',sub:fOR+'\u00a0on-rent\u00a0\u00b7\u00a0'+fIdle+'\u00a0idle',tone:fRepl>0?'bad':fIdle>0?'warn':'ok',icon:IC.box,to:'fleet'});
     var acts=[
-      {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
-      {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
-      {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',tag:{l:'Decision',tone:'info'},to:'fulfill',reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
+      {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',proj:'Cimarron Data Center',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
+      {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
+      {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',proj:'Riverside Medical Center',tag:{l:'Decision',tone:'info'},to:'fulfill',reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
       {t:'TC-0012 past replacement threshold',s:'11,800 hrs \u00b7 9 yrs \u00b7 rising maintenance cost',tag:{l:'Replace',tone:'bad'},to:'fleet',reco:'Add to Q3 CapEx plan \u2014 est. $1.2M replacement',icon:IC.box},
-      {t:'Idle-but-billing \u2014 scissor lift',s:'Hercules \u00b7 $3.8K/mo \u00b7 BILL-9012 \u00b7 1 of 11 open anomalies ($27.2K/mo at risk)',tag:{l:'Anomaly',tone:'bad'},to:'anomaly',reco:'Call-off drafted \u2014 auto-applies in 2 days unless you hold \u00b7 recovers $3.8K/mo',icon:IC.warn},
+      {t:'Idle-but-billing \u2014 scissor lift',s:'Hercules \u00b7 $3.8K/mo \u00b7 BILL-9012 \u00b7 1 of 11 open anomalies ($27.2K/mo at risk)',proj:'Hercules Solar + BESS',tag:{l:'Anomaly',tone:'bad'},to:'anomaly',reco:'Call-off drafted \u2014 auto-applies in 2 days unless you hold \u00b7 recovers $3.8K/mo',icon:IC.warn},
       {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart}
     ];
-    h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+        var scopeLabel=!isFSM?'All projects \u00b7 portfolio':(_ccFSMProj===''?'My projects \u00b7 2 assigned':(_ccFSMProj==='all'?'All projects \u00b7 portfolio':_ccFSMProj));
+    h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+scopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    if(isFSM){
+      h+='<div style="display:flex;align-items:center;gap:7px;padding:10px 0 4px;flex-wrap:wrap">';
+      h+='<span style="font-size:11px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-right:2px">View:</span>';
+      h+='<button class="btn btn-ghost btn-sm'+(_ccFSMProj===''?' on':'')+' bex-fsmp" onclick="setCCFSMProj(\'\')">My projects</button>';
+      h+=CC_FSM_PROJECTS.map(function(pr){return '<button class="btn btn-ghost btn-sm'+(_ccFSMProj===pr?' on':'')+' bex-fsmp" onclick="setCCFSMProj(\''+pr+'\')">'+(pr==='Hercules Solar + BESS'?'Hercules Solar':'Riverside Medical')+'</button>';}).join('');
+      h+='<span style="display:inline-block;width:1px;height:16px;background:var(--g200);margin:0 4px;vertical-align:middle"></span>';
+      h+='<button class="btn btn-ghost btn-sm'+(_ccFSMProj==='all'?' on':'')+' bex-fsmp" style="color:var(--g400)" onclick="setCCFSMProj(\'all\')">All portfolio</button>';
+      h+='</div>';
+    }
+    if(isFSM&&fsmScope) acts=acts.filter(function(a){return !a.proj||fsmScope.indexOf(a.proj)>=0;});
     h+='<div class="vitals" style="grid-template-columns:repeat('+(ns?6:5)+',1fr)">';
     kpis.forEach(function(k){ h+='<div class="vital clk '+k.tone+'" onclick="ccGo(\''+k.to+'\')"><div class="vk">'+svg(k.icon)+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div><span class="vchev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>'; });
     h+='</div>';
