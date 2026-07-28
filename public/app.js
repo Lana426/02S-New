@@ -2822,7 +2822,7 @@ charges:[
           '<button class="btn btn-approve btn-sm" onclick="approveBill(\''+b.id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'dispute\')">Dispute</button>'+
           '<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'edit\')">Correct code</button>'+
-          '<button class="btn btn-ghost btn-sm'+(mode==='remap'?' on':'')+'" onclick="setBillUI(\''+b.id+'\',\'remap\')">Remap to CO</button>'+
+          '<button class="btn btn-ghost btn-sm" onclick="openRemapCOModal(\''+b.id+'\')"' +'>Remap to CO</button>'+
           notes+audit+
         '</div>'+
         inline+
@@ -2947,13 +2947,12 @@ charges:[
       +'<button class="btn btn-approve btn-sm" onclick="approveBill(\''+id+'\')">'+svg('<path d="M20 6L9 17l-5-5"/>',2.4)+'Approve</button>'
       +'<button class="btn btn-ghost btn-sm'+(mode==='dispute'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'dispute\')">Dispute</button>'
       +'<button class="btn btn-ghost btn-sm'+(mode==='edit'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'edit\')">Correct code</button>'
-      +'<button class="btn btn-ghost btn-sm'+(mode==='remap'?' on':'')+'" onclick="setBillUI(\''+id+'\',\'remap\')">Remap to CO</button>'
+      +'<button class="btn btn-ghost btn-sm" onclick="openRemapCOModal(\''+id+'\')"' +'>Remap to CO</button>'
       +'<span class="pc-audit">'+(b.audit||'Awaiting your review')+'</span>'
       +'</div>';
     var inline='';
     if(mode==='dispute') inline=billDisputeInline(b,ns);
     else if(mode==='edit') inline=billEditInline(b);
-    else if(mode==='remap') inline=billCOInline(b);
     var body=anomCard+chargesHtml+windowBar+actions+inline
       +'<div class="modal-foot"><button class="btn btn-ghost" onclick="activeBillModal=null;closeModal()">Close</button></div>';
     openModal('<div><h3 style="margin:0 0 2px">'+b.id+'</h3><div class="sub">'+b.product+' &middot; from <span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span> &middot; '+fmt(b.amt)+'</div></div>',body);
@@ -3001,6 +3000,23 @@ charges:[
       +'<button class="btn btn-ghost btn-sm" onclick="setBillUI(\''+b.id+'\',\'\');">Cancel</button>'
       +'</div>'
       +'</div>';
+  }
+  function openRemapCOModal(id){
+    var b=getBill(id); if(!b) return;
+    var opts=CHANGE_ORDERS.map(function(co){
+      var badge=co.status==='Approved'?'<span class="tag ok" style="font-size:10px">Approved</span>':'<span class="tag warn" style="font-size:10px">Pending</span>';
+      return '<label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--g200);border-radius:7px;cursor:pointer;margin-bottom:8px">'
+        +'<input type="radio" name="co-pick-'+id+'" value="'+co.id+'" style="accent-color:var(--charcoal)">'
+        +'<span style="flex:1"><b style="font-size:13px">'+co.id+'</b> '+badge+'<div style="font-size:12px;color:var(--g600);margin-top:3px">'+co.desc+'</div></span>'
+        +'<span style="font-size:12px;color:var(--g500);white-space:nowrap">'+fmt(co.amt)+' approved</span>'
+        +'</label>';
+    }).join('');
+    var body='<div style="font-size:13px;color:var(--g700);line-height:1.6;margin-bottom:14px">Reassign <b>'+id+'</b> ('+b.product+') to a change order cost code. This updates the cost code on all charge lines and logs to the audit trail.</div>'
+      +opts
+      +'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="remapToCO(\''+id+'\');">Confirm remap</button></div>';
+    activeBillModal=null;
+    openModal('<div><b>Remap to change order</b><div style="font-size:12px;font-weight:400;color:var(--g500);margin-top:2px">'+id+' · '+b.product+'</div></div>',body);
   }
   function remapToCO(id){
     var b=getBill(id); if(!b) return;
