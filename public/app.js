@@ -3024,7 +3024,7 @@ charges:[
     }
     b+='</div>';
     b+='</div>';
-    if(data.order&&ORDER_TASKS[data.order.id])b+=renderOrderTasksPanel(data.order.id,false);
+    if(CURRENT==='ns'&&data.order&&ORDER_TASKS[data.order.id])b+=renderOrderTasksPanel(data.order.id,false);
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
     b+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">';
     data.docs.forEach(function(d){
@@ -3203,7 +3203,7 @@ charges:[
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
-    if(ord&&ORDER_TASKS[ord.id])h+=renderOrderTasksPanel(ord.id,true);
+    if(CURRENT==='ns'&&ord&&ORDER_TASKS[ord.id])h+=renderOrderTasksPanel(ord.id,true);
     return h;
   }
   function buildDPTrack(pk,r,rowIdx){
@@ -3258,7 +3258,7 @@ charges:[
     if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
-    if(_ordId&&ORDER_TASKS[_ordId])h+=renderOrderTasksPanel(_ordId,true);
+    if(CURRENT==='ns'&&_ordId&&ORDER_TASKS[_ordId])h+=renderOrderTasksPanel(_ordId,true);
     return h;
   }
 
@@ -3397,6 +3397,7 @@ charges:[
 
   function renderTasksDueWidget(){
     var mount=document.getElementById('tasksWidgetMount'); if(!mount)return;
+    if(CURRENT!=='ns'){mount.innerHTML='';return;}
     var TODAY='2026-07-29'; var WEEK_END='2026-08-04';
     var rows=[];
     Object.keys(ORDER_TASKS).forEach(function(oid){
