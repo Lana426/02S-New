@@ -2555,57 +2555,6 @@ charges:[
     b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px;font-family:monospace">'+data.costCode+'</span></div>';
     if(data.task) b+='<div class="fq-crow"><span>Schedule activity</span><span>'+data.task+'</span></div>';
     b+='</div>';
-    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
-    b+='<div>';
-    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_ORD+'Order &amp; fulfillment</div>';
-    if(data.order){
-      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-      b+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">';
-      b+='<span style="font-size:12px;font-weight:700;color:var(--g900)">'+data.order.ref+'</span>';
-      b+='<span class="tag ok" style="font-size:10px">'+data.order.stage+'</span>';
-      b+='</div>';
-      b+='<div style="font-size:11.5px;color:var(--g700)'+(data.order.delivery?';margin-bottom:6px':'')+'">' +data.order.latest+'</div>';
-      if(data.order.delivery){
-        b+='<div style="font-size:11px;color:var(--g500);border-top:1px solid var(--g150);padding-top:6px">';
-        b+='Delivery: '+data.order.delivery.window+'<br>'+data.order.delivery.carrier+' · <span class="tag info" style="font-size:9.5px">'+data.order.delivery.status+'</span>';
-        b+='</div>';
-      }
-      b+='</div>';
-    } else {
-      b+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">No order on file yet — this line is draft or projected. Submit to 02S to generate an order.</div>';
-    }
-    b+='</div>';
-    b+='<div>';
-    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_BILL+'Billing &amp; cost code</div>';
-    var shortCode=data.costCode?data.costCode.split('·')[0].trim():'—';
-    if(data.bill){
-      var bTone=data.bill.status==='Finalized'||data.bill.status==='Approved'?'ok':'warn';
-      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
-      b+='<div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:4px">'+data.bill.id+'</div>';
-      b+='<div style="display:flex;align-items:center;justify-content:space-between">';
-      b+='<div style="font-size:11.5px;color:var(--g700)">$'+data.bill.amt.toLocaleString()+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
-      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">' +data.bill.id+' →</button>';
-      b+='</div>';
-      b+='</div>';
-    } else if(data.quote){
-      var qDraft=data.quote.status==='Draft';
-      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';
-      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
-      b+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">';
-      b+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+data.quote.ref+'</span> <span class="tag '+(qDraft?'warn':'ok')+'">'+data.quote.status+'</span></div>';
-      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">View quote →</button>';
-      b+='</div>';
-      b+='<div style="font-size:11px;color:var(--g500)">'+(qDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';
-      b+='</div>';
-    } else {
-      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
-      b+='<div style="font-size:11.5px;color:var(--g400)">'+(data.order?'Billing generated once order is fulfilled.':'No billing on file yet.')+'</div>';
-      b+='</div>';
-    }
-    b+='</div>';
-    b+='</div>';
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
     b+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">';
     data.docs.forEach(function(d){
@@ -2614,7 +2563,9 @@ charges:[
     b+='</div>';
     b+='<div class="modal-foot" style="margin-top:16px">';
     b+='<button onclick="closeModal()">Close</button>';
-    if(data.order){b+='<button class="btn btn-ghost" onclick="closeModal();ordSetView(\'orders\');go(\'orders\')">View orders →</button>';}
+    if(data.order) b+='<button class="btn btn-ghost" onclick="closeModal();gotoOrder(\''+data.order.ref+'\')">'+data.order.ref+' →</button>';
+    if(data.bill) b+='<button class="btn btn-ghost" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">'+data.bill.id+' →</button>';
+    if(data.quote) b+='<button class="btn btn-ghost" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">'+ data.quote.ref+' →</button>';
     b+='</div>';
     openModal(data.pillar+' plan line — '+data.title, b);
   }
