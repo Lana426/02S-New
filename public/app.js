@@ -1807,23 +1807,21 @@ function renderProfServicesDP(){
   function setVer(v){
     if(!document.getElementById('ns-toggle-css')){var _s=document.createElement('style');_s.id='ns-toggle-css';_s.textContent="body:not([data-ver='ns']) .ns-only{display:none!important}";document.head.appendChild(_s);}
     var ns=v==='ns'; CURRENT=v; document.body.setAttribute('data-ver',v);
-    document.getElementById('btnV1').classList.toggle('on',!ns);
-    document.getElementById('btnNS').classList.toggle('on',ns);
-    document.getElementById('vitalsV1').classList.toggle('hide',ns);
-    document.getElementById('vitalsNS').classList.toggle('hide',!ns);
-    document.getElementById('attnV1').classList.toggle('hide',ns);
-    document.getElementById('attnNS').classList.toggle('hide',!ns);
-    document.getElementById('sec4').classList.toggle('hide',!ns);
-    document.querySelector('.lookV1').classList.toggle('hide',ns);
-    document.querySelector('.lookNS').classList.toggle('hide',!ns);
+    var _e; function _tog(id,cls,val){_e=typeof id==='string'?document.getElementById(id):id;if(_e)_e.classList.toggle(cls,val);}
+    _tog('btnV1','on',!ns); _tog('btnNS','on',ns);
+    _tog('vitalsV1','hide',ns); _tog('vitalsNS','hide',!ns);
+    _tog('attnV1','hide',ns); _tog('attnNS','hide',!ns);
+    _tog('sec4','hide',!ns);
+    _tog(document.querySelector('.lookV1'),'hide',ns);
+    _tog(document.querySelector('.lookNS'),'hide',!ns);
     document.getElementById('verChip').innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     ['sec1','sec2','sec3','sec4'].forEach(function(s){document.getElementById(s).classList.remove('open')});
     // browse: copilot is NS-only; refresh an open interstitial for the new version
-    document.getElementById('copilotWrap').classList.toggle('hide',!ns);
+    _tog('copilotWrap','hide',!ns);
     var _uds=document.getElementById('understood');
     if(_uds && !_uds.classList.contains('hide') && document.getElementById('screen-order').classList.contains('active') && document.getElementById('askInput').value.trim()){ ask02S(); }
     if(ns) renderCopilot();
-    document.getElementById('verChipOrder').innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    docum_e=document.getElementById('verChipOrder'); if(_e)_e.innerHTML=ns?'North Star &mdash; vision':'V1 &mdash; standard';
     var vco2=document.getElementById('verChipOrders'); if(vco2) vco2.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     // billing & budget
     var vcb=document.getElementById('verChipBilling'); if(vcb) vcb.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
@@ -1844,7 +1842,10 @@ function renderProfServicesDP(){
     if(document.getElementById('eqBudget')){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
     if(dpActive){if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);}}
     renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
-    if(ccActive)renderCcScreen(ccActive); ccSyncToggle();
+    var _ccv=document.getElementById('ccApp');
+    if(_ccv&&_ccv.style.display!=='none'){
+      renderCcScreen(ccActive||'ccdash'); ccSyncToggle();
+    } else { ccSyncToggle(); }
   }
   function renderCopilot(){
     document.getElementById('copilot').innerHTML =
@@ -3400,42 +3401,40 @@ charges:[
     var mount=document.getElementById('tasksWidgetMount'); if(!mount)return;
     if(CURRENT!=='ns'){mount.innerHTML='';return;}
     var TODAY='2026-07-29'; var WEEK_END='2026-08-04';
-    var rows=[];
+    var byOrd={};
     Object.keys(ORDER_TASKS).forEach(function(oid){
       var entry=ORDER_TASKS[oid]; if(!entry||!entry.tasks)return;
       entry.tasks.forEach(function(t){
         if(t.side==='gc'&&!t.done&&t.dueIso){
-          var label='';
-          if(t.dueIso<TODAY) label='overdue';
-          else if(t.dueIso<=WEEK_END) label='this week';
-          if(label) rows.push({oid:oid,t:t,label:label});
+          var isOver=t.dueIso<TODAY; var isWk=!isOver&&t.dueIso<=WEEK_END;
+          if(isOver||isWk){
+            if(!byOrd[oid]) byOrd[oid]={over:0,wk:0};
+            if(isOver) byOrd[oid].over++; else byOrd[oid].wk++;
+          }
         }
       });
     });
-    rows.sort(function(a,b){ return a.t.dueIso<b.t.dueIso?-1:1; });
-    if(!rows.length){ mount.innerHTML=''; return; }
-    var ICO_TASK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:-2px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>';
-    var overdueN=rows.filter(function(r){return r.label==='overdue';}).length;
-    var h='<div style="margin-top:12px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:13px 16px">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-    h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">'+ICO_TASK+' &nbsp;GC tasks due this week</div>';
-    if(overdueN) h+='<span class="tag warn" style="font-size:10px">'+overdueN+' overdue</span>';
-    h+='</div>';
-    rows.forEach(function(r){
-      var isOverdue=r.label==='overdue';
-      var ord=ORDERS.filter(function(o){return o.id===r.oid;})[0];
-      var ordName=ord?ord.item:'Order';
-      var dueTxt=isOverdue?'Overdue · '+r.t.due:r.t.due||r.t.dueIso;
-      h+='<div onclick="gotoOrder(\''+r.oid+'\')" style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100);cursor:pointer">';
-      h+='<div style="min-width:6px;height:6px;border-radius:50%;background:'+(isOverdue?'var(--red)':'var(--amber, #D97706)')+';margin-top:5px"></div>';
-      h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:12px;font-weight:500;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.t.label+'</div>';
-      h+='<div style="font-size:11px;color:var(--g500)">'+r.oid+' · '+ordName+'</div>';
-      h+='</div>';
-      h+='<div style="font-size:11px;color:'+(isOverdue?'var(--red)':'var(--g600)')+';white-space:nowrap;padding-top:2px">'+dueTxt+'</div>';
-      h+='</div>';
+    var oids=Object.keys(byOrd);
+    if(!oids.length){mount.innerHTML='';return;}
+    var totalOver=oids.reduce(function(n,id){return n+byOrd[id].over;},0);
+    var total=oids.reduce(function(n,id){return n+byOrd[id].over+byOrd[id].wk;},0);
+    var ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;vertical-align:-2px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>';
+    var h='<div style="margin-top:10px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    h+='<div style="font-size:11.5px;font-weight:700;color:var(--g900)">'+ICO+' &nbsp;GC tasks due this week</div>';
+    h+='<div style="display:flex;gap:5px">';
+    if(totalOver) h+='<span class="tag bad" style="font-size:10px">'+totalOver+' overdue</span>';
+    h+='<span class="tag info" style="font-size:10px">'+total+' tasks · '+oids.length+' orders</span>';
+    h+='</div></div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+    oids.slice(0,4).forEach(function(oid){
+      var info=byOrd[oid]; var isOv=info.over>0;
+      var lbl=oid+' · '+(isOv?info.over+' overdue':info.wk+' due');
+      var st=isOv?'background:#fef2f2;color:var(--red);border:1px solid rgba(239,68,68,.2)':'background:var(--g50);color:var(--g700);border:1px solid var(--g200)';
+      h+='<button onclick="gotoOrder(\''+oid+'\')" style="'+st+';font-size:11px;padding:3px 9px;border-radius:5px;cursor:pointer;font-weight:500">'+lbl+'</button>';
     });
-    h+='</div>';
+    if(oids.length>4) h+='<span style="font-size:11px;color:var(--g400);padding:3px 6px">+'+(oids.length-4)+' more</span>';
+    h+='</div></div>';
     mount.innerHTML=h;
   }
 
