@@ -1984,6 +1984,32 @@ function renderProfServicesDP(){
   };
 
   var BILLS=[
+    {id:'BILL-9048',order:'ORD-3110',product:'Generator 125 kW \u00d7 16 \u2014 Jul 2026',amt:67200,cost:'0100-5000-0000-0001 \u00b7 Power & Temp',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'Generator 125 kW monthly rental \u00d7 16 units',qty:16,rate:4200,amt:67200,cost:'0100-5000-0000-0001 \u00b7 Power & Temp'}
+      ]},
+    {id:'BILL-9049',order:'ORD-3111',product:'Light towers \u00d7 26 \u2014 Jul 2026',amt:31200,cost:'0100-5000-0000-0001 \u00b7 Power & Temp',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'Light tower monthly rental \u00d7 26 units',qty:26,rate:1200,amt:31200,cost:'0100-5000-0000-0001 \u00b7 Power & Temp'}
+      ]},
+    {id:'BILL-9050',order:'ORD-3112',product:'Dozer D6 \u00d7 12 \u2014 Jul 2026',amt:194400,cost:'3100-2000-0000-0001 \u00b7 Mass Grading',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'Dozer D6 monthly rental \u00d7 12 units',qty:12,rate:16200,amt:194400,cost:'3100-2000-0000-0001 \u00b7 Mass Grading'}
+      ]},
+    {id:'BILL-9051',order:'ORD-3113',product:'Motor grader \u00d7 6 \u2014 final (Apr\u2013Aug)',amt:112000,cost:'3100-2000-0000-0001 \u00b7 Mass Grading',status:'Finalized',date:'Aug 7',audit:'J. Torres \u00b7 approved Aug 6',
+      charges:[
+        {desc:'Motor grader rental \u00d7 6 units \u00d7 4 months (Apr\u2013Jul)',qty:24,rate:14000,amt:84000,cost:'3100-2000-0000-0001 \u00b7 Mass Grading'},
+        {desc:'Partial Aug (5 days before off-rent)',qty:6,rate:2333,amt:14000,cost:'3100-2000-0000-0001 \u00b7 Mass Grading'},
+        {desc:'Return inspection fee',qty:1,rate:14000,amt:14000,cost:'3100-2000-0000-0001 \u00b7 Mass Grading'}
+      ]},
+    {id:'BILL-9052',order:'ORD-3114',product:'Compaction roller \u00d7 12 \u2014 Jul 2026',amt:81600,cost:'3100-2000-0000-0001 \u00b7 Mass Grading',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'Compaction roller monthly rental \u00d7 12 units',qty:12,rate:6800,amt:81600,cost:'3100-2000-0000-0001 \u00b7 Mass Grading'}
+      ]},
+    {id:'BILL-9053',order:'ORD-3115',product:'Hydraulic pile driver \u00d7 6 Sector 2 \u2014 Aug 2026',amt:207000,cost:'3100-6300-0000-0001 \u00b7 Solar pile',status:'Pending',date:'Sep 1',day:1,notes:0,
+      charges:[
+        {desc:'Hydraulic pile driver monthly rental \u00d7 6 units',qty:6,rate:34500,amt:207000,cost:'3100-6300-0000-0001 \u00b7 Solar pile'}
+      ]},
     {id:'BILL-9040',order:'ORD-3095',product:"Owner's engineer / IE support — Jul 2026",amt:28000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Pending',date:'Aug 1',day:4,notes:0,
       charges:[
         {desc:'IE / owner\'s rep support — 2 FTE Jul 2026',qty:2,rate:14000,amt:28000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
