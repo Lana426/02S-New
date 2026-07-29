@@ -1411,7 +1411,7 @@
         {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
         {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,linkOrd:'ORD-3009'}
       ]},
@@ -2010,10 +2010,11 @@ charges:[
         {desc:'Hard hats, vests, gloves — 20 sets',qty:20,rate:65,amt:1300,cost:'01 · General'},
         {desc:'Safety glasses & face shields',qty:20,rate:20,amt:400,cost:'01 · General'}
       ]},
-    {id:'BILL-9025',order:'ORD-3091',product:'Warehouse & material staging — on demand',amt:5400,cost:'012900.1010 · Warehouse Services',status:'Pending',date:'Jul 22',day:4,notes:1,anomaly:'Cost code mismatch — on demand order',
+    {id:'BILL-9025',order:'ORD-3091',product:'Structural special inspection — Jun 2026',amt:14400,cost:'3100-6200-0000-0001 · Solar pile',status:'Pending',date:'Jul 3',day:5,notes:1,
       charges:[
-        {desc:'Warehouse staging area — 18 days',qty:18,rate:240,amt:4320,cost:'012900.1010 · Warehouse Services'},
-        {desc:'Forklift operator — 3 half-days',qty:3,rate:360,amt:1080,cost:'012900.1010 · Warehouse Services'}
+        {desc:'IBC §1705 special inspection — 24 days',qty:24,rate:500,amt:12000,cost:'3100-6200-0000-0001 · Solar pile'},
+        {desc:'Inspection report preparation',qty:3,rate:600,amt:1800,cost:'3100-6200-0000-0001 · Solar pile'},
+        {desc:'Travel & expense reimbursement',qty:3,rate:200,amt:600,cost:'3100-6200-0000-0001 · Solar pile'}
       ]},
     {id:'BILL-9035',order:'ORD-3093',product:'Hydraulic pile driver x6 (Jun)',amt:207000,cost:'3100-6300-0000-0001 · Solar pile',status:'Pending',date:'Jul 1',day:3,notes:0,
       charges:[
@@ -2025,6 +2026,11 @@ charges:[
     {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20',co:'CO-002'},
     {id:'BILL-8990',order:'ORD-3009',product:'Site survey crew — 2 days',amt:6200,cost:'01 · General',status:'Finalized',date:'Apr 22',audit:'M. Chen · approved Apr 22'},
     {id:'BILL-8985',order:'ORD-3080',product:'PPE kit — initial order',amt:850,cost:'01 · General',status:'Finalized',date:'May 3',audit:'Auto-finalized May 3'},
+    {id:'BILL-9039',order:'ORD-3072',product:'Material staging & drayage — Jun/Jul 2026',amt:8640,cost:'0100-0100-0000-0001 · General conditions',status:'Pending',date:'Aug 1',day:2,notes:0,
+      charges:[
+        {desc:'Laydown Yard C — monthly staging fee',qty:2,rate:3600,amt:7200,cost:'0100-0100-0000-0001 · General conditions'},
+        {desc:'Drayage / material movement — 8 moves',qty:8,rate:180,amt:1440,cost:'0100-0100-0000-0001 · General conditions'}
+      ]},
     {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19',co:'CO-001'}
   ];
   var CHANGE_ORDERS=[
@@ -2591,7 +2597,7 @@ charges:[
       h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px">';
       h+='<div><span style="font-size:12.5px;font-weight:700;color:var(--charcoal)">'+ord.id+'</span>';
       h+='<span class="tag ok" style="font-size:10px;margin-left:6px">'+(stageLabels[ord.stage-1]||'Stage '+ord.stage)+'</span></div>';
-      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">View order →</button>';
       h+='</div>';
       h+='<div style="font-size:12px;color:var(--g700)">'+(ord.item||'')+(ord.sub?' · '+ord.sub:'')+'</div>';
       if(ord.recv&&ord.recv.window){
@@ -2631,7 +2637,7 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
@@ -2640,13 +2646,14 @@ charges:[
   function buildDPTrack(pk,r,rowIdx){
     var chain=DP_CHAIN[pk]; if(!chain)return '';
     var chainStage=chain.stageOf(r);
-    var _ordId=r.linkOrd||(r.src&&r.src.indexOf('ORD-')===0?r.src:null);
+    var _ordId=chainStage>0?(r.linkOrd||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
     var ord=_ordId?ORDERS.filter(function(o){return o.id===_ordId;})[0]:null;
+    var bill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
     var steps=chain.labels.map(function(lbl,i){
       var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
       var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chain.icons[i];
       var clickAttr='';
-      if(i===chain.labels.length-1) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();go(\'billing\')" title="Go to billing"';
+      if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')" title="View '+bill.id+'"';
       else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
       return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
@@ -2695,10 +2702,8 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">Billing →</button>';
+    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
     return h;
@@ -3964,13 +3969,20 @@ charges:[
   }
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
   function gotoOrder(id){
-    var inp=document.getElementById('ordSearch'); if(inp)inp.value=id;
-    ordSetView('orders'); go('orders');
+    ordView='orders'; go('orders');
+    var row=document.getElementById('row-'+id); if(!row)return;
+    if(!row.classList.contains('open'))toggleOrder(id);
+    setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},60);
   }
   function gotoBill(id){
     var inp=document.getElementById('billSearch'); if(inp)inp.value=id;
     go('billing');
-    setTimeout(function(){ renderBills(); },80);
+    setTimeout(function(){
+      renderBills();
+      var b=getBill(id); if(!b)return;
+      if(b.status==='Pending')openBillModal(id);
+      else if(b.status==='Finalized')openBillPDFModal(id);
+    },120);
   }
 
   function openBillDiscuss(id){
