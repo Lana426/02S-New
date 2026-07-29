@@ -2603,9 +2603,6 @@ charges:[
     b+='</div>';
     b+='<div class="modal-foot" style="margin-top:16px">';
     b+='<button onclick="closeModal()">Close</button>';
-    if(data.order) b+='<button class="btn btn-ghost" onclick="closeModal();gotoOrder(\''+data.order.ref+'\')">'+data.order.ref+' →</button>';
-    if(data.bill) b+='<button class="btn btn-ghost" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">'+data.bill.id+' →</button>';
-    if(data.quote) b+='<button class="btn btn-ghost" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">'+ data.quote.ref+' →</button>';
     b+='</div>';
     openModal(data.pillar+' plan line — '+data.title, b);
   }
