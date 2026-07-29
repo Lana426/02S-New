@@ -2588,6 +2588,10 @@ charges:[
     
     {id:'BILL-9055',order:'ORD-3108',product:'Skid-mounted pump assemblies — fabrication deposit',amt:18400,cost:'2600-0540-0000-0001 · Module install',status:'Pending',date:'Jul 15',day:4,notes:0,
       charges:[{desc:'Fabrication deposit — 50% of contract',qty:1,rate:18400,amt:18400,cost:'2600-0540-0000-0001 · Module install'}]},
+    {id:'BILL-9056',order:'ORD-3051',product:'¾-Ton Crew Truck × 2 — Jul 2026',amt:4800,cost:'01-540 · General conditions',status:'Pending',date:'Aug 1',day:3,notes:0,
+      charges:[
+        {desc:'¾-ton crew truck monthly rental × 2 units',qty:2,rate:2400,amt:4800,cost:'01-540 · General conditions'}
+      ]},
     {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19',co:'CO-001'}
   ];
   var CHANGE_ORDERS=[
@@ -3154,8 +3158,8 @@ charges:[
       var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
       var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chainIcons[i];
       var clickAttr='';
-      if(i===2&&ord) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')" title="View '+ord.id+'"';
-      if(i===4&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')" title="View '+bill.id+'"';
+      if(i===2&&ord) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')" title="View '+ord.id+'"';
+      if(i===4&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')" title="View '+bill.id+'"';
       var sub='';
       if(i===2&&ord) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>';
       if(i===4&&bill) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+bill.id+'</div>';
@@ -3201,8 +3205,8 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
-    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
     if(ord&&ORDER_TASKS[ord.id])h+='<div class="ns-only">'+renderOrderTasksPanel(ord.id,true)+'</div>';
@@ -3218,8 +3222,8 @@ charges:[
       var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
       var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chain.icons[i];
       var clickAttr='';
-      if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')" title="View '+bill.id+'"';
-      else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')" title="View '+ord.id+'"';
+      if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')" title="View '+bill.id+'"';
+      else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
       return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
@@ -3255,8 +3259,8 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
-    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
@@ -4710,6 +4714,43 @@ charges:[
     toast('Feedback sent to 02S — thank you');
   }
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
+  function openOrderPreviewModal(id){
+    var ord=ORDERS.filter(function(o){return o.id===id;})[0]; if(!ord)return;
+    var stgLbl={1:'Submitted',2:'Acknowledged',3:'In fulfillment',4:'On rent · active',5:'Off-rent · billing',6:'Closed'};
+    var b='<div class="fq-req"><div class="fq-req-t">'+ord.id+' · '+ord.item+'</div>';
+    if(ord.sub)b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+ord.sub+'</div>';
+    b+='</div><div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag ok">'+( stgLbl[ord.stage]||'Stage '+ord.stage)+'</span></span></div>';
+    if(ord.dates)b+='<div class="fq-crow"><span>Period</span><span>'+ord.dates+'</span></div>';
+    if(ord.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+ord.cost+'</span></div>';
+    if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>$'+ord.mrate.toLocaleString()+'·unit</span></div>';
+    if(ord.latest)b+='<div class="fq-crow" style="align-items:flex-start"><span>Latest</span><span style="color:var(--g700);max-width:260px">'+ord.latest+'</span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-ghost" onclick="closeModal();gotoOrder(\''+id+'\')">Open in Orders →</button></div>';
+    openModal('Order details', b);
+  }
+  function openBillPreviewModal(id){
+    var bill=getBill(id); if(!bill)return;
+    var b='<div class="fq-req"><div class="fq-req-t">'+bill.product+'</div>';
+    b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+bill.id+' · order '+bill.order+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Amount</span><span style="font-weight:700;font-size:13px">'+fmt(bill.amt)+'</span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+(STATUS_TAG[bill.status]||'neu')+'">'+bill.status+'</span></span></div>';
+    if(bill.date)b+='<div class="fq-crow"><span>Date</span><span>'+bill.date+'</span></div>';
+    if(bill.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+bill.cost+'</span></div>';
+    if(bill.charges&&bill.charges.length){
+      b+='</div><div style="margin-top:10px;border-top:1px solid var(--g100);padding-top:8px">';
+      b+='<div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Charges</div>';
+      bill.charges.forEach(function(c){
+        b+='<div class="fq-crow"><span style="font-size:11.5px">'+c.desc+'</span><span style="font-weight:600">'+fmt(c.amt)+'</span></div>';
+      });
+    }
+    b+='</div>';
+    b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-ghost" onclick="closeModal();gotoBill(\''+id+'\')">Go to Billing →</button></div>';
+    openModal('Bill preview', b);
+  }
   function gotoOrder(id){
     ordView='orders'; go('orders');
     var row=document.getElementById('row-'+id); if(!row)return;
