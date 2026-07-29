@@ -1802,8 +1802,8 @@ function renderProfServicesDP(){
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
-    if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
+    if(screen==='orders'){ _ordersShowAll=false; renderOrders(); renderOrdInsights(); }
+    if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
@@ -3478,7 +3478,6 @@ charges:[
     var fo=(document.getElementById('ordOrigin')||{}).value||'';
     var ff=(document.getElementById('ordFrom')||{}).value||'', ft=(document.getElementById('ordTo')||{}).value||'';
     var ns=CURRENT==='ns';
-    _ordersShowAll=false;
     var list=ORDERS.filter(function(o){
       var st=stageStatus(o);
       if(fp && o.pillar!==fp) return false;
@@ -3901,7 +3900,6 @@ charges:[
       if(q && (b.id.toLowerCase().indexOf(q)<0 && b.order.toLowerCase().indexOf(q)<0 && b.product.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
-    _billsShowAll=false;
     var lbl=document.getElementById('billCountLbl'); if(lbl) lbl.textContent='· '+list.length+' bill'+(list.length===1?'':'s');
     var head='<div class="ot-head bt-head"><span>Bill</span><span>Order</span><span>Product</span><span class="r">Amount</span><span class="hide-sm">Cost code</span><span>Status</span></div>';
     var rows=[];
@@ -4765,7 +4763,10 @@ charges:[
     ordView='orders'; go('orders'); _ordersShowAll=true; renderOrders();
     var row=document.getElementById('row-'+id); if(!row)return;
     if(!row.classList.contains('open'))toggleOrder(id);
-    setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},80);
+    setTimeout(function(){
+      row.scrollIntoView({behavior:'smooth',block:'start'});
+      var trk=document.getElementById('trk-'+id); if(trk)trk.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },100);
   }
   function gotoBill(id){
     var inp=document.getElementById('billSearch'); if(inp)inp.value=id;
@@ -4782,11 +4783,12 @@ charges:[
   function gotoQuote(ref){
     ordSetView('quotes'); go('orders');
     setTimeout(function(){
+      renderPortalQuotes();
       var t=document.getElementById('qtrk-'+ref);
       if(t&&t.style.display==='none') togglePortalQuote(ref);
       var row=document.getElementById('qrow-'+ref);
-      if(row) setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},60);
-    },150);
+      if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
+    },180);
   }
   function openBillDiscuss(id){
     openModal('Billing discussion — '+id,
@@ -6229,8 +6231,8 @@ function renderProfServicesDP(){
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
     if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
-    if(screen==='orders'){ renderOrders(); renderOrdInsights(); }
-    if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
+    if(screen==='orders'){ _ordersShowAll=false; renderOrders(); renderOrdInsights(); }
+    if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
