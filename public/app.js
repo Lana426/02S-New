@@ -4905,7 +4905,8 @@ charges:[
     services: ['ccdash','fulfill','dpsvc','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
+  var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -5160,7 +5161,9 @@ charges:[
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
-  var _dpCcProjMap={}, _dpCcCap={};
+  var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={};
+  function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
+  function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
   function fqIsDone(r){ return FQ_DONE.indexOf(r.status)>=0; }
   function fqVisible(r){ if(fqFP!=='all'&&r.pillar!==fqFP)return false; if(fqFPr!=='all'&&r.project!==fqFPr)return false; if(fqFS==='open'&&fqIsDone(r))return false; if(fqFS==='done'&&!fqIsDone(r))return false; if(fqFSrc!=='all'&&r.src!==fqFSrc)return false; return true; }
   function fqSetFilter(k,v){ if(k==='p')fqFP=v; else if(k==='pr')fqFPr=v; else if(k==='s')fqFS=v; else if(k==='src')fqFSrc=v; renderFulfill(); }
@@ -5214,7 +5217,8 @@ charges:[
     var _fmtKs=function(n){return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K');};
     h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:13px 16px;margin-bottom:14px">';
     h+='<div style="font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Demand plans — portfolio overview</div>';
-    var _dpoF=fqFP==='all'?_dpOverview:_dpOverview.filter(function(d){return d.p===fqFP;});
+    var _dpoFKey=fqFP==='services'?'profservices':fqFP;
+    var _dpoF=fqFP==='all'?_dpOverview:_dpOverview.filter(function(d){return d.p===_dpoFKey;});
     h+='<div style="display:grid;grid-template-columns:repeat('+_dpoF.length+',1fr);gap:10px">';
     _dpoF.forEach(function(d){
       var pd_all=CC_PROJ_DP[d.p]||{}; var totalBudget=0,totalDp=0,totalAh=0;
@@ -5237,7 +5241,7 @@ charges:[
     var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
     var STATS=[['all','All'],['open','Open'],['done','Resolved']];
     h+='<div class="fq-filters">';
-    h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    if(ccPersona==='fsm'){ h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>'; }
     h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(fqFPr===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
@@ -5942,75 +5946,96 @@ charges:[
   };
   var CC_DP_BILLS={
     'ORD-3110':[
-      {inv:'INV-AGG-0326',period:'Mar 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-AGG-0426',period:'Apr 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-AGG-0526',period:'May 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-AGG-0626',period:'Jun 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-AGG-0726',period:'Jul 2026',amount:51200,status:'Pending',cc:'0100-5000-0000-0001'}
+      {inv:'BILL-AGG-0326',period:'Mar 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-AGG-0426',period:'Apr 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-AGG-0526',period:'May 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-AGG-0626',period:'Jun 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-AGG-0726',period:'Jul 2026',amount:51200,status:'Pending',cc:'0100-5000-0000-0001'}
     ],
     'ORD-3111':[
-      {inv:'INV-UR-0326',period:'Mar 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-UR-0426',period:'Apr 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-UR-0526',period:'May 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-UR-0626',period:'Jun 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
-      {inv:'INV-UR-0726',period:'Jul 2026',amount:67600,status:'Pending',cc:'0100-5000-0000-0001'}
+      {inv:'BILL-UR-0326',period:'Mar 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-UR-0426',period:'Apr 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-UR-0526',period:'May 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-UR-0626',period:'Jun 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'BILL-UR-0726',period:'Jul 2026',amount:67600,status:'Pending',cc:'0100-5000-0000-0001'}
     ],
     'ORD-3093':[
-      {inv:'INV-ALL-0626',period:'Jun 2026',amount:108000,status:'Paid',cc:'3100-6300-0000-0001'},
-      {inv:'INV-ALL-0726',period:'Jul 2026',amount:111000,status:'Pending',cc:'3100-6300-0000-0001',dispute:'Vendor billed $18,500/unit \u00d7 6; MSA confirms $18,000/unit. $3,000 overage flagged for credit \u2014 ref BILL-9021.'}
+      {inv:'BILL-ALL-0626',period:'Jun 2026',amount:108000,status:'Paid',cc:'3100-6300-0000-0001'},
+      {inv:'BILL-ALL-0726',period:'Jul 2026',amount:111000,status:'Pending',cc:'3100-6300-0000-0001',dispute:'Vendor billed $18,500/unit \u00d7 6; MSA confirms $18,000/unit. $3,000 overage flagged for credit \u2014 ref BILL-9021.'}
     ],
     'ORD-3029':[
-      {inv:'INV-JLG-0526',period:'May 2026',amount:19200,status:'Paid',cc:'05-Metals'}
+      {inv:'BILL-JLG-0526',period:'May 2026',amount:19200,status:'Paid',cc:'05-Metals'}
     ],
     'ORD-3042':[
-      {inv:'INV-SBL-0526',period:'May 2026',amount:7200,status:'Paid',cc:'03-Concrete'},
-      {inv:'INV-SBL-0606',period:'Jun 1\u20136, 2026',amount:1440,status:'Paid',cc:'03-Concrete'}
+      {inv:'BILL-SBL-0526',period:'May 2026',amount:7200,status:'Paid',cc:'03-Concrete'},
+      {inv:'BILL-SBL-0606',period:'Jun 1\u20136, 2026',amount:1440,status:'Paid',cc:'03-Concrete'}
     ],
     'ORD-3112':[
-      {inv:'INV-CAT-0326',period:'Mar 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-CAT-0426',period:'Apr 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-CAT-0526',period:'May 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-CAT-0626',period:'Jun 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-CAT-0726',period:'Jul 2026',amount:172800,status:'Pending',cc:'0200-0310-0000-0001'}
+      {inv:'BILL-CAT-0326',period:'Mar 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-CAT-0426',period:'Apr 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-CAT-0526',period:'May 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-CAT-0626',period:'Jun 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-CAT-0726',period:'Jul 2026',amount:172800,status:'Pending',cc:'0200-0310-0000-0001'}
     ],
     'ORD-3114':[
-      {inv:'INV-VR-0326',period:'Mar 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-VR-0426',period:'Apr 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-VR-0526',period:'May 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-VR-0626',period:'Jun 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'INV-VR-0726',period:'Jul 2026',amount:144000,status:'Pending',cc:'0200-0310-0000-0001'}
+      {inv:'BILL-VR-0326',period:'Mar 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-VR-0426',period:'Apr 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-VR-0526',period:'May 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-VR-0626',period:'Jun 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-VR-0726',period:'Jul 2026',amount:144000,status:'Pending',cc:'0200-0310-0000-0001'}
     ],
     'ORD-3095':[
-      {inv:'INV-DNV-0326',period:'Mar 2026',amount:28000,status:'Paid',cc:'0100-0100-0000-0001'},
-      {inv:'INV-DNV-0426',period:'Apr 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001',ccChange:'Realloc Apr 15 by field PM \u2014 General conditions (0100-0100) \u2192 Engineering support (0100-5200).'},
-      {inv:'INV-DNV-0526',period:'May 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
-      {inv:'INV-DNV-0626',period:'Jun 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
-      {inv:'INV-DNV-0726',period:'Jul 2026',amount:28000,status:'Pending',cc:'0100-5200-0000-0001'}
+      {inv:'BILL-DNV-0326',period:'Mar 2026',amount:28000,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'BILL-DNV-0426',period:'Apr 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001',ccChange:'Realloc Apr 15 by field PM \u2014 General conditions (0100-0100) \u2192 Engineering support (0100-5200).'},
+      {inv:'BILL-DNV-0526',period:'May 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
+      {inv:'BILL-DNV-0626',period:'Jun 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
+      {inv:'BILL-DNV-0726',period:'Jul 2026',amount:28000,status:'Pending',cc:'0100-5200-0000-0001'}
     ],
     'ORD-3096':[
-      {inv:'INV-TRC-0326',period:'Mar 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
-      {inv:'INV-TRC-0426',period:'Apr 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
-      {inv:'INV-TRC-0526',period:'May 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
-      {inv:'INV-TRC-0626',period:'Jun 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
-      {inv:'INV-TRC-0726',period:'Jul 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
-      {inv:'INV-TRC-0826',period:'Aug 2026 (partial)',amount:9000,status:'Pending',cc:'0200-0320-0000-0001',ccChange:'Demob Aug 15 \u2014 50% rate confirmed by PM. Final invoice pending.'}
+      {inv:'BILL-TRC-0326',period:'Mar 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-TRC-0426',period:'Apr 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-TRC-0526',period:'May 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-TRC-0626',period:'Jun 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-TRC-0726',period:'Jul 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-TRC-0826',period:'Aug 2026 (partial)',amount:9000,status:'Pending',cc:'0200-0320-0000-0001',ccChange:'Demob Aug 15 \u2014 50% rate confirmed by PM. Final invoice pending.'}
     ],
     'ORD-3091':[
-      {inv:'INV-TRC-0626S',period:'Jun 2026',amount:16000,status:'Paid',cc:'0300-0540-0000-0001'},
-      {inv:'INV-TRC-0726S',period:'Jul 2026',amount:16000,status:'Pending',cc:'0300-0540-0000-0001'}
+      {inv:'BILL-TRC-0626S',period:'Jun 2026',amount:16000,status:'Paid',cc:'0300-0540-0000-0001'},
+      {inv:'BILL-TRC-0726S',period:'Jul 2026',amount:16000,status:'Pending',cc:'0300-0540-0000-0001'}
     ],
     'ORD-3092':[
-      {inv:'INV-SWC-0626',period:'Jun 2026',amount:9000,status:'Paid',cc:'01-General conditions'},
-      {inv:'INV-SWC-0726',period:'Jul 2026',amount:9000,status:'Pending',cc:'01-General conditions'}
+      {inv:'BILL-SWC-0626',period:'Jun 2026',amount:9000,status:'Paid',cc:'01-General conditions'},
+      {inv:'BILL-SWC-0726',period:'Jul 2026',amount:9000,status:'Pending',cc:'01-General conditions'}
     ],
     'ORD-3009':[
-      {inv:'INV-BWM-0426',period:'Apr 18\u201319, 2026',amount:800,status:'Paid',cc:'01-General conditions'}
+      {inv:'BILL-BWM-0426',period:'Apr 18\u201319, 2026',amount:800,status:'Paid',cc:'01-General conditions'}
     ],
     'ORD-3120':[
-      {inv:'INV-TBD-0726',period:'Jul 2026',amount:null,status:'Pending pricing',cc:'0100-0100-0000-0001'}
+      {inv:'BILL-TBD-0726',period:'Jul 2026',amount:null,status:'Pending pricing',cc:'0100-0100-0000-0001'}
     ]
   };
   var dpCur=null;
+  var _DP_TONE_MAP={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad','Ordered':'info'};
+  function ccDpItemModal(pillar,proj,idx){
+    var r=(CC_PROJ_DP[pillar]&&CC_PROJ_DP[pillar][proj]&&CC_PROJ_DP[pillar][proj].rows)||[];
+    r=r[idx]; if(!r){toast('Row not found');return;}
+    var tone=_DP_TONE_MAP[r.state]||'neu';
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.item+'</div><div class="sub">'+(r.qty||'')+' · '+(r.window||'')+' · '+(_PROJ_NAMES[proj]||proj)+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Rate / cost</span><span>'+r.cost+'</span></div>';
+    b+='<div class="fq-crow"><span>Firm</span><span>'+(r.firm||'TBD')+'</span></div>';
+    b+='<div class="fq-crow"><span>State</span><span><span class="tag '+tone+'">'+r.state+'</span></span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span>'+r.qty+'</span></div>';
+    b+='<div class="fq-crow"><span>Window</span><span>'+r.window+'</span></div>';
+    b+='</div>';
+    var portalActs=[];
+    if(r.state==='Projected'||r.state==='Draft'){portalActs.push('<button class="btn btn-red" onclick="closeModal();toast('+"'"+'Order request created for '+r.item+"'"+')">Create order request →</button>');}
+    else if(r.state==='Requested'||r.state==='Pending pricing'){portalActs.push('<button class="btn btn-red" onclick="closeModal();toast('+"'"+'Pricing started for '+r.item+"'"+')">Set pricing →</button>');}
+    var extActs='<button class="btn btn-ghost" disabled style="opacity:.45;cursor:not-allowed" title="Requires action outside portal">Add to task list</button>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    b+='<div style="display:flex;gap:8px">'+(portalActs.length?portalActs.join('')+extActs:extActs)+'</div></div>';
+    openModal('Plan item — '+r.item,b);
+  }
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
     if(!o){toast('No order data for '+ordId);return;}
@@ -6018,10 +6043,10 @@ charges:[
     var bills=CC_DP_BILLS[ordId]||[];
     var billH='';
     if(bills.length){
-      var gb='1fr 100px 115px 95px 160px';
+      var gb='140px 80px 95px 75px 1fr';
       billH='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
       billH+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
-      billH+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px"><span>Invoice</span><span>Period</span><span style="text-align:right">Amount</span><span>Status</span><span>Cost code</span></div>';
+      billH+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:8px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span></div>';
       bills.forEach(function(b){
         var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
         billH+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)">';
@@ -6094,30 +6119,45 @@ charges:[
     var projsForTable=showProjCol?['hercules','riverside','cimarron']:[selProj];
     projsForTable.forEach(function(proj){
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
-        CC_PROJ_DP[p][proj].rows.forEach(function(r){
-          allReqRows.push({_type:'dp',_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null});
+        CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null});
         });
       }
     });
     var adhocFiltered=showProjCol?cfg.rows:cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
     adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+allReqRows.length+' total · '+pLabel+'</span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" style="margin-left:12px" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') →</button></div>';
-    var gtA=showProjCol?'1.4fr 116px 155px 1.1fr 108px 128px':'1.4fr 116px 1.2fr 108px 128px';
+    var dpSrcFil=_dpCcSrcF[p]||'all';
+    var visRows=dpSrcFil==='all'?allReqRows:allReqRows.filter(function(r){return r._type===(dpSrcFil==='dp'?'dp':'adhoc');});
+    var dpShowAll=!!_dpCcLimit[p];
+    var rowsToRender=dpShowAll?visRows:visRows.slice(0,5);
+    var moreN=visRows.length-5;
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" style="margin-left:12px" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') →</button></div>';
+    h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
+    [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){
+      h+='<button class="ff-b'+(dpSrcFil===o[0]?' on':'')+' btn-sm" onclick="dpSetSrcFilter(\''+p+'\',\''+o[0]+'\')">'+o[1]+'</button>';
+    });
+    h+='</div></div></div>';
+    var gtA=showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+' <span>Details</span><span>Status</span><span>Action</span></div>';
-    if(!allReqRows.length){ h+='<div class="fq-empty">No requests for '+pLabel+'.</div>'; }
-    allReqRows.forEach(function(row){
+    if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'requests for '+pLabel+'.</div>'; }
+    rowsToRender.forEach(function(row){
       if(row._type==='dp'){
         var dpTone=_DP_TONE[row.state]||'neu';
         var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
         var dpDet=(row.qty||'')+' · '+(row.window||'')+(row.firm?' · '+row.firm:'');
-        var dpAct=row.ordId?('<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+row.ordId+' ↗</button>'):('<span style="font-size:11px;color:var(--g400)">'+(row.state==='Projected'||row.state==='Draft'?'Not ordered yet':'No order')+'</span>');
+        var dpAct=row.ordId
+          ?'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+row.ordId+' ↗</button>'
+          :'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpItemModal(\''+p+'\',\''+row._proj+'\','+row._idx+')">Details →</button>';
         h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div><div>'+dpSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div>'+dpAct+'</div></div>';
       } else {
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div>'+dpReviewCell(p,r2,ns)+'</div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
       }
     });
+    if(!dpShowAll&&moreN>0){
+      h+='<div style="padding:10px 16px;font-size:11.5px;color:var(--charcoal);font-weight:500;cursor:pointer;border-top:1px solid var(--g100)" onclick="dpToggleAllReqs(\''+p+'\')">Show all '+visRows.length+' requests →</div>';
+    }
     h+='</div>';
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+'Portfolio demand roll-up</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
