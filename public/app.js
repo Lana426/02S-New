@@ -1454,7 +1454,7 @@
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Tower crane mobilization'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane mobilization'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled',linkOrd:'ORD-3070'},
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
         {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071'},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
@@ -1641,6 +1641,29 @@
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    }
+    var LOG_ROWS=DP['logistics'].rows;
+    if(LOG_ROWS&&LOG_ROWS.length){
+      h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Planned moves</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' move'+(LOG_ROWS.length===1?'':'s')+'</span>';
+      h+='</div>';
+      var pmGt='1fr 126px 150px 124px 118px 114px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      LOG_ROWS.forEach(function(r,pmIdx){
+        var tone=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+        h+='<div>'+(r.type||'\u2014')+'</div>';
+        h+='<div>'+(r.when||'\u2014')+'</div>';
+        h+='<div>'+(r.gate||'\u2014')+'</div>';
+        h+='<div>'+(r.src||'\u2014')+'</div>';
+        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+        h+='</div>';
+        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
       });
       h+='</div>';
     }
@@ -1834,8 +1857,8 @@ function renderProfServicesDP(){
   var ORDERS=[
     {id:'ORD-3051',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok',rental:{offRent:'Oct 31, 2026',daysLeft:101,idle:false,save:0}},
     {id:'ORD-3054',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:'EQ-106',qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',anticipatedOff:'2026-09-30',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok',rental:{offRent:'Sep 30, 2026',daysLeft:72,idle:false,save:0}},
-    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:2,plan:'EQ-085',rental:{offRent:'Aug 15, 2026',daysLeft:24,idle:false,save:0},
-      latest:'Delivery rescheduled to May 20 after a 2-day yard delay',latestTone:'warn',
+    {id:'ORD-3042',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:6,plan:'EQ-085',rental:{offRent:'Jun 6, 2026',daysLeft:0,idle:false,save:0},
+      latest:'Off-rent — returned Jun 6, 2026. Final bill issued and finalized.',latestTone:'ok',
       risk:{type:'risk',text:'Trending <b>2 days late</b> — steel erection (ORD-3038) crane mob depends on this. 02S flagged the yard for expedite.'},
       recv:{status:'scheduled',window:'May 20, 6:00 AM – 10:00 AM CT',windowType:'Heavy haul — oversized load',carrier:'McCarthy Logistics (internal)',dispatch:'(555) 482-7700',coordinator:'Marcus Webb',coordPhone:'(555) 482-3190',vehicle:'3-axle lowboy trailer. Operating weight 46,000 lb. North gate access — verify road bearing.',
         checklist:[
@@ -1876,7 +1899,7 @@ function renderProfServicesDP(){
     {id:'ORD-3060',od:'2026-05-08',item:'MEP Pipe Rack Module',sub:'3 modules · Level 2–4',pillar:'prefab',dates:'one-time · deliver Jun 3',cost:'22 · Plumbing',stage:2,plan:'PF-021',latest:'Shop drawings approved — fabrication started'},
     {id:'ORD-3061',od:'2026-05-15',item:'Modular Restroom Pod',sub:'1 unit · worker welfare',pillar:'prefab',dates:'one-time · deliver Jun 20',cost:'01 · General',stage:1,plan:null,latest:'Submittal submitted — awaiting prefab team review'},
     {id:'ORD-3070',od:'2026-05-18',item:'Heavy haul transport — excavator',sub:'1 load · lowboy',pillar:'logistics',dates:'May 20 · one-time',cost:'03 · Concrete',stage:4,plan:null,latest:'Delivery confirmed — excavator on site May 20'},
-    {id:'ORD-3071',od:'2026-08-01',item:'Tower crane mobilization haul',sub:'1 move · permitted route',pillar:'logistics',dates:'Aug 3 · one-time',cost:'26-330 · BESS & Substation',stage:1,plan:null,latest:'Route permits in process — move scheduled Aug 3'},
+    {id:'ORD-3071',od:'2026-08-01',item:'Tower crane mobilization haul',sub:'1 move · permitted route',pillar:'logistics',dates:'Aug 3 · one-time',cost:'26-330 · BESS & Substation',stage:2,plan:null,latest:'Permits confirmed — crane mobilization window Aug 3, 5 AM · North gate. Haul carrier confirmed.'},
     {id:'ORD-3072',od:'2026-06-10',item:'Material staging & drayage',sub:'ongoing · laydown A',pillar:'logistics',dates:'Jun 10 – Sep 30',cost:'01 · General',stage:3,plan:null,latest:'Staging operations active at laydown A'},
     {id:'ORD-3080',od:'2026-05-01',item:'PPE kit — crew of 20',sub:'hard hats, vests, gloves',pillar:'procurement',dates:'one-time',cost:'01 · General',stage:4,plan:null,latest:'Delivered and distributed to crew'},
     {id:'ORD-3081',od:'2026-05-10',item:'Concrete form hardware — lot',sub:'snap ties, wedge bolts',pillar:'procurement',dates:'one-time',cost:'03 · Concrete',stage:3,plan:null,latest:'Order acknowledged — fulfillment in progress'},
@@ -1895,6 +1918,7 @@ function renderProfServicesDP(){
     {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{window:'Jul 18',carrier:'02S Prefab Shop A',docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
     {id:'ORD-3107',od:'2026-07-01',item:'Modular e-houses (BESS)',sub:'2 units \u00b7 custom fabrication',pillar:'prefab',dates:'Nov 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submittal under engineering review \u2014 approval expected Aug 2026.'},
     {id:'ORD-3108',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'},
+    {id:'ORD-3093',od:'2026-06-01',item:'Hydraulic pile driver',sub:'4 units \u00b7 Sector 1 pile driving',pillar:'equipment',dates:'Jun 2026 \u2013 Oct 2026',cost:'3100-6300-0000-0001 \u00b7 Solar pile',stage:5,plan:null,latest:'On-rent \u2014 Sector 1 pile driving on schedule. 68% complete.',rental:{type:'monthly',rate:34500,unit:'unit',units:4}},
     {id:'ORD-3110',od:'2026-03-01',item:'Generator \u2014 125 kW',sub:'16 units \u00b7 site power',pillar:'equipment',dates:'Mar 2026 \u2013 May 2027',cost:'0100-5000-0000-0001 \u00b7 Power & Temp',stage:5,plan:null,latest:'On-rent \u2014 monthly meter readings submitted. No issues.',rental:{type:'monthly',rate:4200,unit:'unit',units:16}},
     {id:'ORD-3111',od:'2026-03-01',item:'Light towers',sub:'26 units \u00b7 site lighting',pillar:'equipment',dates:'Mar 2026 \u2013 May 2027',cost:'0100-5000-0000-0001 \u00b7 Power & Temp',stage:5,plan:null,latest:'On-rent \u2014 all towers operational.',rental:{type:'monthly',rate:1200,unit:'unit',units:26}},
     {id:'ORD-3112',od:'2026-03-01',item:'Dozer \u2014 D6',sub:'12 units \u00b7 mass grading',pillar:'equipment',dates:'Mar 2026 \u2013 Sep 2026',cost:'3100-2000-0000-0001 \u00b7 Mass Grading',stage:5,plan:null,latest:'On-rent \u2014 grading 92% complete.',rental:{type:'monthly',rate:16200,unit:'unit',units:12}},
@@ -2061,7 +2085,7 @@ charges:[
   {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400,cost:'09 · Finishes'},
   {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420,cost:'09 · Finishes'}
 ]},
-    {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Pending',date:'May 12',day:4,notes:0,
+    {id:'BILL-9015',order:'ORD-3042',product:'Excavator — 20T + operator',amt:38400,cost:'03 · Concrete',status:'Finalized',date:'May 12',audit:'J. Torres · approved Jun 8',
 charges:[
   {desc:'Daily rate — 20T excavator + operator',qty:16,rate:2250,amt:36000,cost:'03 · Concrete'},
   {desc:'Fuel surcharge',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'}
@@ -2077,7 +2101,7 @@ charges:[
         {desc:'Shop drawings & engineering stamp',qty:1,rate:4200,amt:4200,cost:'01 · General'},
         {desc:'Delivery & crane-in coordination',qty:1,rate:3000,amt:3000,cost:'22 · Plumbing'}
       ]},
-    {id:'BILL-9021',order:'ORD-3070',product:'Heavy haul — excavator delivery',amt:3200,cost:'03 · Concrete',status:'Pending',date:'May 21',day:2,notes:0,
+    {id:'BILL-9021',order:'ORD-3070',product:'Heavy haul — excavator delivery',amt:3200,cost:'03 · Concrete',status:'Finalized',date:'May 21',audit:'J. Torres · approved May 27',
       charges:[
         {desc:'Lowboy transport — 85-mile haul',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'},
         {desc:'Escort vehicle (required by permit)',qty:1,rate:800,amt:800,cost:'03 · Concrete'}
@@ -2103,7 +2127,9 @@ charges:[
       charges:[
         {desc:'Monthly rental — 20T pile driver x6 units',qty:6,rate:34500,amt:207000,cost:'3100-6300-0000-0001 · Solar pile'}
       ]},
-    {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
+    {id:'BILL-9054',order:'ORD-3029',product:'Telehandler — 10K · Jul 2026',amt:6180,cost:'05 · Metals',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[{desc:'Telehandler 10K monthly rental · Jul 2026',qty:1,rate:5800,amt:5800,cost:'05 · Metals'},{desc:'Fuel surcharge',qty:1,rate:380,amt:380,cost:'05 · Metals'}]},
+    {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K · May 2026',amt:6180,cost:'05 · Metals',status:'Finalized',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
     {id:'BILL-8994',order:'ORD-3020',product:'Rigging & lift hardware',amt:1180,cost:'05 · Metals',status:'Finalized',date:'Apr 25',audit:'M. Chen · approved Apr 24',co:'CO-001'},
     {id:'BILL-8987',order:'ORD-3009',product:'Site survey crew',amt:4200,cost:'01 · General',status:'Finalized',date:'Apr 20',audit:'Auto-finalized Apr 20',co:'CO-002'},
@@ -2114,6 +2140,9 @@ charges:[
         {desc:'Laydown Yard C — monthly staging fee',qty:2,rate:3600,amt:7200,cost:'0100-0100-0000-0001 · General conditions'},
         {desc:'Drayage / material movement — 8 moves',qty:8,rate:180,amt:1440,cost:'0100-0100-0000-0001 · General conditions'}
       ]},
+    
+    {id:'BILL-9055',order:'ORD-3108',product:'Skid-mounted pump assemblies — fabrication deposit',amt:18400,cost:'2600-0540-0000-0001 · Module install',status:'Pending',date:'Jul 15',day:4,notes:0,
+      charges:[{desc:'Fabrication deposit — 50% of contract',qty:1,rate:18400,amt:18400,cost:'2600-0540-0000-0001 · Module install'}]},
     {id:'BILL-8982',order:'ORD-3070',product:'Lowboy staging — depot fee',amt:420,cost:'03 · Concrete',status:'Finalized',date:'May 19',audit:'J. Torres · approved May 19',co:'CO-001'}
   ];
   var CHANGE_ORDERS=[
@@ -5120,7 +5149,7 @@ charges:[
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Crane pick \u2014 module racking'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane pick'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled'},
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
         {move:'Tower crane mobilization',type:'Crane pick',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
@@ -5307,6 +5336,29 @@ charges:[
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
+      });
+      h+='</div>';
+    }
+    var LOG_ROWS=DP['logistics'].rows;
+    if(LOG_ROWS&&LOG_ROWS.length){
+      h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
+      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Planned moves</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' move'+(LOG_ROWS.length===1?'':'s')+'</span>';
+      h+='</div>';
+      var pmGt='1fr 126px 150px 124px 118px 114px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      LOG_ROWS.forEach(function(r,pmIdx){
+        var tone=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+        h+='<div>'+(r.type||'\u2014')+'</div>';
+        h+='<div>'+(r.when||'\u2014')+'</div>';
+        h+='<div>'+(r.gate||'\u2014')+'</div>';
+        h+='<div>'+(r.src||'\u2014')+'</div>';
+        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+        h+='</div>';
+        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
       });
       h+='</div>';
     }
