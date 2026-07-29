@@ -1711,3 +1711,20 @@
   .log-tab{font-family:inherit;font-size:12.5px;font-weight:500;color:var(--g500);background:transparent;border:1px solid transparent;border-radius:6px;padding:6px 14px;cursor:pointer;transition:all .15s}
   .log-tab:hover{background:var(--g100);color:var(--g700)}
   .log-tab.active{background:#fff;border-color:var(--g250);color:var(--g900);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+
+/* show-more pagination */
+.show-more-wrap { padding: 6px 0 2px; }
+.show-more-btn {
+  display: inline-block;
+  font-size: 11.5px;
+  color: var(--g600);
+  background: none;
+  border: 1px solid var(--g200);
+  border-radius: 4px;
+  padding: 4px 14px;
+  cursor: pointer;
+  margin: 4px 0;
+  transition: background .15s, color .15s;
+}
+.show-more-btn:hover { background: var(--g50); color: var(--charcoal); }
+.cc-qhead { display: flex; align-items: center; gap: 8px; }

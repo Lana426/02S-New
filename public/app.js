@@ -3298,7 +3298,7 @@ charges:[
       h+=_ticon('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',12,'var(--g400)');
       h+='<span style="color:var(--g700);font-weight:500">Tasks</span><span style="color:var(--g400)">'+s.done+'/'+s.total+'</span>';
       if(s.gcOverdue>0) h+='<span style="color:var(--red);font-weight:600">· '+s.gcOverdue+' overdue</span>';
-      else if(s.gcActionable>0) h+='<span style="color:var(--amber);font-weight:600">· '+s.gcActionable+' GC task'+(s.gcActionable>1?'s':'')+' needed</span>';
+      else if(s.gcActionable>0) h+='<span style="color:var(--amber);font-weight:600">· '+s.gcActionable+' Subcontractor action'+(s.gcActionable>1?'s':'')+' needed</span>';
       if(s.o2sBlocking>0) h+='<span style="color:var(--g500)">· '+s.o2sBlocking+' pending 02S</span>';
       if(blockers.length) h+='<span style="color:var(--g500)">— '+blockers[0].label+(blockers[0].due?' · '+blockers[0].due:'')+'</span>';
       if(s.gcActionable===0&&s.gcOverdue===0&&s.o2sBlocking===0) h+='<span style="color:var(--success)">· on track</span>';
@@ -3309,7 +3309,7 @@ charges:[
     h+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px">';
     h+=_ticon('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',13,'var(--g500)');
     h+='Workflow tasks';
-    h+='<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11.5px;color:'+(s.gcOverdue>0?'var(--red)':s.gcActionable>0?'var(--amber)':'var(--success)')+'">'+s.done+'/'+s.total+(s.gcOverdue>0?' · '+s.gcOverdue+' overdue':s.gcActionable>0?' · '+s.gcActionable+' GC task'+(s.gcActionable>1?'s':'')+' needed':'')+'</span>';
+    h+='<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11.5px;color:'+(s.gcOverdue>0?'var(--red)':s.gcActionable>0?'var(--amber)':'var(--success)')+'">'+s.done+'/'+s.total+(s.gcOverdue>0?' · '+s.gcOverdue+' overdue':s.gcActionable>0?' · '+s.gcActionable+' Subcontractor action'+(s.gcActionable>1?'s':'')+' needed':'')+'</span>';
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
     h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;padding:3px 0;border-bottom:1px solid var(--g100);margin-bottom:5px">02S tasks</div>';
@@ -3366,7 +3366,7 @@ charges:[
       h+='<div style="display:flex;align-items:center;gap:5px;padding:2px 0;color:'+col+(t.blocking&&!t.done?';font-weight:600':'')+'">'+ico+'<span style="flex:1">'+t.label+(t.due&&!t.done?' · '+t.due:'')+(t.done&&t.date?' · '+t.date:'')+'</span>'+(!t.done?'<button onclick="toggleCCTask(\''+ordId+'\',\''+t.id+'\')" style="font-size:9.5px;padding:1px 6px;border-radius:3px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--g700)">Done</button>':'')+'</div>';
     });
     h+='</div>';
-    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g150);padding-bottom:3px;margin-bottom:4px">Project tasks (GC)</div>';
+    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g150);padding-bottom:3px;margin-bottom:4px">Subcontractor tasks</div>';
     ot.tasks.filter(function(t){return t.side==='gc';}).forEach(function(t){
       var isOver=t.overdue&&!t.done; var isBlock=t.blocking&&!t.done;
       var col=t.done?'var(--g400)':isOver?'var(--red)':isBlock?'var(--amber)':'var(--g700)';
@@ -3464,6 +3464,7 @@ charges:[
     var fo=(document.getElementById('ordOrigin')||{}).value||'';
     var ff=(document.getElementById('ordFrom')||{}).value||'', ft=(document.getElementById('ordTo')||{}).value||'';
     var ns=CURRENT==='ns';
+    _ordersShowAll=false;
     var list=ORDERS.filter(function(o){
       var st=stageStatus(o);
       if(fp && o.pillar!==fp) return false;
@@ -3478,7 +3479,11 @@ charges:[
     });
     document.getElementById('ordCountLbl').textContent='· '+list.length+' order'+(list.length===1?'':'s');
     var head='<div class="ot-head"><span>Order</span><span>Items</span><span>Pillar</span><span>Origin</span><span class="hide-sm">Dates</span><span class="hide-sm">Cost code</span><span>Status</span><span></span></div>';
-    var rows=list.map(function(o){
+    var ORD_LIMIT=6;
+    var rows=[];
+    var _ordList=_ordersShowAll?list:list.slice(0,ORD_LIMIT);
+    var ordMoreN=list.length-ORD_LIMIT;
+    _ordList.forEach(function(o){
       var st=stageStatus(o);
       var badge='';
       var freshBadge=o.fresh?'<span class="tag ok" style="margin-left:7px">New</span>':'';
@@ -3487,7 +3492,7 @@ charges:[
         else if(o.rental) badge = '<span class="tag warn" style="margin-left:7px">Ending soon</span>';
       }
       var trk = trackerHTML(o, ns);
-      return '<div class="orow" id="row-'+o.id+'" onclick="toggleOrder(\''+o.id+'\')">'+
+      rows.push('<div class="orow" id="row-'+o.id+'" onclick="toggleOrder(\''+o.id+'\')">'+
         '<div class="oc-id">'+o.id+'</div>'+
         '<div class="oc-item">'+o.item+freshBadge+badge+'<div class="sub">'+o.sub+'</div></div>'+
         '<div><span class="tag '+(o.pillar==='equipment'?'info':'neu')+'">'+pillarLabel(o.pillar)+'</span></div>'+
@@ -3497,9 +3502,10 @@ charges:[
         '<div><span class="tag '+(STATUS_TAG[st]||'neu')+'">'+st+'</span></div>'+
         '<div>'+svg('<path d="M9 18l6-6-6-6"/>',2).replace('<svg ','<svg class="oc-chev" ')+'</div>'+
         '</div>'+
-        '<div class="otrack" id="trk-'+o.id+'">'+trk+'</div>';
-    }).join('');
-    document.getElementById('ordTable').innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No orders match these filters.</div>');
+        '<div class="otrack" id="trk-'+o.id+'">'+trk+'</div>');
+    });
+    var ordMoreBtn=(!_ordersShowAll&&ordMoreN>0)?'<button class="show-more-btn" onclick="_ordersShowAll=true;renderOrders()">Show '+ordMoreN+' more orders ↓</button>':'';
+    document.getElementById('ordTable').innerHTML = head + (rows.length?rows.join('')+'<div class="show-more-wrap">'+ordMoreBtn+'</div>':'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No orders match these filters.</div>');
   }
 
   function renderPortalQuotes(){
@@ -3881,27 +3887,34 @@ charges:[
       if(q && (b.id.toLowerCase().indexOf(q)<0 && b.order.toLowerCase().indexOf(q)<0 && b.product.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
+    _billsShowAll=false;
     var lbl=document.getElementById('billCountLbl'); if(lbl) lbl.textContent='· '+list.length+' bill'+(list.length===1?'':'s');
     var head='<div class="ot-head bt-head"><span>Bill</span><span>Order</span><span>Product</span><span class="r">Amount</span><span class="hide-sm">Cost code</span><span>Status</span></div>';
-    var rows=list.map(function(b){
+    var rows=[];
+    list.forEach(function(b){
       var anom = '';
       var isPend=b.status==='Pending';
       var isFin=b.status==='Finalized';
       var statusCell=isPend
         ?'<div style="display:flex;align-items:center;gap:6px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="openBillModal(\''+b.id+'\')">Review</button></div>'
         :'<div style="display:flex;align-items:center;gap:5px"><span class="tag '+(STATUS_TAG[b.status]||'neu')+'">'+b.status+'</span>'+(isFin?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px" onclick="openBillPDFModal(\''+b.id+'\')" title="View PDF">PDF</button>':'')+'</div>';
-      return '<div class="brow">'+
+      rows.push('<div class="brow">'+
         '<div class="oc-id">'+b.id+'</div>'+
         '<div><span class="oc-link" onclick="jumpToOrder(\''+b.order+'\')">'+b.order+'</span></div>'+
         '<div class="oc-item" style="font-weight:500">'+b.product+anom+'</div>'+
         '<div class="oc-amt r">'+fmt(b.amt)+'</div>'+
         '<div class="oc-cost hide-sm">'+b.cost+'</div>'+
         statusCell+
-        '</div>';
-    }).join('');
-    host.innerHTML = head + (rows||'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No bills match these filters.</div>');
+        '</div>');
+    });
+    var BILL_LIMIT=6;
+    var moreN=rows.length-BILL_LIMIT;
+    var vis=_billsShowAll?rows:rows.slice(0,BILL_LIMIT);
+    var moreBtn=(!_billsShowAll&&moreN>0)?'<button class="show-more-btn" onclick="_billsShowAll=true;renderBills()">Show '+moreN+' more ↓</button>':'';
+    host.innerHTML=head+(rows.length?vis.join('')+'<div class="show-more-wrap">'+moreBtn+'</div>':'<div style="padding:32px;text-align:center;color:var(--g400);font-size:12.5px">No bills match these filters.</div>');
   }
 
+  var _billsShowAll=false; var _ordersShowAll=false; var _fqShowAll=false;
   var _billExFilter='all';
   function _billExRows(filter){
     var fin=BILLS.filter(function(b){return b.status==='Finalized';});
@@ -4797,7 +4810,7 @@ charges:[
 
 
   /* ═══════════ COMMAND CENTER ═══════════ */
-  var ccActive=null;
+  var ccActive=null; var _ccTaskFilter='all';
   var ccPersona='fsm';
   var CC_FSM_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center'];
   var _ccFSMProj='';
@@ -4822,6 +4835,7 @@ charges:[
     });
   }
   function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
+  function ccSetTaskFilter(f){ _ccTaskFilter=f; renderFulfill(); }
   function ccSetVer(v){
     CURRENT=v; document.body.setAttribute('data-ver',v);
     if(!document.getElementById('ns-toggle-css')){
@@ -5119,6 +5133,7 @@ charges:[
     h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(fqFPr===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='</div>';
+    _fqShowAll=false;
     var rows=FQ_scoped.filter(fqVisible);
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all');
     h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
@@ -5127,10 +5142,14 @@ charges:[
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
     var _fq_pri={'At-risk':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
     rows=rows.slice().sort(function(a,b){var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
-    rows.forEach(function(r){
+    var FQ_LIMIT=7;
+    var fqMoreN=rows.length-FQ_LIMIT;
+    var visRows=_fqShowAll?rows:rows.slice(0,FQ_LIMIT);
+    visRows.forEach(function(r){
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
     });
+    h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
     if(ns){
       var _oids=Object.keys(ORDER_TASKS);
@@ -5140,24 +5159,32 @@ charges:[
         h+='<div class="cc-queue" style="margin-top:20px">';
         h+='<div class="cc-qhead">';
         h+=svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>');
-        h+='Workflow task tracker';
-        if(_o2sNeed.length)h+=' \u00b7 <span style="color:var(--amber)">'+_o2sNeed.length+' order'+(_o2sNeed.length>1?'s':'')+' need 02S action</span>';
-        if(_gcNeed.length)h+=' \u00b7 <span style="color:var(--g500)">'+_gcNeed.length+' awaiting GC</span>';
-        h+='</div>';
+        h+='<span style="font-weight:600">Workflow task tracker</span>';
+        var _totalAct=_o2sNeed.length+_gcNeed.length;
+        h+=' <span style="color:var(--g400);font-weight:400">· '+_totalAct+' order'+(_totalAct===1?'':'s')+' need attention</span>';
+        h+='<div style="display:flex;gap:5px;margin-left:auto;flex-wrap:wrap">';
+        [['all','All'],['02s','02S needed'],['sub-pending','Sub· pending'],['sub-overdue','Sub· overdue']].forEach(function(fv){
+          var act=_ccTaskFilter===fv[0];
+          h+='<button onclick="ccSetTaskFilter(\''+fv[0]+'\')" style="font-size:10px;padding:2px 9px;border-radius:4px;border:1px solid '+(act?'var(--red)':'var(--g200)')+';background:'+(act?'var(--red)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';cursor:pointer">'+fv[1]+'</button>';
+        });
+        h+='</div></div>';
         var _combined=_o2sNeed.slice();
         _gcNeed.forEach(function(id){if(_combined.indexOf(id)<0)_combined.push(id);});
+        if(_ccTaskFilter==='02s') _combined=_combined.filter(function(id){var s=orderTaskSummary(id);return s&&s.o2sBlocking>0;});
+        else if(_ccTaskFilter==='sub-pending') _combined=_combined.filter(function(id){var s=orderTaskSummary(id);return s&&s.gcActionable>0&&!s.gcOverdue;});
+        else if(_ccTaskFilter==='sub-overdue') _combined=_combined.filter(function(id){var s=orderTaskSummary(id);return s&&s.gcOverdue>0;});
         _combined.forEach(function(oid){
           var s=orderTaskSummary(oid); var _or=ORDERS.filter(function(o){return o.id===oid;})[0];
           var isO2s=s.o2sBlocking>0; var isOver=s.gcOverdue>0;
-          var gcPend=ORDER_TASKS[oid].tasks.filter(function(t){
+          var subPend=ORDER_TASKS[oid].tasks.filter(function(t){
             return !t.done&&t.side==='gc'&&t.blocking&&(!t.blockedBy||(ORDER_TASKS[oid].tasks.filter(function(b){return b.id===t.blockedBy;})[0]||{}).done);
           });
           h+='<div class="cc-act">';
-          h+='<div class="cc-ab"><div class="cc-at">'+oid+(_or?' \u00b7 '+_or.item:'')+' <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toggleCCTaskPanel(\''+oid+'\')" style="font-size:10px;padding:1px 7px;margin-left:6px">Tasks \u21f3</button></div>';
-          if(isO2s){var _o2sTasks=ORDER_TASKS[oid].tasks.filter(function(t){return !t.done&&t.side==='02s'&&t.blocking;});h+='<div class="cc-as" style="color:var(--amber)">02S needed: '+_o2sTasks.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' \u00b7 ')+'</div>';}
-          else if(gcPend.length){h+='<div class="cc-as">GC awaiting: '+gcPend.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' \u00b7 ')+'</div>';}
+          h+='<div class="cc-ab"><div class="cc-at">'+oid+(_or?' · '+_or.item:'')+' <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toggleCCTaskPanel(\''+oid+'\')" style="font-size:10px;padding:1px 7px;margin-left:6px">Tasks ⇳</button></div>';
+          if(isO2s){var _o2sTasks=ORDER_TASKS[oid].tasks.filter(function(t){return !t.done&&t.side==='02s'&&t.blocking;});h+='<div class="cc-as" style="color:var(--amber)">02S needed: '+_o2sTasks.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' · ')+'</div>';}
+          else if(subPend.length){h+='<div class="cc-as">Subcontractor: '+subPend.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' · ')+'</div>';}
           h+='</div>';
-          h+='<span class="tag '+(isOver?'bad':isO2s?'warn':'info')+'">'+(isOver?'GC overdue':isO2s?'02S needed':'GC pending')+'</span>';
+          h+='<span class="tag '+(isOver?'bad':isO2s?'warn':'info')+'">'+( isOver?'Sub· overdue':isO2s?'02S needed':'Sub· pending')+'</span>';
           h+='</div>';
           h+=renderCCTaskPanel(oid);
         });
