@@ -182,7 +182,7 @@
         </div>
       </div>
       <!-- NS: risk-intelligence metrics — the proactive layer -->
-      <div class="vitals hide" id="vitalsNS" style="grid-template-columns:repeat(6,1fr)">
+      <div class="vitals hide" id="vitalsNS" style="grid-template-columns:repeat(7,1fr)">
         <div class="vital warn">
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>Active orders</div>
           <div class="vv">5<span class="u">active</span></div>
@@ -190,13 +190,13 @@
         </div>
         <div class="vital bad">
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>Waiting on you</div>
-          <div class="vv">3<span class="u">items</span></div>
-          <div class="vsub"><span class="tag bad">1 urgent</span><span style="color:var(--g400)">auto-finalizes in 2 days</span></div>
+          <div class="vv">6<span class="u">items</span></div>
+          <div class="vsub"><span class="tag bad">1 overdue</span><span style="color:var(--g400)">geo report + bills</span></div>
         </div>
         <div class="vital warn">
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>02S spend MTD</div>
-          <div class="vv">$248K</div>
-          <div class="vsub"><span class="tag bad">Idle fleet</span><span style="color:var(--g400)">+$3.2K/wk exposure</span></div>
+          <div class="vv">$412K</div>
+          <div class="vsub"><span class="tag warn">74% of budget</span><span style="color:var(--g400)">+$3.2K/wk idle exposure</span></div>
         </div>
         <div class="vital ok">
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Open tickets</div>
@@ -212,6 +212,11 @@
           <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Fleet utilization</div>
           <div class="vv">62%<span class="u">active</span></div>
           <div class="vsub"><span class="tag warn">2 units idle &gt;5 days</span></div>
+        </div>
+        <div class="vital warn" id="vitalTaskBlockers">
+          <div class="vk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Workflow tasks</div>
+          <div class="vv"><span id="nsTaskBlockBadge">3</span><span class="u">blocking</span></div>
+          <div class="vsub">orders w/ GC tasks pending</div>
         </div>
       </div>
 

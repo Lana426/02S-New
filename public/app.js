@@ -1799,7 +1799,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); }
     window.scrollTo(0,0);
   }
 
@@ -1962,6 +1962,69 @@ function renderProfServicesDP(){
        {name:'VDC / BIM coordination, 3 FTE',pillar:'Prof. services',qty:'3 FTE \u00b7 7 months',amount:null}
      ]}
   ];
+  var EXTRA_LOOKAHEAD=[];
+  var ORDER_TASKS={
+    'ORD-3054':{node:'crane-tower',tasks:[
+      {id:'c1',side:'02s',label:'Oversize permit issued',done:true,date:'Jul 25'},
+      {id:'c2',side:'02s',label:'Erection crew scheduled · Aug 4',done:true,date:'Jul 28'},
+      {id:'c3',side:'02s',label:'Insurance certificate to GC',done:true,date:'Jul 28'},
+      {id:'c4',side:'02s',label:'Post-erection inspection report',done:false,due:'Aug 6'},
+      {id:'g1',side:'gc',label:'Lift zone designated in site plan',done:true,date:'Jul 20',blocking:true},
+      {id:'g2',side:'gc',label:'Safety pre-task plan signed',done:false,due:'Aug 3',blocking:true},
+      {id:'g3',side:'gc',label:'Operator badge-in confirmed',done:false,due:'Aug 4'},
+      {id:'g4',side:'gc',label:'Crane operator orientation acknowledged',done:false,due:'Aug 4'}
+    ]},
+    'ORD-3115':{node:'pile-driver',tasks:[
+      {id:'c1',side:'02s',label:'Ground bearing capacity confirmed',done:true,date:'Jul 29'},
+      {id:'c2',side:'02s',label:'Operator qualified + certified',done:true,date:'Jul 28'},
+      {id:'c3',side:'02s',label:'On-rent confirmed · Aug 1',done:true,date:'Aug 1'},
+      {id:'c4',side:'02s',label:'Weekly utilization report · Aug 4 wk',done:false,due:'Aug 8'},
+      {id:'g1',side:'gc',label:'GPS staking complete',done:true,date:'Jul 29'},
+      {id:'g2',side:'gc',label:'Vibration monitoring in place',done:true,date:'Jul 30'},
+      {id:'g3',side:'gc',label:'Phase 1 pile log submitted',done:false,due:'Aug 8'},
+      {id:'g4',side:'gc',label:'Subgrade acceptance — S3 sector',done:false,due:'Aug 15'}
+    ]},
+    'ORD-3107':{node:'prefab-ehouse',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings prepared',done:false,due:'Aug 12'},
+      {id:'c2',side:'02s',label:'Submittal package issued to GC',done:false,due:'Aug 14',blocking:true},
+      {id:'c3',side:'02s',label:'Factory witness test scheduled',done:false,due:'Sep 15'},
+      {id:'c4',side:'02s',label:'Delivery window confirmed',done:false,due:'Oct 1'},
+      {id:'g1',side:'gc',label:'EOR submittal review (14-day clock)',done:false,blocking:true,blockedBy:'c2',note:'Starts when 02S issues submittal'},
+      {id:'g2',side:'gc',label:'Foundation ready confirmation',done:false,due:'Oct 15'},
+      {id:'g3',side:'gc',label:'Interconnect sequence w/ electrical sub',done:false,due:'Oct 20'},
+      {id:'g4',side:'gc',label:'Crane access window reserved',done:false,due:'Oct 28'}
+    ]},
+    'ORD-3096':{node:'profservices-geo',tasks:[
+      {id:'c1',side:'02s',label:'Terracon 3 FTE assigned',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'Monitoring schedule issued',done:true,date:'Jun 5'},
+      {id:'c3',side:'02s',label:'Report distribution confirmed',done:true,date:'Jun 5'},
+      {id:'c4',side:'02s',label:'Final reporting + demob plan',done:false,due:'Aug 18'},
+      {id:'g1',side:'gc',label:'Site access granted for instrumentation',done:true,date:'Jun 3'},
+      {id:'g2',side:'gc',label:'Week 12 report reviewed + signed',done:false,due:'Jul 22',blocking:true,overdue:true},
+      {id:'g3',side:'gc',label:'Phase closeout authorization',done:false,due:'Aug 18',blocking:true},
+      {id:'g4',side:'gc',label:'Regulatory submission',done:false,due:'Aug 25'}
+    ]},
+    'ORD-3071':{node:'logistics-oversize',tasks:[
+      {id:'c1',side:'02s',label:'Route survey completed',done:true,date:'Jul 20'},
+      {id:'c2',side:'02s',label:'Oversize permits issued',done:true,date:'Jul 25'},
+      {id:'c3',side:'02s',label:'Escort vehicle arranged',done:true,date:'Jul 28'},
+      {id:'c4',side:'02s',label:'5 AM move notification to site',done:false,due:'Aug 2'},
+      {id:'g1',side:'gc',label:'North gate clearance confirmed',done:false,due:'Aug 2',blocking:true},
+      {id:'g2',side:'gc',label:'Traffic control plan submitted',done:true,date:'Jul 26'},
+      {id:'g3',side:'gc',label:'Laydown A ready for crane delivery',done:false,due:'Aug 3',blocking:true},
+      {id:'g4',side:'gc',label:'Notify adjacent subcontractors',done:false,due:'Aug 2'}
+    ]},
+    'ORD-3103':{node:'procurement-tool',tasks:[
+      {id:'c1',side:'02s',label:'Spec confirmed (TS60/TS90 mix)',done:true,date:'Jul 26'},
+      {id:'c2',side:'02s',label:'Vendor lead time confirmed (4 wk)',done:true,date:'Jul 26'},
+      {id:'c3',side:'02s',label:'PO issued',done:false,due:'Aug 1',blocking:true},
+      {id:'c4',side:'02s',label:'Delivery to site confirmed',done:false,due:'Aug 29'},
+      {id:'g1',side:'gc',label:'Quantity + torque spec confirmed',done:true,date:'Jul 25'},
+      {id:'g2',side:'gc',label:'Authorize PO release',done:false,due:'Aug 1',blocking:true,blockedBy:'c3'},
+      {id:'g3',side:'gc',label:'Secure storage location assigned',done:false,due:'Aug 15'},
+      {id:'g4',side:'gc',label:'Operator training scheduled',done:false,due:'Aug 29'}
+    ]}
+  };
   var ORDER_NOTES={
     'ORD-3042':[
       {who:'Marcus Webb · 02S',when:'May 18',text:'Yard cleared for departure. ETA May 20, 6 AM. Heavy haul permit confirmed.'},
@@ -2427,6 +2490,7 @@ charges:[
       ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
       ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     }
+    if(EXTRA_LOOKAHEAD.length){EXTRA_LOOKAHEAD.forEach(function(x){ITEMS.push(x);});ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});}
     var pillarTone={'Equipment':'info','Billing':'warn','Prof. services':'ok','Logistics':'neu','Procurement':'neu','Prefab':'info'};
     var toneColor={ok:'var(--success)',warn:'var(--warning)',info:'var(--info)',neu:'var(--g400)'};
     var head='<div style="display:grid;grid-template-columns:190px 1fr;gap:0;margin-bottom:2px">'
@@ -2595,6 +2659,7 @@ charges:[
     }
     b+='</div>';
     b+='</div>';
+    if(data.order&&ORDER_TASKS[data.order.id])b+=renderOrderTasksPanel(data.order.id,false);
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
     b+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">';
     data.docs.forEach(function(d){
@@ -2773,6 +2838,7 @@ charges:[
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
+    if(ord&&ORDER_TASKS[ord.id])h+=renderOrderTasksPanel(ord.id,true);
     return h;
   }
   function buildDPTrack(pk,r,rowIdx){
@@ -2827,7 +2893,140 @@ charges:[
     if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
+    if(_ordId&&ORDER_TASKS[_ordId])h+=renderOrderTasksPanel(_ordId,true);
     return h;
+  }
+
+
+  function orderTaskSummary(ordId){
+    var ot=ORDER_TASKS[ordId]; if(!ot)return null;
+    var tasks=ot.tasks;
+    var total=tasks.length,done=tasks.filter(function(t){return t.done;}).length;
+    var gcActionable=tasks.filter(function(t){
+      if(t.done||t.side!=='gc'||!t.blocking)return false;
+      if(t.blockedBy){var bl=tasks.filter(function(b){return b.id===t.blockedBy;})[0];return !!(bl&&bl.done);}
+      return true;
+    }).length;
+    var gcOverdue=tasks.filter(function(t){return !t.done&&t.side==='gc'&&t.blocking&&t.overdue;}).length;
+    var o2sBlocking=tasks.filter(function(t){return !t.done&&t.side==='02s'&&t.blocking;}).length;
+    return {total:total,done:done,gcActionable:gcActionable,gcOverdue:gcOverdue,o2sBlocking:o2sBlocking};
+  }
+  function gcBlockingCount(){
+    var n=0; Object.keys(ORDER_TASKS).forEach(function(id){var s=orderTaskSummary(id);if(s&&s.gcActionable>0)n++;});
+    return n;
+  }
+  function renderNSDashKPIs(){
+    var bc=document.getElementById('nsTaskBlockBadge'); if(bc)bc.textContent=gcBlockingCount();
+  }
+  function _ticon(path,size,color){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="'+(color||'currentColor')+'" stroke-width="2" style="width:'+(size||12)+'px;height:'+(size||12)+'px;flex-shrink:0;margin-top:1px">'+path+'</svg>';
+  }
+  function renderOrderTasksPanel(ordId,compact){
+    var ot=ORDER_TASKS[ordId]; if(!ot)return '';
+    var s=orderTaskSummary(ordId);
+    var ICO_OK='<path d="M20 6L9 17l-5-5"/>',ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',ICO_CIRC='<circle cx="12" cy="12" r="9"/>';
+    if(compact){
+      var blockers=ot.tasks.filter(function(t){if(t.done||t.side!=='gc'||!t.blocking)return false;if(t.blockedBy){var bl=ot.tasks.filter(function(b){return b.id===t.blockedBy;})[0];return !!(bl&&bl.done);}return true;});
+      var h='<div id="tp-'+ordId+'" data-compact="1" style="margin:6px 16px 2px;padding:7px 12px;background:var(--g50);border:1px solid var(--g150);border-radius:5px;display:flex;align-items:center;gap:8px;font-size:11.5px;flex-wrap:wrap">';
+      h+=_ticon('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',12,'var(--g400)');
+      h+='<span style="color:var(--g700);font-weight:500">Tasks</span><span style="color:var(--g400)">'+s.done+'/'+s.total+'</span>';
+      if(s.gcOverdue>0) h+='<span style="color:var(--red);font-weight:600">· '+s.gcOverdue+' overdue</span>';
+      else if(s.gcActionable>0) h+='<span style="color:var(--amber);font-weight:600">· '+s.gcActionable+' GC task'+(s.gcActionable>1?'s':'')+' needed</span>';
+      if(s.o2sBlocking>0) h+='<span style="color:var(--g500)">· '+s.o2sBlocking+' pending 02S</span>';
+      if(blockers.length) h+='<span style="color:var(--g500)">— '+blockers[0].label+(blockers[0].due?' · '+blockers[0].due:'')+'</span>';
+      if(s.gcActionable===0&&s.gcOverdue===0&&s.o2sBlocking===0) h+='<span style="color:var(--success)">· on track</span>';
+      h+='</div>';
+      return h;
+    }
+    var h='<div id="tp-'+ordId+'" data-compact="0" style="margin-bottom:16px">';
+    h+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:8px">';
+    h+=_ticon('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',13,'var(--g500)');
+    h+='Workflow tasks';
+    h+='<span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11.5px;color:'+(s.gcOverdue>0?'var(--red)':s.gcActionable>0?'var(--amber)':'var(--success)')+'">'+s.done+'/'+s.total+(s.gcOverdue>0?' · '+s.gcOverdue+' overdue':s.gcActionable>0?' · '+s.gcActionable+' GC task'+(s.gcActionable>1?'s':'')+' needed':'')+'</span>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;padding:3px 0;border-bottom:1px solid var(--g100);margin-bottom:5px">02S tasks</div>';
+    ot.tasks.filter(function(t){return t.side==='02s';}).forEach(function(t){
+      var ico=t.done?_ticon(ICO_OK,12,'var(--success)'):t.blocking?_ticon(ICO_WARN,12,'var(--amber)'):_ticon(ICO_CIRC,12,'var(--g300)');
+      var col=t.done?'var(--g400)':t.blocking?'var(--amber)':'var(--g800)';
+      h+='<div style="display:flex;align-items:flex-start;gap:5px;padding:3px 0;font-size:11.5px;color:'+col+(t.blocking&&!t.done?';font-weight:600':'')+'">'+ico+'<span>'+t.label+(t.done&&t.date?' <span style="color:var(--g400)">· '+t.date+'</span>':!t.done&&t.due?' <span style="color:'+(t.blocking?'var(--amber)':'var(--g500)')+';">· '+t.due+'</span>':'')+'</span></div>';
+    });
+    h+='</div>';
+    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;padding:3px 0;border-bottom:1px solid var(--g100);margin-bottom:5px">Your tasks</div>';
+    ot.tasks.filter(function(t){return t.side==='gc';}).forEach(function(t){
+      var canAct=!t.done&&t.blocking&&(!t.blockedBy||(ot.tasks.filter(function(b){return b.id===t.blockedBy;})[0]||{}).done);
+      var isOver=t.overdue&&!t.done; var isBlock=t.blocking&&!t.done;
+      var col=t.done?'var(--g400)':isOver?'var(--red)':isBlock?'var(--amber)':'var(--g800)';
+      var ico=t.done?_ticon(ICO_OK,12,'var(--success)'):isOver?_ticon(ICO_WARN,12,'var(--red)'):isBlock?_ticon(ICO_WARN,12,'var(--amber)'):_ticon(ICO_CIRC,12,'var(--g300)');
+      h+='<div style="display:flex;align-items:flex-start;gap:5px;padding:3px 0;font-size:11.5px;color:'+col+(isBlock||isOver?';font-weight:600':'')+'">'+ico;
+      h+='<span style="flex:1">'+t.label;
+      if(t.note) h+=' <span style="color:var(--g400);font-size:10.5px">— '+t.note+'</span>';
+      if(t.done&&t.date) h+=' <span style="color:var(--g400)">· '+t.date+'</span>';
+      else if(!t.done&&t.due) h+=' <span style="color:'+(isOver?'var(--red)':isBlock?'var(--amber)':'var(--g500)')+';">· '+t.due+'</span>';
+      if(isOver) h+=' <span class="tag bad" style="font-size:9px;padding:1px 4px">Overdue</span>';
+      h+='</span>';
+      if(canAct) h+='<button onclick="toggleOrdTask(\''+ordId+'\',\''+t.id+'\')" style="font-size:10px;padding:1px 7px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--g700);white-space:nowrap;margin-left:4px">Mark done</button>';
+      h+='</div>';
+    });
+    h+='</div></div></div>';
+    return h;
+  }
+  function toggleOrdTask(ordId,taskId){
+    var ot=ORDER_TASKS[ordId]; if(!ot)return;
+    var task=ot.tasks.filter(function(t){return t.id===taskId;})[0]; if(!task)return;
+    var wasBlocking=task.blocking&&!task.done;
+    task.done=!task.done; if(task.done)task.date='Jul 29';
+    var panel=document.getElementById('tp-'+ordId);
+    if(panel){var compact=panel.getAttribute('data-compact')==='1';var d=document.createElement('div');d.innerHTML=renderOrderTasksPanel(ordId,compact);panel.parentNode.replaceChild(d.firstChild,panel);}
+    toast(task.done?task.label+' — marked done':task.label+' — unmarked');
+    if(wasBlocking&&task.done){
+      EXTRA_LOOKAHEAD.push({label:'GC task cleared — '+ordId,pillar:'Tasks',ref:ordId,start:'2026-07-29',end:'2026-07-29',tone:'ok',note:task.label+' — blocking task resolved'});
+      renderNSDashKPIs();
+      setTimeout(function(){toast('✓ Lookahead updated — blocking task cleared on '+ordId);},700);
+    }
+  }
+  function renderCCTaskPanel(ordId){
+    var ot=ORDER_TASKS[ordId]; if(!ot)return '';
+    var ord=ORDERS.filter(function(o){return o.id===ordId;})[0];
+    var ICO_OK='<path d="M20 6L9 17l-5-5"/>',ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>',ICO_CIRC='<circle cx="12" cy="12" r="9"/>';
+    var h='<div id="cctpanel-'+ordId+'" style="display:none;margin:4px 0 6px;padding:10px 14px;background:var(--g50);border:1px solid var(--g150);border-radius:6px">';
+    h+='<div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:8px">'+ordId+(ord?' · '+ord.item:'')+'</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px">';
+    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g150);padding-bottom:3px;margin-bottom:4px">02S tasks</div>';
+    ot.tasks.filter(function(t){return t.side==='02s';}).forEach(function(t){
+      var ico=t.done?_ticon(ICO_OK,11,'var(--success)'):t.blocking?_ticon(ICO_WARN,11,'var(--amber)'):_ticon(ICO_CIRC,11,'var(--g300)');
+      var col=t.done?'var(--g400)':t.blocking?'var(--amber)':'var(--g800)';
+      h+='<div style="display:flex;align-items:center;gap:5px;padding:2px 0;color:'+col+(t.blocking&&!t.done?';font-weight:600':'')+'">'+ico+'<span style="flex:1">'+t.label+(t.due&&!t.done?' · '+t.due:'')+(t.done&&t.date?' · '+t.date:'')+'</span>'+(!t.done?'<button onclick="toggleCCTask(\''+ordId+'\',\''+t.id+'\')" style="font-size:9.5px;padding:1px 6px;border-radius:3px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--g700)">Done</button>':'')+'</div>';
+    });
+    h+='</div>';
+    h+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--g150);padding-bottom:3px;margin-bottom:4px">Project tasks (GC)</div>';
+    ot.tasks.filter(function(t){return t.side==='gc';}).forEach(function(t){
+      var isOver=t.overdue&&!t.done; var isBlock=t.blocking&&!t.done;
+      var col=t.done?'var(--g400)':isOver?'var(--red)':isBlock?'var(--amber)':'var(--g700)';
+      var ico=t.done?_ticon(ICO_OK,11,'var(--success)'):isOver?_ticon(ICO_WARN,11,'var(--red)'):isBlock?_ticon(ICO_WARN,11,'var(--amber)'):_ticon(ICO_CIRC,11,'var(--g300)');
+      h+='<div style="display:flex;align-items:center;gap:5px;padding:2px 0;color:'+col+(isBlock||isOver?';font-weight:600':'')+'">'+ico+'<span>'+t.label+(t.due&&!t.done?' · '+t.due:'')+(t.done&&t.date?' · '+t.date:'')+'</span>'+(isOver?'<span class="tag bad" style="font-size:9px;padding:1px 4px;margin-left:4px">Overdue</span>':isBlock?'<span class="tag warn" style="font-size:9px;padding:1px 4px;margin-left:4px">Needs action</span>':'')+'</div>';
+    });
+    h+='</div></div></div>';
+    return h;
+  }
+  function toggleCCTask(ordId,taskId){
+    var ot=ORDER_TASKS[ordId]; if(!ot)return;
+    var task=ot.tasks.filter(function(t){return t.id===taskId;})[0]; if(!task)return;
+    var wasBlocking=task.blocking&&!task.done;
+    task.done=!task.done; if(task.done)task.date='Jul 29';
+    var panel=document.getElementById('cctpanel-'+ordId);
+    if(panel){var d=document.createElement('div');d.innerHTML=renderCCTaskPanel(ordId);var np=d.firstChild;np.style.display='block';panel.parentNode.replaceChild(np,panel);}
+    toast(task.label+' — '+(task.done?'marked complete':'unmarked'));
+    if(wasBlocking&&task.done){
+      var unblocked=ot.tasks.filter(function(t){return t.side==='gc'&&!t.done&&t.blockedBy===taskId;});
+      if(unblocked.length){setTimeout(function(){toast('✓ '+ordId+': '+unblocked[0].label+' is now unblocked — notification sent to project team');},700);}
+      EXTRA_LOOKAHEAD.push({label:ordId+' task unblocked',pillar:'Tasks',ref:ordId,start:'2026-07-29',end:'2026-07-29',tone:'ok',note:task.label+' complete — '+(unblocked&&unblocked[0]?unblocked[0].label+' now actionable for GC':'GC notified')});
+      renderNSDashKPIs();
+    }
+  }
+  function toggleCCTaskPanel(ordId){
+    var el=document.getElementById('cctpanel-'+ordId);
+    if(el)el.style.display=el.style.display==='none'||el.style.display===''?'block':'none';
   }
 
   var ordView='orders';
@@ -4515,6 +4714,38 @@ charges:[
       h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
     });
     h+='</div>';
+    if(ns){
+      var _oids=Object.keys(ORDER_TASKS);
+      var _o2sNeed=_oids.filter(function(id){var s=orderTaskSummary(id);return s&&s.o2sBlocking>0;});
+      var _gcNeed=_oids.filter(function(id){var s=orderTaskSummary(id);return s&&s.gcActionable>0;});
+      if(_o2sNeed.length||_gcNeed.length){
+        h+='<div class="cc-queue" style="margin-top:20px">';
+        h+='<div class="cc-qhead">';
+        h+=svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>');
+        h+='Workflow task tracker';
+        if(_o2sNeed.length)h+=' \u00b7 <span style="color:var(--amber)">'+_o2sNeed.length+' order'+(_o2sNeed.length>1?'s':'')+' need 02S action</span>';
+        if(_gcNeed.length)h+=' \u00b7 <span style="color:var(--g500)">'+_gcNeed.length+' awaiting GC</span>';
+        h+='</div>';
+        var _combined=_o2sNeed.slice();
+        _gcNeed.forEach(function(id){if(_combined.indexOf(id)<0)_combined.push(id);});
+        _combined.forEach(function(oid){
+          var s=orderTaskSummary(oid); var _or=ORDERS.filter(function(o){return o.id===oid;})[0];
+          var isO2s=s.o2sBlocking>0; var isOver=s.gcOverdue>0;
+          var gcPend=ORDER_TASKS[oid].tasks.filter(function(t){
+            return !t.done&&t.side==='gc'&&t.blocking&&(!t.blockedBy||(ORDER_TASKS[oid].tasks.filter(function(b){return b.id===t.blockedBy;})[0]||{}).done);
+          });
+          h+='<div class="cc-act">';
+          h+='<div class="cc-ab"><div class="cc-at">'+oid+(_or?' \u00b7 '+_or.item:'')+' <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toggleCCTaskPanel(\''+oid+'\')" style="font-size:10px;padding:1px 7px;margin-left:6px">Tasks \u21f3</button></div>';
+          if(isO2s){var _o2sTasks=ORDER_TASKS[oid].tasks.filter(function(t){return !t.done&&t.side==='02s'&&t.blocking;});h+='<div class="cc-as" style="color:var(--amber)">02S needed: '+_o2sTasks.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' \u00b7 ')+'</div>';}
+          else if(gcPend.length){h+='<div class="cc-as">GC awaiting: '+gcPend.map(function(t){return t.label+(t.due?' ('+t.due+')':'');}).join(' \u00b7 ')+'</div>';}
+          h+='</div>';
+          h+='<span class="tag '+(isOver?'bad':isO2s?'warn':'info')+'">'+(isOver?'GC overdue':isO2s?'02S needed':'GC pending')+'</span>';
+          h+='</div>';
+          h+=renderCCTaskPanel(oid);
+        });
+        h+='</div>';
+      }
+    }
     var _tl=FQ.filter(function(r){return r.tasked;});
     if(_tl.length){
       h+='<div class="cc-queue" style="margin-top:24px">';
@@ -5505,7 +5736,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); }
     window.scrollTo(0,0);
   }
 
