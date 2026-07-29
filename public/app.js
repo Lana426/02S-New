@@ -1407,8 +1407,8 @@
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8,linkOrd:'ORD-3095'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096'},
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
@@ -1423,13 +1423,13 @@
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued'},
-        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered'},
-        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered'},
-        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk'},
-        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered'},
+        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued',linkOrd:'ORD-3100'},
+        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered',linkOrd:'ORD-3101'},
+        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered',linkOrd:'ORD-3102'},
+        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk',linkOrd:'ORD-3103'},
+        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3104'},
         {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
-        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued'},
+        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued',linkOrd:'ORD-3105'},
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
@@ -1440,10 +1440,10 @@
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
-        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
+        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication',linkOrd:'ORD-3060'},
+        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal',linkOrd:'ORD-3107'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
@@ -1883,7 +1883,18 @@ function renderProfServicesDP(){
     {id:'ORD-3082',od:'2026-06-01',item:'Temporary fencing & gates',sub:'400 LF + 2 gates',pillar:'procurement',dates:'Jun 1 – project close',cost:'01 · General',stage:2,plan:null,latest:'Fabrication quote received — awaiting PO approval'},
     {id:'ORD-3090',od:'2026-04-25',item:'Special inspections — concrete',sub:'IBC §1705 · 3rd party',pillar:'profservices',dates:'ongoing',cost:'03 · Concrete',stage:4,plan:null,latest:'Inspector on site as scheduled — reports filed weekly'},
     {id:'ORD-3091',od:'2026-05-20',item:'Structural engineering — RFI support',sub:'8 hrs/wk · as needed',pillar:'profservices',dates:'May – Sep 2026',cost:'05 · Metals',stage:3,plan:null,latest:'3 RFIs responded this week — avg 24hr turnaround'},
-    {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'}
+    {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'},
+    {id:'ORD-3095',od:'2026-03-01',item:"Owner's engineer / IE support",sub:'DNV \u00b7 2 FTE',pillar:'profservices',dates:'Mar \u2013 Dec 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'Monthly progress report submitted \u2014 Jun 2026. On track per CPM schedule.'},
+    {id:'ORD-3096',od:'2026-03-05',item:'Geotechnical monitoring',sub:'Terracon \u00b7 3 FTE',pillar:'profservices',dates:'Mar \u2013 Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:3,plan:null,latest:'Monitoring ongoing \u2014 no deviations. Jul billing submitted.'},
+    {id:'ORD-3100',od:'2026-06-01',item:'Nut runners \u2014 3/8\" cordless',sub:'48 units \u00b7 solar racking',pillar:'procurement',dates:'Jul 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:3,plan:null,latest:'PO issued \u2014 delivery confirmed Jul 18. 02S tracking inbound.'},
+    {id:'ORD-3101',od:'2026-06-15',item:'Battery packs \u2014 20v M18',sub:'100 units \u00b7 site cordless fleet',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jun 30 \u2014 distributed to crews. Receiving inspection complete.'},
+    {id:'ORD-3102',od:'2026-06-10',item:'Quad charging banks \u2014 12-bay',sub:'20 units \u00b7 site-wide tool charging',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Installed at tool cribs Jul 1. All stations operational.'},
+    {id:'ORD-3103',od:'2026-07-18',item:'Tone shear wrenches TS60/TS90',sub:'12 units \u00b7 structural bolt tensioning',pillar:'procurement',dates:'Aug 15, 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:1,plan:null,latest:'At-risk \u2014 4-wk lead time. Order submitted Jul 18; expedited shipping requested.',latestTone:'risk'},
+    {id:'ORD-3104',od:'2026-06-15',item:'Angle grinders \u2014 cordless 20v',sub:'16 units \u00b7 metalwork & weld prep',pillar:'procurement',dates:'Aug 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jul 30 \u2014 received and logged at tool crib.'},
+    {id:'ORD-3105',od:'2026-07-15',item:'HEPA vacuums \u2014 10 gal cordless',sub:'6 units \u00b7 silica dust control OSHA Table 1',pillar:'procurement',dates:'Aug 5, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'PO issued Jul 15 \u2014 delivery expected Aug 5. Expedited per OSHA compliance.'},
+    {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{window:'Jul 18',carrier:'02S Prefab Shop A',docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
+    {id:'ORD-3107',od:'2026-07-01',item:'Modular e-houses (BESS)',sub:'2 units \u00b7 custom fabrication',pillar:'prefab',dates:'Nov 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submittal under engineering review \u2014 approval expected Aug 2026.'},
+    {id:'ORD-3108',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'}
   ];
   var PORTAL_QUOTES=[
     {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
@@ -1973,6 +1984,42 @@ function renderProfServicesDP(){
   };
 
   var BILLS=[
+    {id:'BILL-9040',order:'ORD-3095',product:"Owner's engineer / IE support — Jul 2026",amt:28000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'IE / owner\'s rep support — 2 FTE Jul 2026',qty:2,rate:14000,amt:28000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
+      ]},
+    {id:'BILL-9041',order:'ORD-3096',product:'Geotechnical monitoring — Jul 2026',amt:18000,cost:'0200-0320-0000-0001 \u00b7 Site earthwork',status:'Pending',date:'Aug 1',day:4,notes:0,
+      charges:[
+        {desc:'Geotechnical monitoring — 3 FTE Jul 2026',qty:3,rate:6000,amt:18000,cost:'0200-0320-0000-0001 \u00b7 Site earthwork'}
+      ]},
+    {id:'BILL-9042',order:'ORD-3092',product:'Environmental / SWPPP monitoring — final',amt:9000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Finalized',date:'Jun 2',audit:'Auto-finalized Jun 2',
+      charges:[
+        {desc:'Environmental monitoring — SWCA 1 FTE final month',qty:1,rate:9000,amt:9000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
+      ]},
+    {id:'BILL-9043',order:'ORD-3071',product:'Tower crane mobilization haul',amt:18500,cost:'26-330 \u00b7 BESS & Substation',status:'Pending',date:'Aug 5',day:3,notes:0,
+      charges:[
+        {desc:'Lowboy transport — crane base & counterweights',qty:1,rate:12000,amt:12000,cost:'26-330 \u00b7 BESS & Substation'},
+        {desc:'Escort vehicles (3) — permitted oversize route',qty:3,rate:1500,amt:4500,cost:'26-330 \u00b7 BESS & Substation'},
+        {desc:'Permit & route survey fees',qty:1,rate:2000,amt:2000,cost:'26-330 \u00b7 BESS & Substation'}
+      ]},
+    {id:'BILL-9044',order:'ORD-3101',product:'Battery packs 20v M18 — 100 units',amt:11000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Finalized',date:'Jul 3',audit:'Auto-finalized Jul 5',
+      charges:[
+        {desc:'Milwaukee M18 battery packs — 100 units',qty:100,rate:110,amt:11000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
+      ]},
+    {id:'BILL-9045',order:'ORD-3102',product:'Quad charging banks 12-bay — 20 units',amt:14000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Finalized',date:'Jul 5',audit:'Auto-finalized Jul 7',
+      charges:[
+        {desc:'12-bay charging stations — 20 units installed',qty:20,rate:700,amt:14000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
+      ]},
+    {id:'BILL-9046',order:'ORD-3104',product:'Angle grinders cordless 20v — 16 units',amt:4000,cost:'0100-0100-0000-0001 \u00b7 General conditions',status:'Finalized',date:'Aug 2',audit:'Auto-finalized Aug 2',
+      charges:[
+        {desc:'Cordless angle grinders 20v — 16 units',qty:16,rate:250,amt:4000,cost:'0100-0100-0000-0001 \u00b7 General conditions'}
+      ]},
+    {id:'BILL-9047',order:'ORD-3106',product:'L2 headwall assemblies — 8 units',amt:147000,cost:'2600-0540-0000-0001 \u00b7 Module install',status:'Finalized',date:'Jul 22',audit:'J. Torres \u00b7 approved Jul 21',
+      charges:[
+        {desc:'L2 headwall fabrication — 8 units',qty:8,rate:16200,amt:129600,cost:'2600-0540-0000-0001 \u00b7 Module install'},
+        {desc:'Shop drawings & engineering stamp',qty:1,rate:9400,amt:9400,cost:'2600-0540-0000-0001 \u00b7 Module install'},
+        {desc:'Delivery & crane-in coordination',qty:1,rate:8000,amt:8000,cost:'2600-0540-0000-0001 \u00b7 Module install'}
+      ]},
     {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
   {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400,cost:'09 · Finishes'},
@@ -2493,6 +2540,11 @@ charges:[
     inp.value='';
   }
   var DP_CHAIN={
+    profservices:{
+      labels:['Plan line','Contracted','Active','Demobilized'],
+      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>','<path d="M20 6L9 17l-5-5"/>'],
+      stageOf:function(r){var m={Draft:0,Projected:0,'Pending pricing':0,Requested:1,Acknowledged:1,Active:2,Demobilized:3};return m[r.state]!=null?m[r.state]:0;}
+    },
     procurement:{
       labels:['Plan line','PO submitted','PO issued','Delivered'],
       icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>','<path d="M20 6L9 17l-5-5"/>'],
@@ -4988,8 +5040,8 @@ charges:[
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
-        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
+        {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8,linkOrd:'ORD-3095'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096'},
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
@@ -5003,13 +5055,13 @@ charges:[
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
-        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued'},
-        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered'},
-        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered'},
-        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk'},
-        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered'},
+        {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued',linkOrd:'ORD-3100'},
+        {item:'Battery packs \u2014 20v',itemSub:'Milwaukee M18 · site cordless fleet',qty:'100',needby:'Jul 1',orderby:'Jun 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$11K',state:'Delivered',linkOrd:'ORD-3101'},
+        {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered',linkOrd:'ORD-3102'},
+        {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk',linkOrd:'ORD-3103'},
+        {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3104'},
         {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
-        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued'},
+        {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued',linkOrd:'ORD-3105'},
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
@@ -5019,10 +5071,10 @@ charges:[
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication'},
-        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered'},
+        {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication',linkOrd:'ORD-3060'},
+        {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
         {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
