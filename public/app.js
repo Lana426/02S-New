@@ -4906,7 +4906,7 @@ charges:[
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -5157,7 +5157,10 @@ charges:[
     {src:'dp',id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held'},
     {src:'dp',id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization'},
     {src:'adhoc',id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Delivered',doneNote:'On site'},
-    {src:'dp',id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'}
+    {src:'dp',id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'},
+    {src:'dp',id:'fqRv1',ref:'REQ-S-2117',pillar:'services',item:'MEP commissioning lead',qty:'1 FTE',project:'Riverside Medical Center',needby:'Nov 2026',code:'0140-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning lead'},
+    {src:'dp',id:'fqCm1',ref:'REQ-F-051',pillar:'prefab',item:'Cable tray bracket assemblies',qty:'lot',project:'Cimarron Data Center',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 custom fabrication required'},
+    {src:'dp',id:'fqRv2',ref:'REQ-P-0621',pillar:'procurement',item:'Surgical fixture hardware',qty:'lot',project:'Riverside Medical Center',needby:'Sep 2026',code:'0140-0100-0000-0001',kind:'flow',status:'Requested',actLabel:'Place order',nextStatus:'Ordered',hint:'Specialty item \u2014 confirm spec with MEP engineer first'}
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
@@ -5803,7 +5806,11 @@ charges:[
       rows:[
         {id:'REQ-P-0501',asset:'MV switchgear \u00b7 15kV lineup \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Switchgear',taxOk:true,leaf:'15kV',dec:'May 1 \u00b7 24 wk',decTone:'bad',status:'At-risk'},
         {id:'REQ-P-0508',asset:'BESS containers \u00b7 2.5 MWh \u00b7 qty 6',project:'Hercules Solar + BESS',tax:'Material \u203a Energy storage \u203a BESS',taxOk:true,leaf:'2.5 MWh',dec:'May 15 \u00b7 30 wk',decTone:'bad',status:'At-risk'},
-        {id:'REQ-P-0512',asset:'Main power transformer \u00b7 qty 1',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Transformer',taxOk:true,leaf:'MPT',dec:'Apr 15 \u00b7 28 wk',decTone:'neu',status:'PO issued'}
+        {id:'REQ-P-0512',asset:'Main power transformer \u00b7 qty 1',project:'Hercules Solar + BESS',tax:'Material \u203a Electrical \u203a Transformer',taxOk:true,leaf:'MPT',dec:'Apr 15 \u00b7 28 wk',decTone:'neu',status:'PO issued'},
+        {id:'REQ-P-0621',asset:'Surgical fixture hardware \u00b7 specialty',project:'Riverside Medical Center',tax:'Material \u203a Specialty \u203a Medical fixture',taxOk:true,leaf:'Medical',dec:'Rate card',decTone:'ok',status:'Requested'},
+        {id:'REQ-P-0622',asset:'Fire suppression heads \u00b7 qty 40',project:'Riverside Medical Center',tax:'Material \u203a Life safety \u203a Suppression',taxOk:true,leaf:'Wet pipe',dec:'Rate card',decTone:'ok',status:'Ordered'},
+        {id:'REQ-P-0631',asset:'Server rack power strips \u00b7 qty 120',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a PDU',taxOk:true,leaf:'PDU',dec:'Rate card',decTone:'ok',status:'Ordered'},
+        {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued'}
       ],
       rollCols:['Category','Committed','Order window','vs plan'],
       roll:[{a:'Electrical',b:'$3.5M',c:'Q2 2026',v:'+$0.3M',vt:'warn'},{a:'Energy storage',b:'$2.4M',c:'Q2 2026',v:'on plan',vt:'ok'},{a:'Modules',b:'$4.6M',c:'Q3 2026',v:'on plan',vt:'ok'}],
@@ -5817,7 +5824,9 @@ charges:[
         {id:'REQ-F-021',asset:'Prefab pipe rack modules \u00b7 qty 12',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pipe rack',taxOk:true,leaf:'Pipe rack',dec:'In fab',decTone:'info',status:'In fabrication'},
         {id:'REQ-F-034',asset:'Modular e-houses \u00b7 BESS \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Assembly \u203a Electrical \u203a E-house',taxOk:true,leaf:'E-house',dec:'Submittal',decTone:'info',status:'Submittal'},
         {id:'REQ-F-041',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Riverside Medical Center',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'},
-        {id:'REQ-F-042',asset:'Skid-mounted pump assemblies \u00b7 qty 4',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pump skid',taxOk:true,leaf:'Pump skid',dec:'In fab',decTone:'info',status:'In fabrication'}
+        {id:'REQ-F-042',asset:'Skid-mounted pump assemblies \u00b7 qty 4',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pump skid',taxOk:true,leaf:'Pump skid',dec:'In fab',decTone:'info',status:'In fabrication'},
+        {id:'REQ-F-051',asset:'Cable tray bracket assemblies \u00b7 lot',project:'Cimarron Data Center',tax:'Assembly \u203a Electrical \u203a Cable tray',taxOk:true,leaf:'Cable tray',dec:'Needs quote',decTone:'warn',status:'Awaiting pricing'},
+        {id:'REQ-F-052',asset:'Server room partition panels \u00b7 qty 6',project:'Cimarron Data Center',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Peak units','Need-by','vs plan'],
       roll:[{a:'Mechanical',b:'12',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Electrical',b:'8',c:'Nov 2026',v:'on plan',vt:'ok'},{a:'Structural',b:'12',c:'Jul 2026',v:'+2 over',vt:'warn'}],
@@ -5828,9 +5837,9 @@ charges:[
   var CC_PROJ_DP={
     equipment:{
       hercules:{budget:4200000,dpSpent:3800000,adHoc:400000,rows:[
-        {item:'Generator 125 kW',qty:'16 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3110',cost:'$3,200/mo',firm:'Aggreko'},
+        {item:'Generator 125 kW',qty:'16 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3110',cost:'$3,200/mo',firm:'Aggreko',note:'All 16 units active; 5 units cycling off Nov per phased-completion plan.'},
         {item:'Light tower',qty:'26 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3111',cost:'$2,600/mo',firm:'United Rentals'},
-        {item:'Excavator 20T',qty:'6 units',window:'Mar–May 2026',state:'Off-rent',ordId:'ORD-3042',cost:'$7,200/mo',firm:'Sunbelt'},
+        {item:'Excavator 20T',qty:'6 units',window:'Mar–May 2026',state:'Off-rent',ordId:'ORD-3042',cost:'$7,200/mo',firm:'Sunbelt',note:'Off-rent as of Jun 2026. Final invoice confirmed, $3K dispute resolved with credit applied.'},
         {item:'Dozer D6',qty:'12 units',window:'Mar–Sep 2026',state:'On-rent',ordId:'ORD-3112',cost:'$14,400/mo',firm:'CAT Financial'},
         {item:'Motor grader',qty:'6 units',window:'Mar–Jun 2026',state:'Off-rent',ordId:'ORD-3113',cost:'$9,600/mo',firm:'Sunbelt'},
         {item:'Compaction roller',qty:'12 units',window:'Mar–Sep 2026',state:'On-rent',ordId:'ORD-3114',cost:'$12,000/mo',firm:'Volvo Rents'},
@@ -5879,7 +5888,7 @@ charges:[
     },
     profservices:{
       hercules:{budget:1920000,dpSpent:1560000,adHoc:180000,rows:[
-        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',cost:'$28K/mo',firm:'DNV'},
+        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.'},
         {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon'},
         {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon'},
         {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Projected',ordId:null,cost:'$34K/mo',firm:'TBD'},
@@ -6042,26 +6051,37 @@ charges:[
     var ns=CURRENT==='ns';
     var bills=CC_DP_BILLS[ordId]||[];
     var billH='';
-    if(bills.length){
-      var gb='140px 80px 95px 75px 1fr';
-      billH='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
-      billH+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
-      billH+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:8px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span></div>';
-      bills.forEach(function(b){
-        var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
-        billH+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)">';
-        billH+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Disputed</span>':'')+'</div>';
-        billH+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
-        billH+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
-        billH+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
-        billH+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+'</div>';
-        billH+='</div>';
-        if(b.dispute){billH+='<div style="background:rgba(239,68,68,.06);border-left:3px solid var(--red);padding:4px 8px;font-size:11px;color:var(--g700);margin-bottom:3px"><b>Dispute:</b> '+b.dispute+'</div>';}
-        if(b.ccChange){billH+='<div style="background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;padding:4px 8px;font-size:11px;color:var(--g700);margin-bottom:3px"><b>Cost code change:</b> '+b.ccChange+'</div>';}
-      });
-      billH+='</div>';
-    }
-    openModal('Order \u2014 '+ordId, trackerHTML(o,ns)+billH);
+    if(bills.length){ billH=buildDpBillingInline(ordId); }
+    openModal('Order — '+ordId, trackerHTML(o,ns)+billH);
+  }
+  function dpExpandToggle(id){ var d=document.getElementById(id); if(d)d.style.display=d.style.display==='none'?'block':'none'; }
+  function buildDpBillingInline(ordId){
+    var bills=CC_DP_BILLS[ordId]||[];
+    if(!bills.length) return '';
+    var gb='140px 80px 95px 75px 1fr';
+    var h='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:6px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span></div>';
+    bills.forEach(function(b){
+      var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
+      var hasD=!!(b.dispute||b.ccChange);
+      var did='bdet-'+b.inv.replace(/[^a-zA-Z0-9]/g,'-');
+      h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="dpExpandToggle(\''+did+'\')"':'')+'>';
+      h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
+      h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
+      h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
+      h+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+'</div>';
+      h+='</div>';
+      if(hasD){
+        h+='<div id="'+did+'" style="display:none;padding:4px 8px 8px;background:var(--g50);border-left:2px solid var(--g200);margin-bottom:2px">';
+        if(b.dispute) h+='<div style="background:rgba(239,68,68,.06);border-left:3px solid var(--red);padding:4px 8px;font-size:11px;color:var(--g700);margin-top:3px"><b>Dispute:</b> '+b.dispute+'</div>';
+        if(b.ccChange) h+='<div style="background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;padding:4px 8px;font-size:11px;color:var(--g700);margin-top:3px"><b>Cost code change:</b> '+b.ccChange+'</div>';
+        h+='</div>';
+      }
+    });
+    h+='</div>';
+    return h;
   }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
   function dpTaxCell(r){
@@ -6076,6 +6096,12 @@ charges:[
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
     var selProj=_dpCcProjMap[p]||'all';
     var pLabel=selProj==='all'?'All projects · portfolio':(_PROJ_NAMES[selProj]||selProj);
+    if(selProj!=='all'&&selProj!=='hercules'){
+      h+='<div style="display:flex;align-items:center;gap:8px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:6px;padding:9px 12px;margin-bottom:10px">';
+      h+='<span style="font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.03em">Demo</span>';
+      h+='<span style="font-size:11.5px;color:var(--g700)">'+(_PROJ_NAMES[selProj]||selProj)+' data shown here for demo purposes only — not yet reflected in customer portal.</span>';
+      h+='</div>';
+    }
     var fmtK=function(n){ return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K'); };
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
@@ -6140,18 +6166,44 @@ charges:[
     var gtA=showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+' <span>Details</span><span>Status</span><span>Action</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'requests for '+pLabel+'.</div>'; }
-    rowsToRender.forEach(function(row){
+    rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'){
         var dpTone=_DP_TONE[row.state]||'neu';
         var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
         var dpDet=(row.qty||'')+' · '+(row.window||'')+(row.firm?' · '+row.firm:'');
-        var dpAct=row.ordId
-          ?'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+row.ordId+' ↗</button>'
-          :'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpItemModal(\''+p+'\',\''+row._proj+'\','+row._idx+')">Details →</button>';
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div><div>'+dpSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div>'+dpAct+'</div></div>';
+        var expId='dpx-'+p+'-'+(row._proj||'all')+'-'+row._idx;
+        var expH='';
+        if(row.ordId){
+          var _eo=ORDERS.filter(function(x){return x.id===row.ordId;})[0];
+          if(_eo){
+            expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
+            expH+=trackerHTML(_eo,ns);
+            expH+=buildDpBillingInline(row.ordId);
+            expH+='</div>';
+          }
+        } else {
+          expH='<div style="padding:12px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
+          expH+='<div class="fq-calc">';
+          expH+='<div class="fq-crow"><span>Rate / cost</span><span>'+row.cost+'</span></div>';
+          expH+='<div class="fq-crow"><span>Vendor / firm</span><span>'+(row.firm||'TBD')+'</span></div>';
+          expH+='<div class="fq-crow"><span>Status</span><span><span class="tag '+dpTone+'">'+row.state+'</span></span></div>';
+          expH+='<div class="fq-crow"><span>Qty</span><span>'+row.qty+'</span></div>';
+          expH+='<div class="fq-crow"><span>Window</span><span>'+row.window+'</span></div>';
+          expH+='</div>';
+          var _dpPActs=[];
+          if(row.state==='Projected'||row.state==='Draft'){_dpPActs.push('<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');toast(\'Order created for '+row.item+'\')">Create order →</button>');}
+          else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){_dpPActs.push('<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');toast(\'Pricing started for '+row.item+'\')">Set pricing →</button>');}
+          expH+='<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--g200);margin-top:10px">';
+          expH+=(_dpPActs.length?_dpPActs.join(''):'');
+          expH+='<button class="btn btn-ghost btn-sm" disabled style="opacity:.45;cursor:not-allowed">Add to task list</button>';
+          expH+='</div></div>';
+        }
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div><div>'+dpSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div style="color:var(--g400);font-size:12px">&#9660;</div></div>';
+        if(expH) h+='<div id="'+expId+'" style="display:none">'+expH+'</div>';
       } else {
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
+        var ahExpId='ahx-'+p+'-'+_rowI;
         h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
       }
     });
