@@ -1921,16 +1921,16 @@ function renderProfServicesDP(){
     {id:'ORD-3092',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'},
     {id:'ORD-3095',od:'2026-03-01',item:"Owner's engineer / IE support",sub:'DNV \u00b7 2 FTE',pillar:'profservices',dates:'Mar \u2013 Dec 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'Monthly progress report submitted \u2014 Jun 2026. On track per CPM schedule.'},
     {id:'ORD-3096',od:'2026-03-05',item:'Geotechnical monitoring',sub:'Terracon \u00b7 3 FTE',pillar:'profservices',dates:'Mar \u2013 Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:3,plan:null,latest:'Monitoring ongoing \u2014 no deviations. Jul billing submitted.'},
-    {id:'ORD-3100',od:'2026-06-01',item:'Nut runners \u2014 3/8\" cordless',sub:'48 units \u00b7 solar racking',pillar:'procurement',dates:'Jul 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:3,plan:null,latest:'PO issued \u2014 delivery confirmed Jul 18. 02S tracking inbound.'},
+    {id:'ORD-3100',od:'2026-06-01',item:'Nut runners \u2014 3/8\" cordless',sub:'48 units \u00b7 solar racking',pillar:'procurement',dates:'Jul 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:4,plan:null,latest:'Delivered \u2014 48 nut runners on-site. Solar racking crews active.'},
     {id:'ORD-3101',od:'2026-06-15',item:'Battery packs \u2014 20v M18',sub:'100 units \u00b7 site cordless fleet',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jun 30 \u2014 distributed to crews. Receiving inspection complete.'},
     {id:'ORD-3102',od:'2026-06-10',item:'Quad charging banks \u2014 12-bay',sub:'20 units \u00b7 site-wide tool charging',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Installed at tool cribs Jul 1. All stations operational.'},
-    {id:'ORD-3103',od:'2026-07-18',item:'Tone shear wrenches TS60/TS90',sub:'12 units \u00b7 structural bolt tensioning',pillar:'procurement',dates:'Aug 15, 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:1,plan:null,latest:'At-risk \u2014 4-wk lead time. Order submitted Jul 18; expedited shipping requested.',latestTone:'risk'},
+    {id:'ORD-3103',od:'2026-07-18',item:'Tone shear wrenches TS60/TS90',sub:'12 units \u00b7 structural bolt tensioning',pillar:'procurement',dates:'Aug 15, 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:4,plan:null,latest:'Delivered \u2014 12 tone shear wrenches received Aug 15. Bolt tensioning crews active.'},
     {id:'ORD-3104',od:'2026-06-15',item:'Angle grinders \u2014 cordless 20v',sub:'16 units \u00b7 metalwork & weld prep',pillar:'procurement',dates:'Aug 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jul 30 \u2014 received and logged at tool crib.'},
     {id:'ORD-3105',od:'2026-07-15',item:'HEPA vacuums \u2014 10 gal cordless',sub:'6 units \u00b7 silica dust control OSHA Table 1',pillar:'procurement',dates:'Aug 5, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'PO issued Jul 15 \u2014 delivery expected Aug 5. Expedited per OSHA compliance.'},
     {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{window:'Jul 18',carrier:'02S Prefab Shop A',docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
     {id:'ORD-3107',od:'2026-07-01',item:'Modular e-houses (BESS)',sub:'2 units \u00b7 custom fabrication',pillar:'prefab',dates:'Nov 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submittal under engineering review \u2014 approval expected Aug 2026.'},
     {id:'ORD-3108',od:'2026-05-01',item:'Prefab pipe rack modules',sub:'12 modules \u00b7 shop-fabricated',pillar:'prefab',dates:'Aug 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved, 4 of 12 modules complete. Delivery Aug 2026.'},
-    {id:'ORD-3108',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'},
+    {id:'ORD-3109',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'},
     {id:'ORD-3093',od:'2026-06-01',item:'Hydraulic pile driver',sub:'4 units \u00b7 Sector 1 pile driving',pillar:'equipment',dates:'Jun 2026 \u2013 Oct 2026',cost:'3100-6300-0000-0001 \u00b7 Solar pile',stage:5,plan:null,latest:'On-rent \u2014 Sector 1 pile driving on schedule. 68% complete.',rental:{type:'monthly',rate:34500,unit:'unit',units:4}},
     {id:'ORD-3110',od:'2026-03-01',item:'Generator \u2014 125 kW',sub:'16 units \u00b7 site power',pillar:'equipment',dates:'Mar 2026 \u2013 May 2027',cost:'0100-5000-0000-0001 \u00b7 Power & Temp',stage:5,plan:null,latest:'On-rent \u2014 monthly meter readings submitted. No issues.',rental:{type:'monthly',rate:4200,unit:'unit',units:16}},
     {id:'ORD-3111',od:'2026-03-01',item:'Light towers',sub:'26 units \u00b7 site lighting',pillar:'equipment',dates:'Mar 2026 \u2013 May 2027',cost:'0100-5000-0000-0001 \u00b7 Power & Temp',stage:5,plan:null,latest:'On-rent \u2014 all towers operational.',rental:{type:'monthly',rate:1200,unit:'unit',units:26}},
@@ -1944,7 +1944,29 @@ function renderProfServicesDP(){
     {id:'ORD-3119',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'},
     {id:'ORD-3120',od:'2026-07-15',item:'VDC / BIM coordination',sub:'3 FTE \u00b7 Apr\u2013Oct 2026',pillar:'profservices',dates:'Apr 2026 \u2013 Oct 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,plan:null,latest:'Submitted \u2014 pending 02S pricing confirmation for 3-FTE VDC/BIM engagement.'},
     {id:'ORD-3121',od:'2026-07-20',item:'Telehandler \u2014 10K \u00d7 24 (Sector 1)',sub:'24 units \u00b7 Sep 2026\u2013Apr 2027 \u00b7 Tracker assembly',pillar:'equipment',dates:'Sep 2026 \u2013 Apr 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing allocation; confirm by Aug 15.'},
-    {id:'ORD-3122',od:'2026-07-20',item:'Boom lift \u2014 60 ft \u00d7 18 (Sector 1)',sub:'18 units \u00b7 Sep 2026\u2013Mar 2027 \u00b7 Module installation',pillar:'equipment',dates:'Sep 2026 \u2013 Mar 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing availability across fleet; confirm by Aug 15.'}
+    {id:'ORD-3122',od:'2026-07-20',item:'Boom lift \u2014 60 ft \u00d7 18 (Sector 1)',sub:'18 units \u00b7 Sep 2026\u2013Mar 2027 \u00b7 Module installation',pillar:'equipment',dates:'Sep 2026 \u2013 Mar 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing availability across fleet; confirm by Aug 15.'},
+  {id:'ORD-3123',od:'2026-04-01',item:'Forklift 5K',sub:'4 units \u00b7 Riverside material handling',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 4 units active, Riverside Medical Center site.'},
+  {id:'ORD-3124',od:'2026-07-01',item:'Excavator 20T',sub:'2 units \u00b7 Riverside earthwork',pillar:'equipment',dates:'Jul\u2013Oct 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 2 units active, Riverside. Off-rent target Oct 2026.'},
+  {id:'ORD-3125',od:'2026-04-01',item:'Compaction roller',sub:'4 units \u00b7 Cimarron site prep',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 4 units active, Cimarron Data Center.'},
+  {id:'ORD-3126',od:'2026-04-01',item:'Motor grader',sub:'2 units \u00b7 Cimarron grading',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 2 units active, Cimarron Data Center.'},
+  {id:'ORD-3127',od:'2026-06-01',item:'Excavator demobi',sub:'2 units \u00b7 Hercules site',pillar:'logistics',dates:'Jun 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:2,plan:null,latest:'Scheduled \u2014 demobi window confirmed Jun 2026. Self-perform crew assigned.'},
+  {id:'ORD-3128',od:'2026-07-15',item:'Tower crane mobilization (Riverside)',sub:'1 move \u00b7 Riverside Medical',pillar:'logistics',dates:'Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 Bragg Crane confirmed Aug slot. Permit applications filed.'},
+  {id:'ORD-3129',od:'2026-07-20',item:'Excavator delivery (Riverside)',sub:'1 move \u00b7 Riverside site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 self-perform delivery, Sep window confirmed.'},
+  {id:'ORD-3130',od:'2026-04-01',item:'Floor-by-floor material hoisting',sub:'8 lifts/mo \u00b7 internal crew',pillar:'logistics',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 internal crew active, 8 lifts/mo average. Ongoing through structural close.'},
+  {id:'ORD-3131',od:'2026-07-20',item:'Excavator delivery + haul',sub:'2 moves \u00b7 Cimarron site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 self-perform, Sep delivery window confirmed.'},
+  {id:'ORD-3132',od:'2026-07-10',item:'PDU site delivery',sub:'3 loads \u00b7 3PL',pillar:'logistics',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 3PL confirmed. Delivery window Oct 2026; receiving team scheduled.'},
+  {id:'ORD-3133',od:'2026-06-01',item:'Overhead MEP rack modules',sub:'6 modules \u00b7 shop-fabricated',pillar:'prefab',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 Piperite Fab. 2 of 6 modules complete. Delivery Sep 2026.'},
+  {id:'ORD-3134',od:'2026-05-01',item:'L2 headwall assemblies (Riverside)',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:3,plan:null,latest:'Delivered \u2014 all 8 headwall units received Jul 20, 2026. Signed off by site lead.'},
+  {id:'ORD-3135',od:'2026-06-15',item:'Server room partition panels',sub:'6 panels \u00b7 custom fab',pillar:'prefab',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'In fabrication \u2014 ModSpace. Drawings approved, fabrication underway. Delivery Nov 2026.'},
+  {id:'ORD-3136',od:'2026-06-15',item:'Main power transformer',sub:'1 unit \u00b7 custom spec 345/12.5kV',pillar:'procurement',dates:'Dec 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:2,plan:null,latest:'PO issued \u2014 ABB confirmed 26-wk lead time. Delivery Dec 2026. Critical path item.'},
+  {id:'ORD-3137',od:'2026-04-01',item:'Surgical unit supply runs',sub:'Ongoing \u00b7 McKesson',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 McKesson supply runs ongoing. Weekly deliveries per spec.'},
+  {id:'ORD-3138',od:'2026-04-01',item:'Safety signage + PPE bundles',sub:'Lot \u00b7 MSA Safety',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 MSA Safety standing order. Restocked monthly.'},
+  {id:'ORD-3139',od:'2026-07-01',item:'High-density PDUs',sub:'24 units \u00b7 Vertiv',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Vertiv confirmed. Lead time 10 wks, delivery Oct 2026.'},
+  {id:'ORD-3140',od:'2026-07-05',item:'Cable management trays',sub:'Lot \u00b7 Panduit',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Panduit order confirmed. Delivery Oct 2026 per schedule.'},
+  {id:'ORD-3141',od:'2026-07-01',item:'Raised floor panels',sub:'2,000 sqft \u00b7 Tate Access',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Tate Access confirmed. Delivery Oct 2026, coordinating dock access.'},
+  {id:'ORD-3142',od:'2026-07-10',item:'Precision cooling units',sub:'16 units \u00b7 Liebert',pillar:'procurement',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Liebert confirmed, 16-wk lead time. Delivery Nov 2026. Critical.'},
+  {id:'ORD-3143',od:'2026-04-01',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Riverside Medical. No billing disputes.'},
+  {id:'ORD-3144',od:'2026-05-01',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
   ];
   var PORTAL_QUOTES=[
     {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
@@ -5857,14 +5879,14 @@ charges:[
       riverside:{budget:2100000,dpSpent:800000,adHoc:900000,rows:[
         {item:'Tower crane (self-erect)',qty:'5 units',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$175K/8 wk',firm:'TBD'},
         {item:'Scissor lift 32 ft',qty:'12 units',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$8,400/mo',firm:'TBD'},
-        {item:'Forklift 5K',qty:'4 units',window:'Ongoing',state:'On-rent',ordId:null,cost:'$4,000/mo',firm:'Sunbelt'},
-        {item:'Excavator 20T',qty:'2 units',window:'Jul–Oct 2026',state:'On-rent',ordId:null,cost:'$14,400/mo',firm:'United Rentals'}
+        {item:'Forklift 5K',qty:'4 units',window:'Ongoing',state:'On-rent',ordId:'ORD-3123',cost:'$4,000/mo',firm:'Sunbelt'},
+        {item:'Excavator 20T',qty:'2 units',window:'Jul–Oct 2026',state:'On-rent',ordId:'ORD-3124',cost:'$14,400/mo',firm:'United Rentals'}
       ]},
       cimarron:{budget:1800000,dpSpent:600000,adHoc:600000,rows:[
         {item:'Excavator 45K',qty:'4 units',window:'Sep 2026+',state:'Requested',ordId:null,cost:'$48,000/mo',firm:'TBD'},
         {item:'Excavator 50T',qty:'2 units',window:'Sep 2026+',state:'Requested',ordId:null,cost:'$28,000/mo',firm:'TBD'},
-        {item:'Compaction roller',qty:'4 units',window:'Ongoing',state:'On-rent',ordId:null,cost:'$6,400/mo',firm:'Volvo Rents'},
-        {item:'Motor grader',qty:'2 units',window:'Ongoing',state:'On-rent',ordId:null,cost:'$9,600/mo',firm:'CAT Financial'}
+        {item:'Compaction roller',qty:'4 units',window:'Ongoing',state:'On-rent',ordId:'ORD-3125',cost:'$6,400/mo',firm:'Volvo Rents'},
+        {item:'Motor grader',qty:'2 units',window:'Ongoing',state:'On-rent',ordId:'ORD-3126',cost:'$9,600/mo',firm:'CAT Financial'}
       ]}
     },
     logistics:{
@@ -5874,16 +5896,16 @@ charges:[
         {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Pending',ordId:null,cost:'$8,200',firm:'TBD'},
         {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Projected',ordId:null,cost:'$22,000',firm:'TBD'},
         {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'Projected',ordId:null,cost:'$14,000',firm:'TBD'},
-        {item:'Excavator demobi',qty:'2 units',window:'Jun 2026',state:'Scheduled',ordId:null,cost:'$4,800',firm:'Self-perform'}
+        {item:'Excavator demobi',qty:'2 units',window:'Jun 2026',state:'Scheduled',ordId:'ORD-3127',cost:'$4,800',firm:'Self-perform'}
       ]},
       riverside:{budget:600000,dpSpent:300000,adHoc:180000,rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:null,cost:'$18,500',firm:'Bragg Crane'},
-        {item:'Excavator delivery',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:null,cost:'$3,200',firm:'Self-perform'},
-        {item:'Floor-by-floor material hoisting',qty:'8 lifts/mo',window:'Ongoing',state:'On-rent',ordId:null,cost:'$6,400/mo',firm:'Internal crew'}
+        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3128',cost:'$18,500',firm:'Bragg Crane'},
+        {item:'Excavator delivery',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform'},
+        {item:'Floor-by-floor material hoisting',qty:'8 lifts/mo',window:'Ongoing',state:'On-rent',ordId:'ORD-3130',cost:'$6,400/mo',firm:'Internal crew'}
       ]},
       cimarron:{budget:400000,dpSpent:180000,adHoc:100000,rows:[
-        {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:null,cost:'$6,400',firm:'Self-perform'},
-        {item:'PDU site delivery',qty:'3 loads',window:'Oct 2026',state:'PO issued',ordId:null,cost:'$4,200',firm:'3PL'},
+        {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',cost:'$6,400',firm:'Self-perform'},
+        {item:'PDU site delivery',qty:'3 loads',window:'Oct 2026',state:'PO issued',ordId:'ORD-3132',cost:'$4,200',firm:'3PL'},
         {item:'Precision cooling delivery + install',qty:'16 units',window:'Nov 2026',state:'Projected',ordId:null,cost:'$12,000',firm:'TBD'}
       ]}
     },
@@ -5898,40 +5920,40 @@ charges:[
         {item:'Site survey crew',qty:'2 FTE',window:'Apr–Jul 2026',state:'Demobilized',ordId:'ORD-3009',cost:'$12K/mo',firm:'Bowman'}
       ]},
       riverside:{budget:950000,dpSpent:320000,adHoc:420000,rows:[
-        {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'Active',ordId:null,cost:'$22K/mo',firm:'HDR'},
+        {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3143',cost:'$22K/mo',firm:'HDR'},
         {item:'Structural special inspection',qty:'2 FTE',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$14K/mo',firm:'TBD'},
         {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Draft',ordId:null,cost:'Pending',firm:'TBD'}
       ]},
       cimarron:{budget:600000,dpSpent:120000,adHoc:150000,rows:[
         {item:'Site survey crew',qty:'2 FTE',window:'Jul–Sep 2026',state:'Requested',ordId:null,cost:'$12K/mo',firm:'TBD'},
         {item:'Commissioning manager',qty:'1 FTE',window:'Dec 2026+',state:'Draft',ordId:null,cost:'Pending',firm:'TBD'},
-        {item:'Material testing lab',qty:'2 FTE',window:'Ongoing',state:'Active',ordId:null,cost:'$8,400/mo',firm:'GeoTech Labs'}
+        {item:'Material testing lab',qty:'2 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3144',cost:'$8,400/mo',firm:'GeoTech Labs'}
       ]}
     },
     procurement:{
       hercules:{budget:8200000,dpSpent:7400000,adHoc:120000,rows:[
-        {item:'Nut runners',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:null,cost:'$8,400',firm:'Hilti'},
-        {item:'Battery pack sets',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:null,cost:'$6,000',firm:'Milwaukee Tool'},
-        {item:'Charging banks',qty:'6 units',window:'Mar 2026',state:'Delivered',ordId:null,cost:'$4,800',firm:'Milwaukee Tool'},
-        {item:'Tone shear wrenches',qty:'8 units',window:'Apr 2026',state:'Delivered',ordId:null,cost:'$12,800',firm:'Enerpac'},
-        {item:'Angle grinders',qty:'6 units',window:'Apr 2026',state:'Delivered',ordId:null,cost:'$3,600',firm:'Bosch'},
+        {item:'Nut runners',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3100',cost:'$8,400',firm:'Hilti'},
+        {item:'Battery pack sets',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3101',cost:'$6,000',firm:'Milwaukee Tool'},
+        {item:'Charging banks',qty:'6 units',window:'Mar 2026',state:'Delivered',ordId:'ORD-3102',cost:'$4,800',firm:'Milwaukee Tool'},
+        {item:'Tone shear wrenches',qty:'8 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3103',cost:'$12,800',firm:'Enerpac'},
+        {item:'Angle grinders',qty:'6 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3104',cost:'$3,600',firm:'Bosch'},
         {item:'SDS Max + bits',qty:'10 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$7,500',firm:'TBD'},
         {item:'HEPA vacuums',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$4,800',firm:'TBD'},
         {item:'Wire crimpers',qty:'12 sets',window:'Oct 2026',state:'Projected',ordId:null,cost:'$9,600',firm:'TBD'},
         {item:'MV switchgear 15 kV',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton'},
         {item:'BESS containers 2.5 MWh',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy'},
-        {item:'Main power transformer',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:null,cost:'$1.2M',firm:'ABB'}
+        {item:'Main power transformer',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'}
       ]},
       riverside:{budget:450000,dpSpent:180000,adHoc:80000,rows:[
-        {item:'Surgical unit supply runs',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:null,cost:'$8,500',firm:'McKesson'},
-        {item:'Safety signage + PPE bundles',qty:'Lot',window:'Ongoing',state:'Active',ordId:null,cost:'$3,200',firm:'MSA Safety'},
+        {item:'Surgical unit supply runs',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
+        {item:'Safety signage + PPE bundles',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
         {item:'Specialty fasteners',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'}
       ]},
       cimarron:{budget:1200000,dpSpent:920000,adHoc:50000,rows:[
-        {item:'High-density PDUs',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:null,cost:'$144K',firm:'Vertiv'},
-        {item:'Cable management trays',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:null,cost:'$38,000',firm:'Panduit'},
-        {item:'Raised floor panels',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:null,cost:'$180K',firm:'Tate Access'},
-        {item:'Precision cooling units',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:null,cost:'$640K',firm:'Liebert'}
+        {item:'High-density PDUs',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
+        {item:'Cable management trays',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
+        {item:'Raised floor panels',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
+        {item:'Precision cooling units',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'}
       ]}
     },
     prefab:{
@@ -5943,13 +5965,13 @@ charges:[
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'}
       ]},
       riverside:{budget:400000,dpSpent:320000,adHoc:120000,rows:[
-        {item:'Overhead MEP rack modules',qty:'6 modules',window:'Sep 2026',state:'In fabrication',ordId:null,cost:'$92K',firm:'Piperite Fab'},
-        {item:'L2 headwall assemblies',qty:'8 units',window:'Jul 2026',state:'Delivered',ordId:null,cost:'$135K',firm:'Ironclad Mfg'},
+        {item:'Overhead MEP rack modules',qty:'6 modules',window:'Sep 2026',state:'In fabrication',ordId:'ORD-3133',cost:'$92K',firm:'Piperite Fab'},
+        {item:'L2 headwall assemblies',qty:'8 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3134',cost:'$135K',firm:'Ironclad Mfg'},
         {item:'Stairwell prefab panels',qty:'4 panels',window:'Oct 2026',state:'Projected',ordId:null,cost:'$48K',firm:'TBD'}
       ]},
       cimarron:{budget:300000,dpSpent:60000,adHoc:40000,rows:[
         {item:'Cable tray brackets',qty:'Lot',window:'Oct 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'},
-        {item:'Server room partition panels',qty:'6 panels',window:'Nov 2026',state:'In fabrication',ordId:null,cost:'$72K',firm:'ModSpace'},
+        {item:'Server room partition panels',qty:'6 panels',window:'Nov 2026',state:'In fabrication',ordId:'ORD-3135',cost:'$72K',firm:'ModSpace'},
         {item:'Generator exhaust enclosures',qty:'4 units',window:'Dec 2026',state:'Projected',ordId:null,cost:'$48K',firm:'TBD'}
       ]}
     }
