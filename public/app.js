@@ -1929,6 +1929,7 @@ function renderProfServicesDP(){
     {id:'ORD-3105',od:'2026-07-15',item:'HEPA vacuums \u2014 10 gal cordless',sub:'6 units \u00b7 silica dust control OSHA Table 1',pillar:'procurement',dates:'Aug 5, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'PO issued Jul 15 \u2014 delivery expected Aug 5. Expedited per OSHA compliance.'},
     {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{window:'Jul 18',carrier:'02S Prefab Shop A',docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
     {id:'ORD-3107',od:'2026-07-01',item:'Modular e-houses (BESS)',sub:'2 units \u00b7 custom fabrication',pillar:'prefab',dates:'Nov 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submittal under engineering review \u2014 approval expected Aug 2026.'},
+    {id:'ORD-3108',od:'2026-05-01',item:'Prefab pipe rack modules',sub:'12 modules \u00b7 shop-fabricated',pillar:'prefab',dates:'Aug 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved, 4 of 12 modules complete. Delivery Aug 2026.'},
     {id:'ORD-3108',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'},
     {id:'ORD-3093',od:'2026-06-01',item:'Hydraulic pile driver',sub:'4 units \u00b7 Sector 1 pile driving',pillar:'equipment',dates:'Jun 2026 \u2013 Oct 2026',cost:'3100-6300-0000-0001 \u00b7 Solar pile',stage:5,plan:null,latest:'On-rent \u2014 Sector 1 pile driving on schedule. 68% complete.',rental:{type:'monthly',rate:34500,unit:'unit',units:4}},
     {id:'ORD-3110',od:'2026-03-01',item:'Generator \u2014 125 kW',sub:'16 units \u00b7 site power',pillar:'equipment',dates:'Mar 2026 \u2013 May 2027',cost:'0100-5000-0000-0001 \u00b7 Power & Temp',stage:5,plan:null,latest:'On-rent \u2014 monthly meter readings submitted. No issues.',rental:{type:'monthly',rate:4200,unit:'unit',units:16}},
@@ -5868,7 +5869,7 @@ charges:[
     },
     logistics:{
       hercules:{budget:1200000,dpSpent:800000,adHoc:300000,rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:null,cost:'$18,500',firm:'Bragg Crane'},
+        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3071',cost:'$18,500',firm:'Bragg Crane'},
         {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',ordId:null,cost:'TBD',firm:'Self-perform'},
         {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Pending',ordId:null,cost:'$8,200',firm:'TBD'},
         {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Projected',ordId:null,cost:'$22,000',firm:'TBD'},
@@ -5935,9 +5936,9 @@ charges:[
     },
     prefab:{
       hercules:{budget:900000,dpSpent:720000,adHoc:80000,rows:[
-        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:null,cost:'$180K',firm:'Piperite Fab'},
-        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:null,cost:'$380K',firm:'ModSpace'},
-        {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:null,cost:'$65K',firm:'Ironclad Mfg'},
+        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',cost:'$180K',firm:'Piperite Fab'},
+        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace'},
+        {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
         {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 2026',state:'Projected',ordId:null,cost:'$45K',firm:'TBD'},
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'}
       ]},
@@ -6217,9 +6218,10 @@ charges:[
           var _actCell='';
           if(row.ordId&&_ordR){
             var _sl=_stgLbls[_ordR.stage]||'Stage '+_ordR.stage;
-            _actCell='<div style="font-size:10.5px"><span style="color:var(--g700);font-weight:500">'+row.ordId+'</span>'
-              +'<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
-            if(_dispR){_actCell+='<div style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px">⚠ Bill issue</div>';}
+            _actCell='<div style="font-size:10.5px">';
+            _actCell+='<button style="background:none;border:none;padding:0;cursor:pointer;color:var(--charcoal);font-weight:600;font-size:10.5px;text-decoration:underline;text-underline-offset:2px" '+'onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+ row.ordId+'</button>';
+            _actCell+='<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
+            if(_dispR){_actCell+='<div style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px">⚠ Bill issue — click to review</div>';}
             _actCell+='</div>';
           } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){
             _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGo(\'fulfill\')">\u2192 Fulfillment queue</button>';
