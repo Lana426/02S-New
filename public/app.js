@@ -1821,7 +1821,7 @@ function renderProfServicesDP(){
     var _uds=document.getElementById('understood');
     if(_uds && !_uds.classList.contains('hide') && document.getElementById('screen-order').classList.contains('active') && document.getElementById('askInput').value.trim()){ ask02S(); }
     if(ns) renderCopilot();
-    docum_e=document.getElementById('verChipOrder'); if(_e)_e.innerHTML=ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    _e=document.getElementById('verChipOrder'); if(_e)_e.innerHTML=ns?'North Star &mdash; vision':'V1 &mdash; standard';
     var vco2=document.getElementById('verChipOrders'); if(vco2) vco2.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
     // billing & budget
     var vcb=document.getElementById('verChipBilling'); if(vcb) vcb.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
@@ -4822,6 +4822,15 @@ charges:[
     });
   }
   function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
+  function ccSetVer(v){
+    CURRENT=v; document.body.setAttribute('data-ver',v);
+    if(!document.getElementById('ns-toggle-css')){
+      var _s=document.createElement('style');_s.id='ns-toggle-css';
+      _s.textContent="body:not([data-ver='ns']) .ns-only{display:none!important}";
+      document.head.appendChild(_s);}
+    renderCcScreen(ccActive||'ccdash');
+    ccSyncToggle();
+  }
   function ccGo(s){
     var sk=s==='fulfill-quotes'?'fulfill':s;
     if(!ccPersonaCanAccess(sk)) return;
