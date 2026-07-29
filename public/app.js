@@ -1518,6 +1518,30 @@
     } else {
       h+='<div class="eq-toolbar" style="margin-bottom:14px"><span style="font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     }
+    var LOG_ROWS=DP['logistics'].rows;
+    if(LOG_ROWS&&LOG_ROWS.length){
+      h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
+      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
+      h+='</div>';
+      var pmGt='1fr 126px 150px 124px 118px 114px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      LOG_ROWS.forEach(function(r,pmIdx){
+        var tone=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+        h+='<div>'+(r.type||'\u2014')+'</div>';
+        h+='<div>'+(r.when||'\u2014')+'</div>';
+        h+='<div>'+(r.gate||'\u2014')+'</div>';
+        h+='<div>'+(r.src||'\u2014')+'</div>';
+        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+        h+='</div>';
+        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
+      });
+      h+='</div>';
+      h+='<div style="margin-top:24px"></div>';
+    }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
       h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
@@ -1641,29 +1665,6 @@
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
-    }
-    var LOG_ROWS=DP['logistics'].rows;
-    if(LOG_ROWS&&LOG_ROWS.length){
-      h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Planned moves</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' move'+(LOG_ROWS.length===1?'':'s')+'</span>';
-      h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 114px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
-      LOG_ROWS.forEach(function(r,pmIdx){
-        var tone=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
-        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
-        h+='<div>'+(r.type||'\u2014')+'</div>';
-        h+='<div>'+(r.when||'\u2014')+'</div>';
-        h+='<div>'+(r.gate||'\u2014')+'</div>';
-        h+='<div>'+(r.src||'\u2014')+'</div>';
-        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
-        h+='</div>';
-        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
       });
       h+='</div>';
     }
@@ -5213,6 +5214,30 @@ charges:[
     } else {
       h+='<div class="eq-toolbar" style="margin-bottom:14px"><span style="font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
     }
+    var LOG_ROWS=DP['logistics'].rows;
+    if(LOG_ROWS&&LOG_ROWS.length){
+      h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
+      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
+      h+='</div>';
+      var pmGt='1fr 126px 150px 124px 118px 114px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      LOG_ROWS.forEach(function(r,pmIdx){
+        var tone=DP_TONE[r.state]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+        h+='<div>'+(r.type||'\u2014')+'</div>';
+        h+='<div>'+(r.when||'\u2014')+'</div>';
+        h+='<div>'+(r.gate||'\u2014')+'</div>';
+        h+='<div>'+(r.src||'\u2014')+'</div>';
+        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+        h+='</div>';
+        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
+      });
+      h+='</div>';
+      h+='<div style="margin-top:24px"></div>';
+    }
     if(logPlanView==='gcgr'){
       if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
       h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
@@ -5336,29 +5361,6 @@ charges:[
         var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
         var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
         h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
-    }
-    var LOG_ROWS=DP['logistics'].rows;
-    if(LOG_ROWS&&LOG_ROWS.length){
-      h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Planned moves</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' move'+(LOG_ROWS.length===1?'':'s')+'</span>';
-      h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 114px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
-      LOG_ROWS.forEach(function(r,pmIdx){
-        var tone=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
-        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
-        h+='<div>'+(r.type||'\u2014')+'</div>';
-        h+='<div>'+(r.when||'\u2014')+'</div>';
-        h+='<div>'+(r.gate||'\u2014')+'</div>';
-        h+='<div>'+(r.src||'\u2014')+'</div>';
-        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
-        h+='</div>';
-        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
       });
       h+='</div>';
     }
