@@ -1412,7 +1412,7 @@
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415'},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,linkOrd:'ORD-3009'}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
@@ -1428,9 +1428,9 @@
         {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered',linkOrd:'ORD-3102'},
         {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk',linkOrd:'ORD-3103'},
         {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3104'},
-        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
+        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft',quoteRef:'Q-63413'},
         {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued',linkOrd:'ORD-3105'},
-        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
+        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -1773,7 +1773,9 @@ function renderProfServicesDP(){
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          var ri=cfg.rows.indexOf(r);
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
         });
       });
       h+='</div>';
@@ -1946,6 +1948,18 @@ function renderProfServicesDP(){
     {ref:'Q-63412',submitted:'Jul 26, 2026',project:'Cimarron Data Center',items:1,status:'Draft',pendingN:1,note:'Custom cable tray brackets — not in rate card',
      lineItems:[
        {name:'Cable tray bracket assemblies',pillar:'Prefab',qty:'lot',amount:null}
+     ]},
+    {ref:'Q-63413',submitted:'Jul 20, 2026',project:'Hercules Solar + BESS',items:1,status:'Draft',pendingN:1,note:'SDS Max rotary hammers \u2014 specialty tool, not in rate card',
+     lineItems:[
+       {name:'SDS Max rotary hammers, 1-3/4\" \u00d7 8',pillar:'Procurement',qty:'8 units',amount:null}
+     ]},
+    {ref:'Q-63414',submitted:'Jul 22, 2026',project:'Hercules Solar + BESS',items:1,status:'Draft',pendingN:1,note:'Wire crimpers, hydraulic \u2014 BESS & electrical terminations',
+     lineItems:[
+       {name:'Wire crimpers, hydraulic 11T/12T \u00d7 8',pillar:'Procurement',qty:'8 units',amount:null}
+     ]},
+    {ref:'Q-63415',submitted:'Jul 15, 2026',project:'Hercules Solar + BESS',items:1,status:'Draft',pendingN:1,note:'VDC / BIM coordination \u2014 specialty role, not in rate card',
+     lineItems:[
+       {name:'VDC / BIM coordination, 3 FTE',pillar:'Prof. services',qty:'3 FTE \u00b7 7 months',amount:null}
      ]}
   ];
   var ORDER_NOTES={
@@ -5138,7 +5152,7 @@ charges:[
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415'},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
@@ -5153,9 +5167,9 @@ charges:[
         {item:'Quad charging banks',itemSub:'12-bay · site-wide tool charging',qty:'20',needby:'Jul 1',orderby:'Jun 10 \u00b7 3 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$14K',state:'Delivered',linkOrd:'ORD-3102'},
         {item:'Tone shear wrenches',itemSub:'TS60 + TS90 · structural bolt tensioning',qty:'12',needby:'Aug 15',orderby:'Jul 18 \u00b7 4 wk',risk:true,code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$18K',state:'At-risk',linkOrd:'ORD-3103'},
         {item:'Angle grinders \u2014 4.5\'',itemSub:'cordless 20v · metalwork &amp; weld prep',qty:'16',needby:'Aug 1',orderby:'Jun 15 \u00b7 6 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3104'},
-        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft'},
+        {item:'SDS Max rotary hammers',itemSub:'1-3/4\' · concrete anchoring · BESS pad',qty:'8',needby:'Sep 1',orderby:'Aug 10 \u00b7 3 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$6K',state:'Draft',quoteRef:'Q-63413'},
         {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'PO issued',linkOrd:'ORD-3105'},
-        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft'}
+        {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Draft',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
@@ -5183,7 +5197,7 @@ charges:[
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
         {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
-        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active'}
+        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072'}
       ]}
   };
   var dpActive=null, dpAddPk=null;
