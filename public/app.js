@@ -2582,7 +2582,7 @@ charges:[
       b+='</div>';
     } else if(data.quote){
       var qDraft=data.quote.status==='Draft';
-      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">';
+      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();gotoQuote(\''+data.quote.ref+'\')">';
       b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
       b+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+data.quote.ref+'</span> <span class="tag '+(qDraft?'warn':'ok')+'">'+data.quote.status+'</span></div>';
       b+='<div style="font-size:11px;color:var(--g500);margin-top:4px">'+(qDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';
@@ -2824,7 +2824,7 @@ charges:[
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
-    if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'quotes\');go(\'orders\')">View quote →</button>';}
+    if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
     return h;
@@ -2896,17 +2896,18 @@ charges:[
 
   function renderPortalQuotes(){
     var tbl=document.getElementById('ordTable'); if(!tbl)return;
-    var gt='1fr 120px 100px 120px';
-    var h='<div class="ot-head" style="grid-template-columns:'+gt+'"><span>Quote ref</span><span>Project</span><span>Status</span><span></span></div>';
+    var gt='90px 1fr 130px 70px 120px';
+    var h='<div class="ot-head" style="grid-template-columns:'+gt+'"><span>Ref</span><span>Description</span><span>Project</span><span>Status</span><span></span></div>';
     PORTAL_QUOTES.forEach(function(q){
       var isDraft=q.status==='Draft';
       var btn=isDraft
         ?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();downloadDraftQuote(\''+q.ref+'\')">Draft PDF</button>'
         :'<button class="btn btn-red btn-sm" onclick="event.stopPropagation();downloadFullQuote(\''+q.ref+'\')">Download PDF</button>';
-      h+='<div class="orow" onclick="togglePortalQuote(\''+q.ref+'\')">'+
-        '<div><div class="oc-id">'+q.ref+'</div><div class="sub" style="font-size:10.5px;color:var(--g500);margin-top:2px">'+q.note+'</div></div>'+
+      h+='<div class="orow" id="qrow-'+q.ref+'" onclick="togglePortalQuote(\''+q.ref+'\')">'+
+        '<div class="oc-id">'+q.ref+'</div>'+
+        '<div style="font-size:11.5px;color:var(--g700)">'+q.note+'</div>'+
         '<div style="font-size:11.5px;color:var(--g700)">'+q.project+'<div class="sub">'+q.submitted+'</div></div>'+
-        '<div><span class="tag '+(isDraft?'warn':'ok')+'">'+q.status+'</span></div>'+
+        '<div><span class="tag '+(isDraft?'warn':'ok')+'">'+ q.status+'</span></div>'+
         '<div>'+btn+'</div>'+
         '</div>'+
         '<div class="otrack" id="qtrk-'+q.ref+'" style="display:none">'+quoteTrackerHTML(q)+'</div>';
@@ -4105,6 +4106,15 @@ charges:[
     },120);
   }
 
+  function gotoQuote(ref){
+    ordSetView('quotes'); go('orders');
+    setTimeout(function(){
+      var t=document.getElementById('qtrk-'+ref);
+      if(t&&t.style.display==='none') togglePortalQuote(ref);
+      var row=document.getElementById('qrow-'+ref);
+      if(row) setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},60);
+    },150);
+  }
   function openBillDiscuss(id){
     openModal('Billing discussion — '+id,
       '<div style="font-size:12px;color:var(--g600);margin-bottom:12px">Thread with 02S billing desk regarding '+id+'. Replies appear here and are sent to <b>o2s-billing@mccarthy.com</b>.</div>'
