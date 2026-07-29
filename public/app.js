@@ -3054,25 +3054,25 @@ charges:[
   ];
   var COST_CODES=[
     // Equipment pillar
-    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:980000, pillar:'equipment',subJob:'SJ-001'},
-    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:1760000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:1140000, pillar:'equipment',subJob:'SJ-001'},
+    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:2200000,pillar:'equipment',subJob:'SJ-002'},
     {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:420000, approvedCO:0,      pendingCO:0,     committed:0,      spent:0,      pillar:'equipment',subJob:'SJ-003'},
-    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:480000, pillar:'equipment',subJob:'SJ-005'},
-    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:840000, pillar:'equipment',subJob:'SJ-002'},
+    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:760000, pillar:'equipment',subJob:'SJ-005'},
+    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:980000, pillar:'equipment',subJob:'SJ-002'},
     {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment',subJob:'SJ-004'},
     // Prefab pillar
-    {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:420000,pillar:'prefab',subJob:'SJ-004'},
+    {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:560000,pillar:'prefab',subJob:'SJ-004'},
     {code:'0300-0100-0000-0001',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab',subJob:'SJ-002'},
-    {code:'0500-0500-0000-0001',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:96000, pillar:'prefab',subJob:'SJ-004'},
+    {code:'0500-0500-0000-0001',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:114000, pillar:'prefab',subJob:'SJ-004'},
     // Logistics pillar
-    {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:84000, pillar:'logistics',subJob:'SJ-002'},
-    {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:52000, pillar:'logistics',subJob:'SJ-004'},
+    {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:108000, pillar:'logistics',subJob:'SJ-002'},
+    {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:68000, pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
     {code:'0600-0100-0000-0001',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,committed:1295000,spent:410000,pillar:'procurement',subJob:'SJ-004'},
-    {code:'0600-0200-0000-0001',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:98000, pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0200-0000-0001',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:132000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
-    {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:480000,pillar:'profservices',subJob:'SJ-001'},
-    {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:120000,pillar:'profservices',subJob:'SJ-006'},
+    {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:560000,pillar:'profservices',subJob:'SJ-001'},
+    {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:160000,pillar:'profservices',subJob:'SJ-006'},
     {code:'0100-0800-0000-0001',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,pendingCO:0,    committed:80000, spent:28000, pillar:'profservices',subJob:'SJ-006'}
   ];
   function ccBudget(c){return c.originalBudget+(c.approvedCO||0);}
@@ -4353,7 +4353,7 @@ charges:[
     var acts=[
       {t:CC_QUOTES.filter(function(q){return q.status==='Needs pricing';}).length+' portal RFQs — pricing not set',s:'Equipment, prefab &amp; prof services · submitted this week',proj:null,tag:{l:'Quotes',tone:'warn'},to:'fulfill-quotes',reco:'MEWP matches the rate card — auto-price; cable tray brackets and MEP commissioning need fabrication &amp; specialty quotes',icon:IC.cart},
       {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',proj:'Cimarron Data Center',tag:{l:'Needs map',tone:'warn'},to:'fulfill',reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
-      {t:'5 requests awaiting pricing',s:'2 are pending-pricing lines from Hercules demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
+      {t:'6 requests awaiting pricing',s:'5 are pending-pricing lines across demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
       {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',proj:'Riverside Medical Center',tag:{l:'Decision',tone:'info'},to:'fulfill',reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
       {t:'TC-0012 past replacement threshold',s:'11,800 hrs \u00b7 9 yrs \u00b7 rising maintenance cost',tag:{l:'Replace',tone:'bad'},to:'fleet',reco:'Add to Q3 CapEx plan \u2014 est. $1.2M replacement',icon:IC.box},
       {t:'Idle-but-billing \u2014 scissor lift',s:'Hercules \u00b7 $3.8K/mo \u00b7 BILL-9012 \u00b7 1 of 11 open anomalies ($27.2K/mo at risk)',proj:'Hercules Solar + BESS',tag:{l:'Anomaly',tone:'bad'},to:'anomaly',reco:'Call-off drafted \u2014 auto-applies in 2 days unless you hold \u00b7 recovers $3.8K/mo',icon:IC.warn},
