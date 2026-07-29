@@ -1,5 +1,12 @@
 
   var CURRENT='v1';
+  (function(){
+    document.body.setAttribute('data-ver','v1');
+    var _s=document.createElement('style');
+    _s.id='ns-toggle-css';
+    _s.textContent="body:not([data-ver='ns']) .ns-only{display:none!important}";
+    document.head.appendChild(_s);
+  })();
   function toggle(id){document.getElementById(id).classList.toggle('open')}
   function svg(inner,w){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.5)+'">'+inner+'</svg>';}
 
@@ -4752,14 +4759,14 @@ charges:[
     openModal('Bill preview', b);
   }
   function gotoOrder(id){
-    ordView='orders'; go('orders');
+    ordView='orders'; _ordersShowAll=true; go('orders');
     var row=document.getElementById('row-'+id); if(!row)return;
     if(!row.classList.contains('open'))toggleOrder(id);
     setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},60);
   }
   function gotoBill(id){
     var inp=document.getElementById('billSearch'); if(inp)inp.value=id;
-    go('billing');
+    _billsShowAll=true; go('billing');
     setTimeout(function(){
       renderBills();
       var b=getBill(id); if(!b)return;
