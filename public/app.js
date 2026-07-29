@@ -6191,24 +6191,30 @@ charges:[
             expH+='</div>';
           }
         } else {
-          expH='<div style="padding:12px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
-          var _sNote={Draft:'Draft — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',
-            'Pending pricing':'Pending 02S quote — price to be confirmed before order is placed.',
+          expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
+          var _sToneMap={Active:'ok','On-rent':'ok',Delivered:'ok',Scheduled:'ok',Demobilized:'info','Off-rent':'info',
+            'In fabrication':'info',Submittal:'info','PO issued':'info',Projected:'neu',Draft:'neu',
+            Requested:'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad',Pending:'neu'};
+          var _sLineMap={Draft:'Draft — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',
+            'Pending pricing':'Pending 02S quote — price confirmed before order is placed.',
             'Awaiting pricing':'Awaiting 02S pricing confirmation.',Projected:'Projected demand — not yet submitted.',
-            'At-risk':'At-risk — order-by date approaching. Expedite required.'};
-          expH+='<div style="font-size:11.5px;color:var(--g600);background:#fff;border:1px dashed var(--g200);border-radius:6px;padding:8px 11px;margin-bottom:10px">'+(_sNote[row.state]||row.state)+'</div>';
-          expH+='<div class="fq-calc">';
-          expH+='<div class="fq-crow"><span>Qty</span><span>'+row.qty+'</span></div>';
-          expH+='<div class="fq-crow"><span>Window</span><span>'+row.window+'</span></div>';
-          expH+='<div class="fq-crow"><span>Rate / cost</span><span>'+row.cost+'</span></div>';
-          expH+='<div class="fq-crow"><span>Vendor / firm</span><span>'+(row.firm||'TBD')+'</span></div>';
+            'At-risk':'At-risk — order-by date approaching. Expedite required.',
+            Scheduled:'Scheduled — window confirmed.',Pending:'Submitted — order processing.',
+            'In fabrication':'In fabrication — production in progress.',Submittal:'Submittal under review.'};
+          expH+='<div class="latest-line '+(_sToneMap[row.state]||'neu')+'" style="margin-bottom:10px">'
+            +'<span class="ll-k">Status</span>'+(_sLineMap[row.state]||row.state)+'</div>';
+          expH+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding:6px 0;font-size:11.5px">';
+          expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Qty</div><div style="font-weight:500;color:var(--g900)">'+( row.qty||'\u2014')+'</div></div>';
+          expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Window</div><div style="font-weight:500;color:var(--g900)">'+( row.window||'\u2014')+'</div></div>';
+          expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Rate / cost</div><div style="font-weight:500;color:var(--g900)">'+( row.cost||'\u2014')+'</div></div>';
+          expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Vendor / firm</div><div style="font-weight:500;color:var(--g900)">'+( row.firm||'TBD')+'</div></div>';
           expH+='</div>';
           if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){
             expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';
-            expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');ccGo(\'fulfill\')">View in fulfillment queue →</button>';
+            expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');ccGo(\'fulfill\')">View in fulfillment queue \u2192</button>';
             expH+='</div>';
           }
-          if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
+          if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note \u00b7 </b>'+row.note+'</div>';}
           expH+='</div>';    }
         if(isDpView){
           var _ordR=row.ordId?ORDERS.filter(function(x){return x.id===row.ordId;})[0]:null;
