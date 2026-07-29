@@ -2555,6 +2555,46 @@ charges:[
     b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px;font-family:monospace">'+data.costCode+'</span></div>';
     if(data.task) b+='<div class="fq-crow"><span>Schedule activity</span><span>'+data.task+'</span></div>';
     b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">';
+    b+='<div>';
+    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_ORD+'Order &amp; fulfillment</div>';
+    if(data.order){
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">';
+      b+='<span style="font-size:12px;font-weight:700;color:var(--g900)">'+data.order.ref+'</span>';
+      b+='<span class="tag ok" style="font-size:10px">'+data.order.stage+'</span>';
+      b+='</div>';
+      b+='<div style="font-size:11.5px;color:var(--g700)">' +data.order.latest+'</div>';
+      b+='</div>';
+    } else {
+      b+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">No order on file yet — draft or projected line.</div>';
+    }
+    b+='</div>';
+    b+='<div>';
+    b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_BILL+'Billing &amp; cost code</div>';
+    var shortCode=data.costCode?data.costCode.split('·')[0].trim():'—';
+    if(data.bill){
+      var bTone=data.bill.status==='Finalized'||data.bill.status==='Approved'?'ok':'warn';
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:4px">'+data.bill.id+'</div>';
+      b+='<div style="font-size:11.5px;color:var(--g700)">$'+data.bill.amt.toLocaleString()+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
+      b+='</div>';
+    } else if(data.quote){
+      var qDraft=data.quote.status==='Draft';
+      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+data.quote.ref+'</span> <span class="tag '+(qDraft?'warn':'ok')+'">'+data.quote.status+'</span></div>';
+      b+='<div style="font-size:11px;color:var(--g500);margin-top:4px">'+(qDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';
+      b+='</div>';
+    } else {
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div style="font-size:11.5px;color:var(--g400)">'+(data.order?'Billing generated once order is fulfilled.':'No billing on file yet.')+'</div>';
+      b+='</div>';
+    }
+    b+='</div>';
+    b+='</div>';
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
     b+='<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px">';
     data.docs.forEach(function(d){
@@ -2697,34 +2737,18 @@ charges:[
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
-    if(ord){
-      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-      h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px">';
-      h+='<div><span style="font-size:12.5px;font-weight:700;color:var(--charcoal)">'+ord.id+'</span>';
-      h+='<span class="tag ok" style="font-size:10px;margin-left:6px">'+(stageLabels[ord.stage-1]||'Stage '+ord.stage)+'</span></div>';
-      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">View order →</button>';
+    if(stt==='offrent'){
+      h+='<div style="margin:0 18px 10px;display:flex;align-items:center;gap:6px">';
+      h+='<span class="tag ok" style="font-size:10px">✓ Off-rent</span>';
+      h+='<span style="font-size:11px;color:var(--g500)">Equipment returned · rental period closed</span>';
       h+='</div>';
-      h+='<div style="font-size:12px;color:var(--g700)">'+(ord.item||'')+(ord.sub?' · '+ord.sub:'')+'</div>';
-      if(ord.recv&&ord.recv.window){
-        h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">Delivery: '+ord.recv.window+' · '+ord.recv.carrier+'</div>';
+    }
+    if(!ord){
+      if(l.submitted){
+        h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g500)">Submitted to 02S — order pending allocation. You\'ll be notified when an order is created.</div>';
+      } else {
+        h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">Draft or projected line — submit to 02S to begin the fulfillment process.</div>';
       }
-      if(bill){
-        h+='<div style="border-top:1px solid var(--g150);margin-top:8px;padding-top:8px;display:flex;align-items:center;justify-content:space-between">';
-        h+='<div style="font-size:11.5px;color:var(--g700)">'+bill.id+' · $'+bill.amt.toLocaleString()+' · <span class="tag '+(bill.status==='Finalized'?'ok':bill.status==='Approved'?'ok':'warn')+'">'+bill.status+'</span></div>';
-        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
-        h+='</div>';
-      }
-      if(stt==='offrent'){
-        h+='<div style="'+(bill?'border-top:1px solid var(--g150);margin-top:6px;padding-top:6px;':'margin-top:4px;')+'display:flex;align-items:center;gap:6px">';
-        h+='<span class="tag ok" style="font-size:10px">✓ Off-rent</span>';
-        h+='<span style="font-size:11px;color:var(--g500)">Equipment returned · rental period closed</span>';
-        h+='</div>';
-      }
-      h+='</div>';
-    } else if(l.submitted){
-      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g500)">Submitted to 02S — order pending allocation. You’ll be notified when an order is created.</div>';
-    } else {
-      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 12px;font-size:11.5px;color:var(--g400)">Draft or projected line — submit to 02S to begin the fulfillment process.</div>';
     }
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
@@ -2775,19 +2799,7 @@ charges:[
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
-    if(ord){
-      h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-      h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px">';
-      h+='<div><span style="font-size:12.5px;font-weight:700;color:var(--charcoal)">'+ord.id+'</span>';
-      h+='<span class="tag ok" style="font-size:10px;margin-left:6px">'+(stageLabels[ord.stage-1]||'Stage '+ord.stage)+'</span></div>';
-      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
-      h+='</div>';
-      h+='<div style="font-size:12px;color:var(--g700)">'+(ord.item||'')+(ord.sub?' · '+ord.sub:'')+'</div>';
-      if(ord.recv&&ord.recv.window){
-        h+='<div style="font-size:11px;color:var(--g500);margin-top:4px">Delivery: '+ord.recv.window+' · '+ord.recv.carrier+'</div>';
-      }
-      h+='</div>';
-    } else {
+    if(!ord){
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(r.state==='At-risk'?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(r.state==='At-risk'?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
       if(r.quoteRef){var _bq=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bq){var bqDraft=_bq.status==='Draft';h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(bqDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">';h+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+_bq.ref+'</span> <span class="tag '+(bqDraft?'warn':'ok')+'">'+_bq.status+'</span></div>';h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'quotes\');go(\'orders\')">View quote →</button>';h+='</div>';h+='<div style="font-size:11px;color:var(--g500)">'+(bqDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';h+='</div>';}}
