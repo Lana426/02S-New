@@ -1674,7 +1674,7 @@
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
-    if(pk==='profservices'){ renderProfServicesDP(); return; }
+    if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
@@ -5411,7 +5411,7 @@ charges:[
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
-    if(pk==='profservices'){ renderProfServicesDP(); return; }
+    if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
