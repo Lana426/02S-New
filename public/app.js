@@ -5214,8 +5214,9 @@ charges:[
     var _fmtKs=function(n){return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K');};
     h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:13px 16px;margin-bottom:14px">';
     h+='<div style="font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">Demand plans — portfolio overview</div>';
-    h+='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">';
-    _dpOverview.forEach(function(d){
+    var _dpoF=fqFP==='all'?_dpOverview:_dpOverview.filter(function(d){return d.p===fqFP;});
+    h+='<div style="display:grid;grid-template-columns:repeat('+_dpoF.length+',1fr);gap:10px">';
+    _dpoF.forEach(function(d){
       var pd_all=CC_PROJ_DP[d.p]||{}; var totalBudget=0,totalDp=0,totalAh=0;
       ['hercules','riverside','cimarron'].forEach(function(proj){ var pd=pd_all[proj]||{}; totalBudget+=(pd.budget||0); totalDp+=(pd.dpSpent||0); totalAh+=(pd.adHoc||0); });
       var pAh=totalBudget?Math.round(100*totalAh/(totalDp+totalAh||1)):0;
@@ -5647,25 +5648,25 @@ charges:[
   var MARGIN_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
   var MARGIN_DATA={
     'Hercules Solar + BESS':{
-      'Equipment':{arP:118000,costP:91000,arA:127000,costA:91000,note:'Actual AR includes $9.0K/mo from 2 open idle-billing anomalies (BILL-9012, BILL-9021) not yet credited \u2014 reported margin is overstated until they\u2019re resolved.'},
-      'Logistics':{arP:18000,costP:16500,arA:18000,costA:16500,note:'Move-coordination fee only \u2014 a future logistics-execution build will sharpen this pillar\u2019s economics.'},
-      'Professional services':{arP:62000,costP:56000,arA:62000,costA:56000,note:'3 active roles (owner\u2019s engineer, geotechnical, structural) billed at the 02S rate card \u2014 steady.'},
-      'Procurement':{arP:210000,costP:206000,arA:205000,costA:201500,note:'Pass-through spend on long-lead BESS/module items \u2014 thin admin margin by design.'},
+      'Equipment':{arP:118000,costP:91000,arA:127000,costA:91000,note:'$9K/mo AR overstatement from 2 idle-billing lines (BILL-9012, BILL-9021) awaiting vendor credit.'},
+      'Logistics':{arP:18000,costP:16500,arA:18000,costA:16500,note:'Move coordination only. Execution economics in a future build.'},
+      'Professional services':{arP:62000,costP:56000,arA:62000,costA:56000,note:'3 active roles at rate card (owner\u2019s engineer, geotech, structural). Steady.'},
+      'Procurement':{arP:210000,costP:206000,arA:205000,costA:201500,note:'Pass-through long-lead items. Thin margin by design.'},
       'Pre-fab':{arP:58000,costP:55000,arA:56000,costA:53200,note:'Made-to-order assemblies quoted by 02S after submittal.'}
     },
     'Riverside Medical Center':{
-      'Equipment':{arP:186400,costP:147000,arA:186400,costA:151100,note:'Includes the 5\u00d7 tower crane (REQ-4471 \u2014 2 owned + 3 re-rent, plan 19.4%). One re-rent line renewed at a higher MSA rate (BILL-9034), cutting margin $4.1K/mo.'},
-      'Logistics':{arP:9000,costP:8300,arA:9000,costA:8300,note:''},
-      'Professional services':{arP:24000,costP:21800,arA:24000,costA:21800,note:''},
-      'Procurement':{arP:95000,costP:93200,arA:95000,costA:93200,note:''},
-      'Pre-fab':{arP:12000,costP:11500,arA:12000,costA:11500,note:''}
+      'Equipment':{arP:186400,costP:147000,arA:186400,costA:151100,note:'Tower crane re-rent renewed above MSA rate (BILL-9034) \u2014 margin cut $4.1K/mo.'},
+      'Logistics':{arP:9000,costP:8300,arA:9000,costA:8300,note:'Move coordination. Steady.'},
+      'Professional services':{arP:24000,costP:21800,arA:24000,costA:21800,note:'Active roles at rate card.'},
+      'Procurement':{arP:95000,costP:93200,arA:95000,costA:93200,note:'Supply run pass-throughs. Thin margin by design.'},
+      'Pre-fab':{arP:12000,costP:11500,arA:12000,costA:11500,note:'Assemblies quoted post-submittal.'}
     },
     'Cimarron Data Center':{
-      'Equipment':{arP:188000,costP:149900,arA:140000,costA:109000,note:'Plan includes REQ-4472 (4\u00d7 excavator) \u2014 still open in the Fulfillment queue, so that margin isn\u2019t realized yet. A missing-AR anomaly (BILL-9041) also understates actual by $2.6K/mo.'},
-      'Logistics':{arP:11000,costP:10100,arA:11000,costA:10100,note:''},
-      'Professional services':{arP:19000,costP:17300,arA:19000,costA:17300,note:''},
-      'Procurement':{arP:76000,costP:74500,arA:76000,costA:74500,note:''},
-      'Pre-fab':{arP:9000,costP:8600,arA:9000,costA:8600,note:''}
+      'Equipment':{arP:188000,costP:149900,arA:140000,costA:109000,note:'REQ-4472 (4\u00d7 excavator) open \u2014 planned margin unrealized. BILL-9041 missing-AR understates actual by $2.6K/mo.'},
+      'Logistics':{arP:11000,costP:10100,arA:11000,costA:10100,note:'Delivery scheduling. Steady.'},
+      'Professional services':{arP:19000,costP:17300,arA:19000,costA:17300,note:'Active roles at rate card.'},
+      'Procurement':{arP:76000,costP:74500,arA:76000,costA:74500,note:'PDU/cooling pass-throughs. Thin margin by design.'},
+      'Pre-fab':{arP:9000,costP:8600,arA:9000,costA:8600,note:'Assemblies quoted post-submittal.'}
     }
   };
   var MG_LINK={
@@ -5939,7 +5940,104 @@ charges:[
       ]}
     }
   };
+  var CC_DP_BILLS={
+    'ORD-3110':[
+      {inv:'INV-AGG-0326',period:'Mar 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-AGG-0426',period:'Apr 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-AGG-0526',period:'May 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-AGG-0626',period:'Jun 2026',amount:51200,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-AGG-0726',period:'Jul 2026',amount:51200,status:'Pending',cc:'0100-5000-0000-0001'}
+    ],
+    'ORD-3111':[
+      {inv:'INV-UR-0326',period:'Mar 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-UR-0426',period:'Apr 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-UR-0526',period:'May 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-UR-0626',period:'Jun 2026',amount:67600,status:'Paid',cc:'0100-5000-0000-0001'},
+      {inv:'INV-UR-0726',period:'Jul 2026',amount:67600,status:'Pending',cc:'0100-5000-0000-0001'}
+    ],
+    'ORD-3093':[
+      {inv:'INV-ALL-0626',period:'Jun 2026',amount:108000,status:'Paid',cc:'3100-6300-0000-0001'},
+      {inv:'INV-ALL-0726',period:'Jul 2026',amount:111000,status:'Pending',cc:'3100-6300-0000-0001',dispute:'Vendor billed $18,500/unit \u00d7 6; MSA confirms $18,000/unit. $3,000 overage flagged for credit \u2014 ref BILL-9021.'}
+    ],
+    'ORD-3029':[
+      {inv:'INV-JLG-0526',period:'May 2026',amount:19200,status:'Paid',cc:'05-Metals'}
+    ],
+    'ORD-3042':[
+      {inv:'INV-SBL-0526',period:'May 2026',amount:7200,status:'Paid',cc:'03-Concrete'},
+      {inv:'INV-SBL-0606',period:'Jun 1\u20136, 2026',amount:1440,status:'Paid',cc:'03-Concrete'}
+    ],
+    'ORD-3112':[
+      {inv:'INV-CAT-0326',period:'Mar 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-CAT-0426',period:'Apr 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-CAT-0526',period:'May 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-CAT-0626',period:'Jun 2026',amount:172800,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-CAT-0726',period:'Jul 2026',amount:172800,status:'Pending',cc:'0200-0310-0000-0001'}
+    ],
+    'ORD-3114':[
+      {inv:'INV-VR-0326',period:'Mar 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-VR-0426',period:'Apr 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-VR-0526',period:'May 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-VR-0626',period:'Jun 2026',amount:144000,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'INV-VR-0726',period:'Jul 2026',amount:144000,status:'Pending',cc:'0200-0310-0000-0001'}
+    ],
+    'ORD-3095':[
+      {inv:'INV-DNV-0326',period:'Mar 2026',amount:28000,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'INV-DNV-0426',period:'Apr 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001',ccChange:'Realloc Apr 15 by field PM \u2014 General conditions (0100-0100) \u2192 Engineering support (0100-5200).'},
+      {inv:'INV-DNV-0526',period:'May 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
+      {inv:'INV-DNV-0626',period:'Jun 2026',amount:28000,status:'Paid',cc:'0100-5200-0000-0001'},
+      {inv:'INV-DNV-0726',period:'Jul 2026',amount:28000,status:'Pending',cc:'0100-5200-0000-0001'}
+    ],
+    'ORD-3096':[
+      {inv:'INV-TRC-0326',period:'Mar 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'INV-TRC-0426',period:'Apr 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'INV-TRC-0526',period:'May 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'INV-TRC-0626',period:'Jun 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'INV-TRC-0726',period:'Jul 2026',amount:18000,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'INV-TRC-0826',period:'Aug 2026 (partial)',amount:9000,status:'Pending',cc:'0200-0320-0000-0001',ccChange:'Demob Aug 15 \u2014 50% rate confirmed by PM. Final invoice pending.'}
+    ],
+    'ORD-3091':[
+      {inv:'INV-TRC-0626S',period:'Jun 2026',amount:16000,status:'Paid',cc:'0300-0540-0000-0001'},
+      {inv:'INV-TRC-0726S',period:'Jul 2026',amount:16000,status:'Pending',cc:'0300-0540-0000-0001'}
+    ],
+    'ORD-3092':[
+      {inv:'INV-SWC-0626',period:'Jun 2026',amount:9000,status:'Paid',cc:'01-General conditions'},
+      {inv:'INV-SWC-0726',period:'Jul 2026',amount:9000,status:'Pending',cc:'01-General conditions'}
+    ],
+    'ORD-3009':[
+      {inv:'INV-BWM-0426',period:'Apr 18\u201319, 2026',amount:800,status:'Paid',cc:'01-General conditions'}
+    ],
+    'ORD-3120':[
+      {inv:'INV-TBD-0726',period:'Jul 2026',amount:null,status:'Pending pricing',cc:'0100-0100-0000-0001'}
+    ]
+  };
   var dpCur=null;
+  function ccDpTracker(ordId){
+    var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
+    if(!o){toast('No order data for '+ordId);return;}
+    var ns=CURRENT==='ns';
+    var bills=CC_DP_BILLS[ordId]||[];
+    var billH='';
+    if(bills.length){
+      var gb='1fr 100px 115px 95px 160px';
+      billH='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
+      billH+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
+      billH+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px"><span>Invoice</span><span>Period</span><span style="text-align:right">Amount</span><span>Status</span><span>Cost code</span></div>';
+      bills.forEach(function(b){
+        var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
+        billH+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)">';
+        billH+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Disputed</span>':'')+'</div>';
+        billH+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
+        billH+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
+        billH+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
+        billH+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+'</div>';
+        billH+='</div>';
+        if(b.dispute){billH+='<div style="background:rgba(239,68,68,.06);border-left:3px solid var(--red);padding:4px 8px;font-size:11px;color:var(--g700);margin-bottom:3px"><b>Dispute:</b> '+b.dispute+'</div>';}
+        if(b.ccChange){billH+='<div style="background:rgba(245,158,11,.07);border-left:3px solid #f59e0b;padding:4px 8px;font-size:11px;color:var(--g700);margin-bottom:3px"><b>Cost code change:</b> '+b.ccChange+'</div>';}
+      });
+      billH+='</div>';
+    }
+    openModal('Order \u2014 '+ordId, trackerHTML(o,ns)+billH);
+  }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
   function dpTaxCell(r){
     var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
@@ -5988,28 +6086,37 @@ charges:[
       h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>20?'var(--red)':driftPct>10?'#f59e0b':'var(--g700)')+'">'+driftPct+'% ad hoc drift</span>';
       h+='</div></div>';
     }
-    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].rows&&CC_PROJ_DP[p][selProj].rows.length){
-      var dpRows=CC_PROJ_DP[p][selProj].rows;
-      h+='<div class="eq-toolbar" style="margin-top:16px"><span class="dp-sec-t">'+svg(IC.check)+'Demand plan</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+dpRows.length+' items · '+pLabel+'</span></div>';
-      var gtdp='2fr 80px 130px 112px 130px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtdp+'"><span>Item</span><span>Qty</span><span>Window</span><span>State</span><span>Fulfillment</span></div>';
-      var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad','Ordered':'info'};
-      dpRows.forEach(function(r){
-        var tone=_DP_TONE[r.state]||'neu';
-        var fulfil=r.ordId?('<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();gotoOrder(\''+r.ordId+'\')">'+r.ordId+' ↗</button>'):('<span style="font-size:11px;color:var(--g400)">'+(r.state==='Projected'||r.state==='Draft'?'Not yet ordered':'No order')+'</span>');
-        h+='<div class="dp-row" style="grid-template-columns:'+gtdp+'"><div>'+r.item+'<div class="sub" style="font-size:10.5px">'+r.cost+(r.firm?' · '+r.firm:'')+'</div></div><div style="font-size:12px">'+r.qty+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.window+'</div><div><span class="tag '+tone+'">'+r.state+'</span></div><div>'+fulfil+'</div></div>';
-      });
-      h+='</div>';
-    }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Ad hoc requests</span><span class="spacer"></span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') →</button></div>';
-    var gt='1.15fr 1.5fr 118px 108px 84px';
+    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad','Ordered':'info'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','riverside':'Riverside Medical Center','cimarron':'Cimarron Data Center'};
-    var rowsF=selProj==='all'?cfg.rows:cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request ID / asset</span><span>Taxonomy match</span><span>'+cfg.decCol+'</span><span>Status</span><span></span></div>';
-    if(!rowsF.length){ h+='<div class="fq-empty">No pending ad hoc requests for '+pLabel+'.</div>'; }
-    rowsF.forEach(function(r){
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.id+'<div class="sub" style="white-space:normal">'+r.asset+' · '+r.project+'</div></div><div>'+dpTaxCell(r)+'</div><div><span class="tag '+(r.decTone||'neu')+'">'+r.dec+'</span></div><div><span class="tag '+(DP_ST[r.status]||'neu')+'">'+r.status+'</span></div><div>'+dpReviewCell(p,r,ns)+'</div></div>';
+    var showProjCol=(selProj==='all');
+    var allReqRows=[];
+    var projsForTable=showProjCol?['hercules','riverside','cimarron']:[selProj];
+    projsForTable.forEach(function(proj){
+      if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
+        CC_PROJ_DP[p][proj].rows.forEach(function(r){
+          allReqRows.push({_type:'dp',_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null});
+        });
+      }
+    });
+    var adhocFiltered=showProjCol?cfg.rows:cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
+    adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+allReqRows.length+' total · '+pLabel+'</span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" style="margin-left:12px" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') →</button></div>';
+    var gtA=showProjCol?'1.4fr 116px 155px 1.1fr 108px 128px':'1.4fr 116px 1.2fr 108px 128px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+' <span>Details</span><span>Status</span><span>Action</span></div>';
+    if(!allReqRows.length){ h+='<div class="fq-empty">No requests for '+pLabel+'.</div>'; }
+    allReqRows.forEach(function(row){
+      if(row._type==='dp'){
+        var dpTone=_DP_TONE[row.state]||'neu';
+        var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
+        var dpDet=(row.qty||'')+' · '+(row.window||'')+(row.firm?' · '+row.firm:'');
+        var dpAct=row.ordId?('<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+row.ordId+' ↗</button>'):('<span style="font-size:11px;color:var(--g400)">'+(row.state==='Projected'||row.state==='Draft'?'Not ordered yet':'No order')+'</span>');
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div><div>'+dpSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div>'+dpAct+'</div></div>';
+      } else {
+        var r2=row._raw;
+        var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div>'+dpReviewCell(p,r2,ns)+'</div></div>';
+      }
     });
     h+='</div>';
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
