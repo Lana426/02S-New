@@ -1444,7 +1444,7 @@
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
         {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal',linkOrd:'ORD-3107'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
-        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
+        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
       vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane mobilizations',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
@@ -2510,13 +2510,16 @@ charges:[
     var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
     var pillarNames={profservices:'Prof. services',procurement:'Procurement',prefab:'Prefab',logistics:'Logistics'};
     var docsByPillar={profservices:['Service agreement (PDF)','SOW & deliverables (PDF)'],procurement:['Purchase order (PDF)','Product specification (PDF)'],prefab:['Submittal drawings (PDF)','Shop drawings (PDF)','Fabrication schedule (PDF)'],logistics:['Delivery route map (PDF)','Permit documentation (PDF)']};
+    var dpBill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
+    var dpQuote=r.quoteRef?PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0]:null;
     var data={
       title:name,pillar:pillarNames[pk]||pk,statusText:state,
       category:sub,scope:when,task:null,
       dates:when,qty:qty,
       costDisplay:cost,costCode:code,
       order:ord?{ref:ord.id,stage:stageLabels[ord.stage-1]||('Stage '+ord.stage),latest:ord.latest,latestTone:ord.latestTone||'ok',delivery:null}:null,
-      billing:{committed:(cost&&cost!=='Pending'&&cost!=='—')?cost:null},
+      bill:dpBill||null,
+      quote:dpQuote||null,
       docs:docsByPillar[pk]||['Documentation (PDF)']
     };
     renderPlanDrillModal(data);
@@ -2559,15 +2562,33 @@ charges:[
     b+='</div>';
     b+='<div>';
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_BILL+'Billing &amp; cost code</div>';
-    b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
-    if(data.billing&&data.billing.committed){
-      b+='<div style="font-size:11px;color:var(--g600);margin-bottom:2px">Projected total</div>';
-      b+='<div style="font-size:18px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+data.billing.committed+'</div>';
-    }
     var shortCode=data.costCode?data.costCode.split('·')[0].trim():'—';
-    b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:8px">'+shortCode+'</div>';
-    b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();go(\'billing\')">View billing →</button>';
-    b+='</div>';
+    if(data.bill){
+      var bTone=data.bill.status==='Finalized'||data.bill.status==='Approved'?'ok':'warn';
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:4px">'+data.bill.id+'</div>';
+      b+='<div style="display:flex;align-items:center;justify-content:space-between">';
+      b+='<div style="font-size:11.5px;color:var(--g700)">$'+data.bill.amt.toLocaleString()+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
+      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">' +data.bill.id+' →</button>';
+      b+='</div>';
+      b+='</div>';
+    } else if(data.quote){
+      var qDraft=data.quote.status==='Draft';
+      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">';
+      b+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+data.quote.ref+'</span> <span class="tag '+(qDraft?'warn':'ok')+'">'+data.quote.status+'</span></div>';
+      b+='</div>';
+      b+='<div style="font-size:11px;color:var(--g500);margin-bottom:6px">'+(qDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';
+      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">'+data.quote.ref+' →</button>';
+      b+='</div>';
+    } else {
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
+      b+='<div style="font-size:11.5px;color:var(--g400)">'+(data.order?'Billing generated once order is fulfilled.':'No billing on file yet.')+'</div>';
+      b+='</div>';
+    }
     b+='</div>';
     b+='</div>';
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_DOC+'Documents</div>';
@@ -2725,6 +2746,12 @@ charges:[
         h+='<div style="border-top:1px solid var(--g150);margin-top:8px;padding-top:8px;display:flex;align-items:center;justify-content:space-between">';
         h+='<div style="font-size:11.5px;color:var(--g700)">'+bill.id+' · $'+bill.amt.toLocaleString()+' · <span class="tag '+(bill.status==='Finalized'?'ok':bill.status==='Approved'?'ok':'warn')+'">'+bill.status+'</span></div>';
         h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
+        h+='</div>';
+      }
+      if(stt==='offrent'){
+        h+='<div style="'+(bill?'border-top:1px solid var(--g150);margin-top:6px;padding-top:6px;':'margin-top:4px;')+'display:flex;align-items:center;gap:6px">';
+        h+='<span class="tag ok" style="font-size:10px">✓ Off-rent</span>';
+        h+='<span style="font-size:11px;color:var(--g500)">Equipment returned · rental period closed</span>';
         h+='</div>';
       }
       h+='</div>';
@@ -5141,7 +5168,7 @@ charges:[
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
         {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
-        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft'}
+        {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
       vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
