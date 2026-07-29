@@ -2519,7 +2519,8 @@ charges:[
     var state=r.state||'—';
     var src=r.src||null;
     var ord=null;
-    if(src) ord=ORDERS.filter(function(o){return o.id===src;})[0];
+    var _oid=r.linkOrd||(src&&src.indexOf('ORD-')===0?src:null);
+    if(_oid) ord=ORDERS.filter(function(o){return o.id===_oid;})[0];
     if(!ord){var dn2=name.replace(/[— ].*/,'').trim().toLowerCase().slice(0,8); ord=ORDERS.filter(function(o){return o.pillar===pk&&o.item&&o.item.toLowerCase().indexOf(dn2)>=0;})[0];}
     var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
     var pillarNames={profservices:'Prof. services',procurement:'Procurement',prefab:'Prefab',logistics:'Logistics'};
@@ -2838,6 +2839,7 @@ charges:[
     } else {
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(r.state==='At-risk'?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(r.state==='At-risk'?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
+      if(r.quoteRef){var _bq=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bq){var bqDraft=_bq.status==='Draft';h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(bqDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">';h+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+_bq.ref+'</span> <span class="tag '+(bqDraft?'warn':'ok')+'">'+_bq.status+'</span></div>';h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'quotes\');go(\'orders\')">'+_bq.ref+' →</button>';h+='</div>';h+='<div style="font-size:11px;color:var(--g500)">'+(bqDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';h+='</div>';}}
     }
     var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
     if(notes.length){
@@ -2863,6 +2865,7 @@ charges:[
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
+    if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'quotes\');go(\'orders\')">'+r.quoteRef+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
     return h;
