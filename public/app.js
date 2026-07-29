@@ -1419,7 +1419,7 @@
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415'},
+        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415',linkOrd:'ORD-3120'},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,linkOrd:'ORD-3009'}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
@@ -1940,7 +1940,10 @@ function renderProfServicesDP(){
     {id:'ORD-3116',od:'2026-10-01',item:'MV switchgear delivery \u2014 oversize haul',sub:'1 load \u00b7 permitted route',pillar:'logistics',dates:'Oct 15, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submitted \u2014 02S coordinating permit and route survey.'},
     {id:'ORD-3117',od:'2026-09-01',item:'PV module deliveries \u2014 recurring',sub:'daily Sep \u2013 Nov \u00b7 East gate',pillar:'logistics',dates:'Sep \u2013 Nov 2026',cost:'2600-5600-0000-0001 \u00b7 Tracker & Module',stage:1,plan:null,latest:'Submitted \u2014 02S scheduling gate slots.'},
     {id:'ORD-3118',od:'2026-12-01',item:'BESS container placement',sub:'haul + crane \u00b7 Pad 3',pillar:'logistics',dates:'Dec 1, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submitted \u2014 02S coordinating crane and haul.'},
-    {id:'ORD-3119',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'}
+    {id:'ORD-3119',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'},
+    {id:'ORD-3120',od:'2026-07-15',item:'VDC / BIM coordination',sub:'3 FTE \u00b7 Apr\u2013Oct 2026',pillar:'profservices',dates:'Apr 2026 \u2013 Oct 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,plan:null,latest:'Submitted \u2014 pending 02S pricing confirmation for 3-FTE VDC/BIM engagement.'},
+    {id:'ORD-3121',od:'2026-07-20',item:'Telehandler \u2014 10K \u00d7 24 (Sector 1)',sub:'24 units \u00b7 Sep 2026\u2013Apr 2027 \u00b7 Tracker assembly',pillar:'equipment',dates:'Sep 2026 \u2013 Apr 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing allocation; confirm by Aug 15.'},
+    {id:'ORD-3122',od:'2026-07-20',item:'Boom lift \u2014 60 ft \u00d7 18 (Sector 1)',sub:'18 units \u00b7 Sep 2026\u2013Mar 2027 \u00b7 Module installation',pillar:'equipment',dates:'Sep 2026 \u2013 Mar 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing availability across fleet; confirm by Aug 15.'}
   ];
   var PORTAL_QUOTES=[
     {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
@@ -2435,7 +2438,7 @@ function renderProfServicesDP(){
     ]
   };
 
-  var EQ_ORD_MAP={'e1':'ORD-3110','e2':'ORD-3111','e3':'ORD-3042','e4':'ORD-3112','e5':'ORD-3113','e6':'ORD-3114','e7':'ORD-3093','e8':'ORD-3115','e9':'ORD-3029'};
+  var EQ_ORD_MAP={'e1':'ORD-3110','e2':'ORD-3111','e3':'ORD-3042','e4':'ORD-3112','e5':'ORD-3113','e6':'ORD-3114','e7':'ORD-3093','e8':'ORD-3115','e9':'ORD-3029','e10':'ORD-3121','e11':'ORD-3122'};
   var EQ_LINE_NOTES={
     'e3':[
       {who:'Dana Reyes · You',when:'May 10',text:'Submitted Phase 1 earthwork package — 6 excavators across A2010/A2020. Rate confirmed at $13,500/mo from 02S rate card.'},
@@ -2532,7 +2535,7 @@ function renderProfServicesDP(){
         {desc:'Shop drawings & engineering stamp',qty:1,rate:9400,amt:9400,cost:'2600-0540-0000-0001 \u00b7 Module install'},
         {desc:'Delivery & crane-in coordination',qty:1,rate:8000,amt:8000,cost:'2600-0540-0000-0001 \u00b7 Module install'}
       ]},
-    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Pending',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
+    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Approved',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
   {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400,cost:'09 · Finishes'},
   {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420,cost:'09 · Finishes'}
@@ -2542,12 +2545,12 @@ charges:[
   {desc:'Daily rate — 20T excavator + operator',qty:16,rate:2250,amt:36000,cost:'03 · Concrete'},
   {desc:'Fuel surcharge',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'}
 ]},
-    {id:'BILL-9016',order:'ORD-3020',product:'Rigging & lift hardware',amt:4980,cost:'05 · Metals',status:'Pending',date:'May 13',day:2,notes:1,
+    {id:'BILL-9016',order:'ORD-3020',product:'Rigging & lift hardware',amt:4980,cost:'05 · Metals',status:'Approved',date:'May 13',day:2,notes:1,
 charges:[
   {desc:'Rigging hardware — daily rental',qty:7,rate:680,amt:4760,cost:'05 · Metals'},
   {desc:'Setup / teardown labor',qty:1,rate:220,amt:220,cost:'05 · Metals'}
 ]},
-    {id:'BILL-9020',order:'ORD-3060',product:'MEP Pipe Rack Module (3)',amt:36600,cost:'22 · Plumbing',status:'Pending',date:'Jun 1',day:3,notes:1,
+    {id:'BILL-9020',order:'ORD-3060',product:'MEP Pipe Rack Module (3)',amt:36600,cost:'22 · Plumbing',status:'Approved',date:'Jun 1',day:3,notes:1,
       charges:[
         {desc:'Fabrication — 3 module assemblies',qty:3,rate:9800,amt:29400,cost:'22 · Plumbing'},
         {desc:'Shop drawings & engineering stamp',qty:1,rate:4200,amt:4200,cost:'01 · General'},
@@ -2558,24 +2561,24 @@ charges:[
         {desc:'Lowboy transport — 85-mile haul',qty:1,rate:2400,amt:2400,cost:'03 · Concrete'},
         {desc:'Escort vehicle (required by permit)',qty:1,rate:800,amt:800,cost:'03 · Concrete'}
       ]},
-    {id:'BILL-9022',order:'ORD-3090',product:'Special inspections — concrete (May)',amt:8400,cost:'03 · Concrete',status:'Pending',date:'Jun 1',day:5,notes:0,
+    {id:'BILL-9022',order:'ORD-3090',product:'Special inspections — concrete (May)',amt:8400,cost:'03 · Concrete',status:'Approved',date:'Jun 1',day:5,notes:0,
       charges:[
         {desc:'IBC §1705 inspection — 21 days',qty:21,rate:350,amt:7350,cost:'03 · Concrete'},
         {desc:'Inspection report preparation',qty:3,rate:350,amt:350,cost:'01 · General'},
         {desc:'Travel & expense reimbursement',qty:1,rate:700,amt:700,cost:'03 · Concrete'}
       ]},
-    {id:'BILL-9023',order:'ORD-3080',product:'PPE kit — crew of 20',amt:1700,cost:'01 · General',status:'Pending',date:'May 5',day:1,notes:0,
+    {id:'BILL-9023',order:'ORD-3080',product:'PPE kit — crew of 20',amt:1700,cost:'01 · General',status:'Approved',date:'May 5',day:1,notes:0,
       charges:[
         {desc:'Hard hats, vests, gloves — 20 sets',qty:20,rate:65,amt:1300,cost:'01 · General'},
         {desc:'Safety glasses & face shields',qty:20,rate:20,amt:400,cost:'01 · General'}
       ]},
-    {id:'BILL-9025',order:'ORD-3091',product:'Structural special inspection — Jun 2026',amt:14400,cost:'3100-6200-0000-0001 · Solar pile',status:'Pending',date:'Jul 3',day:5,notes:1,
+    {id:'BILL-9025',order:'ORD-3091',product:'Structural special inspection — Jun 2026',amt:14400,cost:'3100-6200-0000-0001 · Solar pile',status:'Approved',date:'Jul 3',day:5,notes:1,
       charges:[
         {desc:'IBC §1705 special inspection — 24 days',qty:24,rate:500,amt:12000,cost:'3100-6200-0000-0001 · Solar pile'},
         {desc:'Inspection report preparation',qty:3,rate:600,amt:1800,cost:'3100-6200-0000-0001 · Solar pile'},
         {desc:'Travel & expense reimbursement',qty:3,rate:200,amt:600,cost:'3100-6200-0000-0001 · Solar pile'}
       ]},
-    {id:'BILL-9035',order:'ORD-3093',product:'Hydraulic pile driver x6 (Jun)',amt:207000,cost:'3100-6300-0000-0001 · Solar pile',status:'Pending',date:'Jul 1',day:3,notes:0,
+    {id:'BILL-9035',order:'ORD-3093',product:'Hydraulic pile driver x6 (Jun)',amt:207000,cost:'3100-6300-0000-0001 · Solar pile',status:'Approved',date:'Jul 1',day:3,notes:0,
       charges:[
         {desc:'Monthly rental — 20T pile driver x6 units',qty:6,rate:34500,amt:207000,cost:'3100-6300-0000-0001 · Solar pile'}
       ]},
@@ -2593,7 +2596,7 @@ charges:[
         {desc:'Drayage / material movement — 8 moves',qty:8,rate:180,amt:1440,cost:'0100-0100-0000-0001 · General conditions'}
       ]},
     
-    {id:'BILL-9055',order:'ORD-3108',product:'Skid-mounted pump assemblies — fabrication deposit',amt:18400,cost:'2600-0540-0000-0001 · Module install',status:'Pending',date:'Jul 15',day:4,notes:0,
+    {id:'BILL-9055',order:'ORD-3108',product:'Skid-mounted pump assemblies — fabrication deposit',amt:18400,cost:'2600-0540-0000-0001 · Module install',status:'Approved',date:'Jul 15',day:4,notes:0,
       charges:[{desc:'Fabrication deposit — 50% of contract',qty:1,rate:18400,amt:18400,cost:'2600-0540-0000-0001 · Module install'}]},
     {id:'BILL-9056',order:'ORD-3051',product:'¾-Ton Crew Truck × 2 — Jul 2026',amt:4800,cost:'01-540 · General conditions',status:'Pending',date:'Aug 1',day:3,notes:0,
       charges:[
@@ -4759,19 +4762,20 @@ charges:[
     openModal('Bill preview', b);
   }
   function gotoOrder(id){
-    ordView='orders'; _ordersShowAll=true; go('orders');
+    ordView='orders'; go('orders'); _ordersShowAll=true; renderOrders();
     var row=document.getElementById('row-'+id); if(!row)return;
     if(!row.classList.contains('open'))toggleOrder(id);
-    setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},60);
+    setTimeout(function(){row.scrollIntoView({behavior:'smooth',block:'center'});},80);
   }
   function gotoBill(id){
     var inp=document.getElementById('billSearch'); if(inp)inp.value=id;
-    _billsShowAll=true; go('billing');
+    go('billing');
     setTimeout(function(){
-      renderBills();
+      _billsShowAll=true; renderBills();
       var b=getBill(id); if(!b)return;
       if(b.status==='Pending')openBillModal(id);
       else if(b.status==='Finalized')openBillPDFModal(id);
+      else if(b.status==='Approved')openBillModal(id);
     },120);
   }
 
