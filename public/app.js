@@ -2559,7 +2559,7 @@ charges:[
     b+='<div>';
     b+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px">'+ICO_ORD+'Order &amp; fulfillment</div>';
     if(data.order){
-      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();gotoOrder(\''+data.order.ref+'\')">';
       b+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">';
       b+='<span style="font-size:12px;font-weight:700;color:var(--g900)">'+data.order.ref+'</span>';
       b+='<span class="tag ok" style="font-size:10px">'+data.order.stage+'</span>';
@@ -2575,14 +2575,14 @@ charges:[
     var shortCode=data.costCode?data.costCode.split('·')[0].trim():'—';
     if(data.bill){
       var bTone=data.bill.status==='Finalized'||data.bill.status==='Approved'?'ok':'warn';
-      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px">';
+      b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">';
       b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
       b+='<div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:4px">'+data.bill.id+'</div>';
       b+='<div style="font-size:11.5px;color:var(--g700)">$'+data.bill.amt.toLocaleString()+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
       b+='</div>';
     } else if(data.quote){
       var qDraft=data.quote.status==='Draft';
-      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';
+      b+='<div style="background:var(--g50);border:1px '+(qDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();ordSetView(\'quotes\');go(\'orders\')">';
       b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
       b+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+data.quote.ref+'</span> <span class="tag '+(qDraft?'warn':'ok')+'">'+data.quote.status+'</span></div>';
       b+='<div style="font-size:11px;color:var(--g500);margin-top:4px">'+(qDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';
@@ -2799,7 +2799,6 @@ charges:[
     if(!ord){
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(r.state==='At-risk'?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(r.state==='At-risk'?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
-      if(r.quoteRef){var _bq=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bq){var bqDraft=_bq.status==='Draft';h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(bqDraft?'dashed var(--g300)':'solid var(--g150)')+';border-radius:6px;padding:10px 12px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">';h+='<div><span style="font-size:12px;font-weight:700;color:var(--charcoal)">'+_bq.ref+'</span> <span class="tag '+(bqDraft?'warn':'ok')+'">'+_bq.status+'</span></div>';h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ordSetView(\'quotes\');go(\'orders\')">View quote →</button>';h+='</div>';h+='<div style="font-size:11px;color:var(--g500)">'+(bqDraft?'Pricing pending 02S confirmation':'All items priced — PDF ready')+'</div>';h+='</div>';}}
     }
     var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
     if(notes.length){
