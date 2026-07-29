@@ -1409,11 +1409,11 @@
       rows:[
         {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8},
         {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
         {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6},
-        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
+        {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,linkOrd:'ORD-3009'}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'4 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
@@ -1454,13 +1454,13 @@
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Tower crane mobilization'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane mobilization'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled'},
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Scheduled',linkOrd:'ORD-3070'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071'},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
         {move:'BESS container placement',type:'Haul + crane',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
         {move:'Prefab pipe rack delivery',type:'Delivery',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
-        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active'}
+        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072'}
       ]}
   };
   var dpActive=null, dpAddPk=null;
@@ -1915,6 +1915,26 @@ function renderProfServicesDP(){
     'ORD-3054':[
       {who:'02S Logistics',when:'Aug 1',text:'Crane assembly confirmed on site Aug 3 per schedule. Rigger crew en route.'},
       {who:'Dana Reyes · You',when:'Jul 30',text:'North gate reserved. Coordinated with structural foreman for Aug 3 mob window.'}
+    ],
+    'ORD-3093':[
+      {who:'Dana Reyes · You',when:'Jun 1',text:'All 6 pile drivers delivered and cleared. Sector 1 layout staked. Crew starting A3010 piles today.'},
+      {who:'02S Ops',when:'Jun 3',text:'Pile production at 42 piles/day — tracking 4 days ahead of A3010 schedule. Sector 2 mob will follow in August.'}
+    ],
+    'ORD-3091':[
+      {who:'Dana Reyes · You',when:'Jun 5',text:'3 RFIs on steel connections responded this week. Avg turnaround 18 hrs. Structural team responsive.'},
+      {who:'02S Ops',when:'Jun 10',text:'June billing issued — BILL-9036 includes 32 hrs RFI support and 8 drawing markups. Confirm approval.'}
+    ],
+    'ORD-3092':[
+      {who:'02S Environmental',when:'Jun 2',text:'Baseline monitoring in place for dust, noise, and stormwater. Weekly reports auto-filed to project team.'},
+      {who:'Dana Reyes · You',when:'Jul 2',text:'June monitoring report reviewed and approved. No exceedances. BILL-9037 approved.'}
+    ],
+    'ORD-3070':[
+      {who:'Marcus Webb · 02S',when:'May 20',text:'Excavator arrived on site 6:22 AM. Delivery receipt signed by site superintendent. Unit inspected and cleared.'},
+      {who:'Dana Reyes · You',when:'May 19',text:'North gate access confirmed. Road bearing verified at 55,000 lb. Superintendent on site for 6 AM window.'}
+    ],
+    'ORD-3071':[
+      {who:'02S Logistics',when:'Jul 28',text:'Route permits approved for Aug 3 crane mob. 4-axle lowboy + 2 escorts confirmed. Departure 4:30 AM.'},
+      {who:'Dana Reyes · You',when:'Jul 30',text:'Laydown A cleared and mat prepped for crane assembly. Structural foreman on site Aug 3 for rigging supervision.'}
     ]
   };
 
@@ -1994,6 +2014,10 @@ charges:[
       charges:[
         {desc:'Warehouse staging area — 18 days',qty:18,rate:240,amt:4320,cost:'012900.1010 · Warehouse Services'},
         {desc:'Forklift operator — 3 half-days',qty:3,rate:360,amt:1080,cost:'012900.1010 · Warehouse Services'}
+      ]},
+    {id:'BILL-9035',order:'ORD-3093',product:'Hydraulic pile driver x6 (Jun)',amt:207000,cost:'3100-6300-0000-0001 · Solar pile',status:'Pending',date:'Jul 1',day:3,notes:0,
+      charges:[
+        {desc:'Monthly rental — 20T pile driver x6 units',qty:6,rate:34500,amt:207000,cost:'3100-6300-0000-0001 · Solar pile'}
       ]},
     {id:'BILL-9008',order:'ORD-3029',product:'Telehandler — 10K',amt:6180,cost:'05 · Metals',status:'Approved',date:'May 6',audit:'J. Torres · approved May 6'},
     {id:'BILL-9001',order:'ORD-2998',product:'SUV AWD',amt:3900,cost:'01 · General',status:'Finalized',date:'Apr 30',audit:'Auto-finalized Apr 30'},
@@ -2479,10 +2503,51 @@ charges:[
       stageOf:function(r){var m={Draft:0,Requested:1,Scheduled:2,Active:3,Complete:3,'At-risk':1};return m[r.state]!=null?m[r.state]:1;}
     }
   };
+  var EQ_LINE_DOCS={
+    'e1':['Generator maintenance log (PDF)','Load test certificate (PDF)','Fuel & hour log (PDF)'],
+    'e2':['Light tower inspection checklist (PDF)','Operating manual (PDF)'],
+    'e3':['Delivery route map (PDF)','Access road load rating (PDF)','Operating manual (PDF)','Delivery receipt (PDF)','Fuel & hour log (PDF)'],
+    'e4':['Dozer operating manual (PDF)','Grade sheet (PDF)'],
+    'e5':['Motor grader inspection log (PDF)','Operating manual (PDF)'],
+    'e6':['Compaction test reports (PDF)','Roller inspection log (PDF)'],
+    'e7':['Pile driving log (PDF)','Vibration monitoring report (PDF)','Operating manual (PDF)','Delivery receipt (PDF)'],
+    'e8':['Pile driving log (PDF)','Operating manual (PDF)'],
+    'e9':['Equipment inspection checklist (PDF)','Operating manual (PDF)','Delivery receipt (PDF)'],
+    'e10':['Equipment specification (PDF)','Delivery checklist (PDF)'],
+    'e11':['Boom lift inspection report (PDF)','Operator training certificate (PDF)'],
+    'e12':['Equipment specification (PDF)','Delivery checklist (PDF)'],
+    'e13':['Scissor lift spec sheet (PDF)','ANSI compliance certificate (PDF)'],
+    'e14':['Crane load chart (PDF)','Rigging plan (PDF)'],
+    'e15':['Crawler crane specification (PDF)','Manufacturer assembly manual (PDF)','Rigging & lift plan (PDF)']
+  };
   var DP_LINE_DOCS={
-    procurement:['Purchase order (PDF)','Product specification (PDF)','Safety data sheet (PDF)'],
-    prefab:['Submittal drawings (PDF)','Shop drawings (PDF)','Fabrication schedule (PDF)'],
-    logistics:['Delivery route map (PDF)','Permit documentation (PDF)','Site access plan (PDF)']
+    'profservices-0':["Owner's engineer contract (PDF)","Monthly progress report (PDF)","IE inspection checklist (PDF)"],
+    'profservices-1':["Geotechnical report (PDF)","Soil testing lab results (PDF)","Site monitoring log (PDF)"],
+    'profservices-2':["Special inspection reports (PDF)","IBC §1705 compliance log (PDF)","RFI response log (PDF)","Structural drawings (PDF)"],
+    'profservices-3':["BESS commissioning scope (PDF)","Vendor proposal (PDF)"],
+    'profservices-4':["SWPPP permit (PDF)","Environmental baseline report (PDF)","Monitoring log (PDF)"],
+    'profservices-5':["VDC—BIM scope of work (PDF)","Rate card request (PDF)"],
+    'profservices-6':["Survey report (PDF)","As-built survey drawings (PDF)","Deliverable acceptance letter (PDF)"],
+    'procurement-0':["Purchase order PO-4401 (PDF)","Nut runner product spec (PDF)","Safety data sheet (PDF)"],
+    'procurement-1':["Purchase order PO-4395 (PDF)","Delivery receipt (PDF)"],
+    'procurement-2':["Purchase order PO-4396 (PDF)","Delivery receipt (PDF)"],
+    'procurement-3':["Purchase order draft PO-4410 (PDF)","Tone wrench spec (PDF)","Safety data sheet (PDF)"],
+    'procurement-4':["Purchase order PO-4397 (PDF)","Delivery receipt (PDF)"],
+    'procurement-5':["SDS Max spec sheet (PDF)","BESS safety plan (PDF)"],
+    'procurement-6':["Purchase order PO-4403 (PDF)","OSHA Table 1 compliance log (PDF)"],
+    'procurement-7':["Wire crimper spec (PDF)","BESS & electrical plan (PDF)"],
+    'prefab-0':["Shop drawings (PDF)","Submittal approval letter (PDF)","Fabrication schedule (PDF)","Receiving inspection checklist (PDF)"],
+    'prefab-1':["Delivery receipt (PDF)","Installation drawings (PDF)","Quality inspection report (PDF)","As-built record (PDF)"],
+    'prefab-2':["Submittal package (PDF)","BESS e-house shop drawings (PDF)","Vendor fabrication proposal (PDF)"],
+    'prefab-3':["Shop drawings (PDF)","Pump assembly spec (PDF)","Fabrication progress photos (PDF)"],
+    'prefab-4':["Cable tray submittal (PDF)","Product data sheet (PDF)"],
+    'logistics-0':["Heavy haul permit (PDF)","Delivery route map (PDF)","Delivery receipt (PDF)","Access road load rating (PDF)"],
+    'logistics-1':["Oversize load permit application (PDF)","Route survey (PDF)"],
+    'logistics-2':["Crane mobilization permit (PDF)","Rigging plan (PDF)","Mobilization checklist (PDF)","Escort vehicle agreement (PDF)"],
+    'logistics-3':["PV module delivery schedule (PDF)","East gate access plan (PDF)"],
+    'logistics-4':["BESS container placement plan (PDF)","Crane lift plan (PDF)"],
+    'logistics-5':["Prefab delivery schedule (PDF)","Laydown B plan (PDF)"],
+    'logistics-6':["Laydown agreement (PDF)","Site plan (PDF)","Yard C inventory log (PDF)"]
   };
   function buildEqTrack(l){
     var stt=eqLineState(l);
@@ -2535,7 +2600,7 @@ charges:[
       if(bill){
         h+='<div style="border-top:1px solid var(--g150);margin-top:8px;padding-top:8px;display:flex;align-items:center;justify-content:space-between">';
         h+='<div style="font-size:11.5px;color:var(--g700)">'+bill.id+' · $'+bill.amt.toLocaleString()+' · <span class="tag '+(bill.status==='Finalized'?'ok':bill.status==='Approved'?'ok':'warn')+'">'+bill.status+'</span></div>';
-        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
         h+='</div>';
       }
       h+='</div>';
@@ -2557,7 +2622,7 @@ charges:[
       h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+l.id+'\')">Send</button>';
       h+='</div></div>';
     }
-    var docs=ord&&ord.recv&&ord.recv.docs?ord.recv.docs:['Equipment specification (PDF)','Delivery receipt (PDF)'];
+    var docs=(EQ_LINE_DOCS&&EQ_LINE_DOCS[l.id])?EQ_LINE_DOCS[l.id]:(ord&&ord.recv&&ord.recv.docs?ord.recv.docs:['Equipment specification (PDF)','Delivery receipt (PDF)']);
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
@@ -2567,7 +2632,7 @@ charges:[
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
     return h;
@@ -2575,13 +2640,14 @@ charges:[
   function buildDPTrack(pk,r,rowIdx){
     var chain=DP_CHAIN[pk]; if(!chain)return '';
     var chainStage=chain.stageOf(r);
-    var ord=r.src?ORDERS.filter(function(o){return o.id===r.src;})[0]:null;
+    var _ordId=r.linkOrd||(r.src&&r.src.indexOf('ORD-')===0?r.src:null);
+    var ord=_ordId?ORDERS.filter(function(o){return o.id===_ordId;})[0]:null;
     var steps=chain.labels.map(function(lbl,i){
       var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
       var ic=i<chainStage?'<path d="M20 6L9 17l-5-5"/>':chain.icons[i];
       var clickAttr='';
       if(i===chain.labels.length-1) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();go(\'billing\')" title="Go to billing"';
-      else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')" title="View '+ord.id+'"';
+      else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
       return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
@@ -2620,7 +2686,7 @@ charges:[
       h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')">Send</button>';
       h+='</div></div>';
     }
-    var docs=DP_LINE_DOCS[pk]||['Documentation (PDF)'];
+    var docs=(DP_LINE_DOCS&&DP_LINE_DOCS[pk+'-'+rowIdx])?DP_LINE_DOCS[pk+'-'+rowIdx]:['Documentation (PDF)'];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
@@ -2631,6 +2697,8 @@ charges:[
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ordSetView(\'orders\');go(\'orders\')">View order →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">View billing →</button>';
+    if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoOrder(\''+ord.id+'\')">' +ord.id+' →</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'billing\')">Billing →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
     return h;
@@ -3895,6 +3963,15 @@ charges:[
     toast('Feedback sent to 02S — thank you');
   }
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
+  function gotoOrder(id){
+    var inp=document.getElementById('ordSearch'); if(inp)inp.value=id;
+    ordSetView('orders'); go('orders');
+  }
+  function gotoBill(id){
+    var inp=document.getElementById('billSearch'); if(inp)inp.value=id;
+    go('billing');
+    setTimeout(function(){ renderBills(); },80);
+  }
 
   function openBillDiscuss(id){
     openModal('Billing discussion — '+id,
