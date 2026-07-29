@@ -3271,7 +3271,7 @@ charges:[
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
-    if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
+    if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
     if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
@@ -4758,6 +4758,31 @@ charges:[
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
     b+='<button class="btn btn-ghost" onclick="closeModal();gotoBill(\''+id+'\')">Go to Billing →</button></div>';
     openModal('Bill preview', b);
+  }
+  function openQuotePreviewModal(ref){
+    var q=PORTAL_QUOTES.filter(function(x){return x.ref===ref;})[0]; if(!q)return;
+    var isDraft=q.status==='Draft';
+    var b='<div class="fq-req"><div class="fq-req-t">'+q.ref+'</div>';
+    b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+q.project+' \u00b7 submitted '+q.submitted+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+(isDraft?'warn':'ok')+'">'+q.status+'</span></span></div>';
+    if(q.note)b+='<div class="fq-crow" style="align-items:flex-start"><span>Scope</span><span style="color:var(--g700);max-width:260px">'+q.note+'</span></div>';
+    if(isDraft&&q.pendingN)b+='<div class="fq-crow"><span>Pricing</span><span style="color:var(--amber)">'+q.pendingN+' item'+(q.pendingN===1?'':'s')+' pending 02S confirmation</span></div>';
+    b+='</div>';
+    if(q.lineItems&&q.lineItems.length){
+      b+='<div style="margin-top:10px;border-top:1px solid var(--g100);padding-top:8px">';
+      b+='<div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Line items</div>';
+      q.lineItems.forEach(function(li){
+        b+='<div class="fq-crow">';
+        b+='<span style="font-size:11.5px"><span style="font-weight:500">'+li.name+'</span><div style="font-size:10.5px;color:var(--g500)">'+li.pillar+' \u00b7 '+li.qty+'</div></span>';
+        b+='<span style="font-weight:600;color:'+(li.amount?'var(--charcoal)':'var(--g400)')+'">'+( li.amount||'Pending 02S')+'</span>';
+        b+='</div>';
+      });
+      if(q.totalPriced)b+='<div class="fq-crow" style="border-top:1px solid var(--g200);margin-top:6px;padding-top:6px"><span style="font-weight:600">Total</span><span style="font-weight:700;font-size:13px">'+q.totalPriced+'</span></div>';
+    }
+    b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-ghost" onclick="closeModal();gotoQuote(\'' +ref+ '\')">View in Quotes \u2192</button></div>';
+    openModal('Quote preview', b);
   }
   function gotoOrder(id){
     ordView='orders'; go('orders'); _ordersShowAll=true; renderOrders();
