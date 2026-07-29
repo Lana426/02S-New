@@ -4781,7 +4781,7 @@ charges:[
       if(q.totalPriced)b+='<div class="fq-crow" style="border-top:1px solid var(--g200);margin-top:6px;padding-top:6px"><span style="font-weight:600">Total</span><span style="font-weight:700;font-size:13px">'+q.totalPriced+'</span></div>';
     }
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
-    b+='<button class="btn btn-ghost" onclick="closeModal();gotoQuote(\'' +ref+ '\')">View in Quotes \u2192</button></div>';
+    b+='<button class="btn btn-ghost" onclick="closeModal();setTimeout(function(){gotoQuote(\'' +ref+ '\');},30)">View in Quotes \u2192</button></div>';
     openModal('Quote preview', b);
   }
   function gotoOrder(id){
@@ -4806,14 +4806,16 @@ charges:[
   }
 
   function gotoQuote(ref){
-    ordSetView('quotes'); go('orders');
+    ordView='quotes'; go('orders');
     setTimeout(function(){
-      renderPortalQuotes();
+      ordSetView('quotes');
       var t=document.getElementById('qtrk-'+ref);
       if(t&&t.style.display==='none') togglePortalQuote(ref);
-      var row=document.getElementById('qrow-'+ref);
-      if(row) row.scrollIntoView({behavior:'smooth',block:'center'});
-    },180);
+      var row=document.getElementById('qrow-'+ref); if(!row)return;
+      row.style.outline='2px solid var(--blue,#3b82f6)'; row.style.borderRadius='4px';
+      setTimeout(function(){row.style.outline='';row.style.borderRadius='';},1400);
+      row.scrollIntoView({behavior:'smooth',block:'center'});
+    },60);
   }
   function openBillDiscuss(id){
     openModal('Billing discussion — '+id,
