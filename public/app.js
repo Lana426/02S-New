@@ -1799,7 +1799,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
     window.scrollTo(0,0);
   }
 
@@ -1964,65 +1964,430 @@ function renderProfServicesDP(){
   ];
   var EXTRA_LOOKAHEAD=[];
   var ORDER_TASKS={
+    // ── EQUIPMENT ──────────────────────────────────────────────────────────
+    'ORD-3051':{node:'crew-vehicle',tasks:[
+      {id:'c1',side:'02s',label:'Maintenance schedule confirmed',done:true,date:'May 20'},
+      {id:'c2',side:'02s',label:'Insurance docs on file',done:true,date:'May 20'},
+      {id:'c3',side:'02s',label:'Monthly meter reading requested · Aug',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'c4',side:'02s',label:'Off-rent coordination when phase ends',done:false,due:'Oct 30'},
+      {id:'g1',side:'gc',label:'Fuel log maintained (weekly)',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'Driver assignment current',done:true,date:'Jul 1'},
+      {id:'g3',side:'gc',label:'Monthly usage report submitted · Aug',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'g4',side:'gc',label:'Return authorization when civil phase ends',done:false,due:'Oct 28'}
+    ]},
     'ORD-3054':{node:'crane-tower',tasks:[
       {id:'c1',side:'02s',label:'Oversize permit issued',done:true,date:'Jul 25'},
       {id:'c2',side:'02s',label:'Erection crew scheduled · Aug 4',done:true,date:'Jul 28'},
       {id:'c3',side:'02s',label:'Insurance certificate to GC',done:true,date:'Jul 28'},
-      {id:'c4',side:'02s',label:'Post-erection inspection report',done:false,due:'Aug 6'},
+      {id:'c4',side:'02s',label:'Post-erection inspection report',done:false,due:'Aug 6',dueIso:'2026-08-06'},
       {id:'g1',side:'gc',label:'Lift zone designated in site plan',done:true,date:'Jul 20',blocking:true},
-      {id:'g2',side:'gc',label:'Safety pre-task plan signed',done:false,due:'Aug 3',blocking:true},
-      {id:'g3',side:'gc',label:'Operator badge-in confirmed',done:false,due:'Aug 4'},
-      {id:'g4',side:'gc',label:'Crane operator orientation acknowledged',done:false,due:'Aug 4'}
+      {id:'g2',side:'gc',label:'Safety pre-task plan signed',done:false,due:'Aug 3',dueIso:'2026-08-03',blocking:true},
+      {id:'g3',side:'gc',label:'Operator badge-in confirmed',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g4',side:'gc',label:'Crane operator orientation acknowledged',done:false,due:'Aug 4',dueIso:'2026-08-04'}
+    ]},
+    'ORD-3042':{node:'excavator',tasks:[
+      {id:'c1',side:'02s',label:'Final inspection report filed',done:true,date:'Jun 6'},
+      {id:'c2',side:'02s',label:'Final billing issued',done:true,date:'Jun 10'},
+      {id:'c3',side:'02s',label:'Lien waiver submitted',done:true,date:'Jun 15'},
+      {id:'c4',side:'02s',label:'Account reconciliation closed',done:true,date:'Jun 20'},
+      {id:'g1',side:'gc',label:'Delivery receipt archived',done:true,date:'May 20'},
+      {id:'g2',side:'gc',label:'Return receipt signed',done:true,date:'Jun 6'},
+      {id:'g3',side:'gc',label:'Site cleared post-return',done:true,date:'Jun 7'},
+      {id:'g4',side:'gc',label:'Final cost allocated to cost code',done:true,date:'Jun 20'}
+    ]},
+    'ORD-3038':{node:'crane-hydraulic',tasks:[
+      {id:'c1',side:'02s',label:'Rigging plan prepared',done:true,date:'Jul 28'},
+      {id:'c2',side:'02s',label:'Operator assignment confirmed',done:true,date:'Jul 28'},
+      {id:'c3',side:'02s',label:'Pre-delivery inspection scheduled',done:true,date:'Jul 30'},
+      {id:'c4',side:'02s',label:'Mobilization notification sent',done:false,due:'Aug 3',dueIso:'2026-08-03',blocking:true},
+      {id:'g1',side:'gc',label:'Rigging zone designated in site plan',done:true,date:'Jul 26',blocking:true},
+      {id:'g2',side:'gc',label:'Operator + rigging crew confirmed on site',done:false,due:'Aug 3',dueIso:'2026-08-03',blocking:true},
+      {id:'g3',side:'gc',label:'Site safety pre-task plan for Aug 4',done:false,due:'Aug 3',dueIso:'2026-08-03'},
+      {id:'g4',side:'gc',label:'Boom erection zone clear + barricaded',done:false,due:'Aug 3',dueIso:'2026-08-03'}
+    ]},
+    'ORD-3031':{node:'scissor-lift',tasks:[
+      {id:'c1',side:'02s',label:'Idle alert issued to GC',done:true,date:'Jul 20'},
+      {id:'c2',side:'02s',label:'Off-rent window offered (4-day notice)',done:true,date:'Jul 22'},
+      {id:'c3',side:'02s',label:'Pickup scheduled once authorized',done:false,due:'Aug 2',dueIso:'2026-08-02',blocking:true},
+      {id:'c4',side:'02s',label:'Final billing on return',done:false,due:'Aug 5',dueIso:'2026-08-05'},
+      {id:'g1',side:'gc',label:'MEP supervisor sign-off on idle status',done:true,date:'Jul 24'},
+      {id:'g2',side:'gc',label:'Confirm replacement not needed',done:true,date:'Jul 24'},
+      {id:'g3',side:'gc',label:'Authorize off-rent · 2 idle units',done:false,due:'Aug 1',dueIso:'2026-08-01',blocking:true},
+      {id:'g4',side:'gc',label:'Clear staging area for pickup',done:false,due:'Aug 2',dueIso:'2026-08-02'}
+    ]},
+    'ORD-3029':{node:'telehandler',tasks:[
+      {id:'c1',side:'02s',label:'Operator certification on file',done:true,date:'May 5'},
+      {id:'c2',side:'02s',label:'Service interval check (300h)',done:true,date:'Jul 15'},
+      {id:'c3',side:'02s',label:'Utilization tracking · Jul report',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Off-rent coordination when metals phase ends',done:false,due:'Aug 29'},
+      {id:'g1',side:'gc',label:'Operator assignment current',done:true,date:'May 5'},
+      {id:'g2',side:'gc',label:'Daily pre-start inspection maintained',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Usage log submitted weekly',done:true,date:'Jul 27'},
+      {id:'g4',side:'gc',label:'Off-rent notice to 02S when phase done',done:false,due:'Aug 26'}
+    ]},
+    'ORD-3093':{node:'pile-driver',tasks:[
+      {id:'c1',side:'02s',label:'Sector 1 schedule confirmed',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'Daily production tracking active',done:true,date:'Jun 15'},
+      {id:'c3',side:'02s',label:'Week 8 utilization report · Jul 28',done:true,date:'Jul 28'},
+      {id:'c4',side:'02s',label:'Demob coordination · Sector 1 close',done:false,due:'Aug 30'},
+      {id:'g1',side:'gc',label:'GPS staking S1 complete',done:true,date:'Jun 1'},
+      {id:'g2',side:'gc',label:'Vibration monitoring active',done:true,date:'Jun 2'},
+      {id:'g3',side:'gc',label:'Weekly pile log reviewed + signed · Aug 4 wk',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'g4',side:'gc',label:'Sector 1 → Sector 3 handoff plan confirmed',done:false,due:'Aug 15'}
+    ]},
+    'ORD-3110':{node:'generator',tasks:[
+      {id:'c1',side:'02s',label:'Monthly service visits scheduled',done:true,date:'Mar 1'},
+      {id:'c2',side:'02s',label:'Fuel contract confirmed · on-call delivery',done:true,date:'Mar 5'},
+      {id:'c3',side:'02s',label:'Jul meter reading compiled',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Aug service visit scheduled · Aug 15',done:false,due:'Aug 15'},
+      {id:'g1',side:'gc',label:'Power distribution layout approved',done:true,date:'Mar 1'},
+      {id:'g2',side:'gc',label:'Weekly safety inspections current',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Monthly meter readings submitted · Aug',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'g4',side:'gc',label:'Fuel log maintained (weekly)',done:false,due:'Aug 4',dueIso:'2026-08-04'}
+    ]},
+    'ORD-3111':{node:'light-towers',tasks:[
+      {id:'c1',side:'02s',label:'Monthly operational check scheduled',done:true,date:'Jul 1'},
+      {id:'c2',side:'02s',label:'Fuel replenishment on-call confirmed',done:true,date:'Mar 1'},
+      {id:'c3',side:'02s',label:'Jul tower count + status report',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Aug inspection · all 26 units',done:false,due:'Aug 8'},
+      {id:'g1',side:'gc',label:'Tower position map current',done:true,date:'Jul 15'},
+      {id:'g2',side:'gc',label:'Weekly operational inspection logged',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Report any outage within 24h',done:true,date:'Jul 27'},
+      {id:'g4',side:'gc',label:'Aug position review · expansion to S2 area',done:false,due:'Aug 5',dueIso:'2026-08-05'}
+    ]},
+    'ORD-3112':{node:'dozer',tasks:[
+      {id:'c1',side:'02s',label:'Grading KPI tracking · Jul update',done:true,date:'Jul 31'},
+      {id:'c2',side:'02s',label:'Operator rotation plan confirmed',done:true,date:'Jun 1'},
+      {id:'c3',side:'02s',label:'Off-rent notice issued (2 wks)',done:false,due:'Aug 15'},
+      {id:'c4',side:'02s',label:'Final fuel + service billing',done:false,due:'Sep 5'},
+      {id:'g1',side:'gc',label:'Haul road condition checks weekly',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'Grade completion certification · S2',done:false,due:'Aug 4',dueIso:'2026-08-04',blocking:true},
+      {id:'g3',side:'gc',label:'Final topographic survey requested',done:false,due:'Aug 10'},
+      {id:'g4',side:'gc',label:'Haul road decommission plan submitted',done:false,due:'Aug 20'}
+    ]},
+    'ORD-3113':{node:'motor-grader',tasks:[
+      {id:'c1',side:'02s',label:'Final inspection report filed',done:true,date:'Aug 5'},
+      {id:'c2',side:'02s',label:'Off-rent confirmation issued',done:true,date:'Aug 5'},
+      {id:'c3',side:'02s',label:'Final billing submitted',done:true,date:'Aug 8'},
+      {id:'c4',side:'02s',label:'Account reconciliation complete',done:true,date:'Aug 10'},
+      {id:'g1',side:'gc',label:'Return authorization signed',done:true,date:'Aug 5'},
+      {id:'g2',side:'gc',label:'Return receipt archived',done:true,date:'Aug 5'},
+      {id:'g3',side:'gc',label:'Site cleared post-return',done:true,date:'Aug 5'},
+      {id:'g4',side:'gc',label:'Final cost allocated to cost code',done:true,date:'Aug 10'}
+    ]},
+    'ORD-3114':{node:'compaction-roller',tasks:[
+      {id:'c1',side:'02s',label:'Compaction test schedule confirmed',done:true,date:'Apr 1'},
+      {id:'c2',side:'02s',label:'Operator assignments current',done:true,date:'Jul 1'},
+      {id:'c3',side:'02s',label:'Jul utilization report',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Off-rent coordination when sector done',done:false,due:'Oct 1'},
+      {id:'g1',side:'gc',label:'Compaction test reports signed weekly',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'QC inspection report · Jul',done:true,date:'Jul 31'},
+      {id:'g3',side:'gc',label:'Test frequency per spec confirmed',done:true,date:'Apr 5'},
+      {id:'g4',side:'gc',label:'Sector 2 compaction handoff plan',done:false,due:'Aug 15'}
     ]},
     'ORD-3115':{node:'pile-driver',tasks:[
       {id:'c1',side:'02s',label:'Ground bearing capacity confirmed',done:true,date:'Jul 29'},
       {id:'c2',side:'02s',label:'Operator qualified + certified',done:true,date:'Jul 28'},
       {id:'c3',side:'02s',label:'On-rent confirmed · Aug 1',done:true,date:'Aug 1'},
-      {id:'c4',side:'02s',label:'Weekly utilization report · Aug 4 wk',done:false,due:'Aug 8'},
+      {id:'c4',side:'02s',label:'Weekly utilization report · Aug 4 wk',done:false,due:'Aug 8',dueIso:'2026-08-08'},
       {id:'g1',side:'gc',label:'GPS staking complete',done:true,date:'Jul 29'},
       {id:'g2',side:'gc',label:'Vibration monitoring in place',done:true,date:'Jul 30'},
-      {id:'g3',side:'gc',label:'Phase 1 pile log submitted',done:false,due:'Aug 8'},
-      {id:'g4',side:'gc',label:'Subgrade acceptance — S3 sector',done:false,due:'Aug 15'}
+      {id:'g3',side:'gc',label:'Phase 1 pile log submitted',done:false,due:'Aug 8',dueIso:'2026-08-08'},
+      {id:'g4',side:'gc',label:'Subgrade acceptance — S3 sector',done:false,due:'Aug 15',dueIso:'2026-08-15'}
     ]},
-    'ORD-3107':{node:'prefab-ehouse',tasks:[
-      {id:'c1',side:'02s',label:'Shop drawings prepared',done:false,due:'Aug 12'},
-      {id:'c2',side:'02s',label:'Submittal package issued to GC',done:false,due:'Aug 14',blocking:true},
-      {id:'c3',side:'02s',label:'Factory witness test scheduled',done:false,due:'Sep 15'},
-      {id:'c4',side:'02s',label:'Delivery window confirmed',done:false,due:'Oct 1'},
-      {id:'g1',side:'gc',label:'EOR submittal review (14-day clock)',done:false,blocking:true,blockedBy:'c2',note:'Starts when 02S issues submittal'},
-      {id:'g2',side:'gc',label:'Foundation ready confirmation',done:false,due:'Oct 15'},
-      {id:'g3',side:'gc',label:'Interconnect sequence w/ electrical sub',done:false,due:'Oct 20'},
-      {id:'g4',side:'gc',label:'Crane access window reserved',done:false,due:'Oct 28'}
-    ]},
-    'ORD-3096':{node:'profservices-geo',tasks:[
-      {id:'c1',side:'02s',label:'Terracon 3 FTE assigned',done:true,date:'Jun 1'},
-      {id:'c2',side:'02s',label:'Monitoring schedule issued',done:true,date:'Jun 5'},
-      {id:'c3',side:'02s',label:'Report distribution confirmed',done:true,date:'Jun 5'},
-      {id:'c4',side:'02s',label:'Final reporting + demob plan',done:false,due:'Aug 18'},
-      {id:'g1',side:'gc',label:'Site access granted for instrumentation',done:true,date:'Jun 3'},
-      {id:'g2',side:'gc',label:'Week 12 report reviewed + signed',done:false,due:'Jul 22',blocking:true,overdue:true},
-      {id:'g3',side:'gc',label:'Phase closeout authorization',done:false,due:'Aug 18',blocking:true},
-      {id:'g4',side:'gc',label:'Regulatory submission',done:false,due:'Aug 25'}
+    // ── LOGISTICS ─────────────────────────────────────────────────────────
+    'ORD-3070':{node:'logistics-heavy-haul',tasks:[
+      {id:'c1',side:'02s',label:'Route survey completed',done:true,date:'May 18'},
+      {id:'c2',side:'02s',label:'Oversize permit confirmed',done:true,date:'May 19'},
+      {id:'c3',side:'02s',label:'Carrier dispatched',done:true,date:'May 20'},
+      {id:'c4',side:'02s',label:'Delivery report filed',done:true,date:'May 20'},
+      {id:'g1',side:'gc',label:'Gate clearance confirmed',done:true,date:'May 19'},
+      {id:'g2',side:'gc',label:'Laydown area cleared',done:true,date:'May 19'},
+      {id:'g3',side:'gc',label:'Delivery receipt signed',done:true,date:'May 20'},
+      {id:'g4',side:'gc',label:'Dispatch confirmation archived',done:true,date:'May 20'}
     ]},
     'ORD-3071':{node:'logistics-oversize',tasks:[
       {id:'c1',side:'02s',label:'Route survey completed',done:true,date:'Jul 20'},
       {id:'c2',side:'02s',label:'Oversize permits issued',done:true,date:'Jul 25'},
       {id:'c3',side:'02s',label:'Escort vehicle arranged',done:true,date:'Jul 28'},
-      {id:'c4',side:'02s',label:'5 AM move notification to site',done:false,due:'Aug 2'},
-      {id:'g1',side:'gc',label:'North gate clearance confirmed',done:false,due:'Aug 2',blocking:true},
+      {id:'c4',side:'02s',label:'5 AM move notification to site',done:false,due:'Aug 2',dueIso:'2026-08-02'},
+      {id:'g1',side:'gc',label:'North gate clearance confirmed',done:false,due:'Aug 2',dueIso:'2026-08-02',blocking:true},
       {id:'g2',side:'gc',label:'Traffic control plan submitted',done:true,date:'Jul 26'},
-      {id:'g3',side:'gc',label:'Laydown A ready for crane delivery',done:false,due:'Aug 3',blocking:true},
-      {id:'g4',side:'gc',label:'Notify adjacent subcontractors',done:false,due:'Aug 2'}
+      {id:'g3',side:'gc',label:'Laydown A ready for crane delivery',done:false,due:'Aug 3',dueIso:'2026-08-03',blocking:true},
+      {id:'g4',side:'gc',label:'Notify adjacent subcontractors',done:false,due:'Aug 2',dueIso:'2026-08-02'}
+    ]},
+    'ORD-3072':{node:'logistics-staging',tasks:[
+      {id:'c1',side:'02s',label:'Laydown plan confirmed with GC',done:true,date:'Jun 10'},
+      {id:'c2',side:'02s',label:'Material tracking system active',done:true,date:'Jun 15'},
+      {id:'c3',side:'02s',label:'Jul drayage summary report',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Aug schedule updated · S2 expansion',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g1',side:'gc',label:'Laydown A FIFO protocol confirmed',done:true,date:'Jun 10'},
+      {id:'g2',side:'gc',label:'Gate log current (weekly)',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Incoming material log submitted · Aug 4 wk',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'g4',side:'gc',label:'S2 laydown zone designated',done:false,due:'Aug 8'}
+    ]},
+    'ORD-3116':{node:'logistics-oversize',tasks:[
+      {id:'c1',side:'02s',label:'Route survey initiated',done:false,due:'Sep 1'},
+      {id:'c2',side:'02s',label:'Oversize permit application submitted',done:false,due:'Sep 15',blocking:true},
+      {id:'c3',side:'02s',label:'Carrier selected + booked',done:false,due:'Oct 1'},
+      {id:'c4',side:'02s',label:'Delivery notification to GC (72h prior)',done:false,due:'Oct 12'},
+      {id:'g1',side:'gc',label:'Oct delivery window confirmed',done:false,due:'Sep 1'},
+      {id:'g2',side:'gc',label:'Haul access road load-rated',done:false,due:'Sep 15'},
+      {id:'g3',side:'gc',label:'Site contact + escort designated',done:false,due:'Oct 12'},
+      {id:'g4',side:'gc',label:'Laydown area for switchgear reserved',done:false,due:'Oct 10'}
+    ]},
+    'ORD-3117':{node:'logistics-recurring',tasks:[
+      {id:'c1',side:'02s',label:'Gate slot schedule prepared',done:false,due:'Aug 15',blocking:true},
+      {id:'c2',side:'02s',label:'Delivery sequencing plan issued',done:false,due:'Aug 20'},
+      {id:'c3',side:'02s',label:'Unload crew plan confirmed',done:false,due:'Aug 25'},
+      {id:'c4',side:'02s',label:'First delivery window confirmed · Sep 1',done:false,due:'Aug 25'},
+      {id:'g1',side:'gc',label:'East gate slots reserved (daily Sep–Nov)',done:false,due:'Aug 20',blocking:true,blockedBy:'c1'},
+      {id:'g2',side:'gc',label:'Module storage area designated',done:false,due:'Aug 20'},
+      {id:'g3',side:'gc',label:'Receiving team schedule confirmed',done:false,due:'Aug 25'},
+      {id:'g4',side:'gc',label:'FIFO protocol established for modules',done:false,due:'Aug 28'}
+    ]},
+    'ORD-3118':{node:'logistics-placement',tasks:[
+      {id:'c1',side:'02s',label:'Crane capacity confirmed for BESS weight',done:false,due:'Oct 15'},
+      {id:'c2',side:'02s',label:'Haul route identified + permitted',done:false,due:'Oct 20',blocking:true},
+      {id:'c3',side:'02s',label:'Carrier + crane operator booked',done:false,due:'Nov 1'},
+      {id:'c4',side:'02s',label:'Delivery window confirmed · Dec 1',done:false,due:'Nov 15'},
+      {id:'g1',side:'gc',label:'Pad 3 ready date confirmed',done:false,due:'Nov 1'},
+      {id:'g2',side:'gc',label:'Crane access path cleared',done:false,due:'Nov 25'},
+      {id:'g3',side:'gc',label:'Electrical sub coordinated for placement',done:false,due:'Nov 20'},
+      {id:'g4',side:'gc',label:'BESS commissioning team notified',done:false,due:'Nov 25'}
+    ]},
+    'ORD-3119':{node:'logistics-delivery',tasks:[
+      {id:'c1',side:'02s',label:'Truck size confirmed (flatbed)',done:true,date:'Jul 25'},
+      {id:'c2',side:'02s',label:'Laydown B availability confirmed',done:false,due:'Aug 8',dueIso:'2026-08-08',blocking:true},
+      {id:'c3',side:'02s',label:'Carrier dispatched · Aug 15 delivery',done:false,due:'Aug 10',dueIso:'2026-08-10'},
+      {id:'c4',side:'02s',label:'Delivery notification to GC (48h prior)',done:false,due:'Aug 13',dueIso:'2026-08-13'},
+      {id:'g1',side:'gc',label:'Laydown B cleared + surveyed',done:false,due:'Aug 10',dueIso:'2026-08-10',blocking:true,blockedBy:'c2'},
+      {id:'g2',side:'gc',label:'Unload crew scheduled · Aug 15',done:false,due:'Aug 13',dueIso:'2026-08-13'},
+      {id:'g3',side:'gc',label:'Crane or forklift reserved for unload',done:false,due:'Aug 14',dueIso:'2026-08-14'},
+      {id:'g4',side:'gc',label:'Receiving inspection plan confirmed',done:false,due:'Aug 14',dueIso:'2026-08-14'}
+    ]},
+    // ── PROCUREMENT ───────────────────────────────────────────────────────
+    'ORD-3020':{node:'procurement-rigging',tasks:[
+      {id:'c1',side:'02s',label:'Hardware spec confirmed with GC',done:true,date:'May 13'},
+      {id:'c2',side:'02s',label:'Vendor selected',done:true,date:'May 15'},
+      {id:'c3',side:'02s',label:'PO issued',done:true,date:'May 18'},
+      {id:'c4',side:'02s',label:'Delivery confirmed',done:true,date:'May 25'},
+      {id:'g1',side:'gc',label:'Approved rigging plan on file',done:true,date:'May 13'},
+      {id:'g2',side:'gc',label:'Rigging supervisor designated',done:true,date:'May 13'},
+      {id:'g3',side:'gc',label:'Receiving inspection complete',done:true,date:'May 25'},
+      {id:'g4',side:'gc',label:'Storage location assigned',done:true,date:'May 25'}
+    ]},
+    'ORD-3080':{node:'procurement-ppe',tasks:[
+      {id:'c1',side:'02s',label:'PPE spec confirmed',done:true,date:'May 1'},
+      {id:'c2',side:'02s',label:'PO issued',done:true,date:'May 3'},
+      {id:'c3',side:'02s',label:'Delivery confirmed · May 15',done:true,date:'May 15'},
+      {id:'c4',side:'02s',label:'Replacement order standing PO established',done:true,date:'Jun 1'},
+      {id:'g1',side:'gc',label:'Distribution complete to all crews',done:true,date:'May 16'},
+      {id:'g2',side:'gc',label:'Sign-out log established',done:true,date:'May 16'},
+      {id:'g3',side:'gc',label:'Daily sign-out log maintained',done:true,date:'Jul 27'},
+      {id:'g4',side:'gc',label:'Replacement requests submitted as needed',done:true,date:'Jul 15'}
+    ]},
+    'ORD-3081':{node:'procurement-form-hardware',tasks:[
+      {id:'c1',side:'02s',label:'Hardware spec confirmed',done:true,date:'May 10'},
+      {id:'c2',side:'02s',label:'Vendor allocation in process',done:true,date:'May 15'},
+      {id:'c3',side:'02s',label:'PO issued',done:true,date:'May 20'},
+      {id:'c4',side:'02s',label:'Delivery confirmed',done:false,due:'Aug 10'},
+      {id:'g1',side:'gc',label:'Delivery location designated',done:true,date:'May 10'},
+      {id:'g2',side:'gc',label:'Receiving inspection team on standby',done:true,date:'May 25'},
+      {id:'g3',side:'gc',label:'Storage location clear + secured',done:false,due:'Aug 8'},
+      {id:'g4',side:'gc',label:'Receiving inspection complete on delivery',done:false,due:'Aug 12'}
+    ]},
+    'ORD-3082':{node:'procurement-fencing',tasks:[
+      {id:'c1',side:'02s',label:'Fabrication quote received',done:true,date:'Jun 15'},
+      {id:'c2',side:'02s',label:'PO approval pending GC auth',done:false,due:'Aug 6',dueIso:'2026-08-06',blocking:true},
+      {id:'c3',side:'02s',label:'Fabrication lead time 3 wks',done:false,due:'Aug 27'},
+      {id:'c4',side:'02s',label:'Delivery + installation scheduled',done:false,due:'Sep 3'},
+      {id:'g1',side:'gc',label:'Fencing layout plan confirmed',done:true,date:'Jun 10'},
+      {id:'g2',side:'gc',label:'Perimeter survey complete',done:true,date:'Jun 15'},
+      {id:'g3',side:'gc',label:'Authorize PO release',done:false,due:'Aug 5',dueIso:'2026-08-05',blocking:true,blockedBy:'c2'},
+      {id:'g4',side:'gc',label:'Installation crew slot reserved',done:false,due:'Aug 25'}
+    ]},
+    'ORD-3100':{node:'procurement-tools',tasks:[
+      {id:'c1',side:'02s',label:'Spec confirmed (nut runner qty/torque)',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'PO issued',done:true,date:'Jun 5'},
+      {id:'c3',side:'02s',label:'Delivery tracking · Jul 18',done:true,date:'Jul 18'},
+      {id:'c4',side:'02s',label:'Receipt confirmation to GC',done:true,date:'Jul 18'},
+      {id:'g1',side:'gc',label:'Delivery acceptance complete',done:true,date:'Jul 18'},
+      {id:'g2',side:'gc',label:'Tool crib storage location assigned',done:true,date:'Jul 18'},
+      {id:'g3',side:'gc',label:'Usage log started',done:true,date:'Jul 20'},
+      {id:'g4',side:'gc',label:'Operator training on nut runners confirmed',done:true,date:'Jul 22'}
+    ]},
+    'ORD-3101':{node:'procurement-batteries',tasks:[
+      {id:'c1',side:'02s',label:'PO issued',done:true,date:'Jun 15'},
+      {id:'c2',side:'02s',label:'Delivery confirmed · Jun 30',done:true,date:'Jun 30'},
+      {id:'c3',side:'02s',label:'Receipt confirmation issued',done:true,date:'Jul 1'},
+      {id:'c4',side:'02s',label:'Warranty documentation on file',done:true,date:'Jul 1'},
+      {id:'g1',side:'gc',label:'Receiving inspection complete',done:true,date:'Jun 30'},
+      {id:'g2',side:'gc',label:'Distribution to crews complete',done:true,date:'Jul 1'},
+      {id:'g3',side:'gc',label:'Charging station assignment confirmed',done:true,date:'Jul 1'},
+      {id:'g4',side:'gc',label:'Battery health checks monthly',done:true,date:'Jul 25'}
+    ]},
+    'ORD-3102':{node:'procurement-charging',tasks:[
+      {id:'c1',side:'02s',label:'PO issued',done:true,date:'Jun 10'},
+      {id:'c2',side:'02s',label:'Delivery confirmed · Jul 1',done:true,date:'Jul 1'},
+      {id:'c3',side:'02s',label:'Installation support coordinated',done:true,date:'Jul 1'},
+      {id:'c4',side:'02s',label:'Installation confirmation to billing',done:true,date:'Jul 2'},
+      {id:'g1',side:'gc',label:'Installation location designated',done:true,date:'Jun 20'},
+      {id:'g2',side:'gc',label:'Electrical connection verified',done:true,date:'Jul 1'},
+      {id:'g3',side:'gc',label:'All stations operational confirmed',done:true,date:'Jul 1'},
+      {id:'g4',side:'gc',label:'Capacity expansion plan if needed',done:true,date:'Jul 10'}
     ]},
     'ORD-3103':{node:'procurement-tool',tasks:[
       {id:'c1',side:'02s',label:'Spec confirmed (TS60/TS90 mix)',done:true,date:'Jul 26'},
       {id:'c2',side:'02s',label:'Vendor lead time confirmed (4 wk)',done:true,date:'Jul 26'},
-      {id:'c3',side:'02s',label:'PO issued',done:false,due:'Aug 1',blocking:true},
-      {id:'c4',side:'02s',label:'Delivery to site confirmed',done:false,due:'Aug 29'},
+      {id:'c3',side:'02s',label:'PO issued',done:false,due:'Aug 1',dueIso:'2026-08-01',blocking:true},
+      {id:'c4',side:'02s',label:'Delivery to site confirmed',done:false,due:'Aug 29',dueIso:'2026-08-29'},
       {id:'g1',side:'gc',label:'Quantity + torque spec confirmed',done:true,date:'Jul 25'},
-      {id:'g2',side:'gc',label:'Authorize PO release',done:false,due:'Aug 1',blocking:true,blockedBy:'c3'},
-      {id:'g3',side:'gc',label:'Secure storage location assigned',done:false,due:'Aug 15'},
-      {id:'g4',side:'gc',label:'Operator training scheduled',done:false,due:'Aug 29'}
+      {id:'g2',side:'gc',label:'Authorize PO release',done:false,due:'Aug 1',dueIso:'2026-08-01',blocking:true,blockedBy:'c3'},
+      {id:'g3',side:'gc',label:'Secure storage location assigned',done:false,due:'Aug 15',dueIso:'2026-08-15'},
+      {id:'g4',side:'gc',label:'Operator training scheduled',done:false,due:'Aug 29',dueIso:'2026-08-29'}
+    ]},
+    'ORD-3104':{node:'procurement-tools',tasks:[
+      {id:'c1',side:'02s',label:'PO issued',done:true,date:'Jun 15'},
+      {id:'c2',side:'02s',label:'Delivery confirmed · Jul 30',done:true,date:'Jul 30'},
+      {id:'c3',side:'02s',label:'Receipt confirmation issued',done:true,date:'Jul 30'},
+      {id:'c4',side:'02s',label:'Warranty + PPE documentation on file',done:true,date:'Jul 30'},
+      {id:'g1',side:'gc',label:'Receiving inspection complete',done:true,date:'Jul 30'},
+      {id:'g2',side:'gc',label:'Tool crib assignment confirmed',done:true,date:'Jul 30'},
+      {id:'g3',side:'gc',label:'Blade stock confirmed on site',done:true,date:'Jul 31'},
+      {id:'g4',side:'gc',label:'Operator PPE (face shield) confirmed',done:true,date:'Jul 31'}
+    ]},
+    'ORD-3105':{node:'procurement-safety',tasks:[
+      {id:'c1',side:'02s',label:'PO issued · expedited',done:true,date:'Jul 15'},
+      {id:'c2',side:'02s',label:'Delivery tracking · Aug 5',done:false,due:'Aug 5',dueIso:'2026-08-05',blocking:true},
+      {id:'c3',side:'02s',label:'Receipt confirmation to GC',done:false,due:'Aug 5',dueIso:'2026-08-05'},
+      {id:'c4',side:'02s',label:'OSHA compliance docs on file',done:false,due:'Aug 6',dueIso:'2026-08-06'},
+      {id:'g1',side:'gc',label:'OSHA Table 1 silica plan updated',done:true,date:'Jul 15'},
+      {id:'g2',side:'gc',label:'Receiving team on standby · Aug 5',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g3',side:'gc',label:'Storage location designated (dry, secure)',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g4',side:'gc',label:'OSHA operator training scheduled',done:false,due:'Aug 6',dueIso:'2026-08-06'}
+    ]},
+    // ── PREFAB ────────────────────────────────────────────────────────────
+    'ORD-3014':{node:'prefab-headwall',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings prepared',done:true,date:'May 5'},
+      {id:'c2',side:'02s',label:'Submittal package issued',done:true,date:'May 8'},
+      {id:'c3',side:'02s',label:'Fabrication start pending EOR approval',done:false,due:'Aug 15',blocking:true},
+      {id:'c4',side:'02s',label:'Delivery window confirmed',done:false,due:'Sep 1'},
+      {id:'g1',side:'gc',label:'Submittal log entry filed',done:true,date:'May 9'},
+      {id:'g2',side:'gc',label:'EOR submittal review in progress',done:false,due:'Aug 8',blocking:true,blockedBy:'c2',note:'14-day review window from submittal'},
+      {id:'g3',side:'gc',label:'Installation crew identified',done:false,due:'Aug 20'},
+      {id:'g4',side:'gc',label:'Foundation / rough-in ready for delivery',done:false,due:'Sep 1'}
+    ]},
+    'ORD-3060':{node:'prefab-pipe-rack',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings approved',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'Fabrication underway',done:true,date:'Jun 5'},
+      {id:'c3',side:'02s',label:'Delivery window confirmed · Aug 15',done:true,date:'Jun 20'},
+      {id:'c4',side:'02s',label:'Delivery notification (48h prior)',done:false,due:'Aug 13',dueIso:'2026-08-13'},
+      {id:'g1',side:'gc',label:'Submittal approved on file',done:true,date:'Jun 1'},
+      {id:'g2',side:'gc',label:'MEP rough-in complete before delivery',done:false,due:'Aug 12',dueIso:'2026-08-12',blocking:true},
+      {id:'g3',side:'gc',label:'Installation crew scheduled · Aug 15',done:false,due:'Aug 10',dueIso:'2026-08-10'},
+      {id:'g4',side:'gc',label:'Receiving inspection plan confirmed',done:false,due:'Aug 13',dueIso:'2026-08-13'}
+    ]},
+    'ORD-3061':{node:'prefab-pod',tasks:[
+      {id:'c1',side:'02s',label:'Submittal package issued',done:true,date:'May 20'},
+      {id:'c2',side:'02s',label:'EOR review coordination',done:false,due:'Aug 10',blocking:true},
+      {id:'c3',side:'02s',label:'Fabrication start pending approval',done:false,due:'Aug 15'},
+      {id:'c4',side:'02s',label:'Delivery window confirmed',done:false,due:'Sep 10'},
+      {id:'g1',side:'gc',label:'Site location for pod designated',done:true,date:'May 18'},
+      {id:'g2',side:'gc',label:'EOR submittal review',done:false,due:'Aug 10',blocking:true,blockedBy:'c1',note:'Review clock starts on 02S submission'},
+      {id:'g3',side:'gc',label:'Utility connections planned (water/sewer)',done:false,due:'Aug 20'},
+      {id:'g4',side:'gc',label:'Access path to pod location cleared',done:false,due:'Sep 5'}
+      ]},
+    'ORD-3106':{node:'prefab-headwall',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings approved',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'Fabrication complete',done:true,date:'Jul 10'},
+      {id:'c3',side:'02s',label:'Delivery confirmed · Jul 18',done:true,date:'Jul 18'},
+      {id:'c4',side:'02s',label:'Final billing issued',done:true,date:'Jul 22'},
+      {id:'g1',side:'gc',label:'Receiving inspection complete',done:true,date:'Jul 18'},
+      {id:'g2',side:'gc',label:'Installation crew mobilized',done:true,date:'Jul 19'},
+      {id:'g3',side:'gc',label:'Field installation complete',done:true,date:'Jul 24'},
+      {id:'g4',side:'gc',label:'As-built documentation filed',done:false,due:'Aug 1',dueIso:'2026-08-01'}
+    ]},
+    'ORD-3107':{node:'prefab-ehouse',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings prepared',done:false,due:'Aug 12',dueIso:'2026-08-12'},
+      {id:'c2',side:'02s',label:'Submittal package issued to GC',done:false,due:'Aug 14',dueIso:'2026-08-14',blocking:true},
+      {id:'c3',side:'02s',label:'Factory witness test scheduled',done:false,due:'Sep 15'},
+      {id:'c4',side:'02s',label:'Delivery window confirmed',done:false,due:'Oct 1'},
+      {id:'g1',side:'gc',label:'EOR submittal review (14-day clock)',done:false,blocking:true,blockedBy:'c2',note:'Starts when 02S issues submittal'},
+      {id:'g2',side:'gc',label:'Foundation ready confirmation',done:false,due:'Oct 15',dueIso:'2026-10-15'},
+      {id:'g3',side:'gc',label:'Interconnect sequence w/ electrical sub',done:false,due:'Oct 20'},
+      {id:'g4',side:'gc',label:'Crane access window reserved',done:false,due:'Oct 28'}
+    ]},
+    'ORD-3108':{node:'prefab-skid',tasks:[
+      {id:'c1',side:'02s',label:'Shop drawings approved',done:true,date:'Jul 5'},
+      {id:'c2',side:'02s',label:'Fabrication active',done:true,date:'Jul 10'},
+      {id:'c3',side:'02s',label:'Factory witness test scheduled · Aug 20',done:false,due:'Aug 20'},
+      {id:'c4',side:'02s',label:'Delivery confirmed · Sep 1',done:false,due:'Sep 1'},
+      {id:'g1',side:'gc',label:'Submittal on file',done:true,date:'Jul 5'},
+      {id:'g2',side:'gc',label:'Pad / foundation ready by Aug 25',done:false,due:'Aug 25'},
+      {id:'g3',side:'gc',label:'Receiving inspection team identified',done:false,due:'Aug 28'},
+      {id:'g4',side:'gc',label:'Installation contractor confirmed',done:false,due:'Aug 28'}
+    ]},
+    // ── PROF SERVICES ─────────────────────────────────────────────────────
+    'ORD-3009':{node:'profservices-survey',tasks:[
+      {id:'c1',side:'02s',label:'Survey crew assigned',done:true,date:'Apr 18'},
+      {id:'c2',side:'02s',label:'Survey complete · 2-day window',done:true,date:'Apr 19'},
+      {id:'c3',side:'02s',label:'Survey report issued',done:true,date:'Apr 22'},
+      {id:'c4',side:'02s',label:'Final billing closed',done:true,date:'May 1'},
+      {id:'g1',side:'gc',label:'Site access granted for survey',done:true,date:'Apr 18'},
+      {id:'g2',side:'gc',label:'Survey report reviewed',done:true,date:'Apr 24'},
+      {id:'g3',side:'gc',label:'Survey data incorporated into drawings',done:true,date:'May 5'},
+      {id:'g4',side:'gc',label:'Cost allocated to cost code',done:true,date:'May 10'}
+    ]},
+    'ORD-3090':{node:'profservices-inspection',tasks:[
+      {id:'c1',side:'02s',label:'Inspector assigned (3rd party)',done:true,date:'Apr 1'},
+      {id:'c2',side:'02s',label:'Inspection schedule confirmed',done:true,date:'Apr 5'},
+      {id:'c3',side:'02s',label:'Weekly reports filed to date',done:true,date:'Jul 27'},
+      {id:'c4',side:'02s',label:'Phase completion sign-off pending concrete close',done:false,due:'Sep 30'},
+      {id:'g1',side:'gc',label:'Daily work notifications to inspector',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'Weekly inspection reports signed',done:true,date:'Jul 25'},
+      {id:'g3',side:'gc',label:'Compliance docs archived',done:true,date:'Jul 25'},
+      {id:'g4',side:'gc',label:'Phase closeout report to AHJ',done:false,due:'Oct 1'}
+    ]},
+    'ORD-3091':{node:'profservices-engineering',tasks:[
+      {id:'c1',side:'02s',label:'RFI queue monitored (24h SLA)',done:true,date:'Jul 27'},
+      {id:'c2',side:'02s',label:'Jul RFI report compiled',done:true,date:'Jul 31'},
+      {id:'c3',side:'02s',label:'Aug scope confirmation',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'c4',side:'02s',label:'Field guidance documentation current',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g1',side:'gc',label:'RFI log maintained + current',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'RFIs submitted with 48h notice',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Field conditions documented (photos)',done:true,date:'Jul 27'},
+      {id:'g4',side:'gc',label:'Aug priority RFI list submitted',done:false,due:'Aug 1',dueIso:'2026-08-01'}
+    ]},
+    'ORD-3092':{node:'profservices-enviro',tasks:[
+      {id:'c1',side:'02s',label:'Monitoring stations placed',done:true,date:'Jun 5'},
+      {id:'c2',side:'02s',label:'Baseline readings established',done:true,date:'Jun 10'},
+      {id:'c3',side:'02s',label:'Jul monitoring report compiled',done:true,date:'Jul 31'},
+      {id:'c4',side:'02s',label:'Aug monitoring schedule confirmed',done:false,due:'Aug 4',dueIso:'2026-08-04'},
+      {id:'g1',side:'gc',label:'SWPPP compliance current',done:true,date:'Jul 27'},
+      {id:'g2',side:'gc',label:'Site disturbance notifications sent',done:true,date:'Jul 27'},
+      {id:'g3',side:'gc',label:'Weekly coordination meeting held',done:true,date:'Jul 27'},
+      {id:'g4',side:'gc',label:'Stormwater BMP inspection · Aug 1',done:false,due:'Aug 1',dueIso:'2026-08-01'}
+    ]},
+    'ORD-3095':{node:'profservices-owner-rep',tasks:[
+      {id:'c1',side:'02s',label:'Jun monthly report submitted',done:true,date:'Jul 5'},
+      {id:'c2',side:'02s',label:'Jul site visit conducted',done:true,date:'Jul 22'},
+      {id:'c3',side:'02s',label:'Aug scope confirmed (2 FTE)',done:true,date:'Jul 25'},
+      {id:'c4',side:'02s',label:'Jul billing submitted',done:false,due:'Aug 5',dueIso:'2026-08-05'},
+      {id:'g1',side:'gc',label:'Monthly progress report reviewed · Jul',done:false,due:'Aug 1',dueIso:'2026-08-01'},
+      {id:'g2',side:'gc',label:'Field access confirmed for Aug site visit',done:false,due:'Aug 6',dueIso:'2026-08-06'},
+      {id:'g3',side:'gc',label:'RFI copies to DNV current',done:true,date:'Jul 25'},
+      {id:'g4',side:'gc',label:'Cost code review with DNV · Aug',done:false,due:'Aug 12',dueIso:'2026-08-12'}
+    ]},
+    'ORD-3096':{node:'profservices-geo',tasks:[
+      {id:'c1',side:'02s',label:'Terracon 3 FTE assigned',done:true,date:'Jun 1'},
+      {id:'c2',side:'02s',label:'Monitoring schedule issued',done:true,date:'Jun 5'},
+      {id:'c3',side:'02s',label:'Report distribution confirmed',done:true,date:'Jun 5'},
+      {id:'c4',side:'02s',label:'Final reporting + demob plan',done:false,due:'Aug 18',dueIso:'2026-08-18'},
+      {id:'g1',side:'gc',label:'Site access granted for instrumentation',done:true,date:'Jun 3'},
+      {id:'g2',side:'gc',label:'Week 12 report reviewed + signed',done:false,due:'Jul 22',dueIso:'2026-07-22',blocking:true,overdue:true},
+      {id:'g3',side:'gc',label:'Phase closeout authorization',done:false,due:'Aug 18',dueIso:'2026-08-18',blocking:true},
+      {id:'g4',side:'gc',label:'Regulatory submission',done:false,due:'Aug 25',dueIso:'2026-08-25'}
     ]}
   };
   var ORDER_NOTES={
@@ -3027,6 +3392,49 @@ charges:[
   function toggleCCTaskPanel(ordId){
     var el=document.getElementById('cctpanel-'+ordId);
     if(el)el.style.display=el.style.display==='none'||el.style.display===''?'block':'none';
+  }
+
+
+  function renderTasksDueWidget(){
+    var mount=document.getElementById('tasksWidgetMount'); if(!mount)return;
+    var TODAY='2026-07-29'; var WEEK_END='2026-08-04';
+    var rows=[];
+    Object.keys(ORDER_TASKS).forEach(function(oid){
+      var entry=ORDER_TASKS[oid]; if(!entry||!entry.tasks)return;
+      entry.tasks.forEach(function(t){
+        if(t.side==='gc'&&!t.done&&t.dueIso){
+          var label='';
+          if(t.dueIso<TODAY) label='overdue';
+          else if(t.dueIso<=WEEK_END) label='this week';
+          if(label) rows.push({oid:oid,t:t,label:label});
+        }
+      });
+    });
+    rows.sort(function(a,b){ return a.t.dueIso<b.t.dueIso?-1:1; });
+    if(!rows.length){ mount.innerHTML=''; return; }
+    var ICO_TASK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:-2px"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>';
+    var overdueN=rows.filter(function(r){return r.label==='overdue';}).length;
+    var h='<div style="margin-top:12px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:13px 16px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+    h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">'+ICO_TASK+' &nbsp;GC tasks due this week</div>';
+    if(overdueN) h+='<span class="tag warn" style="font-size:10px">'+overdueN+' overdue</span>';
+    h+='</div>';
+    rows.forEach(function(r){
+      var isOverdue=r.label==='overdue';
+      var ord=ORDERS.filter(function(o){return o.id===r.oid;})[0];
+      var ordName=ord?ord.item:'Order';
+      var dueTxt=isOverdue?'Overdue · '+r.t.due:r.t.due||r.t.dueIso;
+      h+='<div onclick="gotoOrder(\''+r.oid+'\')" style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100);cursor:pointer">';
+      h+='<div style="min-width:6px;height:6px;border-radius:50%;background:'+(isOverdue?'var(--red)':'var(--amber, #D97706)')+';margin-top:5px"></div>';
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-size:12px;font-weight:500;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.t.label+'</div>';
+      h+='<div style="font-size:11px;color:var(--g500)">'+r.oid+' · '+ordName+'</div>';
+      h+='</div>';
+      h+='<div style="font-size:11px;color:'+(isOverdue?'var(--red)':'var(--g600)')+';white-space:nowrap;padding-top:2px">'+dueTxt+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    mount.innerHTML=h;
   }
 
   var ordView='orders';
@@ -5736,7 +6144,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
     window.scrollTo(0,0);
   }
 
