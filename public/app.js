@@ -6170,8 +6170,8 @@ charges:[
       });
       h+='</div></div></div>';
     }
-    var gtA=isDpView?'1.8fr 160px 1.2fr 28px':(showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px');
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'':('<span>Source</span>'+(showProjCol?'<span>Project</span>':'')))+' <span>Details</span><span>Status</span><span></span></div>';
+    var gtA=isDpView?'1.6fr 80px 150px 105px 120px 175px':(showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px');
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span><span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'){
@@ -6186,26 +6186,66 @@ charges:[
             expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
             expH+=trackerHTML(_eo,ns);
             expH+=buildDpBillingInline(row.ordId);
+            if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
             expH+='</div>';
           }
         } else {
           expH='<div style="padding:12px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
+          var _sNote={Draft:'Draft — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',
+            'Pending pricing':'Pending 02S quote — price to be confirmed before order is placed.',
+            'Awaiting pricing':'Awaiting 02S pricing confirmation.',Projected:'Projected demand — not yet submitted.',
+            'At-risk':'At-risk — order-by date approaching. Expedite required.'};
+          expH+='<div style="font-size:11.5px;color:var(--g600);background:#fff;border:1px dashed var(--g200);border-radius:6px;padding:8px 11px;margin-bottom:10px">'+(_sNote[row.state]||row.state)+'</div>';
           expH+='<div class="fq-calc">';
-          expH+='<div class="fq-crow"><span>Rate / cost</span><span>'+row.cost+'</span></div>';
-          expH+='<div class="fq-crow"><span>Vendor / firm</span><span>'+(row.firm||'TBD')+'</span></div>';
-          expH+='<div class="fq-crow"><span>Status</span><span><span class="tag '+dpTone+'">'+row.state+'</span></span></div>';
           expH+='<div class="fq-crow"><span>Qty</span><span>'+row.qty+'</span></div>';
           expH+='<div class="fq-crow"><span>Window</span><span>'+row.window+'</span></div>';
+          expH+='<div class="fq-crow"><span>Rate / cost</span><span>'+row.cost+'</span></div>';
+          expH+='<div class="fq-crow"><span>Vendor / firm</span><span>'+(row.firm||'TBD')+'</span></div>';
           expH+='</div>';
-          var _dpPActs=[];
-          if(row.state==='Projected'||row.state==='Draft'){_dpPActs.push('<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');toast(\'Order created for '+row.item+'\')">Create order →</button>');}
-          else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){_dpPActs.push('<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');toast(\'Pricing started for '+row.item+'\')">Set pricing →</button>');}
-          expH+='<div style="display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--g200);margin-top:10px">';
-          expH+=(_dpPActs.length?_dpPActs.join(''):'');
-          expH+='<button class="btn btn-ghost btn-sm" disabled style="opacity:.45;cursor:not-allowed">Add to task list</button>';
-          expH+='</div></div>';
+          if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){
+            expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';
+            expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');ccGo(\'fulfill\')">View in fulfillment queue →</button>';
+            expH+='</div>';
+          }
+          if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
+          expH+='</div>';    }
+        if(isDpView){
+          var _ordR=row.ordId?ORDERS.filter(function(x){return x.id===row.ordId;})[0]:null;
+          var _billsR=CC_DP_BILLS[row.ordId]||[];
+          var _dispR=_billsR.some(function(b){return !!b.dispute||!!b.ccChange;});
+          var _stgLbls=['Requested','Quoted','PO issued','Delivered','On-site','On-rent','Off-rent'];
+          var _actCell='';
+          if(row.ordId&&_ordR){
+            var _sl=_stgLbls[_ordR.stage]||'Stage '+_ordR.stage;
+            _actCell='<div style="font-size:10.5px"><span style="color:var(--g700);font-weight:500">'+row.ordId+'</span>'
+              +'<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
+            if(_dispR){_actCell+='<div style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px">⚠ Bill issue</div>';}
+            _actCell+='</div>';
+          } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){
+            _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGo(\'fulfill\')">\u2192 Fulfillment queue</button>';
+          } else if(row.state==='Projected'||row.state==='Draft'){
+            _actCell='<span style="font-size:10.5px;color:var(--g300)">Not yet submitted</span>';
+          } else if(row.state==='Demobilized'||row.state==='Off-rent'){
+            _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
+          }
+          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')">';
+          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
+          h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
+          h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
+          h+='<div><span class="tag '+dpTone+'">'+row.state+'</span></div>';
+          h+='<div>'+_actCell+'</div>';
+          h+='</div>';
+        } else {
+          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')">';
+          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>';
+          h+=dpSrc;
+          if(showProjCol){h+='<div style="font-size:11.5px">'+row._projLabel+'</div>';}
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div>';
+          h+='<div><span class="tag '+dpTone+'">'+row.state+'</span></div>';
+          h+='<div style="color:var(--g400);font-size:12px">&#9660;</div>';
+          h+='</div>';
         }
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>'+(isDpView?'':dpSrc+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':''))+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div style="color:var(--g400);font-size:12px">&#9660;</div></div>';
         if(expH) h+='<div id="'+expId+'" style="display:none">'+expH+'</div>';
       } else if(!isDpView) {
         var r2=row._raw;
