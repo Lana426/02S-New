@@ -1805,6 +1805,7 @@ function renderProfServicesDP(){
 
   /* ═══════════ VERSION TOGGLE ═══════════ */
   function setVer(v){
+    if(!document.getElementById('ns-toggle-css')){var _s=document.createElement('style');_s.id='ns-toggle-css';_s.textContent="body:not([data-ver='ns']) .ns-only{display:none!important}";document.head.appendChild(_s);}
     var ns=v==='ns'; CURRENT=v; document.body.setAttribute('data-ver',v);
     document.getElementById('btnV1').classList.toggle('on',!ns);
     document.getElementById('btnNS').classList.toggle('on',ns);
@@ -3203,7 +3204,7 @@ charges:[
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoBill(\''+bill.id+'\')">' +bill.id+' →</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
-    if(CURRENT==='ns'&&ord&&ORDER_TASKS[ord.id])h+=renderOrderTasksPanel(ord.id,true);
+    if(ord&&ORDER_TASKS[ord.id])h+='<div class="ns-only">'+renderOrderTasksPanel(ord.id,true)+'</div>';
     return h;
   }
   function buildDPTrack(pk,r,rowIdx){
@@ -3258,7 +3259,7 @@ charges:[
     if(!ord&&r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();gotoQuote(\''+_bqb.ref+'\')">'+ _bqb.ref+' →</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     h+='</div>';
-    if(CURRENT==='ns'&&_ordId&&ORDER_TASKS[_ordId])h+=renderOrderTasksPanel(_ordId,true);
+    if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
     return h;
   }
 
