@@ -6150,22 +6150,29 @@ charges:[
         });
       }
     });
-    var adhocFiltered=showProjCol?cfg.rows:cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
-    adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
-    var dpSrcFil=_dpCcSrcF[p]||'all';
-    var visRows=dpSrcFil==='all'?allReqRows:allReqRows.filter(function(r){return r._type===(dpSrcFil==='dp'?'dp':'adhoc');});
+    if(showProjCol){
+      var adhocFiltered=cfg.rows;
+      adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
+    }
+    var isDpView=!showProjCol;
+    var dpSrcFil=isDpView?'dp':(_dpCcSrcF[p]||'all');
+    var visRows=isDpView?allReqRows:(dpSrcFil==='all'?allReqRows:allReqRows.filter(function(r){return r._type===(dpSrcFil==='dp'?'dp':'adhoc');}));
     var dpShowAll=!!_dpCcLimit[p];
-    var rowsToRender=dpShowAll?visRows:visRows.slice(0,5);
+    var rowsToRender=isDpView?visRows:(dpShowAll?visRows:visRows.slice(0,5));
     var moreN=visRows.length-5;
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" style="margin-left:12px" onclick="dpRelease(\''+p+'\')">Release ready ('+ready+') →</button></div>';
-    h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
-    [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){
-      h+='<button class="ff-b'+(dpSrcFil===o[0]?' on':'')+' btn-sm" onclick="dpSetSrcFilter(\''+p+'\',\''+o[0]+'\')">'+o[1]+'</button>';
-    });
-    h+='</div></div></div>';
-    var gtA=showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+' <span>Details</span><span>Status</span><span>Action</span></div>';
-    if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'requests for '+pLabel+'.</div>'; }
+    if(isDpView){
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
+    } else {
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
+      h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
+      [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){
+        h+='<button class="ff-b'+(dpSrcFil===o[0]?' on':'')+' btn-sm" onclick="dpSetSrcFilter(\''+p+'\',\''+o[0]+'\')">'+o[1]+'</button>';
+      });
+      h+='</div></div></div>';
+    }
+    var gtA=isDpView?'1.8fr 160px 1.2fr 28px':(showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px');
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'':('<span>Source</span>'+(showProjCol?'<span>Project</span>':'')))+' <span>Details</span><span>Status</span><span></span></div>';
+    if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'){
         var dpTone=_DP_TONE[row.state]||'neu';
@@ -6198,19 +6205,31 @@ charges:[
           expH+='<button class="btn btn-ghost btn-sm" disabled style="opacity:.45;cursor:not-allowed">Add to task list</button>';
           expH+='</div></div>';
         }
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div><div>'+dpSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div style="color:var(--g400);font-size:12px">&#9660;</div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')"><div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>'+(isDpView?'':dpSrc+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':''))+'<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div><div><span class="tag '+dpTone+'">'+row.state+'</span></div><div style="color:var(--g400);font-size:12px">&#9660;</div></div>';
         if(expH) h+='<div id="'+expId+'" style="display:none">'+expH+'</div>';
-      } else {
+      } else if(!isDpView) {
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
         var ahExpId='ahx-'+p+'-'+_rowI;
         h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
       }
     });
-    if(!dpShowAll&&moreN>0){
+    if(!isDpView&&!dpShowAll&&moreN>0){
       h+='<div style="padding:10px 16px;font-size:11.5px;color:var(--charcoal);font-weight:500;cursor:pointer;border-top:1px solid var(--g100)" onclick="dpToggleAllReqs(\''+p+'\')">Show all '+visRows.length+' requests →</div>';
     }
     h+='</div>';
+    if(isDpView){
+      var _ahRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
+      if(_ahRows.length){
+        h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">Ad hoc requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_ahRows.length+' request'+((_ahRows.length===1)?'':'s')+'</span></div>';
+        var gtAH='1.4fr 1.2fr 100px 110px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtAH+'"><span>Request</span><span>Details</span><span>Status</span><span>Action</span></div>';
+        _ahRows.forEach(function(r2){
+          h+='<div class="dp-row" style="grid-template-columns:'+gtAH+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
+        });
+        h+='</div>';
+      }
+    }
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+'Portfolio demand roll-up</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
     var gt2='1fr 150px 1fr 120px';
