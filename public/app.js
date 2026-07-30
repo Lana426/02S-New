@@ -5792,25 +5792,25 @@ charges:[
 var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
   var CC_DP_LINEAGE={
     equipment:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$3.1M',note:'ROM at opportunity stage — solar + BESS equipment package',lines:[{label:'Owned fleet mobilization',est:'$840K'},{label:'Re-rent · peak demand window',est:'$1,220K'},{label:'Fuel & consumables',est:'$390K'},{label:'Field handling & logistics',est:'$280K'},{label:'Contingency (12%)',est:'$370K'},{label:'Total estimate',est:'$3.1M',bold:true}]},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:14,note:'Baseline at project award — detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration'}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.8M',note:'ROM for hospital campus earthwork + MEP',lines:[{label:'Owned fleet mobilization',est:'$520K'},{label:'Re-rent · peak demand window',est:'$840K'},{label:'Fuel & consumables',est:'$240K'},{label:'Field handling',est:'$130K'},{label:'Contingency (4%)',est:'$70K'},{label:'Total estimate',est:'$1.8M',bold:true}]},baseline:{id:'DP-EQ-RIV-BL1',date:'Apr 2025',total:'$1.62M',items:11,note:'Baseline at LOI — earthwork + foundation equipment'},delta:{added:1,value:'+$88K',reason:'Material handling scope expansion'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$2.2M',note:'ROM for data center shell + MEP',lines:[{label:'Owned fleet mobilization',est:'$680K'},{label:'Re-rent · peak demand window',est:'$1,040K'},{label:'Fuel & consumables',est:'$290K'},{label:'Field handling',est:'$140K'},{label:'Contingency (2%)',est:'$50K'},{label:'Total estimate',est:'$2.2M',bold:true}]},baseline:{id:'DP-EQ-CIM-BL1',date:'May 2025',total:'$1.98M',items:9,note:'Baseline at NTP — data center shell and core equipment'},delta:{added:2,value:'+$220K',reason:'Generator + UPS scope added post-design'}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$3.1M',note:'ROM at opportunity stage — solar + BESS equipment package',lines:[{label:'Owned fleet mobilization',est:'$840K'},{label:'Re-rent · peak demand window',est:'$1,220K'},{label:'Fuel & consumables',est:'$390K'},{label:'Field handling & logistics',est:'$280K'},{label:'Contingency (12%)',est:'$370K'},{label:'Total estimate',est:'$3.1M',bold:true}]},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:14,note:'Baseline at project award — detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration',links:[{label:'Telehandler 10K (Sector 2)',rowIdx:9},{label:'Boom lift 60 ft',rowIdx:10}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.8M',note:'ROM for hospital campus earthwork + MEP',lines:[{label:'Owned fleet mobilization',est:'$520K'},{label:'Re-rent · peak demand window',est:'$840K'},{label:'Fuel & consumables',est:'$240K'},{label:'Field handling',est:'$130K'},{label:'Contingency (4%)',est:'$70K'},{label:'Total estimate',est:'$1.8M',bold:true}]},baseline:{id:'DP-EQ-RIV-BL1',date:'Apr 2025',total:'$1.62M',items:11,note:'Baseline at LOI — earthwork + foundation equipment'},delta:{added:1,value:'+$88K',reason:'Material handling scope expansion',links:[{label:'Tower crane (self-erect)',rowIdx:0}]}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$2.2M',note:'ROM for data center shell + MEP',lines:[{label:'Owned fleet mobilization',est:'$680K'},{label:'Re-rent · peak demand window',est:'$1,040K'},{label:'Fuel & consumables',est:'$290K'},{label:'Field handling',est:'$140K'},{label:'Contingency (2%)',est:'$50K'},{label:'Total estimate',est:'$2.2M',bold:true}]},baseline:{id:'DP-EQ-CIM-BL1',date:'May 2025',total:'$1.98M',items:9,note:'Baseline at NTP — data center shell and core equipment'},delta:{added:2,value:'+$220K',reason:'Generator + UPS scope added post-design',links:[{label:'Excavator 45K',rowIdx:0},{label:'Excavator 50T',rowIdx:1}]}}},
     logistics:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$480K',note:'ROM logistics envelope',lines:[{label:'Oversize transport · 3 hauls',est:'$180K'},{label:'Crane mobilizations',est:'$220K'},{label:'Permits, escorts & flagging',est:'$48K'},{label:'Contingency (7%)',est:'$32K'},{label:'Total estimate',est:'$480K',bold:true}]},baseline:{id:'DP-LOG-HRC-BL1',date:'Mar 2025',total:'$412K',items:6,note:'Baseline logistics plan at award'},delta:{added:1,value:'+$38K',reason:'Oversize crane move added'}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$480K',note:'ROM logistics envelope',lines:[{label:'Oversize transport · 3 hauls',est:'$180K'},{label:'Crane mobilizations',est:'$220K'},{label:'Permits, escorts & flagging',est:'$48K'},{label:'Contingency (7%)',est:'$32K'},{label:'Total estimate',est:'$480K',bold:true}]},baseline:{id:'DP-LOG-HRC-BL1',date:'Mar 2025',total:'$412K',items:6,note:'Baseline logistics plan at award'},delta:{added:1,value:'+$38K',reason:'Oversize crane move added',links:[{label:'BESS container placements',rowIdx:1}]}},
       riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$290K',note:'ROM logistics envelope',lines:[{label:'Oversize transport · 2 hauls',est:'$110K'},{label:'Crane mobilizations',est:'$140K'},{label:'Permits & escorts',est:'$30K'},{label:'Contingency (3%)',est:'$10K'},{label:'Total estimate',est:'$290K',bold:true}]},baseline:{id:'DP-LOG-RIV-BL1',date:'Apr 2025',total:'$254K',items:5,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$320K',note:'ROM logistics envelope',lines:[{label:'Oversize transport · 2 hauls',est:'$140K'},{label:'Crane mobilizations',est:'$140K'},{label:'Permits & escorts',est:'$28K'},{label:'Contingency (4%)',est:'$12K'},{label:'Total estimate',est:'$320K',bold:true}]},baseline:{id:'DP-LOG-CIM-BL1',date:'May 2025',total:'$285K',items:4,note:'Baseline at NTP'},delta:{added:1,value:'+$44K',reason:'Data hall equipment delivery added'}}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$320K',note:'ROM logistics envelope',lines:[{label:'Oversize transport · 2 hauls',est:'$140K'},{label:'Crane mobilizations',est:'$140K'},{label:'Permits & escorts',est:'$28K'},{label:'Contingency (4%)',est:'$12K'},{label:'Total estimate',est:'$320K',bold:true}]},baseline:{id:'DP-LOG-CIM-BL1',date:'May 2025',total:'$285K',items:4,note:'Baseline at NTP'},delta:{added:1,value:'+$44K',reason:'Data hall equipment delivery added',links:[{label:'Precision cooling delivery + install',rowIdx:2}]}}},
     procurement:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$920K',note:'ROM procurement scope',lines:[{label:'Long-lead electrical (switchgear, transformers)',est:'$480K'},{label:'Structural materials',est:'$220K'},{label:'Instrumentation & controls',est:'$160K'},{label:'Bulk materials',est:'$60K'},{label:'Total estimate',est:'$920K',bold:true}]},baseline:{id:'DP-PRO-HRC-BL1',date:'Mar 2025',total:'$840K',items:8,note:'Baseline at award — long-lead items locked'},delta:{added:2,value:'+$118K',reason:'Solar DC cabling + monitoring sensors added'}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$560K',note:'ROM procurement scope',lines:[{label:'Long-lead mechanical (pumps, AHU)',est:'$290K'},{label:'Structural materials',est:'$140K'},{label:'Bulk materials',est:'$80K'},{label:'Contingency (9%)',est:'$50K'},{label:'Total estimate',est:'$560K',bold:true}]},baseline:{id:'DP-PRO-RIV-BL1',date:'Apr 2025',total:'$498K',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$62K',reason:'Structural bolt order added'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$680K',note:'ROM procurement scope',lines:[{label:'Long-lead electrical (UPS, switchgear)',est:'$360K'},{label:'Structural / architectural',est:'$180K'},{label:'Instrumentation & low-voltage',est:'$90K'},{label:'Contingency (7%)',est:'$50K'},{label:'Total estimate',est:'$680K',bold:true}]},baseline:{id:'DP-PRO-CIM-BL1',date:'May 2025',total:'$612K',items:6,note:'Baseline at NTP'},delta:{added:1,value:'+$58K',reason:'UPS bypass cable added'}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$920K',note:'ROM procurement scope',lines:[{label:'Long-lead electrical (switchgear, transformers)',est:'$480K'},{label:'Structural materials',est:'$220K'},{label:'Instrumentation & controls',est:'$160K'},{label:'Bulk materials',est:'$60K'},{label:'Total estimate',est:'$920K',bold:true}]},baseline:{id:'DP-PRO-HRC-BL1',date:'Mar 2025',total:'$840K',items:8,note:'Baseline at award — long-lead items locked'},delta:{added:2,value:'+$118K',reason:'Solar DC cabling + monitoring sensors added',links:[{label:'Solar DC cabling',rowIdx:11},{label:'Monitoring sensors',rowIdx:12}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$560K',note:'ROM procurement scope',lines:[{label:'Long-lead mechanical (pumps, AHU)',est:'$290K'},{label:'Structural materials',est:'$140K'},{label:'Bulk materials',est:'$80K'},{label:'Contingency (9%)',est:'$50K'},{label:'Total estimate',est:'$560K',bold:true}]},baseline:{id:'DP-PRO-RIV-BL1',date:'Apr 2025',total:'$498K',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$62K',reason:'Structural bolt order added',links:[{label:'Structural bolt package',rowIdx:3}]}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$680K',note:'ROM procurement scope',lines:[{label:'Long-lead electrical (UPS, switchgear)',est:'$360K'},{label:'Structural / architectural',est:'$180K'},{label:'Instrumentation & low-voltage',est:'$90K'},{label:'Contingency (7%)',est:'$50K'},{label:'Total estimate',est:'$680K',bold:true}]},baseline:{id:'DP-PRO-CIM-BL1',date:'May 2025',total:'$612K',items:6,note:'Baseline at NTP'},delta:{added:1,value:'+$58K',reason:'UPS bypass cable added',links:[{label:'UPS bypass cable assembly',rowIdx:4}]}}},
     prefab:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$1.4M',note:'ROM prefab / structural scope',lines:[{label:'Structural steel assemblies',est:'$480K'},{label:'Mechanical prefab · pipe racks + skids',est:'$520K'},{label:'Electrical prefab · e-houses',est:'$280K'},{label:'Misc steel fabrication',est:'$120K'},{label:'Total estimate',est:'$1.4M',bold:true}]},baseline:{id:'DP-PFB-HRC-BL1',date:'Mar 2025',total:'$1.24M',items:10,note:'Baseline at award — structural + racking prefab'},delta:{added:1,value:'+$88K',reason:'Combiner box prefab added'}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$1.4M',note:'ROM prefab / structural scope',lines:[{label:'Structural steel assemblies',est:'$480K'},{label:'Mechanical prefab · pipe racks + skids',est:'$520K'},{label:'Electrical prefab · e-houses',est:'$280K'},{label:'Misc steel fabrication',est:'$120K'},{label:'Total estimate',est:'$1.4M',bold:true}]},baseline:{id:'DP-PFB-HRC-BL1',date:'Mar 2025',total:'$1.24M',items:10,note:'Baseline at award — structural + racking prefab'},delta:{added:1,value:'+$88K',reason:'Combiner box prefab added',links:[{label:'Combiner box prefab array',rowIdx:5}]}},
       riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$820K',note:'ROM prefab / structural scope',lines:[{label:'Structural headwalls · 8 units',est:'$360K'},{label:'MEP rack modules · 6 units',est:'$320K'},{label:'Misc architectural prefab',est:'$140K'},{label:'Total estimate',est:'$820K',bold:true}]},baseline:{id:'DP-PFB-RIV-BL1',date:'Apr 2025',total:'$745K',items:8,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$940K',note:'ROM prefab scope',lines:[{label:'Electrical prefab · cable tray & switchgear',est:'$420K'},{label:'Misc steel · partitions & enclosures',est:'$280K'},{label:'MEP modules',est:'$240K'},{label:'Total estimate',est:'$940K',bold:true}]},baseline:{id:'DP-PFB-CIM-BL1',date:'May 2025',total:'$865K',items:7,note:'Baseline at NTP'},delta:{added:1,value:'+$68K',reason:'Server room raised floor added'}}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$940K',note:'ROM prefab scope',lines:[{label:'Electrical prefab · cable tray & switchgear',est:'$420K'},{label:'Misc steel · partitions & enclosures',est:'$280K'},{label:'MEP modules',est:'$240K'},{label:'Total estimate',est:'$940K',bold:true}]},baseline:{id:'DP-PFB-CIM-BL1',date:'May 2025',total:'$865K',items:7,note:'Baseline at NTP'},delta:{added:1,value:'+$68K',reason:'Server room raised floor added',links:[{label:'Server room raised floor',rowIdx:3}]}}},
     profservices:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.1M',note:'ROM professional services',lines:[{label:'Engineering / IE support · 2 FTE',est:'$480K'},{label:'VDC / BIM coordination · 3 FTE',est:'$340K'},{label:'BESS commissioning agent · 2 FTE',est:'$620K'},{label:'Site survey & geotech',est:'$180K'},{label:'Quality & inspection',est:'$220K'},{label:'Contingency (12%)',est:'$260K'},{label:'Total estimate',est:'$2.1M',bold:true}]},baseline:{id:'DP-SVC-HRC-BL1',date:'Mar 2025',total:'$1.88M',items:9,note:'Baseline at award'},delta:{added:2,value:'+$145K',reason:'IE + commissioning FTEs added'}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.3M',note:'ROM professional services',lines:[{label:'Engineering support · 2 FTE',est:'$280K'},{label:'MEP commissioning lead · 1 FTE',est:'$480K'},{label:'Structural special inspection',est:'$220K'},{label:'Safety oversight',est:'$180K'},{label:'Contingency (11%)',est:'$140K'},{label:'Total estimate',est:'$1.3M',bold:true}]},baseline:{id:'DP-SVC-RIV-BL1',date:'Apr 2025',total:'$1.16M',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$82K',reason:'MEP commissioning lead added'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.6M',note:'ROM professional services',lines:[{label:'Engineering support · 2 FTE',est:'$360K'},{label:'IT / MEP commissioning · 2 FTE',est:'$580K'},{label:'Testing & special inspection',est:'$240K'},{label:'VDC coordination',est:'$180K'},{label:'Contingency (15%)',est:'$240K'},{label:'Total estimate',est:'$1.6M',bold:true}]},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:8,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added'}}}
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.1M',note:'ROM professional services',lines:[{label:'Engineering / IE support · 2 FTE',est:'$480K'},{label:'VDC / BIM coordination · 3 FTE',est:'$340K'},{label:'BESS commissioning agent · 2 FTE',est:'$620K'},{label:'Site survey & geotech',est:'$180K'},{label:'Quality & inspection',est:'$220K'},{label:'Contingency (12%)',est:'$260K'},{label:'Total estimate',est:'$2.1M',bold:true}]},baseline:{id:'DP-SVC-HRC-BL1',date:'Mar 2025',total:'$1.88M',items:9,note:'Baseline at award'},delta:{added:2,value:'+$145K',reason:'IE + commissioning FTEs added',links:[{label:"Owner's engineer / IE support",rowIdx:0},{label:'BESS commissioning agent',rowIdx:3}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.3M',note:'ROM professional services',lines:[{label:'Engineering support · 2 FTE',est:'$280K'},{label:'MEP commissioning lead · 1 FTE',est:'$480K'},{label:'Structural special inspection',est:'$220K'},{label:'Safety oversight',est:'$180K'},{label:'Contingency (11%)',est:'$140K'},{label:'Total estimate',est:'$1.3M',bold:true}]},baseline:{id:'DP-SVC-RIV-BL1',date:'Apr 2025',total:'$1.16M',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$82K',reason:'MEP commissioning lead added',links:[{label:'MEP commissioning lead',rowIdx:2}]}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.6M',note:'ROM professional services',lines:[{label:'Engineering support · 2 FTE',est:'$360K'},{label:'IT / MEP commissioning · 2 FTE',est:'$580K'},{label:'Testing & special inspection',est:'$240K'},{label:'VDC coordination',est:'$180K'},{label:'Contingency (15%)',est:'$240K'},{label:'Total estimate',est:'$1.6M',bold:true}]},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:8,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added',links:[{label:'Commissioning manager',rowIdx:1}]}}}
     };
   var CC_PREFAB_CAP={
   types:['mechanical','electrical','structural','misc','concrete'],
@@ -5933,6 +5933,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       riverside:{
         sm_tools:{hasInventory:true,poIssued:true},
         safety:{hasInventory:true,poIssued:true},
+        struct_steel:{hasInventory:false,poIssued:false,note:'Local supplier TBD'},
         concrete:{hasInventory:false,poIssued:false,note:'Local supplier TBD'},
         elec_commodity:{hasInventory:false,poIssued:false},
         mech_commodity:{hasInventory:false,poIssued:false}
@@ -6111,18 +6112,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Wire crimpers',cat:'sm_tools',qty:'12 sets',window:'Oct 2026',state:'Projected',ordId:null,cost:'$9,600',firm:'TBD'},
         {item:'MV switchgear 15 kV',cat:'elec_commodity',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton'},
         {item:'BESS containers 2.5 MWh',cat:'elec_commodity',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy'},
-        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'}
+        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'},
+        {item:'Solar DC cabling',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'At-risk',ordId:null,cost:'$68K',firm:'TBD'},
+        {item:'Monitoring sensors',cat:'elec_commodity',qty:'24 units',window:'Sep 2026',state:'At-risk',ordId:null,cost:'$18K',firm:'TBD'}
       ]},
       riverside:{budget:450000,dpSpent:180000,adHoc:80000,rows:[
         {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
         {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
-        {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'}
+        {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'},
+        {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD'}
       ]},
       cimarron:{budget:1200000,dpSpent:920000,adHoc:50000,rows:[
         {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
         {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
         {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
-        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'}
+        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'},
+        {item:'UPS bypass cable assembly',cat:'elec_commodity',qty:'2 sets',window:'Dec 2026',state:'Requested',ordId:null,cost:'$58K',firm:'TBD'}
       ]}
     },
     prefab:{
@@ -6131,7 +6136,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace'},
         {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
         {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 2026',state:'Projected',ordId:null,cost:'$45K',firm:'TBD'},
-        {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'}
+        {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'},
+        {item:'Combiner box prefab array',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$28K',firm:'TBD'}
       ]},
       riverside:{budget:400000,dpSpent:320000,adHoc:120000,rows:[
         {item:'Overhead MEP rack modules',qty:'6 modules',window:'Sep 2026',state:'In fabrication',ordId:'ORD-3133',cost:'$92K',firm:'Piperite Fab'},
@@ -6141,7 +6147,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       cimarron:{budget:300000,dpSpent:60000,adHoc:40000,rows:[
         {item:'Cable tray brackets',qty:'Lot',window:'Oct 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'},
         {item:'Server room partition panels',qty:'6 panels',window:'Nov 2026',state:'In fabrication',ordId:'ORD-3135',cost:'$72K',firm:'ModSpace'},
-        {item:'Generator exhaust enclosures',qty:'4 units',window:'Dec 2026',state:'Projected',ordId:null,cost:'$48K',firm:'TBD'}
+        {item:'Generator exhaust enclosures',qty:'4 units',window:'Dec 2026',state:'Projected',ordId:null,cost:'$48K',firm:'TBD'},
+        {item:'Server room raised floor',qty:'2,000 sqft',window:'Nov 2026',state:'Projected',ordId:null,cost:'$68K',firm:'TBD'}
       ]}
     }
   };
@@ -6576,6 +6583,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
            +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+dl.reason+'</div>'
+           +(dl.links&&dl.links.length?'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+dl.links.map(function(lk){return '<button onclick="dpDeltaJump(\''+p+'\',\''+selProj+'\','+lk.rowIdx+')\'" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;cursor:pointer">'+lk.label+' \u2192</button>';}).join('')+'</div>':'')
            +'</div>';
         h+='</div>';
       }
@@ -6716,7 +6724,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           } else if(row.state==='Demobilized'||row.state==='Off-rent'){
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
-          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
+          h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
@@ -6725,7 +6733,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
         } else {
-          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
+          h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>';
           h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
@@ -6776,11 +6784,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
       h+='</div>';
     }
+    if(selProj!=='all'){
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up')+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
     var gt2='1fr 150px 1fr 120px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
+    } else { h+=renderCapAtRiskSummary(p); }
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
     if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
@@ -7084,6 +7094,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     b+='<div class="fq-crow"><span>Vendor</span><span><input id="pre-firm" class="dp-input" value="'+(r.firm||'TBD')+'"></span></div>';
     b+='</div>';
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="procRowSave(\''+proj+'\','+idx+')">Save</button></div>';
+    var _hInv=typeof r.hasInventory==='boolean'?r.hasInventory:!!(CC_PROCUREMENT_CAP.state[proj]&&CC_PROCUREMENT_CAP.state[proj][r.cat]&&CC_PROCUREMENT_CAP.state[proj][r.cat].hasInventory);
+    b+='<div class="fq-crow"><span>Has inventory</span><span><input type="checkbox" id="pre-hasinv"'+(_hInv?' checked':'')+' style="width:16px;height:16px;cursor:pointer"></span></div>';
     openModal(b);
   }
   function procRowSave(proj,idx){
@@ -7095,7 +7107,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     r.window=document.getElementById('pre-window').value;
     r.cost=document.getElementById('pre-cost').value;
     r.firm=document.getElementById('pre-firm').value;
+    r.hasInventory=!!document.getElementById('pre-hasinv').checked;
     closeModal(); renderCcDemand('procurement');
+  }
+  function procItemInvToggle(proj,idx){
+    var rows=CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows;
+    if(!rows||!rows[idx])return;
+    var r=rows[idx];
+    var catSt=(CC_PROCUREMENT_CAP.state[proj]&&CC_PROCUREMENT_CAP.state[proj][r.cat])||{};
+    var cur=typeof r.hasInventory==='boolean'?r.hasInventory:!!catSt.hasInventory;
+    r.hasInventory=!cur;
+    renderCcDemand('procurement');
   }
 
   // ─── RENDER: EQUIPMENT ───────────────────────────────────────────────────────
@@ -7106,7 +7128,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:36px 20px;text-align:center">';
     h+='<div style="font-size:28px;color:var(--g250);margin-bottom:10px">⧄</div>';
     h+='<div style="font-size:13px;font-weight:600;color:var(--g400);margin-bottom:6px">Placeholder — Ongoing Alpha build</div>';
-    h+='<div style="font-size:12px;color:var(--g400);max-width:400px;margin:0 auto;line-height:1.6">Equipment capacity planning (own vs. re-rent optimization, fleet pool allocation, regional availability) is under active development. This section will auto-populate from confirmed equipment schedules in a future release.</div>';
+    h+='<div style="font-size:12px;color:var(--g400);max-width:400px;margin:0 auto;line-height:1.6">Equipment capacity planning (own vs. re-rent optimization, fleet pool allocation, regional availability) is under active development.</div>';
     h+='</div></div>';
     return h;
   }
@@ -7144,7 +7166,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     });
     h+='</div>';
     h+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="logCapAdd(\''+proj+'\')">+ Add line</button></div>';
-    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment & transit schedule</span></div>';
+    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment &amp; transit schedule</span></div>';
     h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
     h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:160px"></div>';
     h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
@@ -7172,13 +7194,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#f59e0b;border-radius:2px;opacity:.55"></div>Requested / Pending</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
-    // within capacity / at-risk accordions
     var catTotals={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;catTotals[it.cat]=(catTotals[it.cat]||0)+n;});
     var withinItems=[],atRiskItems=[];
     items.forEach(function(it){var owned=cap.fleetOwned[it.cat];var used=catTotals[it.cat];var risk=typeof owned==='number'&&used>owned;(risk?atRiskItems:withinItems).push(it);});
     var accId='log-acc-'+proj;
     h+='<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-    // within capacity
     h+='<div style="border:1px solid rgba(16,185,129,.2);border-radius:8px;overflow:hidden">';
     h+='<div style="padding:10px 14px;background:rgba(16,185,129,.06);display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="logCapAccToggle(\''+accId+'-ok\')">';
     h+='<div><span style="font-size:12.5px;font-weight:700;color:#047857">✓ Within capacity</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+withinItems.length+' item'+(withinItems.length!==1?'s':'')+'</span></div>';
@@ -7190,7 +7210,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     });
     if(!withinItems.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">No items within capacity.</div>';
     h+='</div></div>';
-    // at risk
     h+='<div style="border:1px solid '+(atRiskItems.length?'rgba(239,68,68,.25)':'var(--g200)')+';border-radius:8px;overflow:hidden">';
     h+='<div style="padding:10px 14px;background:'+(atRiskItems.length?'rgba(239,68,68,.05)':'var(--g50)')+';display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="logCapAccToggle(\''+accId+'-risk\')">';
     h+='<div><span style="font-size:12.5px;font-weight:700;color:'+(atRiskItems.length?'var(--red)':'var(--g500)')+'">'+( atRiskItems.length?'⚠ At risk':'— No risks')+'</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+atRiskItems.length+' item'+(atRiskItems.length!==1?'s':'')+'</span></div>';
@@ -7206,7 +7225,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!atRiskItems.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">All items within fleet capacity.</div>';
     h+='</div></div>';
     h+='</div>';
-    // move events
     var moves=cap.moveEvents[proj]||[];
     if(moves.length){
       h+='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Peak move events</div>';
@@ -7286,7 +7304,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;border:2px dashed #f59e0b;background:#f59e0b40;border-radius:2px"></div>SOW pending / Requested</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
-    // within capacity / at-risk accordions
     var scopeTotals={};items.forEach(function(it){scopeTotals[it.scope]=(scopeTotals[it.scope]||0)+it.fte;});
     var psWithin=[],psRisk=[];
     items.forEach(function(it){var cap2=cap.internalFTE[it.scope]||0;var used=scopeTotals[it.scope];(used>cap2?psRisk:psWithin).push(it);});
@@ -7330,93 +7347,144 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var cap=CC_PROCUREMENT_CAP;
     var projRows=(CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows)||[];
     var projName=_PROJ_LABELS[proj]||proj;
-    var catMap={};
-    projRows.forEach(function(r){var c=r.cat||'sm_tools';if(!catMap[c])catMap[c]=[];catMap[c].push(r);});
     var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
-    h+='<span class="dp-sec-t">'+svg(IC.cart)+'Category Plan</span>';
+    h+='<span class="dp-sec-t">'+svg(IC.cart)+'Inventory Coverage Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory and PO status are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
-    var gHead='1.6fr 90px 100px 90px 90px 28px';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory status and need-by dates are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
+    var gHead='1.6fr 90px 100px 90px 100px 95px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gHead+'"><span>Category</span><span>Items</span><span>Has inventory</span><span>Has agreement</span><span>PO issued</span><span></span></div>';
-    var actions=[];
-    Object.keys(catMap).forEach(function(cat,ci){
-      var rows=catMap[cat];
-      var st=(cap.state[proj]&&cap.state[proj][cat])||{};
-      var hasInv=!!st.hasInventory;var hasPO=!!st.poIssued;
-      var hasAgr=hasInv||rows.some(function(r){return r.state==='PO issued'||r.state==='Ordered'||r.state==='Delivered';});
-      var expId='proc-cat-'+ci+'-'+proj;
-      var needsAction=!hasInv&&!hasPO;
-      h+='<div class="dp-row" style="grid-template-columns:'+gHead+';'+(needsAction?'background:rgba(245,158,11,.04)':'')+'">';
-      h+='<div><span style="font-weight:700;font-size:12px;cursor:pointer" onclick="procExpandCat(\''+expId+'\')">'+(cap.catLabel[cat]||cat)+' ▾</span>'+(st.note?'<div style="font-size:10.5px;color:var(--g400);margin-top:1px">'+st.note+'</div>':'')+'</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600)">'+rows.length+' item'+(rows.length!==1?'s':'')+'</div>';
-      h+='<div><button class="btn btn-'+(hasInv?'ok':'ghost')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procToggle(\''+proj+'\',\''+cat+'\',\'hasInventory\')">'+(hasInv?'✓ Yes':'No')+'</button></div>';
-      h+='<div><button class="btn btn-'+(hasAgr?'ok':'ghost')+' btn-sm" style="font-size:10px;padding:2px 8px;cursor:default">'+(hasAgr?'✓ Yes':'No')+'</button></div>';
-      h+='<div><button class="btn btn-'+(hasPO?'ok':'warn')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procToggle(\''+proj+'\',\''+cat+'\',\'poIssued\')">'+(hasPO?'✓ Issued':'Pending')+'</button></div>';
-      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit note" onclick="procCapEditNote(\''+proj+'\',\''+cat+'\')">&#9998;</button></div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gHead+'"><span>Item</span><span>Category</span><span>Need by</span><span>Qty</span><span>Status</span><span>Inventory</span><span></span></div>';
+    var atRiskList=[];
+    projRows.forEach(function(r,idx){
+      var catLabel=cap.catLabel[r.cat]||r.cat||'—';
+      var catSt=(cap.state[proj]&&cap.state[proj][r.cat])||{};
+      var hasInv=typeof r.hasInventory==='boolean'?r.hasInventory:!!catSt.hasInventory;
+      var isCovered=/delivered|po\.issued|ordered/i.test(r.state||'');
+      var isAtRisk=!hasInv&&!isCovered;
+      if(isAtRisk){
+        var act='Source vendor & issue PO';
+        var risk='Need-by window at risk';
+        if(/at.risk/i.test(r.state||'')){act='Expedite immediately';risk='Delivery likely missed';}
+        else if(/requested|pending/i.test(r.state||'')){act='Confirm vendor & issue PO';risk='Order not yet placed';}
+        else if(/projected|draft/i.test(r.state||'')){act='Source vendor & issue PO';risk='Procurement not started';}
+        atRiskList.push({r:r,idx:idx,act:act,risk:risk});
+      }
+      h+='<div class="dp-row" style="grid-template-columns:'+gHead+';'+(isAtRisk?'background:rgba(239,68,68,.03)':'')+'">';
+      h+='<div style="font-weight:600;font-size:12px">'+r.item+'</div>';
+      h+='<div style="font-size:11px;color:var(--g500)">'+catLabel+'</div>';
+      h+='<div style="font-size:11.5px;'+(isAtRisk&&r.window?'color:var(--red);font-weight:600':'')+'">'+(r.window||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+r.qty+'</div>';
+      h+='<div>'+_sBadge(r.state)+'</div>';
+      h+='<div><button class="btn btn-'+(isCovered?'ok':hasInv?'ok':'ghost')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procItemInvToggle(\''+proj+'\','+idx+')">'+(isCovered?'✓ Covered':hasInv?'✓ Yes':'No')+'</button></div>';
+      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" onclick="procRowEdit(\''+proj+'\','+idx+')">&#9998;</button></div>';
       h+='</div>';
-      h+='<div id="'+expId+'" style="display:none;grid-column:1/-1;background:var(--g50);border-top:1px solid var(--g100)">';
-      rows.forEach(function(r){
-        var gi=projRows.indexOf(r);
-        h+='<div style="display:grid;grid-template-columns:'+gHead+';padding:5px 0 5px 20px;border-bottom:1px solid var(--g100)">';
-        h+='<div style="font-size:11.5px;color:var(--g600)">'+r.item+'</div>';
-        h+='<div style="font-size:11px;color:var(--g500)">'+r.qty+'</div>';
-        h+='<div></div><div></div>';
-        h+='<div>'+_sBadge(r.state)+'</div>';
-        h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit" onclick="procRowEdit(\''+proj+'\','+gi+')">&#9998;</button></div>';
+    });
+    if(!projRows.length){h+='<div class="fq-empty">No procurement items for '+projName+'.</div>';}
+    h+='</div>';
+    if(atRiskList.length){
+      h+='<div style="margin-top:14px">';
+      h+='<div style="font-size:11px;font-weight:700;color:var(--g700);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">⚠ '+atRiskList.length+' item'+(atRiskList.length!==1?'s':'')+'  requiring action</div>';
+      h+='<div style="display:flex;flex-direction:column;gap:6px">';
+      atRiskList.forEach(function(a){
+        var isHot=/at.risk/i.test(a.r.state||'');
+        var bg=isHot?'rgba(239,68,68,.05)':'rgba(245,158,11,.05)';
+        var bd=isHot?'rgba(239,68,68,.2)':'rgba(245,158,11,.2)';
+        var tc=isHot?'var(--red)':'#b45309';
+        h+='<div style="background:'+bg+';border:1px solid '+bd+';border-radius:6px;padding:8px 12px;display:grid;grid-template-columns:1fr auto;align-items:start;gap:12px">';
+        h+='<div><div style="font-size:12px;font-weight:700;color:'+tc+'">'+a.r.item+'</div>';
+        h+='<div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:4px;font-size:11px;color:var(--g600)">';
+        if(a.r.window)h+='<span>Need by: <b style="color:'+tc+'">'+a.r.window+'</b></span>';
+        h+='<span>Action: <b>'+a.act+'</b></span>';
+        h+='<span style="color:'+tc+'">Risk: '+a.risk+'</span>';
+        h+='</div></div>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;white-space:nowrap;margin-top:2px" onclick="procRowEdit(\''+proj+'\','+a.idx+')">Edit →</button>';
         h+='</div>';
       });
-      h+='</div>';
-      if(!hasInv&&!hasPO)actions.push({label:cap.catLabel[cat]||cat,note:st.note||'No inventory & PO not issued'});
-    });
-    h+='</div>';
-    if(actions.length){
-      h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
-      actions.forEach(function(a){h+='<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:#b45309;font-weight:600">⚠ '+a.label+'</span> — <span style="color:var(--g600)">'+a.note+'</span></div>';});
-      h+='</div>';
-    } else {
-      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All categories have inventory or POs issued.</div>';
-    }
-    // procurement Gantt
-    var ganttRows=projRows.filter(function(r){return r.window&&r.window!=='Ongoing';});
-    if(ganttRows.length){
-      var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
-      function procN(s){var p2=(s||'').trim().split(' ');var y=(parseInt(p2[1],10)||2026)-2026;return (mo[p2[0]]||1)*30+y*360;}
-      var allPN=ganttRows.map(function(r){return procN(r.window);});
-      var plo=Math.min.apply(null,allPN)-15,phi=Math.max.apply(null,allPN)+30,pspan=phi-plo||1;
-      function ppct(n){return Math.max(0,Math.min(100,Math.round((n-plo)/pspan*100)));}
-      var monthNms2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      var pgH=ganttRows.length*26+50;
-      h+='<div style="margin-top:18px"><div class="dp-sec-t" style="font-size:11.5px;margin-bottom:8px">'+svg(IC.clock)+'Procurement timeline — need-by dates</div>';
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
-      h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:200px"></div>';
-      h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
-      for(var gmi=0;gmi<12;gmi++){
-        var gmn=(gmi+1)*30;
-        if(gmn>=plo&&gmn<=phi){h+='<div style="position:absolute;left:'+ppct(gmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms2[gmi]+' 26</div>';if(ppct(gmn)>1)h+='<div style="position:absolute;left:'+ppct(gmn)+'%;top:16px;height:'+pgH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
-        var gmn2=gmn+360;
-        if(gmn2>=plo&&gmn2<=phi){h+='<div style="position:absolute;left:'+ppct(gmn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms2[gmi]+' 27</div>';if(ppct(gmn2)>1)h+='<div style="position:absolute;left:'+ppct(gmn2)+'%;top:16px;height:'+pgH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
-      }
       h+='</div></div>';
-      ganttRows.forEach(function(r){
-        var xn=procN(r.window);var xp=ppct(xn);
-        var bc=_sColor(r.state);
-        h+='<div style="display:flex;align-items:center;margin:3px 0">';
-        h+='<div style="min-width:200px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+r.item+'</div>';
-        h+='<div style="position:relative;flex:1;height:22px">';
-        h+='<div style="position:absolute;left:'+xp+'%;width:24px;height:18px;top:2px;border-radius:4px;background:'+bc+';opacity:'+(r.state==='At-risk'?'.85':'0.7')+';transform:translateX(-12px)" title="'+r.item+' · Need by '+r.window+'"></div>';
-        h+='<div style="position:absolute;left:'+xp+'%;top:3px;font-size:9.5px;color:var(--g600);white-space:nowrap;transform:translateX(6px)">'+r.window+'</div>';
-        h+='</div></div>';
-      });
-      h+='<div style="display:flex;gap:14px;margin-top:10px;padding-top:8px;border-top:1px solid var(--g100);flex-wrap:wrap">';
-      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#10b981;border-radius:3px;opacity:.7"></div>Delivered / Active</div>';
-      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#3b82f6;border-radius:3px;opacity:.7"></div>Projected / Planned</div>';
-      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#ef4444;border-radius:3px;opacity:.85"></div>At-risk</div>';
-      h+='</div></div></div>';
+    } else {
+      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All items have inventory coverage or confirmed orders.</div>';
     }
     h+='</div>';
+    return h;
+  }
+
+  // ─── DELTA JUMP HELPER ────────────────────────────────────────────────────────
+  function dpDeltaJump(p,proj,rowIdx){
+    _dpCcProjMap[p]=proj;
+    renderCcDemand(p);
+    setTimeout(function(){
+      var el=document.getElementById('dprow-'+p+'-'+proj+'-'+rowIdx);
+      if(el){el.scrollIntoView({behavior:'smooth',block:'center'});var orig=el.style.background;el.style.background='rgba(59,130,246,.12)';el.style.transition='background 0.8s ease';setTimeout(function(){el.style.background=orig;el.style.transition='';},1800);}
+    },80);
+  }
+
+  // ─── CAP AT-RISK AGGREGATE (all projects view) ────────────────────────────────
+  function renderCapAtRiskSummary(p){
+    var projs=['hercules','riverside','cimarron'];
+    var risks=[];
+    if(p==='logistics'){
+      projs.forEach(function(proj){
+        (CC_LOGISTICS_CAP.gaps[proj]||[]).forEach(function(g){
+          risks.push({proj:proj,label:CC_LOGISTICS_CAP.typeLabel[g.cat]||g.cat,note:g.note,hot:false});
+        });
+        var items=CC_LOGISTICS_CAP.plan[proj]||[];
+        var ct={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;ct[it.cat]=(ct[it.cat]||0)+n;});
+        Object.keys(ct).forEach(function(cat){
+          var own=CC_LOGISTICS_CAP.fleetOwned[cat];
+          if(typeof own==='number'&&ct[cat]>own&&!risks.some(function(r){return r.proj===proj&&r.label===(CC_LOGISTICS_CAP.typeLabel[cat]||cat);})){
+            risks.push({proj:proj,label:CC_LOGISTICS_CAP.typeLabel[cat]||cat,note:'Fleet overload: '+ct[cat]+' needed / '+own+' owned',hot:true});
+          }
+        });
+      });
+    } else if(p==='profservices'){
+      projs.forEach(function(proj){
+        (CC_PROFSERVICES_CAP.gaps[proj]||[]).forEach(function(g){
+          risks.push({proj:proj,label:CC_PROFSERVICES_CAP.scopeLabel[g.scope]||g.scope,note:g.note,hot:false});
+        });
+      });
+    } else if(p==='procurement'){
+      projs.forEach(function(proj){
+        var prows=(CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows)||[];
+        prows.forEach(function(r){
+          var catSt=(CC_PROCUREMENT_CAP.state[proj]&&CC_PROCUREMENT_CAP.state[proj][r.cat])||{};
+          var hasInv=typeof r.hasInventory==='boolean'?r.hasInventory:!!catSt.hasInventory;
+          var covered=/delivered|po\.issued|ordered/i.test(r.state||'');
+          if(!hasInv&&!covered){
+            var catL=CC_PROCUREMENT_CAP.catLabel[r.cat]||r.cat||'';
+            risks.push({proj:proj,label:r.item,note:(r.window?'Need by '+r.window:'')+(r.window&&catL?' · ':'')+catL,hot:/at.risk/i.test(r.state||'')});
+          }
+        });
+      });
+    } else if(p==='prefab'){
+      projs.forEach(function(proj){
+        (CC_PREFAB_CAP.gaps[proj]||[]).forEach(function(g){
+          risks.push({proj:proj,label:CC_PREFAB_CAP.typeLabel[g.t]||g.t||'Prefab',note:g.note,hot:false});
+        });
+      });
+    }
+    var h='<div style="margin-top:20px">';
+    if(!risks.length){
+      h+='<div style="padding:14px 16px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:8px;font-size:12px;color:#047857">✓ No capacity risks identified across all projects for this pillar.</div>';
+      h+='</div>';
+      return h;
+    }
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'Capacity risks — all projects</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400)">'+risks.length+' flagged item'+(risks.length!==1?'s':'')+'</span></div>';
+    h+='<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">';
+    risks.forEach(function(risk){
+      var pLbl=_PROJ_LABELS[risk.proj]||risk.proj;
+      var bg=risk.hot?'rgba(239,68,68,.04)':'rgba(245,158,11,.04)';
+      var bd=risk.hot?'rgba(239,68,68,.18)':'rgba(245,158,11,.18)';
+      var tc=risk.hot?'var(--red)':'#b45309';
+      h+='<div style="display:grid;grid-template-columns:1fr auto;align-items:center;background:'+bg+';border:1px solid '+bd+';border-radius:6px;padding:8px 14px;gap:12px">';
+      h+='<div><div style="font-size:12px;font-weight:700;color:'+tc+'">'+risk.label+'</div>';
+      if(risk.note)h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+risk.note+'</div>';
+      h+='</div>';
+      h+='<div style="font-size:11px;color:var(--g500);white-space:nowrap;background:var(--g100);padding:2px 8px;border-radius:4px">'+pLbl+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
     return h;
   }
 
