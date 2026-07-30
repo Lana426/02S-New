@@ -5822,12 +5822,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14},
       {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5},
       {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7},
-      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5}
+      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5},
+      {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true}
     ],
     riverside:[
       {item:'Overhead MEP rack modules',t:'mechanical',qty:'6 modules',mo:'May 15',fs:'Jul 1',fe:'Aug 25',shipD:5},
       {item:'L2 headwall assemblies',t:'structural',qty:'8 units',mo:'Mar 15',fs:'Apr 15',fe:'Jun 20',shipD:5},
-      {item:'Stairwell prefab panels',t:'structural',qty:'4 panels',mo:'Jun 1',fs:'Aug 1',fe:'Sep 25',shipD:5}
+      {item:'Stairwell prefab panels',t:'structural',qty:'4 panels',mo:'Jun 1',fs:'Aug 1',fe:'Sep 25',shipD:5},
+      {item:'Fire suppression header modules',t:'mechanical',qty:'2 units',mo:'Jun 15',fs:'Aug 15',fe:'Sep 20',shipD:5,adhoc:true}
     ],
     cimarron:[
       {item:'Cable tray brackets',t:'electrical',qty:'Lot',mo:'Jun 15',fs:'Aug 1',fe:'Sep 20',shipD:5},
@@ -6206,80 +6208,158 @@ var CC_DP={
     var TL=CC_PREFAB_CAP.typeLabel;
     var TC=CC_PREFAB_CAP.typeColor;
     var gaps=CC_PREFAB_CAP.gaps[proj]||[];
+    var projName=_PROJ_LABELS[proj]||proj;
+    var pillarQuotes=CC_QUOTES.filter(function(q){return q.pillar==='prefab'&&q.project===projName;});
     var h='';
-    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400);font-style:italic">V1 \u00b7 Illustrative \u2014 manually populated</span></div>';
-    var tgt='1fr 116px 88px 88px 104px 56px';
+    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="pfbCapAdd(\''+proj+'\')">+ Add line</button></div>';
+    h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">'
+      +'<b style="color:var(--charcoal)">V1 · Demo data pre-filled.</b> In production each line is manually entered by the prefab team. '
+      +'<span style="color:var(--g400)">⭐ North Star: 02S auto-ingests submittal approvals and vendor lead times to propose fab dates and flags conflicts before they become critical.</span></div>';
+    var tgt='1.2fr 100px 82px 82px 100px 50px 28px';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:10px 14px;margin-bottom:14px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Planned fab windows</div>';
-    h+='<div class="dp-head" style="grid-template-columns:'+tgt+';font-size:10.5px"><span>Item</span><span>Assembly type</span><span>Mat. order</span><span>Fab start</span><span>Ship date</span><span class="c">Qty</span></div>';
-    items.forEach(function(it){
+    h+='<div class="dp-head" style="grid-template-columns:'+tgt+';font-size:10.5px"><span>Item</span><span>Type</span><span>Mat. order</span><span>Fab start</span><span>Ship date</span><span class="c">Qty</span><span></span></div>';
+    items.forEach(function(it,idx){
       var tc=TC[it.t]||'var(--g600)'; var tl=TL[it.t]||it.t;
-      h+='<div class="dp-row" style="grid-template-columns:'+tgt+';padding:5px 0;border-bottom:1px solid var(--g100)">';
-      h+='<div style="font-size:12px">'+it.item+'</div>';
+      var isAdhoc=!!it.adhoc;
+      h+='<div class="dp-row" style="grid-template-columns:'+tgt+';padding:5px 0;border-bottom:1px solid var(--g100)'+(isAdhoc?';background:rgba(217,119,6,.03)':'')+'">';
+      h+='<div style="font-size:12px">'+it.item+(isAdhoc?' <span style="font-size:9.5px;background:rgba(217,119,6,.1);color:#b45309;padding:1px 5px;border-radius:8px;font-weight:600">Ad hoc</span>':'')+'</div>';
       h+='<div><span style="display:inline-block;background:'+tc+'20;color:'+tc+';font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600">'+tl+'</span></div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+it.mo+'</div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+it.fs+'</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.fe+' <span style="color:var(--g400);font-size:10.5px">+'+it.shipD+'d ship</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.fe+' <span style="color:var(--g400);font-size:10px">+'+it.shipD+'d</span></div>';
       h+='<div class="c" style="font-size:11.5px">'+it.qty+'</div>';
+      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit" onclick="pfbCapEdit(\''+proj+'\','+idx+')">&#9998;</button></div>';
+      h+='</div>';
+    });
+    pillarQuotes.forEach(function(q){
+      h+='<div class="dp-row" style="grid-template-columns:'+tgt+';padding:5px 0;border-bottom:1px dashed var(--g200);opacity:.6">';
+      h+='<div style="font-size:12px;color:var(--g500)">'+q.item+' <span style="font-size:9.5px;background:var(--g200);color:var(--g500);padding:1px 5px;border-radius:8px;font-weight:600">Quote</span></div>';
+      h+='<div><span style="display:inline-block;background:var(--g200);color:var(--g500);font-size:10px;padding:1px 6px;border-radius:10px">—</span></div>';
+      h+='<div style="font-size:11px;color:var(--g400)">Pending</div>';
+      h+='<div style="font-size:11px;color:var(--g400)">TBD</div>';
+      h+='<div style="font-size:11px;color:var(--g400)">Need-by '+q.needby+'</div>';
+      h+='<div class="c" style="font-size:11px;color:var(--g400)">'+q.qty+'</div>';
+      h+='<div></div>';
       h+='</div>';
     });
     h+='</div>';
     h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Fab schedule vs. plant capacity</span></div>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow-x:auto">';
-    var PPD=2.87; var TW=700; var LW=120;
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
+    var TD=274; var LW=110;
     var MO={Jan:-90,Feb:-59,Mar:-31,Apr:0,May:30,Jun:61,Jul:91,Aug:122,Sep:153,Oct:183,Nov:213,Dec:244};
-    function dx(dstr){
+    var pct=function(dstr){
       var pt=dstr.trim().split(' '); if(pt.length<2)return 0;
       var base=MO[pt[0]]; if(base===undefined)return 0;
-      return Math.max(0,Math.min(TW,Math.round((base+parseInt(pt[1])-1)*PPD)));
-    }
-    h+='<div style="display:flex;margin-bottom:4px">';
+      return Math.max(0,Math.min(100,parseFloat(((base+parseInt(pt[1])-1)/TD*100).toFixed(2))));
+    };
+    h+='<div style="display:flex;margin-bottom:6px">';
     h+='<div style="min-width:'+LW+'px"></div>';
-    h+='<div style="position:relative;width:'+TW+'px;height:18px;border-bottom:1px solid var(--g200)">';
+    h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
     ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].forEach(function(m){
-      var x=Math.round(MO[m]*PPD);
-      h+='<div style="position:absolute;left:'+x+'px;font-size:10px;color:var(--g400);white-space:nowrap">'+m+'</div>';
-      if(x>0)h+='<div style="position:absolute;left:'+x+'px;top:0;height:500px;border-left:1px solid var(--g100);z-index:0"></div>';
+      var x=parseFloat((MO[m]/TD*100).toFixed(2));
+      if(x<-0.1)return;
+      h+='<div style="position:absolute;left:'+Math.max(0,x)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+m+'</div>';
+      if(x>0.1)h+='<div style="position:absolute;left:'+x+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';
     });
     h+='</div></div>';
     TYPES.forEach(function(type){
       var tItems=items.filter(function(it){return it.t===type;});
       if(!tItems.length)return;
       var tc=TC[type]||'#888'; var tl=TL[type]||type;
-      var rH=tItems.length*22+14;
+      var rH=tItems.length*26+14;
       var gapItem=(CC_PREFAB_CAP.gaps[proj]||[]).filter(function(g){return g.t===type;})[0];
-      h+='<div style="display:flex;align-items:flex-start;margin:4px 0;min-height:'+rH+'px;border-bottom:1px solid var(--g100)">';
-      h+='<div style="min-width:'+LW+'px;font-size:11px;color:var(--g700);font-weight:600;padding-top:6px;padding-right:10px">'+tl+'<div style="font-size:10px;color:var(--g400);font-weight:400">cap: '+caps[type]+'/wk</div></div>';
-      h+='<div style="position:relative;width:'+TW+'px;min-height:'+rH+'px">';
+      h+='<div style="display:flex;align-items:flex-start;margin:3px 0;min-height:'+rH+'px;border-bottom:1px solid var(--g100)">';
+      h+='<div style="min-width:'+LW+'px;font-size:11px;color:var(--g700);font-weight:600;padding-top:6px;padding-right:8px;flex-shrink:0">'+tl+'<div style="font-size:10px;color:var(--g400);font-weight:400">cap: '+caps[type]+'/wk</div></div>';
+      h+='<div style="position:relative;flex:1;min-height:'+rH+'px">';
       if(gapItem){
-        var gs=dx(gapItem.start); var ge=dx(gapItem.end);
-        h+='<div style="position:absolute;left:'+gs+'px;width:'+(ge-gs)+'px;top:0;bottom:0;background:rgba(239,68,68,.1);border-left:2px solid rgba(239,68,68,.4)"></div>';
+        var gs=pct(gapItem.start); var ge=pct(gapItem.end);
+        h+='<div style="position:absolute;left:'+gs+'%;width:'+(ge-gs)+'%;top:0;bottom:0;background:rgba(239,68,68,.1);border-left:2px solid rgba(239,68,68,.4)"></div>';
       }
       tItems.forEach(function(it,ri){
-        var x1=dx(it.fs); var x2=dx(it.fe); var bw=Math.max(x2-x1,14);
-        var top=ri*22+4;
-        h+='<div title="'+it.item+' | Fab: '+it.fs+' \u2192 '+it.fe+'" style="position:absolute;left:'+x1+'px;width:'+bw+'px;height:17px;top:'+top+'px;background:'+tc+';opacity:'+(gapItem?'.85':'.72')+';border-radius:4px;overflow:hidden;z-index:1">';
-        h+='<div style="font-size:9.5px;color:#fff;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
+        var x1=pct(it.fs); var x2=pct(it.fe); var bw=Math.max(x2-x1,0.8);
+        var top=ri*26+4;
+        var delPct=Math.min(100,x2+(it.shipD/TD*100));
+        var isAdhoc=!!it.adhoc;
+        var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;'+(isAdhoc?'border:2px dashed '+tc+';background:'+tc+'20':'background:'+tc+';opacity:'+(gapItem?'.85':'.72'));
+        h+='<div title="'+it.item+' \u2502 Fab: '+it.fs+' \u2192 '+it.fe+' \u2502 Delivery ~+'+it.shipD+'d" style="'+barSty+'">';
+        if(!isAdhoc)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
         h+='</div>';
-        var mx=dx(it.mo);
-        if(mx>=0&&mx<TW)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'px;top:'+top+'px;width:2px;height:17px;background:var(--g400);border-radius:1px;z-index:2"></div>';
+        var mx=pct(it.mo);
+        if(mx>=0&&mx<=100)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'%;top:'+(top-1)+'px;width:2px;height:20px;background:#64748b;z-index:2;border-radius:1px"></div>';
+        if(delPct>=0&&delPct<=100)h+='<div title="Delivery ≈ '+it.fe+' +'+it.shipD+'d transit" style="position:absolute;left:calc('+delPct+'% - 4px);top:'+(top+5)+'px;width:8px;height:8px;background:#ef4444;transform:rotate(45deg);z-index:3;border-radius:1px"></div>';
       });
-      h+='<div style="position:absolute;bottom:1px;left:0;right:0;border-top:1.5px dashed rgba(0,0,0,.12)"></div>';
+      h+='<div style="position:absolute;bottom:0;left:0;right:0;border-top:1.5px dashed rgba(0,0,0,.1)"></div>';
       h+='</div></div>';
     });
+    h+='<div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#3b82f6;border-radius:2px;opacity:.72"></div>Fab window</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;border:2px dashed #3b82f6;background:#3b82f620;border-radius:2px"></div>Ad hoc order</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#64748b"></div>Mat. order date</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:8px;height:8px;background:#ef4444;transform:rotate(45deg);flex-shrink:0;border-radius:1px"></div>Delivery date</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.4)"></div>Capacity risk</div>';
+    h+='</div>';
     if(gaps.length){
-      h+='<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">';
+      h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
       gaps.forEach(function(g){
-        var tl=TL[g.t]||g.t;
-        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">\u26a0 Capacity risk \u00b7 '+tl+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';
+        var tl2=TL[g.t]||g.t;
+        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">⚠ Capacity risk · '+tl2+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';
       });
       h+='</div>';
     } else {
-      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">\u2713 No capacity conflicts for this project.</div>';
+      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No capacity conflicts for this project.</div>';
     }
     h+='</div>';
     return h;
   }
+  function pfbCapEdit(proj,idx){
+    if(!CC_PREFAB_CAP||!CC_PREFAB_CAP.plan[proj])return;
+    var items=CC_PREFAB_CAP.plan[proj];
+    var isNew=idx<0;
+    var it=isNew?{item:'',t:'mechanical',qty:'',mo:'',fs:'',fe:'',shipD:5}:items[idx];
+    var TL=CC_PREFAB_CAP.typeLabel;
+    var TYPES=CC_PREFAB_CAP.types;
+    var inp=function(id,val,ph,w){return '<input id="'+id+'" placeholder="'+(ph||'')+'" style="border:1px solid var(--g200);border-radius:5px;padding:3px 7px;font-size:12px;width:'+(w||'110px')+'" value="'+(val||'')+'"/>';};
+    var b='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Item name</span><span>'+inp('pfbItem',it.item,'e.g. Structural support frames','200px')+'</span></div>';
+    b+='<div class="fq-crow"><span>Assembly type</span><span><select id="pfbT" style="border:1px solid var(--g200);border-radius:5px;padding:3px 7px;font-size:12px">';
+    TYPES.forEach(function(t){b+='<option value="'+t+'"'+(t===it.t?' selected':'')+'>'+TL[t]+'</option>';});
+    b+='</select></span></div>';
+    b+='<div class="fq-crow"><span>Mat. order date</span><span>'+inp('pfbMo',it.mo,'Apr 15','90px')+'</span></div>';
+    b+='<div class="fq-crow"><span>Fab start</span><span>'+inp('pfbFs',it.fs,'May 1','90px')+'</span></div>';
+    b+='<div class="fq-crow"><span>Fab finish date</span><span>'+inp('pfbFe',it.fe,'Aug 15','90px')+'</span></div>';
+    b+='<div class="fq-crow"><span>Transit (days)</span><span>'+inp('pfbSd',it.shipD,'5','60px')+'</span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span>'+inp('pfbQty',it.qty,'e.g. 12 modules','130px')+'</span></div>';
+    b+='</div><div style="font-size:11px;color:var(--g400);padding:4px 0 8px">Dates: use “Mon DD” format (e.g. Jul 15). Timeline spans Apr–Dec 2026.</div>';
+    b+='<div class="modal-foot">';
+    if(!isNew)b+='<button class="btn btn-ghost" style="color:var(--red);margin-right:auto" onclick="pfbCapDelete(\''+proj+'\','+idx+')">Remove</button>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="pfbCapSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal((isNew?'Add capacity plan line':'Edit — '+it.item),b);
+  }
+  function pfbCapAdd(proj){pfbCapEdit(proj,-1);}
+  function pfbCapSave(proj,idx){
+    if(!CC_PREFAB_CAP.plan[proj])CC_PREFAB_CAP.plan[proj]=[];
+    var items=CC_PREFAB_CAP.plan[proj];
+    var g=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+    var it=idx>=0?items[idx]:{};
+    var nItem=g('pfbItem'); if(nItem)it.item=nItem;
+    var nT=g('pfbT'); if(nT)it.t=nT;
+    var nMo=g('pfbMo'); if(nMo)it.mo=nMo;
+    var nFs=g('pfbFs'); if(nFs)it.fs=nFs;
+    var nFe=g('pfbFe'); if(nFe)it.fe=nFe;
+    var nSd=parseInt(g('pfbSd')); if(nSd>0)it.shipD=nSd;
+    var nQty=g('pfbQty'); if(nQty)it.qty=nQty;
+    if(idx<0)items.push(it);
+    closeModal();
+    renderCcScreen(ccActive);
+  }
+  function pfbCapDelete(proj,idx){
+    if(CC_PREFAB_CAP.plan[proj])CC_PREFAB_CAP.plan[proj].splice(idx,1);
+    closeModal();
+    renderCcScreen(ccActive);
+  }
+
   function dpRowClick(p,proj,idx){
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
@@ -6567,11 +6647,6 @@ var CC_DP={
       }
     }
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
-    h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up')+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
-    var gt2='1fr 150px 1fr 120px';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
-    cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
-    h+='</div>';
         var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
     if(pillarQ.length){
       h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.cart)+'Portal quotes — pending pricing</span><span class="spacer"></span></div>';
@@ -6588,6 +6663,11 @@ var CC_DP={
       });
       h+='</div>';
     }
+    h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up')+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
+    var gt2='1fr 150px 1fr 120px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
+    cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
+    h+='</div>';
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
     mount.innerHTML=h;
   }
