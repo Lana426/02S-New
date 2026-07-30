@@ -5788,6 +5788,7 @@ charges:[
     profservices:{hercules:'DP-SVC-HRC-001',riverside:'DP-SVC-RIV-001',cimarron:'DP-SVC-CIM-001'}
   };
   var _PILLAR_SCREEN={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
+var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
   var CC_DP_LINEAGE={
     equipment:{
       hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$3.1M',note:'ROM at opportunity stage \u2014 solar + BESS equipment package'},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:14,note:'Baseline at project award \u2014 detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration'}},
@@ -6124,7 +6125,7 @@ charges:[
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx]; if(!row)return;
     var dpId=(_DP_IDS[p]||{})[proj]||'\u2014';
-    var pLabel=_PROJ_MATCH[proj]||proj;
+    var pLabel=_PROJ_LABELS[proj]||proj;
     var bst=_DP_TONE_MAP[row.state]||'neu';
     var b='<div class="fq-calc">';
     b+='<div class="fq-crow"><span>Demand plan ID</span><span style="font-family:monospace;font-size:12px">'+dpId+'</span></div>';
@@ -6137,12 +6138,13 @@ charges:[
     b+='</div>';
     if(row.ordId){b+=buildDpBillingInline(row.ordId);}
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    if(p!=='equipment'&&row.ordId){b+='<button class="btn btn-dark" onclick="ccDpTracker(\''+row.ordId+'\');closeModal()">View in fulfillment queue \u2192</button>';}
     b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button></div>';
     openModal(row.item+'\u2014'+pLabel,b);
   }
   function dpShowLineage(p,proj,type){
     var lin=CC_DP_LINEAGE[p]&&CC_DP_LINEAGE[p][proj]; if(!lin)return;
-    var pLabel=_PROJ_MATCH[proj]||proj;
+    var pLabel=_PROJ_LABELS[proj]||proj;
     if(type==='margin'){
       var mp=lin.margin;
       var b='<div class="fq-calc">';
@@ -6166,6 +6168,12 @@ charges:[
       openModal('Baseline plan snapshot \u2014 '+pLabel,b);
     }
   }
+  function dpRowClick(p,proj,idx){
+    var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
+    var row=rows&&rows[idx];
+    if(p==='equipment'&&row&&row.ordId){ccDpTracker(row.ordId);return;}
+    dpDpModal(p,proj,idx);
+  }
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
     if(!o){toast('No order data for '+ordId);return;}
@@ -6179,10 +6187,10 @@ charges:[
   function buildDpBillingInline(ordId){
     var bills=CC_DP_BILLS[ordId]||[];
     if(!bills.length) return '';
-    var gb='140px 80px 95px 75px 1fr 74px';
+    var gb='140px 80px 95px 75px 1fr';
     var h='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
     h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
-    h+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:6px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span><span></span></div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:6px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span></div>';
     bills.forEach(function(b){
       var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
       var hasD=!!(b.dispute||b.ccChange);
@@ -6192,8 +6200,7 @@ charges:[
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
       h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
-      h+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+'</div>';
-      h+='<div>'+(b.status==='Paid'?'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 7px" onclick="event.stopPropagation();toast(\'Bill PDF \u2014 '+b.inv+'\')">Bill PDF</button>':'')+'</div>';
+      h+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+(b.status==='Paid'?'<br><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;margin-top:2px" onclick="event.stopPropagation();toast(\'Bill PDF \u2014 '+b.inv+'\')">Bill PDF</button>':'')+'</div>';
       h+='</div>';
       if(hasD){
         h+='<div id="'+did+'" style="display:none;padding:4px 8px 8px;background:var(--g50);border-left:2px solid var(--g200);margin-bottom:2px">';
@@ -6389,7 +6396,7 @@ charges:[
           } else if(row.state==='Demobilized'||row.state==='Off-rent'){
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
-          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')">';
+          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
@@ -6398,7 +6405,7 @@ charges:[
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
         } else {
-          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpDpModal(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
+          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>';
           h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
