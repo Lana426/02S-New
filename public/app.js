@@ -6047,7 +6047,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Forklift 10K',qty:'4 units',window:'Oct 2026+',state:'Projected',ordId:null,cost:'$2,400/mo',firm:'TBD'}
       ]},
       riverside:{budget:2100000,dpSpent:800000,adHoc:900000,rows:[
-        {item:'Tower crane (self-erect)',qty:'5 units',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$175K/8 wk',firm:'TBD'},
+        {item:'Tower crane (self-erect)',qty:'5 units',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$88K',firm:'TBD'},
         {item:'Scissor lift 32 ft',qty:'12 units',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$8,400/mo',firm:'TBD'},
         {item:'Forklift 5K',qty:'4 units',window:'Ongoing',state:'On-rent',ordId:'ORD-3123',cost:'$4,000/mo',firm:'Sunbelt'},
         {item:'Excavator 20T',qty:'2 units',window:'Jul–Oct 2026',state:'On-rent',ordId:'ORD-3124',cost:'$14,400/mo',firm:'United Rentals'}
@@ -6062,7 +6062,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     logistics:{
       hercules:{budget:1200000,dpSpent:800000,adHoc:300000,rows:[
         {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3071',cost:'$18,500',firm:'Bragg Crane'},
-        {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',ordId:null,cost:'TBD',firm:'Self-perform'},
+        {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',ordId:null,cost:'$38K',firm:'Self-perform'},
         {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Pending',ordId:null,cost:'$8,200',firm:'TBD'},
         {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Projected',ordId:null,cost:'$22,000',firm:'TBD'},
         {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'Projected',ordId:null,cost:'$14,000',firm:'TBD'},
@@ -6076,7 +6076,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       cimarron:{budget:400000,dpSpent:180000,adHoc:100000,rows:[
         {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',cost:'$6,400',firm:'Self-perform'},
         {item:'PDU site delivery',qty:'3 loads',window:'Oct 2026',state:'PO issued',ordId:'ORD-3132',cost:'$4,200',firm:'3PL'},
-        {item:'Precision cooling delivery + install',qty:'16 units',window:'Nov 2026',state:'Projected',ordId:null,cost:'$12,000',firm:'TBD'}
+        {item:'Precision cooling delivery + install',qty:'16 units',window:'Nov 2026',state:'Projected',ordId:null,cost:'$44K',firm:'TBD'}
       ]}
     },
     profservices:{
@@ -6092,11 +6092,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       riverside:{budget:950000,dpSpent:320000,adHoc:420000,rows:[
         {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3143',cost:'$22K/mo',firm:'HDR'},
         {item:'Structural special inspection',qty:'2 FTE',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$14K/mo',firm:'TBD'},
-        {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Draft',ordId:null,cost:'Pending',firm:'TBD'}
+        {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Draft',ordId:null,cost:'$82K est.',firm:'TBD'}
       ]},
       cimarron:{budget:600000,dpSpent:120000,adHoc:150000,rows:[
         {item:'Site survey crew',qty:'2 FTE',window:'Jul–Sep 2026',state:'Requested',ordId:null,cost:'$12K/mo',firm:'TBD'},
-        {item:'Commissioning manager',qty:'1 FTE',window:'Dec 2026+',state:'Draft',ordId:null,cost:'Pending',firm:'TBD'},
+        {item:'Commissioning manager',qty:'1 FTE',window:'Dec 2026+',state:'Draft',ordId:null,cost:'$96K est.',firm:'TBD'},
         {item:'Material testing lab',qty:'2 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3144',cost:'$8,400/mo',firm:'GeoTech Labs'}
       ]}
     },
@@ -6113,7 +6113,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'MV switchgear 15 kV',cat:'elec_commodity',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton'},
         {item:'BESS containers 2.5 MWh',cat:'elec_commodity',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy'},
         {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'},
-        {item:'Solar DC cabling',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'At-risk',ordId:null,cost:'$68K',firm:'TBD'},
+        {item:'Solar DC cabling',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'At-risk',ordId:null,cost:'$100K',firm:'TBD'},
         {item:'Monitoring sensors',cat:'elec_commodity',qty:'24 units',window:'Sep 2026',state:'At-risk',ordId:null,cost:'$18K',firm:'TBD'}
       ]},
       riverside:{budget:450000,dpSpent:180000,adHoc:80000,rows:[
@@ -6137,7 +6137,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
         {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 2026',state:'Projected',ordId:null,cost:'$45K',firm:'TBD'},
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'},
-        {item:'Combiner box prefab array',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$28K',firm:'TBD'}
+        {item:'Combiner box prefab array',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$88K',firm:'TBD'}
       ]},
       riverside:{budget:400000,dpSpent:320000,adHoc:120000,rows:[
         {item:'Overhead MEP rack modules',qty:'6 modules',window:'Sep 2026',state:'In fabrication',ordId:'ORD-3133',cost:'$92K',firm:'Piperite Fab'},
@@ -6360,7 +6360,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     });
     h+='</div>';
     h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Fab schedule vs. plant capacity</span></div>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
     var TD=274; var LW=110;
     var MO={Jan:-90,Feb:-59,Mar:-31,Apr:0,May:30,Jun:61,Jul:91,Aug:122,Sep:153,Oct:183,Nov:213,Dec:244};
     var pct=function(dstr){
