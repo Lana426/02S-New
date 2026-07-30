@@ -6583,7 +6583,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
            +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+dl.reason+'</div>'
-           +(dl.links&&dl.links.length?'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+dl.links.map(function(lk){return '<button onclick="dpDeltaJump(\''+p+'\',\''+selProj+'\','+lk.rowIdx+')\'" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;cursor:pointer">'+lk.label+' \u2192</button>';}).join('')+'</div>':'')
+           +(dl.links&&dl.links.length?'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+dl.links.map(function(lk){return '<button onclick="dpDeltaJump(\''+p+'\',\''+selProj+'\','+lk.rowIdx+')" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;cursor:pointer">'+lk.label+' \u2192</button>';}).join('')+'</div>':'')
            +'</div>';
         h+='</div>';
       }
