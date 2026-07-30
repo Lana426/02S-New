@@ -6482,6 +6482,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">'
       +'<b style="color:var(--charcoal)">V1 · Demo data pre-filled.</b> In production each line is manually entered by the prefab team. '
       +'<span style="color:var(--g400)">⭐ North Star: 02S auto-ingests submittal approvals and vendor lead times to propose fab dates and flags conflicts before they become critical.</span></div>';
+    var ns=CURRENT==='ns';
+    if(ns){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">Shop at 94% capacity Aug&ndash;Sep</div><div class="isd">E-house submittal deadline 3 days &middot; Piperite Fab slot contested across 2 projects</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SHOP CAPACITY</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Aug 12&ndash;Sep 4: 94%</div>';
+    h+='<div style="font-size:11px;color:var(--red)">Hercules + Riverside competing for Piperite slot</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SUBMITTAL ALERT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">E-house &mdash; deadline Jul 15</div>';
+    h+='<div style="font-size:11px;color:var(--red)">3 days &middot; approve to protect Nov energization</div></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">P6 IMPACT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Pipe rack install: Sep 28</div>';
+    h+='<div style="font-size:11px;color:#d97706">2 days behind &middot; inspect Jul 22</div></div>';
+    h+='</div>';
+    }
     var tgt='1.2fr 100px 82px 82px 100px 50px 28px';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:10px 14px;margin-bottom:14px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Planned fab windows</div>';
@@ -7330,6 +7348,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
     h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
+    var ns=CURRENT==='ns';
+    if(ns){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">Gate conflict Oct 15 &middot; 2 permits pending</div><div class="isd">Switchgear haul + crane mobilization using same gate &middot; resequence before permits expire</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">GATE CONFLICT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Oct 15 &mdash; north gate</div>';
+    h+='<div style="font-size:11px;color:var(--red)">Switchgear haul + crane mob &middot; resequence or split</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(251,146,60,.35);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">PERMIT STATUS</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">3 oversize hauls</div>';
+    h+='<div style="font-size:11px;color:#d97706">1 approved &middot; 2 pending (30-day lead time)</div></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">P6 ALERT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Cimarron concrete &mdash; Sep 12</div>';
+    h+='<div style="font-size:11px;color:var(--g600)">Excavator delivery must complete Sep 10</div></div>';
+    h+='</div>';
+    }
     var gCols='1.4fr 120px 70px 80px 80px 80px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
     h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Item</span><span>Category</span><span>Qty</span><span>Start</span><span>End</span><span>Status</span><span></span></div>';
@@ -7434,6 +7470,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
     h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM milestones and flags resources not confirmed before their mobilization window.</span></div>';
+    var ns=CURRENT==='ns';
+    if(ns){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">2 roles unplaced &middot; commissioning SOW gap</div><div class="isd">VDC/BIM + structural inspection unpriced &middot; BESS commissioning SOW must execute by Oct 1</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">UNPLACED ROLES</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">VDC/BIM + structural insp.</div>';
+    h+='<div style="font-size:11px;color:var(--red)">Needed within 45 days &middot; pricing unconfirmed</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SOW ALERT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">BESS commissioning</div>';
+    h+='<div style="font-size:11px;color:var(--red)">P6 startup Nov 2026 &middot; SOW deadline: Oct 1</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(251,146,60,.35);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">UTILIZATION</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Terracon &mdash; 2 FTE</div>';
+    h+='<div style="font-size:11px;color:#d97706">Aug overlap: Hercules + Riverside &middot; confirm avail.</div></div>';
+    h+='</div>';
+    }
     var gCols='1.4fr 130px 60px 80px 80px 110px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:12px">';
     h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Scope / Role</span><span>Discipline</span><span>FTE</span><span>Start</span><span>End</span><span>SOW Status</span><span></span></div>';
@@ -7527,6 +7581,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
     h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory status and need-by dates are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
+    var ns=CURRENT==='ns';
+    if(ns){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">T3 signal: 2 items past order-by</div><div class="isd">BESS containers 14d overdue &middot; MV switchgear exhausted &middot; Nov energization at risk</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">T3 INVENTORY</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">MV Switchgear &mdash; 0 units</div>';
+    h+='<div style="font-size:11px;color:var(--red)">Allocation exhausted &middot; reorder by Aug 20</div></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">P6 SCHEDULE</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Energization &mdash; Nov 15</div>';
+    h+='<div style="font-size:11px;color:var(--g600)">Cable pull closes Aug 30 &middot; order by Aug 2</div></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">CONSOLIDATION</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">ABB &mdash; 2 open POs</div>';
+    h+='<div style="font-size:11px;color:#d97706">Bundle for ~$18K freight savings</div></div>';
+    h+='</div>';
+    }
     // Group rows by category
     var cats=[],catMap={};
     projRows.forEach(function(r,idx){
