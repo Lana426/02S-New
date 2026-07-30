@@ -6479,9 +6479,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var pillarQuotes=CC_QUOTES.filter(function(q){return q.pillar==='prefab'&&q.project===projName;});
     var h='';
     h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="pfbCapAdd(\''+proj+'\')">+ Add line</button></div>';
-    h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">'
+    if(CURRENT!=='ns'){
+        h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">'
       +'<b style="color:var(--charcoal)">V1 · Demo data pre-filled.</b> In production each line is manually entered by the prefab team. '
       +'<span style="color:var(--g400)">⭐ North Star: 02S auto-ingests submittal approvals and vendor lead times to propose fab dates and flags conflicts before they become critical.</span></div>';
+    }
     var ns=CURRENT==='ns';
     if(ns){
     h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">Shop at 94% capacity Aug&ndash;Sep</div><div class="isd">E-house submittal deadline 3 days &middot; Piperite Fab slot contested across 2 projects</div></div></div>';
@@ -7381,7 +7383,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span class="dp-sec-t">'+svg(IC.truck)+'GC / GR Fleet Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
+    if(CURRENT!=='ns'){h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';}
     var ns=CURRENT==='ns';
     if(ns){
     h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">Gate conflict Oct 15 &middot; 2 permits pending</div><div class="isd">Switchgear haul + crane mobilization using same gate &middot; resequence before permits expire</div></div></div>';
@@ -7503,7 +7505,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span class="dp-sec-t">'+svg(IC.people)+'Resource Deployment Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM milestones and flags resources not confirmed before their mobilization window.</span></div>';
+    if(CURRENT!=='ns'){h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM milestones and flags resources not confirmed before their mobilization window.</span></div>';}
     var ns=CURRENT==='ns';
     if(ns){
     h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">2 roles unplaced &middot; commissioning SOW gap</div><div class="isd">VDC/BIM + structural inspection unpriced &middot; BESS commissioning SOW must execute by Oct 1</div></div></div>';
@@ -7614,7 +7616,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span class="dp-sec-t">'+svg(IC.cart)+'Inventory Coverage Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory status and need-by dates are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
+    if(CURRENT!=='ns'){h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory status and need-by dates are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';}
     var ns=CURRENT==='ns';
     if(ns){
     h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">T3 signal: 2 items past order-by</div><div class="isd">BESS containers 14d overdue &middot; MV switchgear exhausted &middot; Nov energization at risk</div></div></div>';
