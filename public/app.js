@@ -5253,11 +5253,12 @@ charges:[
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px;cursor:pointer" onclick="ccGo(\''+d.cc+'\')">';
       h+='<div style="font-size:11px;font-weight:600;color:var(--g900);margin-bottom:6px">'+d.label+'</div>';
       h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:4px">'+_fmtKs(totalBudget)+'</div>';
-      h+='<div style="font-size:10.5px;color:'+(pAh>15?'var(--red)':pAh>8?'#f59e0b':'var(--g500)')+'">'+pAh+'% ad hoc drift</div>';
-      h+='<div style="margin-top:6px;height:4px;border-radius:2px;overflow:hidden;background:var(--g200)">';
+      if(ccPersona==='fsm'){
+        h+='<div style="font-size:10.5px;color:'+(pAh>15?'var(--red)':pAh>8?'#f59e0b':'var(--g500)')+'">'+pAh+'% ad hoc drift</div>';
+        h+='<div style="margin-top:6px;height:4px;border-radius:2px;overflow:hidden;background:var(--g200)">';
       var dpPct=totalBudget?Math.min(100,Math.round(100*totalDp/totalBudget)):0; var ahPct=Math.min(100-dpPct,Math.round(100*totalAh/totalBudget));
-      h+='<div style="display:flex;height:100%"><div style="width:'+dpPct+'%;background:var(--charcoal)"></div><div style="width:'+ahPct+'%;background:#f59e0b"></div></div>';
-      h+='</div></div>';
+        h+='<div style="display:flex;height:100%"><div style="width:'+dpPct+'%;background:var(--charcoal)"></div><div style="width:'+ahPct+'%;background:#f59e0b"></div></div>';
+        h+='</div></div>';
     });
     h+='</div></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
@@ -5274,6 +5275,7 @@ charges:[
     [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){ h+='<button class="ff-b'+(fqFSrc===o[0]?' on':'')+'" onclick="fqSetFilter(\'src\',\''+o[0]+'\')">'+o[1]+'</button>'; });
     h+='</div></div>';
     h+='</div>';
+      }
     _fqShowAll=false;
     var rows=FQ_scoped.filter(fqVisible);
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
@@ -5778,9 +5780,39 @@ charges:[
   /* ═══════════ COMMAND CENTER — PILLAR DEMAND PLANS (portfolio mirror of the portal plans) ═══════════ */
   var DP_ST={'Ready':'ok','Needs map':'warn','Scheduled':'info','Requested':'neu','Projected':'info','Active':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok','At-risk':'bad','PO issued':'info'};
   function dpIcon(name){ var M={proj:'<path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>',tax:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><path d="M7 7h.01"/>'}; return M[name]||IC[name]||IC.chart; }
+  var _DP_IDS={
+    equipment:{hercules:'DP-EQ-HRC-001',riverside:'DP-EQ-RIV-001',cimarron:'DP-EQ-CIM-001'},
+    logistics:{hercules:'DP-LOG-HRC-001',riverside:'DP-LOG-RIV-001',cimarron:'DP-LOG-CIM-001'},
+    procurement:{hercules:'DP-PRO-HRC-001',riverside:'DP-PRO-RIV-001',cimarron:'DP-PRO-CIM-001'},
+    prefab:{hercules:'DP-PFB-HRC-001',riverside:'DP-PFB-RIV-001',cimarron:'DP-PFB-CIM-001'},
+    profservices:{hercules:'DP-SVC-HRC-001',riverside:'DP-SVC-RIV-001',cimarron:'DP-SVC-CIM-001'}
+  };
+  var _PILLAR_SCREEN={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
+  var CC_DP_LINEAGE={
+    equipment:{
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$3.1M',note:'ROM at opportunity stage \u2014 solar + BESS equipment package'},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:14,note:'Baseline at project award \u2014 detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration'}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.8M',note:'ROM for hospital campus earthwork + MEP'},baseline:{id:'DP-EQ-RIV-BL1',date:'Apr 2025',total:'$1.62M',items:11,note:'Baseline at LOI \u2014 earthwork + foundation equipment'},delta:{added:1,value:'+$88K',reason:'Material handling scope expansion'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$2.2M',note:'ROM for data center shell + MEP'},baseline:{id:'DP-EQ-CIM-BL1',date:'May 2025',total:'$1.98M',items:9,note:'Baseline at NTP \u2014 data center shell and core equipment'},delta:{added:2,value:'+$220K',reason:'Generator + UPS scope added post-design'}}},
+    logistics:{
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$480K',note:'ROM logistics envelope'},baseline:{id:'DP-LOG-HRC-BL1',date:'Mar 2025',total:'$412K',items:6,note:'Baseline logistics plan at award'},delta:{added:1,value:'+$38K',reason:'Oversize crane move added'}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$290K',note:'ROM logistics envelope'},baseline:{id:'DP-LOG-RIV-BL1',date:'Apr 2025',total:'$254K',items:5,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$320K',note:'ROM logistics envelope'},baseline:{id:'DP-LOG-CIM-BL1',date:'May 2025',total:'$285K',items:4,note:'Baseline at NTP'},delta:{added:1,value:'+$44K',reason:'Data hall equipment delivery added'}}},
+    procurement:{
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$920K',note:'ROM procurement scope'},baseline:{id:'DP-PRO-HRC-BL1',date:'Mar 2025',total:'$840K',items:8,note:'Baseline at award \u2014 long-lead items locked'},delta:{added:2,value:'+$118K',reason:'Solar DC cabling + monitoring sensors added'}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$560K',note:'ROM procurement scope'},baseline:{id:'DP-PRO-RIV-BL1',date:'Apr 2025',total:'$498K',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$62K',reason:'Structural bolt order added'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$680K',note:'ROM procurement scope'},baseline:{id:'DP-PRO-CIM-BL1',date:'May 2025',total:'$612K',items:6,note:'Baseline at NTP'},delta:{added:1,value:'+$58K',reason:'UPS bypass cable added'}}},
+    prefab:{
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$1.4M',note:'ROM prefab / structural scope'},baseline:{id:'DP-PFB-HRC-BL1',date:'Mar 2025',total:'$1.24M',items:10,note:'Baseline at award \u2014 structural + racking prefab'},delta:{added:1,value:'+$88K',reason:'Combiner box prefab added'}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$820K',note:'ROM prefab / structural scope'},baseline:{id:'DP-PFB-RIV-BL1',date:'Apr 2025',total:'$745K',items:8,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$940K',note:'ROM prefab scope'},baseline:{id:'DP-PFB-CIM-BL1',date:'May 2025',total:'$865K',items:7,note:'Baseline at NTP'},delta:{added:1,value:'+$68K',reason:'Server room raised floor added'}}},
+    profservices:{
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.1M',note:'ROM professional services'},baseline:{id:'DP-SVC-HRC-BL1',date:'Mar 2025',total:'$1.88M',items:9,note:'Baseline at award'},delta:{added:2,value:'+$145K',reason:'IE + commissioning FTEs added'}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.3M',note:'ROM professional services'},baseline:{id:'DP-SVC-RIV-BL1',date:'Apr 2025',total:'$1.16M',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$82K',reason:'MEP commissioning lead added'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.6M',note:'ROM professional services'},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:8,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added'}}}
+  };
   var CC_DP={
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
-      kpis:[{k:'Active projects',v:'14',sub:'with equipment demand',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
       ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
       cap:'Every project\u2019s equipment demand, aggregated. 02S confirms each request against the canonical taxonomy, then releases it to the Fulfillment queue for the owned vs re-rent decision.',
       rows:[
@@ -5793,7 +5825,7 @@ charges:[
       varSummary:'Aerial running 14 units over plan for October \u2014 the main portfolio driver.',
       consol:{save:'~$62K',cta:'Consolidate aerial',detail:'Aerial demand overlaps all three projects and peaks at 82 units in October, 14 over plan. Consolidate into one fleet re-rent rate instead of per-project spot rentals.'} },
     logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
-      kpis:[{k:'Active projects',v:'12',sub:'with move demand',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans. Three oversize heavy hauls need permits, and a north-gate conflict on Oct 15 (switchgear haul vs tower-crane mobilization) is flagged for resequencing.',
       cap:'Every project\u2019s move demand, aggregated \u2014 deliveries, heavy hauls, and crane mobilizations. 02S schedules windows, gates, and permits; the supply side is executed downstream in logistics.',
       rows:[
@@ -5806,7 +5838,7 @@ charges:[
       varSummary:'Heavy hauls one over plan \u2014 3 route to the same corridor within a week.',
       consol:{save:'~$18K + 1 permit',cta:'Combine hauls',detail:'3 heavy hauls route to the same corridor (Cimarron + Riverside) within one week. Combine permits and carrier into a single mobilization.'} },
     profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
-      kpis:[{k:'Active projects',v:'9',sub:'with services demand',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'18',sub:'across 8 firms',tone:'ok',icon:'people'},{k:'Needs pricing',v:'2',sub:'specialty roles unquoted',tone:'warn',icon:'tax'},{k:'Committed',v:'$3.2M',sub:'services · portfolio',tone:'ok',icon:'dollar'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'18',sub:'across 8 firms',tone:'ok',icon:'people'},{k:'Needs pricing',v:'2',sub:'specialty roles unquoted',tone:'warn',icon:'tax'},{k:'Committed',v:'$3.2M',sub:'services · portfolio',tone:'ok',icon:'dollar'}],
       ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule — the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they’re needed on site.',
       cap:'Every project’s professional-services demand, aggregated by discipline. Standard roles are priced from the 02S rate card; specialty roles are quoted before mobilization.',
       rows:[
@@ -5822,8 +5854,8 @@ charges:[
       roll:[{a:'Engineering',b:'5 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'4 FTE',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'3 FTE',c:'ongoing',v:'on plan',vt:'ok'}],
       varSummary:'VDC / BIM one FTE over plan — two projects have overlapping coordination windows.',
       consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and Cimarron. One firm can cover both projects at a blended MSA rate.'} },
-    procurement:{ mount:'ccDpProc', title:'Long-lead procurement', icon:'cart', decCol:'Order-by (lead)',
-      kpis:[{k:'Active projects',v:'8',sub:'with long-lead demand',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'At-risk',v:'2',sub:'order-by passed',tone:'bad',icon:'warn'}],
+    procurement:{ mount:'ccDpProc', title:'Procurement demand plan', icon:'cart', decCol:'Order-by (lead)',
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'At-risk',v:'2',sub:'order-by passed',tone:'bad',icon:'warn'}],
       ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items (switchgear, BESS containers) are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
       cap:'Major materials with 12\u201330-week lead times, aggregated across the portfolio. Distinct from field small-tools procurement (managed in each project portal). Order-by dates are back-calculated from schedule need-by; the pillar signal is order-by risk.',
       rows:[
@@ -5840,7 +5872,7 @@ charges:[
       varSummary:'Electrical spend $0.3M over plan \u2014 same OEM across two projects.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'Switchgear and transformer share the same OEM across two projects. Combine POs to hit the next volume tier and shorten lead time.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
-      kpis:[{k:'Active projects',v:'6',sub:'with prefab demand',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'32',sub:'5 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'32',sub:'5 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Every project\u2019s prefab demand, aggregated. Assemblies are made-to-order, so pricing is quoted by 02S after submittal; the pillar signal is fabrication stage.',
       rows:[
@@ -6044,6 +6076,25 @@ charges:[
     ],
     'ORD-3120':[
       {inv:'BILL-TBD-0726',period:'Jul 2026',amount:null,status:'Pending pricing',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3100':[
+      {inv:'BILL-NR-0826',period:'Aug 2026',amount:18400,status:'Paid',cc:'0200-0320-0000-0001'},
+      {inv:'BILL-NR-0926',period:'Sep 2026',amount:9200,status:'Pending',cc:'0200-0320-0000-0001'}
+    ],
+    'ORD-3103':[
+      {inv:'BILL-SW-0826',period:'Aug 2026',amount:22800,status:'Paid',cc:'0200-0320-0000-0001'}
+    ],
+    'ORD-3130':[
+      {inv:'BILL-SOL-0526',period:'May 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'},
+      {inv:'BILL-SOL-0626',period:'Jun 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'},
+      {inv:'BILL-SOL-0726',period:'Jul 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'}
+    ],
+    'ORD-3137':[
+      {inv:'BILL-RK-0626',period:'Jun 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'},
+      {inv:'BILL-RK-0726',period:'Jul 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'}
+    ],
+    'ORD-3143':[
+      {inv:'BILL-MB-0726',period:'Jul 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'}
     ]
   };
   var dpCur=null;
@@ -6068,6 +6119,53 @@ charges:[
     b+='<div style="display:flex;gap:8px">'+(portalActs.length?portalActs.join('')+extActs:extActs)+'</div></div>';
     openModal('Plan item — '+r.item,b);
   }
+  function dpGoDP(p,proj){_dpCcProjMap[p]=proj;ccGo(_PILLAR_SCREEN[p]||'dpequip');}
+  function dpDpModal(p,proj,idx){
+    var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
+    var row=rows&&rows[idx]; if(!row)return;
+    var dpId=(_DP_IDS[p]||{})[proj]||'\u2014';
+    var pLabel=_PROJ_MATCH[proj]||proj;
+    var bst=_DP_TONE_MAP[row.state]||'neu';
+    var b='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Demand plan ID</span><span style="font-family:monospace;font-size:12px">'+dpId+'</span></div>';
+    b+='<div class="fq-crow"><span>Project</span><span>'+pLabel+'</span></div>';
+    b+='<div class="fq-crow"><span>Window</span><span>'+row.window+'</span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span>'+row.qty+'</span></div>';
+    b+='<div class="fq-crow"><span>Cost code</span><span>'+row.cost+'</span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+bst+'">'+row.state+'</span></span></div>';
+    if(row.ordId){b+='<div class="fq-crow"><span>Order</span><span style="font-family:monospace;font-size:12px">'+row.ordId+'</span></div>';}
+    b+='</div>';
+    if(row.ordId){b+=buildDpBillingInline(row.ordId);}
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button></div>';
+    openModal(row.item+'\u2014'+pLabel,b);
+  }
+  function dpShowLineage(p,proj,type){
+    var lin=CC_DP_LINEAGE[p]&&CC_DP_LINEAGE[p][proj]; if(!lin)return;
+    var pLabel=_PROJ_MATCH[proj]||proj;
+    if(type==='margin'){
+      var mp=lin.margin;
+      var b='<div class="fq-calc">';
+      b+='<div class="fq-crow"><span>Opportunity ID</span><span style="font-family:monospace">'+mp.id+'</span></div>';
+      b+='<div class="fq-crow"><span>Date</span><span>'+mp.date+'</span></div>';
+      b+='<div class="fq-crow"><span>ROM estimate</span><span style="font-weight:700">'+mp.rom+'</span></div>';
+      b+='</div>';
+      b+='<div class="eq-cap" style="margin-top:12px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>'+mp.note+'. Margin plans capture the high-level ROM at the opportunity stage \u2014 scope is refined as projects progress to baseline.</span></div>';
+      b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>';
+      openModal('Margin plan \u2014 '+pLabel,b);
+    } else {
+      var bl=lin.baseline;
+      var b='<div class="fq-calc">';
+      b+='<div class="fq-crow"><span>Plan ID</span><span style="font-family:monospace">'+bl.id+'</span></div>';
+      b+='<div class="fq-crow"><span>Locked</span><span>'+bl.date+'</span></div>';
+      b+='<div class="fq-crow"><span>Total (baseline)</span><span style="font-weight:700">'+bl.total+'</span></div>';
+      b+='<div class="fq-crow"><span>Line items</span><span>'+bl.items+'</span></div>';
+      b+='</div>';
+      b+='<div class="eq-cap" style="margin-top:12px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>'+bl.note+'. Delta from baseline reflects additions and scope changes tracked against this locked plan.</span></div>';
+      b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>';
+      openModal('Baseline plan snapshot \u2014 '+pLabel,b);
+    }
+  }
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
     if(!o){toast('No order data for '+ordId);return;}
@@ -6081,10 +6179,10 @@ charges:[
   function buildDpBillingInline(ordId){
     var bills=CC_DP_BILLS[ordId]||[];
     if(!bills.length) return '';
-    var gb='140px 80px 95px 75px 1fr';
+    var gb='140px 80px 95px 75px 1fr 74px';
     var h='<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--g100)">';
     h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Billing history</div>';
-    h+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:6px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span></div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gb+';font-size:10.5px;margin-top:6px"><span>Reference</span><span>Period</span><span>Amount</span><span>Status</span><span>Cost code</span><span></span></div>';
     bills.forEach(function(b){
       var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
       var hasD=!!(b.dispute||b.ccChange);
@@ -6095,6 +6193,7 @@ charges:[
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
       h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
       h+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+'</div>';
+      h+='<div>'+(b.status==='Paid'?'<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 7px" onclick="event.stopPropagation();toast(\'Bill PDF \u2014 '+b.inv+'\')">Bill PDF</button>':'')+'</div>';
       h+='</div>';
       if(hasD){
         h+='<div id="'+did+'" style="display:none;padding:4px 8px 8px;background:var(--g50);border-left:2px solid var(--g200);margin-bottom:2px">';
@@ -6138,7 +6237,38 @@ charges:[
     h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
-    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget){
+    if(selProj!=='all'){
+      var lin=CC_DP_LINEAGE[p]&&CC_DP_LINEAGE[p][selProj];
+      if(lin){
+        var mp=lin.margin; var bl=lin.baseline; var dl=lin.delta;
+        h+='<div style="display:flex;gap:10px;margin:14px 0 10px;align-items:stretch">';
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'margin\')">'
+           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Margin plan</div>'
+           +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+mp.rom+'</div>'
+           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+mp.id+' \u00b7 '+mp.date+'</div>'
+           +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+mp.note+'</div>'
+           +'<div style="font-size:10px;color:#2563eb;margin-top:8px">View snapshot \u2192</div>'
+           +'</div>';
+        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">\u2192</div>';
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
+           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Baseline demand plan</div>'
+           +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+bl.total+'</div>'
+           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+bl.id+' \u00b7 '+bl.date+' \u00b7 '+bl.items+' items</div>'
+           +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+bl.note+'</div>'
+           +'<div style="font-size:10px;color:#2563eb;margin-top:8px">View snapshot \u2192</div>'
+           +'</div>';
+        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">\u2192</div>';
+        var dlTone=dl.added>0?'warn':'ok';
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff">'
+           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Current vs. baseline</div>'
+           +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
+           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
+           +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+dl.reason+'</div>'
+           +'</div>';
+        h+='</div>';
+      }
+    }
+    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget&&ccPersona==='fsm'){
       var pd=CC_PROJ_DP[p][selProj];
       var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
       var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
@@ -6193,8 +6323,9 @@ charges:[
       });
       h+='</div></div></div>';
     }
-    var gtA=isDpView?'1.6fr 80px 150px 105px 120px 175px':(showProjCol?'1.3fr 116px 150px 1.1fr 100px 110px':'1.3fr 116px 1.2fr 100px 110px');
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span><span>'+(isDpView?'Order / action':'')+'</span></div>';
+    var gtA=isDpView?'1.6fr 80px 150px 105px 120px 175px':(showProjCol?'1.3fr 90px 116px 150px 1fr 100px 110px':'1.3fr 90px 116px 1.2fr 100px 110px');
+    if(!isDpView){ h+='<div class="eq-cap" style="margin-bottom:10px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>Recommended actions for all pending requests are in the fulfillment queue. Click any request for more information.</span></div>'; }
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span><span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'){
@@ -6267,21 +6398,22 @@ charges:[
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
         } else {
-          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpExpandToggle(\''+expId+'\')">';
+          h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpDpModal(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>';
+          h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
           if(showProjCol){h+='<div style="font-size:11.5px">'+row._projLabel+'</div>';}
           h+='<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div>';
           h+='<div><span class="tag '+dpTone+'">'+row.state+'</span></div>';
-          h+='<div style="color:var(--g400);font-size:12px">&#9660;</div>';
+          h+='<div style="font-size:10px;color:var(--g500)">View \u2192</div>';
           h+='</div>';
         }
-        if(expH) h+='<div id="'+expId+'" style="display:none">'+expH+'</div>';
+        if(expH&&isDpView) h+='<div id="'+expId+'" style="display:none">'+expH+'</div>';
       } else if(!isDpView) {
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
         var ahExpId='ahx-'+p+'-'+_rowI;
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
       }
     });
     if(!isDpView&&!dpShowAll&&moreN>0){
@@ -6306,23 +6438,7 @@ charges:[
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
-    var capKey=p; var capD=_dpCcCap[capKey]||{};
-    var _pLabels={'equipment':'Equipment','logistics':'Logistics','profservices':'Prof. Services','procurement':'Procurement','prefab':'Pre-fab'};
-    h+='<div style="margin-top:20px;background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px">';
-    h+='<div style="font-size:12px;font-weight:700;color:var(--g900);margin-bottom:10px">02S Capacity — '+(_pLabels[p]||p)+'</div>';
-    h+='<div style="display:flex;gap:10px;margin-bottom:10px">';
-    [{k:'staff',lb:'Staff / FTE available'},{k:'committed',lb:'Committed'},{k:'avail',lb:'Slack capacity'}].forEach(function(cf){
-      var val=capD[cf.k]||'';
-      h+='<div style="flex:1"><label style="font-size:10.5px;font-weight:600;color:var(--g500);display:block;margin-bottom:3px">'+cf.lb+'</label>';
-      h+='<input type="text" value="'+val+'" style="width:100%;padding:5px 8px;border:1px solid var(--g200);border-radius:4px;font-size:12px;background:#fff;box-sizing:border-box" placeholder="e.g. 12"';
-      h+=' oninput="if(!_dpCcCap[\''+capKey+'\'])_dpCcCap[\''+capKey+'\']={}; _dpCcCap[\''+capKey+'\'].'+cf.k+'=this.value;" /></div>';
-    });
-    h+='</div>';
-    h+='<label style="font-size:10.5px;font-weight:600;color:var(--g500);display:block;margin-bottom:3px">Notes / constraints</label>';
-    h+='<textarea rows="2" style="width:100%;padding:6px 8px;border:1px solid var(--g200);border-radius:4px;font-size:12px;background:#fff;resize:vertical;box-sizing:border-box" placeholder="Contractor availability, lead times, known constraints..."';
-    h+=' oninput="if(!_dpCcCap[\''+capKey+'\'])_dpCcCap[\''+capKey+'\']={}; _dpCcCap[\''+capKey+'\'].notes=this.value;">'+(capD.notes||'')+'</textarea>';
-    h+='</div>';
-    var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
+        var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
     if(pillarQ.length){
       h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.cart)+'Portal quotes — pending pricing</span><span class="spacer"></span></div>';
       var gtq='1fr 168px 90px 130px 160px';
@@ -6353,7 +6469,7 @@ charges:[
     if(!r.taxOk){
       if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+'02S mapped this to <b>'+r.tax+(r.mapLeaf?(' \u203a '+r.mapLeaf):'')+'</b> ('+(r.conf||'92')+'% confidence) \u2014 confirm, or adjust the class above</div>'; }
       else { b+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Pick the class this request maps to in the 02S taxonomy, then confirm to release it for pricing and allocation.</span></div>'; }
-      b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpConfirmTax()">Confirm taxonomy</button></div></div>';
+      b+='<div class="modal-foot" style="display:flex;align-items:center"><div style="font-size:11px;color:var(--g500)">After confirming, find this in the <button class="btn btn-ghost btn-sm" style="font-size:11px;padding:1px 6px" onclick="closeModal();ccGo(\'fulfill\')">Fulfillment queue</button></div><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpConfirmTax()">Confirm taxonomy</button></div></div>';
     } else {
       b+='<div class="eq-cap">'+svg('<path d="M20 6L9 17l-5-5"/>')+'<span>Taxonomy confirmed \u2014 this request is released to the Fulfillment queue for the owned vs re-rent decision.</span></div>';
       b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-dark" onclick="dpOpenFulfill(\''+r.id+'\')">Open in Fulfillment queue</button></div></div>';
