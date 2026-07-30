@@ -5189,6 +5189,10 @@ charges:[
     {src:'dp',id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'},
     {src:'dp',id:'fqRv1',ref:'REQ-S-2117',pillar:'services',item:'MEP commissioning lead',qty:'1 FTE',project:'Riverside Medical Center',needby:'Nov 2026',code:'0140-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning lead'},
     {src:'dp',id:'fqCm1',ref:'REQ-F-051',pillar:'prefab',item:'Cable tray bracket assemblies',qty:'lot',project:'Cimarron Data Center',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 custom fabrication required'},
+    {src:'dp',id:'fqPH1',ref:'REQ-P-0531',pillar:'procurement',item:'Solar DC cabling',qty:'Lot',project:'Hercules Solar + BESS',needby:'Oct 2026',code:'2600-3300-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Long lead — confirm spec with EPC, release immediately to protect energization'},
+    {src:'dp',id:'fqPH2',ref:'REQ-P-0537',pillar:'procurement',item:'Monitoring sensors',qty:'24 units',project:'Hercules Solar + BESS',needby:'Sep 2026',code:'2600-3300-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'SCADA integration — verify BOM with controls engineer'},
+    {src:'dp',id:'fqPC1',ref:'REQ-P-0614',pillar:'procurement',item:'UPS bypass cable assembly',qty:'2 sets',project:'Cimarron Data Center',needby:'Dec 2026',code:'2600-0540-0000-0003',kind:'flow',status:'Requested',actLabel:'Place order',nextStatus:'Ordered',hint:'Specialty item — confirm spec with electrical engineer first'},
+    {src:'dp',id:'fqPR1',ref:'REQ-P-0619',pillar:'procurement',item:'Structural bolt package',qty:'Lot',project:'Riverside Medical Center',needby:'Oct 2026',code:'0140-0100-0000-0001',kind:'flow',status:'Requested',actLabel:'Place order',nextStatus:'Ordered',hint:'Confirm structural spec before releasing'},
     {src:'dp',id:'fqRv2',ref:'REQ-P-0621',pillar:'procurement',item:'Surgical fixture hardware',qty:'lot',project:'Riverside Medical Center',needby:'Sep 2026',code:'0140-0100-0000-0001',kind:'flow',status:'Requested',actLabel:'Place order',nextStatus:'Ordered',hint:'Specialty item \u2014 confirm spec with MEP engineer first'}
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
@@ -6124,7 +6128,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
         {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
         {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'},
-        {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD'}
+        {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD'},
+        {item:'Surgical fixture hardware',cat:'sm_tools',qty:'Lot',window:'Sep 2026',state:'Requested',ordId:null,cost:'$28K est.',firm:'TBD',note:'New request REQ-P-0621 — sourcing in fulfillment queue.'}
       ]},
       cimarron:{budget:1200000,dpSpent:920000,adHoc:50000,rows:[
         {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
