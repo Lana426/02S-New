@@ -5959,7 +5959,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready'}
       ],
       rollCols:['Category','Peak units','Peak month','vs plan'],
-      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Cranes',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'bad'}],
+      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Cranes',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'warn'}],
       varSummary:'Aerial running 14 units over plan for October \u2014 the main portfolio driver.',
       consol:{save:'~$62K',cta:'Consolidate aerial',detail:'Aerial demand overlaps all three projects and peaks at 82 units in October, 14 over plan. Consolidate into one fleet re-rent rate instead of per-project spot rentals.'} },
     logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
@@ -6022,7 +6022,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-F-052',asset:'Server room partition panels \u00b7 qty 6',project:'Cimarron Data Center',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],
-      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 At risk Jul\u2013Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'2 active',c:'On plan',v:'BESS e-houses + cable tray',vt:'ok'},{a:'Structural Steel',b:'1 active',c:'On plan',v:'Headwall assemblies',vt:'ok'},{a:'Misc Steel',b:'1 active',c:'On plan',v:'\u2014',vt:'ok'},{a:'Concrete',b:'\u2014',c:'\u2014',v:'\u2014',vt:'neu'}],
+      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 At risk Jul\u2013Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'2 active',c:'On plan',v:'BESS e-houses + cable tray',vt:'ok'},{a:'Structural Steel',b:'1 active',c:'On plan',v:'Headwall assemblies',vt:'ok'},{a:'Misc Steel',b:'1 active',c:'On plan',v:'On plan',vt:'ok'},{a:'Concrete',b:'\u2014',c:'\u2014',v:'No demand',vt:'neu'}],
       varSummary:'Mechanical at risk Jul\u2013Aug (Hercules concurrent orders) \u00b7 Misc Steel at risk Oct (Cimarron overlap)',
       consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot. Batch the run to cut setup cost and protect the November date.'} }
   };
@@ -6559,7 +6559,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpRowClick(p,proj,idx){
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
-    if(p==='equipment'&&row&&row.ordId){ccDpTracker(row.ordId);return;}
+    if(row&&row.ordId){ccDpTracker(row.ordId);return;}
     dpDpModal(p,proj,idx);
   }
   function ccDpTracker(ordId){
@@ -6583,7 +6583,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
       var hasD=!!(b.dispute||b.ccChange);
       var did='bdet-'+b.inv.replace(/[^a-zA-Z0-9]/g,'-');
-      h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="dpExpandToggle(\''+did+'\')"':'')+'>';
+      h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="event.stopPropagation();var nx=this.nextElementSibling;if(nx)nx.style.display=nx.style.display===\'none\'?\'block\':\'none\'"':'')+'>';
       h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
