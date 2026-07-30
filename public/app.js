@@ -6152,7 +6152,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]}
     },
     prefab:{
-      hercules:{budget:900000,dpSpent:720000,adHoc:80000,rows:[
+      hercules:{budget:900000,dpSpent:720000,adHoc:80000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Mechanical',b:'2 active',c:'⚠ At risk Jul–Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'1 active',c:'Submittal pending',v:'E-houses',vt:'warn'},{a:'Structural',b:'1 delivered',c:'Delivered Jun',v:'On plan',vt:'ok'}],varSummary:'Mechanical at risk Jul–Aug (concurrent orders) · E-house submittal pending approval',rows:[
         {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',cost:'$180K',firm:'Piperite Fab'},
         {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace'},
         {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
@@ -6857,6 +6857,23 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div></div>';
       }
     }
+    if(ns&&p==='prefab'&&!isDpView){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">Shop at 94% capacity Aug&ndash;Sep</div><div class="isd">E-house submittal deadline 3 days &middot; Piperite Fab slot contested across 2 projects</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SHOP CAPACITY</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Aug 12&ndash;Sep 4: 94%</div>';
+    h+='<div style="font-size:11px;color:var(--red)">Hercules + Riverside competing for Piperite slot</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SUBMITTAL ALERT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">E-house &mdash; deadline Jul 15</div>';
+    h+='<div style="font-size:11px;color:var(--red)">3 days &middot; approve to protect Nov energization</div></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">P6 IMPACT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Pipe rack install: Sep 28</div>';
+    h+='<div style="font-size:11px;color:#d97706">2 days behind &middot; inspect Jul 22</div></div>';
+    h+='</div>';
+    }
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span><span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -7320,14 +7337,31 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
 
   // ─── RENDER: EQUIPMENT ───────────────────────────────────────────────────────
   function renderEquipmentCapPlan(proj){
+    var ns=CURRENT==='ns';
     var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Capacity Planning</span>';
-    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Alpha · In progress</span></div>';
-    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:36px 20px;text-align:center">';
-    h+='<div style="font-size:28px;color:var(--g250);margin-bottom:10px">⧄</div>';
-    h+='<div style="font-size:13px;font-weight:600;color:var(--g400);margin-bottom:6px">Placeholder — Ongoing Alpha build</div>';
-    h+='<div style="font-size:12px;color:var(--g400);max-width:400px;margin:0 auto;line-height:1.6">Equipment capacity planning (own vs. re-rent optimization, fleet pool allocation, regional availability) is under active development.</div>';
-    h+='</div></div>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">'+(ns?'North Star':'V1 · Alpha')+'</span></div>';
+    if(ns){
+    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">P6 schedule shift &middot; 2 lifecycle alerts this period</div><div class="isd">Cimarron excavation phase pushed &middot; 2 dozer certs due Oct 3 &middot; Hercules Oct peak 1 crane unconfirmed</div></div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
+    h+='<div style="background:#fff;border:1px solid rgba(251,146,60,.35);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SCHEDULE SHIFT</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Cimarron phase &mdash; +2 wks</div>';
+    h+='<div style="font-size:11px;color:#d97706">Excavator on-rent extended &middot; est. $28K additional</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">ASSET LIFECYCLE</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Dozer D6 fleet &mdash; Oct 3</div>';
+    h+='<div style="font-size:11px;color:var(--red)">12 units inspection due &middot; cert renewal required</div></div>';
+    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">FLEET GAP</div>';
+    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Hercules Oct peak: crane</div>';
+    h+='<div style="font-size:11px;color:var(--red)">230T crawler unconfirmed &middot; source window closes Sep 15</div></div>';
+    h+='</div>';
+    } else {
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Alpha.</b> Own vs. re-rent optimization and fleet pool allocation are under active development. <span style="color:var(--g400)">⭐ North Star: 02S monitors P6 schedule shifts and asset lifecycle to surface rental extension risk and inspection due dates.</span></div>';
+    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:24px 20px;text-align:center;font-size:12px;color:var(--g400)">Fleet pool allocation &mdash; in development</div>';
+    }
+    h+='</div>';
     return h;
   }
 
