@@ -6006,8 +6006,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued'}
       ],
       rollCols:['Category','Committed','Order window','vs plan'],
-      roll:[{a:'Electrical',b:'$3.5M',c:'Q2 2026',v:'+$0.3M',vt:'warn'},{a:'Energy storage',b:'$2.4M',c:'Q2 2026',v:'on plan',vt:'ok'},{a:'Modules',b:'$4.6M',c:'Q3 2026',v:'on plan',vt:'ok'}],
-      varSummary:'Electrical spend $0.3M over plan \u2014 same OEM across two projects.',
+      roll:[{a:'Electrical & HV',b:'$8.1M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$69K',c:'Q2–Q3 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'}],
+      varSummary:'Electrical & HV $0.3M over plan — BESS containers and MV switchgear same OEM across two projects.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'Switchgear and transformer share the same OEM across two projects. Combine POs to hit the next volume tier and shorten lead time.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'32',sub:'5 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
@@ -6239,6 +6239,84 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     ],
     'ORD-3143':[
       {inv:'BILL-MB-0726',period:'Jul 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'}
+    ],
+    'ORD-3113':[
+      {inv:'BILL-SBL-MG-0326',period:'Mar 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-SBL-MG-0426',period:'Apr 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-SBL-MG-0526',period:'May 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-SBL-MG-0626',period:'Jun 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'}
+    ],
+    'ORD-3123':[
+      {inv:'BILL-SBL-FK-0426',period:'Apr 2026',amount:4000,status:'Paid',cc:'0500-0100-0000-0002'},
+      {inv:'BILL-SBL-FK-0526',period:'May 2026',amount:4000,status:'Paid',cc:'0500-0100-0000-0002'},
+      {inv:'BILL-SBL-FK-0626',period:'Jun 2026',amount:4000,status:'Paid',cc:'0500-0100-0000-0002'},
+      {inv:'BILL-SBL-FK-0726',period:'Jul 2026',amount:4000,status:'Pending',cc:'0500-0100-0000-0002'}
+    ],
+    'ORD-3124':[
+      {inv:'BILL-UR-EX-0726',period:'Jul 2026',amount:14400,status:'Pending',cc:'0500-0300-0000-0002'}
+    ],
+    'ORD-3125':[
+      {inv:'BILL-VR-CR-0426',period:'Apr 2026',amount:6400,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-VR-CR-0526',period:'May 2026',amount:6400,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-VR-CR-0626',period:'Jun 2026',amount:6400,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-VR-CR-0726',period:'Jul 2026',amount:6400,status:'Pending',cc:'0600-0310-0000-0003'}
+    ],
+    'ORD-3126':[
+      {inv:'BILL-CAT-MG-0426',period:'Apr 2026',amount:9600,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-CAT-MG-0526',period:'May 2026',amount:9600,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-CAT-MG-0626',period:'Jun 2026',amount:9600,status:'Paid',cc:'0600-0310-0000-0003'},
+      {inv:'BILL-CAT-MG-0726',period:'Jul 2026',amount:9600,status:'Pending',cc:'0600-0310-0000-0003'}
+    ],
+    'ORD-3138':[
+      {inv:'BILL-MSA-0526',period:'May 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'},
+      {inv:'BILL-MSA-0726',period:'Jul 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'}
+    ],
+    'ORD-3144':[
+      {inv:'BILL-GTL-0526',period:'May 2026',amount:8400,status:'Paid',cc:'0600-0820-0000-0003'},
+      {inv:'BILL-GTL-0626',period:'Jun 2026',amount:8400,status:'Paid',cc:'0600-0820-0000-0003'},
+      {inv:'BILL-GTL-0726',period:'Jul 2026',amount:8400,status:'Pending',cc:'0600-0820-0000-0003'}
+    ],
+    'ORD-3101':[
+      {inv:'BILL-MW-BP-0326',period:'Mar 2026',amount:6000,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3102':[
+      {inv:'BILL-MW-CB-0326',period:'Mar 2026',amount:4800,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3104':[
+      {inv:'BILL-BSH-0426',period:'Apr 2026',amount:3600,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3106':[
+      {inv:'BILL-ICM-0626',period:'Jun 2026',amount:65000,status:'Paid',cc:'0300-0540-0000-0001'}
+    ],
+    'ORD-3134':[
+      {inv:'BILL-ICM-0726R',period:'Jul 2026',amount:135000,status:'Pending',cc:'0500-0320-0000-0002'}
+    ],
+    'ORD-3136':[
+      {inv:'BILL-ABB-DEP-0726',period:'Jul 2026 (30% deposit)',amount:360000,status:'Paid',cc:'2600-3300-0000-0001'}
+    ],
+    'ORD-3139':[
+      {inv:'BILL-VRT-DEP-0726',period:'Jul 2026 (50% deposit)',amount:72000,status:'Pending',cc:'2600-0540-0000-0003'}
+    ],
+    'ORD-3140':[
+      {inv:'BILL-PDT-0726',period:'Jul 2026',amount:38000,status:'Pending',cc:'2600-0540-0000-0003'}
+    ],
+    'ORD-3141':[
+      {inv:'BILL-TAT-DEP-0726',period:'Jul 2026 (30% deposit)',amount:54000,status:'Pending',cc:'2600-0540-0000-0003'}
+    ],
+    'ORD-3142':[
+      {inv:'BILL-LBT-DEP-0726',period:'Jul 2026 (30% deposit)',amount:192000,status:'Pending',cc:'2600-0540-0000-0003'}
+    ],
+    'ORD-3108':[
+      {inv:'BILL-PIP-DEP-0526',period:'May 2026 (50% deposit)',amount:90000,status:'Paid',cc:'0100-0440-0000-0001'}
+    ],
+    'ORD-3133':[
+      {inv:'BILL-PIP-DEP-0626R',period:'Jun 2026 (50% deposit)',amount:46000,status:'Paid',cc:'0500-0320-0000-0002'}
+    ],
+    'ORD-3135':[
+      {inv:'BILL-MOD-DEP-0726',period:'Jul 2026 (50% deposit)',amount:36000,status:'Pending',cc:'2600-0540-0000-0003'}
+    ],
+    'ORD-3132':[
+      {inv:'BILL-3PL-DEP-0726',period:'Jul 2026 (PO confirmation)',amount:4200,status:'Pending',cc:'2600-0100-0000-0003'}
     ]
   };
   var dpCur=null;
@@ -6506,7 +6584,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var hasD=!!(b.dispute||b.ccChange);
       var did='bdet-'+b.inv.replace(/[^a-zA-Z0-9]/g,'-');
       h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="dpExpandToggle(\''+did+'\')"':'')+'>';
-      h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
+      h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
       h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
@@ -6715,7 +6793,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             _actCell='<div style="font-size:10.5px">';
             _actCell+='<button style="background:none;border:none;padding:0;cursor:pointer;color:var(--charcoal);font-weight:600;font-size:10.5px;text-decoration:underline;text-underline-offset:2px" '+'onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+ row.ordId+'</button>';
             _actCell+='<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
-            if(_dispR){_actCell+='<div style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px">⚠ Bill issue — click to review</div>';}
+            if(_dispR){_actCell+='<div onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')" style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px">⚠ Bill issue — click to review</div>';}
             _actCell+='</div>';
           } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'){
             _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGo(\'fulfill\')">\u2192 Fulfillment queue</button>';
@@ -6784,13 +6862,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
       h+='</div>';
     }
-    if(selProj!=='all'){
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up')+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
     var gt2='1fr 150px 1fr 120px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
-    } else { h+=renderCapAtRiskSummary(p); }
+    if(selProj==='all'){ h+=renderCapAtRiskSummary(p); }
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
     if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
