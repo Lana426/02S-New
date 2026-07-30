@@ -1932,7 +1932,7 @@ function renderProfServicesDP(){
     {id:'ORD-3103',od:'2026-07-18',item:'Tone shear wrenches TS60/TS90',sub:'12 units \u00b7 structural bolt tensioning',pillar:'procurement',dates:'Aug 15, 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:4,plan:null,latest:'Delivered \u2014 12 tone shear wrenches received Aug 15. Bolt tensioning crews active.'},
     {id:'ORD-3104',od:'2026-06-15',item:'Angle grinders \u2014 cordless 20v',sub:'16 units \u00b7 metalwork & weld prep',pillar:'procurement',dates:'Aug 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jul 30 \u2014 received and logged at tool crib.'},
     {id:'ORD-3105',od:'2026-07-15',item:'HEPA vacuums \u2014 10 gal cordless',sub:'6 units \u00b7 silica dust control OSHA Table 1',pillar:'procurement',dates:'Aug 5, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'PO issued Jul 15 \u2014 delivery expected Aug 5. Expedited per OSHA compliance.'},
-    {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{window:'Jul 18',carrier:'02S Prefab Shop A',docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
+    {id:'ORD-3106',od:'2026-06-01',item:'L2 headwall assemblies',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 20, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Delivered Jul 18 \u2014 receiving inspection complete. Installed in field.',recv:{status:'completed',window:'Jul 18',carrier:'02S Prefab Shop A',checklist:[{t:'Confirm delivery window with 02S shop',due:'Jul 17',done:true},{t:'Receiving inspection \u2014 dimensions and finish',due:'Jul 18',done:true},{t:'Sign off delivery receipt',due:'Jul 18',done:true}],docs:['Shop drawings (PDF)','Receiving inspection checklist (PDF)']}},
     {id:'ORD-3107',od:'2026-07-01',item:'Modular e-houses (BESS)',sub:'2 units \u00b7 custom fabrication',pillar:'prefab',dates:'Nov 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submittal under engineering review \u2014 approval expected Aug 2026.'},
     {id:'ORD-3108',od:'2026-05-01',item:'Prefab pipe rack modules',sub:'12 modules \u00b7 shop-fabricated',pillar:'prefab',dates:'Aug 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved, 4 of 12 modules complete. Delivery Aug 2026.'},
     {id:'ORD-3109',od:'2026-07-10',item:'Skid-mounted pump assemblies',sub:'4 units \u00b7 in fabrication',pillar:'prefab',dates:'Sep 1, 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 shop drawings approved Jul 5. Delivery on track for Sep 1.'},
@@ -3669,12 +3669,12 @@ charges:[
     var r=o.recv, done=r.status==='completed';
     var hdrIcon = done?'<path d="M20 6L9 17l-5-5"/>':'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>';
     var hdrLbl = done?'Delivery completed ✓':'Delivery scheduled';
-    var checks = r.checklist.map(function(c){
+    var checks = (r.checklist||[]).map(function(c){
       return '<div class="ck-row'+(c.done?' done':' pending')+'">'+
         (c.done?'<span class="ck-ic">'+svg('<path d="M20 6L9 17l-5-5"/>',3)+'</span>':'<span class="ck-ic todo"></span>')+
         '<span class="ck-t">'+c.t+'</span><span class="ck-due">Due '+c.due+'</span></div>';
     }).join('');
-    var docs = r.docs.map(function(d){
+    var docs = (r.docs||[]).map(function(d){
       return '<span class="doc-chip" data-doc="'+d.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation();openDocChip(this.getAttribute(\'data-doc\'))">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
     }).join('');
     return '<div class="recv '+(done?'d':'s')+'">'+
@@ -6852,7 +6852,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var g=CC_PREFAB_CAP.gaps[k][0];
           var lbl=CC_PREFAB_CAP.typeLabel[g.t]||g.t;
           var pLbl=_PROJ_LABELS[k]||k;
-          h+='<span style="display:inline-block;margin-right:16px">\u26a0 <b>'+pLbl+'</b> \u2014 '+lbl+': '+g.note+'&nbsp;&nbsp;<span style="color:var(--charcoal);cursor:pointer;text-decoration:underline" onclick="_dpCcProjMap[p]=\''+k+'\';ccGo(_PILLAR_SCREEN[p])">View plan</span></span>';
+          h+='<span style="display:inline-block;margin-right:16px">\u26a0 <b>'+pLbl+'</b> \u2014 '+lbl+': '+g.note+'&nbsp;&nbsp;<span style="color:var(--charcoal);cursor:pointer;text-decoration:underline" onclick="_dpCcProjMap[\'prefab\']=\''+k+'\';ccGo(\'dpprefab\')">View plan</span></span>';
         });
         h+='</div></div>';
       }
