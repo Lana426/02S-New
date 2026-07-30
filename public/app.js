@@ -6542,9 +6542,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="_dpCcProjMap[\''+p+'\']=\''+pr[0]+'\';renderCcDemand(\''+p+'\')">'+pr[1]+'</button>';
     });
     h+='</div>';
+    if(selProj==='all'){
     h+='<div class="vitals" style="grid-template-columns:repeat('+cfg.kpis.length+',1fr)">';
     cfg.kpis.forEach(function(k){ var v=k.v, tone=k.tone; if(k.dyn==='tax'){ v=''+pending; tone=pending>0?'warn':'ok'; } h+='<div class="vital '+tone+'"><div class="vk">'+svg(dpIcon(k.icon))+k.k+'</div><div class="vv">'+v+'</div><div class="vsub">'+k.sub+'</div></div>'; });
     h+='</div>';
+    }
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     if(selProj!=='all'){
@@ -6926,13 +6928,185 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   }
 
   // ─── RENDER: EQUIPMENT (placeholder) ────────────────────────────────────────
+  // ─── SHARED HELPERS ─────────────────────────────────────────────────────────
+  function _sColor(s){
+    if(/active|on.rent|in.fab|deployed|scheduled|delivered|po.issued|ordered/i.test(s||''))return '#10b981';
+    if(/projected|planned/i.test(s||''))return '#3b82f6';
+    if(/request|draft|pending|awaiting/i.test(s||''))return '#f59e0b';
+    if(/demob|off.rent/i.test(s||''))return '#9ca3af';
+    if(/at.risk/i.test(s||''))return '#ef4444';
+    return '#3b82f6';
+  }
+  function _sOpacity(s){
+    if(/active|deployed|scheduled|on.rent|in.fab|po.issued|ordered/i.test(s||''))return '.82';
+    if(/projected|planned|delivered/i.test(s||''))return '.65';
+    if(/request|draft|awaiting/i.test(s||''))return '.5';
+    if(/demob|off.rent/i.test(s||''))return '.35';
+    if(/pending/i.test(s||''))return '.55';
+    return '.65';
+  }
+  function _sBadge(s){
+    var t='neu';
+    if(/active|deployed|delivered|ordered|po.issued|on.rent|in.fab|scheduled/i.test(s||''))t='ok';
+    else if(/request|draft|awaiting|sow.pend/i.test(s||''))t='warn';
+    else if(/at.risk/i.test(s||''))t='bad';
+    else if(/demob|off.rent/i.test(s||''))t='neu';
+    return '<span class="tag '+t+'" style="font-size:10px">'+(s||'—')+'</span>';
+  }
+  function _logN(s){
+    var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+    var p=(s||'').trim().split(' ');
+    return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));
+  }
+  function _ganttRange(items,sf,ef){
+    var startNs=items.map(function(it){return _logN(it[sf]);});
+    var endNs=items.map(function(it,i){var sn=startNs[i],en=_logN(it[ef]);return en<sn?en+360:en;});
+    var allN=startNs.concat(endNs);
+    return {lo:Math.min.apply(null,allN)-5,hi:Math.max.apply(null,allN)+10};
+  }
+  function _pct(n,lo,span){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+
+  // ─── ACCORDION TOGGLES ──────────────────────────────────────────────────────
+  function logCapAccToggle(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
+  function psCapAccToggle(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
+
+  // ─── LOGISTICS EDIT HELPERS ──────────────────────────────────────────────────
+  function logCapAdd(proj){
+    if(!CC_LOGISTICS_CAP.plan[proj])CC_LOGISTICS_CAP.plan[proj]=[];
+    CC_LOGISTICS_CAP.plan[proj].push({item:'New item',cat:'transport',qty:'1',start:'Aug 1',end:'Aug 15',state:'Planned'});
+    var idx=CC_LOGISTICS_CAP.plan[proj].length-1;
+    renderCcDemand('logistics');
+    setTimeout(function(){logCapEdit(proj,idx);},50);
+  }
+  function logCapEdit(proj,idx){
+    var it=CC_LOGISTICS_CAP.plan[proj][idx]; if(!it)return;
+    var cap=CC_LOGISTICS_CAP;
+    var catOpts=Object.keys(cap.typeLabel).map(function(k){return '<option value="'+k+'"'+(it.cat===k?' selected':'')+'>'+cap.typeLabel[k]+'</option>';}).join('');
+    var stateOpts=['Deployed','Active','On-rent','Planned','Projected','Requested','Scheduled','Pending','PO issued','Demobilized','Off-rent','At-risk'].map(function(s){return '<option'+(it.state===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">Edit logistics line</div><div class="sub">'+proj+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Item</span><span><input id="lce-item" class="dp-input" value="'+it.item+'"></span></div>';
+    b+='<div class="fq-crow"><span>Category</span><span><select id="lce-cat" class="dp-sel">'+catOpts+'</select></span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span><input id="lce-qty" class="dp-input" value="'+it.qty+'"></span></div>';
+    b+='<div class="fq-crow"><span>Start</span><span><input id="lce-start" class="dp-input" value="'+it.start+'"></span></div>';
+    b+='<div class="fq-crow"><span>End</span><span><input id="lce-end" class="dp-input" value="'+it.end+'"></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><select id="lce-state" class="dp-sel">'+stateOpts+'</select></span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" style="color:var(--red);margin-right:auto" onclick="logCapDelete(\''+proj+'\','+idx+')">Delete</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="logCapSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal(b);
+  }
+  function logCapSave(proj,idx){
+    var it=CC_LOGISTICS_CAP.plan[proj][idx]; if(!it)return;
+    it.item=document.getElementById('lce-item').value;
+    it.cat=document.getElementById('lce-cat').value;
+    it.qty=document.getElementById('lce-qty').value;
+    it.start=document.getElementById('lce-start').value;
+    it.end=document.getElementById('lce-end').value;
+    it.state=document.getElementById('lce-state').value;
+    closeModal(); renderCcDemand('logistics');
+  }
+  function logCapDelete(proj,idx){
+    CC_LOGISTICS_CAP.plan[proj].splice(idx,1);
+    closeModal(); renderCcDemand('logistics');
+  }
+
+  // ─── PROF SERVICES EDIT HELPERS ─────────────────────────────────────────────
+  function psCapAdd(proj){
+    if(!CC_PROFSERVICES_CAP.plan[proj])CC_PROFSERVICES_CAP.plan[proj]=[];
+    CC_PROFSERVICES_CAP.plan[proj].push({scope:'ie',label:'New scope',fte:1,start:'Aug 1',end:'Dec 31',status:'planned'});
+    var idx=CC_PROFSERVICES_CAP.plan[proj].length-1;
+    renderCcDemand('profservices'); setTimeout(function(){psCapEdit(proj,idx);},50);
+  }
+  function psCapEdit(proj,idx){
+    var it=CC_PROFSERVICES_CAP.plan[proj][idx]; if(!it)return;
+    var cap=CC_PROFSERVICES_CAP;
+    var scOpts=Object.keys(cap.scopeLabel).map(function(k){return '<option value="'+k+'"'+(it.scope===k?' selected':'')+'>'+cap.scopeLabel[k]+'</option>';}).join('');
+    var stOpts=['active','sow_pending','requested','demobilized','planned'].map(function(s){return '<option'+(it.status===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">Edit resource line</div><div class="sub">'+proj+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Label</span><span><input id="pce-label" class="dp-input" value="'+it.label+'"></span></div>';
+    b+='<div class="fq-crow"><span>Discipline</span><span><select id="pce-scope" class="dp-sel">'+scOpts+'</select></span></div>';
+    b+='<div class="fq-crow"><span>FTE</span><span><input id="pce-fte" class="dp-input" value="'+it.fte+'"></span></div>';
+    b+='<div class="fq-crow"><span>Start</span><span><input id="pce-start" class="dp-input" value="'+it.start+'"></span></div>';
+    b+='<div class="fq-crow"><span>End</span><span><input id="pce-end" class="dp-input" value="'+it.end+'"></span></div>';
+    b+='<div class="fq-crow"><span>SOW ref</span><span><input id="pce-sow" class="dp-input" value="'+(it.sow||'')+'"></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><select id="pce-status" class="dp-sel">'+stOpts+'</select></span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" style="color:var(--red);margin-right:auto" onclick="psCapDelete(\''+proj+'\','+idx+')">Delete</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="psCapSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal(b);
+  }
+  function psCapSave(proj,idx){
+    var it=CC_PROFSERVICES_CAP.plan[proj][idx]; if(!it)return;
+    it.label=document.getElementById('pce-label').value;
+    it.scope=document.getElementById('pce-scope').value;
+    it.fte=parseFloat(document.getElementById('pce-fte').value)||it.fte;
+    it.start=document.getElementById('pce-start').value;
+    it.end=document.getElementById('pce-end').value;
+    it.sow=document.getElementById('pce-sow').value||undefined;
+    it.status=document.getElementById('pce-status').value;
+    closeModal(); renderCcDemand('profservices');
+  }
+  function psCapDelete(proj,idx){
+    CC_PROFSERVICES_CAP.plan[proj].splice(idx,1);
+    closeModal(); renderCcDemand('profservices');
+  }
+
+  // ─── PROCUREMENT HELPERS ────────────────────────────────────────────────────
+  function procToggle(proj,cat,field){
+    if(!CC_PROCUREMENT_CAP.state[proj])CC_PROCUREMENT_CAP.state[proj]={};
+    if(!CC_PROCUREMENT_CAP.state[proj][cat])CC_PROCUREMENT_CAP.state[proj][cat]={};
+    CC_PROCUREMENT_CAP.state[proj][cat][field]=!CC_PROCUREMENT_CAP.state[proj][cat][field];
+    renderCcDemand('procurement');
+  }
+  function procExpandCat(id){
+    var el=document.getElementById(id); if(!el)return;
+    el.style.display=el.style.display==='none'?'block':'none';
+  }
+  function procCapEditNote(proj,cat){
+    var cur=(CC_PROCUREMENT_CAP.state[proj]&&CC_PROCUREMENT_CAP.state[proj][cat]&&CC_PROCUREMENT_CAP.state[proj][cat].note)||'';
+    var b='<div class="fq-req"><div class="fq-req-t">Edit note</div><div class="sub">'+CC_PROCUREMENT_CAP.catLabel[cat]+' · '+proj+'</div></div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Note</span><span><input id="pcn-note" class="dp-input" value="'+cur+'"></span></div></div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="(function(){if(!CC_PROCUREMENT_CAP.state[\''+proj+'\'])CC_PROCUREMENT_CAP.state[\''+proj+'\']={}; if(!CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\'])CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\']={};CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\'].note=document.getElementById(\'pcn-note\').value;closeModal();renderCcDemand(\'procurement\');})()">Save</button></div>';
+    openModal(b);
+  }
+  function procRowEdit(proj,idx){
+    var rows=CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows;
+    if(!rows||!rows[idx])return;
+    var r=rows[idx];
+    var stateOpts=['Delivered','PO issued','Ordered','Active','Projected','At-risk','Requested','Pending','Awaiting pricing'].map(function(s){return '<option'+(r.state===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">Edit procurement item</div><div class="sub">'+proj+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Item</span><span><input id="pre-item" class="dp-input" value="'+r.item+'"></span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span><input id="pre-qty" class="dp-input" value="'+r.qty+'"></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><select id="pre-state" class="dp-sel">'+stateOpts+'</select></span></div>';
+    b+='<div class="fq-crow"><span>Need by</span><span><input id="pre-window" class="dp-input" value="'+r.window+'"></span></div>';
+    b+='<div class="fq-crow"><span>Cost est.</span><span><input id="pre-cost" class="dp-input" value="'+(r.cost||'')+'"></span></div>';
+    b+='<div class="fq-crow"><span>Vendor</span><span><input id="pre-firm" class="dp-input" value="'+(r.firm||'TBD')+'"></span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="procRowSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal(b);
+  }
+  function procRowSave(proj,idx){
+    var rows=CC_PROJ_DP.procurement[proj].rows; if(!rows||!rows[idx])return;
+    var r=rows[idx];
+    r.item=document.getElementById('pre-item').value;
+    r.qty=document.getElementById('pre-qty').value;
+    r.state=document.getElementById('pre-state').value;
+    r.window=document.getElementById('pre-window').value;
+    r.cost=document.getElementById('pre-cost').value;
+    r.firm=document.getElementById('pre-firm').value;
+    closeModal(); renderCcDemand('procurement');
+  }
+
+  // ─── RENDER: EQUIPMENT ───────────────────────────────────────────────────────
   function renderEquipmentCapPlan(proj){
     var h='<div style="margin-top:24px">';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Own vs. Re-rent Planning</span>';
-    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Placeholder · Alpha build</span></div>';
-    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:24px 20px;text-align:center">';
-    h+='<div style="font-size:13px;font-weight:600;color:var(--g400);margin-bottom:6px">Own vs. Re-rent Decision Support</div>';
-    h+='<div style="font-size:12px;color:var(--g400);max-width:420px;margin:0 auto;line-height:1.6">Fleet utilization planning, owned-vs-re-rent optimization, and regional pool management are under active development in Alpha. This section will auto-populate from confirmed equipment schedules.</div>';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Capacity Planning</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Alpha · In progress</span></div>';
+    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:36px 20px;text-align:center">';
+    h+='<div style="font-size:28px;color:var(--g250);margin-bottom:10px">⧄</div>';
+    h+='<div style="font-size:13px;font-weight:600;color:var(--g400);margin-bottom:6px">Placeholder — Ongoing Alpha build</div>';
+    h+='<div style="font-size:12px;color:var(--g400);max-width:400px;margin:0 auto;line-height:1.6">Equipment capacity planning (own vs. re-rent optimization, fleet pool allocation, regional availability) is under active development. This section will auto-populate from confirmed equipment schedules in a future release.</div>';
     h+='</div></div>';
     return h;
   }
@@ -6953,7 +7127,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span class="dp-sec-t">'+svg(IC.truck)+'GC / GR Fleet Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, GC/GR lines auto-populate from the project mobilization template. Move events derive from delivery and setup schedules. <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
     var gCols='1.4fr 120px 70px 80px 80px 80px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
     h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Item</span><span>Category</span><span>Qty</span><span>Start</span><span>End</span><span>Status</span><span></span></div>';
@@ -6992,24 +7166,45 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       if(bw>5)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
       h+='</div></div></div>';
     });
-    // legend
     h+='<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#10b981;border-radius:2px;opacity:.82"></div>Active / Deployed</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned / Projected</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#f59e0b;border-radius:2px;opacity:.55"></div>Requested / Pending</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
-    // fleet utilization cards
+    // within capacity / at-risk accordions
     var catTotals={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;catTotals[it.cat]=(catTotals[it.cat]||0)+n;});
-    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">';
-    Object.keys(catTotals).forEach(function(cat){
-      var owned=cap.fleetOwned[cat];var used=catTotals[cat];var risk=typeof owned==='number'&&used>owned;
-      h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
-      h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.typeLabel[cat]||cat)+'</div>';
-      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+(typeof owned==='number'?'<span contenteditable="true" onblur="CC_LOGISTICS_CAP.fleetOwned[\''+cat+'\']=parseInt(this.innerText,10)||'+owned+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+owned+'</span>':'—')+'</div>';
-      h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over fleet':'Within capacity')+'</div>';
+    var withinItems=[],atRiskItems=[];
+    items.forEach(function(it){var owned=cap.fleetOwned[it.cat];var used=catTotals[it.cat];var risk=typeof owned==='number'&&used>owned;(risk?atRiskItems:withinItems).push(it);});
+    var accId='log-acc-'+proj;
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    // within capacity
+    h+='<div style="border:1px solid rgba(16,185,129,.2);border-radius:8px;overflow:hidden">';
+    h+='<div style="padding:10px 14px;background:rgba(16,185,129,.06);display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="logCapAccToggle(\''+accId+'-ok\')">';
+    h+='<div><span style="font-size:12.5px;font-weight:700;color:#047857">✓ Within capacity</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+withinItems.length+' item'+(withinItems.length!==1?'s':'')+'</span></div>';
+    h+='<span style="font-size:11px;color:var(--g400)">▾</span></div>';
+    h+='<div id="'+accId+'-ok">';
+    withinItems.forEach(function(it){
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 14px;border-top:1px solid rgba(16,185,129,.1);font-size:11.5px">';
+      h+='<span style="color:var(--g700)">'+it.item+'</span><span style="color:var(--g500)">'+(cap.typeLabel[it.cat]||it.cat)+' · '+it.qty+'</span></div>';
+    });
+    if(!withinItems.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">No items within capacity.</div>';
+    h+='</div></div>';
+    // at risk
+    h+='<div style="border:1px solid '+(atRiskItems.length?'rgba(239,68,68,.25)':'var(--g200)')+';border-radius:8px;overflow:hidden">';
+    h+='<div style="padding:10px 14px;background:'+(atRiskItems.length?'rgba(239,68,68,.05)':'var(--g50)')+';display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="logCapAccToggle(\''+accId+'-risk\')">';
+    h+='<div><span style="font-size:12.5px;font-weight:700;color:'+(atRiskItems.length?'var(--red)':'var(--g500)')+'">'+( atRiskItems.length?'⚠ At risk':'— No risks')+'</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+atRiskItems.length+' item'+(atRiskItems.length!==1?'s':'')+'</span></div>';
+    h+='<span style="font-size:11px;color:var(--g400)">▾</span></div>';
+    h+='<div id="'+accId+'-risk">';
+    atRiskItems.forEach(function(it){
+      var owned=cap.fleetOwned[it.cat];
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 14px;border-top:1px solid rgba(239,68,68,.1);font-size:11.5px">';
+      h+='<span style="color:var(--red)">'+it.item+'</span>';
+      h+='<span style="color:var(--g500)">'+(cap.typeLabel[it.cat]||it.cat)+' · using '+catTotals[it.cat]+' / <b contenteditable="true" onblur="CC_LOGISTICS_CAP.fleetOwned[\''+it.cat+'\']=parseInt(this.innerText,10)||'+(owned||0)+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+(owned||0)+'</b> owned</span>';
       h+='</div>';
     });
+    if(!atRiskItems.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">All items within fleet capacity.</div>';
+    h+='</div></div>';
     h+='</div>';
     // move events
     var moves=cap.moveEvents[proj]||[];
@@ -7017,7 +7212,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Peak move events</div>';
       h+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
       moves.forEach(function(m){var risk=m.events>=cap.moveCapacity*.8;h+='<div style="background:'+(risk?'rgba(239,68,68,.06)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:6px 10px;font-size:11px"><b>'+m.week+'</b> — '+m.events+' moves'+(m.note?' · '+m.note:'')+(risk?' <span style="color:var(--red)">⚠</span>':'')+'</div>';});
-      h+='</div><div style="font-size:10.5px;color:var(--g400);margin-top:5px">Regional crew capacity: <b contenteditable="true" onblur="CC_LOGISTICS_CAP.moveCapacity=parseInt(this.innerText,10)||'+cap.moveCapacity+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+cap.moveCapacity+'</b> moves/wk · In production move events auto-populate from confirmed delivery schedules</div></div>';
+      h+='</div><div style="font-size:10.5px;color:var(--g400);margin-top:5px">Regional crew capacity: <b contenteditable="true" onblur="CC_LOGISTICS_CAP.moveCapacity=parseInt(this.innerText,10)||'+cap.moveCapacity+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+cap.moveCapacity+'</b> moves/wk</div></div>';
     }
     var lgaps=cap.gaps[proj]||[];
     if(!lgaps.length)h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No fleet conflicts for this project.</div>';
@@ -7049,7 +7244,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Scope / Role</span><span>Discipline</span><span>FTE</span><span>Start</span><span>End</span><span>SOW Status</span><span></span></div>';
     items.forEach(function(it,idx){
       var stLabel=stMap[it.status]||it.status;
-      var stColor=it.status==='active'?'#10b981':it.status==='sow_pending'?'#f59e0b':it.status==='demobilized'?'#9ca3af':'#3b82f6';
       h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
       h+='<div style="font-weight:600;font-size:12px">'+it.label+(it.sow?'<span style="font-size:10px;color:var(--g400);margin-left:6px">'+it.sow+'</span>':'')+'</div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+(cap.scopeLabel[it.scope]||it.scope)+'</div>';
@@ -7088,20 +7282,41 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     });
     h+='<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#10b981;border-radius:2px;opacity:.82"></div>Active</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned / Projected</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;border:2px dashed #f59e0b;background:#f59e0b40;border-radius:2px"></div>SOW pending / Requested</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
+    // within capacity / at-risk accordions
     var scopeTotals={};items.forEach(function(it){scopeTotals[it.scope]=(scopeTotals[it.scope]||0)+it.fte;});
-    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">';
-    Object.keys(scopeTotals).forEach(function(sc){
-      var internal=cap.internalFTE[sc]||0;var used=scopeTotals[sc];var risk=used>internal;
-      h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
-      h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.scopeLabel[sc]||sc)+'</div>';
-      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / <span contenteditable="true" onblur="CC_PROFSERVICES_CAP.internalFTE[\''+sc+'\']=parseFloat(this.innerText)||'+internal+';renderCcDemand(\'profservices\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+internal+'</span> FTE</div>';
-      h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over capacity':'Within capacity')+'</div>';
+    var psWithin=[],psRisk=[];
+    items.forEach(function(it){var cap2=cap.internalFTE[it.scope]||0;var used=scopeTotals[it.scope];(used>cap2?psRisk:psWithin).push(it);});
+    var psAccId='ps-acc-'+proj;
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    h+='<div style="border:1px solid rgba(16,185,129,.2);border-radius:8px;overflow:hidden">';
+    h+='<div style="padding:10px 14px;background:rgba(16,185,129,.06);display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="psCapAccToggle(\''+psAccId+'-ok\')">';
+    h+='<div><span style="font-size:12.5px;font-weight:700;color:#047857">✓ Within capacity</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+psWithin.length+' role'+(psWithin.length!==1?'s':'')+'</span></div>';
+    h+='<span style="font-size:11px;color:var(--g400)">▾</span></div>';
+    h+='<div id="'+psAccId+'-ok">';
+    psWithin.forEach(function(it){
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 14px;border-top:1px solid rgba(16,185,129,.1);font-size:11.5px">';
+      h+='<span style="color:var(--g700)">'+it.label+'</span><span style="color:var(--g500)">'+(cap.scopeLabel[it.scope]||it.scope)+' · '+it.fte+' FTE</span></div>';
+    });
+    if(!psWithin.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">No roles within capacity.</div>';
+    h+='</div></div>';
+    h+='<div style="border:1px solid '+(psRisk.length?'rgba(239,68,68,.25)':'var(--g200)')+';border-radius:8px;overflow:hidden">';
+    h+='<div style="padding:10px 14px;background:'+(psRisk.length?'rgba(239,68,68,.05)':'var(--g50)')+';display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="psCapAccToggle(\''+psAccId+'-risk\')">';
+    h+='<div><span style="font-size:12.5px;font-weight:700;color:'+(psRisk.length?'var(--red)':'var(--g500)')+'">'+( psRisk.length?'⚠ At risk':'— No risks')+'</span><span style="margin-left:8px;font-size:11px;color:var(--g500)">'+psRisk.length+' role'+(psRisk.length!==1?'s':'')+'</span></div>';
+    h+='<span style="font-size:11px;color:var(--g400)">▾</span></div>';
+    h+='<div id="'+psAccId+'-risk">';
+    psRisk.forEach(function(it){
+      var intl=cap.internalFTE[it.scope]||0;
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 14px;border-top:1px solid rgba(239,68,68,.1);font-size:11.5px">';
+      h+='<span style="color:var(--red)">'+it.label+'</span>';
+      h+='<span style="color:var(--g500)">'+(cap.scopeLabel[it.scope]||it.scope)+' · '+it.fte+' / <b contenteditable="true" onblur="CC_PROFSERVICES_CAP.internalFTE[\''+it.scope+'\']=parseFloat(this.innerText)||'+intl+';renderCcDemand(\'profservices\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+intl+'</b> FTE cap</span>';
       h+='</div>';
     });
+    if(!psRisk.length)h+='<div style="padding:10px 14px;font-size:11.5px;color:var(--g400)">All roles within FTE capacity.</div>';
+    h+='</div></div>';
     h+='</div>';
     var pgaps=cap.gaps[proj]||[];
     if(!pgaps.length)h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No resource conflicts for this project.</div>';
@@ -7115,7 +7330,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var cap=CC_PROCUREMENT_CAP;
     var projRows=(CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows)||[];
     var projName=_PROJ_LABELS[proj]||proj;
-    // group rows by cat
     var catMap={};
     projRows.forEach(function(r){var c=r.cat||'sm_tools';if(!catMap[c])catMap[c]=[];catMap[c].push(r);});
     var h='<div style="margin-top:24px">';
@@ -7123,7 +7337,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<span class="dp-sec-t">'+svg(IC.cart)+'Category Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory availability and agreement status are manually flagged here — no live IMS or contract feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory and PO status are manually flagged — no live IMS feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
     var gHead='1.6fr 90px 100px 90px 90px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px">';
     h+='<div class="dp-head" style="grid-template-columns:'+gHead+'"><span>Category</span><span>Items</span><span>Has inventory</span><span>Has agreement</span><span>PO issued</span><span></span></div>';
@@ -7143,15 +7357,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div><button class="btn btn-'+(hasPO?'ok':'warn')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procToggle(\''+proj+'\',\''+cat+'\',\'poIssued\')">'+(hasPO?'✓ Issued':'Pending')+'</button></div>';
       h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit note" onclick="procCapEditNote(\''+proj+'\',\''+cat+'\')">&#9998;</button></div>';
       h+='</div>';
-      // sub-rows (expandable)
       h+='<div id="'+expId+'" style="display:none;grid-column:1/-1;background:var(--g50);border-top:1px solid var(--g100)">';
       rows.forEach(function(r){
+        var gi=projRows.indexOf(r);
         h+='<div style="display:grid;grid-template-columns:'+gHead+';padding:5px 0 5px 20px;border-bottom:1px solid var(--g100)">';
         h+='<div style="font-size:11.5px;color:var(--g600)">'+r.item+'</div>';
         h+='<div style="font-size:11px;color:var(--g500)">'+r.qty+'</div>';
         h+='<div></div><div></div>';
         h+='<div>'+_sBadge(r.state)+'</div>';
-        h+='<div></div>';
+        h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit" onclick="procRowEdit(\''+proj+'\','+gi+')">&#9998;</button></div>';
         h+='</div>';
       });
       h+='</div>';
@@ -7164,6 +7378,43 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
     } else {
       h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All categories have inventory or POs issued.</div>';
+    }
+    // procurement Gantt
+    var ganttRows=projRows.filter(function(r){return r.window&&r.window!=='Ongoing';});
+    if(ganttRows.length){
+      var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+      function procN(s){var p2=(s||'').trim().split(' ');var y=(parseInt(p2[1],10)||2026)-2026;return (mo[p2[0]]||1)*30+y*360;}
+      var allPN=ganttRows.map(function(r){return procN(r.window);});
+      var plo=Math.min.apply(null,allPN)-15,phi=Math.max.apply(null,allPN)+30,pspan=phi-plo||1;
+      function ppct(n){return Math.max(0,Math.min(100,Math.round((n-plo)/pspan*100)));}
+      var monthNms2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var pgH=ganttRows.length*26+50;
+      h+='<div style="margin-top:18px"><div class="dp-sec-t" style="font-size:11.5px;margin-bottom:8px">'+svg(IC.clock)+'Procurement timeline — need-by dates</div>';
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
+      h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:200px"></div>';
+      h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
+      for(var gmi=0;gmi<12;gmi++){
+        var gmn=(gmi+1)*30;
+        if(gmn>=plo&&gmn<=phi){h+='<div style="position:absolute;left:'+ppct(gmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms2[gmi]+' 26</div>';if(ppct(gmn)>1)h+='<div style="position:absolute;left:'+ppct(gmn)+'%;top:16px;height:'+pgH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+        var gmn2=gmn+360;
+        if(gmn2>=plo&&gmn2<=phi){h+='<div style="position:absolute;left:'+ppct(gmn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms2[gmi]+' 27</div>';if(ppct(gmn2)>1)h+='<div style="position:absolute;left:'+ppct(gmn2)+'%;top:16px;height:'+pgH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+      }
+      h+='</div></div>';
+      ganttRows.forEach(function(r){
+        var xn=procN(r.window);var xp=ppct(xn);
+        var bc=_sColor(r.state);
+        h+='<div style="display:flex;align-items:center;margin:3px 0">';
+        h+='<div style="min-width:200px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+r.item+'</div>';
+        h+='<div style="position:relative;flex:1;height:22px">';
+        h+='<div style="position:absolute;left:'+xp+'%;width:24px;height:18px;top:2px;border-radius:4px;background:'+bc+';opacity:'+(r.state==='At-risk'?'.85':'0.7')+';transform:translateX(-12px)" title="'+r.item+' · Need by '+r.window+'"></div>';
+        h+='<div style="position:absolute;left:'+xp+'%;top:3px;font-size:9.5px;color:var(--g600);white-space:nowrap;transform:translateX(6px)">'+r.window+'</div>';
+        h+='</div></div>';
+      });
+      h+='<div style="display:flex;gap:14px;margin-top:10px;padding-top:8px;border-top:1px solid var(--g100);flex-wrap:wrap">';
+      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#10b981;border-radius:3px;opacity:.7"></div>Delivered / Active</div>';
+      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#3b82f6;border-radius:3px;opacity:.7"></div>Projected / Planned</div>';
+      h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:14px;height:14px;background:#ef4444;border-radius:3px;opacity:.85"></div>At-risk</div>';
+      h+='</div></div></div>';
     }
     h+='</div>';
     return h;
