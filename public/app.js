@@ -5819,10 +5819,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   baseline:{mechanical:3,electrical:2,structural:3,misc:4,concrete:2},
   plan:{
     hercules:[
-      {item:'Prefab pipe rack modules',t:'mechanical',qty:'12 modules',mo:'Apr 1',fs:'May 15',fe:'Jul 25',shipD:5},
+      {item:'Prefab pipe rack modules',t:'mechanical',qty:'12 modules',mo:'Apr 1',fs:'May 15',fe:'Jul 25',shipD:5,status:'in_fab'},
       {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14},
       {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5},
-      {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7},
+      {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7,status:'in_fab'},
       {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5},
       {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true}
     ],
@@ -5834,7 +5834,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     ],
     cimarron:[
       {item:'Cable tray brackets',t:'electrical',qty:'Lot',mo:'Jun 15',fs:'Aug 1',fe:'Sep 20',shipD:5},
-      {item:'Server room partition panels',t:'misc',qty:'6 panels',mo:'Jun 1',fs:'Jul 15',fe:'Oct 10',shipD:7},
+      {item:'Server room partition panels',t:'misc',qty:'6 panels',mo:'Jun 1',fs:'Jul 15',fe:'Oct 10',shipD:7,status:'in_fab'},
       {item:'Generator exhaust enclosures',t:'misc',qty:'4 units',mo:'Jul 15',fs:'Sep 1',fe:'Nov 20',shipD:10},
       {item:'UPS battery cabinet frames',t:'electrical',qty:'6 units',mo:'Jul 1',fs:'Aug 1',fe:'Sep 15',shipD:7,adhoc:true}
     ]
@@ -5845,7 +5845,99 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     cimarron:[{t:'misc',start:'Sep 1',end:'Oct 10',note:'Partition panels + enclosures concurrent \u2014 Misc Steel at risk Sep\u2013Oct'}]
   }
 };
-var CC_DP={
+
+  var CC_LOGISTICS_CAP={
+    typeLabel:{fence:'Temp fencing',trailer_office:'Office trailers',trailer_storage:'Storage trailers',dumpster:'Dumpsters',portable_power:'Portable power',hoisting:'Hoisting / rigging'},
+    typeColor:{fence:'#6366f1',trailer_office:'#0ea5e9',trailer_storage:'#14b8a6',dumpster:'#f59e0b',portable_power:'#ef4444',hoisting:'#8b5cf6'},
+    fleetOwned:{fence:80,trailer_office:8,trailer_storage:6,dumpster:15,portable_power:4,hoisting:2},
+    plan:{
+      hercules:[
+        {item:'Perimeter temp fencing',cat:'fence',qty:'320 LF',mobilize:'Jun 1',release:'Jan 15',status:'deployed'},
+        {item:'Office trailer complex',cat:'trailer_office',qty:'6 units',mobilize:'Jun 15',release:'Jan 30',status:'deployed'},
+        {item:'Storage trailers',cat:'trailer_storage',qty:'3 units',mobilize:'Jul 1',release:'Jan 15'},
+        {item:'Dumpster rotation',cat:'dumpster',qty:'4 units',mobilize:'Jun 1',release:'Jan 30'},
+        {item:'Portable power (generator set)',cat:'portable_power',qty:'1 unit',mobilize:'Jun 1',release:'Dec 15',status:'deployed'}
+      ],
+      riverside:[
+        {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',mobilize:'Jul 1',release:'Nov 30'},
+        {item:'Office trailer (3-unit)',cat:'trailer_office',qty:'3 units',mobilize:'Jul 15',release:'Dec 15'},
+        {item:'Storage trailer',cat:'trailer_storage',qty:'2 units',mobilize:'Aug 1',release:'Dec 1'},
+        {item:'Dumpster service',cat:'dumpster',qty:'2 units',mobilize:'Jul 1',release:'Nov 30'}
+      ],
+      cimarron:[
+        {item:'Security fencing perimeter',cat:'fence',qty:'480 LF',mobilize:'Aug 1',release:'Feb 28'},
+        {item:'Office trailers (4-unit)',cat:'trailer_office',qty:'4 units',mobilize:'Aug 15',release:'Feb 28'},
+        {item:'Storage trailers',cat:'trailer_storage',qty:'2 units',mobilize:'Sep 1',release:'Feb 1'},
+        {item:'Portable power',cat:'portable_power',qty:'1 unit',mobilize:'Aug 1',release:'Jan 31'}
+      ]
+    },
+    moveEvents:{
+      hercules:[{week:'Jun 1',events:6,note:'Initial mob · fencing + trailers + generator'},{week:'Jul 1',events:3},{week:'Jan 15',events:5,note:'Demob wave'}],
+      riverside:[{week:'Jul 1',events:4},{week:'Aug 1',events:2},{week:'Nov 30',events:4,note:'Full demob'}],
+      cimarron:[{week:'Aug 1',events:5},{week:'Sep 1',events:2},{week:'Feb 28',events:5,note:'Final demob'}]
+    },
+    moveCapacity:12,
+    gaps:{hercules:[],riverside:[],cimarron:[]}
+  };
+  var CC_PROFSERVICES_CAP={
+    scopeLabel:{ie:'Industrial Engineering',vdc:'VDC / BIM',pm:'Project Management',commissioning:'Commissioning',survey:'Survey & Inspection',qa:'QA / Quality'},
+    scopeColor:{ie:'#3b82f6',vdc:'#8b5cf6',pm:'#0ea5e9',commissioning:'#10b981',survey:'#f59e0b',qa:'#f97316'},
+    internalFTE:{ie:2,vdc:3,pm:4,commissioning:2,survey:1,qa:2},
+    plan:{
+      hercules:[
+        {scope:'ie',label:'IE Support',fte:1.5,start:'Jun 1',end:'Dec 15',status:'active',sow:'SOW-HRC-IE-01'},
+        {scope:'vdc',label:'VDC / BIM Coordination',fte:2,start:'May 15',end:'Nov 30',status:'active',sow:'SOW-HRC-VDC-01'},
+        {scope:'commissioning',label:'BESS Commissioning Lead',fte:2,start:'Oct 1',end:'Jan 15',status:'sow_pending'},
+        {scope:'qa',label:'Quality Inspection',fte:1,start:'Aug 1',end:'Dec 15',status:'active'}
+      ],
+      riverside:[
+        {scope:'ie',label:'IE Support',fte:1,start:'Jul 1',end:'Nov 30',status:'active'},
+        {scope:'pm',label:'PM Oversight',fte:0.5,start:'Jun 15',end:'Dec 15',status:'active',sow:'SOW-RIV-PM-01'},
+        {scope:'commissioning',label:'MEP Commissioning Lead',fte:1,start:'Oct 15',end:'Dec 30',status:'sow_pending'},
+        {scope:'survey',label:'Structural Inspection',fte:0.5,start:'Jul 1',end:'Oct 1',status:'active',sow:'SOW-RIV-INS-01'}
+      ],
+      cimarron:[
+        {scope:'ie',label:'IE Support',fte:1,start:'Aug 1',end:'Feb 28',status:'active'},
+        {scope:'vdc',label:'VDC Coordination',fte:1.5,start:'Jul 15',end:'Jan 31',status:'active'},
+        {scope:'commissioning',label:'Data Center Commissioning',fte:2,start:'Nov 1',end:'Mar 15',status:'sow_pending'},
+        {scope:'qa',label:'Testing & Inspection',fte:1,start:'Sep 1',end:'Feb 28',status:'active'}
+      ]
+    },
+    gaps:{
+      hercules:[{scope:'commissioning',note:'BESS commissioning SOW not yet executed — risk if Oct 1 start slips'}],
+      riverside:[{scope:'commissioning',note:'MEP commissioning resource not confirmed — SOW needed by Sep'}],
+      cimarron:[]
+    }
+  };
+  var CC_PROCUREMENT_CAP={
+    catLabel:{sm_tools:'Small Tools & Consumables',concrete:'Concrete / Masonry',elec_commodity:'Electrical Commodity',mech_commodity:'Mechanical Commodity',struct_steel:'Structural Steel',safety:'Safety Supplies'},
+    plan:{
+      hercules:[
+        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal + White Cap',poIssued:true,note:'Stocked; reorder at 20%'},
+        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$420K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false,note:'PO pending final takeoff'},
+        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$280K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
+        {cat:'struct_steel',label:'Structural Steel',qtyEst:'~85T',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'No agreement — sourcing needed'},
+        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
+      ],
+      riverside:[
+        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal stock',poIssued:true},
+        {cat:'concrete',label:'Concrete / Masonry',qtyEst:'~320 CY',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'Local supplier TBD'},
+        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$180K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false},
+        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$140K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
+        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
+      ],
+      cimarron:[
+        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal stock',poIssued:true},
+        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$360K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false,note:'High-voltage switchgear — confirm spec before PO'},
+        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$240K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
+        {cat:'struct_steel',label:'Structural Steel',qtyEst:'~120T',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'No agreement — sourcing in progress'},
+        {cat:'concrete',label:'Concrete / Masonry',qtyEst:'~180 CY',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false},
+        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
+      ]
+    }
+  };
+
+  var CC_DP={
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
       ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
@@ -6287,7 +6379,9 @@ var CC_DP={
         var top=ri*26+4;
         var delPct=Math.min(100,x2+(it.shipD/TD*100));
         var isAdhoc=!!it.adhoc;
-        var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;background:'+tc+';opacity:'+(isAdhoc?'.5':(gapItem?'.85':'.72'));
+        var isInFab=it.status==='in_fab';
+        var barColor=isInFab?'#10b981':tc;
+        var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;background:'+barColor+';opacity:'+(isInFab?'.92':(isAdhoc?'.5':(gapItem?'.85':'.72')));
         h+='<div title="'+it.item+' \u2502 Fab: '+it.fs+' \u2192 '+it.fe+' \u2502 Delivery ~+'+it.shipD+'d" style="'+barSty+'">';
         if(!isAdhoc)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
         h+='</div>';
@@ -6300,6 +6394,8 @@ var CC_DP={
     });
     h+='<div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#3b82f6;border-radius:2px;opacity:.72"></div>Fab window</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#10b981;border-radius:2px;opacity:.9"></div>In fabrication</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;border:2px dashed var(--g300);background:var(--g50);border-radius:2px"></div>Quote request</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#64748b"></div>Mat. order date</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:8px;height:8px;background:#ef4444;transform:rotate(45deg);flex-shrink:0;border-radius:1px"></div>Delivery date</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.4)"></div>Capacity risk</div>';
@@ -6674,8 +6770,210 @@ var CC_DP={
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
+    if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
+    if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
+    if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
+    if(p==='equipment'&&isDpView){h+=renderEquipmentCapPlan(selProj);}
     mount.innerHTML=h;
   }
+
+  function renderEquipmentCapPlan(proj){
+    var h='';
+    h+='<div style="margin-top:24px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Own vs. Re-rent Planning</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Placeholder · Alpha build</span></div>';
+    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:24px 20px;text-align:center">';
+    h+='<div style="font-size:13px;font-weight:600;color:var(--g400);margin-bottom:6px">Own vs. Re-rent Decision Support</div>';
+    h+='<div style="font-size:12px;color:var(--g400);max-width:420px;margin:0 auto;line-height:1.6">Fleet utilization planning, owned-vs-re-rent optimization, and regional pool management are under active development in Alpha. This section will auto-populate from confirmed equipment schedules.</div>';
+    h+='</div></div>';
+    return h;
+  }
+  function renderLogisticsCapPlan(proj){
+    if(!CC_LOGISTICS_CAP||!CC_LOGISTICS_CAP.plan[proj])return '';
+    var cap=CC_LOGISTICS_CAP;
+    var items=cap.plan[proj];
+    var projName=_PROJ_LABELS[proj]||proj;
+    function logN(s){var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var p=(s||'').trim().split(' ');return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));}
+    var allN=[];items.forEach(function(it){allN.push(logN(it.mobilize),logN(it.release));});
+    var lo=Math.min.apply(null,allN)-5,hi=Math.max.apply(null,allN)+10,span=hi-lo||1;
+    function pctL(n){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+    var monthNms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h='';
+    h+='<div style="margin-top:24px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+    h+='<span class="dp-sec-t">'+svg(IC.truck)+'GC / GR Fleet Plan</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
+    h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, GC/GR lines auto-populate from the project mobilization template (category + qty, mob date, planned release). Move events derive from delivery and setup schedules. <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
+    var gCols='1.4fr 130px 80px 80px 80px 80px';
+    h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
+    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Item</span><span>Category</span><span>Qty</span><span>Mob. date</span><span>Release</span><span>Status</span></div>';
+    items.forEach(function(it){
+      var deployed=it.status==='deployed';
+      h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
+      h+='<div style="font-weight:600;font-size:12px">'+it.item+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+(cap.typeLabel[it.cat]||it.cat)+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.qty+'</div>';
+      h+='<div style="font-size:11.5px">'+it.mobilize+'</div>';
+      h+='<div style="font-size:11.5px">'+it.release+'</div>';
+      h+='<div><span class="tag '+(deployed?'ok':'neu')+'" style="font-size:10px">'+(deployed?'Deployed':'Planned')+'</span></div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'On-rent window</span></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
+    h+='<div style="display:flex;margin-bottom:6px"><div style="min-width:160px"></div>';
+    h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
+    for(var lmi=0;lmi<12;lmi++){var lmn=(lmi+1)*30+1;if(lmn>=lo&&lmn<=hi){h+='<div style="position:absolute;left:'+pctL(lmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(lmn)>1)h+='<div style="position:absolute;left:'+pctL(lmn)+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';}}
+    h+='</div></div>';
+    items.forEach(function(it){
+      var tc=cap.typeColor[it.cat]||'#6366f1';
+      var x1=pctL(logN(it.mobilize)),x2=pctL(logN(it.release)),bw=Math.max(x2-x1,0.8);
+      var deployed=it.status==='deployed';
+      h+='<div style="display:flex;align-items:center;margin:3px 0">';
+      h+='<div style="min-width:160px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+it.item+'</div>';
+      h+='<div style="position:relative;flex:1;height:22px">';
+      h+='<div title="'+it.mobilize+' → '+it.release+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+tc+';opacity:'+(deployed?'.85':'.6')+'"><div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div></div>';
+      h+='</div></div>';
+    });
+    h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
+    var seenCats={};
+    items.forEach(function(it){if(!seenCats[it.cat]){seenCats[it.cat]=true;h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:'+(cap.typeColor[it.cat]||'#888')+';border-radius:2px;opacity:.72"></div>'+(cap.typeLabel[it.cat]||it.cat)+'</div>';}});
+    h+='</div></div>';
+    var catTotals={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;catTotals[it.cat]=(catTotals[it.cat]||0)+n;});
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+    Object.keys(catTotals).forEach(function(cat){
+      var owned=cap.fleetOwned[cat];var used=catTotals[cat];var risk=typeof owned==='number'&&used>owned;
+      h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
+      h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.typeLabel[cat]||cat)+'</div>';
+      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+(typeof owned==='number'?owned:'—')+'</div>';
+      h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over fleet':'Within capacity')+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    var moves=cap.moveEvents[proj]||[];
+    if(moves.length){
+      h+='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Peak move events</div>';
+      h+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
+      moves.forEach(function(m){var risk=m.events>=cap.moveCapacity*.8;h+='<div style="background:'+(risk?'rgba(239,68,68,.06)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:6px 10px;font-size:11px"><b>'+m.week+'</b> — '+m.events+' moves'+(m.note?' · '+m.note:'')+(risk?' <span style="color:var(--red)">⚠</span>':'')+'</div>';});
+      h+='</div><div style="font-size:10.5px;color:var(--g400);margin-top:5px">Regional crew capacity: '+cap.moveCapacity+' moves/wk · Illustrative — in production move events auto-populate from confirmed delivery schedules</div></div>';
+    }
+    var lgaps=cap.gaps[proj]||[];
+    if(!lgaps.length)h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No fleet conflicts for this project.</div>';
+    else{h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';lgaps.forEach(function(g){h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">⚠ Fleet risk · '+(cap.typeLabel[g.cat]||g.cat)+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';});h+='</div>';}
+    h+='</div>';
+    return h;
+  }
+  function renderProfServicesCapPlan(proj){
+    if(!CC_PROFSERVICES_CAP||!CC_PROFSERVICES_CAP.plan[proj])return '';
+    var cap=CC_PROFSERVICES_CAP;
+    var items=cap.plan[proj];
+    var projName=_PROJ_LABELS[proj]||proj;
+    function psN(s){var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var p=(s||'').trim().split(' ');return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));}
+    var allN=[];items.forEach(function(it){allN.push(psN(it.start),psN(it.end));});
+    var lo=Math.min.apply(null,allN)-5,hi=Math.max.apply(null,allN)+10,span=hi-lo||1;
+    function pctP(n){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+    var monthNms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var h='';
+    h+='<div style="margin-top:24px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+    h+='<span class="dp-sec-t">'+svg(IC.people)+'Resource Deployment Plan</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
+    h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). SOW status is manually flagged. <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM schedule milestones and flags resources not confirmed before their mobilization window.</span></div>';
+    var gCols='1.4fr 120px 60px 80px 80px 110px';
+    h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
+    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Scope / Role</span><span>Discipline</span><span>FTE</span><span>Start</span><span>End</span><span>SOW Status</span></div>';
+    items.forEach(function(it){
+      var isActive=it.status==='active';var isPending=it.status==='sow_pending';
+      h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
+      h+='<div style="font-weight:600;font-size:12px">'+it.label+(it.sow?'<span style="font-size:10px;color:var(--g400);margin-left:6px">'+it.sow+'</span>':'')+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+(cap.scopeLabel[it.scope]||it.scope)+'</div>';
+      h+='<div style="font-size:11.5px">'+it.fte+' FTE</div>';
+      h+='<div style="font-size:11.5px">'+it.start+'</div>';
+      h+='<div style="font-size:11.5px">'+it.end+'</div>';
+      h+='<div><span class="tag '+(isActive?'ok':isPending?'warn':'neu')+'" style="font-size:10px">'+(isActive?'Active':isPending?'SOW pending':'Planned')+'</span></div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment window</span></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
+    h+='<div style="display:flex;margin-bottom:6px"><div style="min-width:200px"></div>';
+    h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
+    for(var pmi=0;pmi<12;pmi++){var pmn=(pmi+1)*30+1;if(pmn>=lo&&pmn<=hi){h+='<div style="position:absolute;left:'+pctP(pmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[pmi]+'</div>';if(pctP(pmn)>1)h+='<div style="position:absolute;left:'+pctP(pmn)+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';}}
+    h+='</div></div>';
+    items.forEach(function(it){
+      var tc=cap.scopeColor[it.scope]||'#6366f1';
+      var x1=pctP(psN(it.start)),x2=pctP(psN(it.end)),bw=Math.max(x2-x1,0.8);
+      var isActive=it.status==='active';var isPending=it.status==='sow_pending';
+      h+='<div style="display:flex;align-items:center;margin:3px 0">';
+      h+='<div style="min-width:200px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+it.label+' ('+it.fte+' FTE)</div>';
+      h+='<div style="position:relative;flex:1;height:22px">';
+      h+='<div title="'+it.start+' → '+it.end+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+tc+';opacity:'+(isActive?'.75':'.35')+';'+(isPending?'border:2px dashed '+tc+';background:'+tc+'40':'')+'">';
+      h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.label+'</div>';
+      h+='</div></div></div>';
+    });
+    h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#6366f1;border-radius:2px;opacity:.75"></div>Active</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;border:2px dashed #f59e0b;background:#f59e0b40;border-radius:2px"></div>SOW pending</div>';
+    h+='</div></div>';
+    var scopeTotals={};items.forEach(function(it){scopeTotals[it.scope]=(scopeTotals[it.scope]||0)+it.fte;});
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px">';
+    Object.keys(scopeTotals).forEach(function(sc){
+      var internal=cap.internalFTE[sc]||0;var used=scopeTotals[sc];var risk=used>internal;
+      h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
+      h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.scopeLabel[sc]||sc)+'</div>';
+      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+internal+' FTE</div>';
+      h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over capacity':'Within capacity')+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    var pgaps=cap.gaps[proj]||[];
+    if(!pgaps.length)h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No resource conflicts for this project.</div>';
+    else{h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';pgaps.forEach(function(g){h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">⚠ Resource risk · '+(cap.scopeLabel[g.scope]||g.scope)+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';});h+='</div>';}
+    h+='</div>';
+    return h;
+  }
+  function renderProcurementCapPlan(proj){
+    if(!CC_PROCUREMENT_CAP||!CC_PROCUREMENT_CAP.plan[proj])return '';
+    var cap=CC_PROCUREMENT_CAP;
+    var items=cap.plan[proj];
+    var projName=_PROJ_LABELS[proj]||proj;
+    var h='';
+    h+='<div style="margin-top:24px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+    h+='<span class="dp-sec-t">'+svg(IC.cart)+'Category Plan</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
+    h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">ℹ️ <b>V1 note:</b> Inventory availability and agreement status are manually flagged — no live IMS or contract feed. In production this connects to the T3 inventory system and contract repository. Small tools & consumables inventory may be available from T3 in Alpha.</div>';
+    var gCols='1.2fr 90px 90px 90px 150px 90px';
+    h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px">';
+    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Category</span><span>Est. qty</span><span>Inventory</span><span>Agreement</span><span>Vendor</span><span>PO issued</span></div>';
+    var actions=[];
+    items.forEach(function(it){
+      h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
+      h+='<div><span style="font-weight:600;font-size:12px">'+it.label+'</span>'+(it.note?'<div style="font-size:10.5px;color:var(--g400);margin-top:1px">'+it.note+'</div>':'')+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.qtyEst+'</div>';
+      h+='<div><span class="tag '+(it.hasInventory?'ok':'neu')+'" style="font-size:10px">'+(it.hasInventory?'✓ Yes':'Manual')+'</span></div>';
+      h+='<div><span class="tag '+(it.hasAgreement?'ok':'warn')+'" style="font-size:10px">'+(it.hasAgreement?'✓ Yes':'None')+'</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+(it.vendor||'— Sourcing needed')+'</div>';
+      h+='<div><span class="tag '+(it.poIssued?'ok':it.hasAgreement?'warn':'bad')+'" style="font-size:10px">'+(it.poIssued?'✓ Issued':'Pending')+'</span></div>';
+      h+='</div>';
+      if(!it.hasAgreement)actions.push({label:it.label,action:'No vendor agreement in place — sourcing needed before PO'});
+      else if(!it.poIssued&&!it.hasInventory)actions.push({label:it.label,action:'Agreement in place, PO not yet issued'});
+    });
+    h+='</div>';
+    if(actions.length){
+      h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
+      actions.forEach(function(a){h+='<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:#b45309;font-weight:600">⚠ '+a.label+'</span> — <span style="color:var(--g600)">'+a.action+'</span></div>';});
+      h+='</div>';
+    } else {
+      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All categories have agreements and POs issued.</div>';
+    }
+    h+='</div>';
+    return h;
+  }
+
   function dpReview(p,id){
 
     var r=dpRowById(p,id); if(!r)return; dpCur={p:p,id:id}; var ns=CURRENT==='ns'; var cfg=CC_DP[p];
