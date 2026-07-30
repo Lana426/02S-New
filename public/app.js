@@ -5847,37 +5847,49 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
 };
 
   var CC_LOGISTICS_CAP={
-    typeLabel:{fence:'Temp fencing',trailer_office:'Office trailers',trailer_storage:'Storage trailers',dumpster:'Dumpsters',portable_power:'Portable power',hoisting:'Hoisting / rigging'},
-    typeColor:{fence:'#6366f1',trailer_office:'#0ea5e9',trailer_storage:'#14b8a6',dumpster:'#f59e0b',portable_power:'#ef4444',hoisting:'#8b5cf6'},
+    typeLabel:{fence:'Temp fencing',trailer_office:'Office trailers',trailer_storage:'Storage trailers',dumpster:'Dumpsters',portable_power:'Portable power',hoisting:'Hoisting / rigging',transport:'Transport / haul'},
+    typeColor:{fence:'#6366f1',trailer_office:'#0ea5e9',trailer_storage:'#14b8a6',dumpster:'#f59e0b',portable_power:'#ef4444',hoisting:'#8b5cf6',transport:'#64748b'},
     fleetOwned:{fence:80,trailer_office:8,trailer_storage:6,dumpster:15,portable_power:4,hoisting:2},
     plan:{
       hercules:[
-        {item:'Perimeter temp fencing',cat:'fence',qty:'320 LF',mobilize:'Jun 1',release:'Jan 15',status:'deployed'},
-        {item:'Office trailer complex',cat:'trailer_office',qty:'6 units',mobilize:'Jun 15',release:'Jan 30',status:'deployed'},
-        {item:'Storage trailers',cat:'trailer_storage',qty:'3 units',mobilize:'Jul 1',release:'Jan 15'},
-        {item:'Dumpster rotation',cat:'dumpster',qty:'4 units',mobilize:'Jun 1',release:'Jan 30'},
-        {item:'Portable power (generator set)',cat:'portable_power',qty:'1 unit',mobilize:'Jun 1',release:'Dec 15',status:'deployed'}
+        {item:'Perimeter temp fencing',cat:'fence',qty:'320 LF',start:'Jun 1',end:'Jan 15',state:'Deployed'},
+        {item:'Office trailer complex',cat:'trailer_office',qty:'6 units',start:'Jun 15',end:'Jan 30',state:'Deployed'},
+        {item:'Storage trailers',cat:'trailer_storage',qty:'3 units',start:'Jul 1',end:'Jan 15',state:'Planned'},
+        {item:'Dumpster rotation',cat:'dumpster',qty:'4 units',start:'Jun 1',end:'Jan 30',state:'Active'},
+        {item:'Portable power (generator set)',cat:'portable_power',qty:'1 unit',start:'Jun 1',end:'Dec 15',state:'Deployed'},
+        {item:'Excavator demob',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Scheduled'},
+        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Scheduled'},
+        {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'Projected'},
+        {item:'BESS container placements',cat:'hoisting',qty:'6 moves',start:'Oct 1',end:'Oct 20',state:'Requested'},
+        {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Projected'},
+        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Pending'}
       ],
       riverside:[
-        {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',mobilize:'Jul 1',release:'Nov 30'},
-        {item:'Office trailer (3-unit)',cat:'trailer_office',qty:'3 units',mobilize:'Jul 15',release:'Dec 15'},
-        {item:'Storage trailer',cat:'trailer_storage',qty:'2 units',mobilize:'Aug 1',release:'Dec 1'},
-        {item:'Dumpster service',cat:'dumpster',qty:'2 units',mobilize:'Jul 1',release:'Nov 30'}
+        {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',start:'Jul 1',end:'Nov 30',state:'Planned'},
+        {item:'Office trailer (3-unit)',cat:'trailer_office',qty:'3 units',start:'Jul 15',end:'Dec 15',state:'Planned'},
+        {item:'Storage trailer',cat:'trailer_storage',qty:'2 units',start:'Aug 1',end:'Dec 1',state:'Planned'},
+        {item:'Dumpster service',cat:'dumpster',qty:'2 units',start:'Jul 1',end:'Nov 30',state:'Planned'},
+        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 8',state:'Scheduled'},
+        {item:'Excavator delivery',cat:'transport',qty:'1 move',start:'Sep 1',end:'Sep 5',state:'Scheduled'},
+        {item:'Floor-by-floor hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'}
       ],
       cimarron:[
-        {item:'Security fencing perimeter',cat:'fence',qty:'480 LF',mobilize:'Aug 1',release:'Feb 28'},
-        {item:'Office trailers (4-unit)',cat:'trailer_office',qty:'4 units',mobilize:'Aug 15',release:'Feb 28'},
-        {item:'Storage trailers',cat:'trailer_storage',qty:'2 units',mobilize:'Sep 1',release:'Feb 1'},
-        {item:'Portable power',cat:'portable_power',qty:'1 unit',mobilize:'Aug 1',release:'Jan 31'}
+        {item:'Security fencing perimeter',cat:'fence',qty:'480 LF',start:'Aug 1',end:'Feb 28',state:'Planned'},
+        {item:'Office trailers (4-unit)',cat:'trailer_office',qty:'4 units',start:'Aug 15',end:'Feb 28',state:'Planned'},
+        {item:'Storage trailers',cat:'trailer_storage',qty:'2 units',start:'Sep 1',end:'Feb 1',state:'Planned'},
+        {item:'Portable power',cat:'portable_power',qty:'1 unit',start:'Aug 1',end:'Jan 31',state:'Planned'},
+        {item:'Excavator delivery + haul',cat:'transport',qty:'2 moves',start:'Sep 1',end:'Sep 8',state:'Scheduled'},
+        {item:'PDU site delivery',cat:'transport',qty:'3 loads',start:'Oct 1',end:'Oct 5',state:'PO issued'},
+        {item:'Precision cooling delivery',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Projected'}
       ]
     },
     moveEvents:{
-      hercules:[{week:'Jun 1',events:6,note:'Initial mob · fencing + trailers + generator'},{week:'Jul 1',events:3},{week:'Jan 15',events:5,note:'Demob wave'}],
-      riverside:[{week:'Jul 1',events:4},{week:'Aug 1',events:2},{week:'Nov 30',events:4,note:'Full demob'}],
-      cimarron:[{week:'Aug 1',events:5},{week:'Sep 1',events:2},{week:'Feb 28',events:5,note:'Final demob'}]
+      hercules:[{week:'Jun 1',events:6,note:'Initial mob · fencing + trailers + generator'},{week:'Aug 1',events:5,note:'Crane mob + pipe rack hauls'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Jan 15',events:5,note:'Demob wave'}],
+      riverside:[{week:'Jul 1',events:4},{week:'Aug 1',events:3,note:'Crane mob'},{week:'Nov 30',events:4,note:'Full demob'}],
+      cimarron:[{week:'Aug 1',events:4,note:'Mob wave'},{week:'Oct 1',events:5,note:'PDU + cooling delivery'},{week:'Feb 28',events:5,note:'Final demob'}]
     },
     moveCapacity:12,
-    gaps:{hercules:[],riverside:[],cimarron:[]}
+    gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — near crew capacity of 12/wk'}],riverside:[],cimarron:[]}
   };
   var CC_PROFSERVICES_CAP={
     scopeLabel:{ie:'Industrial Engineering',vdc:'VDC / BIM',pm:'Project Management',commissioning:'Commissioning',survey:'Survey & Inspection',qa:'QA / Quality'},
@@ -5885,58 +5897,56 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     internalFTE:{ie:2,vdc:3,pm:4,commissioning:2,survey:1,qa:2},
     plan:{
       hercules:[
-        {scope:'ie',label:'IE Support',fte:1.5,start:'Jun 1',end:'Dec 15',status:'active',sow:'SOW-HRC-IE-01'},
-        {scope:'vdc',label:'VDC / BIM Coordination',fte:2,start:'May 15',end:'Nov 30',status:'active',sow:'SOW-HRC-VDC-01'},
-        {scope:'commissioning',label:'BESS Commissioning Lead',fte:2,start:'Oct 1',end:'Jan 15',status:'sow_pending'},
-        {scope:'qa',label:'Quality Inspection',fte:1,start:'Aug 1',end:'Dec 15',status:'active'}
+        {scope:'ie',label:"Owner's engineer / IE support",fte:2,start:'Mar 1',end:'Dec 15',status:'active',sow:'SOW-HRC-IE-01'},
+        {scope:'survey',label:'Geotechnical inspection',fte:3,start:'Mar 1',end:'Aug 15',status:'active',sow:'SOW-HRC-GEO-01'},
+        {scope:'survey',label:'Structural special inspection',fte:2,start:'Jun 1',end:'Feb 28',status:'active',sow:'SOW-HRC-INS-01'},
+        {scope:'commissioning',label:'BESS commissioning agent',fte:2,start:'Nov 1',end:'Mar 15',status:'sow_pending'},
+        {scope:'qa',label:'Environmental / SWPPP monitoring',fte:1,start:'Mar 1',end:'May 15',status:'demobilized',sow:'SOW-HRC-ENV-01'},
+        {scope:'vdc',label:'VDC / BIM coordination',fte:3,start:'Apr 1',end:'Oct 15',status:'requested'},
+        {scope:'survey',label:'Site survey crew',fte:2,start:'Apr 1',end:'Jul 15',status:'demobilized',sow:'SOW-HRC-SUR-01'}
       ],
       riverside:[
-        {scope:'ie',label:'IE Support',fte:1,start:'Jul 1',end:'Nov 30',status:'active'},
-        {scope:'pm',label:'PM Oversight',fte:0.5,start:'Jun 15',end:'Dec 15',status:'active',sow:'SOW-RIV-PM-01'},
-        {scope:'commissioning',label:'MEP Commissioning Lead',fte:1,start:'Oct 15',end:'Dec 30',status:'sow_pending'},
-        {scope:'survey',label:'Structural Inspection',fte:0.5,start:'Jul 1',end:'Oct 1',status:'active',sow:'SOW-RIV-INS-01'}
+        {scope:'pm',label:"Owner's rep",fte:1,start:'Jun 1',end:'Dec 31',status:'active',sow:'SOW-RIV-PM-01'},
+        {scope:'survey',label:'Structural special inspection',fte:2,start:'Aug 1',end:'Dec 31',status:'requested'},
+        {scope:'commissioning',label:'MEP commissioning lead',fte:1,start:'Nov 1',end:'Dec 30',status:'sow_pending'}
       ],
       cimarron:[
-        {scope:'ie',label:'IE Support',fte:1,start:'Aug 1',end:'Feb 28',status:'active'},
-        {scope:'vdc',label:'VDC Coordination',fte:1.5,start:'Jul 15',end:'Jan 31',status:'active'},
-        {scope:'commissioning',label:'Data Center Commissioning',fte:2,start:'Nov 1',end:'Mar 15',status:'sow_pending'},
-        {scope:'qa',label:'Testing & Inspection',fte:1,start:'Sep 1',end:'Feb 28',status:'active'}
+        {scope:'survey',label:'Site survey crew',fte:2,start:'Jul 1',end:'Sep 30',status:'requested'},
+        {scope:'commissioning',label:'Commissioning manager',fte:1,start:'Dec 1',end:'Mar 31',status:'sow_pending'},
+        {scope:'qa',label:'Material testing lab',fte:2,start:'Jul 1',end:'Feb 28',status:'active',sow:'SOW-CIM-QA-01'}
       ]
     },
     gaps:{
-      hercules:[{scope:'commissioning',note:'BESS commissioning SOW not yet executed — risk if Oct 1 start slips'}],
+      hercules:[{scope:'commissioning',note:'BESS commissioning SOW not yet executed — risk if Oct start slips'},{scope:'vdc',note:'VDC / BIM unpriced — needed Apr–Oct'}],
       riverside:[{scope:'commissioning',note:'MEP commissioning resource not confirmed — SOW needed by Sep'}],
       cimarron:[]
     }
   };
   var CC_PROCUREMENT_CAP={
-    catLabel:{sm_tools:'Small Tools & Consumables',concrete:'Concrete / Masonry',elec_commodity:'Electrical Commodity',mech_commodity:'Mechanical Commodity',struct_steel:'Structural Steel',safety:'Safety Supplies'},
-    plan:{
-      hercules:[
-        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal + White Cap',poIssued:true,note:'Stocked; reorder at 20%'},
-        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$420K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false,note:'PO pending final takeoff'},
-        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$280K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
-        {cat:'struct_steel',label:'Structural Steel',qtyEst:'~85T',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'No agreement — sourcing needed'},
-        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
-      ],
-      riverside:[
-        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal stock',poIssued:true},
-        {cat:'concrete',label:'Concrete / Masonry',qtyEst:'~320 CY',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'Local supplier TBD'},
-        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$180K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false},
-        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$140K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
-        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
-      ],
-      cimarron:[
-        {cat:'sm_tools',label:'Small Tools & Consumables',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Internal stock',poIssued:true},
-        {cat:'elec_commodity',label:'Electrical Commodity',qtyEst:'~$360K',hasInventory:false,hasAgreement:true,vendor:'White Cap',poIssued:false,note:'High-voltage switchgear — confirm spec before PO'},
-        {cat:'mech_commodity',label:'Mechanical Commodity',qtyEst:'~$240K',hasInventory:false,hasAgreement:true,vendor:'Ferguson',poIssued:false},
-        {cat:'struct_steel',label:'Structural Steel',qtyEst:'~120T',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false,note:'No agreement — sourcing in progress'},
-        {cat:'concrete',label:'Concrete / Masonry',qtyEst:'~180 CY',hasInventory:false,hasAgreement:false,vendor:null,poIssued:false},
-        {cat:'safety',label:'Safety Supplies',qtyEst:'Lot',hasInventory:true,hasAgreement:true,vendor:'Grainger',poIssued:true}
-      ]
+    catLabel:{sm_tools:'Small Tools & Consumables',elec_commodity:'Electrical Commodity',mech_commodity:'Mechanical Commodity',struct_steel:'Structural Steel',safety:'Safety Supplies',concrete:'Concrete / Masonry'},
+    state:{
+      hercules:{
+        sm_tools:{hasInventory:true,poIssued:true,note:'Stocked; reorder trigger at 20%'},
+        elec_commodity:{hasInventory:false,poIssued:false,note:'PO pending final takeoff; long-lead items at risk'},
+        struct_steel:{hasInventory:false,poIssued:false,note:'No agreement — sourcing needed'}
+      },
+      riverside:{
+        sm_tools:{hasInventory:true,poIssued:true},
+        safety:{hasInventory:true,poIssued:true},
+        concrete:{hasInventory:false,poIssued:false,note:'Local supplier TBD'},
+        elec_commodity:{hasInventory:false,poIssued:false},
+        mech_commodity:{hasInventory:false,poIssued:false}
+      },
+      cimarron:{
+        sm_tools:{hasInventory:true,poIssued:true},
+        elec_commodity:{hasInventory:false,poIssued:false,note:'High-voltage switchgear — confirm spec before PO'},
+        mech_commodity:{hasInventory:false,poIssued:false},
+        struct_steel:{hasInventory:false,poIssued:false,note:'No agreement — sourcing in progress'},
+        concrete:{hasInventory:false,poIssued:false},
+        safety:{hasInventory:true,poIssued:true}
+      }
     }
   };
-
   var CC_DP={
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
@@ -6091,28 +6101,28 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     },
     procurement:{
       hercules:{budget:8200000,dpSpent:7400000,adHoc:120000,rows:[
-        {item:'Nut runners',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3100',cost:'$8,400',firm:'Hilti'},
-        {item:'Battery pack sets',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3101',cost:'$6,000',firm:'Milwaukee Tool'},
-        {item:'Charging banks',qty:'6 units',window:'Mar 2026',state:'Delivered',ordId:'ORD-3102',cost:'$4,800',firm:'Milwaukee Tool'},
-        {item:'Tone shear wrenches',qty:'8 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3103',cost:'$12,800',firm:'Enerpac'},
-        {item:'Angle grinders',qty:'6 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3104',cost:'$3,600',firm:'Bosch'},
-        {item:'SDS Max + bits',qty:'10 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$7,500',firm:'TBD'},
-        {item:'HEPA vacuums',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$4,800',firm:'TBD'},
-        {item:'Wire crimpers',qty:'12 sets',window:'Oct 2026',state:'Projected',ordId:null,cost:'$9,600',firm:'TBD'},
-        {item:'MV switchgear 15 kV',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton'},
-        {item:'BESS containers 2.5 MWh',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy'},
-        {item:'Main power transformer',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'}
+        {item:'Nut runners',cat:'sm_tools',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3100',cost:'$8,400',firm:'Hilti'},
+        {item:'Battery pack sets',cat:'sm_tools',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3101',cost:'$6,000',firm:'Milwaukee Tool'},
+        {item:'Charging banks',cat:'sm_tools',qty:'6 units',window:'Mar 2026',state:'Delivered',ordId:'ORD-3102',cost:'$4,800',firm:'Milwaukee Tool'},
+        {item:'Tone shear wrenches',cat:'sm_tools',qty:'8 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3103',cost:'$12,800',firm:'Enerpac'},
+        {item:'Angle grinders',cat:'sm_tools',qty:'6 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3104',cost:'$3,600',firm:'Bosch'},
+        {item:'SDS Max + bits',cat:'sm_tools',qty:'10 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$7,500',firm:'TBD'},
+        {item:'HEPA vacuums',cat:'sm_tools',qty:'8 units',window:'Sep 2026',state:'Projected',ordId:null,cost:'$4,800',firm:'TBD'},
+        {item:'Wire crimpers',cat:'sm_tools',qty:'12 sets',window:'Oct 2026',state:'Projected',ordId:null,cost:'$9,600',firm:'TBD'},
+        {item:'MV switchgear 15 kV',cat:'elec_commodity',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton'},
+        {item:'BESS containers 2.5 MWh',cat:'elec_commodity',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy'},
+        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'}
       ]},
       riverside:{budget:450000,dpSpent:180000,adHoc:80000,rows:[
-        {item:'Surgical unit supply runs',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
-        {item:'Safety signage + PPE bundles',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
-        {item:'Specialty fasteners',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'}
+        {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
+        {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
+        {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'}
       ]},
       cimarron:{budget:1200000,dpSpent:920000,adHoc:50000,rows:[
-        {item:'High-density PDUs',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
-        {item:'Cable management trays',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
-        {item:'Raised floor panels',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
-        {item:'Precision cooling units',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'}
+        {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
+        {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
+        {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
+        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'}
       ]}
     },
     prefab:{
@@ -6380,7 +6390,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var delPct=Math.min(100,x2+(it.shipD/TD*100));
         var isAdhoc=!!it.adhoc;
         var isInFab=it.status==='in_fab';
-        var barColor=isInFab?'#10b981':tc;
+        var barColor=isInFab?'#10b981':'#3b82f6';
         var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;background:'+barColor+';opacity:'+(isInFab?'.92':(isAdhoc?'.5':(gapItem?'.85':'.72')));
         h+='<div title="'+it.item+' \u2502 Fab: '+it.fs+' \u2192 '+it.fe+' \u2502 Delivery ~+'+it.shipD+'d" style="'+barSty+'">';
         if(!isAdhoc)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
@@ -6777,9 +6787,147 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     mount.innerHTML=h;
   }
 
+  // ─── SHARED HELPERS ─────────────────────────────────────────────────────────
+  function _sColor(s){
+    if(/active|on.rent|in.fab|deployed|scheduled|delivered|po.issued|ordered/i.test(s||''))return '#10b981';
+    if(/projected|planned/i.test(s||''))return '#3b82f6';
+    if(/request|draft|pending|awaiting/i.test(s||''))return '#f59e0b';
+    if(/demob|off.rent/i.test(s||''))return '#9ca3af';
+    if(/at.risk/i.test(s||''))return '#ef4444';
+    return '#3b82f6';
+  }
+  function _sOpacity(s){
+    if(/active|deployed|scheduled|on.rent|in.fab|po.issued|ordered/i.test(s||''))return '.82';
+    if(/projected|planned|delivered/i.test(s||''))return '.65';
+    if(/request|draft|awaiting/i.test(s||''))return '.5';
+    if(/demob|off.rent/i.test(s||''))return '.35';
+    if(/pending/i.test(s||''))return '.55';
+    return '.65';
+  }
+  function _sBadge(s){
+    var t='neu';
+    if(/active|deployed|delivered|ordered|po.issued|on.rent|in.fab|scheduled/i.test(s||''))t='ok';
+    else if(/request|draft|awaiting|sow.pend/i.test(s||''))t='warn';
+    else if(/at.risk/i.test(s||''))t='bad';
+    else if(/demob|off.rent/i.test(s||''))t='neu';
+    return '<span class="tag '+t+'" style="font-size:10px">'+(s||'—')+'</span>';
+  }
+  function _logN(s){
+    var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+    var p=(s||'').trim().split(' ');
+    return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));
+  }
+  function _ganttRange(items,sf,ef){
+    var startNs=items.map(function(it){return _logN(it[sf]);});
+    var endNs=items.map(function(it,i){var sn=startNs[i],en=_logN(it[ef]);return en<sn?en+360:en;});
+    var allN=startNs.concat(endNs);
+    return {lo:Math.min.apply(null,allN)-5,hi:Math.max.apply(null,allN)+10};
+  }
+  function _pct(n,lo,span){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+
+  // ─── LOGISTICS EDIT HELPERS ──────────────────────────────────────────────────
+  function logCapAdd(proj){
+    if(!CC_LOGISTICS_CAP.plan[proj])CC_LOGISTICS_CAP.plan[proj]=[];
+    CC_LOGISTICS_CAP.plan[proj].push({item:'New item',cat:'transport',qty:'1',start:'Aug 1',end:'Aug 15',state:'Planned'});
+    var idx=CC_LOGISTICS_CAP.plan[proj].length-1;
+    renderCcDemand('logistics');
+    setTimeout(function(){logCapEdit(proj,idx);},50);
+  }
+  function logCapEdit(proj,idx){
+    var it=CC_LOGISTICS_CAP.plan[proj][idx]; if(!it)return;
+    var cap=CC_LOGISTICS_CAP;
+    var catOpts=Object.keys(cap.typeLabel).map(function(k){return '<option value="'+k+'"'+(it.cat===k?' selected':'')+'>'+cap.typeLabel[k]+'</option>';}).join('');
+    var stateOpts=['Deployed','Active','On-rent','Planned','Projected','Requested','Scheduled','Pending','PO issued','Demobilized','Off-rent','At-risk'].map(function(s){return '<option'+(it.state===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">Edit logistics line</div><div class="sub">'+proj+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Item</span><span><input id="lce-item" class="dp-input" value="'+it.item+'"></span></div>';
+    b+='<div class="fq-crow"><span>Category</span><span><select id="lce-cat" class="dp-sel">'+catOpts+'</select></span></div>';
+    b+='<div class="fq-crow"><span>Qty</span><span><input id="lce-qty" class="dp-input" value="'+it.qty+'"></span></div>';
+    b+='<div class="fq-crow"><span>Start</span><span><input id="lce-start" class="dp-input" value="'+it.start+'"></span></div>';
+    b+='<div class="fq-crow"><span>End</span><span><input id="lce-end" class="dp-input" value="'+it.end+'"></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><select id="lce-state" class="dp-sel">'+stateOpts+'</select></span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" style="color:var(--red);margin-right:auto" onclick="logCapDelete(\''+proj+'\','+idx+')">Delete</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="logCapSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal(b);
+  }
+  function logCapSave(proj,idx){
+    var it=CC_LOGISTICS_CAP.plan[proj][idx]; if(!it)return;
+    it.item=document.getElementById('lce-item').value;
+    it.cat=document.getElementById('lce-cat').value;
+    it.qty=document.getElementById('lce-qty').value;
+    it.start=document.getElementById('lce-start').value;
+    it.end=document.getElementById('lce-end').value;
+    it.state=document.getElementById('lce-state').value;
+    closeModal(); renderCcDemand('logistics');
+  }
+  function logCapDelete(proj,idx){
+    CC_LOGISTICS_CAP.plan[proj].splice(idx,1);
+    closeModal(); renderCcDemand('logistics');
+  }
+
+  // ─── PROF SERVICES EDIT HELPERS ─────────────────────────────────────────────
+  function psCapAdd(proj){
+    if(!CC_PROFSERVICES_CAP.plan[proj])CC_PROFSERVICES_CAP.plan[proj]=[];
+    CC_PROFSERVICES_CAP.plan[proj].push({scope:'ie',label:'New scope',fte:1,start:'Aug 1',end:'Dec 31',status:'planned'});
+    var idx=CC_PROFSERVICES_CAP.plan[proj].length-1;
+    renderCcDemand('profservices'); setTimeout(function(){psCapEdit(proj,idx);},50);
+  }
+  function psCapEdit(proj,idx){
+    var it=CC_PROFSERVICES_CAP.plan[proj][idx]; if(!it)return;
+    var cap=CC_PROFSERVICES_CAP;
+    var scOpts=Object.keys(cap.scopeLabel).map(function(k){return '<option value="'+k+'"'+(it.scope===k?' selected':'')+'>'+cap.scopeLabel[k]+'</option>';}).join('');
+    var stOpts=['active','sow_pending','requested','demobilized','planned'].map(function(s){return '<option'+(it.status===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-req"><div class="fq-req-t">Edit resource line</div><div class="sub">'+proj+'</div></div>';
+    b+='<div class="fq-calc">';
+    b+='<div class="fq-crow"><span>Label</span><span><input id="pce-label" class="dp-input" value="'+it.label+'"></span></div>';
+    b+='<div class="fq-crow"><span>Discipline</span><span><select id="pce-scope" class="dp-sel">'+scOpts+'</select></span></div>';
+    b+='<div class="fq-crow"><span>FTE</span><span><input id="pce-fte" class="dp-input" value="'+it.fte+'"></span></div>';
+    b+='<div class="fq-crow"><span>Start</span><span><input id="pce-start" class="dp-input" value="'+it.start+'"></span></div>';
+    b+='<div class="fq-crow"><span>End</span><span><input id="pce-end" class="dp-input" value="'+it.end+'"></span></div>';
+    b+='<div class="fq-crow"><span>SOW ref</span><span><input id="pce-sow" class="dp-input" value="'+(it.sow||'')+'"></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><select id="pce-status" class="dp-sel">'+stOpts+'</select></span></div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" style="color:var(--red);margin-right:auto" onclick="psCapDelete(\''+proj+'\','+idx+')">Delete</button><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="psCapSave(\''+proj+'\','+idx+')">Save</button></div>';
+    openModal(b);
+  }
+  function psCapSave(proj,idx){
+    var it=CC_PROFSERVICES_CAP.plan[proj][idx]; if(!it)return;
+    it.label=document.getElementById('pce-label').value;
+    it.scope=document.getElementById('pce-scope').value;
+    it.fte=parseFloat(document.getElementById('pce-fte').value)||it.fte;
+    it.start=document.getElementById('pce-start').value;
+    it.end=document.getElementById('pce-end').value;
+    it.sow=document.getElementById('pce-sow').value||undefined;
+    it.status=document.getElementById('pce-status').value;
+    closeModal(); renderCcDemand('profservices');
+  }
+  function psCapDelete(proj,idx){
+    CC_PROFSERVICES_CAP.plan[proj].splice(idx,1);
+    closeModal(); renderCcDemand('profservices');
+  }
+
+  // ─── PROCUREMENT TOGGLE ──────────────────────────────────────────────────────
+  function procToggle(proj,cat,field){
+    if(!CC_PROCUREMENT_CAP.state[proj])CC_PROCUREMENT_CAP.state[proj]={};
+    if(!CC_PROCUREMENT_CAP.state[proj][cat])CC_PROCUREMENT_CAP.state[proj][cat]={};
+    CC_PROCUREMENT_CAP.state[proj][cat][field]=!CC_PROCUREMENT_CAP.state[proj][cat][field];
+    renderCcDemand('procurement');
+  }
+  function procExpandCat(id){
+    var el=document.getElementById(id); if(!el)return;
+    el.style.display=el.style.display==='none'?'block':'none';
+  }
+  function procCapEditNote(proj,cat){
+    var cur=(CC_PROCUREMENT_CAP.state[proj]&&CC_PROCUREMENT_CAP.state[proj][cat]&&CC_PROCUREMENT_CAP.state[proj][cat].note)||'';
+    var b='<div class="fq-req"><div class="fq-req-t">Edit note</div><div class="sub">'+CC_PROCUREMENT_CAP.catLabel[cat]+' · '+proj+'</div></div>';
+    b+='<div class="fq-calc"><div class="fq-crow"><span>Note</span><span><input id="pcn-note" class="dp-input" value="'+cur+'"></span></div></div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="(function(){if(!CC_PROCUREMENT_CAP.state[\''+proj+'\'])CC_PROCUREMENT_CAP.state[\''+proj+'\']={};if(!CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\'])CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\']={}; CC_PROCUREMENT_CAP.state[\''+proj+'\'][\''+cat+'\'].note=document.getElementById(\'pcn-note\').value;closeModal();renderCcDemand(\'procurement\');})()">Save</button></div>';
+    openModal(b);
+  }
+
+  // ─── RENDER: EQUIPMENT (placeholder) ────────────────────────────────────────
   function renderEquipmentCapPlan(proj){
-    var h='';
-    h+='<div style="margin-top:24px">';
+    var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Own vs. Re-rent Planning</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Placeholder · Alpha build</span></div>';
     h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:24px 20px;text-align:center">';
@@ -6788,75 +6936,88 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='</div></div>';
     return h;
   }
+
+  // ─── RENDER: LOGISTICS ───────────────────────────────────────────────────────
   function renderLogisticsCapPlan(proj){
     if(!CC_LOGISTICS_CAP||!CC_LOGISTICS_CAP.plan[proj])return '';
     var cap=CC_LOGISTICS_CAP;
     var items=cap.plan[proj];
     var projName=_PROJ_LABELS[proj]||proj;
-    function logN(s){var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var p=(s||'').trim().split(' ');return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));}
-    var allN=[];items.forEach(function(it){allN.push(logN(it.mobilize),logN(it.release));});
-    var lo=Math.min.apply(null,allN)-5,hi=Math.max.apply(null,allN)+10,span=hi-lo||1;
-    function pctL(n){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+    var rng=_ganttRange(items,'start','end');
+    var lo=rng.lo,span=rng.hi-rng.lo||1;
+    function pctL(n){return _pct(n,lo,span);}
     var monthNms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var h='';
-    h+='<div style="margin-top:24px">';
+    var ganttH=items.length*26+50;
+    var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
     h+='<span class="dp-sec-t">'+svg(IC.truck)+'GC / GR Fleet Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, GC/GR lines auto-populate from the project mobilization template (category + qty, mob date, planned release). Move events derive from delivery and setup schedules. <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
-    var gCols='1.4fr 130px 80px 80px 80px 80px';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, GC/GR lines auto-populate from the project mobilization template. Move events derive from delivery and setup schedules. <span style="color:var(--g400)">⭐ North Star: 02S auto-flags move-event overloads and fleet shortfalls against the regional pool before they hit the field.</span></div>';
+    var gCols='1.4fr 120px 70px 80px 80px 80px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Item</span><span>Category</span><span>Qty</span><span>Mob. date</span><span>Release</span><span>Status</span></div>';
-    items.forEach(function(it){
-      var deployed=it.status==='deployed';
+    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Item</span><span>Category</span><span>Qty</span><span>Start</span><span>End</span><span>Status</span><span></span></div>';
+    items.forEach(function(it,idx){
       h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
       h+='<div style="font-weight:600;font-size:12px">'+it.item+'</div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+(cap.typeLabel[it.cat]||it.cat)+'</div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+it.qty+'</div>';
-      h+='<div style="font-size:11.5px">'+it.mobilize+'</div>';
-      h+='<div style="font-size:11.5px">'+it.release+'</div>';
-      h+='<div><span class="tag '+(deployed?'ok':'neu')+'" style="font-size:10px">'+(deployed?'Deployed':'Planned')+'</span></div>';
+      h+='<div style="font-size:11.5px">'+it.start+'</div>';
+      h+='<div style="font-size:11.5px">'+it.end+'</div>';
+      h+='<div>'+_sBadge(it.state)+'</div>';
+      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit" onclick="logCapEdit(\''+proj+'\','+idx+')">&#9998;</button></div>';
       h+='</div>';
     });
     h+='</div>';
-    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'On-rent window</span></div>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
-    h+='<div style="display:flex;margin-bottom:6px"><div style="min-width:160px"></div>';
+    h+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="logCapAdd(\''+proj+'\')">+ Add line</button></div>';
+    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment & transit schedule</span></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
+    h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:160px"></div>';
     h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
-    for(var lmi=0;lmi<12;lmi++){var lmn=(lmi+1)*30+1;if(lmn>=lo&&lmn<=hi){h+='<div style="position:absolute;left:'+pctL(lmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(lmn)>1)h+='<div style="position:absolute;left:'+pctL(lmn)+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';}}
+    for(var lmi=0;lmi<12;lmi++){
+      var mn=(lmi+1)*30+1;
+      if(mn>=lo&&mn<=rng.hi){h+='<div style="position:absolute;left:'+pctL(mn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(mn)>1)h+='<div style="position:absolute;left:'+pctL(mn)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+      var mn2=mn+360;
+      if(mn2>=lo&&mn2<=rng.hi){h+='<div style="position:absolute;left:'+pctL(mn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(mn2)>1)h+='<div style="position:absolute;left:'+pctL(mn2)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+    }
     h+='</div></div>';
     items.forEach(function(it){
-      var tc=cap.typeColor[it.cat]||'#6366f1';
-      var x1=pctL(logN(it.mobilize)),x2=pctL(logN(it.release)),bw=Math.max(x2-x1,0.8);
-      var deployed=it.status==='deployed';
+      var sn=_logN(it.start),en=_logN(it.end);if(en<sn)en+=360;
+      var x1=pctL(sn),x2=pctL(en),bw=Math.max(x2-x1,2);
+      var bc=_sColor(it.state),op=_sOpacity(it.state);
       h+='<div style="display:flex;align-items:center;margin:3px 0">';
       h+='<div style="min-width:160px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+it.item+'</div>';
       h+='<div style="position:relative;flex:1;height:22px">';
-      h+='<div title="'+it.mobilize+' → '+it.release+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+tc+';opacity:'+(deployed?'.85':'.6')+'"><div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div></div>';
-      h+='</div></div>';
+      h+='<div title="'+it.item+' · '+it.start+' → '+it.end+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+bc+';opacity:'+op+'">';
+      if(bw>5)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
+      h+='</div></div></div>';
     });
-    h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
-    var seenCats={};
-    items.forEach(function(it){if(!seenCats[it.cat]){seenCats[it.cat]=true;h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:'+(cap.typeColor[it.cat]||'#888')+';border-radius:2px;opacity:.72"></div>'+(cap.typeLabel[it.cat]||it.cat)+'</div>';}});
+    // legend
+    h+='<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#10b981;border-radius:2px;opacity:.82"></div>Active / Deployed</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned / Projected</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#f59e0b;border-radius:2px;opacity:.55"></div>Requested / Pending</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
+    // fleet utilization cards
     var catTotals={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;catTotals[it.cat]=(catTotals[it.cat]||0)+n;});
-    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">';
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">';
     Object.keys(catTotals).forEach(function(cat){
       var owned=cap.fleetOwned[cat];var used=catTotals[cat];var risk=typeof owned==='number'&&used>owned;
       h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
       h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.typeLabel[cat]||cat)+'</div>';
-      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+(typeof owned==='number'?owned:'—')+'</div>';
+      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+(typeof owned==='number'?'<span contenteditable="true" onblur="CC_LOGISTICS_CAP.fleetOwned[\''+cat+'\']=parseInt(this.innerText,10)||'+owned+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+owned+'</span>':'—')+'</div>';
       h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over fleet':'Within capacity')+'</div>';
       h+='</div>';
     });
     h+='</div>';
+    // move events
     var moves=cap.moveEvents[proj]||[];
     if(moves.length){
       h+='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Peak move events</div>';
       h+='<div style="display:flex;flex-wrap:wrap;gap:8px">';
       moves.forEach(function(m){var risk=m.events>=cap.moveCapacity*.8;h+='<div style="background:'+(risk?'rgba(239,68,68,.06)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:6px 10px;font-size:11px"><b>'+m.week+'</b> — '+m.events+' moves'+(m.note?' · '+m.note:'')+(risk?' <span style="color:var(--red)">⚠</span>':'')+'</div>';});
-      h+='</div><div style="font-size:10.5px;color:var(--g400);margin-top:5px">Regional crew capacity: '+cap.moveCapacity+' moves/wk · Illustrative — in production move events auto-populate from confirmed delivery schedules</div></div>';
+      h+='</div><div style="font-size:10.5px;color:var(--g400);margin-top:5px">Regional crew capacity: <b contenteditable="true" onblur="CC_LOGISTICS_CAP.moveCapacity=parseInt(this.innerText,10)||'+cap.moveCapacity+';renderCcDemand(\'logistics\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+cap.moveCapacity+'</b> moves/wk · In production move events auto-populate from confirmed delivery schedules</div></div>';
     }
     var lgaps=cap.gaps[proj]||[];
     if(!lgaps.length)h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ No fleet conflicts for this project.</div>';
@@ -6864,66 +7025,80 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='</div>';
     return h;
   }
+
+  // ─── RENDER: PROF SERVICES ───────────────────────────────────────────────────
   function renderProfServicesCapPlan(proj){
     if(!CC_PROFSERVICES_CAP||!CC_PROFSERVICES_CAP.plan[proj])return '';
     var cap=CC_PROFSERVICES_CAP;
     var items=cap.plan[proj];
     var projName=_PROJ_LABELS[proj]||proj;
-    function psN(s){var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var p=(s||'').trim().split(' ');return (mo[p[0]]||1)*30+(parseInt(p[1]||1,10));}
-    var allN=[];items.forEach(function(it){allN.push(psN(it.start),psN(it.end));});
-    var lo=Math.min.apply(null,allN)-5,hi=Math.max.apply(null,allN)+10,span=hi-lo||1;
-    function pctP(n){return Math.max(0,Math.min(100,Math.round((n-lo)/span*100)));}
+    var rng=_ganttRange(items,'start','end');
+    var lo=rng.lo,span=rng.hi-rng.lo||1;
+    function pctP(n){return _pct(n,lo,span);}
     var monthNms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var h='';
-    h+='<div style="margin-top:24px">';
+    var ganttH=items.length*26+50;
+    var stMap={active:'Active',sow_pending:'SOW pending',requested:'Requested',demobilized:'Demobilized',planned:'Planned'};
+    var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
     h+='<span class="dp-sec-t">'+svg(IC.people)+'Resource Deployment Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">Illustrative, V1</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). SOW status is manually flagged. <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM schedule milestones and flags resources not confirmed before their mobilization window.</span></div>';
-    var gCols='1.4fr 120px 60px 80px 80px 110px';
-    h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Scope / Role</span><span>Discipline</span><span>FTE</span><span>Start</span><span>End</span><span>SOW Status</span></div>';
-    items.forEach(function(it){
-      var isActive=it.status==='active';var isPending=it.status==='sow_pending';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Demo data.</b> In production, resource lines are entered by the project PM (scope, FTE, dates, SOW ref). <span style="color:var(--g400)">⭐ North Star: 02S cross-references CPM milestones and flags resources not confirmed before their mobilization window.</span></div>';
+    var gCols='1.4fr 130px 60px 80px 80px 110px 28px';
+    h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px;margin-bottom:12px">';
+    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Scope / Role</span><span>Discipline</span><span>FTE</span><span>Start</span><span>End</span><span>SOW Status</span><span></span></div>';
+    items.forEach(function(it,idx){
+      var stLabel=stMap[it.status]||it.status;
+      var stColor=it.status==='active'?'#10b981':it.status==='sow_pending'?'#f59e0b':it.status==='demobilized'?'#9ca3af':'#3b82f6';
       h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
       h+='<div style="font-weight:600;font-size:12px">'+it.label+(it.sow?'<span style="font-size:10px;color:var(--g400);margin-left:6px">'+it.sow+'</span>':'')+'</div>';
       h+='<div style="font-size:11.5px;color:var(--g600)">'+(cap.scopeLabel[it.scope]||it.scope)+'</div>';
       h+='<div style="font-size:11.5px">'+it.fte+' FTE</div>';
       h+='<div style="font-size:11.5px">'+it.start+'</div>';
       h+='<div style="font-size:11.5px">'+it.end+'</div>';
-      h+='<div><span class="tag '+(isActive?'ok':isPending?'warn':'neu')+'" style="font-size:10px">'+(isActive?'Active':isPending?'SOW pending':'Planned')+'</span></div>';
+      h+='<div><span class="tag '+(it.status==='active'?'ok':it.status==='sow_pending'?'warn':it.status==='demobilized'?'neu':'neu')+'" style="font-size:10px">'+stLabel+'</span></div>';
+      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit" onclick="psCapEdit(\''+proj+'\','+idx+')">&#9998;</button></div>';
       h+='</div>';
     });
     h+='</div>';
+    h+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="psCapAdd(\''+proj+'\')">+ Add line</button></div>';
     h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment window</span></div>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px">';
-    h+='<div style="display:flex;margin-bottom:6px"><div style="min-width:200px"></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
+    h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:200px"></div>';
     h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
-    for(var pmi=0;pmi<12;pmi++){var pmn=(pmi+1)*30+1;if(pmn>=lo&&pmn<=hi){h+='<div style="position:absolute;left:'+pctP(pmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[pmi]+'</div>';if(pctP(pmn)>1)h+='<div style="position:absolute;left:'+pctP(pmn)+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';}}
+    for(var pmi=0;pmi<12;pmi++){
+      var pmn=(pmi+1)*30+1;
+      if(pmn>=lo&&pmn<=rng.hi){h+='<div style="position:absolute;left:'+pctP(pmn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[pmi]+'</div>';if(pctP(pmn)>1)h+='<div style="position:absolute;left:'+pctP(pmn)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+      var pmn2=pmn+360;
+      if(pmn2>=lo&&pmn2<=rng.hi){h+='<div style="position:absolute;left:'+pctP(pmn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[pmi]+'</div>';if(pctP(pmn2)>1)h+='<div style="position:absolute;left:'+pctP(pmn2)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
+    }
     h+='</div></div>';
     items.forEach(function(it){
-      var tc=cap.scopeColor[it.scope]||'#6366f1';
-      var x1=pctP(psN(it.start)),x2=pctP(psN(it.end)),bw=Math.max(x2-x1,0.8);
-      var isActive=it.status==='active';var isPending=it.status==='sow_pending';
+      var sn=_logN(it.start),en=_logN(it.end);if(en<sn)en+=360;
+      var x1=pctP(sn),x2=pctP(en),bw=Math.max(x2-x1,1);
+      var bc=it.status==='active'?'#10b981':it.status==='sow_pending'?'#f59e0b':it.status==='demobilized'?'#9ca3af':'#3b82f6';
+      var op=it.status==='active'?'.82':it.status==='demobilized'?'.35':it.status==='sow_pending'?'.5':'.65';
+      var isDash=it.status==='sow_pending'||it.status==='requested';
       h+='<div style="display:flex;align-items:center;margin:3px 0">';
       h+='<div style="min-width:200px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+it.label+' ('+it.fte+' FTE)</div>';
       h+='<div style="position:relative;flex:1;height:22px">';
-      h+='<div title="'+it.start+' → '+it.end+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+tc+';opacity:'+(isActive?'.75':'.35')+';'+(isPending?'border:2px dashed '+tc+';background:'+tc+'40':'')+'">';
-      h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.label+'</div>';
+      h+='<div title="'+it.label+' · '+it.start+' → '+it.end+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+bc+';opacity:'+op+(isDash?';outline:2px dashed '+bc+';outline-offset:-2px;background:'+bc+'40':'')+'">';
+      if(bw>8)h+='<div style="font-size:9.5px;color:'+(isDash?bc:'#fff')+';padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:'+(isDash?'600':'400')+'">'+it.label+'</div>';
       h+='</div></div></div>';
     });
-    h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#6366f1;border-radius:2px;opacity:.75"></div>Active</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;border:2px dashed #f59e0b;background:#f59e0b40;border-radius:2px"></div>SOW pending</div>';
+    h+='<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#10b981;border-radius:2px;opacity:.82"></div>Active</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned / Projected</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;border:2px dashed #f59e0b;background:#f59e0b40;border-radius:2px"></div>SOW pending / Requested</div>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
     var scopeTotals={};items.forEach(function(it){scopeTotals[it.scope]=(scopeTotals[it.scope]||0)+it.fte;});
-    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px">';
+    h+='<div style="margin-top:12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">';
     Object.keys(scopeTotals).forEach(function(sc){
       var internal=cap.internalFTE[sc]||0;var used=scopeTotals[sc];var risk=used>internal;
       h+='<div style="background:'+(risk?'rgba(239,68,68,.05)':'var(--g50)')+';border:1px solid '+(risk?'rgba(239,68,68,.2)':'var(--g150)')+';border-radius:6px;padding:8px 10px">';
       h+='<div style="font-size:10px;font-weight:700;color:var(--g500);margin-bottom:3px;text-transform:uppercase;letter-spacing:.03em">'+(cap.scopeLabel[sc]||sc)+'</div>';
-      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / '+internal+' FTE</div>';
+      h+='<div style="font-size:12.5px;font-weight:700;color:'+(risk?'var(--red)':'var(--charcoal)')+'">'+used+' / <span contenteditable="true" onblur="CC_PROFSERVICES_CAP.internalFTE[\''+sc+'\']=parseFloat(this.innerText)||'+internal+';renderCcDemand(\'profservices\')" style="border-bottom:1px dashed var(--g400);outline:none;cursor:text">'+internal+'</span> FTE</div>';
       h+='<div style="font-size:10px;color:'+(risk?'var(--red)':'var(--g400)')+'">'+(risk?'⚠ Over capacity':'Within capacity')+'</div>';
       h+='</div>';
     });
@@ -6934,41 +7109,61 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='</div>';
     return h;
   }
+
+  // ─── RENDER: PROCUREMENT ─────────────────────────────────────────────────────
   function renderProcurementCapPlan(proj){
-    if(!CC_PROCUREMENT_CAP||!CC_PROCUREMENT_CAP.plan[proj])return '';
     var cap=CC_PROCUREMENT_CAP;
-    var items=cap.plan[proj];
+    var projRows=(CC_PROJ_DP.procurement&&CC_PROJ_DP.procurement[proj]&&CC_PROJ_DP.procurement[proj].rows)||[];
     var projName=_PROJ_LABELS[proj]||proj;
-    var h='';
-    h+='<div style="margin-top:24px">';
+    // group rows by cat
+    var catMap={};
+    projRows.forEach(function(r){var c=r.cat||'sm_tools';if(!catMap[c])catMap[c]=[];catMap[c].push(r);});
+    var h='<div style="margin-top:24px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
     h+='<span class="dp-sec-t">'+svg(IC.cart)+'Category Plan</span>';
     h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">V1 · Manual inputs</span>';
     h+='<span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+projName+'</span></div>';
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">ℹ️ <b>V1 note:</b> Inventory availability and agreement status are manually flagged — no live IMS or contract feed. In production this connects to the T3 inventory system and contract repository. Small tools & consumables inventory may be available from T3 in Alpha.</div>';
-    var gCols='1.2fr 90px 90px 90px 150px 90px';
+    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 note:</b> Inventory availability and agreement status are manually flagged here — no live IMS or contract feed. <span style="color:var(--g400)">⭐ North Star: 02S connects to the T3 inventory system and contract repository to auto-populate these fields.</span></div>';
+    var gHead='1.6fr 90px 100px 90px 90px 28px';
     h+='<div style="overflow:hidden;border:1px solid var(--g150);border-radius:8px">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gCols+'"><span>Category</span><span>Est. qty</span><span>Inventory</span><span>Agreement</span><span>Vendor</span><span>PO issued</span></div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gHead+'"><span>Category</span><span>Items</span><span>Has inventory</span><span>Has agreement</span><span>PO issued</span><span></span></div>';
     var actions=[];
-    items.forEach(function(it){
-      h+='<div class="dp-row" style="grid-template-columns:'+gCols+'">';
-      h+='<div><span style="font-weight:600;font-size:12px">'+it.label+'</span>'+(it.note?'<div style="font-size:10.5px;color:var(--g400);margin-top:1px">'+it.note+'</div>':'')+'</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.qtyEst+'</div>';
-      h+='<div><span class="tag '+(it.hasInventory?'ok':'neu')+'" style="font-size:10px">'+(it.hasInventory?'✓ Yes':'Manual')+'</span></div>';
-      h+='<div><span class="tag '+(it.hasAgreement?'ok':'warn')+'" style="font-size:10px">'+(it.hasAgreement?'✓ Yes':'None')+'</span></div>';
-      h+='<div style="font-size:11.5px;color:var(--g600)">'+(it.vendor||'— Sourcing needed')+'</div>';
-      h+='<div><span class="tag '+(it.poIssued?'ok':it.hasAgreement?'warn':'bad')+'" style="font-size:10px">'+(it.poIssued?'✓ Issued':'Pending')+'</span></div>';
+    Object.keys(catMap).forEach(function(cat,ci){
+      var rows=catMap[cat];
+      var st=(cap.state[proj]&&cap.state[proj][cat])||{};
+      var hasInv=!!st.hasInventory;var hasPO=!!st.poIssued;
+      var hasAgr=hasInv||rows.some(function(r){return r.state==='PO issued'||r.state==='Ordered'||r.state==='Delivered';});
+      var expId='proc-cat-'+ci+'-'+proj;
+      var needsAction=!hasInv&&!hasPO;
+      h+='<div class="dp-row" style="grid-template-columns:'+gHead+';'+(needsAction?'background:rgba(245,158,11,.04)':'')+'">';
+      h+='<div><span style="font-weight:700;font-size:12px;cursor:pointer" onclick="procExpandCat(\''+expId+'\')">'+(cap.catLabel[cat]||cat)+' ▾</span>'+(st.note?'<div style="font-size:10.5px;color:var(--g400);margin-top:1px">'+st.note+'</div>':'')+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+rows.length+' item'+(rows.length!==1?'s':'')+'</div>';
+      h+='<div><button class="btn btn-'+(hasInv?'ok':'ghost')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procToggle(\''+proj+'\',\''+cat+'\',\'hasInventory\')">'+(hasInv?'✓ Yes':'No')+'</button></div>';
+      h+='<div><button class="btn btn-'+(hasAgr?'ok':'ghost')+' btn-sm" style="font-size:10px;padding:2px 8px;cursor:default">'+(hasAgr?'✓ Yes':'No')+'</button></div>';
+      h+='<div><button class="btn btn-'+(hasPO?'ok':'warn')+' btn-sm" style="font-size:10px;padding:2px 8px" onclick="procToggle(\''+proj+'\',\''+cat+'\',\'poIssued\')">'+(hasPO?'✓ Issued':'Pending')+'</button></div>';
+      h+='<div><button style="background:none;border:none;padding:1px 4px;cursor:pointer;color:var(--g400);font-size:13px;line-height:1" title="Edit note" onclick="procCapEditNote(\''+proj+'\',\''+cat+'\')">&#9998;</button></div>';
       h+='</div>';
-      if(!it.hasAgreement)actions.push({label:it.label,action:'No vendor agreement in place — sourcing needed before PO'});
-      else if(!it.poIssued&&!it.hasInventory)actions.push({label:it.label,action:'Agreement in place, PO not yet issued'});
+      // sub-rows (expandable)
+      h+='<div id="'+expId+'" style="display:none;grid-column:1/-1;background:var(--g50);border-top:1px solid var(--g100)">';
+      rows.forEach(function(r){
+        h+='<div style="display:grid;grid-template-columns:'+gHead+';padding:5px 0 5px 20px;border-bottom:1px solid var(--g100)">';
+        h+='<div style="font-size:11.5px;color:var(--g600)">'+r.item+'</div>';
+        h+='<div style="font-size:11px;color:var(--g500)">'+r.qty+'</div>';
+        h+='<div></div><div></div>';
+        h+='<div>'+_sBadge(r.state)+'</div>';
+        h+='<div></div>';
+        h+='</div>';
+      });
+      h+='</div>';
+      if(!hasInv&&!hasPO)actions.push({label:cap.catLabel[cat]||cat,note:st.note||'No inventory & PO not issued'});
     });
     h+='</div>';
     if(actions.length){
       h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
-      actions.forEach(function(a){h+='<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:#b45309;font-weight:600">⚠ '+a.label+'</span> — <span style="color:var(--g600)">'+a.action+'</span></div>';});
+      actions.forEach(function(a){h+='<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:#b45309;font-weight:600">⚠ '+a.label+'</span> — <span style="color:var(--g600)">'+a.note+'</span></div>';});
       h+='</div>';
     } else {
-      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All categories have agreements and POs issued.</div>';
+      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">✓ All categories have inventory or POs issued.</div>';
     }
     h+='</div>';
     return h;
