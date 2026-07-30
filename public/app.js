@@ -3624,7 +3624,7 @@ charges:[
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
     if(ns && o.recv) parts.push(recvHTML(o));                        // NS: rich receiving details
-    if(o.attachments) parts.push(attachmentsHTML(o.attachments));
+    parts.push(attachmentsHTML(o.attachments));
     var _nts=ORDER_NOTES[o.id]; if(_nts&&_nts.length) parts.push(notesHTML(o,_nts));
     return parts.join('');
   }
@@ -6433,7 +6433,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(row.ordId){b+='<div class="fq-crow"><span>Order</span><span style="font-family:monospace;font-size:12px">'+row.ordId+'</span></div>';}
     b+='</div>';
     if(row.ordId){b+=buildDpBillingInline(row.ordId);}
-    if(row.attachments){b+=attachmentsHTML(row.attachments);}
+    b+=attachmentsHTML(row.attachments);
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
     if(!isDp){b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button>';}
     b+='</div>';
@@ -6724,28 +6724,50 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return h;
   }
   function attachmentsHTML(docs){
-    if(!docs||!docs.length) return '';
+    if(!docs) docs=[];
     var groups={};
     docs.forEach(function(d){ if(!groups[d.type]) groups[d.type]=[]; groups[d.type].push(d); });
     var h='<div style="border-top:1px solid var(--g100);padding:12px 0 4px">';
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">';
-    h+='Attached documentation <span style="font-weight:400;color:var(--g400)">('+docs.length+')</span></div>';
-    Object.keys(groups).forEach(function(type){
-      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(99,102,241,.85);margin:6px 0 3px">'+type+'</div>';
-      groups[type].forEach(function(d){
-        var st=d.status==='Approved'||d.status==='Available'?'ok':d.status==='Pending'||d.status==='In review'?'warn':'neu';
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--g50);border-radius:4px;border:1px solid var(--g100);margin-bottom:3px">';
-        h+='<div style="min-width:0;flex:1"><span style="font-size:11.5px;color:var(--g900)">'+d.name+'</span><span style="font-size:10px;color:var(--g400);margin-left:8px">'+d.ref+'</span></div>';
-        h+='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px">';
-        h+='<span class="tag '+st+'" style="font-size:9.5px;padding:0 5px">'+d.status+'</span>';
-        h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px" onclick="event.stopPropagation();dpDocDownload(\''+d.ref+'\')">↓ PDF</button>';
-        h+='</div></div>';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Attached documentation<span style="font-weight:400;color:var(--g400);margin-left:6px">('+docs.length+')</span></div>';
+    h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();var up=document.getElementById(\'dp-up-panel\');up.style.display=up.style.display===\'none\'?\'block\':\'none\'">+ Upload</button>';
+    h+='</div>';
+    h+='<div id="dp-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
+    h+='<div style="font-size:11px;font-weight:600;color:var(--g700);margin-bottom:8px">Attach document</div>';
+    h+='<div style="margin-bottom:8px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Document type</div>';
+    h+='<select id=\"dp-type-sel\" style=\"width:100%;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700)\"><option value=\"\">Select type...</option><option value=\"RFIs\">RFIs</option><option value=\"Submittals\">Submittals</option><option value=\"Engineering\">Engineering</option><option value=\"Safety\">Safety</option><option value=\"Quality\">Quality</option><option value=\"Quotes\">Quotes / Bills of Lading</option><option value=\"Shipping\">Shipping / Logistics</option><option value=\"Crew Design\">Crew Focused Design</option><option value=\"Change Orders\">Change Orders / Schedule Impacts</option><option value=\"Turnover\">Turnover \u2014 COPI</option><option value=\"Turnover\">Turnover \u2014 COPO</option></select></div>';
+    h+='<div style="margin-bottom:10px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">File</div>';
+    h+='<input type="file" id="dp-file-inp" style="width:100%;font-size:11.5px;font-family:inherit"></div>';
+    h+='<div style="display:flex;gap:6px;justify-content:flex-end">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();document.getElementById(\'dp-up-panel\').style.display=\'none\'">Cancel</button>';
+    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach()">Attach</button>';
+    h+='</div></div>';
+    if(docs.length){
+      Object.keys(groups).forEach(function(type){
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(99,102,241,.85);margin:6px 0 3px">'+type+'</div>';
+        groups[type].forEach(function(d){
+          var st=d.status==='Approved'||d.status==='Available'?'ok':d.status==='Pending'||d.status==='In review'?'warn':'neu';
+          h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--g50);border-radius:4px;border:1px solid var(--g100);margin-bottom:3px">';
+          h+='<div style="min-width:0;flex:1"><span style="font-size:11.5px;color:var(--g900)">'+d.name+'</span><span style="font-size:10px;color:var(--g400);margin-left:8px">'+d.ref+'</span></div>';
+          h+='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px"><span class="tag '+st+'" style="font-size:9.5px;padding:0 5px">'+d.status+'</span>';
+          h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px" onclick="event.stopPropagation();dpDocDownload(\''+d.ref+'\')">↓ PDF</button></div></div>';
+        });
       });
-    });
+    } else {
+      h+='<div style="font-size:11.5px;color:var(--g400);padding:4px 0">No documents attached yet.</div>';
+    }
     h+='</div>';
     return h;
   }
   function dpDocDownload(ref){ toast('Opening '+ref+' — document staged'); }
+  function dpUploadAttach(){
+    var t=document.getElementById('dp-type-sel');
+    var f=document.getElementById('dp-file-inp');
+    if(!t||!t.value){ toast('Select a document type first'); return; }
+    if(!f||!f.files||!f.files.length){ toast('Select a file first'); return; }
+    toast(f.files[0].name+' attached as '+t.value+' — saved');
+    document.getElementById('dp-up-panel').style.display='none';
+  }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
   function dpTaxCell(r){
     var CHK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>';
