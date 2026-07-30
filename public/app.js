@@ -5304,28 +5304,6 @@ charges:[
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
-    if(fqFP!=='all'){
-      var _fqDpPillar=(fqFP==='services')?'profservices':fqFP;
-      var _fqDpRows=[];
-      var _projM={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
-      ['hercules','riverside','cimarron'].forEach(function(proj){
-        var pd=CC_PROJ_DP[_fqDpPillar]&&CC_PROJ_DP[_fqDpPillar][proj];
-        if(pd&&pd.rows){pd.rows.forEach(function(r){_fqDpRows.push({item:r.item,qty:r.qty,window:r.window,state:r.state,ordId:r.ordId||null,project:_projM[proj]});});}
-      });
-      if(_fqDpRows.length){
-        var _STATE_TONE={Requested:'warn','At-risk':'bad','PO issued':'info',Ordered:'info','In fabrication':'info',Projected:'neu',Scheduled:'info',Active:'ok','On-rent':'ok',Delivered:'ok',Fulfilled:'ok',Demobilized:'neu','Off-rent':'neu',Draft:'neu','Pending pricing':'warn','Submittal':'info'};
-        h+='<div style="margin-top:20px">';
-        h+='<div class="eq-toolbar"><span class="dp-sec-t" style="font-size:12px;font-weight:700;color:var(--g700)">All demand plan items</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400)">'+_fqDpRows.length+' items</span></div>';
-        var _gtDp='1fr 168px 120px 128px 180px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_gtDp+'"><span>Item</span><span>Project</span><span>Window</span><span>State</span><span>Action</span></div>';
-        _fqDpRows.forEach(function(r){
-          var tone=_STATE_TONE[r.state]||'neu';
-          var act=r.ordId?('<button class="btn btn-ghost btn-sm" onclick="ccDpTracker(\''+r.ordId+'\')">↗ Track order</button>'):'<span class="tag '+tone+'">'+r.state+'</span>';
-          h+='<div class="dp-row" style="grid-template-columns:'+_gtDp+'"><div>'+r.item+'<div class="sub">'+r.qty+'</div></div><div>'+r.project+'</div><div>'+r.window+'</div><div><span class="tag '+tone+'">'+r.state+'</span></div><div>'+act+'</div></div>';
-        });
-        h+='</div></div>';
-      }
-    }
     if(ns){
       var _oids=Object.keys(ORDER_TASKS);
       var _o2sNeed=_oids.filter(function(id){var s=orderTaskSummary(id);return s&&s.o2sBlocking>0;});
@@ -6647,6 +6625,31 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var _isDp=(_dpCcProjMap[p]&&_dpCcProjMap[p]!=='all');
     dpDpModal(p,proj,idx,_isDp);
   }
+  function dpAllReqModal(p,proj,idx){
+    var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
+    var row=rows&&rows[idx]; if(!row)return;
+    var _pL={equipment:'Equipment',logistics:'Logistics',procurement:'Procurement',prefab:'Pre-fab',profservices:'Prof. Services'};
+    var _prL={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
+    var _toneM={Active:'ok','On-rent':'ok',Delivered:'ok',Fulfilled:'ok',Scheduled:'info','PO issued':'info',Ordered:'info','In fabrication':'info',Submittal:'info','Off-rent':'neu',Demobilized:'neu',Requested:'warn','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad'};
+    var tone=_toneM[row.state]||'neu';
+    var b='<div style="padding:4px 0 16px">';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;font-size:12px;margin-bottom:14px">';
+    b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Project</div><div>'+(_prL[proj]||proj)+'</div></div>';
+    b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">State</div><div><span class="tag '+tone+'">'+row.state+'</span></div></div>';
+    b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Qty</div><div>'+(row.qty||'\u2014')+'</div></div>';
+    b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Window</div><div>'+(row.window||'\u2014')+'</div></div>';
+    if(row.cost){b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Rate / cost</div><div>'+row.cost+'</div></div>';}
+    if(row.firm){b+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Vendor</div><div>'+row.firm+'</div></div>';}
+    b+='</div>';
+    if(row.ordId){b+='<div style="padding:8px 12px;background:var(--g50);border-radius:6px;font-size:11.5px;margin-bottom:12px"><span style="color:var(--g500)">Order ID: </span><span style="font-weight:600;font-family:monospace">'+row.ordId+'</span></div>';}
+    b+='</div>';
+    b+='<div class="modal-foot">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button>';
+    b+='<button class="btn btn-dark" onclick="ccGo(\'fulfill\');closeModal()">View in fulfillment queue \u2192</button>';
+    b+='</div>';
+    openModal(row.item+' \u2014 '+(_pL[p]||p),b);
+  }
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
     if(!o){toast('No order data for '+ordId);return;}
@@ -6782,6 +6785,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     projsForTable.forEach(function(proj){
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
+          if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
           allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null});
         });
       }
@@ -6896,7 +6900,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
         } else {
-          h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
+          h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpAllReqModal(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+row.cost+'</div></div>';
           h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
@@ -6911,7 +6915,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
         var ahExpId='ahx-'+p+'-'+_rowI;
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="event.stopPropagation();dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="ccHighlight=\''+r2.id+'\';ccGo(\'fulfill\')"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="ccHighlight=\''+r2.id+'\';ccGo('fulfill')">\u2192 FQ</div></div>';
       }
     });
     if(!isDpView&&!dpShowAll&&moreN>0){
