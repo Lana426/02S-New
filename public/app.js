@@ -5304,6 +5304,28 @@ charges:[
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
+    if(fqFP!=='all'){
+      var _fqDpPillar=(fqFP==='services')?'profservices':fqFP;
+      var _fqDpRows=[];
+      var _projM={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
+      ['hercules','riverside','cimarron'].forEach(function(proj){
+        var pd=CC_PROJ_DP[_fqDpPillar]&&CC_PROJ_DP[_fqDpPillar][proj];
+        if(pd&&pd.rows){pd.rows.forEach(function(r){_fqDpRows.push({item:r.item,qty:r.qty,window:r.window,state:r.state,ordId:r.ordId||null,project:_projM[proj]});});}
+      });
+      if(_fqDpRows.length){
+        var _STATE_TONE={Requested:'warn','At-risk':'bad','PO issued':'info',Ordered:'info','In fabrication':'info',Projected:'neu',Scheduled:'info',Active:'ok','On-rent':'ok',Delivered:'ok',Fulfilled:'ok',Demobilized:'neu','Off-rent':'neu',Draft:'neu','Pending pricing':'warn','Submittal':'info'};
+        h+='<div style="margin-top:20px">';
+        h+='<div class="eq-toolbar"><span class="dp-sec-t" style="font-size:12px;font-weight:700;color:var(--g700)">All demand plan items</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400)">'+_fqDpRows.length+' items</span></div>';
+        var _gtDp='1fr 168px 120px 128px 180px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_gtDp+'"><span>Item</span><span>Project</span><span>Window</span><span>State</span><span>Action</span></div>';
+        _fqDpRows.forEach(function(r){
+          var tone=_STATE_TONE[r.state]||'neu';
+          var act=r.ordId?('<button class="btn btn-ghost btn-sm" onclick="ccDpTracker(\''+r.ordId+'\')">↗ Track order</button>'):'<span class="tag '+tone+'">'+r.state+'</span>';
+          h+='<div class="dp-row" style="grid-template-columns:'+_gtDp+'"><div>'+r.item+'<div class="sub">'+r.qty+'</div></div><div>'+r.project+'</div><div>'+r.window+'</div><div><span class="tag '+tone+'">'+r.state+'</span></div><div>'+act+'</div></div>';
+        });
+        h+='</div></div>';
+      }
+    }
     if(ns){
       var _oids=Object.keys(ORDER_TASKS);
       var _o2sNeed=_oids.filter(function(id){var s=orderTaskSummary(id);return s&&s.o2sBlocking>0;});
