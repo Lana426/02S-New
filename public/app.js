@@ -5811,7 +5811,37 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.3M',note:'ROM professional services'},baseline:{id:'DP-SVC-RIV-BL1',date:'Apr 2025',total:'$1.16M',items:7,note:'Baseline at LOI'},delta:{added:1,value:'+$82K',reason:'MEP commissioning lead added'}},
       cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.6M',note:'ROM professional services'},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:8,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added'}}}
   };
-  var CC_DP={
+  var CC_PREFAB_CAP={
+  types:['mechanical','electrical','structural','misc','concrete'],
+  typeLabel:{mechanical:'Mechanical',electrical:'Electrical',structural:'Structural Steel',misc:'Misc Steel',concrete:'Concrete'},
+  typeColor:{mechanical:'#3b82f6',electrical:'#d97706',structural:'#4f46e5',misc:'#059669',concrete:'#ea580c'},
+  baseline:{mechanical:3,electrical:2,structural:3,misc:4,concrete:2},
+  plan:{
+    hercules:[
+      {item:'Prefab pipe rack modules',t:'mechanical',qty:'12 modules',mo:'Apr 1',fs:'May 15',fe:'Jul 25',shipD:5},
+      {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14},
+      {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5},
+      {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7},
+      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5}
+    ],
+    riverside:[
+      {item:'Overhead MEP rack modules',t:'mechanical',qty:'6 modules',mo:'May 15',fs:'Jul 1',fe:'Aug 25',shipD:5},
+      {item:'L2 headwall assemblies',t:'structural',qty:'8 units',mo:'Mar 15',fs:'Apr 15',fe:'Jun 20',shipD:5},
+      {item:'Stairwell prefab panels',t:'structural',qty:'4 panels',mo:'Jun 1',fs:'Aug 1',fe:'Sep 25',shipD:5}
+    ],
+    cimarron:[
+      {item:'Cable tray brackets',t:'electrical',qty:'Lot',mo:'Jun 15',fs:'Aug 1',fe:'Sep 20',shipD:5},
+      {item:'Server room partition panels',t:'misc',qty:'6 panels',mo:'Jun 1',fs:'Jul 15',fe:'Oct 10',shipD:7},
+      {item:'Generator exhaust enclosures',t:'misc',qty:'4 units',mo:'Jul 15',fs:'Sep 1',fe:'Nov 20',shipD:10}
+    ]
+  },
+  gaps:{
+    hercules:[{t:'mechanical',start:'Jul 1',end:'Jul 25',note:'Pipe racks + pump skids concurrent \u2014 Mechanical at risk Jul\u2013Aug'}],
+    riverside:[],
+    cimarron:[{t:'misc',start:'Sep 1',end:'Oct 10',note:'Partition panels + enclosures concurrent \u2014 Misc Steel at risk Sep\u2013Oct'}]
+  }
+};
+var CC_DP={
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
       ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
@@ -5884,9 +5914,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-F-051',asset:'Cable tray bracket assemblies \u00b7 lot',project:'Cimarron Data Center',tax:'Assembly \u203a Electrical \u203a Cable tray',taxOk:true,leaf:'Cable tray',dec:'Needs quote',decTone:'warn',status:'Awaiting pricing'},
         {id:'REQ-F-052',asset:'Server room partition panels \u00b7 qty 6',project:'Cimarron Data Center',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
-      rollCols:['Assembly type','Peak units','Need-by','vs plan'],
-      roll:[{a:'Mechanical',b:'12',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Electrical',b:'8',c:'Nov 2026',v:'on plan',vt:'ok'},{a:'Structural',b:'12',c:'Jul 2026',v:'+2 over',vt:'warn'}],
-      varSummary:'Structural 2 assemblies over plan \u2014 batchable in one fab slot.',
+      rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],
+      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 At risk Jul\u2013Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'2 active',c:'On plan',v:'BESS e-houses + cable tray',vt:'ok'},{a:'Structural Steel',b:'1 active',c:'On plan',v:'Headwall assemblies',vt:'ok'},{a:'Misc Steel',b:'1 active',c:'On plan',v:'\u2014',vt:'ok'},{a:'Concrete',b:'\u2014',c:'\u2014',v:'\u2014',vt:'neu'}],
+      varSummary:'Mechanical at risk Jul\u2013Aug (Hercules concurrent orders) \u00b7 Misc Steel at risk Oct (Cimarron overlap)',
       consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot. Batch the run to cut setup cost and protect the November date.'} }
   };
   var _PROJ_NAMES={'hercules':'Hercules Solar + BESS','riverside':'Riverside Medical Center','cimarron':'Cimarron Data Center'};
@@ -6168,6 +6198,88 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       openModal('Baseline plan snapshot \u2014 '+pLabel,b);
     }
   }
+  function renderPrefabCapPlan(proj){
+    if(!CC_PREFAB_CAP||!CC_PREFAB_CAP.plan[proj])return '';
+    var items=CC_PREFAB_CAP.plan[proj];
+    var caps=CC_PREFAB_CAP.baseline;
+    var TYPES=CC_PREFAB_CAP.types;
+    var TL=CC_PREFAB_CAP.typeLabel;
+    var TC=CC_PREFAB_CAP.typeColor;
+    var gaps=CC_PREFAB_CAP.gaps[proj]||[];
+    var h='';
+    h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400);font-style:italic">V1 \u00b7 Illustrative \u2014 manually populated</span></div>';
+    var tgt='1fr 116px 88px 88px 104px 56px';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:10px 14px;margin-bottom:14px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Planned fab windows</div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+tgt+';font-size:10.5px"><span>Item</span><span>Assembly type</span><span>Mat. order</span><span>Fab start</span><span>Ship date</span><span class="c">Qty</span></div>';
+    items.forEach(function(it){
+      var tc=TC[it.t]||'var(--g600)'; var tl=TL[it.t]||it.t;
+      h+='<div class="dp-row" style="grid-template-columns:'+tgt+';padding:5px 0;border-bottom:1px solid var(--g100)">';
+      h+='<div style="font-size:12px">'+it.item+'</div>';
+      h+='<div><span style="display:inline-block;background:'+tc+'20;color:'+tc+';font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600">'+tl+'</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.mo+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.fs+'</div>';
+      h+='<div style="font-size:11.5px;color:var(--g600)">'+it.fe+' <span style="color:var(--g400);font-size:10.5px">+'+it.shipD+'d ship</span></div>';
+      h+='<div class="c" style="font-size:11.5px">'+it.qty+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Fab schedule vs. plant capacity</span></div>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow-x:auto">';
+    var PPD=2.87; var TW=700; var LW=120;
+    var MO={Jan:-90,Feb:-59,Mar:-31,Apr:0,May:30,Jun:61,Jul:91,Aug:122,Sep:153,Oct:183,Nov:213,Dec:244};
+    function dx(dstr){
+      var pt=dstr.trim().split(' '); if(pt.length<2)return 0;
+      var base=MO[pt[0]]; if(base===undefined)return 0;
+      return Math.max(0,Math.min(TW,Math.round((base+parseInt(pt[1])-1)*PPD)));
+    }
+    h+='<div style="display:flex;margin-bottom:4px">';
+    h+='<div style="min-width:'+LW+'px"></div>';
+    h+='<div style="position:relative;width:'+TW+'px;height:18px;border-bottom:1px solid var(--g200)">';
+    ['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].forEach(function(m){
+      var x=Math.round(MO[m]*PPD);
+      h+='<div style="position:absolute;left:'+x+'px;font-size:10px;color:var(--g400);white-space:nowrap">'+m+'</div>';
+      if(x>0)h+='<div style="position:absolute;left:'+x+'px;top:0;height:500px;border-left:1px solid var(--g100);z-index:0"></div>';
+    });
+    h+='</div></div>';
+    TYPES.forEach(function(type){
+      var tItems=items.filter(function(it){return it.t===type;});
+      if(!tItems.length)return;
+      var tc=TC[type]||'#888'; var tl=TL[type]||type;
+      var rH=tItems.length*22+14;
+      var gapItem=(CC_PREFAB_CAP.gaps[proj]||[]).filter(function(g){return g.t===type;})[0];
+      h+='<div style="display:flex;align-items:flex-start;margin:4px 0;min-height:'+rH+'px;border-bottom:1px solid var(--g100)">';
+      h+='<div style="min-width:'+LW+'px;font-size:11px;color:var(--g700);font-weight:600;padding-top:6px;padding-right:10px">'+tl+'<div style="font-size:10px;color:var(--g400);font-weight:400">cap: '+caps[type]+'/wk</div></div>';
+      h+='<div style="position:relative;width:'+TW+'px;min-height:'+rH+'px">';
+      if(gapItem){
+        var gs=dx(gapItem.start); var ge=dx(gapItem.end);
+        h+='<div style="position:absolute;left:'+gs+'px;width:'+(ge-gs)+'px;top:0;bottom:0;background:rgba(239,68,68,.1);border-left:2px solid rgba(239,68,68,.4)"></div>';
+      }
+      tItems.forEach(function(it,ri){
+        var x1=dx(it.fs); var x2=dx(it.fe); var bw=Math.max(x2-x1,14);
+        var top=ri*22+4;
+        h+='<div title="'+it.item+' | Fab: '+it.fs+' \u2192 '+it.fe+'" style="position:absolute;left:'+x1+'px;width:'+bw+'px;height:17px;top:'+top+'px;background:'+tc+';opacity:'+(gapItem?'.85':'.72')+';border-radius:4px;overflow:hidden;z-index:1">';
+        h+='<div style="font-size:9.5px;color:#fff;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
+        h+='</div>';
+        var mx=dx(it.mo);
+        if(mx>=0&&mx<TW)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'px;top:'+top+'px;width:2px;height:17px;background:var(--g400);border-radius:1px;z-index:2"></div>';
+      });
+      h+='<div style="position:absolute;bottom:1px;left:0;right:0;border-top:1.5px dashed rgba(0,0,0,.12)"></div>';
+      h+='</div></div>';
+    });
+    if(gaps.length){
+      h+='<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">';
+      gaps.forEach(function(g){
+        var tl=TL[g.t]||g.t;
+        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">\u26a0 Capacity risk \u00b7 '+tl+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';
+      });
+      h+='</div>';
+    } else {
+      h+='<div style="margin-top:10px;font-size:11.5px;color:#16a34a">\u2713 No capacity conflicts for this project.</div>';
+    }
+    h+='</div>';
+    return h;
+  }
   function dpRowClick(p,proj,idx){
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
@@ -6332,6 +6444,21 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     }
     var gtA=isDpView?'1.6fr 80px 150px 105px 120px 175px':(showProjCol?'1.3fr 90px 116px 150px 1fr 100px 110px':'1.3fr 90px 116px 1.2fr 100px 110px');
     if(!isDpView){ h+='<div class="eq-cap" style="margin-bottom:10px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>Recommended actions for all pending requests are in the fulfillment queue. Click any request for more information.</span></div>'; }
+    if(!isDpView&&p==='prefab'){
+      var _capGaps=Object.keys(CC_PREFAB_CAP.gaps).filter(function(k){return CC_PREFAB_CAP.gaps[k].length>0;});
+      if(_capGaps.length){
+        h+='<div style="background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;gap:10px;align-items:flex-start">';
+        h+=svg('<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',0);
+        h+='<div style="font-size:12px"><b style="color:var(--red)">Capacity planning — '+_capGaps.length+' project'+(1===1?'s have':'s have')+' risks (illustrative, V1).</b><div style="margin-top:4px;font-size:11.5px;color:var(--g700)">';
+        _capGaps.forEach(function(k){
+          var g=CC_PREFAB_CAP.gaps[k][0];
+          var lbl=CC_PREFAB_CAP.typeLabel[g.t]||g.t;
+          var pLbl=_PROJ_LABELS[k]||k;
+          h+='<span style="display:inline-block;margin-right:16px">\u26a0 <b>'+pLbl+'</b> \u2014 '+lbl+': '+g.note+'&nbsp;&nbsp;<span style="color:var(--charcoal);cursor:pointer;text-decoration:underline" onclick="_dpCcProjMap[p]=\''+k+'\';ccGo(_PILLAR_SCREEN[p])">View plan</span></span>';
+        });
+        h+='</div></div></div>';
+      }
+    }
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span><span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -6440,7 +6567,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       }
     }
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
-    h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+'Portfolio demand roll-up</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
+    h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up')+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+cfg.varSummary+'</span></div>';
     var gt2='1fr 150px 1fr 120px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'">'+cfg.rollCols.map(function(c){return '<span>'+c+'</span>';}).join('')+'</div>';
     cfg.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
@@ -6461,6 +6588,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
       h+='</div>';
     }
+    if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
     mount.innerHTML=h;
   }
   function dpReview(p,id){
