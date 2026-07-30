@@ -2728,6 +2728,8 @@ charges:[
       {l:'Procurement',   p:8.0, a:7.8, note:''},
       {l:'Prof. services',p:22.0,a:21.0,note:''}
     ];
+    var _gmpMap={equip:'Equipment',logistics:'Logistics',prefab:'Prefab',procurement:'Procurement',services:'Prof. services'};
+    if(_gmpMap[ccPersona]){GP=GP.filter(function(r){return r.l===_gmpMap[ccPersona];});}
     var gt='1fr 72px 72px 84px';
     var b='<div style="background:var(--g50);border-radius:7px;padding:10px 13px;margin-bottom:14px">'
       +'<div style="font-size:12.5px;font-weight:600;color:var(--g900)">Hercules Solar + BESS</div>'
@@ -4929,7 +4931,7 @@ charges:[
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -5188,9 +5190,10 @@ charges:[
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
-  var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={};
+  var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
   function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
+  function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
   function fqIsDone(r){ return FQ_DONE.indexOf(r.status)>=0; }
   function fqVisible(r){ if(fqFP!=='all'&&r.pillar!==fqFP)return false; if(fqFPr!=='all'&&r.project!==fqFPr)return false; if(fqFS==='open'&&fqIsDone(r))return false; if(fqFS==='done'&&!fqIsDone(r))return false; if(fqFSrc!=='all'&&r.src!==fqFSrc)return false; return true; }
   function fqSetFilter(k,v){ if(k==='p')fqFP=v; else if(k==='pr')fqFPr=v; else if(k==='s')fqFS=v; else if(k==='src')fqFSrc=v; renderFulfill(); }
@@ -5254,13 +5257,11 @@ charges:[
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px;cursor:pointer" onclick="ccGo(\''+d.cc+'\')">';
       h+='<div style="font-size:11px;font-weight:600;color:var(--g900);margin-bottom:6px">'+d.label+'</div>';
       h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:4px">'+_fmtKs(totalBudget)+'</div>';
-      if(ccPersona==='fsm'){
         h+='<div style="font-size:10.5px;color:'+(pAh>15?'var(--red)':pAh>8?'#f59e0b':'var(--g500)')+'">'+pAh+'% ad hoc drift</div>';
         h+='<div style="margin-top:6px;height:4px;border-radius:2px;overflow:hidden;background:var(--g200)">';
       var dpPct=totalBudget?Math.min(100,Math.round(100*totalDp/totalBudget)):0; var ahPct=Math.min(100-dpPct,Math.round(100*totalAh/totalBudget));
         h+='<div style="display:flex;height:100%"><div style="width:'+dpPct+'%;background:var(--charcoal)"></div><div style="width:'+ahPct+'%;background:#f59e0b"></div></div>';
         h+='</div></div>';
-      } else { h+='</div>'; }
     });
     h+='</div></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
@@ -6342,7 +6343,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     openModal('Plan item — '+r.item,b);
   }
   function dpGoDP(p,proj){_dpCcProjMap[p]=proj;ccGo(_PILLAR_SCREEN[p]||'dpequip');}
-  function dpDpModal(p,proj,idx){
+  function dpDpModal(p,proj,idx,isDp){
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx]; if(!row)return;
     var dpId=(_DP_IDS[p]||{})[proj]||'\u2014';
@@ -6359,8 +6360,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     b+='</div>';
     if(row.ordId){b+=buildDpBillingInline(row.ordId);}
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
-    if(p!=='equipment'&&row.ordId){b+='<button class="btn btn-dark" onclick="ccDpTracker(\''+row.ordId+'\');closeModal()">View in fulfillment queue \u2192</button>';}
-    b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button></div>';
+    if(!isDp){b+='<button class="btn btn-dark" onclick="dpGoDP(\''+p+'\',\''+proj+'\');closeModal()">View in demand plan \u2192</button>';}
+    b+='</div>';
     openModal(row.item+'\u2014'+pLabel,b);
   }
   function dpShowLineage(p,proj,type){
@@ -6560,7 +6561,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
     if(row&&row.ordId){ccDpTracker(row.ordId);return;}
-    dpDpModal(p,proj,idx);
+    var _isDp=(_dpCcProjMap[p]&&_dpCcProjMap[p]!=='all');
+    dpDpModal(p,proj,idx,_isDp);
   }
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
@@ -6583,7 +6585,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var bst=b.status==='Paid'?'ok':b.dispute?'bad':'warn';
       var hasD=!!(b.dispute||b.ccChange);
       var did='bdet-'+b.inv.replace(/[^a-zA-Z0-9]/g,'-');
-      h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="event.stopPropagation();var nx=this.nextElementSibling;if(nx)nx.style.display=nx.style.display===\'none\'?\'block\':\'none\'"':'')+'>';
+      h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="event.stopPropagation();var nx=this.nextElementSibling;if(nx){nx.style.display=nx.style.display===\'none\'?\'block\':\'none\';if(nx.style.display===\'block\')nx.scrollIntoView({block:\'nearest\',behavior:\'smooth\'});}"':'')+'>';
       h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
@@ -6666,7 +6668,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
       }
     }
-    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget&&ccPersona==='fsm'){
+    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget){
       var pd=CC_PROJ_DP[p][selProj];
       var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
       var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
@@ -7573,7 +7575,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     }
     h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'Capacity risks — all projects</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400)">'+risks.length+' flagged item'+(risks.length!==1?'s':'')+'</span></div>';
     h+='<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">';
-    risks.forEach(function(risk){
+    var _visRisks=_capRiskLimit[p]?risks:risks.slice(0,5);_visRisks.forEach(function(risk){
       var pLbl=_PROJ_LABELS[risk.proj]||risk.proj;
       var bg=risk.hot?'rgba(239,68,68,.04)':'rgba(245,158,11,.04)';
       var bd=risk.hot?'rgba(239,68,68,.18)':'rgba(245,158,11,.18)';
@@ -7585,6 +7587,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="font-size:11px;color:var(--g500);white-space:nowrap;background:var(--g100);padding:2px 8px;border-radius:4px">'+pLbl+'</div>';
       h+='</div>';
     });
+    if(!_capRiskLimit[p]&&risks.length>5){h+='<div onclick="capRiskToggle(\''+p+'\')" style="padding:7px 0;text-align:center;cursor:pointer;font-size:12px;color:var(--g500);text-decoration:underline">Show all '+risks.length+' capacity risks \u2192</div>';}
     h+='</div></div>';
     return h;
   }
