@@ -6730,7 +6730,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var h='<div style="border-top:1px solid var(--g100);padding:12px 0 4px">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Attached documentation<span style="font-weight:400;color:var(--g400);margin-left:6px">('+docs.length+')</span></div>';
-    h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();var up=document.getElementById(\'dp-up-panel\');up.style.display=up.style.display===\'none\'?\'block\':\'none\'">+ Upload</button>';
+    h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();var up=this.parentElement.nextElementSibling;up.style.display=up.style.display===\'none\'?\'block\':\'none\';if(up.style.display===\'block\')up.scrollIntoView({block:\'nearest\',behavior:\'smooth\'})">+ Upload</button>';
     h+='</div>';
     h+='<div id="dp-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g700);margin-bottom:8px">Attach document</div>';
@@ -6739,8 +6739,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="margin-bottom:10px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">File</div>';
     h+='<input type="file" id="dp-file-inp" style="width:100%;font-size:11.5px;font-family:inherit"></div>';
     h+='<div style="display:flex;gap:6px;justify-content:flex-end">';
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();document.getElementById(\'dp-up-panel\').style.display=\'none\'">Cancel</button>';
-    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach()">Attach</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
+    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Attach</button>';
     h+='</div></div>';
     if(docs.length){
       Object.keys(groups).forEach(function(type){
@@ -6760,13 +6760,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return h;
   }
   function dpDocDownload(ref){ toast('Opening '+ref+' — document staged'); }
-  function dpUploadAttach(){
-    var t=document.getElementById('dp-type-sel');
-    var f=document.getElementById('dp-file-inp');
+  function dpUploadAttach(btn){
+    var panel=btn.parentElement.parentElement;
+    var t=panel.querySelector('select');
+    var f=panel.querySelector('input[type=file]');
     if(!t||!t.value){ toast('Select a document type first'); return; }
     if(!f||!f.files||!f.files.length){ toast('Select a file first'); return; }
     toast(f.files[0].name+' attached as '+t.value+' — saved');
-    document.getElementById('dp-up-panel').style.display='none';
+    panel.style.display='none';
   }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
   function dpTaxCell(r){
