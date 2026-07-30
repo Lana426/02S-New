@@ -1864,6 +1864,11 @@ function renderProfServicesDP(){
   /* ═══════════ ORDERS SCREEN ═══════════ */
   var STAGES_EQ=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
   var STAGES_OTHER=['Requested','Acknowledged','Fulfilled'];
+  var STAGES_LOG=['Scheduled','In transit','Delivered'];
+  var STAGES_PROC=['PO issued','Ordered','Delivered'];
+  var STAGES_FAB=['In fabrication','QC approved','Delivered'];
+  var STAGES_SVC=['SOW executed','Active','Demobilized'];
+  function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
   var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad'};
 
   var ORDERS=[
@@ -2633,7 +2638,7 @@ charges:[
   ];
   var _billExCO='';
   var COST_CODES=['01 · General','03 · Concrete','05 · Metals','09 · Finishes'];
-  function stageStatus(o){var arr=o.pillar==='equipment'?STAGES_EQ:STAGES_OTHER;return arr[Math.min(o.stage,arr.length-1)];}
+  function stageStatus(o){var arr=_stageArr(o);return arr[Math.min(o.stage,arr.length-1)];}
 
   function ordClearDates(){ var a=document.getElementById('ordFrom'); if(a)a.value=''; var b=document.getElementById('ordTo'); if(b)b.value=''; renderOrders(); }
   /* ═══════════ WEEKLY ON-RENT RECERTIFICATION ═══════════ */
@@ -2728,8 +2733,6 @@ charges:[
       {l:'Procurement',   p:8.0, a:7.8, note:''},
       {l:'Prof. services',p:22.0,a:21.0,note:''}
     ];
-    var _gmpMap={equip:'Equipment',logistics:'Logistics',prefab:'Prefab',procurement:'Procurement',services:'Prof. services'};
-    if(_gmpMap[ccPersona]){GP=GP.filter(function(r){return r.l===_gmpMap[ccPersona];});}
     var gt='1fr 72px 72px 84px';
     var b='<div style="background:var(--g50);border-radius:7px;padding:10px 13px;margin-bottom:14px">'
       +'<div style="font-size:12.5px;font-weight:600;color:var(--g900)">Hercules Solar + BESS</div>'
@@ -3608,7 +3611,7 @@ charges:[
   }
 
   function trackerHTML(o, ns){
-    var arr=o.pillar==='equipment'?STAGES_EQ:STAGES_OTHER;
+    var arr=_stageArr(o);
     var icons=['<path d="M5 12h14M12 5l7 7-7 7"/>','<path d="M20 6L9 17l-5-5"/>','<path d="M20 7l-8-4-8 4m16 0l-8 4"/>','<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>','<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>','<path d="M21 12a9 9 0 11-6.2-8.5"/>'];
     var steps=arr.map(function(lbl,i){
       var cls = i<o.stage?'done':(i===o.stage?'cur':'future');
@@ -6173,7 +6176,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {inv:'BILL-ALL-0726',period:'Jul 2026',amount:111000,status:'Pending',cc:'3100-6300-0000-0001',dispute:'Vendor billed $18,500/unit \u00d7 6; MSA confirms $18,000/unit. $3,000 overage flagged for credit \u2014 ref BILL-9021.'}
     ],
     'ORD-3029':[
-      {inv:'BILL-JLG-0526',period:'May 2026',amount:19200,status:'Paid',cc:'05-Metals'}
+      {inv:'BILL-JLG-0426',period:'Apr 2026',amount:19200,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'BILL-JLG-0526',period:'May 2026',amount:19200,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'BILL-JLG-0626',period:'Jun 2026',amount:19200,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'BILL-JLG-0726',period:'Jul 2026',amount:19200,status:'Pending',cc:'0100-0100-0000-0001'}
     ],
     'ORD-3042':[
       {inv:'BILL-SBL-0526',period:'May 2026',amount:7200,status:'Paid',cc:'03-Concrete'},
@@ -6230,22 +6236,29 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {inv:'BILL-SW-0826',period:'Aug 2026',amount:22800,status:'Paid',cc:'0200-0320-0000-0001'}
     ],
     'ORD-3130':[
+      {inv:'BILL-SOL-0426',period:'Apr 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'},
       {inv:'BILL-SOL-0526',period:'May 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'},
       {inv:'BILL-SOL-0626',period:'Jun 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'},
       {inv:'BILL-SOL-0726',period:'Jul 2026',amount:48000,status:'Paid',cc:'0100-0440-0000-0001'}
     ],
     'ORD-3137':[
+      {inv:'BILL-RK-0426',period:'Apr 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'},
+      {inv:'BILL-RK-0526',period:'May 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'},
       {inv:'BILL-RK-0626',period:'Jun 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'},
       {inv:'BILL-RK-0726',period:'Jul 2026',amount:31200,status:'Paid',cc:'0100-0320-0000-0001'}
     ],
     'ORD-3143':[
+      {inv:'BILL-MB-0426',period:'Apr 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'},
+      {inv:'BILL-MB-0526',period:'May 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'},
+      {inv:'BILL-MB-0626',period:'Jun 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'},
       {inv:'BILL-MB-0726',period:'Jul 2026',amount:14500,status:'Paid',cc:'0300-0820-0000-0001'}
     ],
     'ORD-3113':[
       {inv:'BILL-SBL-MG-0326',period:'Mar 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
       {inv:'BILL-SBL-MG-0426',period:'Apr 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
       {inv:'BILL-SBL-MG-0526',period:'May 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
-      {inv:'BILL-SBL-MG-0626',period:'Jun 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'}
+      {inv:'BILL-SBL-MG-0626',period:'Jun 2026',amount:9600,status:'Paid',cc:'0200-0310-0000-0001'},
+      {inv:'BILL-SBL-MG-0726',period:'Jul 2026',amount:9600,status:'Pending',cc:'0200-0310-0000-0001'}
     ],
     'ORD-3123':[
       {inv:'BILL-SBL-FK-0426',period:'Apr 2026',amount:4000,status:'Paid',cc:'0500-0100-0000-0002'},
@@ -6269,7 +6282,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {inv:'BILL-CAT-MG-0726',period:'Jul 2026',amount:9600,status:'Pending',cc:'0600-0310-0000-0003'}
     ],
     'ORD-3138':[
+      {inv:'BILL-MSA-0426',period:'Apr 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'},
       {inv:'BILL-MSA-0526',period:'May 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'},
+      {inv:'BILL-MSA-0626',period:'Jun 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'},
       {inv:'BILL-MSA-0726',period:'Jul 2026',amount:3200,status:'Paid',cc:'0500-0100-0000-0002'}
     ],
     'ORD-3144':[
@@ -6318,6 +6333,47 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     ],
     'ORD-3132':[
       {inv:'BILL-3PL-DEP-0726',period:'Jul 2026 (PO confirmation)',amount:4200,status:'Pending',cc:'2600-0100-0000-0003'}
+    ],
+    'ORD-3115':[
+      {inv:'BILL-ALL-0826',period:'Aug 2026',amount:108000,status:'Pending',cc:'3100-6300-0000-0001'}
+    ],
+    'ORD-3127':[
+      {inv:'BILL-LOG-EXC-DMB-0626',period:'Jun 2026',amount:4800,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-2998':[
+      {inv:'BILL-FLT-SUV-0426',period:'Apr 2026 (Apr 5–Apr 30)',amount:980,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3031':[
+      {inv:'BILL-SBL-SL-0526',period:'May 2026',amount:3800,status:'Paid',cc:'0200-0820-0000-0001'},
+      {inv:'BILL-SBL-SL-0626',period:'Jun 2026',amount:3800,status:'Paid',cc:'0200-0820-0000-0001'},
+      {inv:'BILL-SBL-SL-0726',period:'Jul 2026',amount:3800,status:'Pending',cc:'0200-0820-0000-0001'}
+    ],
+    'ORD-3051':[
+      {inv:'BILL-FLT-TRK-0526',period:'May 2026 (May 20–31)',amount:960,status:'Paid',cc:'0100-0540-0000-0001'},
+      {inv:'BILL-FLT-TRK-0626',period:'Jun 2026',amount:2400,status:'Paid',cc:'0100-0540-0000-0001'},
+      {inv:'BILL-FLT-TRK-0726',period:'Jul 2026',amount:2400,status:'Pending',cc:'0100-0540-0000-0001'}
+    ],
+    'ORD-3060':[
+      {inv:'BILL-PIP-MEP-DEP-0526',period:'May 2026 (50% deposit)',amount:12000,status:'Paid',cc:'0200-0440-0000-0001'}
+    ],
+    'ORD-3070':[
+      {inv:'BILL-3PL-HH-0526',period:'May 2026',amount:4200,status:'Paid',cc:'0300-0320-0000-0001'}
+    ],
+    'ORD-3072':[
+      {inv:'BILL-LOG-STG-0626',period:'Jun 2026 (Jun 10–30)',amount:5000,status:'Paid',cc:'0100-0100-0000-0001'},
+      {inv:'BILL-LOG-STG-0726',period:'Jul 2026',amount:7200,status:'Pending',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3080':[
+      {inv:'BILL-MSA-PPE-0526',period:'May 2026',amount:2000,status:'Paid',cc:'0100-0100-0000-0001'}
+    ],
+    'ORD-3090':[
+      {inv:'BILL-TRC-CI-0426',period:'Apr 2026 (Apr 25–30)',amount:1200,status:'Paid',cc:'0300-0320-0000-0001'},
+      {inv:'BILL-TRC-CI-0526',period:'May 2026',amount:6400,status:'Paid',cc:'0300-0320-0000-0001'},
+      {inv:'BILL-TRC-CI-0626',period:'Jun 2026',amount:6400,status:'Paid',cc:'0300-0320-0000-0001'},
+      {inv:'BILL-TRC-CI-0726',period:'Jul 2026',amount:6400,status:'Pending',cc:'0300-0320-0000-0001'}
+    ],
+    'ORD-3109':[
+      {inv:'BILL-PMP-DEP-0726',period:'Jul 2026 (50% deposit)',amount:40000,status:'Pending',cc:'0200-0320-0000-0002'}
     ]
   };
   var dpCur=null;
