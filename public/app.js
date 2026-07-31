@@ -1741,7 +1741,8 @@ function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
+    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
@@ -5239,13 +5240,15 @@ charges:[
     h+='<div class="cc-queue" style="display:flex;flex-direction:column"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
     var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>') +'</span></div>';};
     var _aPg=4,_aNp=Math.ceil(acts.length/_aPg);
+    h+='<div style="flex:1">';
     for(var _pi=0;_pi<_aNp;_pi++){
       h+='<div class="cc-pg" id="cc-pg-'+_pi+'" style="'+(_pi>0?'display:none':'')+'">'; 
       acts.slice(_pi*_aPg,_pi*_aPg+_aPg).forEach(function(a){h+=_aHtml(a);});
       h+='</div>';
     }
+    h+='</div>';
     if(_aNp>1){
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--g100);margin-top:6px;padding:8px 8px 2px">';
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--g100);padding:8px 8px 2px">';
       h+='<button id="cc-pg-p" class="btn btn-ghost btn-sm" style="font-size:15px;line-height:1;padding:2px 10px;opacity:.4;cursor:default" disabled onclick="(function(){var l=document.getElementById(\'cc-pg-lbl\');var c=+l.dataset.p,np=+l.dataset.np;if(c===0)return;document.getElementById(\'cc-pg-\'+c).style.display=\'none\';var n=c-1;document.getElementById(\'cc-pg-\'+n).style.display=\'\';l.dataset.p=n;l.textContent=(n+1)+\'/\'+np;var pp=document.getElementById(\'cc-pg-p\'),pn=document.getElementById(\'cc-pg-n\');pp.disabled=n===0;pp.style.opacity=n===0?\'0.4\':\'1\';pp.style.cursor=n===0?\'default\':\'pointer\';pn.disabled=false;pn.style.opacity=\'1\';pn.style.cursor=\'pointer\';})()">←</button>';
       h+='<span id="cc-pg-lbl" data-p="0" data-np="'+_aNp+'" style="font-size:11px;color:var(--g400)">1/'+_aNp+'</span>';
       h+='<button id="cc-pg-n" class="btn btn-ghost btn-sm" style="font-size:15px;line-height:1;padding:2px 10px" onclick="(function(){var l=document.getElementById(\'cc-pg-lbl\');var c=+l.dataset.p,np=+l.dataset.np;if(c===np-1)return;document.getElementById(\'cc-pg-\'+c).style.display=\'none\';var n=c+1;document.getElementById(\'cc-pg-\'+n).style.display=\'\';l.dataset.p=n;l.textContent=(n+1)+\'/\'+np;var pp=document.getElementById(\'cc-pg-p\'),pn=document.getElementById(\'cc-pg-n\');pn.disabled=n===np-1;pn.style.opacity=n===np-1?\'0.4\':\'1\';pn.style.cursor=n===np-1?\'default\':\'pointer\';pp.disabled=false;pp.style.opacity=\'1\';pp.style.cursor=\'pointer\';})()">→</button>';
@@ -8412,7 +8415,8 @@ function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
+    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
