@@ -4927,9 +4927,9 @@ charges:[
     'Hercules Solar + BESS':[
       {label:'Crane mob permits',       pillar:'Logistics',      ref:'ORD-3071',   start:'2026-08-01',end:'2026-08-04',tone:'warn',note:'Route permits in process · Aug 3 final mob window'},
       {label:'BESS container placements',pillar:'Logistics',     ref:'REQ-L-3054', start:'2026-08-05',end:'2026-08-06',tone:'warn',note:'6 crane moves · sequencing tied to transformer delivery'},
-      {label:'Billing approval due',    pillar:'Billing',        ref:'BILL-3071',  start:'2026-08-08',end:'2026-08-08',tone:'warn',note:'ORD-3071 · auto-finalizes Aug 8 · action required'},
+      {label:'Scissor lift off-rent',     pillar:'Equipment',      ref:'ORD-3031',   start:'2026-08-01',end:'2026-08-14',tone:'warn',note:'2 units idle-but-billing · $3.8K/mo · return window open · coordinate pickup'},
+      {label:'Billing approval due',     pillar:'Billing',        ref:'BILL-9012',  start:'2026-08-08',end:'2026-08-08',tone:'warn',note:'Scissor lift · idle-but-billing · auto-finalizes Aug 8 · action required'},
       {label:'Crawler crane mobilization',pillar:'Equipment',    ref:'REQ-4471',   start:'2026-08-10',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1'},
-      {label:'Generator inspection due', pillar:'Equipment',     ref:'ORD-3110',   start:'2026-08-12',end:'2026-08-12',tone:'info',note:'Equipment inspection record · Aggreko · 16 units active'},
       {label:'Pipe rack on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · shop drawings approved · Piperite Fab'},
       {label:'Geotech field report due', pillar:'Prof. services',ref:'ORD-3096',   start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'}
     ],
@@ -5236,14 +5236,19 @@ charges:[
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:stretch">';
     h+='<div class="cc-queue" style="display:flex;flex-direction:column"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
-    var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>';};
-    var _aMax=4,_aMore=acts.length-_aMax;
-    acts.slice(0,_aMax).forEach(function(a){h+=_aHtml(a);});
-    if(_aMore>0){
-      h+='<div id="cc-acts-more" style="display:none">';
-      acts.slice(_aMax).forEach(function(a){h+=_aHtml(a);});
+    var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>') +'</span></div>';};
+    var _aPg=4,_aNp=Math.ceil(acts.length/_aPg);
+    for(var _pi=0;_pi<_aNp;_pi++){
+      h+='<div class="cc-pg" id="cc-pg-'+_pi+'" style="'+(_pi>0?'display:none':'')+'">'; 
+      acts.slice(_pi*_aPg,_pi*_aPg+_aPg).forEach(function(a){h+=_aHtml(a);});
       h+='</div>';
-      h+='<button id="cc-acts-btn" class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px;font-size:11px;color:var(--g500);border-top:1px solid var(--g100);border-radius:0 0 6px 6px;padding:7px 0;text-align:center" onclick="(function(){var m=document.getElementById(\'cc-acts-more\');var b=document.getElementById(\'cc-acts-btn\');var open=m.style.display!==\'none\';m.style.display=open?\'none\':\'block\';b.textContent=open?\'Show all '+_aMore+' more →\':\'Show less\';})()">Show all '+_aMore+' more →</button>';
+    }
+    if(_aNp>1){
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--g100);margin-top:6px;padding:8px 8px 2px">';
+      h+='<button id="cc-pg-p" class="btn btn-ghost btn-sm" style="font-size:15px;line-height:1;padding:2px 10px;opacity:.4;cursor:default" disabled onclick="(function(){var l=document.getElementById(\'cc-pg-lbl\');var c=+l.dataset.p;if(c===0)return;document.getElementById(\'cc-pg-\'+c).style.display=\'none\';var n=c-1;document.getElementById(\'cc-pg-\'+n).style.display=\'\';l.dataset.p=n;l.textContent=(n+1)+\'/\'+_aNp;document.getElementById(\'cc-pg-p\').disabled=n===0;document.getElementById(\'cc-pg-p\').style.opacity=n===0?\'0.4\':\'1\';document.getElementById(\'cc-pg-p\').style.cursor=n===0?\'default\':\'pointer\';document.getElementById(\'cc-pg-n\').style.opacity=\'1\';document.getElementById(\'cc-pg-n\').style.cursor=\'pointer\';document.getElementById(\'cc-pg-n\').disabled=false;})()">←</button>';
+      h+='<span id="cc-pg-lbl" data-p="0" style="font-size:11px;color:var(--g400)">1/'+_aNp+'</span>';
+      h+='<button id="cc-pg-n" class="btn btn-ghost btn-sm" style="font-size:15px;line-height:1;padding:2px 10px" onclick="(function(){var l=document.getElementById(\'cc-pg-lbl\');var c=+l.dataset.p;if(c===_aNp-1)return;document.getElementById(\'cc-pg-\'+c).style.display=\'none\';var n=c+1;document.getElementById(\'cc-pg-\'+n).style.display=\'\';l.dataset.p=n;l.textContent=(n+1)+\'/\'+_aNp;document.getElementById(\'cc-pg-n\').disabled=n===_aNp-1;document.getElementById(\'cc-pg-n\').style.opacity=n===_aNp-1?\'0.4\':\'1\';document.getElementById(\'cc-pg-n\').style.cursor=n===_aNp-1?\'default\':\'pointer\';document.getElementById(\'cc-pg-p\').style.opacity=\'1\';document.getElementById(\'cc-pg-p\').style.cursor=\'pointer\';document.getElementById(\'cc-pg-p\').disabled=false;})()">→</button>';
+      h+='</div>';
     }
     h+='</div>';
 
