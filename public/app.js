@@ -5385,7 +5385,7 @@ charges:[
         b+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--g50);border:1px solid var(--g200);border-radius:6px">';
         b+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;flex-shrink:0;color:var(--info)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
         b+='<span style="flex:1;font-size:12.5px;color:var(--g800)">'+d+'</span>';
-        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="toast(\'Opening: '+d.replace(/\'/g,\'\\\'\')+'\')">View</button>';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="toast(\'Opening document (demo)\')"View</button>';
         b+='</div>';
       });
       b+='</div>';
