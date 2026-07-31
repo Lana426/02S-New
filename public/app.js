@@ -5172,25 +5172,25 @@ charges:[
   }
   function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
-    {src:'adhoc',id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2},
-    {src:'adhoc',id:'fq2',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1},
-    {src:'dp',id:'fq3',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0},
-    {src:'adhoc',id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8},
-    {src:'adhoc',id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2},
-    {src:'adhoc',id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer'},
-    {src:'adhoc',id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (oversize transport)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane'},
-    {src:'dp',id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week'},
-    {src:'dp',id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)'},
+    {src:'adhoc',id:'fq1',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
+    {src:'adhoc',id:'fq2',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
+    {src:'dp',id:'fq3',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0,docs:['Vendor quote (PDF)','Scope of work (PDF)']},
+    {src:'adhoc',id:'fq4',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8,docs:['Safety inspection checklist (PDF)']},
+    {src:'adhoc',id:'fq9',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
+    {src:'adhoc',id:'fqL1',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer',docs:['Oversize permit (PDF)','Haul route map (PDF)']},
+    {src:'adhoc',id:'fqL2',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (oversize transport)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane',docs:['Oversize permit (PDF)','Load & route plan (PDF)','Escort coordination brief (PDF)']},
+    {src:'dp',id:'fqL3',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week',docs:['Site layout plan (PDF)']},
+    {src:'dp',id:'fq5',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'$26,000/mo (rate card)',docs:['Scope of work (PDF)','Rate card (PDF)']},
     {src:'adhoc',id:'fq7',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'0100-0100-0000-0001',kind:'service',status:'New'},
     {src:'dp',id:'fqS1',ref:'REQ-S-2101',pillar:'services',item:'Owner\u2019s engineer / IE support',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'ongoing',code:'0100-0100-0000-0001',kind:'service',status:'Acknowledged'},
-    {src:'dp',id:'fqS2',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning'},
+    {src:'dp',id:'fqS2',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning',docs:['SOW draft (PDF)','Commissioning plan (PDF)']},
     {src:'adhoc',id:'fqS3',ref:'REQ-S-2114',pillar:'services',item:'Structural special inspection',qty:'2 FTE',project:'Riverside Medical Center',needby:'Aug 2026',code:'0100-0100-0000-0001',kind:'service',status:'New'},
-    {src:'dp',id:'fqP1',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0100-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release now to recover the substation date'},
-    {src:'dp',id:'fqP2',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release to hold November energization'},
-    {src:'dp',id:'fqP3',ref:'REQ-P-0512',pillar:'procurement',item:'Main power transformer',qty:1,project:'Hercules Solar + BESS',needby:'Dec 2026',code:'2600-0100-0000-0001',kind:'flow',status:'PO issued',doneNote:'28 wk lead \u00b7 on order'},
-    {src:'dp',id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held'},
-    {src:'dp',id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization'},
-    {src:'adhoc',id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Delivered',doneNote:'On site'},
+    {src:'dp',id:'fqP1',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0100-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release now to recover the substation date',docs:['Vendor quote (PDF)','Lead time confirmation (PDF)','Technical spec (PDF)']},
+    {src:'dp',id:'fqP2',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',status:'At-risk',actLabel:'Release PO',nextStatus:'PO issued',hint:'Order-by passed \u2014 release to hold November energization',docs:['Vendor quote (PDF)','Delivery schedule (PDF)']},
+    {src:'dp',id:'fqP3',ref:'REQ-P-0512',pillar:'procurement',item:'Main power transformer',qty:1,project:'Hercules Solar + BESS',needby:'Dec 2026',code:'2600-0100-0000-0001',kind:'flow',status:'PO issued',doneNote:'28 wk lead \u00b7 on order',docs:['PO confirmation (PDF)','Technical datasheet (PDF)']},
+    {src:'dp',id:'fqF1',ref:'REQ-F-021',pillar:'prefab',item:'Prefab pipe rack modules',qty:12,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Pipe rack \u00b7 shop slot held',docs:['Shop drawings (PDF)','Material certification (PDF)','Fabrication schedule (PDF)']},
+    {src:'dp',id:'fqF2',ref:'REQ-F-034',pillar:'prefab',item:'Modular e-houses (BESS)',qty:2,project:'Hercules Solar + BESS',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Submittal',actLabel:'Approve submittal',nextStatus:'In fabrication',hint:'Approve this week to protect November energization',docs:['Submittal package (PDF)','Engineer review notes (PDF)']},
+    {src:'adhoc',id:'fqF3',ref:'REQ-F-041',pillar:'prefab',item:'L2 headwall assemblies',qty:8,project:'Riverside Medical Center',needby:'Jul 2026',code:'2600-0540-0000-0001',kind:'flow',status:'Delivered',doneNote:'On site',docs:['Delivery receipt (PDF)','Inspection checklist (PDF)']},
     {src:'dp',id:'fq6',ref:'REQ-4476',pillar:'prefab',item:'Prefab cable tray runs',qty:'lot',project:'Hercules Solar + BESS',needby:'Aug 1',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 route to prefab shop'},
     {src:'dp',id:'fqRv1',ref:'REQ-S-2117',pillar:'services',item:'MEP commissioning lead',qty:'1 FTE',project:'Riverside Medical Center',needby:'Nov 2026',code:'0140-0100-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 specialty commissioning lead'},
     {src:'dp',id:'fqCm1',ref:'REQ-F-051',pillar:'prefab',item:'Cable tray bracket assemblies',qty:'lot',project:'Cimarron Data Center',needby:'Oct 2026',code:'2600-0540-0000-0001',kind:'pending',status:'Awaiting pricing',suggest:'Quote \u2014 custom fabrication required'},
@@ -5297,8 +5297,8 @@ charges:[
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
     h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
-    var gt='1fr 168px 92px 128px 300px';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
+    var gt='1fr 168px 92px 128px 72px 300px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Docs</span><span>Fulfillment</span></div>';
     var _fq_pri={'At-risk':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
     rows=rows.slice().sort(function(a,b){var _pp=_PERSONA_PILLAR[ccPersona];if(_pp&&fqFP==='all'){var ao=a.pillar===_pp?0:1,bo=b.pillar===_pp?0:1;if(ao!==bo)return ao-bo;}var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
     var FQ_LIMIT=7;
@@ -5309,7 +5309,7 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
@@ -5369,6 +5369,32 @@ charges:[
     }
     mount.innerHTML=h;
     if(hlRef){ setTimeout(function(){ var el=gel('fqrow-'+hlRef); if(el&&el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'center'}); } }, 80); }
+  }
+  function fqDocCell(r){
+    var docs=r.docs||[];
+    if(!docs.length) return '<span style="font-size:11px;color:var(--g400)">\u2014</span>';
+    return '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;white-space:nowrap" onclick="event.stopPropagation();fqDocsModal(\''+r.ref+'\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px;flex-shrink:0;vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>'++''+docs.length+(docs.length===1?' doc':' docs')+'</button>';
+  }
+  function fqDocsModal(ref){
+    var r=FQ.find(function(x){return x.ref===ref;}); if(!r)return;
+    var docs=r.docs||[];
+    var b='<div style="margin-bottom:14px;font-size:12px;color:var(--g600);padding-bottom:10px;border-bottom:1px solid var(--g100)">'+r.item+' \u00b7 '+ref+'</div>';
+    if(docs.length){
+      b+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">';
+      docs.forEach(function(d){
+        b+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--g50);border:1px solid var(--g200);border-radius:6px">';
+        b+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;flex-shrink:0;color:var(--info)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
+        b+='<span style="flex:1;font-size:12.5px;color:var(--g800)">'+d+'</span>';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="toast(\'Opening: '+d.replace(/\'/g,\'\\\'\')+'\')">View</button>';
+        b+='</div>';
+      });
+      b+='</div>';
+    } else {
+      b+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12px">No documents attached yet.</div>';
+    }
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    b+='<button class="btn btn-dark" onclick="toast(\'Document upload — attach file (demo)\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-right:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>'++'Attach document</button></div>';
+    openModal('Documents \u00b7 '+ref, b);
   }
   function fqCell(r,ns){
     if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
