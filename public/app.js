@@ -5237,7 +5237,7 @@ charges:[
     qlinks.forEach(function(q){ h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;display:inline-flex;align-items:center;gap:5px" onclick="ccGo(\''+q.to+'\')">'+svg(q.icon)+' '+q.l+' →</button>'; });
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:stretch">';
-    h+='<div class="cc-queue" style="display:flex;flex-direction:column"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
+    h+='<div class="cc-queue" style="display:flex;flex-direction:column;height:100%;box-sizing:border-box"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
     var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>') +'</span></div>';};
     var _aPg=4,_aNp=Math.ceil(acts.length/_aPg);
     h+='<div style="flex:1">';
@@ -5259,7 +5259,6 @@ charges:[
     if(isFSM) h+=ccLookaheadHTML(_ccFSMProj,ns);
     h+='</div>';
     mount.innerHTML=h;
-    if(isFSM){var _cq=mount.querySelector('.cc-queue');if(_cq){_cq.style.minHeight='';_cq.style.minHeight=_cq.offsetHeight+'px';}}
 
   }
 
