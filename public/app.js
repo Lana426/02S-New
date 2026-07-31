@@ -5393,7 +5393,7 @@ charges:[
       b+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12px">No documents attached yet.</div>';
     }
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
-    b+='<button class="btn btn-dark" onclick="toast(\'Document upload — attach file (demo)\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-right:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>'++'Attach document</button></div>';
+    b+='<button class="btn btn-dark" onclick="toast(\'Document upload — attach file (demo)\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-right:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Attach document</button></div>';
     openModal('Documents \u00b7 '+ref, b);
   }
   function fqCell(r,ns){
