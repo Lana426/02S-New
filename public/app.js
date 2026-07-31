@@ -5110,7 +5110,7 @@ charges:[
     var labelW=isAll?'210px':'190px';
     var warnItems=items.filter(function(x){return x.tone==='warn';});
     var h='<style>.cc-la-row{position:relative}.cc-la-tip{display:none;position:absolute;right:0;top:calc(100% + 5px);background:#1e293b;color:#f1f5f9;border-radius:7px;padding:9px 12px;font-size:11px;min-width:220px;max-width:290px;z-index:300;pointer-events:none;line-height:1.55;box-shadow:0 4px 16px rgba(0,0,0,.28);white-space:normal}.cc-la-row:hover .cc-la-tip{display:block}.cc-la-tip-label{font-size:12px;font-weight:700;color:#f8fafc;display:block;margin-bottom:3px}.cc-la-tip-meta{font-size:10px;color:#94a3b8;display:block;margin-bottom:3px}.cc-la-tip-note{font-size:11px;color:#cbd5e1}</style>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column">';
+    h+='<div id="cc-la-wrap" style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:'+(ns&&warnItems.length?'8':'12')+'px">';
     h+='<div style="font-size:13px;font-weight:700;color:var(--g900)">3-week lookahead</div>';
     h+='<div style="font-size:11px;color:var(--g400)">Aug 1–21, 2026</div>';
@@ -5237,7 +5237,7 @@ charges:[
     qlinks.forEach(function(q){ h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;display:inline-flex;align-items:center;gap:5px" onclick="ccGo(\''+q.to+'\')">'+svg(q.icon)+' '+q.l+' →</button>'; });
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:stretch">';
-    h+='<div class="cc-queue" style="display:flex;flex-direction:column;height:100%;box-sizing:border-box"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
+    h+='<div class="cc-queue" style="display:flex;flex-direction:column"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
     var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>') +'</span></div>';};
     var _aPg=4,_aNp=Math.ceil(acts.length/_aPg);
     h+='<div style="flex:1">';
@@ -5259,6 +5259,7 @@ charges:[
     if(isFSM) h+=ccLookaheadHTML(_ccFSMProj,ns);
     h+='</div>';
     mount.innerHTML=h;
+    if(isFSM){var _la=document.getElementById('cc-la-wrap'),_cq=mount.querySelector('.cc-queue');if(_la&&_cq){var _mh=Math.max(_la.offsetHeight,_cq.offsetHeight);_la.style.minHeight=_mh+'px';_cq.style.minHeight=_mh+'px';}}
 
   }
 
