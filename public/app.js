@@ -5285,8 +5285,7 @@ charges:[
     var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
     var STATS=[['all','All'],['open','Open'],['done','Resolved']];
     h+='<div class="fq-filters">';
-    if(ccPersona==='fsm'){ h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>'; }
-    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; var _epf=(fsmFQScope&&fsmFQScope.length===1)?fsmFQScope[0]:fqFPr; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(_epf===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; var _fqPillarOn=(_fqPPillar&&fqFP==='all')?_fqPPillar:fqFP; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(_fqPillarOn===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; var _epf=(fsmFQScope&&fsmFQScope.length===1)?fsmFQScope[0]:fqFPr; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(_epf===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
     [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){ h+='<button class="ff-b'+(fqFSrc===o[0]?' on':'')+'" onclick="fqSetFilter(\'src\',\''+o[0]+'\')">'+o[1]+'</button>'; });
@@ -5294,6 +5293,8 @@ charges:[
     h+='</div>';
     _fqShowAll=false;
     var rows=FQ_scoped.filter(fqVisible);
+    var _fqPPillar=_PERSONA_PILLAR[ccPersona];
+    if(_fqPPillar&&fqFP==='all'){rows.sort(function(a,b){var ao=a.pillar===_fqPPillar?0:1,bo=b.pillar===_fqPPillar?0:1;return ao-bo;});}
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
     h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
@@ -6842,7 +6843,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
       }
     }
-    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget){
+    if(selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget&&(!_PERSONA_PILLAR[ccPersona]||p===_PERSONA_PILLAR[ccPersona])){
       var pd=CC_PROJ_DP[p][selProj];
       var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
       var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
