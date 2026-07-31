@@ -4927,15 +4927,15 @@ charges:[
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    equip: ['ccdash','fulfill','gap','fleet','dpequip','margin'],
-    logistics: ['ccdash','fulfill','dplog','margin'],
-    prefab: ['ccdash','fulfill','dpprefab','margin'],
-    procurement: ['ccdash','fulfill','dpproc','margin'],
-    services: ['ccdash','fulfill','dpsvc','margin']
+    equip: ['fulfill','gap','fleet','dpequip','margin'],
+    logistics: ['fulfill','dplog','margin'],
+    prefab: ['fulfill','dpprefab','margin'],
+    procurement: ['fulfill','dpproc','margin'],
+    services: ['fulfill','dpsvc','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP=_PERSONA_PILLAR[p]||'all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('ccdash');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP='all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('fulfill');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -5130,8 +5130,7 @@ charges:[
     });
     h+='</div>';
     var qlinks=[
-      {l:'Fulfillment queue',to:'fulfill',icon:IC.cart},
-      {l:'Billing &amp; anomalies',to:'anomaly',icon:IC.warn}
+      {l:'Fulfillment queue',to:'fulfill',icon:IC.cart}
     ];
     h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
     qlinks.forEach(function(q){ h+='<div class="cc-qlink" onclick="ccGo(\''+q.to+'\')"><span>'+svg(q.icon)+'</span><span class="qll">'+q.l+'</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGo(\''+q.to+'\')">Open</button></div>'; });
@@ -5220,7 +5219,7 @@ charges:[
     var isFSMFQ=ccPersona==='fsm'; var fsmFQScope=isFSMFQ&&_ccFSMProj!=='all'?(_ccFSMProj===''?CC_FSM_PROJECTS:[_ccFSMProj]):null;
     var FQ_scoped=fsmFQScope?FQ.filter(function(r){return fsmFQScope.indexOf(r.project)>=0;}):FQ;
     var hlRef=ccHighlight; ccHighlight=null;
-    var openN=0,awaitN=0,readyN=0; FQ_scoped.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
+    var openN=0,awaitN=0,readyN=0; FQ_scoped.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New'&&r.avail&&r.avail.length>0)readyN++; });
     var fqQuotesScoped=fsmFQScope?CC_QUOTES.filter(function(q){return fsmFQScope.indexOf(q.project)>=0;}):CC_QUOTES;
     openN+=fqQuotesScoped.length;
     awaitN+=fqQuotesScoped.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
@@ -5306,9 +5305,11 @@ charges:[
     var fqMoreN=rows.length-FQ_LIMIT;
     var visRows=_fqShowAll?rows:rows.slice(0,FQ_LIMIT);
     visRows.forEach(function(r){
+      var _pPillar=_PERSONA_PILLAR[ccPersona];
+      var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+'"><div>'+r.item+srcTag+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqCell(r,ns)+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div></div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
