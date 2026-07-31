@@ -6733,14 +6733,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();var up=this.parentElement.nextElementSibling;up.style.display=up.style.display===\'none\'?\'block\':\'none\';if(up.style.display===\'block\')up.scrollIntoView({block:\'nearest\',behavior:\'smooth\'})">+ Upload</button>';
     h+='</div>';
     h+='<div id="dp-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
-    h+='<div style="font-size:11px;font-weight:600;color:var(--g700);margin-bottom:8px">Attach document</div>';
-    h+='<div style="margin-bottom:8px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Document type</div>';
-    h+='<select id="dp-type-sel" style="width:100%;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700)"><option value="">Select type...</option><option value="RFIs">RFIs</option><option value="Submittals">Submittals</option><option value="Engineering">Engineering</option><option value="Safety">Safety</option><option value="Quality">Quality</option><option value="Quotes">Quotes / Bills of Lading</option><option value="Shipping">Shipping / Logistics</option><option value="Crew Design">Crew Focused Design</option><option value="Change Orders">Change Orders / Schedule Impacts</option><option value="Turnover">Turnover — COPI</option><option value="Turnover">Turnover — COPO</option></select></div>';
-    h+='<div style="margin-bottom:10px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">File</div>';
-    h+='<input type="file" id="dp-file-inp" style="width:100%;font-size:11.5px;font-family:inherit"></div>';
-    h+='<div style="display:flex;gap:6px;justify-content:flex-end">';
+    h+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px;font-weight:600">Tag document type</div>';
+    h+='<div style="display:flex;gap:8px;align-items:center">';
+    h+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option value="RFIs">RFIs</option><option value="Submittals">Submittals</option><option value="Engineering">Engineering</option><option value="Safety">Safety</option><option value="Quality">Quality</option><option value="Quotes">Quotes / Bills of Lading</option><option value="Shipping">Shipping / Logistics</option><option value="Crew Design">Crew Focused Design</option><option value="Change Orders">Change Orders / Schedule Impacts</option><option value="Turnover — COPI">Turnover — COPI</option><option value="Turnover — COPO">Turnover — COPO</option></select>';
+    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Stage</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
-    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Attach</button>';
     h+='</div></div>';
     if(docs.length){
       Object.keys(groups).forEach(function(type){
@@ -6763,10 +6760,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpUploadAttach(btn){
     var panel=btn.parentElement.parentElement;
     var t=panel.querySelector('select');
-    var f=panel.querySelector('input[type=file]');
     if(!t||!t.value){ toast('Select a document type first'); return; }
-    if(!f||!f.files||!f.files.length){ toast('Select a file first'); return; }
-    toast(f.files[0].name+' attached as '+t.value+' — saved');
+    toast('Document staged under “'+t.value+'” — will appear once saved');
+    t.value='';
     panel.style.display='none';
   }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
