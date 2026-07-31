@@ -1516,7 +1516,7 @@
     if(logPlanView==='mobdemob') logPlanView='gcgr';
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
-    var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     if(ns){
       h+='<div class="eq-toolbar" style="margin-bottom:0"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
       h+='<div class="log-tabs">';
@@ -8191,7 +8191,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(logPlanView==='mobdemob') logPlanView='gcgr';
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
-    var h='<div class="phead"><div><h1>Logistics plan</h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     if(ns){
       h+='<div class="eq-toolbar" style="margin-bottom:0"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
       h+='<div class="log-tabs">';
