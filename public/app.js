@@ -6909,7 +6909,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null,attachments:r.attachments||[]});
         });
       }
     });
