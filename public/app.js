@@ -1684,7 +1684,8 @@
     if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
+  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -5255,6 +5256,7 @@ charges:[
     if(isFSM) h+=ccLookaheadHTML(_ccFSMProj,ns);
     h+='</div>';
     mount.innerHTML=h;
+    if(isFSM){var _cq=mount.querySelector('.cc-queue');if(_cq){_cq.style.minHeight='';_cq.style.minHeight=_cq.offsetHeight+'px';}}
 
   }
 
@@ -8353,7 +8355,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
+  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
