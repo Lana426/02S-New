@@ -6073,7 +6073,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     equipment:{
       hercules:{budget:4200000,dpSpent:3800000,adHoc:400000,
       rollCols:['Category','Peak units','Peak month','vs plan'],roll:[{a:'Power & lighting',b:'42 units',c:'Mar\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Earthmoving',b:'20 units',c:'Mar\u2013Sep 2026',v:'on plan',vt:'ok'},{a:'Telehandlers',b:'40 units',c:'Apr\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Cranes',b:'1 unit',c:'Oct 2026',v:'Requested',vt:'warn'}],varSummary:'Crawler crane (230T) requested for Oct \u2014 sourcing in fulfillment queue.',rows:[
-        {item:'Generator 125 kW',qty:'16 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3110',cost:'$3,200/mo',firm:'Aggreko',note:'All 16 units active; 5 units cycling off Nov per phased-completion plan.'},
+        {item:'Generator 125 kW',qty:'16 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3110',cost:'$3,200/mo',firm:'Aggreko',note:'All 16 units active; 5 units cycling off Nov per phased-completion plan.',attachments:[{type:'Engineering',name:'Rental agreement — Aggreko master services',ref:'RA-3110-001',status:'Executed'},{type:'Safety',name:'Equipment inspection record — 125 kW generators',ref:'EIR-3110-001',status:'Current'},{type:'Safety',name:'Site-specific hazard assessment',ref:'SSHA-3110-001',status:'Approved'}]},
         {item:'Light tower',qty:'26 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3111',cost:'$2,600/mo',firm:'United Rentals'},
         {item:'Excavator 20T',qty:'6 units',window:'Mar–May 2026',state:'Off-rent',ordId:'ORD-3042',cost:'$7,200/mo',firm:'Sunbelt',note:'Off-rent as of Jun 2026. Final invoice confirmed, $3K dispute resolved with credit applied.'},
         {item:'Dozer D6',qty:'12 units',window:'Mar–Sep 2026',state:'On-rent',ordId:'ORD-3112',cost:'$14,400/mo',firm:'CAT Financial'},
@@ -6085,7 +6085,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Telehandler 10K (Sector 2)',qty:'24 units',window:'Aug–Dec 2026',state:'Projected',ordId:'ORD-3121',cost:'$28,800/mo',firm:'JLG'},
         {item:'Boom lift 60 ft',qty:'18 units',window:'Sep–Dec 2026',state:'Projected',ordId:'ORD-3122',cost:'$27,000/mo',firm:'United Rentals'},
         {item:'Tower crane 250T',qty:'1 unit',window:'Nov 2026+',state:'Projected',ordId:null,cost:'$68,000/mo',firm:'TBD'},
-        {item:'Crawler crane 230T',qty:'1 unit',window:'Oct 2026',state:'Requested',ordId:null,cost:'$58,000/mo',firm:'Maxim Crane'},
+        {item:'Crawler crane 230T',qty:'1 unit',window:'Oct 2026',state:'Requested',ordId:null,cost:'$58,000/mo',firm:'Maxim Crane',attachments:[{type:'Engineering',name:'Equipment specification sheet — 230T crawler crane',ref:'SPEC-230T-001',status:'Available'},{type:'Safety',name:'Ground bearing report — Sector 1 crane pad',ref:'GBR-3071-001',status:'Approved'},{type:'Engineering',name:'Lift plan — main transformer set',ref:'LP-230T-001',status:'Draft'}]},
         {item:'Scissor lift 32 ft',qty:'8 units',window:'Oct–Dec 2026',state:'Projected',ordId:null,cost:'$7,600/mo',firm:'TBD'},
         {item:'Forklift 10K',qty:'4 units',window:'Oct 2026+',state:'Projected',ordId:null,cost:'$2,400/mo',firm:'TBD'}
       ]},
@@ -6107,7 +6107,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     logistics:{
       hercules:{budget:1200000,dpSpent:800000,adHoc:300000,
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'3 moves',c:'Aug\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider.',rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3071',cost:'$18,500',firm:'Bragg Crane'},
+        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3071',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',ordId:null,cost:'$38K',firm:'Self-perform',attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
         {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Pending',ordId:null,cost:'$8,200',firm:'TBD'},
         {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Projected',ordId:null,cost:'$22,000',firm:'TBD'},
@@ -6116,7 +6116,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
       riverside:{budget:600000,dpSpent:300000,adHoc:180000,
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Equipment deliveries',b:'2 moves',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1',c:'Aug 2026',v:'+1 over',vt:'warn'},{a:'Material hoisting',b:'8 lifts/mo',c:'ongoing',v:'on plan',vt:'ok'}],varSummary:'Tower crane mobilization is oversize \u2014 permit required. Vendor Bragg confirmed.',rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3128',cost:'$18,500',firm:'Bragg Crane'},
+        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3128',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Riverside',ref:'LP-3128-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3128-001',status:'Approved'}]},
         {item:'Excavator delivery',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform'},
         {item:'Floor-by-floor material hoisting',qty:'8 lifts/mo',window:'Ongoing',state:'On-rent',ordId:'ORD-3130',cost:'$6,400/mo',firm:'Internal crew'}
       ]},
@@ -6131,8 +6131,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       hercules:{budget:1920000,dpSpent:1560000,adHoc:180000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'2 FTE',c:'Mar\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'3 FTE',c:'Mar\u2013Aug 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'VDC/BIM unpriced \u2014 needed Apr\u2013Oct. BESS commissioning SOW not yet executed.',rows:[
         {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.'},
-        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon'},
-        {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon'},
+        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
+        {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Projected',ordId:null,cost:'$34K/mo',firm:'TBD'},
         {item:'Environmental / SWPPP monitoring',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA'},
         {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'Pending pricing',ordId:'ORD-3120',cost:'Pending',firm:'TBD'},
@@ -6173,7 +6173,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
         {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
         {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Projected',ordId:null,cost:'$5,400',firm:'TBD'},
-        {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD'},
+        {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD',attachments:[{type:'Engineering',name:'Structural bolt specification sheet',ref:'SPEC-SB-001',status:'Available'},{type:'Quotes',name:'Vendor quote — structural bolt package',ref:'Q-SB-3137-001',status:'Pending'}]},
         {item:'Surgical fixture hardware',cat:'sm_tools',qty:'Lot',window:'Sep 2026',state:'Requested',ordId:null,cost:'$28K est.',firm:'TBD',note:'New request REQ-P-0621 — sourcing in fulfillment queue.'}
       ]},
       cimarron:{budget:1200000,dpSpent:920000,adHoc:50000,
@@ -6187,8 +6187,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     },
     prefab:{
       hercules:{budget:900000,dpSpent:720000,adHoc:80000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Mechanical',b:'2 active',c:'⚠ At risk Jul–Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'1 active',c:'Submittal pending',v:'E-houses',vt:'warn'},{a:'Structural',b:'1 delivered',c:'Delivered Jun',v:'On plan',vt:'ok'}],varSummary:'Mechanical at risk Jul–Aug (concurrent orders) · E-house submittal pending approval',rows:[
-        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',cost:'$180K',firm:'Piperite Fab'},
-        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace'},
+        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',cost:'$180K',firm:'Piperite Fab',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
+        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
         {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
         {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 2026',state:'Projected',ordId:null,cost:'$45K',firm:'TBD'},
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD'},
