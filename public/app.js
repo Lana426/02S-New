@@ -5379,22 +5379,37 @@ charges:[
     var docs=r.docs||[];
     var b='<div style="margin-bottom:14px;font-size:12px;color:var(--g600);padding-bottom:10px;border-bottom:1px solid var(--g100)">'+r.item+' \u00b7 '+ref+'</div>';
     if(docs.length){
-      b+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">';
+      b+='<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">';
       docs.forEach(function(d){
         b+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--g50);border:1px solid var(--g200);border-radius:6px">';
         b+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;flex-shrink:0;color:var(--info)"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
         b+='<span style="flex:1;font-size:12.5px;color:var(--g800)">'+d+'</span>';
-        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="toast(\'Opening document (demo)\')"View</button>';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="toast(\'Opening document (demo)\')">View</button>';
         b+='</div>';
       });
       b+='</div>';
     } else {
-      b+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12px">No documents attached yet.</div>';
+      b+='<div style="padding:20px 0;text-align:center;color:var(--g400);font-size:12px">No documents attached yet.</div>';
     }
-    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>';
-    b+='<button class="btn btn-dark" onclick="toast(\'Document upload — attach file (demo)\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;margin-right:4px;vertical-align:middle"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg> Attach document</button></div>';
+    b+='<div style="border-top:1px solid var(--g100);padding-top:12px;margin-top:4px">';
+    b+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    b+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Upload document</div>';
+    b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();var up=this.parentElement.nextElementSibling;up.style.display=up.style.display===\'none\'?\'block\':\'none\';if(up.style.display===\'block\')up.scrollIntoView({block:\'nearest\',behavior:\'smooth\'})">+ Upload</button>';
+    b+='</div>';
+    b+='<div id="fq-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
+    b+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px;font-weight:600">Tag document type</div>';
+    b+='<div style="display:flex;gap:8px;align-items:center">';
+    b+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option>RFIs</option><option>Submittals</option><option>Engineering</option><option>Safety</option><option>Quality</option><option>Quotes / Bills of Lading</option><option>Shipping / Logistics</option><option>Crew Design</option><option>Change Orders</option><option>Turnover — COPI</option><option>Turnover — COPO</option></select>';
+    b+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();var c=this.parentElement.nextElementSibling;c.style.display=\'block\';toast(\'Document uploaded (demo)\')">Upload</button>';
+    b+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
+    b+='</div>';
+    b+='<div class="dp-up-confirm" style="display:none;margin-top:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:4px;padding:6px 10px;font-size:11.5px;color:#065f46">&#10003; Document uploaded successfully — it will appear in the list once reviewed.</div>';
+    b+='</div>';
+    b+='</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button></div>';
     openModal('Documents \u00b7 '+ref, b);
   }
+
   function fqCell(r,ns){
     if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
     if(r.status==='Acknowledged'){ return '<div class="fq-done">'+(r.priced?('Priced '+r.priced):'Acknowledged')+'</div>'; }
