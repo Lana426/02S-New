@@ -5285,7 +5285,7 @@ charges:[
     var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
     var STATS=[['all','All'],['open','Open'],['done','Resolved']];
     h+='<div class="fq-filters">';
-    h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; var _fqPillarOn=(_fqPPillar&&fqFP==='all')?_fqPPillar:fqFP; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(_fqPillarOn===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; var _epf=(fsmFQScope&&fsmFQScope.length===1)?fsmFQScope[0]:fqFPr; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(_epf===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; var _fqPillarOn=(_fqPPillar&&fqFP==='all')?_fqPPillar:fqFP; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(_fqPillarOn===o.key?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o.key+'\')">'+o.label+'</button>'; }); h+='</div></div>';    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; var _epf=(fsmFQScope&&fsmFQScope.length===1)?fsmFQScope[0]:fqFPr; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(_epf===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
     [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){ h+='<button class="ff-b'+(fqFSrc===o[0]?' on':'')+'" onclick="fqSetFilter(\'src\',\''+o[0]+'\')">'+o[1]+'</button>'; });
@@ -5294,14 +5294,13 @@ charges:[
     _fqShowAll=false;
     var rows=FQ_scoped.filter(fqVisible);
     var _fqPPillar=_PERSONA_PILLAR[ccPersona];
-    if(_fqPPillar&&fqFP==='all'){rows.sort(function(a,b){var ao=a.pillar===_fqPPillar?0:1,bo=b.pillar===_fqPPillar?0:1;return ao-bo;});}
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
     h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
     var gt='1fr 168px 92px 128px 300px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Fulfillment</span></div>';
     var _fq_pri={'At-risk':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
-    rows=rows.slice().sort(function(a,b){var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
+    rows=rows.slice().sort(function(a,b){var _pp=_PERSONA_PILLAR[ccPersona];if(_pp&&fqFP==='all'){var ao=a.pillar===_pp?0:1,bo=b.pillar===_pp?0:1;if(ao!==bo)return ao-bo;}var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
     var FQ_LIMIT=7;
     var fqMoreN=rows.length-FQ_LIMIT;
     var visRows=_fqShowAll?rows:rows.slice(0,FQ_LIMIT);
