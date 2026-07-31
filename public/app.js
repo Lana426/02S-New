@@ -5373,7 +5373,7 @@ charges:[
   function fqDocCell(r){
     var docs=r.docs||[];
     if(!docs.length) return '<span style="font-size:11px;color:var(--g400)">\u2014</span>';
-    return '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;white-space:nowrap" onclick="event.stopPropagation();fqDocsModal(\''+r.ref+'\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px;flex-shrink:0;vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>'++''+docs.length+(docs.length===1?' doc':' docs')+'</button>';
+    return '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;white-space:nowrap" onclick="event.stopPropagation();fqDocsModal(\''+r.ref+'\')">'+'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:11px;height:11px;flex-shrink:0;vertical-align:middle;margin-right:3px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg> '+docs.length+(docs.length===1?' doc':' docs')+'</button>';
   }
   function fqDocsModal(ref){
     var r=FQ.find(function(x){return x.ref===ref;}); if(!r)return;
