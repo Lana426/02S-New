@@ -4923,6 +4923,31 @@ charges:[
   var ccPersona='fsm';
   var CC_FSM_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
   var _ccFSMProj='';
+  var CC_LOOKAHEAD={
+    'Hercules Solar + BESS':[
+      {label:'Crane mob permits',       pillar:'Logistics',      ref:'ORD-3071',   start:'2026-08-01',end:'2026-08-04',tone:'warn',note:'Route permits in process · Aug 3 final mob window'},
+      {label:'BESS container placements',pillar:'Logistics',     ref:'REQ-L-3054', start:'2026-08-05',end:'2026-08-06',tone:'warn',note:'6 crane moves · sequencing tied to transformer delivery'},
+      {label:'Billing approval due',    pillar:'Billing',        ref:'BILL-3071',  start:'2026-08-08',end:'2026-08-08',tone:'warn',note:'ORD-3071 · auto-finalizes Aug 8 · action required'},
+      {label:'Crawler crane mobilization',pillar:'Equipment',    ref:'REQ-4471',   start:'2026-08-10',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1'},
+      {label:'Generator inspection due', pillar:'Equipment',     ref:'ORD-3110',   start:'2026-08-12',end:'2026-08-12',tone:'info',note:'Equipment inspection record · Aggreko · 16 units active'},
+      {label:'Pipe rack on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · shop drawings approved · Piperite Fab'},
+      {label:'Geotech field report due', pillar:'Prof. services',ref:'ORD-3096',   start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'}
+    ],
+    'Riverside Medical Center':[
+      {label:'Tower crane mobilization', pillar:'Logistics',     ref:'ORD-3128',   start:'2026-08-05',end:'2026-08-06',tone:'warn',note:'Scheduled · site access confirmation needed before Aug 4'},
+      {label:'Structural inspection',    pillar:'Prof. services',ref:'ORD-3091',   start:'2026-08-11',end:'2026-08-12',tone:'info',note:'IBC §1705 monthly milestone · Terracon on-site'},
+      {label:'Structural bolt PO needed',pillar:'Procurement',   ref:'REQ-P-0501', start:'2026-08-14',end:'2026-08-14',tone:'warn',note:'Requested · long-lead risk if PO not issued this week'},
+      {label:"Forklift on-rent (ongoing)",pillar:'Equipment',    ref:'ORD-3123',   start:'2026-08-01',end:'2026-08-21',tone:'ok',  note:'4 units active · Sunbelt · surgical unit support'},
+      {label:"Owner's rep site review",  pillar:'Prof. services',ref:'ORD-3143',   start:'2026-08-20',end:'2026-08-21',tone:'ok',  note:'Monthly progress review · HDR'}
+    ],
+    'Cimarron Data Center':[
+      {label:'Raised floor PO tracking', pillar:'Procurement',   ref:'ORD-3141',   start:'2026-08-01',end:'2026-08-07',tone:'ok',  note:'PO issued · Tate Access · Oct delivery confirmed'},
+      {label:'PDU site delivery',        pillar:'Logistics',     ref:'ORD-3132',   start:'2026-08-08',end:'2026-08-10',tone:'warn',note:'3 loads · dock schedule confirmation still pending'},
+      {label:'Cable tray pricing due',   pillar:'Prefab',        ref:'REQ-F-041',  start:'2026-08-12',end:'2026-08-12',tone:'warn',note:'Awaiting pricing · critical path · Oct delivery at risk'},
+      {label:'Server room partition fab',pillar:'Prefab',        ref:'ORD-3135',   start:'2026-08-15',end:'2026-08-21',tone:'info',note:'In fabrication · ModSpace · Nov delivery on track'},
+      {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
+    ]
+  };
   var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
@@ -5056,7 +5081,67 @@ charges:[
     var c=CC_STUBS[s]||{t:'Section',d:''};
     mount.innerHTML='<div class="phead"><div><h1>'+c.t+'</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(CURRENT==='ns'?'North Star':'V1 \u2014 standard')+'</span></div></div></div><div class="cc-stub">'+svg('<path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6.4 6.4a2.12 2.12 0 003 3l6.4-6.4a4 4 0 005.4-5.4l-2.6 2.6-2.6-.7-.7-2.6 2.5-2.6z"/>')+'<h3>Building this next</h3><p>'+c.d+'</p></div>';
   }
-  function renderCcDash(){
+  function ccLookaheadHTML(proj){
+    var REF=new Date(2026,7,1);
+    var WIN_DAYS=21;
+    function dayOff(ds){var pts=ds.split('-');return Math.round((new Date(+pts[0],+pts[1]-1,+pts[2])-REF)/86400000);}
+    function pct(d){return Math.max(0,Math.min(100,Math.round(d/WIN_DAYS*100)))+'%';}
+    var isAll=(proj===''||proj==='all'||!proj);
+    var items=[];
+    if(isAll){
+      ['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'].forEach(function(p){
+        (CC_LOOKAHEAD[p]||[]).forEach(function(it){
+          var o={}; for(var k in it)o[k]=it[k]; o._proj=p; items.push(o);
+        });
+      });
+      var tonePri={warn:0,info:1,ok:2,neu:3};
+      items.sort(function(a,b){var ta=tonePri[a.tone]||2,tb=tonePri[b.tone]||2;return ta!==tb?ta-tb:(a.start<b.start?-1:1);});
+      items=items.slice(0,8);
+    } else {
+      items=(CC_LOOKAHEAD[proj]||[]).slice().sort(function(a,b){return a.start<b.start?-1:1;});
+    }
+    if(!items.length) return '';
+    var toneColor={ok:'var(--success)',warn:'var(--warning)',info:'var(--info)',neu:'var(--g400)'};
+    var pillarTone={Equipment:'info',Billing:'warn','Prof. services':'ok',Logistics:'neu',Procurement:'neu',Prefab:'info'};
+    var short={'Hercules Solar + BESS':'HRC','Riverside Medical Center':'RIV','Cimarron Data Center':'CIM'};
+    var labelW=isAll?'210px':'190px';
+    var h='<div style="margin-top:16px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+    h+='<div style="font-size:13px;font-weight:700;color:var(--g900)">3-week lookahead</div>';
+    h+='<div style="font-size:11px;color:var(--g400)">Aug 1–21, 2026</div>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:'+labelW+' 1fr;gap:0;margin-bottom:4px">';
+    h+='<div></div>';
+    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr)">';
+    h+='<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">Aug 1–7</div>';
+    h+='<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">Aug 8–14</div>';
+    h+='<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px">Aug 15–21</div>';
+    h+='</div></div>';
+    items.forEach(function(item){
+      var s=dayOff(item.start),e=dayOff(item.end)+1;
+      var left=pct(s),width=pct(Math.max(1,e-s));
+      var bc=toneColor[item.tone]||'var(--g400)';
+      var ptone=pillarTone[item.pillar]||'neu';
+      h+='<div style="display:grid;grid-template-columns:'+labelW+' 1fr;gap:0;margin-bottom:4px;align-items:center">';
+      h+='<div style="display:flex;align-items:center;gap:4px;padding-right:8px;min-width:0">';
+      h+='<span class="tag '+ptone+'" style="font-size:9px;padding:1px 5px;white-space:nowrap;flex-shrink:0">'+item.pillar+'</span>';
+      if(isAll&&item._proj)h+='<span style="font-size:9px;color:var(--g400);flex-shrink:0">'+short[item._proj]+'</span>';
+      h+='<span style="font-size:11px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+item.ref+' \xb7 '+item.note+'">'+item.label+'</span>';
+      h+='</div>';
+      h+='<div style="position:relative;height:22px;background:var(--g100);border-radius:4px">';
+      h+='<div style="position:absolute;left:'+left+';width:'+width+';height:100%;background:'+bc+';border-radius:4px;opacity:.85;display:flex;align-items:center;padding:0 6px;overflow:hidden">';
+      h+='<span style="font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.ref+'</span>';
+      h+='</div></div></div>';
+    });
+    var warnN=items.filter(function(x){return x.tone==='warn';}).length;
+    h+='<div style="font-size:11px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px solid var(--g150)">';
+    h+=warnN+(warnN===1?' item requires action':' items require action')+' \xb7 '+items.length+' total touchpoints this period';
+    if(!isAll)h+=' \xb7 <span class="lk" onclick="ccGo(\'fulfill\')">View fulfillment queue →</span>';
+    h+='</div>';
+    h+='</div>';
+    return h;
+  }
+    function renderCcDash(){
     var mount=document.getElementById('ccDash'); if(!mount)return;
     var ns=CURRENT==='ns';
     var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
@@ -5134,6 +5219,7 @@ charges:[
     h+='<div class="cc-quick"><div class="cc-qhead">'+svg('<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>')+'Quick links</div>';
     qlinks.forEach(function(q){ h+='<div class="cc-qlink" onclick="ccGo(\''+q.to+'\')"><span>'+svg(q.icon)+'</span><span class="qll">'+q.l+'</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGo(\''+q.to+'\')">Open</button></div>'; });
     h+='</div>';
+    if(isFSM) h+=ccLookaheadHTML(_ccFSMProj);
     h+='</div>';
     mount.innerHTML=h;
   }
