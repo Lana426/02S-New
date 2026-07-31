@@ -5115,9 +5115,7 @@ charges:[
       h+='<span style="font-size:11px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-right:2px">View:</span>';
       h+='<button class="btn btn-ghost btn-sm'+(_ccFSMProj===''?' on':'')+' bex-fsmp" onclick="setCCFSMProj(\'\')">My projects</button>';
       h+=CC_FSM_PROJECTS.map(function(pr){return '<button class="btn btn-ghost btn-sm'+(_ccFSMProj===pr?' on':'')+' bex-fsmp" onclick="setCCFSMProj(\''+pr+'\')">'+(pr==='Hercules Solar + BESS'?'Hercules Solar':pr==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical')+'</button>';}).join('');
-      h+='<span style="display:inline-block;width:1px;height:16px;background:var(--g200);margin:0 4px;vertical-align:middle"></span>';
-      h+='<button class="btn btn-ghost btn-sm'+(_ccFSMProj==='all'?' on':'')+' bex-fsmp" style="color:var(--g400)" onclick="setCCFSMProj(\'all\')">All portfolio</button>';
-      h+='</div>';
+            h+='</div>';
     }
     if(isFSM&&fsmScope) acts=acts.filter(function(a){return !a.proj||fsmScope.indexOf(a.proj)>=0;});
     h+='<div class="vitals" style="grid-template-columns:repeat('+(ns?6:5)+',1fr)">';
@@ -5223,7 +5221,9 @@ charges:[
     var FQ_scoped=fsmFQScope?FQ.filter(function(r){return fsmFQScope.indexOf(r.project)>=0;}):FQ;
     var hlRef=ccHighlight; ccHighlight=null;
     var openN=0,awaitN=0,readyN=0; FQ_scoped.forEach(function(r){ if(!fqIsDone(r))openN++; if(r.status==='Awaiting pricing')awaitN++; if(r.kind==='equip'&&r.status==='New')readyN++; });
-    awaitN+=CC_QUOTES.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
+    var fqQuotesScoped=fsmFQScope?CC_QUOTES.filter(function(q){return fsmFQScope.indexOf(q.project)>=0;}):CC_QUOTES;
+    openN+=fqQuotesScoped.length;
+    awaitN+=fqQuotesScoped.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
     var fqScopeLabel=isFSMFQ?(fsmFQScope&&fsmFQScope.length===1?fsmFQScope[0]:(fsmFQScope?'My projects \u00b7 3 assigned':'All projects \u00b7 portfolio')):'All projects \u00b7 portfolio';
     var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+fqScopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
@@ -5282,12 +5282,12 @@ charges:[
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
     var PILLARS=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
     var ALL_PROJ_OPTS=[['Hercules Solar + BESS','Hercules'],['Riverside Medical Center','Riverside'],['Cimarron Data Center','Cimarron']];
-    var FSM_PROJ_OPTS=CC_FSM_PROJECTS.map(function(pr){return [pr,pr.indexOf('Hercules')>=0?'Hercules':'Riverside'];});
+    var FSM_PROJ_OPTS=CC_FSM_PROJECTS.map(function(pr){return [pr,pr.indexOf('Hercules')>=0?'Hercules':pr.indexOf('Cimarron')>=0?'Cimarron DC':'Riverside'];});
     var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
     var STATS=[['all','All'],['open','Open'],['done','Resolved']];
     h+='<div class="fq-filters">';
     if(ccPersona==='fsm'){ h+='<div class="ff-grp"><span class="ff-lbl">Pillar</span><div class="ff-seg">'; PILLARS.forEach(function(o){ h+='<button class="ff-b'+(fqFP===o[0]?' on':'')+'" onclick="fqSetFilter(\'p\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>'; }
-    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(fqFPr===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
+    h+='<div class="ff-grp"><span class="ff-lbl">Project</span><div class="ff-seg">'; var _epf=(fsmFQScope&&fsmFQScope.length===1)?fsmFQScope[0]:fqFPr; PROJECTS.forEach(function(o){ h+='<button class="ff-b'+(_epf===o[0]?' on':'')+'" onclick="fqSetFilter(\'pr\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Status</span><div class="ff-seg">'; STATS.forEach(function(o){ h+='<button class="ff-b'+(fqFS===o[0]?' on':'')+'" onclick="fqSetFilter(\'s\',\''+o[0]+'\')">'+o[1]+'</button>'; }); h+='</div></div>';
     h+='<div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
     [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){ h+='<button class="ff-b'+(fqFSrc===o[0]?' on':'')+'" onclick="fqSetFilter(\'src\',\''+o[0]+'\')">'+o[1]+'</button>'; });
