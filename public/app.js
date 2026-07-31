@@ -5270,7 +5270,7 @@ charges:[
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:10px;cursor:pointer" onclick="ccGo(\''+d.cc+'\')">';
       h+='<div style="font-size:11px;font-weight:600;color:var(--g900);margin-bottom:6px">'+d.label+'</div>';
       h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:4px">'+_fmtKs(totalBudget)+'</div>';
-        h+='<div style="font-size:10.5px;color:'+(pAh>15?'var(--red)':pAh>8?'#f59e0b':'var(--g500)')+'">'+pAh+'% ad hoc drift</div>';
+        h+='<div style="font-size:10.5px;color:'+(pAh>10?'#f59e0b':'var(--g500)')+'">'+pAh+'% ad hoc vs. baseline</div>';
         h+='<div style="margin-top:6px;height:4px;border-radius:2px;overflow:hidden;background:var(--g200)">';
       var dpPct=totalBudget?Math.min(100,Math.round(100*totalDp/totalBudget)):0; var ahPct=Math.min(100-dpPct,Math.round(100*totalAh/totalBudget));
         h+='<div style="display:flex;height:100%"><div style="width:'+dpPct+'%;background:var(--charcoal)"></div><div style="width:'+ahPct+'%;background:#f59e0b"></div></div>';
@@ -6921,7 +6921,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Plan vs. actual spend — '+pLabel+'</div>';
       h+='<div style="display:flex;gap:16px">';
       h+='<span style="font-size:11.5px;color:var(--g600)"><span style="display:inline-block;width:10px;height:10px;background:var(--charcoal);border-radius:2px;margin-right:4px;vertical-align:middle"></span>On-plan: '+fmtK(pd.dpSpent)+'</span>';
-      h+='<span style="font-size:11.5px;color:var(--g600)"><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Ad hoc drift: '+fmtK(pd.adHoc)+'</span>';
+      h+='<span style="font-size:11.5px;color:var(--g600)"><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Ad hoc vs. baseline: '+fmtK(pd.adHoc)+'</span>';
       h+='<span style="font-size:11.5px;color:var(--g500)">Budget: '+fmtK(pd.budget)+'</span>';
       h+='</div></div>';
       h+='<div style="display:flex;height:10px;border-radius:4px;overflow:hidden;background:var(--g200)">';
@@ -6930,7 +6930,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
       h+='<div style="display:flex;justify-content:space-between;margin-top:5px">';
       h+='<span style="font-size:11px;color:var(--g500)">'+pDp+'% on-plan spend</span>';
-      h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>20?'var(--red)':driftPct>10?'#f59e0b':'var(--g700)')+'">'+driftPct+'% ad hoc drift</span>';
+      h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>10?'#f59e0b':'var(--g700)')+'">'+driftPct+'% ad hoc vs. baseline</span>';
       h+='</div></div>';
     }
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
