@@ -6872,23 +6872,42 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
            +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+mp.note+'</div>'
            +'<div style="font-size:10px;color:#2563eb;margin-top:8px">View snapshot \u2192</div>'
            +'</div>';
-        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">\u2192</div>';
+        if(bl){
+        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
         h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Baseline demand plan</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+bl.total+'</div>'
-           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+bl.id+' \u00b7 '+bl.date+' \u00b7 '+bl.items+' items</div>'
+           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+bl.id+' · '+bl.date+' · '+bl.items+' items</div>'
            +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+bl.note+'</div>'
-           +'<div style="font-size:10px;color:#2563eb;margin-top:8px">View snapshot \u2192</div>'
+           +'<div style="font-size:10px;color:#2563eb;margin-top:8px">View snapshot →</div>'
            +'</div>';
-        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">\u2192</div>';
+        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
         var dlTone=dl.added>0?'warn':'ok';
         h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Current vs. baseline</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
            +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+dl.reason+'</div>'
-           +(dl.links&&dl.links.length?'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+dl.links.map(function(lk){return '<button onclick="dpDeltaJump(\''+p+'\',\''+selProj+'\','+lk.rowIdx+')" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;cursor:pointer">'+lk.label+' \u2192</button>';}).join('')+'</div>':'')
+           +(dl.links&&dl.links.length?'<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">'+dl.links.map(function(lk){return '<button onclick="dpDeltaJump(\''+p+'\',\''+selProj+'\','+lk.rowIdx+')" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #3b82f6;background:#eff6ff;color:#2563eb;cursor:pointer">'+lk.label+' →</button>';}).join('')+'</div>':'')
            +'</div>';
+        } else if(dr){
+        h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
+        h+='<div style="flex:1;border:2px solid #f59e0b;border-radius:8px;padding:12px 14px;background:#fffbeb">'
+           +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'
+           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Draft demand plan</div>'
+           +'<span style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#f59e0b;color:#fff;padding:1px 6px;border-radius:3px">In progress</span>'
+           +'</div>'
+           +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dr.total+'</div>'
+           +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dr.id+' · '+dr.date+' · '+dr.items+' items</div>'
+           +'<div style="font-size:10.5px;color:var(--g600);margin-top:5px;white-space:normal">'+dr.note+'</div>'
+           +'</div>';
+        h+='<div style="display:flex;align-items:center;color:var(--g200);font-size:18px;padding:0 4px">→</div>';
+        h+='<div style="flex:1;border:1px solid var(--g100);border-radius:8px;padding:12px 14px;background:var(--g50);opacity:0.5;pointer-events:none">'
+           +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:6px">Current tracking</div>'
+           +'<div style="font-size:12px;color:var(--g400);font-style:italic;margin-top:4px">Not yet baselined</div>'
+           +'<div style="font-size:10.5px;color:var(--g300);margin-top:6px">Tracking begins after the demand plan is locked to a baseline.</div>'
+           +'</div>';
+        }
         h+='</div>';
       }
     }
