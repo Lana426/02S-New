@@ -6736,9 +6736,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px;font-weight:600">Tag document type</div>';
     h+='<div style="display:flex;gap:8px;align-items:center">';
     h+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option value="RFIs">RFIs</option><option value="Submittals">Submittals</option><option value="Engineering">Engineering</option><option value="Safety">Safety</option><option value="Quality">Quality</option><option value="Quotes">Quotes / Bills of Lading</option><option value="Shipping">Shipping / Logistics</option><option value="Crew Design">Crew Focused Design</option><option value="Change Orders">Change Orders / Schedule Impacts</option><option value="Turnover — COPI">Turnover — COPI</option><option value="Turnover — COPO">Turnover — COPO</option></select>';
-    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Stage</button>';
+    h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Upload</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
-    h+='</div></div>';
+    h+='</div>';
+    h+='<div class="dp-up-confirm" style="display:none;margin-top:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:4px;padding:6px 10px;font-size:11.5px;color:#065f46">'
+      +'&#10003; Document uploaded successfully — it will appear in the list once reviewed.</div>';
+    h+='</div>';
     if(docs.length){
       Object.keys(groups).forEach(function(type){
         h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(99,102,241,.85);margin:6px 0 3px">'+type+'</div>';
@@ -6761,9 +6764,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var panel=btn.parentElement.parentElement;
     var t=panel.querySelector('select');
     if(!t||!t.value){ toast('Select a document type first'); return; }
-    toast('Document staged under “'+t.value+'” — will appear once saved');
+    var conf=panel.querySelector('.dp-up-confirm');
+    if(conf) conf.style.display='block';
     t.value='';
-    panel.style.display='none';
   }
   function dpRowById(p,id){ var rs=CC_DP[p].rows; for(var i=0;i<rs.length;i++){ if(rs[i].id===id)return rs[i]; } return null; }
   function dpTaxCell(r){
