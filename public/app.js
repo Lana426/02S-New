@@ -5081,7 +5081,8 @@ charges:[
     var c=CC_STUBS[s]||{t:'Section',d:''};
     mount.innerHTML='<div class="phead"><div><h1>'+c.t+'</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(CURRENT==='ns'?'North Star':'V1 \u2014 standard')+'</span></div></div></div><div class="cc-stub">'+svg('<path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6.4 6.4a2.12 2.12 0 003 3l6.4-6.4a4 4 0 005.4-5.4l-2.6 2.6-2.6-.7-.7-2.6 2.5-2.6z"/>')+'<h3>Building this next</h3><p>'+c.d+'</p></div>';
   }
-  function ccLookaheadHTML(proj){
+  function ccLookaheadHTML(proj,ns){
+    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
     var REF=new Date(2026,7,1);
     var WIN_DAYS=21;
     function dayOff(ds){var pts=ds.split('-');return Math.round((new Date(+pts[0],+pts[1]-1,+pts[2])-REF)/86400000);}
@@ -5105,11 +5106,24 @@ charges:[
     var pillarTone={Equipment:'info',Billing:'warn','Prof. services':'ok',Logistics:'neu',Procurement:'neu',Prefab:'info'};
     var short={'Hercules Solar + BESS':'HRC','Riverside Medical Center':'RIV','Cimarron Data Center':'CIM'};
     var labelW=isAll?'210px':'190px';
-    var h='<div style="margin-top:16px;background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+    var warnItems=items.filter(function(x){return x.tone==='warn';});
+    var h='<style>.cc-la-row{position:relative}.cc-la-tip{display:none;position:absolute;right:0;top:calc(100% + 5px);background:#1e293b;color:#f1f5f9;border-radius:7px;padding:9px 12px;font-size:11px;min-width:220px;max-width:290px;z-index:300;pointer-events:none;line-height:1.55;box-shadow:0 4px 16px rgba(0,0,0,.28);white-space:normal}.cc-la-row:hover .cc-la-tip{display:block}.cc-la-tip-label{font-size:12px;font-weight:700;color:#f8fafc;display:block;margin-bottom:3px}.cc-la-tip-meta{font-size:10px;color:#94a3b8;display:block;margin-bottom:3px}.cc-la-tip-note{font-size:11px;color:#cbd5e1}</style>';
+    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:16px 18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:'+(ns&&warnItems.length?'8':'12')+'px">';
     h+='<div style="font-size:13px;font-weight:700;color:var(--g900)">3-week lookahead</div>';
     h+='<div style="font-size:11px;color:var(--g400)">Aug 1–21, 2026</div>';
     h+='</div>';
+    if(ns&&warnItems.length){
+      var nw=warnItems.slice().sort(function(a,b){return a.start<b.start?-1:1;})[0];
+      var nmsg=warnItems.length+' '+(warnItems.length===1?'item requires':'items require')+' action — ';
+      nmsg+=nw.label.toLowerCase()+' ('+nw.ref;
+      if(isAll&&nw._proj)nmsg+=', '+short[nw._proj];
+      nmsg+=') is the nearest deadline. Hover any bar to see details.';
+      h+='<div style="background:#eff6ff;border-left:3px solid var(--info);border-radius:0 6px 6px 0;padding:7px 10px;margin-bottom:11px;font-size:11px;color:var(--g800);display:flex;gap:7px;align-items:flex-start">';
+      h+=LSPARK+'<span>'+nmsg+'</span></div>';
+    } else if(!ns){
+      h+='<div style="font-size:10.5px;color:var(--g400);margin-bottom:10px">Hover any bar to see details</div>';
+    }
     h+='<div style="display:grid;grid-template-columns:'+labelW+' 1fr;gap:0;margin-bottom:4px">';
     h+='<div></div>';
     h+='<div style="display:grid;grid-template-columns:repeat(3,1fr)">';
@@ -5122,25 +5136,31 @@ charges:[
       var left=pct(s),width=pct(Math.max(1,e-s));
       var bc=toneColor[item.tone]||'var(--g400)';
       var ptone=pillarTone[item.pillar]||'neu';
-      h+='<div style="display:grid;grid-template-columns:'+labelW+' 1fr;gap:0;margin-bottom:4px;align-items:center">';
+      var dateStr=item.start.substring(5)+(item.end!==item.start?' → '+item.end.substring(5):'');
+      var tipMeta=item.ref+(isAll&&item._proj?' · '+short[item._proj]:'')+' · '+dateStr;
+      h+='<div class="cc-la-row" style="display:grid;grid-template-columns:'+labelW+' 1fr;gap:0;margin-bottom:4px;align-items:center">';
       h+='<div style="display:flex;align-items:center;gap:4px;padding-right:8px;min-width:0">';
       h+='<span class="tag '+ptone+'" style="font-size:9px;padding:1px 5px;white-space:nowrap;flex-shrink:0">'+item.pillar+'</span>';
       if(isAll&&item._proj)h+='<span style="font-size:9px;color:var(--g400);flex-shrink:0">'+short[item._proj]+'</span>';
-      h+='<span style="font-size:11px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+item.ref+' \xb7 '+item.note+'">'+item.label+'</span>';
+      h+='<span style="font-size:11px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.label+'</span>';
       h+='</div>';
-      h+='<div style="position:relative;height:22px;background:var(--g100);border-radius:4px">';
+      h+='<div style="position:relative;height:22px;background:var(--g100);border-radius:4px;cursor:default">';
       h+='<div style="position:absolute;left:'+left+';width:'+width+';height:100%;background:'+bc+';border-radius:4px;opacity:.85;display:flex;align-items:center;padding:0 6px;overflow:hidden">';
       h+='<span style="font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+item.ref+'</span>';
-      h+='</div></div></div>';
+      h+='</div>';
+      h+='<div class="cc-la-tip"><span class="cc-la-tip-label">'+item.label+'</span><span class="cc-la-tip-meta">'+tipMeta+'</span><span class="cc-la-tip-note">'+item.note+'</span></div>';
+      h+='</div>';
+      h+='</div>';
     });
     var warnN=items.filter(function(x){return x.tone==='warn';}).length;
-    h+='<div style="font-size:11px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px solid var(--g150)">';
+    h+='<div style="font-size:11px;color:var(--g400);margin-top:auto;padding-top:8px;border-top:1px solid var(--g150)">';
     h+=warnN+(warnN===1?' item requires action':' items require action')+' \xb7 '+items.length+' total touchpoints this period';
     if(!isAll)h+=' \xb7 <span class="lk" onclick="ccGo(\'fulfill\')">View fulfillment queue →</span>';
     h+='</div>';
     h+='</div>';
     return h;
   }
+
     function renderCcDash(){
     var mount=document.getElementById('ccDash'); if(!mount)return;
     var ns=CURRENT==='ns';
@@ -5214,13 +5234,20 @@ charges:[
     h+='<span style="font-size:10.5px;color:var(--g500);font-weight:600;margin-right:2px">Quick links</span>';
     qlinks.forEach(function(q){ h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;display:inline-flex;align-items:center;gap:5px" onclick="ccGo(\''+q.to+'\')">'+svg(q.icon)+' '+q.l+' →</button>'; });
     h+='</div>';
-    h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:flex-start">';
-    h+='<div class="cc-queue"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
-    acts.forEach(function(a){
-      h+='<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>';
-    });
+    h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:stretch">';
+    h+='<div class="cc-queue" style="display:flex;flex-direction:column"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
+    var _aHtml=function(a){return '<div class="cc-act" onclick="ccGo(\''+a.to+'\')"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>')+'</span></div>';};
+    var _aMax=4,_aMore=acts.length-_aMax;
+    acts.slice(0,_aMax).forEach(function(a){h+=_aHtml(a);});
+    if(_aMore>0){
+      h+='<div id="cc-acts-more" style="display:none">';
+      acts.slice(_aMax).forEach(function(a){h+=_aHtml(a);});
+      h+='</div>';
+      h+='<button id="cc-acts-btn" class="btn btn-ghost btn-sm" style="width:100%;margin-top:4px;font-size:11px;color:var(--g500);border-top:1px solid var(--g100);border-radius:0 0 6px 6px;padding:7px 0;text-align:center" onclick="(function(){var m=document.getElementById(\'cc-acts-more\');var b=document.getElementById(\'cc-acts-btn\');var open=m.style.display!==\'none\';m.style.display=open?\'none\':\'block\';b.textContent=open?\'Show all '+_aMore+' more →\':\'Show less\';})()">Show all '+_aMore+' more →</button>';
+    }
     h+='</div>';
-    if(isFSM) h+=ccLookaheadHTML(_ccFSMProj);
+
+    if(isFSM) h+=ccLookaheadHTML(_ccFSMProj,ns);
     h+='</div>';
     mount.innerHTML=h;
 
