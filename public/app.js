@@ -4846,7 +4846,7 @@ charges:[
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP='all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('fulfill');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP='all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('fulfill');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive==='mytasks'){renderMyTasks();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} _myTasksBadge(); }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -5479,49 +5479,83 @@ charges:[
     {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'',source:'fq',done:false},
     {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'',source:'fq',done:false}
   ];
-  var _myTasksFilter='all';
+  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due';
   function myTaskDone(id){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=!t.done;renderMyTasks();_myTasksBadge();}}
   function myTaskAdd(label,ref,project,pillar,due){MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:label,ref:ref||'',project:project||'',pillar:pillar||'',due:due||'',priority:'',source:'fq',done:false});_myTasksBadge();}
-  function myTasksSetFilter(f){_myTasksFilter=f;renderMyTasks();}
   function myTaskSetDue(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t)t.due=val;}
-  function myTaskSetPri(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t)t.priority=val;}
+  function myTaskSetPri(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.priority=val;renderMyTasks();}}
+  function myTasksSet(k,v){if(k==='status')_myTasksFilter=v;else if(k==='pri')_myTasksFilterPri=v;else if(k==='proj')_myTasksFilterProj=v;else if(k==='sort')_myTasksSort=v;renderMyTasks();}
+  function myTasksClearDone(){MY_CC_TASKS=MY_CC_TASKS.filter(function(t){return !t.done;});renderMyTasks();_myTasksBadge();}
   function _myTasksBadge(){
     var nav=document.getElementById('ccnav-mytasks'); if(!nav)return;
     var isFSM=ccPersona==='fsm';
     var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var n=MY_CC_TASKS.filter(function(t){return !t.done&&(!pf||t.pillar===pf);}).length;
     var b=nav.querySelector('.mt-badge');
-    if(!b){b=document.createElement('span');b.className='mt-badge';b.style.cssText='margin-left:auto;background:var(--charcoal);color:#fff;border-radius:10px;padding:0 6px;font-size:10px;font-weight:700;min-width:18px;text-align:center';nav.appendChild(b);}
-    b.textContent=n||'';
-    b.style.display=n?'':'none';
+    if(!b){b=document.createElement('span');b.className='mt-badge';b.style.cssText='margin-left:auto;background:var(--charcoal);color:#fff;border-radius:10px;padding:0 5px;font-size:10px;font-weight:700;min-width:16px;text-align:center;line-height:16px;display:inline-block';nav.appendChild(b);}
+    b.textContent=n||'';b.style.display=n?'':'none';
   }
+  function _taskDueSort(due){if(!due)return 9999;var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var m=due.match(/([A-Za-z]+)\s+(\d+)/);return m?(mo[m[1]]||99)*100+parseInt(m[2],10):9999;}
+  function _taskPriSort(p){return p==='high'?1:p==='medium'?2:p==='low'?3:4;}
   function renderMyTasks(){
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
     _myTasksBadge();
     var isFSM=ccPersona==='fsm';
     var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
-    var all=MY_CC_TASKS.filter(function(t){return !pf||t.pillar===pf;});
-    var tasks=all.filter(function(t){
-      if(_myTasksFilter==='active')return !t.done;
-      if(_myTasksFilter==='done')return t.done;
+    // collect all visible projects (after pillar filter)
+    var basePool=MY_CC_TASKS.filter(function(t){return !pf||t.pillar===pf;});
+    var projs=[]; basePool.forEach(function(t){if(t.project&&projs.indexOf(t.project)<0)projs.push(t.project);});
+    projs.sort();
+    // apply all filters
+    var tasks=basePool.filter(function(t){
+      if(_myTasksFilter==='active'&&t.done)return false;
+      if(_myTasksFilter==='done'&&!t.done)return false;
+      if(_myTasksFilterPri!=='all'&&t.priority!==_myTasksFilterPri)return false;
+      if(_myTasksFilterProj!=='all'&&t.project!==_myTasksFilterProj)return false;
       return true;
     });
-    var open=all.filter(function(t){return !t.done;}).length;
-    var done=all.filter(function(t){return t.done;}).length;
-    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+open+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
-    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">';
-    [['all','All ('+(open+done)+')'  ],['active','Active ('+open+')'],['done','Done ('+done+')']].forEach(function(f){
-      h+='<button class="btn btn-ghost btn-sm"'+((_myTasksFilter===f[0])?' style="font-weight:700;border-color:var(--charcoal)"':'')+' onclick="myTasksSetFilter(\''+f[0]+'\')">'+f[1]+'</button>';
+    // sort
+    tasks=tasks.slice().sort(function(a,b){
+      if(_myTasksSort==='due')return _taskDueSort(a.due)-_taskDueSort(b.due);
+      if(_myTasksSort==='priority')return _taskPriSort(a.priority)-_taskPriSort(b.priority);
+      return 0;
     });
+    var openAll=basePool.filter(function(t){return !t.done;}).length;
+    var doneAll=basePool.filter(function(t){return t.done;}).length;
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+openAll+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
+    // filter bar
+    h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
+    // status pills
+    [['all','All'],['active','Active'],['done','Done']].forEach(function(f){
+      h+='<button onclick="myTasksSet(\'status\',\''+f[0]+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:20px;border:1px solid '+(_myTasksFilter===f[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;font-weight:'+(_myTasksFilter===f[0]?'600':'400')+'">'+f[1]+'</button>';
+    });
+    h+='<div style="width:1px;height:18px;background:var(--g200);margin:0 2px"></div>';
+    // priority dropdown
+    h+='<select onchange="myTasksSet(\'pri\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
+    h+='<option value="all"'+(  _myTasksFilterPri==='all'?' selected':'')+'>Priority</option>';
+    ['high','medium','low',''].forEach(function(p){h+='<option value="'+p+'"'+(_myTasksFilterPri===p?' selected':'')+'>'+(p||'Not set')+'</option>';});
+    h+='</select>';
+    // project dropdown (only if >1 project visible)
+    if(projs.length>1){
+      h+='<select onchange="myTasksSet(\'proj\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
+      h+='<option value="all"'+(_myTasksFilterProj==='all'?' selected':'')+'>Project</option>';
+      projs.forEach(function(p){h+='<option value="'+p+'"'+(_myTasksFilterProj===p?' selected':'')+'>'+(p.length>22?p.slice(0,20)+'…':p)+'</option>';});
+      h+='</select>';
+    }
+    // sort
     h+='<div style="flex:1"></div>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\'fulfill\')" style="font-size:11.5px">Fulfillment queue →</button>';
+    h+='<select onchange="myTasksSet(\'sort\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
+    [['due','Sort: Due date'],['priority','Sort: Priority'],['added','Sort: Recently added']].forEach(function(s){h+='<option value="'+s[0]+'"'+(_myTasksSort===s[0]?' selected':'')+'>'+ s[1]+'</option>';});
+    h+='</select>';
+    if(doneAll>0)h+='<button onclick="myTasksClearDone()" style="font-size:11.5px;padding:3px 10px;border-radius:6px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Clear done</button>';
     h+='</div>';
     if(!tasks.length){
-      h+='<div style="padding:48px 0;text-align:center;color:var(--g400);font-size:13px">'+(_myTasksFilter==='done'?'Nothing marked done yet':'No tasks'+(pf?' for '+pf:''))+'<div style="font-size:11.5px;margin-top:4px;color:var(--g300)">Add from the Fulfillment queue with “Add to list”</div></div>';
+      var hasFilter=_myTasksFilterPri!=='all'||_myTasksFilterProj!=='all'||_myTasksFilter!=='all';
+      h+='<div style="padding:40px 0;text-align:center;color:var(--g400);font-size:13px">No tasks match'+(hasFilter?' these filters':''+(pf?' for '+pf:''))+'<div style="font-size:11.5px;margin-top:4px;color:var(--g300)">'+(hasFilter?'<button onclick="_myTasksFilterPri=\'all\';_myTasksFilterProj=\'all\';_myTasksFilter=\'all\';renderMyTasks()" style="font-size:11px;color:var(--info);background:none;border:none;cursor:pointer">Clear filters</button>':'Add from the Fulfillment queue with "Add to list"')+'</div></div>';
       mount.innerHTML=h; return;
     }
     var PRI_OPTS=['','high','medium','low'];
-    var PRI_LBL={high:'High',medium:'Medium',low:'Low'};
+    var PRI_LBL={'high':'High','medium':'Medium','low':'Low'};
     h+='<div style="display:flex;flex-direction:column;gap:6px">';
     tasks.forEach(function(t){
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px">';
@@ -5529,20 +5563,19 @@ charges:[
       h+='<div style="flex:1;min-width:0">';
       h+='<div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+t.label+'</div>';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
-      if(t.ref){
-        var isLink=t.source==='fq';
-        h+=isLink?'<button class="btn btn-ghost btn-sm" onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 7px;height:auto;color:var(--info)">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';
-      }
+      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
+      if(t.priority)h+='<span style="font-size:10.5px;padding:1px 6px;border-radius:10px;background:'+(t.priority==='high'?'#fee2e2;color:#dc2626':t.priority==='medium'?'#fef9c3;color:#b45309':'#dcfce7;color:#16a34a')+'">'+PRI_LBL[t.priority]+'</span>';
       h+='</div>';
-      if(!t.done)h+='<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">'
-        +'<input type="text" placeholder="Add due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:110px;color:var(--g700);background:#fafafa">'
-        +'<select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);background:#fafafa;cursor:pointer">'
-        +PRI_OPTS.map(function(p){return '<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+( p?PRI_LBL[p]:'Priority'  )+'</option>';}).join('')
-        +'</select>'
-        +'</div>';
-      h+='</div>';
-      h+='</div>';
+      if(!t.done){
+        h+='<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">';
+        h+='<input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:100px;color:var(--g700)">';
+        h+='<select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer">';
+        PRI_OPTS.forEach(function(p){h+='<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';});
+        h+='</select>';
+        h+='</div>';
+      }
+      h+='</div></div>';
     });
     h+='</div>';
     mount.innerHTML=h;
