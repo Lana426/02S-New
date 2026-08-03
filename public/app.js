@@ -5596,7 +5596,7 @@ charges:[
     var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'<span class="chip ver">02S AI</span></div></div></div>';
     // AI insight strip
     h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
-    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;opacity:.8">'+CC_SPARK.replace('fill="currentColor"','fill="#fff"')+'02S AI</span></div>';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;opacity:.8">02S AI</span></div>';
     h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">3 tasks on the critical path to November energization. 2 have passed their order-by date.</div>';
     h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks marked with a system button can be executed directly once source systems are connected — S2P for PO releases, Procore for submittals, and Dispatch for logistics. This is a preview of what becomes possible when 02S is wired to your source systems.</div>';
     h+='</div>';
@@ -5618,7 +5618,7 @@ charges:[
       h+='</div>';
       // AI why
       h+='<div style="display:flex;align-items:flex-start;gap:5px;margin-top:8px;padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal)">';
-      h+=CC_SPARK+'<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
+      h+='<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
       h+='</div>';
       // execute button + system badge
       h+='<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">';
