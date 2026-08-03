@@ -5468,16 +5468,16 @@ charges:[
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
   var MY_CC_TASKS=[
-    {id:'mct-001',label:'Release PO — BESS containers (2.5 MWh)',ref:'REQ-P-0508',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-002',label:'Release PO — MV switchgear 15kV lineup',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-003',label:'Release PO — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-005',label:'Call off rental — 2\xd7 scissor lift idle 6 days',ref:'ORD-3031',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 4',priority:'',source:'manual',done:false,closeNote:''},
-    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'ORD-3128',project:'Riverside Medical Center',pillar:'logistics',due:'Aug 4',priority:'',source:'manual',done:false,closeNote:''},
-    {id:'mct-007',label:'Schedule BESS container placement (6 moves)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'',source:'fq',done:false,closeNote:''},
-    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'',source:'fq',done:false,closeNote:''}
+    {id:'mct-001',label:'Release PO — BESS containers (2.5 MWh)',ref:'REQ-P-0508',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'high',source:'fq',done:false,closeNote:''},
+    {id:'mct-002',label:'Release PO — MV switchgear 15kV lineup',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'high',source:'fq',done:false,closeNote:''},
+    {id:'mct-003',label:'Release PO — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'high',source:'fq',done:false,closeNote:''},
+    {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'high',source:'fq',done:false,closeNote:''},
+    {id:'mct-005',label:'Call off rental — 2\xd7 scissor lift idle 6 days',ref:'ORD-3031',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 4',priority:'medium',source:'manual',done:false,closeNote:''},
+    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'ORD-3128',project:'Riverside Medical Center',pillar:'logistics',due:'Aug 4',priority:'high',source:'manual',done:false,closeNote:''},
+    {id:'mct-007',label:'Schedule BESS container placement (6 moves)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'medium',source:'fq',done:false,closeNote:''},
+    {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'medium',source:'fq',done:false,closeNote:''},
+    {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'medium',source:'fq',done:false,closeNote:''},
+    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'low',source:'fq',done:false,closeNote:''}
   ];
   var _MT_NS=[
     {id:'mct-001',rank:1,why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
