@@ -5985,12 +5985,11 @@ charges:[
     var vit=[
       {k:'Portfolio margin',v:fmt(port.act.margin)+'/mo',sub:'plan '+fmt(port.plan.margin)+'/mo',tone:varv>=0?'ok':'warn',icon:IC.dollar},
       {k:'Margin %',v:port.act.pct.toFixed(1)+'%',sub:'target 15%',tone:port.act.pct>=15?'ok':'warn',icon:IC.chart},
-      {k:'Variance to plan',v:mgVar(0,varv)+'/mo',sub:'net of anomalies',tone:varv>=0?'ok':'bad',icon:IC.warn},
-      {k:'Margin at risk',v:kfmt(risk.t)+'/mo',sub:risk.n+' open anomalies',tone:'bad',icon:IC.warn}
+      {k:'Variance to plan',v:mgVar(0,varv)+'/mo',sub:'actual vs. plan',tone:varv>=0?'ok':'bad',icon:IC.warn},
     ];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Portfolio margin looks roughly flat ('+mgVar(0,varv)+'/mo), but that hides two real headwinds and one overstatement. Riverside\u2019s tower crane re-rent renewed at a higher MSA rate (\u2212$4.1K/mo, BILL-9034). Cimarron\u2019s excavator request (REQ-4472) hasn\u2019t been allocated yet, so ~$12.5K/mo of planned margin isn\u2019t in actuals. And Hercules\u2019 reported margin is inflated $9.0K/mo by two idle-billing lines still awaiting credit.</div></div></div>'; }
-    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Margin = 02S rate revenue (AR, billed to the project) \u2212 owned fleet cost \u2212 re-rent AP (vendor MSA) \u2212 services/procurement vendor cost, by project and pillar. Reconciles to the Fulfillment optimizer and Billing anomaly detection.</span></div>';
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Margin = 02S rate revenue (AR, billed to the project) \u2212 owned fleet cost \u2212 re-rent AP (vendor MSA) \u2212 services/procurement vendor cost, by project and pillar. Reconciles to the Fulfillment optimizer.</span></div>';
     h+='<div class="hm"><div class="hm-row hm-head" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">Pillar</div>'+MARGIN_PROJECTS.map(function(p){ return '<div class="hm-cell">'+p.split(' ')[0]+'</div>'; }).join('')+'</div>';
     MARGIN_PILLARS.forEach(function(pl){
       h+='<div class="hm-row" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">'+pl+'</div>';
@@ -6003,7 +6002,7 @@ charges:[
     h+='<div class="dp-tbl" style="margin-top:18px"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Project</span><span class="r">Plan margin</span><span class="r">Actual margin</span><span class="r">Variance</span><span>Margin %</span><span>Detail</span></div>';
     MARGIN_PROJECTS.forEach(function(p){
       var r=mgProjRoll(p); var pr=mgProjRisk(p); var v=r.act.margin-r.plan.margin;
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+p+(pr.n?'<div class="sub">'+pr.n+' open anomal'+(pr.n===1?'y':'ies')+' \u00b7 '+kfmt(pr.t)+'/mo</div>':'')+'</div>';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+p+'</div>';
       h+='<div class="r">'+fmt(r.plan.margin)+'/mo</div><div class="r">'+fmt(r.act.margin)+'/mo</div>';
       h+='<div class="r"><span class="tag '+(v>=0?'ok':'bad')+'">'+mgVar(0,v)+'/mo</span></div>';
       h+='<div>'+r.act.pct.toFixed(1)+'%</div>';
