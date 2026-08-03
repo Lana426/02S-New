@@ -5568,18 +5568,19 @@ charges:[
     h+='<div style="display:flex;flex-direction:column;gap:6px">';
     tasks.forEach(function(t){
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px">';
-      h+='<div style="display:flex;align-items:flex-start;gap:10px">';
-      h+='<label style="flex-shrink:0;display:flex;align-items:center;margin-top:3px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+      h+='<div style="display:flex;align-items:center;gap:10px">';
+      h+='<label style="flex-shrink:0;display:flex;align-items:flex-start;padding-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
       h+='<div style="flex:1;min-width:0">';
       h+='<div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+t.label+'</div>';
-      h+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
+      h+='<div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">';
       if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
       if(t.priority)h+='<span style="font-size:10.5px;padding:1px 6px;border-radius:10px;background:'+(t.priority==='high'?'#fee2e2;color:#dc2626':t.priority==='medium'?'#fef9c3;color:#b45309':'#dcfce7;color:#16a34a')+'">'+PRI_LBL[t.priority]+'</span>';
       h+='</div>';
-      if(t.done&&t.closeNote)h+='<div style="margin-top:6px;font-size:11.5px;color:var(--g500);background:var(--g50);border-radius:5px;padding:5px 8px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">\xb7 '+t.closedAt+'</span>':'')+'</div>';
-      if(!t.done)h+='<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap"><input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:100px;color:var(--g700)"><select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer">'+PRI_OPTS.map(function(p){return'<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';}).join('')+'</select><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Close task</button></div>';
-      h+='</div></div></div>';
+      if(t.done&&t.closeNote)h+='<div style="margin-top:5px;font-size:11.5px;color:var(--g500);background:var(--g50);border-radius:5px;padding:4px 8px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">· '+t.closedAt+'</span>':'')+'</div>';
+      h+='</div>';
+      if(!t.done)h+='<div style="flex-shrink:0;display:flex;align-items:center;gap:6px"><input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:88px;color:var(--g700)"><select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 6px;color:var(--g700);cursor:pointer">'+PRI_OPTS.map(function(p){return'<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';}).join('')+'</select><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap">Close</button></div>';
+      h+='</div></div>';
     });
     h+='</div>';
     mount.innerHTML=h;
