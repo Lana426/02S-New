@@ -2822,15 +2822,15 @@ charges:[
     var eqOnRent=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.stage===4;}).length;
     var pillars=[
       {k:'Equipment',    icon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>',
-       summary:eqOnRent+' units on-rent',stat:'7 active lines · Aug 2026',tone:'ok'},
+       summary:eqOnRent+' units on-rent',stat:'7 active orders · Aug 2026',tone:'ok'},
       {k:'Prof. services',icon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',
        summary:'14 FTE active',stat:'6 firms · Apr–Oct scope',tone:'ok'},
       {k:'Prefab',icon:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',
-       summary:'$234K in fabrication',stat:'2 pending 02S quote',tone:'warn'},
+       summary:'$234K in fabrication',stat:'2 quotes outstanding',tone:'warn'},
       {k:'Logistics',icon:'<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3M10 17h7M17 17l2 5-4-1.5"/>',
-       summary:'6 moves/week',stat:'3 oversize permits',tone:'ok'},
+       summary:'Deliveries on track',stat:'3 oversize loads in progress',tone:'ok'},
       {k:'Procurement',icon:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>',
-       summary:'$55K committed',stat:'1 item at-risk',tone:'bad'}
+       summary:'$55K committed',stat:'1 delivery at-risk',tone:'bad'}
     ];
     var h='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">';
     pillars.forEach(function(p){
