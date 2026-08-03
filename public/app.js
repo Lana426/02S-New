@@ -5491,7 +5491,7 @@ charges:[
     {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'Maxim Portal',sysLabel:'Confirm allocation in Maxim Portal',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
     {id:'mct-010',rank:10,why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
   ];
-  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due', _myTasksNS=false;
+  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due';
   function myTaskCheckChange(id,el){
     if(el.checked){el.checked=false;myTaskCloseStart(id);}
     else{var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=false;t.closeNote='';renderMyTasks();_myTasksBadge();}}
@@ -5528,7 +5528,7 @@ charges:[
   function _taskDueSort(due){if(!due)return 9999;var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var m=due.match(/([A-Za-z]+)\s+(\d+)/);return m?(mo[m[1]]||99)*100+parseInt(m[2],10):9999;}
   function _taskPriSort(p){return p==='high'?1:p==='medium'?2:p==='low'?3:4;}
   function renderMyTasks(){
-    if(_myTasksNS){renderMyTasksNS();return;}
+    if(CURRENT==='ns'){renderMyTasksNS();return;}
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
     _myTasksBadge();
     var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
@@ -5549,9 +5549,7 @@ charges:[
     var openAll=basePool.filter(function(t){return !t.done;}).length;
     var doneAll=basePool.filter(function(t){return t.done;}).length;
     var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>';
-    var h='<div class="phead"><div style="display:flex;align-items:center;justify-content:space-between"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+openAll+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div>';
-    h+='<div style="display:flex;gap:6px"><button onclick="_myTasksNS=false;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">Standard</button><button onclick="_myTasksNS=true;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">'+SPARK+'02S AI</button></div>';
-    h+='</div></div>';
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+openAll+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
     h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
     [['all','All'],['active','Active'],['done','Done']].forEach(function(f){h+='<button onclick="myTasksSet(\'status\',\''+f[0]+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:20px;border:1px solid '+(_myTasksFilter===f[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;font-weight:'+(_myTasksFilter===f[0]?'600':'400')+'">'+f[1]+'</button>';});
     h+='<div style="width:1px;height:18px;background:var(--g200);margin:0 2px"></div>';
@@ -5595,11 +5593,7 @@ charges:[
     var ranked=[]; var unranked=[];
     var nsMap={}; _MT_NS.forEach(function(n){nsMap[n.id]=n;});
     basePool.forEach(function(t){if(nsMap[t.id])ranked.push({t:t,ns:nsMap[t.id]});else unranked.push(t);});
-    ranked.sort(function(a,b){return a.ns.rank-b.ns.rank;});
-    var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle;flex-shrink:0"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>';
-    var h='<div class="phead"><div style="display:flex;align-items:center;justify-content:space-between"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'<span class="chip ver">02S AI</span></div></div>';
-    h+='<div style="display:flex;gap:6px"><button onclick="_myTasksNS=false;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Standard</button><button onclick="_myTasksNS=true;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">'+SPARK+'02S AI</button></div>';
-    h+='</div></div>';
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'<span class="chip ver">02S AI</span></div></div></div>';
     // AI insight strip
     h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
     h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;opacity:.8">'+SPARK.replace('stroke="currentColor"','stroke="#fff"')+'02S AI</span></div>';
