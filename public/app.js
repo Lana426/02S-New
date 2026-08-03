@@ -5589,24 +5589,18 @@ charges:[
     _myTasksBadge();
     var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var basePool=MY_CC_TASKS.filter(function(t){return !t.done&&(!pf||t.pillar===pf);});
-    // merge NS ranking with live tasks
     var ranked=[]; var unranked=[];
     var nsMap={}; _MT_NS.forEach(function(n){nsMap[n.id]=n;});
     basePool.forEach(function(t){if(nsMap[t.id])ranked.push({t:t,ns:nsMap[t.id]});else unranked.push(t);});
-    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'<span class="chip ver">02S AI</span></div></div></div>';
-    // AI insight strip
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
     h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
-    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;opacity:.8">02S AI</span></div>';
     h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">3 tasks on the critical path to November energization. 2 have passed their order-by date.</div>';
-    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks marked with a system button can be executed directly once source systems are connected — S2P for PO releases, Procore for submittals, and Dispatch for logistics. This is a preview of what becomes possible when 02S is wired to your source systems.</div>';
+    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks with an execute button can be actioned directly once T3 source systems are connected. This is a preview of what becomes possible in the North Star.</div>';
     h+='</div>';
     h+='<div style="display:flex;flex-direction:column;gap:8px">';
     ranked.forEach(function(item,i){
       var t=item.t; var ns=item.ns;
-      var SYS_COLOR={S2P:'#2563eb','EquipManage':'#0891b2','Teams':'#7c3aed','Procore':'#ea580c','Dispatch':'#16a34a','Maxim Portal':'#d97706','Vendor Portal':'#64748b'};
-      var sc=SYS_COLOR[ns.sys]||'var(--charcoal)';
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px">';
-      // rank + title row
       h+='<div style="display:flex;align-items:flex-start;gap:10px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">'+(i+1)+'</div>';
       h+='<div style="flex:1;min-width:0">';
@@ -5616,19 +5610,16 @@ charges:[
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
       if(t.due)h+='<span style="font-size:10.5px;color:var(--g400)">Due '+t.due+'</span>';
       h+='</div>';
-      // AI why
-      h+='<div style="display:flex;align-items:flex-start;gap:5px;margin-top:8px;padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal)">';
+      h+='<div style="margin-top:8px;padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal)">';
       h+='<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
       h+='</div>';
-      // execute button + system badge
       h+='<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">';
-      h+='<button onclick="toast(\''+ns.sysLabel+' — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:'+sc+';color:#fff;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0">'+ns.sysIcon+'</svg>'+ns.sysLabel+'</button>';
-      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: '+ns.sys+'</span>';
+      h+='<button onclick="toast(\'Execute in T3 — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">Execute in T3</button>';
+      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: T3</span>';
       h+='<div style="flex:1"></div><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Close task</button>';
       h+='</div>';
       h+='</div></div></div>';
     });
-    // unranked tasks (no NS data)
     unranked.forEach(function(t){
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px">';
       h+='<label style="flex-shrink:0;margin-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
