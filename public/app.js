@@ -5468,28 +5468,58 @@ charges:[
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
   var MY_CC_TASKS=[
-    {id:'mct-001',label:'Release PO — BESS containers (2.5 MWh)',ref:'REQ-P-0508',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false},
-    {id:'mct-002',label:'Release PO — MV switchgear 15kV lineup',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false},
-    {id:'mct-003',label:'Release PO — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'',source:'fq',done:false},
-    {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'',source:'fq',done:false},
-    {id:'mct-005',label:'Call off rental — 2\xd7 scissor lift idle 6 days',ref:'ORD-3031',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 4',priority:'',source:'manual',done:false},
-    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'ORD-3128',project:'Riverside Medical Center',pillar:'logistics',due:'Aug 4',priority:'',source:'manual',done:false},
-    {id:'mct-007',label:'Schedule BESS container placement (6 moves)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'',source:'fq',done:false},
-    {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'',source:'fq',done:false},
-    {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'',source:'fq',done:false},
-    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'',source:'fq',done:false}
+    {id:'mct-001',label:'Release PO — BESS containers (2.5 MWh)',ref:'REQ-P-0508',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-002',label:'Release PO — MV switchgear 15kV lineup',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-003',label:'Release PO — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-005',label:'Call off rental — 2\xd7 scissor lift idle 6 days',ref:'ORD-3031',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 4',priority:'',source:'manual',done:false,closeNote:''},
+    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'ORD-3128',project:'Riverside Medical Center',pillar:'logistics',due:'Aug 4',priority:'',source:'manual',done:false,closeNote:''},
+    {id:'mct-007',label:'Schedule BESS container placement (6 moves)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'',source:'fq',done:false,closeNote:''},
+    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'',source:'fq',done:false,closeNote:''}
   ];
-  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due';
-  function myTaskDone(id){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=!t.done;renderMyTasks();_myTasksBadge();}}
-  function myTaskAdd(label,ref,project,pillar,due){MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:label,ref:ref||'',project:project||'',pillar:pillar||'',due:due||'',priority:'',source:'fq',done:false});_myTasksBadge();}
+  var _MT_NS=[
+    {id:'mct-001',rank:1,why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-005',rank:2,why:'Scissor lifts are idle-billing at $1.9K/wk with no active schedule dependency. Return window is open — this is pure avoidable spend.',sys:'EquipManage',sysLabel:'Initiate return in EquipManage',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-006',rank:3,why:'Tower crane mobilization window closes Aug 4. Structural steel erection is crane-dependent — missing access confirmation delays critical path by 2+ weeks.',sys:'Teams',sysLabel:'Send confirmation in Teams',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>'},
+    {id:'mct-002',rank:4,why:'MV switchgear has a 28-week lead time. Order-by date passed — substation schedule recoverable only if PO is released this week.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-003',rank:5,why:'Solar DC cabling is long-lead and spec-dependent. EPC confirmation can run in parallel — release PO to vendor now to reserve lead time slot.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-004',rank:6,why:'E-house submittal approval gates fabrication slot. Shop is holding capacity — delay past this week risks the Nov delivery window.',sys:'Procore',sysLabel:'Approve submittal in Procore',sysIcon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>'},
+    {id:'mct-007',rank:7,why:'BESS container placement is 6 crane moves. Self-perform crew is available Aug 5–6. Scheduling now locks the slot before competing project needs arise.',sys:'Dispatch',sysLabel:'Assign crew in Dispatch',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-008',rank:8,why:'Commissioning agent needs 8–12 weeks of onboarding lead time. Quote must be initiated now to hit the Nov energization milestone.',sys:'Vendor Portal',sysLabel:'Request quote via Vendor Portal',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+    {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'Maxim Portal',sysLabel:'Confirm allocation in Maxim Portal',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+    {id:'mct-010',rank:10,why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
+  ];
+  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due', _myTasksNS=false;
+  function myTaskCheckChange(id,el){
+    if(el.checked){el.checked=false;myTaskCloseStart(id);}
+    else{var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=false;t.closeNote='';renderMyTasks();_myTasksBadge();}}
+  }
+  function myTaskCloseStart(id){
+    var t=MY_CC_TASKS.find(function(x){return x.id===id;}); if(!t)return;
+    var b='<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:4px">'+t.label+'</div>';
+    b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:16px">'+t.ref+(t.project?' \xb7 '+t.project:'')+'</div>';
+    b+='<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">What was done in the source system?</div>';
+    b+='<textarea id="mtCloseNote" placeholder="e.g. PO released in S2P — confirmation #PO-20260803. Vendor acknowledged 14-week lead time." style="width:100%;box-sizing:border-box;min-height:90px;border:1px solid var(--g200);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--g800);resize:vertical;line-height:1.5" autofocus></textarea>';
+    b+='<div style="font-size:11px;color:var(--g400);margin-top:4px">Optional — leave blank to mark complete without a note.</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="myTaskCloseConfirm(\''+id+'\')">Mark complete</button></div>';
+    openModal('Complete task', b);
+  }
+  function myTaskCloseConfirm(id){
+    var t=MY_CC_TASKS.find(function(x){return x.id===id;}); if(!t)return;
+    var note=document.getElementById('mtCloseNote')?document.getElementById('mtCloseNote').value.trim():'';
+    t.done=true; t.closeNote=note; t.closedAt=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    closeModal(); renderMyTasks(); _myTasksBadge(); toast(t.label+' marked complete');
+  }
+  function myTaskAdd(label,ref,project,pillar,due){MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:label,ref:ref||'',project:project||'',pillar:pillar||'',due:due||'',priority:'',source:'fq',done:false,closeNote:''});_myTasksBadge();}
   function myTaskSetDue(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t)t.due=val;}
   function myTaskSetPri(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.priority=val;renderMyTasks();}}
   function myTasksSet(k,v){if(k==='status')_myTasksFilter=v;else if(k==='pri')_myTasksFilterPri=v;else if(k==='proj')_myTasksFilterProj=v;else if(k==='sort')_myTasksSort=v;renderMyTasks();}
-  function myTasksClearDone(){MY_CC_TASKS=MY_CC_TASKS.filter(function(t){return !t.done;});renderMyTasks();_myTasksBadge();}
+  function myTasksClearDone(){MY_CC_TASKS=MY_CC_TASKS.filter(function(t){return !t.done;});_myTasksFilter='all';renderMyTasks();_myTasksBadge();}
   function _myTasksBadge(){
     var nav=document.getElementById('ccnav-mytasks'); if(!nav)return;
-    var isFSM=ccPersona==='fsm';
-    var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
+    var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var n=MY_CC_TASKS.filter(function(t){return !t.done&&(!pf||t.pillar===pf);}).length;
     var b=nav.querySelector('.mt-badge');
     if(!b){b=document.createElement('span');b.className='mt-badge';b.style.cssText='margin-left:auto;background:var(--charcoal);color:#fff;border-radius:10px;padding:0 5px;font-size:10px;font-weight:700;min-width:16px;text-align:center;line-height:16px;display:inline-block';nav.appendChild(b);}
@@ -5498,15 +5528,12 @@ charges:[
   function _taskDueSort(due){if(!due)return 9999;var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};var m=due.match(/([A-Za-z]+)\s+(\d+)/);return m?(mo[m[1]]||99)*100+parseInt(m[2],10):9999;}
   function _taskPriSort(p){return p==='high'?1:p==='medium'?2:p==='low'?3:4;}
   function renderMyTasks(){
+    if(_myTasksNS){renderMyTasksNS();return;}
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
     _myTasksBadge();
-    var isFSM=ccPersona==='fsm';
-    var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
-    // collect all visible projects (after pillar filter)
+    var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var basePool=MY_CC_TASKS.filter(function(t){return !pf||t.pillar===pf;});
-    var projs=[]; basePool.forEach(function(t){if(t.project&&projs.indexOf(t.project)<0)projs.push(t.project);});
-    projs.sort();
-    // apply all filters
+    var projs=[]; basePool.forEach(function(t){if(t.project&&projs.indexOf(t.project)<0)projs.push(t.project);}); projs.sort();
     var tasks=basePool.filter(function(t){
       if(_myTasksFilter==='active'&&t.done)return false;
       if(_myTasksFilter==='done'&&!t.done)return false;
@@ -5514,7 +5541,6 @@ charges:[
       if(_myTasksFilterProj!=='all'&&t.project!==_myTasksFilterProj)return false;
       return true;
     });
-    // sort
     tasks=tasks.slice().sort(function(a,b){
       if(_myTasksSort==='due')return _taskDueSort(a.due)-_taskDueSort(b.due);
       if(_myTasksSort==='priority')return _taskPriSort(a.priority)-_taskPriSort(b.priority);
@@ -5522,44 +5548,30 @@ charges:[
     });
     var openAll=basePool.filter(function(t){return !t.done;}).length;
     var doneAll=basePool.filter(function(t){return t.done;}).length;
-    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+openAll+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
-    // filter bar
+    var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>';
+    var h='<div class="phead"><div style="display:flex;align-items:center;justify-content:space-between"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+openAll+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div>';
+    h+='<div style="display:flex;gap:6px"><button onclick="_myTasksNS=false;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">Standard</button><button onclick="_myTasksNS=true;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">'+SPARK+'02S AI</button></div>';
+    h+='</div></div>';
     h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
-    // status pills
-    [['all','All'],['active','Active'],['done','Done']].forEach(function(f){
-      h+='<button onclick="myTasksSet(\'status\',\''+f[0]+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:20px;border:1px solid '+(_myTasksFilter===f[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;font-weight:'+(_myTasksFilter===f[0]?'600':'400')+'">'+f[1]+'</button>';
-    });
+    [['all','All'],['active','Active'],['done','Done']].forEach(function(f){h+='<button onclick="myTasksSet(\'status\',\''+f[0]+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:20px;border:1px solid '+(_myTasksFilter===f[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;font-weight:'+(_myTasksFilter===f[0]?'600':'400')+'">'+f[1]+'</button>';});
     h+='<div style="width:1px;height:18px;background:var(--g200);margin:0 2px"></div>';
-    // priority dropdown
-    h+='<select onchange="myTasksSet(\'pri\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
-    h+='<option value="all"'+(  _myTasksFilterPri==='all'?' selected':'')+'>Priority</option>';
+    h+='<select onchange="myTasksSet(\'pri\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer"><option value="all"'+(_myTasksFilterPri==='all'?' selected':'')+'>Priority</option>';
     ['high','medium','low',''].forEach(function(p){h+='<option value="'+p+'"'+(_myTasksFilterPri===p?' selected':'')+'>'+(p||'Not set')+'</option>';});
     h+='</select>';
-    // project dropdown (only if >1 project visible)
-    if(projs.length>1){
-      h+='<select onchange="myTasksSet(\'proj\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
-      h+='<option value="all"'+(_myTasksFilterProj==='all'?' selected':'')+'>Project</option>';
-      projs.forEach(function(p){h+='<option value="'+p+'"'+(_myTasksFilterProj===p?' selected':'')+'>'+(p.length>22?p.slice(0,20)+'…':p)+'</option>';});
-      h+='</select>';
-    }
-    // sort
+    if(projs.length>1){h+='<select onchange="myTasksSet(\'proj\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer"><option value="all"'+(_myTasksFilterProj==='all'?' selected':'')+'>Project</option>';projs.forEach(function(p){h+='<option value="'+p+'"'+(_myTasksFilterProj===p?' selected':'')+'>'+(p.length>22?p.slice(0,20)+'…':p)+'</option>';});h+='</select>';}
     h+='<div style="flex:1"></div>';
     h+='<select onchange="myTasksSet(\'sort\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:6px;padding:3px 8px;color:var(--g700);background:#fff;cursor:pointer">';
     [['due','Sort: Due date'],['priority','Sort: Priority'],['added','Sort: Recently added']].forEach(function(s){h+='<option value="'+s[0]+'"'+(_myTasksSort===s[0]?' selected':'')+'>'+ s[1]+'</option>';});
     h+='</select>';
     if(doneAll>0)h+='<button onclick="myTasksClearDone()" style="font-size:11.5px;padding:3px 10px;border-radius:6px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Clear done</button>';
     h+='</div>';
-    if(!tasks.length){
-      var hasFilter=_myTasksFilterPri!=='all'||_myTasksFilterProj!=='all'||_myTasksFilter!=='all';
-      h+='<div style="padding:40px 0;text-align:center;color:var(--g400);font-size:13px">No tasks match'+(hasFilter?' these filters':''+(pf?' for '+pf:''))+'<div style="font-size:11.5px;margin-top:4px;color:var(--g300)">'+(hasFilter?'<button onclick="_myTasksFilterPri=\'all\';_myTasksFilterProj=\'all\';_myTasksFilter=\'all\';renderMyTasks()" style="font-size:11px;color:var(--info);background:none;border:none;cursor:pointer">Clear filters</button>':'Add from the Fulfillment queue with "Add to list"')+'</div></div>';
-      mount.innerHTML=h; return;
-    }
-    var PRI_OPTS=['','high','medium','low'];
-    var PRI_LBL={'high':'High','medium':'Medium','low':'Low'};
+    if(!tasks.length){var hasF=_myTasksFilterPri!=='all'||_myTasksFilterProj!=='all'||_myTasksFilter!=='all';h+='<div style="padding:40px 0;text-align:center;color:var(--g400);font-size:13px">No tasks match'+(hasF?' these filters':''+(pf?' for '+pf:''))+'<div style="font-size:11.5px;margin-top:4px;color:var(--g300)">'+(hasF?'<button onclick="_myTasksFilterPri=\'all\';_myTasksFilterProj=\'all\';_myTasksFilter=\'all\';renderMyTasks()" style="font-size:11px;color:var(--info);background:none;border:none;cursor:pointer">Clear filters</button>':'Add from the Fulfillment queue with “Add to list”')+'</div></div>';mount.innerHTML=h;return;}
+    var PRI_OPTS=['','high','medium','low']; var PRI_LBL={'high':'High','medium':'Medium','low':'Low'};
     h+='<div style="display:flex;flex-direction:column;gap:6px">';
     tasks.forEach(function(t){
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:10px">';
-      h+='<label style="flex-shrink:0;display:flex;align-items:center;margin-top:3px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskDone(\''+t.id+'\')" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px">';
+      h+='<div style="display:flex;align-items:flex-start;gap:10px">';
+      h+='<label style="flex-shrink:0;display:flex;align-items:center;margin-top:3px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
       h+='<div style="flex:1;min-width:0">';
       h+='<div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+t.label+'</div>';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
@@ -5567,21 +5579,74 @@ charges:[
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
       if(t.priority)h+='<span style="font-size:10.5px;padding:1px 6px;border-radius:10px;background:'+(t.priority==='high'?'#fee2e2;color:#dc2626':t.priority==='medium'?'#fef9c3;color:#b45309':'#dcfce7;color:#16a34a')+'">'+PRI_LBL[t.priority]+'</span>';
       h+='</div>';
-      if(!t.done){
-        h+='<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap">';
-        h+='<input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:100px;color:var(--g700)">';
-        h+='<select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer">';
-        PRI_OPTS.forEach(function(p){h+='<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';});
-        h+='</select>';
-        h+='</div>';
-      }
-      h+='</div></div>';
+      if(t.done&&t.closeNote)h+='<div style="margin-top:6px;font-size:11.5px;color:var(--g500);background:var(--g50);border-radius:5px;padding:5px 8px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">\xb7 '+t.closedAt+'</span>':'')+'</div>';
+      if(!t.done)h+='<div style="display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap"><input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:100px;color:var(--g700)"><select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer">'+PRI_OPTS.map(function(p){return'<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';}).join('')+'</select><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Close task</button></div>';
+      h+='</div></div></div>';
+    });
+    h+='</div>';
+    mount.innerHTML=h;
+  }
+  function renderMyTasksNS(){
+    var mount=document.getElementById('ccMyTasks'); if(!mount)return;
+    _myTasksBadge();
+    var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
+    var basePool=MY_CC_TASKS.filter(function(t){return !t.done&&(!pf||t.pillar===pf);});
+    // merge NS ranking with live tasks
+    var ranked=[]; var unranked=[];
+    var nsMap={}; _MT_NS.forEach(function(n){nsMap[n.id]=n;});
+    basePool.forEach(function(t){if(nsMap[t.id])ranked.push({t:t,ns:nsMap[t.id]});else unranked.push(t);});
+    ranked.sort(function(a,b){return a.ns.rank-b.ns.rank;});
+    var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle;flex-shrink:0"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5z"/></svg>';
+    var h='<div class="phead"><div style="display:flex;align-items:center;justify-content:space-between"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'<span class="chip ver">02S AI</span></div></div>';
+    h+='<div style="display:flex;gap:6px"><button onclick="_myTasksNS=false;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Standard</button><button onclick="_myTasksNS=true;renderMyTasks()" style="font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">'+SPARK+'02S AI</button></div>';
+    h+='</div></div>';
+    // AI insight strip
+    h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;opacity:.8">'+SPARK.replace('stroke="currentColor"','stroke="#fff"')+'02S AI</span></div>';
+    h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">3 tasks on the critical path to November energization. 2 have passed their order-by date.</div>';
+    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks marked with a system button can be executed directly once source systems are connected — S2P for PO releases, Procore for submittals, and Dispatch for logistics. This is a preview of what becomes possible when 02S is wired to your source systems.</div>';
+    h+='</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:8px">';
+    ranked.forEach(function(item,i){
+      var t=item.t; var ns=item.ns;
+      var SYS_COLOR={S2P:'#2563eb','EquipManage':'#0891b2','Teams':'#7c3aed','Procore':'#ea580c','Dispatch':'#16a34a','Maxim Portal':'#d97706','Vendor Portal':'#64748b'};
+      var sc=SYS_COLOR[ns.sys]||'var(--charcoal)';
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px">';
+      // rank + title row
+      h+='<div style="display:flex;align-items:flex-start;gap:10px">';
+      h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">'+(i+1)+'</div>';
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+t.label+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap">';
+      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
+      if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
+      if(t.due)h+='<span style="font-size:10.5px;color:var(--g400)">Due '+t.due+'</span>';
+      h+='</div>';
+      // AI why
+      h+='<div style="display:flex;align-items:flex-start;gap:5px;margin-top:8px;padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal)">';
+      h+=SPARK+'<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
+      h+='</div>';
+      // execute button + system badge
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">';
+      h+='<button onclick="toast(\''+ns.sysLabel+' — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:'+sc+';color:#fff;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0">'+ns.sysIcon+'</svg>'+ns.sysLabel+'</button>';
+      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: '+ns.sys+'</span>';
+      h+='<div style="flex:1"></div><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Close task</button>';
+      h+='</div>';
+      h+='</div></div></div>';
+    });
+    // unranked tasks (no NS data)
+    unranked.forEach(function(t){
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px">';
+      h+='<label style="flex-shrink:0;margin-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+      h+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+t.label+'</div>';
+      h+='<div style="font-size:11px;color:var(--g400);margin-top:3px">'+t.ref+(t.project?' \xb7 '+t.project:'')+'</div></div>';
+      h+='<button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer;flex-shrink:0">Close</button>';
+      h+='</div>';
     });
     h+='</div>';
     mount.innerHTML=h;
   }
   function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks — view in sidebar'); }
-
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
     {id:'TC-0012',cls:'Tower crane',yard:'Southern Yard',status:'idle',idleDays:12,util:41,age:9,hours:'11,800',cond:'Fair',life:'replace',capex:'$1.2M',reco:'Replace \u2014 add to Q3 CapEx (~$1.2M)'},
