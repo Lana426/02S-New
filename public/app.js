@@ -1411,12 +1411,12 @@
       v1:'6 active roles · 1 role pending pricing (VDC / BIM) · Special inspection on track through current phase.',
       ns:'02S maps each role to the CPM schedule \u2014 the BESS commissioning agent mobilizes as the containers land, and the VDC role is flagged as unpriced before it\u2019s needed on site.',
       cap:'Roles are priced from the 02S rate card; specialty roles are quoted by 02S. The team sets headcount, mobilization window, and cost code.',
-      cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
+      cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
         {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8,linkOrd:'ORD-3095'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091'},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,linkOrd:'ORD-3092'},
         {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415',linkOrd:'ORD-3120'},
@@ -1427,7 +1427,7 @@
       v1:'10 items on plan · 1 at-risk · Tone shear wrenches overdue — needed for structural bolt tensioning.',
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
-      cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
+      cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
         {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued',linkOrd:'ORD-3100'},
@@ -1444,13 +1444,13 @@
       v1:'32 assemblies planned · 16 in fabrication · 1 awaiting submittal approval (BESS e-houses).',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
-      cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
+      cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication',linkOrd:'ORD-3060'},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal',linkOrd:'ORD-3107'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal',linkOrd:'ORD-3107',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
@@ -1463,7 +1463,7 @@
       rows:[
         {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071'},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
         {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
@@ -1531,9 +1531,9 @@
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
       h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 114px';
+      var pmGt='1fr 126px 150px 124px 118px 88px 114px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
       LOG_ROWS.forEach(function(r,pmIdx){
         var tone=DP_TONE[r.state]||'neu';
         h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
@@ -1542,6 +1542,7 @@
         h+='<div>'+(r.when||'\u2014')+'</div>';
         h+='<div>'+(r.gate||'\u2014')+'</div>';
         h+='<div>'+(r.src||'\u2014')+'</div>';
+        var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
         h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
@@ -1703,7 +1704,8 @@
       var origIdx=cfg.rows.indexOf(r);
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
-        if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
+        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -3277,6 +3279,7 @@ charges:[
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(r.state==='At-risk'?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(r.state==='At-risk'?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
     }
+    if(r.linkOrd){var _bl=buildDpBillingInline(r.linkOrd);if(_bl)h+=_bl;}
     var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
@@ -6837,6 +6840,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var row=rows&&rows[idx]; if(!row)return;
     openModal('Documentation · '+row.item, attachmentsHTML(row.attachments||[]));
   }
+  function portalDpDocModal(pk,rowIdx){
+    var row=DP[pk]&&DP[pk].rows&&DP[pk].rows[rowIdx]; if(!row)return;
+    openModal('Documentation · '+(row.role||row.asm||row.move||row.item||''), attachmentsHTML(row.attachments||[]));
+  }
   function dpRowClick(p,proj,idx){
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
@@ -8089,12 +8096,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       vitals:[{label:'Plan budget',value:'$3.2M',sub:'services \u00b7 15-mo horizon',tone:'ok',icon:IC.dollar},{label:'Committed to date',value:'$1.3M',sub:'41% \u00b7 5 roles active',tone:'ok',icon:IC.check},{label:'Active headcount',value:'14 FTE',sub:'across 6 firms',tone:'ok',icon:IC.people},{label:'Projected at complete',value:'$2.4M',sub:'+$0.8M under plan',tone:'ok',icon:IC.chart}],
       ns:'02S maps each role to the CPM schedule \u2014 the BESS commissioning agent mobilizes as the containers land, and the VDC role is flagged as unpriced before it\u2019s needed on site.',
       cap:'Roles are priced from the 02S rate card; specialty roles are quoted by 02S. The team sets headcount, mobilization window, and cost code.',
-      cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__state',label:'Status',w:'118px'}],
+      cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'118px'}],
       add:{nameKey:'role',subKey:'firm',qtyKey:'qty',whenKey:'window',costKey:'cost'}, addName:{label:'Role',ph:'e.g. Commissioning agent'}, addQty:{label:'Headcount',ph:'e.g. 2 FTE'}, addWhen:{label:'Mobilize \u2192 demobilize',ph:'e.g. Nov 2026 \u2013 Mar 2027'},
       rows:[
         {role:'Owner\u2019s engineer / IE support',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:8,linkOrd:'ORD-3095'},
-        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096'},
-        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9},
+        {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
+        {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
         {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415'},
@@ -8104,7 +8111,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'10',sub:'5 categories',tone:'ok',icon:IC.check},{label:'At-risk',value:'1',sub:'order-by passed',tone:'bad',icon:IC.warn},{label:'On-time to need-by',value:'90%',sub:'9 of 10 tracking',tone:'warn',icon:IC.chart}],
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
-      cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__state',label:'Status',w:'112px'}],
+      cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
       rows:[
         {item:'Nut runners \u2014 3/8\'',itemSub:'cordless torque-controlled · solar racking',qty:'48',needby:'Jul 15',orderby:'Jun 1 \u00b7 6 wk',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$22K',state:'PO issued',linkOrd:'ORD-3100'},
@@ -8120,13 +8127,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       vitals:[{label:'Assemblies planned',value:'32',sub:'5 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$0.9M',sub:'made-to-order',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'4 of 5',sub:'1 awaiting submittal',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
-      cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__state',label:'Status',w:'124px'}],
+      cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'stage',label:'Submittal \u2192 fab \u2192 deliver',w:'190px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Modular e-house'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication',linkOrd:'ORD-3060'},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106'},
         {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Draft'},
-        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108'},
+        {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Not started',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Draft',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
@@ -8206,9 +8213,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
       h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 114px';
+      var pmGt='1fr 126px 150px 124px 118px 88px 114px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Status</span></div>';
+      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
       LOG_ROWS.forEach(function(r,pmIdx){
         var tone=DP_TONE[r.state]||'neu';
         h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
@@ -8217,6 +8224,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='<div>'+(r.when||'\u2014')+'</div>';
         h+='<div>'+(r.gate||'\u2014')+'</div>';
         h+='<div>'+(r.src||'\u2014')+'</div>';
+        var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
         h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
@@ -8378,7 +8386,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var origIdx=cfg.rows.indexOf(r);
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
-        if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
+        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
