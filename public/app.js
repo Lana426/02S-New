@@ -5481,14 +5481,14 @@ charges:[
   ];
   var _MT_NS=[
     {id:'mct-001',rank:1,why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
-    {id:'mct-005',rank:2,why:'Scissor lifts are idle-billing at $1.9K/wk with no active schedule dependency. Return window is open — this is pure avoidable spend.',sys:'EquipManage',sysLabel:'Initiate return in EquipManage',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
-    {id:'mct-006',rank:3,why:'Tower crane mobilization window closes Aug 4. Structural steel erection is crane-dependent — missing access confirmation delays critical path by 2+ weeks.',sys:'Teams',sysLabel:'Send confirmation in Teams',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>'},
+    {id:'mct-005',rank:2,why:'Scissor lifts are idle-billing at $1.9K/wk with no active schedule dependency. Return window is open — this is pure avoidable spend.',sys:'T3',sysLabel:'Initiate return in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-006',rank:3,why:'Tower crane mobilization window closes Aug 4. Structural steel erection is crane-dependent — missing access confirmation delays critical path by 2+ weeks.',sys:'T3',sysLabel:'Send confirmation in T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>'},
     {id:'mct-002',rank:4,why:'MV switchgear has a 28-week lead time. Order-by date passed — substation schedule recoverable only if PO is released this week.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
     {id:'mct-003',rank:5,why:'Solar DC cabling is long-lead and spec-dependent. EPC confirmation can run in parallel — release PO to vendor now to reserve lead time slot.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
     {id:'mct-004',rank:6,why:'E-house submittal approval gates fabrication slot. Shop is holding capacity — delay past this week risks the Nov delivery window.',sys:'Procore',sysLabel:'Approve submittal in Procore',sysIcon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>'},
-    {id:'mct-007',rank:7,why:'BESS container placement is 6 crane moves. Self-perform crew is available Aug 5–6. Scheduling now locks the slot before competing project needs arise.',sys:'Dispatch',sysLabel:'Assign crew in Dispatch',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
-    {id:'mct-008',rank:8,why:'Commissioning agent needs 8–12 weeks of onboarding lead time. Quote must be initiated now to hit the Nov energization milestone.',sys:'Vendor Portal',sysLabel:'Request quote via Vendor Portal',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
-    {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'Maxim Portal',sysLabel:'Confirm allocation in Maxim Portal',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+    {id:'mct-007',rank:7,why:'BESS container placement is 6 crane moves. Self-perform crew is available Aug 5–6. Scheduling now locks the slot before competing project needs arise.',sys:'T3',sysLabel:'Assign crew in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-008',rank:8,why:'Commissioning agent needs 8–12 weeks of onboarding lead time. Quote must be initiated now to hit the Nov energization milestone.',sys:'T3',sysLabel:'Request quote via T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+    {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'T3',sysLabel:'Confirm allocation in T3',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
     {id:'mct-010',rank:10,why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
   ];
   var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due';
@@ -5595,11 +5595,13 @@ charges:[
     var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
     h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
     h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">3 tasks on the critical path to November energization. 2 have passed their order-by date.</div>';
-    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks with an execute button can be actioned directly once T3 source systems are connected. This is a preview of what becomes possible in the North Star.</div>';
+    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks with an execute button can be actioned directly once source systems are connected — S2P for PO releases, Procore for submittals, T3 for everything else.</div>';
     h+='</div>';
     h+='<div style="display:flex;flex-direction:column;gap:8px">';
+    var SYS_COLOR={S2P:'#2563eb',Procore:'#ea580c'};
     ranked.forEach(function(item,i){
       var t=item.t; var ns=item.ns;
+      var sc=SYS_COLOR[ns.sys]||'var(--charcoal)';
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px">';
       h+='<div style="display:flex;align-items:flex-start;gap:10px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">'+(i+1)+'</div>';
@@ -5614,8 +5616,8 @@ charges:[
       h+='<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
       h+='</div>';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">';
-      h+='<button onclick="toast(\'Execute in T3 — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:var(--charcoal);color:#fff;cursor:pointer;font-weight:600">Execute in T3</button>';
-      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: T3</span>';
+      h+='<button onclick="toast(\''+ns.sysLabel+' — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:'+sc+';color:#fff;cursor:pointer;font-weight:600">'+ns.sysLabel+'</button>';
+      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: '+ns.sys+'</span>';
       h+='<div style="flex:1"></div><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Close task</button>';
       h+='</div>';
       h+='</div></div></div>';
