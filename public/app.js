@@ -4835,14 +4835,14 @@ charges:[
       {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
     ]
   };
-  var CC_KEYS=['ccdash','fulfill','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
-    fsm:   ['ccdash','fulfill','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    equip: ['fulfill','gap','fleet','dpequip','margin'],
-    logistics: ['fulfill','dplog','margin'],
-    prefab: ['fulfill','dpprefab','margin'],
-    procurement: ['fulfill','dpproc','margin'],
-    services: ['fulfill','dpsvc','margin']
+    fsm:   ['ccdash','fulfill','mytasks','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    equip: ['fulfill','mytasks','gap','fleet','dpequip','margin'],
+    logistics: ['fulfill','mytasks','dplog','margin'],
+    prefab: ['fulfill','mytasks','dpprefab','margin'],
+    procurement: ['fulfill','mytasks','dpproc','margin'],
+    services: ['fulfill','mytasks','dpsvc','margin']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
@@ -4955,7 +4955,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -5467,7 +5467,61 @@ charges:[
   }
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
-  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; renderFulfill(); toast(r.item+' added to task list'); }
+  function renderMyTasks(){
+    var mount=document.getElementById('ccMyTasks'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var isFSM=ccPersona==='fsm';
+    var pillarFilter=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
+    var tasks=MY_CC_TASKS.filter(function(t){
+      if(pillarFilter&&t.pillar!==pillarFilter)return false;
+      if(_myTasksFilter==='active')return !t.done;
+      if(_myTasksFilter==='done')return t.done;
+      return true;
+    });
+    var open=tasks.filter(function(t){return !t.done;}).length;
+    var done=tasks.filter(function(t){return t.done;}).length;
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+open+' open</span>'+(pillarFilter?'<span class="chip">'+pillarFilter+'</span>':'')+'</div></div></div>';
+    var TONE={high:'red',medium:'warn',low:'ok'};
+    var PILLAR_COLOR={equipment:'var(--info)',logistics:'var(--charcoal)',prefab:'var(--success)',procurement:'#7c3aed',services:'var(--amber)'};
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">';
+    var filters=[['all','All ('+tasks.length+')'],['active','Active ('+open+')'],['done','Done ('+done+')']];
+    filters.forEach(function(f){h+='<button class="btn btn-ghost btn-sm'+((_myTasksFilter===f[0])?' on':'')+'" onclick="myTasksSetFilter(\''+f[0]+'\')" style="font-size:11.5px">'+f[1]+'</button>';});
+    h+='<div style="flex:1"></div>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\'fulfill\')" style="font-size:11.5px">'+svg('<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.5h13l3.5 6.5v5a2 2 0 01-2 2H4a2 2 0 01-2-2v-5z"/>')+' Fulfillment queue</button>';
+    h+='</div>';
+    if(!tasks.length){
+      h+='<div style="padding:48px 0;text-align:center;color:var(--g400)"><div style="font-size:24px;margin-bottom:8px">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+'</div><div style="font-size:13px">No tasks'+(pillarFilter?' for '+pillarFilter:'')+'</div><div style="font-size:11.5px;margin-top:4px;color:var(--g300)">Add tasks from the Fulfillment queue</div></div>';
+      mount.innerHTML=h; return;
+    }
+    h+='<div style="display:flex;flex-direction:column;gap:8px">';
+    var shown={high:false,medium:false,low:false};
+    ['high','medium','low'].forEach(function(pri){
+      var grp=tasks.filter(function(t){return t.priority===pri&&(!t.done||_myTasksFilter==='done'||_myTasksFilter==='all');});
+      if(!grp.length)return;
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);padding:4px 0 2px">'+(pri==='high'?'High priority':pri==='medium'?'Medium priority':'Low priority')+'</div>';
+      grp.forEach(function(t){
+        var pillarDot=t.pillar?('<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(PILLAR_COLOR[t.pillar]||'var(--g300)')+';margin-right:5px;flex-shrink:0"></span>'):'';
+        h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px'+(t.done?';opacity:.55':'')+'cursor:default">';
+        h+='<label style="display:flex;align-items:center;margin-top:2px;cursor:pointer;flex-shrink:0">';
+        h+='<input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskDone(\''+t.id+'\')" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)">';
+        h+='</label>';
+        h+='<div style="flex:1;min-width:0">';
+        h+='<div style="font-size:13px;font-weight:600;color:var(--g900);'+(t.done?'text-decoration:line-through;color:var(--g400)':'')+'">'+(t.label||'')+'</div>';
+        if(t.note)h+='<div style="font-size:11.5px;color:var(--g600);margin-top:2px">'+t.note+'</div>';
+        h+='<div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap">';
+        if(t.ref)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';
+        if(t.project)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.project+'</span>';
+        if(t.pillar)h+='<span style="display:inline-flex;align-items:center;font-size:10.5px;color:var(--g500)">'+pillarDot+t.pillar+'</span>';
+        if(t.due&&!t.done)h+='<span style="font-size:10.5px;color:'+(t.priority==='high'?'var(--red)':'var(--g400)')+';font-weight:600">Due '+t.due+'</span>';
+        if(t.source==='fq')h+='<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--g50);color:var(--g400)">From FQ</span>';
+        h+='</div></div>';
+        h+='</div>';
+      });
+    });
+    h+='</div>';
+    mount.innerHTML=h;
+  }
+  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,'Complete in source system · '+r.ref+' · '+r.actLabel,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks'); if(document.getElementById('ccnav-mytasks'))document.getElementById('ccnav-mytasks').style.fontWeight='700'; }
   function fqUntask(id){ var r=fqById(id); if(!r)return; r.tasked=false; renderFulfill(); toast(r.item+' removed from task list'); }
 
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
