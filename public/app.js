@@ -5491,7 +5491,7 @@ charges:[
     {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'T3',sysLabel:'Confirm allocation in T3',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
     {id:'mct-010',rank:10,why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
   ];
-  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due';
+  var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due', _myTasksEdit=null;
   function myTaskCheckChange(id,el){
     if(el.checked){el.checked=false;myTaskCloseStart(id);}
     else{var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=false;t.closeNote='';renderMyTasks();_myTasksBadge();}}
@@ -5517,6 +5517,8 @@ charges:[
   function myTaskSetPri(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.priority=val;renderMyTasks();}}
   function myTasksSet(k,v){if(k==='status')_myTasksFilter=v;else if(k==='pri')_myTasksFilterPri=v;else if(k==='proj')_myTasksFilterProj=v;else if(k==='sort')_myTasksSort=v;renderMyTasks();}
   function myTasksClearDone(){MY_CC_TASKS=MY_CC_TASKS.filter(function(t){return !t.done;});_myTasksFilter='all';renderMyTasks();_myTasksBadge();}
+  function myTaskEditStart(id){_myTasksEdit=id;renderMyTasks();}
+  function myTaskEditDone(){_myTasksEdit=null;renderMyTasks();}
   function _myTasksBadge(){
     var nav=document.getElementById('ccnav-mytasks'); if(!nav)return;
     var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
@@ -5565,22 +5567,37 @@ charges:[
     h+='</div>';
     if(!tasks.length){var hasF=_myTasksFilterPri!=='all'||_myTasksFilterProj!=='all'||_myTasksFilter!=='all';h+='<div style="padding:40px 0;text-align:center;color:var(--g400);font-size:13px">No tasks match'+(hasF?' these filters':''+(pf?' for '+pf:''))+'<div style="font-size:11.5px;margin-top:4px;color:var(--g300)">'+(hasF?'<button onclick="_myTasksFilterPri=\'all\';_myTasksFilterProj=\'all\';_myTasksFilter=\'all\';renderMyTasks()" style="font-size:11px;color:var(--info);background:none;border:none;cursor:pointer">Clear filters</button>':'Add from the Fulfillment queue with “Add to list”')+'</div></div>';mount.innerHTML=h;return;}
     var PRI_OPTS=['','high','medium','low']; var PRI_LBL={'high':'High','medium':'Medium','low':'Low'};
-    h+='<div style="display:flex;flex-direction:column;gap:6px">';
+    var COL='display:grid;grid-template-columns:20px 1fr 86px 96px 130px;gap:0 14px;align-items:center;padding:9px 14px;';
+    h+='<div style="'+COL.replace('padding:9px 14px','padding:2px 14px 8px')+'">';
+    h+='<div></div>';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">Task</div>';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">Due</div>';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">Priority</div>';
+    h+='<div></div></div>';
+    h+='<div style="display:flex;flex-direction:column;gap:4px">';
     tasks.forEach(function(t){
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px">';
-      h+='<div style="display:flex;align-items:center;gap:10px">';
-      h+='<label style="flex-shrink:0;display:flex;align-items:flex-start;padding-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
-      h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+t.label+'</div>';
-      h+='<div style="display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap">';
-      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
+      var isEd=_myTasksEdit===t.id&&!t.done;
+      h+='<div style="'+COL+'background:#fff;border:1px solid var(--g200);border-radius:8px">';
+      h+='<label style="cursor:pointer;display:flex;align-items:center"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+      h+='<div style="min-width:0"><div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+t.label+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:5px;margin-top:2px;flex-wrap:wrap">';
+      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 5px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
-      if(t.priority)h+='<span style="font-size:10.5px;padding:1px 6px;border-radius:10px;background:'+(t.priority==='high'?'#fee2e2;color:#dc2626':t.priority==='medium'?'#fef9c3;color:#b45309':'#dcfce7;color:#16a34a')+'">'+PRI_LBL[t.priority]+'</span>';
       h+='</div>';
-      if(t.done&&t.closeNote)h+='<div style="margin-top:5px;font-size:11.5px;color:var(--g500);background:var(--g50);border-radius:5px;padding:4px 8px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">· '+t.closedAt+'</span>':'')+'</div>';
+      if(t.done&&t.closeNote)h+='<div style="margin-top:4px;font-size:11px;color:var(--g500);background:var(--g50);border-radius:4px;padding:3px 7px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">· '+t.closedAt+'</span>':'')+'</div>';
       h+='</div>';
-      if(!t.done)h+='<div style="flex-shrink:0;display:flex;align-items:center;gap:6px"><input type="text" placeholder="Due date" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;width:88px;color:var(--g700)"><select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 6px;color:var(--g700);cursor:pointer">'+PRI_OPTS.map(function(p){return'<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'Priority')+'</option>';}).join('')+'</select><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap">Close</button></div>';
-      h+='</div></div>';
+      if(isEd){
+        h+='<input type="text" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" placeholder="e.g. Aug 5" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:4px 7px;width:100%;box-sizing:border-box;color:var(--g700)">';
+        h+='<select onchange="myTaskSetPri(\''+t.id+'\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:4px 6px;width:100%;box-sizing:border-box;color:var(--g700);cursor:pointer">'+PRI_OPTS.map(function(p){return'<option value="'+p+'"'+(t.priority===p?' selected':'')+'>'+(p?PRI_LBL[p]:'No priority')+'</option>';}).join('')+'</select>';
+        h+='<div style="display:flex;gap:5px"><button onclick="myTaskEditDone()" style="font-size:11.5px;padding:3px 11px;border-radius:5px;border:1px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;white-space:nowrap">Done</button><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap">Close</button></div>';
+      } else if(!t.done){
+        h+='<span style="font-size:12px;color:'+(t.due?'var(--g700)':'var(--g300)')+'">'+( t.due||'—')+'</span>';
+        h+=(t.priority?'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+(t.priority==='high'?'#fee2e2;color:#dc2626':t.priority==='medium'?'#fef9c3;color:#b45309':'#dcfce7;color:#16a34a')+'">'+PRI_LBL[t.priority]+'</span>':'<span style="font-size:12px;color:var(--g300)">—</span>');
+        h+='<div style="display:flex;gap:5px"><button onclick="myTaskEditStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Edit</button><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g600);cursor:pointer">Close</button></div>';
+      } else {
+        h+='<span></span><span></span><span></span>';
+      }
+      h+='</div>';
     });
     h+='</div>';
     mount.innerHTML=h;
