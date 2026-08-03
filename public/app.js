@@ -5467,9 +5467,24 @@ charges:[
   }
   function fqPriceSave(){ var r=fqById(fqCurId); if(!r)return; var v=gel('fqRate')?gel('fqRate').value.trim():''; if(!v){ toast('Enter a rate first'); return; } r.status='Acknowledged'; r.priced=v; closeModal(); renderFulfill(); toast(r.item+' priced \u2014 acknowledged to the project'); }
   function fqAck(id){ var r=fqById(id); if(!r)return; r.status='Acknowledged'; renderFulfill(); toast(r.item+' acknowledged'); }
+  var MY_CC_TASKS=[
+    {id:'mct-001',label:'Release PO — BESS containers (2.5 MWh)',note:'Order-by passed · release now to hold November energization',ref:'REQ-P-0508',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',source:'fq',done:false},
+    {id:'mct-002',label:'Release PO — MV switchgear 15kV lineup',note:'Order-by passed · release to recover the substation schedule date',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',source:'fq',done:false},
+    {id:'mct-003',label:'Release PO — Solar DC cabling',note:'Long lead · confirm spec with EPC then release immediately',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',source:'fq',done:false},
+    {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',note:'Approve this week to protect November energization schedule',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',source:'fq',done:false},
+    {id:'mct-005',label:'Call off rental — 2× scissor lift idle 6 days',note:'Idle-but-billing at $1.9K/wk · return window open · coordinate pickup',ref:'ORD-3031',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 4',source:'manual',done:false},
+    {id:'mct-006',label:'Confirm site access — tower crane mobilization',note:'Site access confirmation needed before Aug 4 final mobilization window',ref:'ORD-3128',project:'Riverside Medical Center',pillar:'logistics',due:'Aug 4',source:'manual',done:false},
+    {id:'mct-007',label:'Schedule BESS container placement (6 moves)',note:'Self-perform available · crew + crane free that week · Aug 5–6 window',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',source:'fq',done:false},
+    {id:'mct-008',label:'Get quote — BESS commissioning agent',note:'Specialty commissioning · confirm scope with EPC before pricing',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',source:'fq',done:false},
+    {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',note:'No owned units available · re-rent from Maxim Crane at $58K/mo',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',source:'fq',done:false},
+    {id:'mct-010',label:'Place order — UPS bypass cable assembly',note:'Specialty item · confirm spec with electrical engineer first',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',source:'fq',done:false}
+  ];
+  var _myTasksFilter='all';
+  function myTaskDone(id){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.done=!t.done;renderMyTasks();}}
+  function myTaskAdd(label,note,ref,project,pillar,due){MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:label,note:note||'',ref:ref||'',project:project||'',pillar:pillar||'',due:due||'',source:'fq',done:false});}
+  function myTasksSetFilter(f){_myTasksFilter=f;renderMyTasks();}
   function renderMyTasks(){
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
-    var ns=CURRENT==='ns';
     var isFSM=ccPersona==='fsm';
     var pillarFilter=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var tasks=MY_CC_TASKS.filter(function(t){
@@ -5480,49 +5495,39 @@ charges:[
     });
     var open=tasks.filter(function(t){return !t.done;}).length;
     var done=tasks.filter(function(t){return t.done;}).length;
-    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+open+' open</span>'+(pillarFilter?'<span class="chip">'+pillarFilter+'</span>':'')+'</div></div></div>';
-    var TONE={high:'red',medium:'warn',low:'ok'};
     var PILLAR_COLOR={equipment:'var(--info)',logistics:'var(--charcoal)',prefab:'var(--success)',procurement:'#7c3aed',services:'var(--amber)'};
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+open+' open</span>'+(pillarFilter?'<span class="chip">'+pillarFilter+'</span>':'')+'</div></div></div>';
     h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">';
-    var filters=[['all','All ('+tasks.length+')'],['active','Active ('+open+')'],['done','Done ('+done+')']];
-    filters.forEach(function(f){h+='<button class="btn btn-ghost btn-sm'+((_myTasksFilter===f[0])?' on':'')+'" onclick="myTasksSetFilter(\''+f[0]+'\')" style="font-size:11.5px">'+f[1]+'</button>';});
+    var fts=[['all','All ('+(open+done)+')'],['active','Active ('+open+')'],['done','Done ('+done+')']];
+    fts.forEach(function(f){h+='<button class="btn btn-ghost btn-sm'+((_myTasksFilter===f[0])?' on':'')+'" onclick="myTasksSetFilter(\''+ f[0] +'\')" style="font-size:11.5px">'+f[1]+'</button>';});
     h+='<div style="flex:1"></div>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\'fulfill\')" style="font-size:11.5px">'+svg('<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.5h13l3.5 6.5v5a2 2 0 01-2 2H4a2 2 0 01-2-2v-5z"/>')+' Fulfillment queue</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\'fulfill\')" style="font-size:11.5px">'+svg('<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.5h13l3.5 6.5v5a2 2 0 01-2 2H4a2 2 0 01-2-2v-5z"/>')+' Fulfillment queue →</button>';
     h+='</div>';
     if(!tasks.length){
-      h+='<div style="padding:48px 0;text-align:center;color:var(--g400)"><div style="font-size:24px;margin-bottom:8px">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+'</div><div style="font-size:13px">No tasks'+(pillarFilter?' for '+pillarFilter:'')+'</div><div style="font-size:11.5px;margin-top:4px;color:var(--g300)">Add tasks from the Fulfillment queue</div></div>';
+      h+='<div style="padding:48px 0;text-align:center;color:var(--g400)"><div style="font-size:13px">No tasks'+(pillarFilter?' for '+pillarFilter:'')+'</div><div style="font-size:11.5px;margin-top:4px;color:var(--g300)">'+(_myTasksFilter==='done'?'Nothing marked done yet':'Add tasks from the Fulfillment queue')+'</div></div>';
       mount.innerHTML=h; return;
     }
-    h+='<div style="display:flex;flex-direction:column;gap:8px">';
-    var shown={high:false,medium:false,low:false};
-    ['high','medium','low'].forEach(function(pri){
-      var grp=tasks.filter(function(t){return t.priority===pri&&(!t.done||_myTasksFilter==='done'||_myTasksFilter==='all');});
-      if(!grp.length)return;
-      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g400);padding:4px 0 2px">'+(pri==='high'?'High priority':pri==='medium'?'Medium priority':'Low priority')+'</div>';
-      grp.forEach(function(t){
-        var pillarDot=t.pillar?('<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+(PILLAR_COLOR[t.pillar]||'var(--g300)')+';margin-right:5px;flex-shrink:0"></span>'):'';
-        h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;display:flex;align-items:flex-start;gap:12px'+(t.done?';opacity:.55':'')+'cursor:default">';
-        h+='<label style="display:flex;align-items:center;margin-top:2px;cursor:pointer;flex-shrink:0">';
-        h+='<input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskDone(\''+t.id+'\')" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)">';
-        h+='</label>';
-        h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:13px;font-weight:600;color:var(--g900);'+(t.done?'text-decoration:line-through;color:var(--g400)':'')+'">'+(t.label||'')+'</div>';
-        if(t.note)h+='<div style="font-size:11.5px;color:var(--g600);margin-top:2px">'+t.note+'</div>';
-        h+='<div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap">';
-        if(t.ref)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';
-        if(t.project)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.project+'</span>';
-        if(t.pillar)h+='<span style="display:inline-flex;align-items:center;font-size:10.5px;color:var(--g500)">'+pillarDot+t.pillar+'</span>';
-        if(t.due&&!t.done)h+='<span style="font-size:10.5px;color:'+(t.priority==='high'?'var(--red)':'var(--g400)')+';font-weight:600">Due '+t.due+'</span>';
-        if(t.source==='fq')h+='<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--g50);color:var(--g400)">From FQ</span>';
-        h+='</div></div>';
-        h+='</div>';
-      });
+    h+='<div style="display:flex;flex-direction:column;gap:6px">';
+    tasks.forEach(function(t){
+      var pillarDot=t.pillar?('<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+(PILLAR_COLOR[t.pillar]||'var(--g300)')+';margin-right:5px;flex-shrink:0;vertical-align:middle"></span>'):'';
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:11px 14px;display:flex;align-items:flex-start;gap:11px">';
+      h+='<label style="display:flex;align-items:center;margin-top:2px;cursor:pointer;flex-shrink:0"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskDone(\''+ t.id +'\')" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-size:13px;font-weight:600;'+(t.done?'text-decoration:line-through;color:var(--g400)':'color:var(--g900)')+'">'+( t.label||'')+'</div>';
+      if(t.note)h+='<div style="font-size:11.5px;color:var(--g500);margin-top:2px">'+t.note+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:10px;margin-top:5px;flex-wrap:wrap">';
+      if(t.ref)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';
+      if(t.project)h+='<span style="font-size:10.5px;color:var(--g400)">'+t.project+'</span>';
+      if(t.pillar)h+='<span style="display:inline-flex;align-items:center;font-size:10.5px;color:var(--g500)">'+pillarDot+t.pillar+'</span>';
+      if(t.due&&!t.done)h+='<span style="font-size:10.5px;color:var(--g400);font-weight:500">Due '+t.due+'</span>';
+      if(t.source==='fq')h+='<span style="font-size:10px;padding:1px 5px;border-radius:3px;background:var(--g50);color:var(--g400);border:1px solid var(--g100)">FQ</span>';
+      h+='</div></div>';
+      h+='</div>';
     });
     h+='</div>';
     mount.innerHTML=h;
   }
-  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,'Complete in source system · '+r.ref+' · '+r.actLabel,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks'); if(document.getElementById('ccnav-mytasks'))document.getElementById('ccnav-mytasks').style.fontWeight='700'; }
-  function fqUntask(id){ var r=fqById(id); if(!r)return; r.tasked=false; renderFulfill(); toast(r.item+' removed from task list'); }
+  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,(r.actLabel||'Action needed')+' · complete in source system',r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks — view in sidebar'); }
 
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
