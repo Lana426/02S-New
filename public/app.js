@@ -5765,7 +5765,7 @@ charges:[
   var capexPlanApproved=false;
   function approveCapexPlan(){ capexPlanApproved=true; renderGap(); toast('CapEx plan approved — sent to Anaplan as performance baseline'); }
   function hmColor(v){ if(v<=-4)return{bg:'rgba(220,29,52,.20)',fg:'#B81729'}; if(v<0)return{bg:'rgba(220,29,52,.09)',fg:'#B81729'}; if(v===0)return{bg:'transparent',fg:'var(--g400)'}; if(v<=3)return{bg:'rgba(47,122,67,.10)',fg:'var(--success)'}; return{bg:'rgba(47,122,67,.20)',fg:'var(--success)'}; }
-  function gapItems(){ var items=CAPEX_BUYS.slice(); FLEET.forEach(function(r){ if(r.life==='replace'){ items.push({id:r.id,cls:r.cls+' \u00b7 '+r.id,action:'Replace',rec:'replace',rationale:'Past replacement threshold \u00b7 '+r.hours+' hrs \u00b7 rising maintenance',capex:r.capex,capexN:(parseFloat(r.capex.replace(/[^0-9.]/g,''))||0),rerent:'\u2014',payback:'\u2014',reco:true,recoText:'Replace \u2014 aging fleet, rising maintenance',isReplace:true,queued:!!r.capexQueued}); } }); return items; }
+  function gapItems(){ return CAPEX_BUYS.slice(); }
   function capexRecTag(it){ var m={buy:['BUY','ok'],replace:['REPLACE','warn'],redeploy:['REDEPLOY','info'],rerent:['RE-RENT','neu']}; var x=m[it.rec]||['\u2014','neu']; return '<span class="tag '+x[1]+'">'+x[0]+'</span>'; }
   function capexModal(id){
     var it=null,arr=gapItems(),i; for(i=0;i<arr.length;i++){ if(arr[i].id===id){it=arr[i];break;} } if(!it)return; capexCurId=id; var ns=CURRENT==='ns';
