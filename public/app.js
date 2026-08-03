@@ -1550,132 +1550,6 @@
       h+='</div>';
       h+='<div style="margin-top:24px"></div>';
     }
-    if(logPlanView==='gcgr'){
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
-      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
-      if(gcgrView==='table'){
-        var gt='1fr 160px 80px 80px 130px 96px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
-          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-        });
-        h+='</div>';
-      } else {
-        var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
-        var N=LGM.length, todayIdx=3;
-        var todayPct=((todayIdx+0.8)/N)*100;
-        var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
-        var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
-        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var a=r.sa, b=r.ea;
-          var left=(a/N)*100, width=((b-a+1)/N)*100;
-          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'?'submitted':'draft');
-          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
-            +'<div class="g-track" style="background-image:'+gridBg+'">'
-            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+' · '+r.monthly+'/mo">'+r.monthly+'</div>'
-            +'</div></div>';
-        });
-        h+='</div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
-        h+='</div>';
-      }
-    } else if(logPlanView==='trnwh'){
-      var TRNWH=[
-        {svc:'National freight brokerage',vendor:'Coyote Logistics',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$8K',status:'Active',sa:0,ea:9},
-        {svc:'Warehouse &amp; staging — regional hub',vendor:'ProLogis',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$14K',status:'Active',sa:0,ea:9},
-        {svc:'Heavy haul carrier program',vendor:'Landstar System',start:'Jul 2026',end:'Oct 2026',cost:'3100-6200-0000-0001',monthly:'$28K',status:'Scheduled',sa:3,ea:6},
-        {svc:'OFCI receiving &amp; coordination',vendor:'Ryder Supply Chain',start:'May 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$11K',status:'Active',sa:1,ea:9},
-        {svc:'Prefab flow logistics',vendor:'XPO Logistics',start:'Aug 2026',end:'Dec 2026',cost:'2600-3300-0000-0001',monthly:'$16K',status:'Projected',sa:4,ea:8}
-      ];
-      h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Heavy haul ramp-up aligned to module racking schedule — confirm Landstar capacity 6 weeks ahead of Jul 15.</div></div></div>';
-      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
-      if(gcgrView==='table'){
-        var gt2='1fr 160px 80px 80px 130px 96px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-        TRNWH.forEach(function(r){
-          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'||r.status==='Projected'?'info':'neu');
-          h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-        });
-        h+='</div>';
-      } else {
-        var LGMt=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
-        var Nt=LGMt.length, todayIdxt=3;
-        var todayPctt=((todayIdxt+0.8)/Nt)*100;
-        var mht=''; for(var mit=0;mit<Nt;mit++){ mht+='<div class="gh-m">'+LGMt[mit]+'</div>'; }
-        var gridBgt='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'%))';
-        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mht+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPctt/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        TRNWH.forEach(function(r){
-          var a=r.sa, b=r.ea;
-          var left=(a/Nt)*100, width=((b-a+1)/Nt)*100;
-          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'||r.status==='Projected'?'submitted':'draft');
-          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
-            +'<div class="g-track" style="background-image:'+gridBgt+'">'
-            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+'">'+r.monthly+'</div>'
-            +'</div></div>';
-        });
-        h+='</div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled / Projected</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
-        h+='</div>';
-      }
-    }
-    var DLF=deliveryFilter;
-    var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
-    var dlFiltered=DLF==='all'?DELIVERIES:(DLF==='delivered'?DELIVERIES.filter(function(r){return r.status==='Delivered';}):DELIVERIES.filter(function(r){return ACTIVE_ST.indexOf(r.status)>-1;}));
-    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
-    h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
-    h+='<div style="display:flex;gap:4px;margin-left:4px">';
-    [['active','In progress'],['delivered','Delivered'],['all','All']].forEach(function(f){
-      var on=DLF===f[0];
-      h+='<button onclick="setDeliveryFilter(\''+f[0]+'\')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid '+(on?'#0f172a':'#d1d5db')+';background:'+(on?'#0f172a':'#fff')+';color:'+(on?'#fff':'#64748b')+';cursor:pointer;font-weight:'+(on?'600':'400')+'">'+f[1]+'</button>';
-    });
-    h+='</div><span style="font-size:11.5px;color:var(--g400)">'+dlFiltered.length+' item'+(dlFiltered.length===1?'':'s')+'</span>';
-    h+='</div>';
-    if(ns){
-      var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
-      var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
-      h+='<div style="display:flex;flex-direction:column;gap:10px">';
-      dlFiltered.forEach(function(r){
-        var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
-        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
-        var pct=step/(STEPS.length-1)*100;
-        h+='<div style="background:#fff;border:1px solid var(--g150);border-radius:10px;padding:14px 18px">';
-        h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
-        h+='<div style="flex:1;font-size:13px;font-weight:600;color:#0f172a">'+r.item+'</div>';
-        h+='<span class="tag '+ptone+'">'+r.pillar+'</span></div>';
-        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">'+r.vendor+' · '+r.order+' · Need by <b>'+r.needby+'</b></div>';
-        h+='<div style="position:relative;padding:0 11px">';
-        h+='<div style="position:absolute;top:11px;left:11px;right:11px;height:2px;background:#e2e8f0"></div>';
-        h+='<div style="position:absolute;top:11px;left:11px;width:'+pct.toFixed(1)+'%;height:2px;background:#16a34a"></div>';
-        h+='<div style="display:flex;justify-content:space-between;position:relative">';
-        STEPS.forEach(function(s,i){
-          var done=i<step,active=i===step;
-          var bg=done?'#16a34a':(active?'#0f172a':'#f1f5f9');
-          var fg=(done||active)?'#fff':'#94a3b8';
-          var bd=(!done&&!active)?';border:1.5px solid #e2e8f0':'';
-          var lc=(done||active)?'#0f172a':'#94a3b8';
-          var fw=active?'600':'400';
-          h+='<div style="display:flex;flex-direction:column;align-items:center">';
-          h+='<div style="width:22px;height:22px;border-radius:50%;background:'+bg+';color:'+fg+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700'+bd+'">'+(done?'✓':(i+1))+'</div>';
-          h+='<div style="font-size:10px;color:'+lc+';font-weight:'+fw+';margin-top:5px;text-align:center;white-space:nowrap">'+s+'</div>';
-          h+='</div>';
-        });
-        h+='</div></div></div>';
-      });
-      h+='</div>';
-    } else {
-      var gt3='1fr 110px 100px 160px 130px 110px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
-      dlFiltered.forEach(function(r){
-        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
-        var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
-        h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
-    }
     mount.innerHTML=h;
   }
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
@@ -1810,7 +1684,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); renderGlance(); }
     window.scrollTo(0,0);
   }
 
@@ -1845,7 +1719,7 @@ function renderProfServicesDP(){
     var _btEl=document.getElementById('billTo'); if(_btEl)_btEl.value='';
     renderOrders(); renderBills(); renderOrdInsights();
     renderPending(); renderBillInsights();
-    renderBudget(); renderGMDashKPI(); renderNSMilestones();
+    renderBudget(); renderGMDashKPI(); renderNSMilestones(); renderGlance();
     renderTeam(); renderEscalation(); renderProfileInsights();
     var cv1=document.getElementById('composeV1'); if(cv1) cv1.classList.toggle('hide',ns);
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
@@ -2728,6 +2602,16 @@ charges:[
     var pvn=gel('vitalPlanPctNS'); if(pvn) pvn.innerHTML=miniRingHtml;
     var psn=gel('vitalPlanSubNS'); if(psn) psn.textContent=plan+' of '+total+' orders from plan';
   }
+  function renderGlance(){
+    var deliveries=0,offrents=0,pendingBills=0;
+    var lgRows=(DP['logistics']&&DP['logistics'].rows)||[];
+    lgRows.forEach(function(r){if(r.state==='Scheduled'||r.state==='Requested')deliveries++;});
+    var today=new Date('2026-08-03');
+    if(typeof EQ_LINES!=='undefined'){EQ_LINES.forEach(function(l){var s=eqLineState(l);if(s==='offrent'){offrents++;}else if(s==='onrent'){var mo=l.to;var mMap={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};var toDate=new Date('20'+mo.slice(0,2)+'-'+(mMap[mo.slice(3)]||'01')+'-28');var diff=(toDate-today)/(1000*60*60*24);if(diff>=0&&diff<=30)offrents++;}});}
+    if(typeof BILLS!=='undefined'){BILLS.forEach(function(b){if(b.status==='Pending'||b.status==='Open'||b.status==='Awaiting approval')pendingBills++;});}
+    var dEl=document.getElementById('glance-deliveries');var oEl=document.getElementById('glance-offrents');var bEl=document.getElementById('glance-bills');
+    if(dEl)dEl.textContent=deliveries||0;if(oEl)oEl.textContent=offrents||0;if(bEl)bEl.textContent=pendingBills||0;
+  }
   function openMarginPlanModal(){
     var gmPlan=16.5,gmCurr=14.2,gmProj=22600000;
     var GP=[
@@ -2793,9 +2677,7 @@ charges:[
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $22.6M</div></div>'
-        +'</div>'
-        +'<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid var(--g100)">'
-        +'Gap: '+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan — crane re-rent premium on BESS</div>';
+        +'</div>';
     } else {
       var GP=[{l:'Equipment',p:18.0,a:15.2},{l:'Prefab',p:14.0,a:13.5},{l:'Logistics',p:12.0,a:12.4},{l:'Procurement',p:8.0,a:7.8},{l:'Prof. services',p:22.0,a:21.0}];
       h+='<div style="font-size:11px">'
@@ -8145,7 +8027,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       rows:[
         {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane pick',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled'},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
         {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
@@ -8231,132 +8113,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
       h+='</div>';
       h+='<div style="margin-top:24px"></div>';
-    }
-    if(logPlanView==='gcgr'){
-      if(ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Security and office trailer costs are running 8% above plan. Confirm dewatering mobilization 2 weeks before Jun 1.</div></div></div>'; }
-      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
-      if(gcgrView==='table'){
-        var gt='1fr 160px 80px 80px 130px 96px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'?'info':'neu');
-          h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-        });
-        h+='</div>';
-      } else {
-        var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
-        var N=LGM.length, todayIdx=3;
-        var todayPct=((todayIdx+0.8)/N)*100;
-        var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
-        var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
-        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var a=r.sa, b=r.ea;
-          var left=(a/N)*100, width=((b-a+1)/N)*100;
-          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'?'submitted':'draft');
-          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
-            +'<div class="g-track" style="background-image:'+gridBg+'">'
-            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+' · '+r.monthly+'/mo">'+r.monthly+'</div>'
-            +'</div></div>';
-        });
-        h+='</div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
-        h+='</div>';
-      }
-    } else if(logPlanView==='trnwh'){
-      var TRNWH=[
-        {svc:'National freight brokerage',vendor:'Coyote Logistics',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$8K',status:'Active',sa:0,ea:9},
-        {svc:'Warehouse &amp; staging — regional hub',vendor:'ProLogis',start:'Apr 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$14K',status:'Active',sa:0,ea:9},
-        {svc:'Heavy haul carrier program',vendor:'Landstar System',start:'Jul 2026',end:'Oct 2026',cost:'3100-6200-0000-0001',monthly:'$28K',status:'Scheduled',sa:3,ea:6},
-        {svc:'OFCI receiving &amp; coordination',vendor:'Ryder Supply Chain',start:'May 2026',end:'Jan 2027',cost:'0100-0100-0000-0001',monthly:'$11K',status:'Active',sa:1,ea:9},
-        {svc:'Prefab flow logistics',vendor:'XPO Logistics',start:'Aug 2026',end:'Dec 2026',cost:'2600-3300-0000-0001',monthly:'$16K',status:'Projected',sa:4,ea:8}
-      ];
-      h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">Heavy haul ramp-up aligned to module racking schedule — confirm Landstar capacity 6 weeks ahead of Jul 15.</div></div></div>';
-      h+='<div class="eq-toolbar" style="margin-bottom:16px"><div class="seg"><button class="seg-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">Table</button><button class="seg-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Timeline</button></div></div>';
-      if(gcgrView==='table'){
-        var gt2='1fr 160px 80px 80px 130px 96px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt2+'"><span>Service</span><span>Vendor</span><span>Start</span><span>End</span><span>Cost code</span><span class="r">Monthly</span><span>Status</span></div>';
-        TRNWH.forEach(function(r){
-          var tone=r.status==='Active'?'ok':(r.status==='Scheduled'||r.status==='Projected'?'info':'neu');
-          h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+r.svc+'</div><div class="sub">'+r.vendor+'</div><div>'+r.start+'</div><div>'+r.end+'</div><div class="sub">'+r.cost+'</div><div class="r" style="font-weight:600">'+r.monthly+'</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
-        });
-        h+='</div>';
-      } else {
-        var LGMt=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
-        var Nt=LGMt.length, todayIdxt=3;
-        var todayPctt=((todayIdxt+0.8)/Nt)*100;
-        var mht=''; for(var mit=0;mit<Nt;mit++){ mht+='<div class="gh-m">'+LGMt[mit]+'</div>'; }
-        var gridBgt='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'% - 1px), var(--g150) calc('+(100/Nt)+'%))';
-        h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+mht+'</div></div><div class="g-body">';
-        h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPctt/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        TRNWH.forEach(function(r){
-          var a=r.sa, b=r.ea;
-          var left=(a/Nt)*100, width=((b-a+1)/Nt)*100;
-          var barCls=r.status==='Active'?'onrent':(r.status==='Scheduled'||r.status==='Projected'?'submitted':'draft');
-          h+='<div class="grow"><div class="g-label">'+r.svc+'<span class="gqty" style="font-size:11px;font-weight:400;opacity:.7;margin-left:6px">'+r.vendor+'</span></div>'
-            +'<div class="g-track" style="background-image:'+gridBgt+'">'
-            +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.start+' – '+r.end+'">'+r.monthly+'</div>'
-            +'</div></div>';
-        });
-        h+='</div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Scheduled / Projected</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
-        h+='</div>';
-      }
-    }
-    var DLF=deliveryFilter;
-    var ACTIVE_ST=['Requested','Submittal','In fabrication','Scheduled','In transit'];
-    var dlFiltered=DLF==='all'?DELIVERIES:(DLF==='delivered'?DELIVERIES.filter(function(r){return r.status==='Delivered';}):DELIVERIES.filter(function(r){return ACTIVE_ST.indexOf(r.status)>-1;}));
-    h+='<div style="margin-top:28px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
-    h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Delivery tracker</span>';
-    h+='<div style="display:flex;gap:4px;margin-left:4px">';
-    [['active','In progress'],['delivered','Delivered'],['all','All']].forEach(function(f){
-      var on=DLF===f[0];
-      h+='<button onclick="setDeliveryFilter(\''+f[0]+'\')" style="font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid '+(on?'#0f172a':'#d1d5db')+';background:'+(on?'#0f172a':'#fff')+';color:'+(on?'#fff':'#64748b')+';cursor:pointer;font-weight:'+(on?'600':'400')+'">'+f[1]+'</button>';
-    });
-    h+='</div><span style="font-size:11.5px;color:var(--g400)">'+dlFiltered.length+' item'+(dlFiltered.length===1?'':'s')+'</span>';
-    h+='</div>';
-    if(ns){
-      var STEPS=['Order placed','Vendor confirmed','In production','In transit','On site'];
-      var STATUS_STEP={Draft:0,Requested:1,Submittal:1,'In fabrication':2,Scheduled:2,'In transit':3,Delivered:4};
-      h+='<div style="display:flex;flex-direction:column;gap:10px">';
-      dlFiltered.forEach(function(r){
-        var step=STATUS_STEP[r.status]!==undefined?STATUS_STEP[r.status]:0;
-        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
-        var pct=step/(STEPS.length-1)*100;
-        h+='<div style="background:#fff;border:1px solid var(--g150);border-radius:10px;padding:14px 18px">';
-        h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">';
-        h+='<div style="flex:1;font-size:13px;font-weight:600;color:#0f172a">'+r.item+'</div>';
-        h+='<span class="tag '+ptone+'">'+r.pillar+'</span></div>';
-        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">'+r.vendor+' · '+r.order+' · Need by <b>'+r.needby+'</b></div>';
-        h+='<div style="position:relative;padding:0 11px">';
-        h+='<div style="position:absolute;top:11px;left:11px;right:11px;height:2px;background:#e2e8f0"></div>';
-        h+='<div style="position:absolute;top:11px;left:11px;width:'+pct.toFixed(1)+'%;height:2px;background:#16a34a"></div>';
-        h+='<div style="display:flex;justify-content:space-between;position:relative">';
-        STEPS.forEach(function(s,i){
-          var done=i<step,active=i===step;
-          var bg=done?'#16a34a':(active?'#0f172a':'#f1f5f9');
-          var fg=(done||active)?'#fff':'#94a3b8';
-          var bd=(!done&&!active)?';border:1.5px solid #e2e8f0':'';
-          var lc=(done||active)?'#0f172a':'#94a3b8';
-          var fw=active?'600':'400';
-          h+='<div style="display:flex;flex-direction:column;align-items:center">';
-          h+='<div style="width:22px;height:22px;border-radius:50%;background:'+bg+';color:'+fg+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700'+bd+'">'+(done?'✓':(i+1))+'</div>';
-          h+='<div style="font-size:10px;color:'+lc+';font-weight:'+fw+';margin-top:5px;text-align:center;white-space:nowrap">'+s+'</div>';
-          h+='</div>';
-        });
-        h+='</div></div></div>';
-      });
-      h+='</div>';
-    } else {
-      var gt3='1fr 110px 100px 160px 130px 110px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt3+'"><span>Item</span><span>Pillar</span><span>Need-by</span><span>Vendor</span><span>Order</span><span>Status</span></div>';
-      dlFiltered.forEach(function(r){
-        var ptone={Equipment:'info',Procurement:'neu',Prefab:'ok',Logistics:'info'}[r.pillar]||'neu';
-        var stTone=r.status==='Delivered'?'ok':(r.status==='Scheduled'||r.status==='In fabrication'?'info':(r.status==='Draft'?'neu':'warn'));
-        h+='<div class="dp-row" style="grid-template-columns:'+gt3+'"><div>'+r.item+'</div><div><span class="tag '+ptone+'">'+r.pillar+'</span></div><div style="font-weight:600">'+r.needby+'</div><div>'+r.vendor+'</div><div class="sub">'+r.order+'</div><div><span class="tag '+stTone+'">'+r.status+'</span></div></div>';
-      });
-      h+='</div>';
     }
     mount.innerHTML=h;
   }
@@ -8490,7 +8246,7 @@ function renderProfServicesDP(){
     if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
-    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); }
+    if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); renderGlance(); }
     window.scrollTo(0,0);
   }
 

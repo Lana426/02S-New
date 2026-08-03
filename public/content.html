@@ -290,9 +290,16 @@
               <button class="viewall" onclick="go('orders')">View all 5 items <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
             </div>
           </div>
+          <!-- This week at a glance — inside the card, below attention items -->
+          <div class="mini" style="border-top:1px solid var(--g100);margin-top:14px;padding-top:12px">
+            <div class="mk">This week at a glance</div>
+            <div class="mrow" style="cursor:pointer" onclick="go('dp-logistics')"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/></svg>Deliveries</span><span class="mv" id="glance-deliveries">—</span></div>
+            <div class="mrow" style="cursor:pointer" onclick="go('equip')"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.2-8.5"/></svg>Off-rents due</span><span class="mv" id="glance-offrents">—</span></div>
+            <div class="mrow" style="cursor:pointer" onclick="go('billing')"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pending bills</span><span class="mv" id="glance-bills">—</span></div>
+          </div>
         </div>
 
-        <!-- action rail -->
+        <!-- action rail — quick-action cards, no whitespace -->
         <div class="rail">
           <div class="action-card">
             <span class="acti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg></span>
@@ -307,12 +314,6 @@
             <button class="btn" onclick="openRecert()">Review &amp; certify<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
           </div>
           <div class="action-card" id="dashPlanRing" style="display:none"></div>
-          <div class="mini">
-            <div class="mk">This week at a glance</div>
-            <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/></svg>Deliveries</span><span class="mv">4</span></div>
-            <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.2-8.5"/></svg>Off-rents due</span><span class="mv">2</span></div>
-            <div class="mrow"><span class="ml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Pending bills</span><span class="mv">3</span></div>
-          </div>
         </div>
       </div>
 
