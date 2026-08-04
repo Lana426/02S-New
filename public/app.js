@@ -5089,15 +5089,15 @@ charges:[
     if(ns) kpis.push({k:'Asset lifecycle',v:fRepl+' flags',sub:fOR+'\u00a0on-rent\u00a0\u00b7\u00a0'+fIdle+'\u00a0idle',tone:fRepl>0?'bad':fIdle>0?'warn':'ok',icon:IC.box,to:'fleet'});
     var acts=[
       {t:CC_QUOTES.filter(function(q){return q.status==='Needs pricing';}).length+' portal RFQs — pricing not set',s:'Equipment, prefab &amp; prof services · submitted this week',proj:null,tag:{l:'Quotes',tone:'warn'},to:'fulfill-quotes',reco:'MEWP matches the rate card — auto-price; cable tray brackets and MEP commissioning need fabrication &amp; specialty quotes',icon:IC.cart},
-      {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',proj:'Cimarron Data Center',tag:{l:'Needs map',tone:'warn'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-4479';ccGo('fulfill')",reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
-      {t:'6 requests awaiting pricing',s:'5 are pending-pricing lines across demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccGo('fulfill')",reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
-      {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',proj:'Riverside Medical Center',tag:{l:'Decision',tone:'info'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-4471';ccGo('fulfill')",reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
+      {t:'REQ-4479 needs taxonomy confirmation',s:'2\u00d7 excavator \u2014 unmapped equipment class',proj:'Cimarron Data Center',tag:{l:'Needs map',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-4479')",reco:'02S mapped it to Excavator \u203a 50-ton (94% confidence) \u2014 confirm to release for pricing & allocation',icon:ICO_TAX},
+      {t:'6 requests awaiting pricing',s:'5 are pending-pricing lines across demand plans',proj:'Hercules Solar + BESS',tag:{l:'Pending pricing',tone:'warn'},to:'fulfill',fn:"ccGoFulfill(null)",reco:'Auto-price 3 from the 02S catalog; 2 need admin review',icon:IC.cart},
+      {t:'Riverside \u2014 5\u00d7 tower crane request',s:'needs an owned vs re-rent decision',proj:'Riverside Medical Center',tag:{l:'Decision',tone:'info'},to:'fulfill',fn:"ccGoFulfill('REQ-4471')",reco:'Optimizer: 2 owned + 3 re-rent \u2014 19% margin (~$34K/mo)',icon:IC.crane},
 
       {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart},
-      {t:'Excavator capacity \u2014 Cimarron Oct phase',s:'2\u00d7 50-ton unallocated \u00b7 excavation start at risk',proj:'Cimarron Data Center',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-4479';ccGo('fulfill')",reco:'Assign EX-2205 + EX-2208 from North/South Yard \u2014 confirms Oct 12 excavation start',icon:IC.box},
-      {t:'BESS commissioning resource gap',s:'2 FTE unplaced \u00b7 Nov 2026 P6 start \u00b7 SOW unexecuted',proj:'Hercules Solar + BESS',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-S-2108';ccGo('fulfill')",reco:'02S: execute SOW by Oct 1 \u2014 slip risk 4\u20136 weeks if unaddressed',icon:IC.box},
-      {t:'MV switchgear + BESS containers \u2014 PO release',s:'2 at-risk lines \u00b7 Nov 15 energization at risk',proj:'Hercules Solar + BESS',tag:{l:'At-risk',tone:'bad'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-P-0501';ccGo('fulfill')",reco:'Release both POs today \u2014 order-by window already passed',icon:IC.warn},
-      {t:'Tower crane capacity \u2014 5\u00d7 decision',s:'Riverside \u00b7 owned vs re-rent \u00b7 Aug 20 need-by',proj:'Riverside Medical Center',tag:{l:'Capacity',tone:'info'},to:'fulfill',fn:"fqFP='all';fqFPr='all';fqFS='all';ccHighlight='REQ-4471';ccGo('fulfill')",reco:'Optimizer: 2 owned (TC-0012, TC-0018) + 3 re-rent \u2014 confirms Aug 20 installation',icon:IC.crane}
+      {t:'Excavator capacity \u2014 Cimarron Oct phase',s:'2\u00d7 50-ton unallocated \u00b7 excavation start at risk',proj:'Cimarron Data Center',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-4479')",reco:'Assign EX-2205 + EX-2208 from North/South Yard \u2014 confirms Oct 12 excavation start',icon:IC.box},
+      {t:'BESS commissioning resource gap',s:'2 FTE unplaced \u00b7 Nov 2026 P6 start \u00b7 SOW unexecuted',proj:'Hercules Solar + BESS',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-S-2108')",reco:'02S: execute SOW by Oct 1 \u2014 slip risk 4\u20136 weeks if unaddressed',icon:IC.box},
+      {t:'MV switchgear + BESS containers \u2014 PO release',s:'2 at-risk lines \u00b7 Nov 15 energization at risk',proj:'Hercules Solar + BESS',tag:{l:'At-risk',tone:'bad'},to:'fulfill',fn:"ccGoFulfill('REQ-P-0501')",reco:'Release both POs today \u2014 order-by window already passed',icon:IC.warn},
+      {t:'Tower crane capacity \u2014 5\u00d7 decision',s:'Riverside \u00b7 owned vs re-rent \u00b7 Aug 20 need-by',proj:'Riverside Medical Center',tag:{l:'Capacity',tone:'info'},to:'fulfill',fn:"ccGoFulfill('REQ-4471')",reco:'Optimizer: 2 owned (TC-0012, TC-0018) + 3 re-rent \u2014 confirms Aug 20 installation',icon:IC.crane}
     ];
         var scopeLabel=!isFSM?'All projects \u00b7 portfolio':(_ccFSMProj===''?'My projects \u00b7 3 assigned':(_ccFSMProj==='all'?'All projects \u00b7 portfolio':_ccFSMProj));
     h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+scopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
@@ -5388,7 +5388,7 @@ charges:[
       h+='</div>';
     }
     mount.innerHTML=h;
-    if(hlRef){ setTimeout(function(){ var el=gel('fqrow-'+hlRef); if(el&&el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'center'}); } }, 80); }
+    if(hlRef){ setTimeout(function(){ var el=gel('fqrow-'+hlRef); if(el&&el.scrollIntoView){ el.scrollIntoView({behavior:'smooth',block:'center'}); } }, 300); }
   }
   function fqDocCell(r){
     var docs=r.docs||[];
@@ -8233,6 +8233,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpRelease(p){ var rs=CC_DP[p].rows; var n=0; for(var i=0;i<rs.length;i++){ if(rs[i].status==='Ready')n++; } if(!n){ toast('No ready requests \u2014 confirm taxonomy first'); return; } toast(n+' ready request'+(n===1?'':'s')+' released to the Fulfillment queue'); }
   function dpConsolidate(p){ var cs=CC_DP[p].consol; if(!cs)return; toast('Consolidation queued \u2014 '+cs.cta.toLowerCase()+' \u00b7 est. '+cs.save+' saved'); }
   function dpOpenFulfill(ref){ ccHighlight=ref; fqFP='all'; fqFPr='all'; fqFS='all'; closeModal(); ccGo('fulfill'); }
+  function ccGoFulfill(ref){ fqView='orders'; fqFP='all'; fqFPr='all'; fqFS='all'; if(ref)ccHighlight=ref; ccGo('fulfill'); }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
   var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','In transit':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','At-risk':'bad'};
