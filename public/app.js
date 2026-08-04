@@ -6047,8 +6047,11 @@ charges:[
   function renderScView(){
     var mount=gel('ccScView'); if(!mount)return;
     var h='';
+    // Respect CC dashboard project filter
+    var _scProj=(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all')?_ccFSMProj:null;
+    var scopedFQ=_scProj?FQ.filter(function(r){return r.project===_scProj;}):FQ;
     h+='<div style="border-top:2px solid var(--g100);padding-top:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-    h+='<span style="font-size:13px;font-weight:700;color:var(--g900);display:inline-flex;align-items:center;gap:6px">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+'Solution Centers</span>';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g900);display:inline-flex;align-items:center;gap:6px">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+'Solution Centers'+((_scProj)?(' <span style="font-size:11px;font-weight:500;color:var(--g500)">· '+(_scProj==='Hercules Solar + BESS'?'Hercules Solar':_scProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical')+'</span>'):''  )+'</span>';
     h+='<div style="flex:1"></div>';
     h+='<select onchange="scSet(\'sc\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer;background:#fff"><option value="">All yards</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(_scFilter===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
     var _pills=[['all','All'],['equipment','Equip'],['logistics','Log'],['prefab','Prefab'],['procurement','Proc'],['services','Svcs']];
@@ -6057,7 +6060,7 @@ charges:[
     if(!_scFilter){
       var scC={};
       SC_LIST.forEach(function(s){scC[s]={total:0,p:{}};});
-      FQ.forEach(function(r){if(r.yard&&scC[r.yard]){scC[r.yard].total++;scC[r.yard].p[r.pillar]=1;}});
+      scopedFQ.forEach(function(r){if(r.yard&&scC[r.yard]){scC[r.yard].total++;scC[r.yard].p[r.pillar]=1;}});
       var aSCs=SC_LIST.filter(function(s){return scC[s].total>0;});
       if(aSCs.length){
         h+='<div style="display:grid;grid-template-columns:repeat('+Math.min(aSCs.length,7)+',1fr);gap:7px;margin-bottom:12px">';
@@ -6072,7 +6075,7 @@ charges:[
         h+='</div>';
       }
     }
-    var items=FQ.filter(function(r){
+    var items=scopedFQ.filter(function(r){
       if(_scFilter&&r.yard!==_scFilter)return false;
       if(_scPillar!=='all'&&r.pillar!==_scPillar)return false;
       return true;
