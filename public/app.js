@@ -5154,8 +5154,9 @@ charges:[
   /* ═══════════ FULFILLMENT QUEUE + OPTIMIZER ═══════════ */
   var CC_SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
   var SC_LIST=['Chandler','San Diego','Corona','St. Louis','Houston','Kansas City','Sacramento'];
-  var _scFilter='', _scPillar='all';
-  function scSet(k,v){if(k==='sc')_scFilter=v;else if(k==='pillar')_scPillar=v;renderScView();}
+  var _scFilter='', _scPillar='all', _scPage=0;
+  function scSet(k,v){if(k==='sc')_scFilter=v;else if(k==='pillar')_scPillar=v;_scPage=0;renderScView();}
+  function scPage(n){_scPage=n;renderScView();}
   function fqSetYard(id,yard){var r=fqById(id);if(r){r.yard=yard;renderFulfill();}}
   function fqYardSelect(r){
     var opts='<option value="">Assign yard…</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('');
@@ -6045,54 +6046,64 @@ charges:[
 
   function renderScView(){
     var mount=gel('ccScView'); if(!mount)return;
-    var ns=CURRENT==='ns';
-    var h='<div class="phead"><div><h1>Solution Centers</h1><div class="meta"><span class="chip">Fulfillment by source location</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">';
-    h+='<select onchange="scSet(\'sc\',this.value)" style="font-size:13px;font-weight:600;border:1px solid var(--g200);border-radius:6px;padding:5px 10px;color:var(--g800);cursor:pointer;background:#fff"><option value="">All solution centers</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(_scFilter===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
-    h+='<div style="width:1px;height:20px;background:var(--g200)"></div>';
-    var _scPills=[['all','All'],['equipment','Equipment'],['logistics','Logistics'],['prefab','Prefab'],['procurement','Procurement'],['services','Services']];
-    _scPills.forEach(function(p){h+='<button onclick="scSet(\'pillar\',\''+p[0]+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:20px;border:1px solid '+(_scPillar===p[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer">'+p[1]+'</button>';});
+    var h='';
+    h+='<div style="border-top:2px solid var(--g100);padding-top:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g900);display:inline-flex;align-items:center;gap:6px">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+'Solution Centers</span>';
+    h+='<div style="flex:1"></div>';
+    h+='<select onchange="scSet(\'sc\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer;background:#fff"><option value="">All yards</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(_scFilter===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
+    var _pills=[['all','All'],['equipment','Equip'],['logistics','Log'],['prefab','Prefab'],['procurement','Proc'],['services','Svcs']];
+    _pills.forEach(function(p){h+='<button onclick="scSet(\'pillar\',\''+p[0]+'\')" style="font-size:11px;padding:2px 9px;border-radius:20px;border:1px solid '+(_scPillar===p[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;white-space:nowrap">'+p[1]+'</button>';});
     h+='</div>';
-    var items=FQ.filter(function(r){
-      if(_scFilter&&r.yard!==_scFilter)return false;
-      if(_scPillar!=='all'&&r.pillar!==_scPillar)return false;
-      return true;
-    });
     if(!_scFilter){
-      var scCounts={};
-      SC_LIST.forEach(function(s){scCounts[s]={total:0,pillars:{}};});
-      FQ.forEach(function(r){if(r.yard&&scCounts[r.yard]){scCounts[r.yard].total++;scCounts[r.yard].pillars[r.pillar]=true;}});
-      var activeSCs=SC_LIST.filter(function(s){return scCounts[s].total>0;});
-      if(activeSCs.length){
-        h+='<div style="display:grid;grid-template-columns:repeat('+Math.min(activeSCs.length,4)+',1fr);gap:10px;margin-bottom:18px">';
-        activeSCs.forEach(function(s){
-          var c=scCounts[s];
-          var pillTags=Object.keys(c.pillars).map(function(p){return p.charAt(0).toUpperCase()+p.slice(1,4);}).join(' · ');
-          h+='<div class="vital ok" style="cursor:pointer" onclick="scSet(\'sc\',\''+s+'\')">';
-          h+='<div class="vk">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+s+'</div>';
-          h+='<div class="vv" style="font-size:18px">'+c.total+'</div>';
-          h+='<div class="vsub">'+pillTags+'</div>';
+      var scC={};
+      SC_LIST.forEach(function(s){scC[s]={total:0,p:{}};});
+      FQ.forEach(function(r){if(r.yard&&scC[r.yard]){scC[r.yard].total++;scC[r.yard].p[r.pillar]=1;}});
+      var aSCs=SC_LIST.filter(function(s){return scC[s].total>0;});
+      if(aSCs.length){
+        h+='<div style="display:grid;grid-template-columns:repeat('+Math.min(aSCs.length,7)+',1fr);gap:7px;margin-bottom:12px">';
+        aSCs.forEach(function(s){
+          var c=scC[s];
+          h+='<div onclick="scSet(\'sc\',\''+s+'\')" style="cursor:pointer;border:1px solid var(--g200);border-radius:8px;padding:10px 12px;background:#fff" onmouseenter="this.style.borderColor=\'var(--charcoal)\'" onmouseleave="this.style.borderColor=\'var(--g200)\'">';
+          h+='<div style="font-size:10.5px;font-weight:700;color:var(--g600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">'+s+'</div>';
+          h+='<div style="font-size:20px;font-weight:800;color:var(--g900);line-height:1">'+c.total+'</div>';
+          h+='<div style="font-size:9.5px;color:var(--g400);margin-top:3px">'+Object.keys(c.p).map(function(p){return p.charAt(0).toUpperCase()+p.slice(1,4);}).join(' \u00b7 ')+'</div>';
           h+='</div>';
         });
         h+='</div>';
       }
     }
-    if(items.length){
-      var gt='1fr 160px 100px 110px 100px 120px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Item</span><span>Project</span><span>Pillar</span><span>Solution center</span><span>Need-by</span><span>Status</span></div>';
-      items.forEach(function(r){
+    var items=FQ.filter(function(r){
+      if(_scFilter&&r.yard!==_scFilter)return false;
+      if(_scPillar!=='all'&&r.pillar!==_scPillar)return false;
+      return true;
+    });
+    var PG=5,np=Math.ceil(items.length/PG);
+    if(_scPage>=np)_scPage=Math.max(0,np-1);
+    var pgItems=items.slice(_scPage*PG,_scPage*PG+PG);
+    if(pgItems.length){
+      var gt='1fr 130px 80px 120px 80px 90px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Item</span><span>Project</span><span>Pillar</span><span>Yard</span><span>Need-by</span><span>Status</span></div>';
+      pgItems.forEach(function(r){
         var tone=FQ_TONE[r.status]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.item+'<div class="sub">'+r.ref+'</div></div>';
-        h+='<div style="font-size:12px">'+r.project+'</div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+        h+='<div style="font-size:12.5px">'+r.item+'<div class="sub">'+r.ref+'</div></div>';
+        h+='<div style="font-size:11.5px;color:var(--g600)">'+r.project+'</div>';
         h+='<div><span class="tag neu" style="font-size:10px">'+r.pillar.charAt(0).toUpperCase()+r.pillar.slice(1)+'</span></div>';
-        h+='<div>'+(r.yard?'<select onchange="fqSetYard(\''+r.id+'\',this.value);renderScView();" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 7px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>':'<span style="font-size:11.5px;color:var(--g400)">Unassigned</span>')+'</div>';
+        h+='<div>'+(r.yard?'<select onchange="fqSetYard(\''+r.id+'\',this.value);renderScView();" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;color:var(--g700);cursor:pointer;background:#fff">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>':'<span style="font-size:11px;color:var(--g400)">Unassigned</span>')+'</div>';
         h+='<div style="font-size:12px">'+r.needby+'</div>';
-        h+='<div><span class="tag '+tone+'">'+r.status+'</span></div>';
+        h+='<div><span class="tag '+tone+'" style="font-size:10px">'+r.status+'</span></div>';
         h+='</div>';
       });
       h+='</div>';
+      if(np>1){
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px 2px;border-top:1px solid var(--g100)">';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===0?';opacity:.4;cursor:default':'')+('" ')+(_scPage===0?'disabled ':'')+' onclick="scPage('+(_scPage-1)+')">&#8592;</button>';
+        h+='<span style="font-size:11px;color:var(--g400)">'+(_scPage+1)+' / '+np+' \u00b7 '+items.length+' items</span>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===np-1?';opacity:.4;cursor:default':'')+('" ')+(_scPage===np-1?'disabled ':'')+' onclick="scPage('+(_scPage+1)+')">&#8594;</button>';
+        h+='</div>';
+      }
     } else {
-      h+='<div class="fq-empty">No items match'+((_scFilter||_scPillar!=='all')?' these filters.':'. Assign yards to fulfillment queue items to see them here.')+'</div>';
+      h+='<div style="padding:16px 0;font-size:12px;color:var(--g400);text-align:center">No items match'+((_scFilter||_scPillar!=='all')?' these filters.':'. Assign yards to fulfillment queue items.')+'</div>';
     }
     mount.innerHTML=h;
   }
