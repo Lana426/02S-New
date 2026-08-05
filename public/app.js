@@ -3415,7 +3415,13 @@ charges:[
       var st=stageStatus(o);
       var badge='';
       var freshBadge=o.fresh?'<span class="tag ok" style="margin-left:7px">New</span>':'';
-      if(ns){
+      if(o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22'){
+        badge='<span class="tag bad" style="margin-left:7px">Off-rent overdue</span>';
+      } else if(o.rental&&o.rental.offRent){
+        badge='<span style="margin-left:8px;font-size:10.5px;color:var(--g500)">Off-rent: '+o.rental.offRent+'</span>';
+      } else if(o.anticipatedOff&&(!o.rental)){
+        badge='<span style="margin-left:8px;font-size:10.5px;color:var(--g500)">Off-rent: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</span>';
+      } else if(ns){
         if(o.risk) badge = o.risk.type==='risk'?'<span class="tag bad" style="margin-left:7px">At risk</span>':'<span class="tag ok" style="margin-left:7px">Save $</span>';
         else if(o.rental) badge = '<span class="tag warn" style="margin-left:7px">Ending soon</span>';
       }
@@ -3543,6 +3549,7 @@ charges:[
   }
   function eorHTML(o,ns){
     var r=o.rental;
+    if(!r||!r.offRent) return '';
     return '<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+r.offRent+(r.daysLeft!=null?' · '+r.daysLeft+' day'+(r.daysLeft===1?'':'s')+' away':'')+'</div>';
   }
 
