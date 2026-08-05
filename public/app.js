@@ -7748,30 +7748,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
 
   // ─── RENDER: EQUIPMENT ───────────────────────────────────────────────────────
   function renderEquipmentCapPlan(proj){
-    var ns=CURRENT==='ns';
     var h='<div style="margin-top:24px">';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Capacity Planning</span>';
-    h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g100);border-radius:4px;padding:2px 8px">'+(ns?'North Star':'V1 · Alpha')+'</span></div>';
-    if(ns){
-    h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">P6 schedule shift &middot; 2 lifecycle alerts this period</div><div class="isd">Cimarron excavation phase pushed &middot; 2 dozer certs due Oct 3 &middot; Hercules Oct peak 1 crane unconfirmed</div></div></div>';
-    h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">';
-    h+='<div style="background:#fff;border:1px solid rgba(251,146,60,.35);border-radius:6px;padding:10px 12px">';
-    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">SCHEDULE SHIFT</div>';
-    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Cimarron phase &mdash; +2 wks</div>';
-    h+='<div style="font-size:11px;color:#d97706">Excavator on-rent extended &middot; est. $28K additional</div></div>';
-    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
-    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">ASSET LIFECYCLE</div>';
-    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Dozer D6 fleet &mdash; Oct 3</div>';
-    h+='<div style="font-size:11px;color:var(--red)">12 units inspection due &middot; cert renewal required</div></div>';
-    h+='<div style="background:#fff;border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px">';
-    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px">FLEET GAP</div>';
-    h+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">Hercules Oct peak: crane</div>';
-    h+='<div style="font-size:11px;color:var(--red)">230T crawler unconfirmed &middot; source window closes Sep 15</div></div>';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Capacity Planning</span></div>';
+    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:28px 24px;text-align:center">';
+    h+='<div style="font-size:13px;font-weight:600;color:var(--g500);margin-bottom:8px">Wireframe functionality replaced by actual build to be demo-ed</div>';
+    h+='<div style="font-size:12px;color:var(--g400)">Intelligence layer products available in separate pages</div>';
+    h+='<div style="font-size:12px;color:var(--g400);margin-top:5px">Own vs. re-rent fulfillment optimizer &nbsp;&middot;&nbsp; Demand-supply gap &amp; CAPEX</div>';
     h+='</div>';
-    } else {
-    h+='<div style="background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Alpha.</b> Own vs. re-rent optimization and fleet pool allocation are under active development. <span style="color:var(--g400)">⭐ North Star: 02S monitors P6 schedule shifts and asset lifecycle to surface rental extension risk and inspection due dates.</span></div>';
-    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:24px 20px;text-align:center;font-size:12px;color:var(--g400)">Fleet pool allocation &mdash; in development</div>';
-    }
     h+='</div>';
     return h;
   }
