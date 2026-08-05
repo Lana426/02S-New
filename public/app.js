@@ -5192,11 +5192,11 @@ charges:[
   }
   function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
-    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
+    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Riverside Medical Center',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
     {src:'adhoc',id:'fq2',yard:'Houston',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'Cimarron Data Center',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
     {src:'dp',id:'fq3',yard:'Chandler',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'New',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0,docs:['Vendor quote (PDF)','Scope of work (PDF)']},
     {src:'adhoc',id:'fq4',yard:'Corona',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Riverside Medical Center',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8,docs:['Safety inspection checklist (PDF)']},
-    {src:'adhoc',id:'fq9',yard:'Houston',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
+    {src:'adhoc',id:'fq9',yard:'Houston',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2,taxMapped:false,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
     {src:'adhoc',id:'fqL1',yard:'Houston',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer',docs:['Oversize permit (PDF)','Haul route map (PDF)']},
     {src:'adhoc',id:'fqL2',yard:'Corona',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (oversize transport)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane',docs:['Oversize permit (PDF)','Load & route plan (PDF)','Escort coordination brief (PDF)']},
     {src:'dp',id:'fqL3',yard:'Chandler',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week',docs:['Site layout plan (PDF)']},
@@ -5228,8 +5228,8 @@ charges:[
   function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
   function fqIsDone(r){ return FQ_DONE.indexOf(r.status)>=0; }
   function fqVisible(r){ if(fqFP!=='all'&&r.pillar!==fqFP)return false; if(fqFPr!=='all'&&r.project!==fqFPr)return false; if(fqFS==='open'&&fqIsDone(r))return false; if(fqFS==='done'&&!fqIsDone(r))return false; if(fqFSrc!=='all'&&r.src!==fqFSrc)return false; return true; }
-  function fqSetFilter(k,v){ if(k==='p')fqFP=v; else if(k==='pr')fqFPr=v; else if(k==='s')fqFS=v; else if(k==='src')fqFSrc=v; renderFulfill(); }
-  function fqClearFilters(){ fqFP='all'; fqFPr='all'; fqFS='all'; fqFSrc='all'; renderFulfill(); }
+  function fqSetFilter(k,v){ if(k==='p')fqFP=v; else if(k==='pr')fqFPr=v; else if(k==='s')fqFS=v; else if(k==='src')fqFSrc=v; _fqShowAll=false; renderFulfill(); }
+  function fqClearFilters(){ fqFP='all'; fqFPr='all'; fqFS='all'; fqFSrc='all'; _fqShowAll=false; renderFulfill(); }
   function fqAdvance(id){ var r=fqById(id); if(!r)return; if(r.nextStatus)r.status=r.nextStatus; renderFulfill(); toast(r.item+' \u2014 '+r.status.toLowerCase()); }
   function fqById(id){ for(var i=0;i<FQ.length;i++){ if(FQ[i].id===id)return FQ[i]; } return null; }
   function fqCompute(r,owned){ var q=r.qty; var maxOwned=Math.min(r.avail.length,q); owned=Math.max(0,Math.min(owned,maxOwned)); var rerent=q-owned; var ar=q*r.o2sRate; var oc=owned*r.ownedCost; var rc=rerent*r.reRentRate; var margin=ar-oc-rc; var pct=ar?(margin/ar*100):0; return {owned:owned,rerent:rerent,maxOwned:maxOwned,ar:ar,oc:oc,rc:rc,margin:margin,pct:pct}; }
@@ -5311,7 +5311,6 @@ charges:[
     [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){ h+='<button class="ff-b'+(fqFSrc===o[0]?' on':'')+'" onclick="fqSetFilter(\'src\',\''+o[0]+'\')">'+o[1]+'</button>'; });
     h+='</div></div>';
     h+='</div>';
-    if(!hlRef) _fqShowAll=false;
     var rows=FQ_scoped.filter(fqVisible);
     var _fqPPillar=_PERSONA_PILLAR[ccPersona];
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
@@ -5329,7 +5328,7 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
@@ -5437,10 +5436,12 @@ charges:[
     if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; if(!ns){ if(r.tasked) return '<div class="fq-done"><span style="color:var(--success)">✓</span> On task list<div class="sub">'+r.actLabel+' · action in source system</div></div>'; return '<div class="fq-reco-badge" style="margin-bottom:4px">Recommended: '+r.actLabel+'</div><button class="btn btn-ghost btn-sm" onclick="fqTask(\''+r.id+'\')">Add to list</button>'; } return (r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn btn-red btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+r.actLabel+'</button>'; }
     if(r.kind==='pending'){ return (ns&&r.suggest?'<div class="fq-hint">'+CC_SPARK+r.suggest+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqPriceModal(\''+r.id+'\')">'+(ns?'Price':'Set price')+'</button>'; }
     if(r.kind==='service'){ return '<button class="btn btn-dark btn-sm" onclick="fqAck(\''+r.id+'\')">Acknowledge</button>'; }
+    if(r.taxMapped===false){ return '<div class="fq-hint"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Confirm taxonomy to release for allocation</div><button class="btn btn-dark btn-sm" onclick="fqTaxModal(\''+r.id+'\')">⚡ Confirm taxonomy</button>'; }
     if(ns){ return '<div class="fq-hint">'+CC_SPARK+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u00b7 ~'+fqMarginPct(r)+'% margin</div><button class="btn btn-red btn-sm" onclick="fqOptModal(\''+r.id+'\')">Review &amp; accept</button>'; }
     return '<button class="btn btn-dark btn-sm" onclick="fqOptModal(\''+r.id+'\')">Allocate</button>';
   }
 
+  function fqTaxModal(id){ var r=fqById(id); if(!r)return; dpReview('equipment',r.ref); }
   function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
     fqPickOwned = ns ? Math.min(r.reco,Math.min(r.avail.length,r.qty)) : 0;
@@ -8229,7 +8230,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     }
     openModal((r.taxOk?'Request':'Confirm class')+' \u2014 '+r.id, b);
   }
-  function dpConfirmTax(){ var r=dpRowById(dpCur.p,dpCur.id); if(!r)return; var sel=gel('dpLeafSel'); var chosen=(sel&&sel.value)?sel.value:(r.mapLeaf||''); r.taxOk=true; if(chosen)r.leaf=chosen; r.status='Ready'; closeModal(); renderCcDemand(dpCur.p); toast(r.id+' confirmed as '+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+' \u2014 released to the Fulfillment queue'); }
+  function dpConfirmTax(){ var r=dpRowById(dpCur.p,dpCur.id); if(!r)return; var sel=gel('dpLeafSel'); var chosen=(sel&&sel.value)?sel.value:(r.mapLeaf||''); r.taxOk=true; if(chosen)r.leaf=chosen; r.status='Ready'; var _fqI=null; for(var i=0;i<FQ.length;i++){if(FQ[i].ref===dpCur.id){_fqI=FQ[i];break;}} if(_fqI)_fqI.taxMapped=true; closeModal(); renderCcDemand(dpCur.p); var _fs=gel('ccscreen-fulfill'); if(_fs&&_fs.classList.contains('active'))renderFulfill(); toast(r.id+' confirmed as '+r.tax+(r.leaf?(' \u203a '+r.leaf):'')+' \u2014 released to the Fulfillment queue'); }
   function dpRelease(p){ var rs=CC_DP[p].rows; var n=0; for(var i=0;i<rs.length;i++){ if(rs[i].status==='Ready')n++; } if(!n){ toast('No ready requests \u2014 confirm taxonomy first'); return; } toast(n+' ready request'+(n===1?'':'s')+' released to the Fulfillment queue'); }
   function dpConsolidate(p){ var cs=CC_DP[p].consol; if(!cs)return; toast('Consolidation queued \u2014 '+cs.cta.toLowerCase()+' \u00b7 est. '+cs.save+' saved'); }
   function dpOpenFulfill(ref){ ccHighlight=ref; fqFP='all'; fqFPr='all'; fqFS='all'; closeModal(); ccGo('fulfill'); }
