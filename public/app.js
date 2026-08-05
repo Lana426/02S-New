@@ -7321,7 +7321,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           expH+='</div>';
           if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'||row.state==='At-risk'){
             expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';
-            expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">'View in fulfillment queue \u2192</button>';
+            expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">View in fulfillment queue \u2192</button>';
             expH+='</div>';
           }
           if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note \u00b7 </b>'+row.note+'</div>';}
