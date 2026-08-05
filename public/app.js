@@ -3508,7 +3508,7 @@ charges:[
     var parts=[];
     if(o.rental) parts.push(eorHTML(o,ns));                          // show extend/return for all; NS adds savings banner
     parts.push('<div class="trk">'+steps+'</div>');                  // tracker (both versions)
-    if(o.stage===5&&!o.rental) parts.push('<div style="border-top:1px solid var(--g200);padding:10px 0 4px;display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--g700)">Rental active</div><button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Early off-rent / return\')">Initiate off-rent \u2192</button></div>');
+    if(o.stage===5&&!o.rental&&o.anticipatedOff) parts.push('<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>');
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
     if(ns && o.recv) parts.push(recvHTML(o));                        // NS: rich receiving details
@@ -3541,16 +3541,7 @@ charges:[
   }
   function eorHTML(o,ns){
     var r=o.rental;
-    var save = (ns && r.idle && r.save) ? ' Both units idle 4 days — <b>return now to save ~'+fmt(r.save)+'</b>.' : '';
-    return '<div class="eor-banner">'+
-      '<span class="eor-i">'+svg('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M5 3L2.5 5.5M22 6l-2.5-2.5"/>',2)+'</span>'+
-      '<div class="eor-body"><b>Approaching end of rental</b> — '+r.daysLeft+' days remaining (off-rent: '+r.offRent+').'+save+'</div>'+
-      '<div class="eor-act">'+
-        '<button class="btn btn-info-solid btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Extend rental\')">Extend rental</button>'+
-        '<button class="btn btn-return btn-sm" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Early off-rent / return\')">Initiate return</button>'+
-        (ns?'<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();go(\'order\')">Different spec</button>':'')+
-      '</div>'+
-    '</div>';
+    return '<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+r.offRent+(r.daysLeft!=null?' \u00b7 '+r.daysLeft+' day'+(r.daysLeft===1?'':\'s')+' away':'')+'</div>';
   }
 
   function recvHTML(o){
