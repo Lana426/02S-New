@@ -3541,7 +3541,7 @@ charges:[
   }
   function eorHTML(o,ns){
     var r=o.rental;
-    return '<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+r.offRent+(r.daysLeft!=null?' \u00b7 '+r.daysLeft+' day'+(r.daysLeft===1?'':\'s')+' away':'')+'</div>';
+    return '<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+r.offRent+(r.daysLeft!=null?' · '+r.daysLeft+' day'+(r.daysLeft===1?'':'s')+' away':'')+'</div>';
   }
 
   function recvHTML(o){
