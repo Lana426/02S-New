@@ -6375,6 +6375,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Compaction roller',qty:'12 units',window:'Mar–Sep 2026',state:'On-rent',ordId:'ORD-3114',cost:'$12,000/mo',firm:'Volvo Rents'},
         {item:'Hydraulic pile driver (Sector 1)',qty:'6 units',window:'May–Sep 2026',state:'On-rent',ordId:'ORD-3093',cost:'$18,000/mo',firm:'ALL Crane'},
         {item:'Hydraulic pile driver (Sector 2)',qty:'6 units',window:'Aug–Dec 2026',state:'On-rent',ordId:'ORD-3115',cost:'$18,000/mo',firm:'ALL Crane'},
+        {item:'Scissor lift 32 ft',qty:'2 units',window:'May 2026',state:'On-rent',ordId:'ORD-3031',cost:'$3,800/mo',firm:'United Rentals',note:'Anticipated off-rent May 15 — no return request on file. Flagged overdue.'},
         {item:'Telehandler 10K (Sector 1)',qty:'16 units',window:'Apr–Dec 2026',state:'On-rent',ordId:'ORD-3029',cost:'$19,200/mo',firm:'JLG'},
         {item:'Telehandler 10K (Sector 2)',qty:'24 units',window:'Aug–Dec 2026',state:'Projected',ordId:'ORD-3121',cost:'$28,800/mo',firm:'JLG'},
         {item:'Boom lift 60 ft',qty:'18 units',window:'Sep–Dec 2026',state:'Projected',ordId:'ORD-3122',cost:'$27,000/mo',firm:'United Rentals'},
@@ -7117,56 +7118,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
   }
   function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
-  function renderEquipmentOnRentOrders(selProj){
-    var today='2026-07-22';
-    var rows=ORDERS.filter(function(o){
-      if(o.pillar!=='equipment') return false;
-      if(o.stage!==4&&o.stage!==5) return false;
-      if(o.latest&&o.latest.indexOf('Off-rent')===0) return false;
-      return true;
-    });
-    rows.sort(function(a,b){
-      var aOver=a.recert==='pending'&&a.anticipatedOff&&a.anticipatedOff<today;
-      var bOver=b.recert==='pending'&&b.anticipatedOff&&b.anticipatedOff<today;
-      if(aOver&&!bOver) return -1;
-      if(!aOver&&bOver) return 1;
-      var aD=a.anticipatedOff||(a.rental&&a.rental.offRent?a.rental.offRent:'');
-      var bD=b.anticipatedOff||(b.rental&&b.rental.offRent?b.rental.offRent:'');
-      if(aD&&bD&&aD!==bD) return aD<bD?-1:1;
-      return 0;
-    });
-    if(!rows.length) return '';
-    var gt='90px 1fr 140px 110px 160px';
-    var h='<div style="border-top:2px solid var(--g100);padding-top:20px;margin-top:20px">';
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">';
-    h+=svg('<path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>',2);
-    h+='On-rent orders · '+rows.length+' active</span><span class="spacer"></span>';
-    h+='<span style="font-size:11px;color:var(--g400)">Click any row to expand order details</span></div>';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
-    h+='<span>Order</span><span>Item</span><span>Dates</span><span>Status</span><span>Off-rent</span></div>';
-    rows.forEach(function(o){
-      var isOver=o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<today;
-      var offDate=o.anticipatedOff
-        ?new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
-        :(o.rental&&o.rental.offRent?o.rental.offRent:'—');
-      var statusCell=isOver
-        ?'<span class="tag bad">Overdue</span>'
-        :'<span class="tag ok">On-rent</span>';
-      var offCell=isOver
-        ?'<span style="color:var(--red);font-weight:600">'+offDate+' — overdue</span>'
-        :'<span style="color:var(--g600)">'+offDate+'</span>';
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="openModal(\''+o.id+': '+o.item+'\',trackerHTML(o,CURRENT===\'ns\'))">';
-      h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+o.id+'</div>';
-      h+='<div style="font-weight:500">'+o.item+'<div class="sub">'+o.sub+'</div></div>';
-      h+='<div style="color:var(--g600)">'+o.dates+'</div>';
-      h+='<div>'+statusCell+'</div>';
-      h+='<div>'+offCell+'</div>';
-      h+='</div>';
-    });
-    h+='</div></div>';
-    return h;
-  }
-
   function renderCcDemand(p){
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
@@ -7468,7 +7419,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     _rollSrc.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
     if(selProj==='all'){ h+=renderCapAtRiskSummary(p); }
-    if(p==='equipment'){h+=renderEquipmentOnRentOrders(selProj);}
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
     if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
