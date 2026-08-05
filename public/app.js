@@ -7421,7 +7421,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
-    if(p==='equipment'&&isDpView){h+=renderEquipmentCapPlan(selProj);}
     mount.innerHTML=h;
   }
 
@@ -7747,17 +7746,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   }
 
   // ─── RENDER: EQUIPMENT ───────────────────────────────────────────────────────
-  function renderEquipmentCapPlan(proj){
-    var h='<div style="margin-top:24px">';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="dp-sec-t">'+svg(IC.box)+'Capacity Planning</span></div>';
-    h+='<div style="background:var(--g50);border:1px dashed var(--g200);border-radius:8px;padding:28px 24px;text-align:center">';
-    h+='<div style="font-size:13px;font-weight:600;color:var(--g500);margin-bottom:8px">Wireframe functionality replaced by actual build to be demo-ed</div>';
-    h+='<div style="font-size:12px;color:var(--g400)">Intelligence layer products available in separate pages</div>';
-    h+='<div style="font-size:12px;color:var(--g400);margin-top:5px">Own vs. re-rent fulfillment optimizer &nbsp;&middot;&nbsp; Demand-supply gap &amp; CAPEX</div>';
-    h+='</div>';
-    h+='</div>';
-    return h;
-  }
 
   // ─── RENDER: LOGISTICS ───────────────────────────────────────────────────────
   function renderLogisticsCapPlan(proj){
