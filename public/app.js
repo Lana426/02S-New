@@ -4809,6 +4809,7 @@ charges:[
   /* ═══════════ COMMAND CENTER ═══════════ */
   var ccActive=null; var _ccTaskFilter='all';
   var ccPersona='fsm';
+  var _ceProj='Hercules Solar + BESS';
   var CC_FSM_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
   var _ccFSMProj='';
   var CC_LOOKAHEAD={
@@ -4836,14 +4837,14 @@ charges:[
       {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
     ]
   };
-  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','costenv','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
-    fsm:   ['ccdash','fulfill','mytasks','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
-    equip: ['fulfill','mytasks','gap','fleet','dpequip','margin'],
-    logistics: ['fulfill','mytasks','dplog','margin'],
-    prefab: ['fulfill','mytasks','dpprefab','margin'],
-    procurement: ['fulfill','mytasks','dpproc','margin'],
-    services: ['fulfill','mytasks','dpsvc','margin']
+    fsm:   ['ccdash','fulfill','mytasks','gap','margin','costenv','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    equip: ['fulfill','mytasks','gap','fleet','dpequip','margin','costenv'],
+    logistics: ['fulfill','mytasks','dplog','margin','costenv'],
+    prefab: ['fulfill','mytasks','dpprefab','margin','costenv'],
+    procurement: ['fulfill','mytasks','dpproc','margin','costenv'],
+    services: ['fulfill','mytasks','dpsvc','margin','costenv']
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
@@ -4956,7 +4957,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='costenv'){ renderCostEnv(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -6030,6 +6031,186 @@ charges:[
     h+='</div>';
     h+='<div class="cc-arch">'+svg('<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>')+'<span>AR is billed to projects via CMiC at the 02S rate card; cost is read from EquipmentShare T3 (owned + re-rent) and vendor invoices (services/procurement). Margin reconciles to the Fulfillment optimizer and Billing anomaly detection \u2014 extend layer over Palantir intelligence.</span></div>';
     mount.innerHTML=h;
+
+  function ceParseAmt(s){
+    if(!s) return 0;
+    var n=parseFloat(String(s).replace(/[$,]/g,''));
+    if(!n||isNaN(n)) return 0;
+    if(String(s).indexOf('M')>-1) return Math.round(n*1e6);
+    if(String(s).indexOf('K')>-1) return Math.round(n*1e3);
+    return Math.round(n);
+  }
+  function ceProjKey(proj){
+    if(proj==='Hercules Solar + BESS') return 'hercules';
+    if(proj==='Riverside Medical Center') return 'riverside';
+    return 'cimarron';
+  }
+  function ceSetProj(p){ _ceProj=p; renderCostEnv(); }
+
+  function renderCostEnv(){
+    var mount=gel('ccCostEnv'); if(!mount) return;
+    var ns=CURRENT==='ns';
+    var pillarFilter=_PERSONA_PILLAR[ccPersona];
+    var isFSM=!pillarFilter;
+    var PROJS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
+    var CE_PILLARS=['equipment','logistics','profservices','procurement','prefab'];
+    var CE_LBL={equipment:'Equipment',logistics:'Logistics',profservices:'Professional services',procurement:'Procurement',prefab:'Pre-fab'};
+    var CE_NAV={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
+    var pillars=isFSM?CE_PILLARS:[pillarFilter];
+    var pkey=ceProjKey(_ceProj);
+
+    var h='<div class="phead"><div><h1>Cost tracker</h1><div class="meta">';
+    h+='<span class="chip">'+svg(IC.chart)+'ROM → budget → committed</span>';
+    h+='<span class="chip">'+_ceProj+'</span>';
+    h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>';
+    h+='</div></div></div>';
+
+    // Project filter pills
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">';
+    PROJS.forEach(function(p){
+      var short=p==='Hercules Solar + BESS'?'Hercules':p==='Riverside Medical Center'?'Riverside':'Cimarron';
+      h+='<button class="bex-fsmp'+(_ceProj===p?' active':'')+'" onclick="ceSetProj(\''+p+'\')">'+short+'</button>';
+    });
+    h+='</div>';
+
+    // Portfolio summary vitals for this project
+    var totalROM=0,totalBudget=0,totalFAC=0;
+    pillars.forEach(function(pl){
+      var dp=CC_PROJ_DP[pl][pkey]; if(!dp) return;
+      var lin=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pkey])?CC_DP_LINEAGE[pl][pkey].margin:null;
+      totalROM+=lin?ceParseAmt(lin.rom):0;
+      totalBudget+=dp.budget||0;
+      totalFAC+=(dp.dpSpent||0)+(dp.adHoc||0);
+    });
+    var totalFVB=totalFAC-totalBudget;
+    var totalBVR=totalBudget-totalROM;
+    var facTone=totalFVB>totalBudget*0.03?'bad':totalFVB<-totalBudget*0.05?'ok':'neu';
+    h+='<div class="vitals" style="grid-template-columns:repeat(3,1fr);margin-bottom:22px">';
+    h+='<div class="vital neu"><div class="vk">'+svg(IC.layers)+'Original plan (ROM)</div>';
+    h+='<div class="vv">'+fmtBig(totalROM)+'</div><div class="vsub">at opportunity stage</div></div>';
+    h+='<div class="vital neu"><div class="vk">'+svg(IC.dollar)+'Baseline budget</div>';
+    h+='<div class="vv">'+fmtBig(totalBudget)+'</div>';
+    h+='<div class="vsub">'+(totalBVR>=0?'+'+fmtBig(totalBVR):fmtBig(totalBVR))+' vs ROM</div></div>';
+    h+='<div class="vital '+facTone+'"><div class="vk">'+svg(IC.warn)+'Committed (FAC)</div>';
+    h+='<div class="vv">'+fmtBig(totalFAC)+'</div>';
+    h+='<div class="vsub">'+(totalFVB>=0?'▲ '+fmtBig(totalFVB)+' over budget':'▼ '+fmtBig(-totalFVB)+' under budget')+'</div></div>';
+    h+='</div>';
+
+    // Per-pillar cards
+    pillars.forEach(function(pl){
+      var dp=CC_PROJ_DP[pl][pkey]; if(!dp) return;
+      var linData=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pkey])?CC_DP_LINEAGE[pl][pkey]:null;
+      var lin=linData?linData.margin:null;
+      var baselineMeta=linData?linData.baseline:null;
+      var draftMeta=linData?linData.draft:null;
+      var deltaMeta=linData?linData.delta:null;
+      var rom=lin?ceParseAmt(lin.rom):0;
+      var budget=dp.budget||0;
+      var committed=dp.dpSpent||0;
+      var adhoc=dp.adHoc||0;
+      var fac=committed+adhoc;
+      var maxVal=Math.max(rom,budget,fac)*1.1||1;
+      var fVb=fac-budget;
+      var bVr=budget-rom;
+      var cardBorderColor=fVb>budget*0.05?'var(--red)':fVb<-budget*0.05?'var(--success)':'var(--g300)';
+      var overUnderBadge=Math.abs(fVb)<budget*0.01?
+        '<span class="tag ok">On budget</span>':
+        (fVb>0?'<span class="tag bad">▲ '+fmtBig(fVb)+' over</span>':'<span class="tag ok">▼ '+fmtBig(-fVb)+' under</span>');
+
+      h+='<div style="border:1px solid var(--g200);border-left:3px solid '+cardBorderColor+';border-radius:8px;padding:16px 18px;margin-bottom:14px">';
+
+      // Header row
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
+      h+='<div style="display:flex;align-items:center;gap:10px">';
+      h+='<div style="font-size:13.5px;font-weight:700;color:var(--charcoal)">'+CE_LBL[pl]+'</div>';
+      if(lin) h+='<span style="font-size:10.5px;color:var(--g400)">'+lin.id+' · '+lin.date+'</span>';
+      h+='</div>';
+      h+=overUnderBadge;
+      h+='</div>';
+
+      // Three-rail cost visualization
+      var rails=[
+        {label:'ROM',val:rom,color:'var(--g300)',note:lin?(lin.id+' · '+lin.rom):'No ROM data'},
+        {label:'Budget',val:budget,color:'var(--info,#3b82f6)',note:(bVr===0?'Same as ROM':bVr>0?'+'+fmtBig(bVr)+' scope growth at award':fmtBig(bVr)+' scope reduction')},
+        {label:'Committed',val:fac,color:(fVb>budget*0.05?'var(--red)':fVb<-budget*0.05?'var(--success)':'var(--charcoal)'),note:(Math.abs(fVb)<budget*0.01?'On budget':fVb>0?'▲ '+fmtBig(fVb)+' over budget':'▼ '+fmtBig(-fVb)+' under budget')}
+      ];
+      h+='<div style="display:flex;flex-direction:column;gap:9px;margin-bottom:12px">';
+      rails.forEach(function(r){
+        if(!r.val) return;
+        var pct=Math.min(100,(r.val/maxVal)*100);
+        h+='<div style="display:grid;grid-template-columns:90px 1fr 82px 1fr;align-items:center;gap:10px">';
+        h+='<div style="font-size:11px;font-weight:500;color:var(--g500)">'+r.label+'</div>';
+        h+='<div style="background:var(--g100);border-radius:3px;height:7px">';
+        h+='<div style="width:'+pct.toFixed(1)+'%;height:7px;border-radius:3px;background:'+r.color+';transition:width .4s"></div>';
+        h+='</div>';
+        h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);text-align:right">'+fmtBig(r.val)+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g400)">'+r.note+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+
+      // Committed breakdown strip
+      h+='<div style="display:flex;flex-wrap:wrap;gap:16px;padding:7px 10px;background:var(--g50);border-radius:5px;margin-bottom:12px">';
+      h+='<div style="font-size:11px;color:var(--g600)">DP-linked: <b style="color:var(--charcoal)">'+fmtBig(committed)+'</b></div>';
+      if(adhoc>0) h+='<div style="font-size:11px;color:var(--g600)">Ad hoc: <b style="color:var(--warning)">+'+fmtBig(adhoc)+'</b></div>';
+      h+='<div style="font-size:11px;color:var(--g600)">Total FAC: <b style="color:var(--charcoal)">'+fmtBig(fac)+'</b></div>';
+      if(budget>0) h+='<div style="font-size:11px;color:var(--g600)">Budget utilization: <b style="color:'+(fac/budget>1.03?'var(--red)':fac/budget<0.85?'var(--success)':'var(--charcoal)')+'">'+Math.round(fac/budget*100)+'%</b></div>';
+      h+='</div>';
+
+      // Scope evolution note
+      if(baselineMeta||draftMeta||deltaMeta){
+        h+='<div style="padding:7px 10px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:5px;font-size:11.5px;color:var(--g700);margin-bottom:10px">';
+        if(baselineMeta){
+          h+='<b>Baseline locked</b> — '+baselineMeta.id+' ('+baselineMeta.date+'): '+baselineMeta.total+', '+baselineMeta.items+' line items. ';
+          if(baselineMeta.note) h+='<span style="color:var(--g500)">'+baselineMeta.note+'</span> ';
+        }
+        if(deltaMeta){
+          h+='<b>Changes since baseline:</b> '+deltaMeta.added+' line'+(deltaMeta.added===1?'':'s')+' added ('+deltaMeta.value+') — '+deltaMeta.reason+'.';
+        }
+        if(draftMeta&&!baselineMeta){
+          h+='<b>No baseline locked</b> — '+draftMeta.note;
+        }
+        h+='</div>';
+      }
+
+      // North Star insight (equipment-level or MG_LINK)
+      if(ns&&MG_LINK&&MG_LINK[_ceProj]&&(pl==='equipment'||pl==='procurement')){
+        h+='<div class="fq-reco-badge" style="margin-bottom:10px">'+CC_SPARK+MG_LINK[_ceProj].text;
+        h+=' <span class="lk" onclick="ccGo(\''+MG_LINK[_ceProj].to+'\')">'+MG_LINK[_ceProj].label+' →</span></div>';
+      }
+
+      // ROM line breakdown (collapsible)
+      if(lin&&lin.lines&&lin.lines.length){
+        var expId='ceexp-'+pl+'-'+pkey;
+        h+='<div style="border-top:1px solid var(--g100);padding-top:9px;margin-top:2px">';
+        h+='<div style="font-size:11px;color:var(--g400);cursor:pointer;display:flex;align-items:center;gap:5px;user-select:none" ';
+        h+='onclick="(function(){var el=document.getElementById(\''+expId+'\');if(el)el.style.display=el.style.display===\'none\'?\'block\':\'none\';})();">';
+        h+=svg('<path d="M9 18l6-6-6-6"/>',2)+'ROM breakdown · '+lin.rom+' · '+lin.date;
+        h+='</div>';
+        h+='<div id="'+expId+'" style="display:none;margin-top:8px">';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:1fr 90px;font-size:10.5px"><span>Line item</span><span class="r">ROM estimate</span></div>';
+        lin.lines.forEach(function(l){
+          h+='<div class="dp-row" style="grid-template-columns:1fr 90px'+(l.bold?';font-weight:700':'')+'">';
+          h+='<div>'+l.label+'</div><div class="r">'+l.est+'</div></div>';
+        });
+        h+='</div></div></div>';
+      }
+
+      // Footer CTA
+      h+='<div style="display:flex;justify-content:flex-end;margin-top:12px">';
+      h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\''+CE_NAV[pl]+'\')">'+CE_LBL[pl]+' plan →</button>';
+      h+='</div>';
+
+      h+='</div>'; // card end
+    });
+
+    // Footer note
+    h+='<div class="cc-arch">'+svg(IC.layers)+'<span>Cost tracker reconciles to the Project margin screen (revenue − these costs = margin %). ';
+    h+='ROM = opportunity estimate at deal stage. Budget = locked baseline demand plan total. ';
+    h+='Committed = DP-linked orders + off-plan ad hoc adds (forecast at completion).</span></div>';
+
+    mount.innerHTML=h;
+  }
   }
   function mgModal(p){
     var d=MARGIN_DATA[p]; var roll=mgProjRoll(p); var ns=CURRENT==='ns'; var lk=MG_LINK[p];
