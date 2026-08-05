@@ -3405,6 +3405,7 @@ charges:[
       if(q && (o.id.toLowerCase().indexOf(q)<0 && o.item.toLowerCase().indexOf(q)<0 && o.cost.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
+    list.sort(function(a,b){var aOver=a.recert==='pending'&&a.anticipatedOff&&a.anticipatedOff<'2026-07-22';var bOver=b.recert==='pending'&&b.anticipatedOff&&b.anticipatedOff<'2026-07-22';if(aOver&&!bOver)return -1;if(!aOver&&bOver)return 1;return 0;});
     document.getElementById('ordCountLbl').textContent='· '+list.length+' order'+(list.length===1?'':'s');
     var head='<div class="ot-head"><span>Order</span><span>Items</span><span>Pillar</span><span>Origin</span><span class="hide-sm">Dates</span><span class="hide-sm">Cost code</span><span>Status</span><span></span></div>';
     var ORD_LIMIT=6;
