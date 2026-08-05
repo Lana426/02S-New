@@ -3508,6 +3508,7 @@ charges:[
     var parts=[];
     if(o.rental) parts.push(eorHTML(o,ns));                          // show extend/return for all; NS adds savings banner
     parts.push('<div class="trk">'+steps+'</div>');                  // tracker (both versions)
+    if(o.stage===5&&!o.rental) parts.push('<div style="border-top:1px solid var(--g200);padding:10px 0 4px;display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="font-size:12px;font-weight:600;color:var(--g700)">Rental active</div><button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="event.stopPropagation();openEorAction(\''+o.id+'\',\'Early off-rent / return\')">Initiate off-rent \u2192</button></div>');
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
     if(ns && o.recv) parts.push(recvHTML(o));                        // NS: rich receiving details
@@ -6408,13 +6409,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
       riverside:{budget:600000,dpSpent:300000,adHoc:180000,
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Equipment deliveries',b:'2 moves',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1',c:'Aug 2026',v:'+1 over',vt:'warn'},{a:'Material hoisting',b:'8 lifts/mo',c:'ongoing',v:'on plan',vt:'ok'}],varSummary:'Tower crane mobilization is oversize \u2014 permit required. Vendor Bragg confirmed.',rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3128',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Riverside',ref:'LP-3128-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3128-001',status:'Approved'}]},
+        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Scheduled',ordId:'ORD-3128',fqRef:'REQ-L-3054',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Riverside',ref:'LP-3128-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3128-001',status:'Approved'}]},
         {item:'Excavator delivery',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform'},
         {item:'Floor-by-floor material hoisting',qty:'8 lifts/mo',window:'Ongoing',state:'On-rent',ordId:'ORD-3130',cost:'$6,400/mo',firm:'Internal crew'}
       ]},
       cimarron:{budget:400000,dpSpent:180000,adHoc:100000,
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'5 moves',c:'Sep\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'0',c:'\u2014',v:'on plan',vt:'ok'}],varSummary:'PDU delivery (3 loads) and excavator haul scheduled. Data center logistics on track.',rows:[
-        {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',cost:'$6,400',firm:'Self-perform'},
+        {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform'},
         {item:'PDU site delivery',qty:'3 loads',window:'Oct 2026',state:'PO issued',ordId:'ORD-3132',cost:'$4,200',firm:'3PL'},
         {item:'Precision cooling delivery + install',qty:'16 units',window:'Nov 2026',state:'Projected',ordId:null,cost:'$44K',firm:'TBD'}
       ]}
@@ -6422,19 +6423,19 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     profservices:{
       hercules:{budget:1920000,dpSpent:1560000,adHoc:180000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'2 FTE',c:'Mar\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'3 FTE',c:'Mar\u2013Aug 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'VDC/BIM unpriced \u2014 needed Apr\u2013Oct. BESS commissioning SOW not yet executed.',rows:[
-        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.'},
+        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.'},
         {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
-        {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Projected',ordId:null,cost:'$34K/mo',firm:'TBD'},
+        {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Projected',ordId:null,cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108'},
         {item:'Environmental / SWPPP monitoring',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA'},
-        {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'Pending pricing',ordId:'ORD-3120',cost:'Pending',firm:'TBD'},
+        {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'Pending pricing',ordId:'ORD-3120',fqRef:'REQ-4475',cost:'Pending',firm:'TBD'},
         {item:'Site survey crew',qty:'2 FTE',window:'Apr–Jul 2026',state:'Demobilized',ordId:'ORD-3009',cost:'$12K/mo',firm:'Bowman'}
       ]},
       riverside:{budget:950000,dpSpent:320000,adHoc:420000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'1 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'2 FTE',c:'Aug 2026+',v:'Requested',vt:'warn'},{a:'Commissioning',b:'1 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'Structural special inspection and MEP commissioning lead pending confirmation.',rows:[
         {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3143',cost:'$22K/mo',firm:'HDR'},
         {item:'Structural special inspection',qty:'2 FTE',window:'Aug 2026+',state:'Requested',ordId:null,cost:'$14K/mo',firm:'TBD',fqRef:'REQ-S-2114'},
-        {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Draft',ordId:null,cost:'$82K est.',firm:'TBD'}
+        {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Draft',ordId:null,cost:'$82K est.',firm:'TBD',fqRef:'REQ-S-2117'}
       ]},
       cimarron:{budget:600000,dpSpent:120000,adHoc:150000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Survey & monitoring',b:'2 FTE',c:'Jul\u2013Sep 2026',v:'Requested',vt:'warn'},{a:'Materials testing',b:'2 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Commissioning',b:'1 FTE',c:'Dec 2026+',v:'on plan',vt:'ok'}],varSummary:'Site survey crew requested. Materials testing lab active and on plan.',rows:[
@@ -6456,7 +6457,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Wire crimpers',cat:'sm_tools',qty:'12 sets',window:'Oct 2026',state:'Projected',ordId:null,cost:'$9,600',firm:'TBD'},
         {item:'MV switchgear 15 kV',cat:'elec_commodity',qty:'2 lineups',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$0.5M+',firm:'Eaton',fqRef:'REQ-P-0501',attachments:[{type:'Quotes',name:'Eaton MV switchgear quote — 2 lineups',ref:'Q-EATON-001',status:'Available'},{type:'Submittals',name:'MV switchgear specification sheet',ref:'SUB-MV-001',status:'Pending'},{type:'Engineering',name:'Installation requirements — MV switchgear',ref:'ENG-MV-001',status:'Draft'}]},
         {item:'BESS containers 2.5 MWh',cat:'elec_commodity',qty:'6 units',window:'Nov 2026',state:'At-risk',ordId:null,cost:'$6M+',firm:'Tesla Energy',fqRef:'REQ-P-0508'},
-        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',cost:'$1.2M',firm:'ABB'},
+        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'PO issued',ordId:'ORD-3136',fqRef:'REQ-P-0512',cost:'$1.2M',firm:'ABB'},
         {item:'Solar DC cabling',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'At-risk',ordId:null,cost:'$100K',firm:'TBD',fqRef:'REQ-P-0531'},
         {item:'Monitoring sensors',cat:'elec_commodity',qty:'24 units',window:'Sep 2026',state:'At-risk',ordId:null,cost:'$18K',firm:'TBD',fqRef:'REQ-P-0537'}
       ]},
@@ -6479,8 +6480,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     },
     prefab:{
       hercules:{budget:900000,dpSpent:720000,adHoc:80000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Mechanical',b:'2 active',c:'⚠ At risk Jul–Aug',v:'Pipe racks + pump skids',vt:'warn'},{a:'Electrical',b:'1 active',c:'Submittal pending',v:'E-houses',vt:'warn'},{a:'Structural',b:'1 delivered',c:'Delivered Jun',v:'On plan',vt:'ok'}],varSummary:'Mechanical at risk Jul–Aug (concurrent orders) · E-house submittal pending approval',rows:[
-        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',cost:'$180K',firm:'Piperite Fab',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
-        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
+        {item:'Prefab pipe rack modules',qty:'12 modules',window:'Aug 2026',state:'In fabrication',ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$180K',firm:'Piperite Fab',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
+        {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 2026',state:'Submittal',ordId:'ORD-3107',fqRef:'REQ-F-034',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
         {item:'L2 headwall assemblies',qty:'4 units',window:'Jun 2026',state:'Delivered',ordId:'ORD-3106',cost:'$65K',firm:'Ironclad Mfg'},
         {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 2026',state:'Projected',ordId:null,cost:'$45K',firm:'TBD'},
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 2026',state:'Awaiting pricing',ordId:null,cost:'Pending',firm:'TBD',fqRef:'REQ-4476'},
@@ -6488,7 +6489,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
       riverside:{budget:400000,dpSpent:320000,adHoc:120000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Structural Steel',b:'1 complete',c:'Delivered',v:'On plan',vt:'ok'},{a:'Electrical',b:'1 active',c:'In fabrication',v:'On plan',vt:'ok'}],varSummary:'L2 headwall assemblies delivered. MEP rack modules in fabrication \u2014 on track.',rows:[
         {item:'Overhead MEP rack modules',qty:'6 modules',window:'Sep 2026',state:'In fabrication',ordId:'ORD-3133',cost:'$92K',firm:'Piperite Fab'},
-        {item:'L2 headwall assemblies',qty:'8 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3134',cost:'$135K',firm:'Ironclad Mfg'},
+        {item:'L2 headwall assemblies',qty:'8 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3134',fqRef:'REQ-F-041',cost:'$135K',firm:'Ironclad Mfg'},
         {item:'Stairwell prefab panels',qty:'4 panels',window:'Oct 2026',state:'Projected',ordId:null,cost:'$48K',firm:'TBD'}
       ]},
       cimarron:{budget:300000,dpSpent:60000,adHoc:40000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Structural',b:'1 active',c:'In fabrication',v:'On plan',vt:'ok'},{a:'Electrical',b:'1 active',c:'\u26a0 Awaiting pricing',v:'Cable tray brackets',vt:'warn'}],varSummary:'Server room panels in fabrication. Cable tray brackets unpriced \u2014 required for fit-out.',rows:[
@@ -7339,10 +7340,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             _actCell+='<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
             if(_dispR){_actCell+='<div onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')" style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px">⚠ Bill issue — click to review</div>';}
             _actCell+='</div>';
+            if(row.fqRef){_actCell+='<div style="margin-top:3px"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">\u2192 FQ</button></div>';}
           } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'||row.state==='At-risk'){
             _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">→ Fulfillment queue</button>';
           } else if(row.state==='Projected'||row.state==='Draft'){
-            _actCell='<span style="font-size:10.5px;color:var(--g300)">Not yet submitted</span>';
+            _actCell=row.fqRef?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">\u2192 Fulfillment queue</button>':'<span style="font-size:10.5px;color:var(--g300)">Not yet submitted</span>';
           } else if(row.state==='Demobilized'||row.state==='Off-rent'){
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
