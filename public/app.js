@@ -5116,7 +5116,7 @@ charges:[
     qlinks.forEach(function(q){ h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;display:inline-flex;align-items:center;gap:5px" onclick="ccGo(\''+q.to+'\')">'+svg(q.icon)+' '+q.l+' →</button>'; });
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:'+(isFSM?'1fr 1.6fr':'1fr')+';gap:24px;align-items:stretch">';
-    h+='<div class="cc-queue" style="display:flex;flex-direction:column;overflow:hidden;margin-top:0"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Needs you — across all projects'))+'</div>';
+    h+='<div class="cc-queue" style="display:flex;flex-direction:column;overflow:hidden;margin-top:0"><div class="cc-qhead">'+(ns?SPARK:svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>'))+(ns?'02S — recommended actions':(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'?'Ball in court — Needs you — '+(_ccFSMProj==='Hercules Solar + BESS'?'Hercules Solar':_ccFSMProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical'):'Ball in court — Needs you — across all projects'))+'</div>';
     var _aHtml=function(a){return '<div class="cc-act" onclick="'+(a.fn||"ccGo('"+a.to+"')")+'"><div class="cc-ai">'+svg(a.icon)+'</div><div class="cc-ab"><div class="cc-at">'+a.t+'</div><div class="cc-as">'+a.s+'</div>'+((ns&&a.reco)?'<div class="cc-reco">'+SPARK+a.reco+'</div>':'')+'</div><span class="tag '+a.tag.tone+'">'+a.tag.l+'</span><span class="cc-chev">'+svg('<path d="M9 18l6-6-6-6"/>') +'</span></div>';};
     var _aPg=4,_aNp=Math.ceil(acts.length/_aPg);
     h+='<div style="flex:1">';
@@ -5323,7 +5323,7 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'<div onclick="event.stopPropagation()"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 7px" onclick="fqEditModal(\''+r.id+'\')" >Edit</button></div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
@@ -6039,62 +6039,82 @@ charges:[
   function renderScView(){
     var mount=gel('ccScView'); if(!mount)return;
     var h='';
-    // Respect CC dashboard project filter
     var _scProj=(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all')?_ccFSMProj:null;
     var scopedFQ=_scProj?FQ.filter(function(r){return r.project===_scProj;}):FQ;
     h+='<div style="border-top:2px solid var(--g100);padding-top:18px;margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-    h+='<span style="font-size:13px;font-weight:700;color:var(--g900);display:inline-flex;align-items:center;gap:6px">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+'Solution Centers'+((_scProj)?(' <span style="font-size:11px;font-weight:500;color:var(--g500)">· '+(_scProj==='Hercules Solar + BESS'?'Hercules Solar':_scProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical')+'</span>'):''  )+'</span>';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g900);display:inline-flex;align-items:center;gap:6px">'+svg('<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',2)+'Solution Centers'+((_scProj)?(' <span style="font-size:11px;font-weight:500;color:var(--g500)">&#183; '+(_scProj==='Hercules Solar + BESS'?'Hercules Solar':_scProj==='Cimarron Data Center'?'Cimarron DC':'Riverside Medical')+'</span>'):'')+'</span>';
     h+='<div style="flex:1"></div>';
     h+='<select onchange="scSet(\'sc\',this.value)" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;color:var(--g700);cursor:pointer;background:#fff"><option value="">All yards</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(_scFilter===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
     var _pills=[['all','All'],['equipment','Equip'],['logistics','Log'],['prefab','Prefab'],['procurement','Proc'],['services','Svcs']];
     _pills.forEach(function(p){h+='<button onclick="scSet(\'pillar\',\''+p[0]+'\')" style="font-size:11px;padding:2px 9px;border-radius:20px;border:1px solid '+(_scPillar===p[0]?'var(--charcoal);background:var(--charcoal);color:#fff':'var(--g200);background:#fff;color:var(--g600)')+';cursor:pointer;white-space:nowrap">'+p[1]+'</button>';});
     h+='</div>';
+    var allItems=scopedFQ.filter(function(r){
+      if(_scFilter&&r.yard!==_scFilter)return false;
+      if(_scPillar!=='all'&&r.pillar!==_scPillar)return false;
+      return true;
+    });
+    var atRisk=allItems.filter(function(r){return r.status==='At-risk';});
+    if(atRisk.length){
+      h+='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:12px 16px;margin-bottom:14px">';
+      h+='<div style="font-size:12px;font-weight:700;color:#dc2626;margin-bottom:8px">&#9888; '+atRisk.length+' item'+(atRisk.length>1?'s':'')+' At-risk</div>';
+      atRisk.forEach(function(r){
+        h+='<div onclick="scOpenModal(\''+r.id+'\')" style="cursor:pointer;padding:4px 8px;margin:2px 0;border-radius:5px;background:rgba(220,38,38,.07);display:flex;align-items:baseline;gap:10px">';
+        h+='<span style="font-size:12px;font-weight:600;color:#dc2626">'+r.item+'</span>';
+        h+='<span style="font-size:11px;color:var(--g500)">'+r.project+' &#183; need-by '+r.needby+'</span>';
+        if(r.hint)h+='<span style="font-size:11px;color:#b45309;margin-left:auto">'+r.hint+'</span>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
     if(!_scFilter){
       var scC={};
-      SC_LIST.forEach(function(s){scC[s]={total:0,p:{}};});
-      scopedFQ.forEach(function(r){if(r.yard&&scC[r.yard]){scC[r.yard].total++;scC[r.yard].p[r.pillar]=1;}});
+      SC_LIST.forEach(function(s){scC[s]={total:0,p:{},risk:0};});
+      scopedFQ.forEach(function(r){if(r.yard&&scC[r.yard]){scC[r.yard].total++;scC[r.yard].p[r.pillar]=1;if(r.status==='At-risk')scC[r.yard].risk++;}});
       var aSCs=SC_LIST.filter(function(s){return scC[s].total>0;});
       if(aSCs.length){
         h+='<div style="display:grid;grid-template-columns:repeat('+Math.min(aSCs.length,7)+',1fr);gap:7px;margin-bottom:12px">';
         aSCs.forEach(function(s){
           var c=scC[s];
-          h+='<div onclick="scSet(\'sc\',\''+s+'\')" style="cursor:pointer;border:1px solid var(--g200);border-radius:8px;padding:10px 12px;background:#fff" onmouseenter="this.style.borderColor=\'var(--charcoal)\'" onmouseleave="this.style.borderColor=\'var(--g200)\'">';
+          var bdr=c.risk?'2px solid #f87171':'1px solid var(--g200)';
+          h+='<div onclick="scSet(\'sc\',\''+s+'\')" style="cursor:pointer;border:'+bdr+';border-radius:8px;padding:10px 12px;background:#fff" onmouseenter="this.style.borderColor=\'var(--charcoal)\'" onmouseleave="this.style.borderColor=\''+  (c.risk?'#f87171':'var(--g200)')+'\'";>';
           h+='<div style="font-size:10.5px;font-weight:700;color:var(--g600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">'+s+'</div>';
           h+='<div style="font-size:20px;font-weight:800;color:var(--g900);line-height:1">'+c.total+'</div>';
-          h+='<div style="font-size:9.5px;color:var(--g400);margin-top:3px">'+Object.keys(c.p).map(function(p){return p.charAt(0).toUpperCase()+p.slice(1,4);}).join(' \u00b7 ')+'</div>';
+          if(c.risk)h+='<div style="font-size:9.5px;color:#dc2626;margin-top:2px;font-weight:600">'+c.risk+' at-risk</div>';
+          h+='<div style="font-size:9.5px;color:var(--g400);margin-top:2px">'+Object.keys(c.p).map(function(p){return p.charAt(0).toUpperCase()+p.slice(1,4);}).join(' &#183; ')+'</div>';
           h+='</div>';
         });
         h+='</div>';
       }
     }
-    var items=scopedFQ.filter(function(r){
-      if(_scFilter&&r.yard!==_scFilter)return false;
-      if(_scPillar!=='all'&&r.pillar!==_scPillar)return false;
-      return true;
+    allItems.sort(function(a,b){
+      var aR=a.status==='At-risk'?0:1, bR=b.status==='At-risk'?0:1;
+      if(aR!==bR)return aR-bR;
+      return _scSort(a.needby)-_scSort(b.needby);
     });
-    var PG=5,np=Math.ceil(items.length/PG);
+    var PG=5,np=Math.ceil(allItems.length/PG);
     if(_scPage>=np)_scPage=Math.max(0,np-1);
-    var pgItems=items.slice(_scPage*PG,_scPage*PG+PG);
+    var pgItems=allItems.slice(_scPage*PG,_scPage*PG+PG);
     if(pgItems.length){
-      var gt='1fr 130px 80px 120px 80px 90px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Item</span><span>Project</span><span>Pillar</span><span>Yard</span><span>Need-by</span><span>Status</span></div>';
+      var gt='1fr 130px 80px 120px 80px 90px 28px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Item</span><span>Project</span><span>Pillar</span><span>Yard</span><span>Need-by</span><span>Status</span><span></span></div>';
       pgItems.forEach(function(r){
         var tone=FQ_TONE[r.status]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
-        h+='<div style="font-size:12.5px">'+r.item+'<div class="sub">'+r.ref+'</div></div>';
-        h+='<div style="font-size:11.5px;color:var(--g600)">'+r.project+'</div>';
-        h+='<div><span class="tag neu" style="font-size:10px">'+r.pillar.charAt(0).toUpperCase()+r.pillar.slice(1)+'</span></div>';
-        h+='<div>'+(r.yard?'<select onchange="fqSetYard(\''+r.id+'\',this.value);renderScView();" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;color:var(--g700);cursor:pointer;background:#fff">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>':'<span style="font-size:11px;color:var(--g400)">Unassigned</span>')+'</div>';
-        h+='<div style="font-size:12px">'+r.needby+'</div>';
-        h+='<div><span class="tag '+tone+'" style="font-size:10px">'+r.status+'</span></div>';
-        h+='</div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="scOpenModal(\''+r.id+'\')">'
+          +'<div style="font-size:12.5px">'+r.item+'<div class="sub">'+r.ref+'</div></div>'
+          +'<div style="font-size:11.5px;color:var(--g600)">'+r.project+'</div>'
+          +'<div><span class="tag neu" style="font-size:10px">'+r.pillar.charAt(0).toUpperCase()+r.pillar.slice(1)+'</span></div>'
+          +'<div onclick="event.stopPropagation()">'+(r.yard?'<select onchange="fqSetYard(\''+r.id+'\',this.value);renderScView();" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;color:var(--g700);cursor:pointer;background:#fff">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>':'<span style="font-size:11px;color:var(--g400)">Unassigned</span>')+'</div>'
+          +'<div style="font-size:12px">'+r.needby+'</div>'
+          +'<div><span class="tag '+tone+'" style="font-size:10px">'+r.status+'</span></div>'
+          +'<div style="font-size:16px;color:var(--g400);text-align:center">&#8250;</div>'
+          +'</div>';
       });
       h+='</div>';
       if(np>1){
         h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px 2px;border-top:1px solid var(--g100)">';
-        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===0?';opacity:.4;cursor:default':'')+('" ')+(_scPage===0?'disabled ':'')+' onclick="scPage('+(_scPage-1)+')">&#8592;</button>';
-        h+='<span style="font-size:11px;color:var(--g400)">'+(_scPage+1)+' / '+np+' \u00b7 '+items.length+' items</span>';
-        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===np-1?';opacity:.4;cursor:default':'')+('" ')+(_scPage===np-1?'disabled ':'')+' onclick="scPage('+(_scPage+1)+')">&#8594;</button>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===0?';opacity:.4;cursor:default':'')+'" '+(_scPage===0?'disabled ':'')+' onclick="scPage('+(_scPage-1)+')">&#8592;</button>';
+        h+='<span style="font-size:11px;color:var(--g400)">'+(_scPage+1)+' / '+np+' &#183; '+allItems.length+' items</span>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:14px;padding:1px 10px'+(_scPage===np-1?';opacity:.4;cursor:default':'')+'" '+(_scPage===np-1?'disabled ':'')+' onclick="scPage('+(_scPage+1)+')">&#8594;</button>';
         h+='</div>';
       }
     } else {
@@ -6103,8 +6123,69 @@ charges:[
     mount.innerHTML=h;
   }
 
-  /* ═══════════ COMMAND CENTER — PILLAR DEMAND PLANS (portfolio mirror of the portal plans) ═══════════ */
-  var DP_ST={'Ready':'ok','Needs map':'warn','Scheduled':'info','Requested':'neu','Projected':'info','Active':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok','At-risk':'bad','PO issued':'info'};
+  function _scSort(nb){
+    if(!nb)return 9999;
+    var months={'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
+    var p=nb.split(' ');
+    return (months[p[0]]||0)*100+(parseInt(p[1],10)||0);
+  }
+
+  function scOpenModal(id){
+    var r=fqById(id); if(!r)return;
+    var tone=FQ_TONE[r.status]||'neu';
+    var h='<div style="display:flex;flex-direction:column;gap:10px">';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:12.5px">';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Item</div><div style="font-weight:600">'+r.item+'</div></div>';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Project</div><div>'+r.project+'</div></div>';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Pillar</div><div>'+r.pillar+'</div></div>';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Qty</div><div>'+(r.qty||1)+'</div></div>';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Need-by</div><div>'+r.needby+'</div></div>';
+    h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Status</div><div><span class="tag '+tone+'">'+r.status+'</span></div></div>';
+    if(r.ref)h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Ref</div><div style="font-family:monospace;font-size:11.5px">'+r.ref+'</div></div>';
+    if(r.yard)h+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;margin-bottom:2px">Yard</div><div>'+r.yard+'</div></div>';
+    h+='</div>';
+    if(r.hint)h+='<div style="background:'+(r.status==='At-risk'?'#fef2f2;border:1px solid #fecaca':'#fffbeb;border:1px solid #fde68a')+';border-radius:6px;padding:8px 12px;font-size:12px;color:'+(r.status==='At-risk'?'#b91c1c':'#92400e')+'">'+r.hint+'</div>';
+    if(_fqNotes[r.id])h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:8px 12px;font-size:12px;color:#92400e"><span style="font-weight:700">Note:</span> '+_fqNotes[r.id]+'</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>';
+    h+='<button class="btn btn-dark btn-sm" onclick="closeModal();fqEditModal(\''+r.id+'\')" >Edit status / notes</button>';
+    h+='<button class="btn btn-red btn-sm" style="margin-left:auto" onclick="closeModal();ccHighlight=\''+r.ref+'\';ccGo(\'fulfill\')">Open in Fulfillment Queue &#8594;</button>';
+    h+='</div>';
+    openModal(r.item, h);
+  }
+
+  var _fqNotes={};
+
+  function fqEditModal(id){
+    var r=fqById(id); if(!r)return;
+    var statuses=['New','Requested','Projected','Scheduled','PO issued','In fabrication','Delivered','Active','Acknowledged','Allocated','At-risk'];
+    var h='<div style="display:flex;flex-direction:column;gap:12px">';
+    h+='<div><label style="font-size:11px;color:var(--g500);display:block;margin-bottom:4px">Status</label>';
+    h+='<select id="fqEditStatus" style="width:100%;font-size:12.5px;border:1px solid var(--g200);border-radius:6px;padding:6px 10px">';
+    statuses.forEach(function(s){h+='<option value="'+s+'"'+(r.status===s?' selected':'')+'>'+s+'</option>';});
+    h+='</select></div>';
+    h+='<div><label style="font-size:11px;color:var(--g500);display:block;margin-bottom:4px">Notes <span style="color:var(--g300)">(explain risk, blockers, or context)</span></label>';
+    h+='<textarea id="fqEditNotes" rows="3" style="width:100%;font-size:12.5px;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;resize:vertical;font-family:inherit">'+(_fqNotes[r.id]||'')+'</textarea></div>';
+    h+='<div style="display:flex;gap:8px;margin-top:4px">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    h+='<button class="btn btn-red btn-sm" style="margin-left:auto" onclick="fqSaveEdit(\''+r.id+'\')" >Save</button>';
+    h+='</div></div>';
+    openModal('Edit: '+r.item, h);
+  }
+
+  function fqSaveEdit(id){
+    var r=fqById(id); if(!r)return;
+    var newStatus=document.getElementById('fqEditStatus').value;
+    var newNotes=document.getElementById('fqEditNotes').value.trim();
+    r.status=newStatus;
+    if(newNotes)_fqNotes[r.id]=newNotes; else delete _fqNotes[r.id];
+    closeModal();
+    if(typeof renderFulfill==='function')renderFulfill();
+    if(typeof renderScView==='function')renderScView();
+    if(typeof renderCcDash==='function')renderCcDash();
+  }
+
   function dpIcon(name){ var M={proj:'<path d="M3 21h18M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/>',tax:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><path d="M7 7h.01"/>'}; return M[name]||IC[name]||IC.chart; }
   var _DP_IDS={
     equipment:{hercules:'DP-EQ-HRC-001',riverside:'DP-EQ-RIV-001',cimarron:'DP-EQ-CIM-001'},
