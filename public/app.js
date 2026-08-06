@@ -6025,7 +6025,7 @@ charges:[
     h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">';
     PROJS.forEach(function(p){
       var short=p==='Hercules Solar + BESS'?'Hercules':p==='Riverside Medical Center'?'Riverside':'Cimarron';
-      h+='<button class="bex-fsmp'+(_ceProj===p?' active':'')+" onclick=\"ceSetProj('\"'+p+"')\""+'>'+short+'</button>';
+      h+='<button class="bex-fsmp'+(_ceProj===p?' active':'')+'\" onclick=\"ceSetProj(\''+p+'\')\">'+short+'</button>';
     });
     h+='</div>';
 
