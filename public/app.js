@@ -5058,15 +5058,7 @@ charges:[
     var ICO_SWAP='<path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/>';
     var ICO_TAX='<path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><path d="M7 7h.01"/>';
     var h='';
-    var rc=(typeof recertItems==='function')?recertItems():[]; var rn=rc.length; var ret=0;
-    for(var ri=0;ri<rc.length;ri++){ if(rc[ri].nsReco&&rc[ri].nsReco.rec==='return')ret++; } var kp=rn-ret;
-    if(rn){
-      var shield='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>';
-      var bT, bS;
-      if(ns){ bT='Overdue off-rent \u2014 '+rn+' item'+(rn===1?'':'s')+' past anticipated return, no request filed'; bS='02S flags idle scissor lift (ORD-3031) \u2014 anticipated off May 15, no return request \u2014 recovers $3.8K/mo'; }
-      else { bT=rn+' on-rent item'+(rn===1?'':'s')+' past anticipated off-rent date'; bS='Return request not yet filed \u2014 rental billing continues until off-rent is submitted'; }
-      h+='<div class="rc-banner">'+shield+'<div class="rcb-t"><b>'+bT+'</b><span>'+bS+'</span></div><button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="openRecert()">Review &amp; certify</button></div>';
-    }
+
     var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
     var mgP=(typeof mgPortfolioRoll==='function')?(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'&&typeof mgProjRoll==='function'?mgProjRoll(_ccFSMProj):mgPortfolioRoll()):{act:{pct:0}};
     var isFSM=ccPersona==='fsm';
