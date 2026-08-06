@@ -5060,7 +5060,7 @@ charges:[
     var h='';
 
     var mgR=(typeof mgAtRisk==='function')?mgAtRisk():{t:27200,n:11};
-    var mgP=(typeof mgPortfolioRoll==='function')?(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'&&typeof mgProjRoll==='function'?mgProjRoll(_ccFSMProj):mgPortfolioRoll()):{act:{pct:0}};
+    var mgP=(typeof mgPortfolioRoll==='function')?(_ccFSMProj&&_ccFSMProj!==''&&_ccFSMProj!=='all'&&typeof mgProjRoll==='function'?mgProjRoll(_ccFSMProj):mgPortfolioRoll()):{pct:0};
     var isFSM=ccPersona==='fsm';
     var fsmScope=_ccFSMProj===''?CC_FSM_PROJECTS:(_ccFSMProj==='all'?null:[_ccFSMProj]);
     var fsmFQ=(typeof FQ!=='undefined'&&FQ.length)?FQ:[];
@@ -5078,7 +5078,7 @@ charges:[
       {k:'Owned vs re-rent',v:String(ownedVsRerent),sub:'decisions due',tone:ownedVsRerent>0?'warn':'ok',icon:ICO_SWAP,to:'fulfill'},
       {k:'Demand\u2013supply gap',v:'\u22127',sub:'peak \u00b7 October',tone:'bad',icon:IC.chart,to:'gap'},
       {k:'Billing at risk',v:kfmt(mgR.t)+'/mo',sub:mgR.n+' open anomalies',tone:'bad',icon:IC.warn,to:'anomaly'},
-      {k:'Project margin',v:mgP.act.pct.toFixed(1)+'%',sub:'target 15%',tone:mgP.act.pct>=15?'ok':'warn',icon:IC.dollar,to:'margin'}
+      {k:'Project margin',v:mgP.pct.toFixed(1)+'%',sub:'target 15%',tone:mgP.pct>=15?'ok':'warn',icon:IC.dollar,to:'margin'}
     ];
     if(ns) kpis.push({k:'Asset lifecycle',v:fRepl+' flags',sub:fOR+'\u00a0on-rent\u00a0\u00b7\u00a0'+fIdle+'\u00a0idle',tone:fRepl>0?'bad':fIdle>0?'warn':'ok',icon:IC.box,to:'fleet'});
     var acts=[
