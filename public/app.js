@@ -2773,7 +2773,6 @@ charges:[
     function pct(d){return Math.max(0,Math.min(100,Math.round(d/WIN_DAYS*100)))+'%';}
     var ITEMS=[
       {label:'Billing approval due',    pillar:'Billing',       ref:'BILL-9012',start:'2026-05-12',end:'2026-05-18',tone:'warn', note:'Auto-finalizes May 18 · action required'},
-      {label:'Scissor lift off-rent',   pillar:'Equipment',     ref:'ORD-3031', start:'2026-05-12',end:'2026-05-15',tone:'warn', note:'2 units · return window · coordinate pickup'},
       {label:'Env. monitoring demob',   pillar:'Prof. services',ref:'DP-SWPPP', start:'2026-05-16',end:'2026-05-16',tone:'ok',   note:'SWPPP monitoring · Mar–May scope closing'},
       {label:'Excavator delivery',      pillar:'Logistics',     ref:'ORD-3042', start:'2026-05-20',end:'2026-05-20',tone:'warn', note:'Heavy haul · north gate · 6 AM window'},
       {label:'Excavator on-rent',       pillar:'Equipment',     ref:'ORD-3042', start:'2026-05-20',end:'2026-06-01',tone:'ok',   note:'Active through Jun · site earthwork'},
@@ -4816,7 +4815,6 @@ charges:[
     'Hercules Solar + BESS':[
       {label:'Crane mob permits',       pillar:'Logistics',      ref:'ORD-3071',   start:'2026-08-01',end:'2026-08-04',tone:'warn',note:'Route permits in process · Aug 3 final mob window'},
       {label:'BESS container placements',pillar:'Logistics',     ref:'REQ-L-3054', start:'2026-08-05',end:'2026-08-06',tone:'warn',note:'6 crane moves · sequencing tied to transformer delivery'},
-      {label:'Scissor lift off-rent',     pillar:'Equipment',      ref:'ORD-3031',   start:'2026-08-01',end:'2026-08-14',tone:'warn',note:'2 units idle-but-billing · $3.8K/mo · return window open · coordinate pickup'},
       {label:'Billing approval due',     pillar:'Billing',        ref:'BILL-9012',  start:'2026-08-08',end:'2026-08-08',tone:'warn',note:'Scissor lift · idle-but-billing · auto-finalizes Aug 8 · action required'},
       {label:'Crawler crane mobilization',pillar:'Equipment',    ref:'REQ-4471',   start:'2026-08-10',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1'},
       {label:'Pipe rack on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · shop drawings approved · Piperite Fab'},
