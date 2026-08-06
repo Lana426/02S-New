@@ -5436,65 +5436,81 @@ charges:[
   }
 
   function fqTaxModal(id){ var r=fqById(id); if(!r)return; dpReview('equipment',r.ref); }
-    function fqOptModal(id){
+    function fqApproveReco(){
+    var r=fqById(fqCurId); if(!r)return;
+    fqPickOwned=r.reco;
+    var c=fqCompute(r,fqPickOwned);
+    var _yr=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
+    r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; r.yard=_yr;
+    closeModal(); renderFulfill();
+    toast(r.qty+'× '+r.item+' allocated — '+c.owned+' owned, '+c.rerent+' re-rent · '+fmt(c.margin)+'/mo margin');
+  }
+  function fqShowOverride(){
+    var el=gel('fqOverrideSec'); if(el)el.style.display='block';
+    var el2=gel('fqRecoBtns'); if(el2)el2.style.display='none';
+    fqRefresh();
+  }
+  function fqHideOverride(){
+    var el=gel('fqOverrideSec'); if(el)el.style.display='none';
+    var el2=gel('fqRecoBtns'); if(el2)el2.style.display='flex';
+  }
+  function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id;
-    fqPickOwned = Math.min(r.reco, Math.min(r.avail.length, r.qty));
+    fqPickOwned=Math.min(r.reco,Math.min(r.avail.length,r.qty));
     var maxOwned=Math.min(r.avail.length,r.qty);
-    // Pre-compute scenarios for recommendation panel
-    var cAll=fqCompute(r,maxOwned), cReco=fqCompute(r,r.reco), cNone=fqCompute(r,0);
+    var cReco=fqCompute(r,r.reco), cAll=fqCompute(r,maxOwned), cNone=fqCompute(r,0);
     var ownCheaper=r.ownedCost<r.reRentRate;
     var savPct=r.reRentRate>0?Math.round(Math.abs(r.reRentRate-r.ownedCost)/r.reRentRate*100):0;
     var whyTxt;
     if(maxOwned===0){
-      whyTxt='No owned units available for this class — fully re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/unit/mo (MSA).';
+      whyTxt='No owned units available — fully re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/unit/mo (MSA).';
     } else if(maxOwned>=r.qty){
-      whyTxt='All '+r.qty+' units available from owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. re-rent '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper, fully own to maximize margin.':'re-rent is '+savPct+'% cheaper but owned fleet is already available — use owned to avoid AP.');
+      whyTxt='All '+r.qty+' units available from the owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. re-rent '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper.':'re-rent is '+savPct+'% cheaper but owned fleet is available.');
     } else {
-      whyTxt=maxOwned+' of '+r.qty+' units available from owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. '+r.vendor+' MSA rate '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper. Maximize owned units, re-rent only the shortfall.':'re-rent is '+savPct+'% cheaper, but using owned avoids cash outlay — recommend owned first.');
+      whyTxt=maxOwned+' of '+r.qty+' units available. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. '+r.vendor+' MSA '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper. Maximize owned, re-rent only the shortfall.':'re-rent is '+savPct+'% cheaper, but using owned avoids AP outlay.');
     }
-    var recoLabel=r.reco+' owned · '+(r.qty-r.reco)+' re-rent · '+cReco.pct.toFixed(1)+'% margin';
+    // Request header
     var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · billed at '+fmt(r.o2sRate)+'/unit/mo</div></div>';
-    // Recommendation panel
-    b+='<div style="background:var(--g50);border:1px solid var(--g200);border-left:3px solid var(--info,#3b82f6);border-radius:7px;padding:12px 14px;margin-bottom:14px">';
-    b+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-    b+='<span style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--info,#3b82f6);text-transform:uppercase">'+CC_SPARK+'02S Recommendation</span>';
-    b+='<span id="fqOverrideBadge" style="display:none;font-size:10px;font-weight:700;color:var(--warning);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:1px 7px;letter-spacing:.04em">Override active</span>';
-    b+='</div>';
-    b+='<div style="font-size:14px;font-weight:700;color:var(--charcoal);margin-bottom:4px">'+recoLabel+'</div>';
-    b+='<div style="font-size:11.5px;color:var(--g600);margin-bottom:10px">'+whyTxt+'</div>';
-    // 3-scenario comparison
+    // GREEN recommendation box
+    b+='<div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
+    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:#16a34a;text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
+    b+='<div style="font-size:20px;font-weight:800;color:#15803d;margin-bottom:4px">'+r.reco+' owned + '+(r.qty-r.reco)+' re-rent</div>';
+    b+='<div style="font-size:12px;color:#166534;margin-bottom:12px">'+whyTxt+'</div>';
+    // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
-    var scenarios=[
-      {label:'Max owned ('+maxOwned+')',c:cAll,isReco:r.reco===maxOwned},
-      {label:'Recommended',c:cReco,isReco:true,highlight:true},
-      {label:'All re-rent',c:cNone,isReco:r.reco===0}
-    ];
-    scenarios.forEach(function(s){
-      var same=s.highlight;
-      b+='<div style="background:'+(same?'var(--info-tint,#eff6ff)':'#fff')+';border:1px solid '+(same?'var(--info,#3b82f6)':'var(--g200)')+';border-radius:5px;padding:7px 9px;text-align:center">';
-      b+='<div style="font-size:10px;color:'+(same?'var(--info,#3b82f6)':'var(--g500)')+';font-weight:600;margin-bottom:3px">'+s.label+'</div>';
-      b+='<div style="font-size:14px;font-weight:700;color:'+(same?'var(--info,#3b82f6)':s.c.pct<10?'var(--red)':'var(--g800)')+'">'+s.c.pct.toFixed(1)+'%</div>';
-      b+='<div style="font-size:10px;color:var(--g400)">'+fmt(s.c.margin)+'/mo</div>';
-      b+='</div>';
+    [{label:'Max owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended',c:cReco,hi:true},{label:'All re-rent',c:cNone,hi:false}].forEach(function(s){
+      b+='<div style="background:'+(s.hi?'#dcfce7':'rgba(255,255,255,.7)')+';border:1px solid '+(s.hi?'#16a34a':'#bbf7d0')+';border-radius:5px;padding:6px 8px;text-align:center">';
+      b+='<div style="font-size:9.5px;color:'+(s.hi?'#15803d':'#4ade80')+';font-weight:600;margin-bottom:2px">'+s.label+'</div>';
+      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'#15803d':s.c.pct<8?'#dc2626':'#374151')+'">'+s.c.pct.toFixed(1)+'%</div>';
+      b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
-    // Allocation controls
+    // Reco action buttons
+    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<div style="margin-left:auto;display:flex;gap:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
+    b+='<button class="btn" style="background:#16a34a;color:#fff;border-color:#16a34a" onclick="fqApproveReco()">Approve recommendation</button>';
+    b+='</div></div>';
+    // Override section (hidden)
+    b+='<div id="fqOverrideSec" style="display:none">';
+    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">You are overriding the recommended allocation — adjust the split below and provide a reason.</div>';
     b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
-    // Override reason (shown only when deviating from recommendation)
-    b+='<div id="fqOverrideSection" style="display:none;margin-top:12px;padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px">';
-    b+='<div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:6px">Reason for override <span style="font-weight:400;color:var(--g500)">(equipment manager note — saved with allocation)</span></div>';
-    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid rgba(245,158,11,.35);border-radius:4px;padding:6px 8px;color:var(--g800);background:#fff;resize:vertical" placeholder="Why are you deviating from the recommendation? e.g., unit reserved for another project, equipment condition issue, yard distance / haul cost, customer request..."></textarea>';
-    b+='</div>';
-    // Source yard
-    b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:8px;border-top:1px solid var(--g100)">';
+    // Source yard (inside override section)
+    b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
     b+='<div style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0">Source yard</div>';
     var _yreco=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
     b+='<select id="fqYardSel" style="font-size:12px;border:1px solid var(--g200);border-radius:5px;padding:4px 8px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+((r.yard||_yreco)===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
-    b+='<span style="font-size:11px;color:var(--g400)">'+(r.avail&&r.avail.length>0?'Recommended based on owned unit location':'Assign fulfillment source')+'</span>';
     b+='</div>';
-    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fqAccept()">Accept &amp; allocate</button></div></div>';
-    openModal('Fulfill — '+r.item, b); fqRefresh();
+    b+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:5px">Reason for override <span style="font-weight:400;color:var(--g400)">(required — saved with allocation)</span></div>';
+    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid #fde68a;border-radius:4px;padding:6px 8px;color:var(--g800);background:#fffbeb;resize:vertical" placeholder="Why are you changing the recommended allocation? e.g., unit reserved for another project, equipment condition, yard distance, customer request…"></textarea></div>';
+    b+='<div class="modal-foot" style="margin-top:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back to recommendation</button>';
+    b+='<button class="btn btn-red" style="margin-left:auto" onclick="fqAccept()">Accept allocation</button>';
+    b+='</div>';
+    b+='</div>';
+    openModal('Fulfill — '+r.item, b);
   }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
@@ -6056,101 +6072,94 @@ charges:[
     var pillarFilter=_PERSONA_PILLAR[ccPersona];
     var isFSM=!pillarFilter;
     var PROJS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
+    var PKEYS=['hercules','riverside','cimarron'];
+    var PSHORT={hercules:'Hercules',riverside:'Riverside',cimarron:'Cimarron'};
     var CE_PILLARS=['equipment','logistics','profservices','procurement','prefab'];
     var CE_LBL={equipment:'Equipment',logistics:'Logistics',profservices:'Professional services',procurement:'Procurement',prefab:'Pre-fab'};
     var CE_NAV={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
     var pillars=isFSM?CE_PILLARS:[pillarFilter];
-    var pkey=ceProjKey(_ceProj);
+
+    // Pre-aggregate per pillar × project → portfolio totals
+    var portROM=0,portBudget=0,portCommit=0,portActuals=0;
+    var PD={};
+    pillars.forEach(function(pl){
+      var plROM=0,plBudget=0,plCommit=0,plActuals=0,plPend=0;
+      var projRows=[];
+      PKEYS.forEach(function(pk){
+        var lin=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pk])?CC_DP_LINEAGE[pl][pk].margin:null;
+        var cm=(CC_CMIC_DATA[pl]&&CC_CMIC_DATA[pl][pk])?CC_CMIC_DATA[pl][pk]:null;
+        var rom=lin?ceParseAmt(lin.rom):0;
+        var budget=cm?cm.origBudget+(cm.co||0):0;
+        var commit=cm?cm.committed:0;
+        var actuals=cm?cm.spent:0;
+        var pend=cm?cm.pendingCO:0;
+        plROM+=rom; plBudget+=budget; plCommit+=commit; plActuals+=actuals; plPend+=pend;
+        projRows.push({pk:pk,rom:rom,budget:budget,commit:commit,actuals:actuals,pend:pend,cm:cm,lin:lin});
+      });
+      portROM+=plROM; portBudget+=plBudget; portCommit+=plCommit; portActuals+=plActuals;
+      PD[pl]={rom:plROM,budget:plBudget,commit:plCommit,actuals:plActuals,pend:plPend,rows:projRows};
+    });
+
+    var budgetCvB=portCommit-portBudget;
+    var budgetPct=portBudget?Math.round(portBudget/portROM*100):0;
+    var commitPct=portBudget?Math.round(portCommit/portBudget*100):0;
+    var actualsPct=portROM?Math.round(portActuals/portROM*100):0;
 
     var h='<div class="phead"><div><h1>Project margin</h1><div class="meta">';
-    h+='<span class="chip">CMiC budget · 02S scope · committed</span>';
-    h+='<span class="chip">'+_ceProj+'</span>';
-    h+='<span class="chip">Source: CMiC</span>';
+    h+='<span class="chip">02S opportunities · CMiC budget · actuals</span>';
+    h+='<span class="chip">All projects · by pillar</span>';
     h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>';
     h+='</div></div></div>';
 
-    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">';
-    PROJS.forEach(function(p){
-      var short=p==='Hercules Solar + BESS'?'Hercules':p==='Riverside Medical Center'?'Riverside':'Cimarron';
-      h+='<button class="bex-fsmp'+(_ceProj===p?' active':'')+'\" onclick=\"ceSetProj(\''+p+'\')\">'+short+'</button>';
-    });
-    h+='</div>';
-
-    var totalROM=0,totalBudget=0,totalCommitted=0,totalSpent=0,totalPendingCO=0;
-    pillars.forEach(function(pl){
-      var lin=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pkey])?CC_DP_LINEAGE[pl][pkey].margin:null;
-      var cm=(CC_CMIC_DATA[pl]&&CC_CMIC_DATA[pl][pkey])?CC_CMIC_DATA[pl][pkey]:null;
-      totalROM+=lin?ceParseAmt(lin.rom):0;
-      if(cm){ totalBudget+=cm.origBudget+(cm.co||0); totalCommitted+=cm.committed; totalSpent+=cm.spent||0; totalPendingCO+=cm.pendingCO||0; }
-    });
-    var tCvB=totalCommitted-totalBudget;
-    var tCommitPct=totalBudget?Math.round(totalCommitted/totalBudget*100):0;
-    var tSpentPct=totalCommitted?Math.round(totalSpent/totalCommitted*100):0;
-    var summaryTone=tCvB>totalBudget*0.03?'bad':tCvB<-totalBudget*0.05?'ok':'neu';
-
+    // Portfolio KPI vitals
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">';
-    h+='<div class="vital neu"><div class="vk">Original ROM</div>';
-    h+='<div class="vv">'+fmtBig(totalROM)+'</div>';
-    h+='<div class="vsub">at opportunity stage</div></div>';
-    var bvr=totalBudget-totalROM;
-    h+='<div class="vital neu"><div class="vk">CMiC project budget</div>';
-    h+='<div class="vv">'+fmtBig(totalBudget)+'</div>';
-    h+='<div class="vsub" style="display:flex;align-items:center;gap:4px">';
-    h+='<span style="background:var(--g100);color:var(--g600);font-size:10px;padding:1px 5px;border-radius:3px;font-weight:600">CMiC</span>';
-    h+=(bvr>=0?'+'+fmtBig(bvr):fmtBig(bvr))+' vs ROM';
-    h+='</div></div>';
-    h+='<div class="vital '+summaryTone+'"><div class="vk">Committed to date</div>';
-    h+='<div class="vv">'+fmtBig(totalCommitted)+'</div>';
-    h+='<div class="vsub">'+tCommitPct+'% of budget'+(tCvB>0?' · <b style="color:var(--red)">▲ '+fmtBig(tCvB)+' over</b>':tCvB<0?' · '+fmtBig(-tCvB)+' under':' · on track')+'</div></div>';
-    h+='<div class="vital neu"><div class="vk">Invoiced / billed</div>';
-    h+='<div class="vv">'+fmtBig(totalSpent)+'</div>';
-    h+='<div class="vsub">'+tSpentPct+'% of committed · CMiC AP</div></div>';
+
+    h+='<div class="vital neu"><div class="vk">02S opportunity (ROM)</div>';
+    h+='<div class="vv">'+fmtBig(portROM)+'</div>';
+    h+='<div class="vsub">planned AR · all projects</div></div>';
+
+    h+='<div class="vital neu"><div class="vk">CMiC budget</div>';
+    h+='<div class="vv">'+fmtBig(portBudget)+'</div>';
+    h+='<div class="vsub">'+budgetPct+'% of ROM · '+(portROM-portBudget>0?fmtBig(portROM-portBudget)+' planned margin':'')+'</div></div>';
+
+    var commitTone=budgetCvB>portBudget*0.03?'bad':budgetCvB<-portBudget*0.05?'ok':'neu';
+    h+='<div class="vital '+commitTone+'"><div class="vk">Committed to date</div>';
+    h+='<div class="vv">'+fmtBig(portCommit)+'</div>';
+    h+='<div class="vsub">'+commitPct+'% of budget'+(budgetCvB>0?' · <b style="color:var(--red)">▲ '+fmtBig(budgetCvB)+' over</b>':budgetCvB<0?' · '+fmtBig(-budgetCvB)+' under':' · on track')+'</div></div>';
+
+    h+='<div class="vital neu"><div class="vk">Actuals</div>';
+    h+='<div class="vv">'+fmtBig(portActuals)+'</div>';
+    h+='<div class="vsub">'+actualsPct+'% of ROM · AR billed to projects</div></div>';
+
     h+='</div>';
 
+    // Per-pillar cards
     pillars.forEach(function(pl){
-      var linData=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pkey])?CC_DP_LINEAGE[pl][pkey]:null;
-      var lin=linData?linData.margin:null;
-      var baselineMeta=linData?linData.baseline:null;
-      var draftMeta=linData?linData.draft:null;
-      var deltaMeta=linData?linData.delta:null;
-      var cm=(CC_CMIC_DATA[pl]&&CC_CMIC_DATA[pl][pkey])?CC_CMIC_DATA[pl][pkey]:null;
-      if(!cm) return;
-      var rom=lin?ceParseAmt(lin.rom):0;
-      var origBudget=cm.origBudget;
-      var co=cm.co||0;
-      var pendingCO=cm.pendingCO||0;
-      var budget=origBudget+co;
-      var committed=cm.committed;
-      var spent=cm.spent||0;
-      var lastSync=cm.lastSync||'';
-      var coNote=cm.coNote||'';
-      var maxVal=Math.max(rom,budget,committed)*1.12||1;
-      var cvb=committed-budget;
-      var bvr=budget-rom;
-      var commitPctCard=budget?Math.round(committed/budget*100):0;
-      var spentPctCard=committed?Math.round(spent/committed*100):0;
-      var cardBorderColor=cvb>budget*0.05?'var(--red)':cvb<-budget*0.05?'var(--success)':'var(--g300)';
-      var overUnderBadge=Math.abs(cvb)<budget*0.01?
+      var pd=PD[pl];
+      var maxVal=Math.max(pd.rom,pd.budget,pd.commit,pd.actuals)*1.12||1;
+      var cvb=pd.commit-pd.budget;
+      var borderColor=cvb>pd.budget*0.05?'var(--red)':cvb<-pd.budget*0.05?'var(--success)':'var(--g300)';
+      var badge=Math.abs(cvb)<pd.budget*0.01?
         '<span class="tag ok">On budget</span>':
         (cvb>0?'<span class="tag bad">▲ '+fmtBig(cvb)+' over</span>':'<span class="tag ok">▼ '+fmtBig(-cvb)+' under</span>');
-      h+='<div style="border:1px solid var(--g200);border-left:3px solid '+cardBorderColor+';border-radius:8px;padding:16px 18px;margin-bottom:14px">';
+
+      h+='<div style="border:1px solid var(--g200);border-left:3px solid '+borderColor+';border-radius:8px;padding:16px 18px;margin-bottom:14px">';
+      // Header
       h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
-      h+='<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
-      h+='<div style="font-size:13.5px;font-weight:700;color:var(--charcoal)">'+CE_LBL[pl]+'</div>';
-      h+='<span style="font-size:10px;font-weight:600;color:var(--g500);background:var(--g100);border:1px solid var(--g200);border-radius:3px;padding:1px 6px;letter-spacing:.02em">CMiC · '+lastSync+'</span>';
-      if(lin) h+='<span style="font-size:10.5px;color:var(--g400)">'+lin.id+'</span>';
-      h+='</div>'+overUnderBadge+'</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--charcoal)">'+CE_LBL[pl]+'</div>'+badge;
+      h+='</div>';
+
+      // 4-rail bar: ROM | Budget | Committed | Actuals
       var rails=[
-        {label:'ROM',val:rom,color:'var(--g200)',note:lin?(lin.rom+' · '+lin.date):'No ROM on file'},
-        {label:'Project budget',val:budget,color:'var(--info,#3b82f6)',note:'CMiC baseline'+(co?' +'+fmtBig(co)+' CO':'')+(pendingCO?' · '+fmtBig(pendingCO)+' pending CO':'')},
-        {label:'Committed',val:committed,color:(cvb>budget*0.05?'var(--red)':cvb<-budget*0.05?'var(--g700)':'var(--g800)'),note:commitPctCard+'% of budget · POs + subcontracts'},
-        {label:'Invoiced',val:spent,color:'var(--success)',note:spentPctCard+'% of committed · AP billed'}
+        {label:'ROM',val:pd.rom,color:'var(--g300)',note:fmtBig(pd.rom)+' · 02S opportunity'},
+        {label:'Budget',val:pd.budget,color:'var(--info,#3b82f6)',note:fmtBig(pd.budget)+' · CMiC cost budget'},
+        {label:'Committed',val:pd.commit,color:(cvb>pd.budget*0.05?'var(--red)':cvb<-pd.budget*0.05?'var(--g700)':'var(--g800)'),note:fmtBig(pd.commit)+' · POs + subcontracts'},
+        {label:'Actuals',val:pd.actuals,color:'var(--success)',note:fmtBig(pd.actuals)+' · AR billed to projects'}
       ];
-      h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">';
+      h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">';
       rails.forEach(function(r){
-        if(!r.val&&r.label!=='ROM') return;
         var pct=Math.min(100,(r.val/maxVal)*100);
-        h+='<div style="display:grid;grid-template-columns:82px 1fr 76px 1fr;align-items:center;gap:10px">';
+        h+='<div style="display:grid;grid-template-columns:72px 1fr 72px 1fr;align-items:center;gap:10px">';
         h+='<div style="font-size:11px;font-weight:500;color:var(--g500)">'+r.label+'</div>';
         h+='<div style="background:var(--g100);border-radius:3px;height:7px"><div style="width:'+pct.toFixed(1)+'%;height:7px;border-radius:3px;background:'+r.color+';transition:width .4s"></div></div>';
         h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);text-align:right">'+fmtBig(r.val)+'</div>';
@@ -6158,47 +6167,31 @@ charges:[
         h+='</div>';
       });
       h+='</div>';
-      h+='<div style="display:flex;flex-wrap:wrap;gap:14px;padding:7px 10px;background:var(--g50);border-radius:5px;margin-bottom:12px">';
-      h+='<div style="font-size:11px;color:var(--g600)">Orig. budget: <b>'+fmtBig(origBudget)+'</b></div>';
-      if(co) h+='<div style="font-size:11px;color:var(--g600)">Approved CO: <b>+'+fmtBig(co)+'</b>'+(coNote?' <span style="color:var(--g400)">('+coNote+')</span>':'')+'</div>';
-      if(pendingCO) h+='<div style="font-size:11px;color:var(--g600)">Pending CO: <b style="color:var(--warning)">+'+fmtBig(pendingCO)+'</b></div>';
-      h+='<div style="font-size:11px;color:var(--g600)">Committed: <b>'+fmtBig(committed)+'</b> <span style="color:var(--g400)">('+commitPctCard+'%)</span></div>';
-      h+='<div style="font-size:11px;color:var(--g600)">Invoiced: <b>'+fmtBig(spent)+'</b> <span style="color:var(--g400)">('+spentPctCard+'% of committed)</span></div>';
+
+      // Per-project breakdown table
+      var gt='1fr 80px 80px 80px 80px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+';font-size:10.5px">';
+      h+='<span>Project</span><span class="r">ROM</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">Actuals</span></div>';
+      pd.rows.forEach(function(row){
+        var rvb=row.commit-row.budget;
+        var rtone=rvb>row.budget*0.05?'var(--red)':rvb<-row.budget*0.05?'var(--success)':'var(--g700)';
+        h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+        h+='<div>'+PSHORT[row.pk]+'</div>';
+        h+='<div class="r" style="color:var(--g600)">'+fmtBig(row.rom)+'</div>';
+        h+='<div class="r" style="color:var(--info,#3b82f6)">'+fmtBig(row.budget)+'</div>';
+        h+='<div class="r" style="color:'+rtone+'">'+fmtBig(row.commit)+'</div>';
+        h+='<div class="r" style="color:var(--success)">'+fmtBig(row.actuals)+'</div>';
+        h+='</div>';
+      });
       h+='</div>';
-      if(baselineMeta||draftMeta||deltaMeta){
-        h+='<div style="padding:7px 10px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:5px;font-size:11.5px;color:var(--g700);margin-bottom:10px">';
-        if(baselineMeta){
-          h+='<b>DP baseline locked</b> — '+baselineMeta.id+' ('+baselineMeta.date+'): '+baselineMeta.total+', '+baselineMeta.items+' line items.';
-          if(baselineMeta.note) h+=' <span style="color:var(--g500)">'+baselineMeta.note+'</span>';
-        }
-        if(deltaMeta){
-          h+=' <b>Changes since baseline:</b> '+deltaMeta.added+' line'+(deltaMeta.added===1?'':'s')+' added ('+deltaMeta.value+') — '+deltaMeta.reason+'.';
-        }
-        if(draftMeta&&!baselineMeta){
-          h+='<b>No baseline locked</b> — '+draftMeta.note;
-        }
-        h+='</div>';
-      }
-      if(lin&&lin.lines&&lin.lines.length){
-        var expId='ceexp-'+pl+'-'+pkey;
-        h+='<div style="border-top:1px solid var(--g100);padding-top:9px;margin-top:2px">';
-        h+='<div style="font-size:11px;color:var(--g400);cursor:pointer;display:flex;align-items:center;gap:5px;user-select:none" ';
-        h+='onclick="(function(){var el=document.getElementById(\''+expId+'\');if(el)el.style.display=el.style.display===\'none\'?\'block\':\'none\';})();">';
-        h+='ROM breakdown · '+lin.rom+' · '+lin.date;
-        h+='</div>';
-        h+='<div id="'+expId+'" style="display:none;margin-top:8px">';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:1fr 90px;font-size:10.5px"><span>Line item</span><span class="r">ROM estimate</span></div>';
-        lin.lines.forEach(function(li){
-          h+='<div class="dp-row" style="grid-template-columns:1fr 90px'+(li.bold?';font-weight:700':'')+'"><div>'+li.label+'</div><div class="r">'+li.est+'</div></div>';
-        });
-        h+='</div></div></div>';
-      }
+
+      // Footer CTA
       h+='<div style="display:flex;justify-content:flex-end;margin-top:12px">';
-      h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\''+CE_NAV[pl]+'\')">' +CE_LBL[pl]+' demand plan →</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\''+CE_NAV[pl]+'\')">'+CE_LBL[pl]+' demand plan →</button>';
       h+='</div></div>';
     });
-    h+='<div class="cc-arch"><span>Project margin reconciles to CMiC budget vs. 02S scope (ROM) vs. committed POs. ';
-    h+='CMiC budget and committed figures sync daily. Budget = CMiC contract baseline + approved COs. Committed = POs + subcontracts. Invoiced = AP-approved billings.</span></div>';
+
+    h+='<div class="cc-arch"><span>ROM = planned 02S AR over project life (MARGIN_DATA plan rate × project months). Budget = CMiC cost baseline + approved COs. Actuals = AR billed to date. Numbers reconcile to per-pillar demand plan monthly rates.</span></div>';
     mount.innerHTML=h;
   }
   function mgModal(p){
