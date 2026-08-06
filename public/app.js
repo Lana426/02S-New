@@ -5323,7 +5323,7 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
     h+='</div>';
@@ -5943,25 +5943,25 @@ charges:[
   var MARGIN_PROJECTS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
   var MARGIN_DATA={
     'Hercules Solar + BESS':{
-      'Equipment':{ar:127000,cost:91000,note:'$9K/mo AR overstatement from 2 idle-billing lines (BILL-9012, BILL-9021) awaiting vendor credit.'},
-      'Logistics':{ar:18000,cost:16500,note:'Move coordination only. Execution economics in a future build.'},
-      'Professional services':{ar:62000,cost:56000,note:'3 active roles at rate card (owner\u2019s engineer, geotech, structural). Steady.'},
-      'Procurement':{ar:205000,cost:201500,note:'Pass-through long-lead items. Thin margin by design.'},
-      'Pre-fab':{ar:56000,cost:53200,note:'Made-to-order assemblies quoted by 02S after submittal.'}
+      'Equipment':{ar:2649840,cost:1899938,note:'$9K/mo AR overstatement from 2 idle-billing lines (BILL-9012, BILL-9021) awaiting vendor credit. AR computed from demand plan billings.'},
+      'Logistics':{ar:4800,cost:4402,note:'Move coordination only. Billed to date.'},
+      'Professional services':{ar:289800,cost:262979,note:'3 active roles at rate card (owner\u2019s engineer, geotech, structural). Billed to date.'},
+      'Procurement':{ar:424800,cost:417578,note:'Pass-through long-lead items. Thin margin by design.'},
+      'Pre-fab':{ar:155000,cost:147250,note:'Made-to-order assemblies quoted by 02S after submittal.'}
     },
     'Riverside Medical Center':{
-      'Equipment':{ar:186400,cost:151100,note:'Tower crane re-rent renewed above MSA rate (BILL-9034) \u2014 margin cut $4.1K/mo.'},
-      'Logistics':{ar:9000,cost:8300,note:'Move coordination. Steady.'},
-      'Professional services':{ar:24000,cost:21800,note:'Active roles at rate card.'},
-      'Procurement':{ar:95000,cost:93200,note:'Supply run pass-throughs. Thin margin by design.'},
-      'Pre-fab':{ar:12000,cost:11500,note:'Assemblies quoted post-submittal.'}
+      'Equipment':{ar:30400,cost:21797,note:'Tower crane re-rent renewed above MSA rate (BILL-9034) \u2014 margin impact captured in billings to date.'},
+      'Logistics':{ar:192000,cost:176064,note:'Delivery coordination. Billed to date.'},
+      'Professional services':{ar:58000,cost:52606,note:'Active roles at rate card. Billed to date.'},
+      'Procurement':{ar:137600,cost:135261,note:'Supply run pass-throughs. Thin margin by design.'},
+      'Pre-fab':{ar:181000,cost:171950,note:'Assemblies quoted post-submittal. Billed to date.'}
     },
     'Cimarron Data Center':{
-      'Equipment':{ar:140000,cost:109000,note:'REQ-4472 (4\u00d7 excavator) open \u2014 planned margin unrealized. BILL-9041 missing-AR understates actual by $2.6K/mo.'},
-      'Logistics':{ar:11000,cost:10100,note:'Delivery scheduling. Steady.'},
-      'Professional services':{ar:19000,cost:17300,note:'Active roles at rate card.'},
-      'Procurement':{ar:76000,cost:74500,note:'PDU/cooling pass-throughs. Thin margin by design.'},
-      'Pre-fab':{ar:9000,cost:8600,note:'Assemblies quoted post-submittal.'}
+      'Equipment':{ar:64000,cost:45888,note:'REQ-4472 (4\u00d7 excavator) open \u2014 planned margin unrealized. BILL-9041 missing-AR understates billed total.'},
+      'Logistics':{ar:4200,cost:3851,note:'Delivery scheduling. Billed to date.'},
+      'Professional services':{ar:25200,cost:22856,note:'Active roles at rate card. Billed to date.'},
+      'Procurement':{ar:356000,cost:349948,note:'PDU/cooling pass-throughs. Thin margin by design.'},
+      'Pre-fab':{ar:36000,cost:34200,note:'Assemblies quoted post-submittal. Billed to date.'}
     }
   };
   var MG_LINK={
@@ -5994,12 +5994,12 @@ charges:[
     var port=mgPortfolioRoll(); var risk=mgAtRisk();
     var h='<div class="phead"><div><h1>Project margin</h1><div class="meta"><span class="chip">'+svg(IC.dollar)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
     var vit=[
-      {k:'Portfolio margin',v:fmt(port.margin)+'/mo',sub:'billed to projects \u00b7 CMiC',tone:port.pct>=15?'ok':'warn',icon:IC.dollar},
+      {k:'Portfolio margin',v:fmt(port.margin),sub:'margin to date \u00b7 all pillars',tone:port.pct>=15?'ok':'warn',icon:IC.dollar},
       {k:'Margin %',v:port.pct.toFixed(1)+'%',sub:'target 15%',tone:port.pct>=15?'ok':'warn',icon:IC.chart},
     ];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
-    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Portfolio margin is at '+port.pct.toFixed(1)+'% ('+fmt(port.margin)+'/mo billed). Two headwinds and one overstatement are active. Riverside\u2019s tower crane re-rent renewed at a higher MSA rate (\u2212$4.1K/mo, BILL-9034). Cimarron\u2019s excavator request (REQ-4472) hasn\u2019t been allocated yet, so ~$12.5K/mo of planned margin isn\u2019t in actuals. And Hercules\u2019 reported margin is inflated $9.0K/mo by two idle-billing lines still awaiting credit.</div></div></div>'; }
-    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Margin = 02S rate revenue (AR, billed to the project) \u2212 owned fleet cost \u2212 re-rent AP (vendor MSA) \u2212 services/procurement vendor cost, by project and pillar. Reconciles to the Fulfillment optimizer.</span></div>';
+    if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Portfolio margin is at '+port.pct.toFixed(1)+'% ('+fmt(port.margin)+' billed to date). Two headwinds and one overstatement are active. Riverside\u2019s tower crane re-rent renewed at a higher MSA rate (\u2212$4.1K/mo, BILL-9034). Cimarron\u2019s excavator request (REQ-4472) hasn\u2019t been allocated yet, so ~$12.5K/mo of planned margin isn\u2019t in actuals. And Hercules\u2019 reported margin is inflated $9.0K/mo by two idle-billing lines still awaiting credit.</div></div></div>'; }
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>Margin = total AR billed to project (from demand plan invoices) \u2212 02S vendor costs (re-rent AP, labor, procurement pass-throughs). Computed from billing actuals in demand plans. Reconciles to Fulfillment optimizer.</span></div>';
     h+='<div class="hm"><div class="hm-row hm-head" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">Pillar</div>'+MARGIN_PROJECTS.map(function(p){ return '<div class="hm-cell">'+p.split(' ')[0]+'</div>'; }).join('')+'</div>';
     MARGIN_PILLARS.forEach(function(pl){
       h+='<div class="hm-row" style="grid-template-columns:180px repeat(3,1fr)"><div class="hm-cell">'+pl+'</div>';
@@ -6009,11 +6009,11 @@ charges:[
     h+='</div>';
     h+='<div class="hm-legend">Actual margin % by pillar and project \u00b7 <span class="hl-neg">red = below 12%</span> \u00b7 <span class="hl-pos">green = 18%+</span></div>';
     var gt='1fr 140px 100px 168px';
-    h+='<div class="dp-tbl" style="margin-top:18px"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Project</span><span class="r">Actual margin</span><span>Margin %</span><span>Detail</span></div>';
+    h+='<div class="dp-tbl" style="margin-top:18px"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Project</span><span class="r">Margin to date</span><span>Margin %</span><span>Detail</span></div>';
     MARGIN_PROJECTS.forEach(function(p){
       var r=mgProjRoll(p); var pr=mgProjRisk(p);
       h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+p+'</div>';
-      h+='<div class="r">'+fmt(r.margin)+'/mo</div>';
+      h+='<div class="r">'+fmt(r.margin)+'</div>';
       h+='<div>'+r.pct.toFixed(1)+'%</div>';
       h+='<div><button class="btn btn-dark btn-sm" onclick="mgModal(\''+p+'\')">By pillar</button></div></div>';
     });
@@ -6023,7 +6023,7 @@ charges:[
   }
   function mgModal(p){
     var d=MARGIN_DATA[p]; var roll=mgProjRoll(p); var ns=CURRENT==='ns'; var lk=MG_LINK[p];
-    var b='<div class="fq-req"><div class="fq-req-t">'+p+'</div><div class="sub">'+fmt(roll.margin)+'/mo \u00b7 '+roll.pct.toFixed(1)+'% actual margin</div></div>';
+    var b='<div class="fq-req"><div class="fq-req-t">'+p+'</div><div class="sub">'+fmt(roll.margin)+' billed \u00b7 '+roll.pct.toFixed(1)+'% margin to date</div></div>';
     b+='<div class="fq-calc">';
     MARGIN_PILLARS.forEach(function(pl){
       var x=d[pl]; var a=mgCalc(x.ar,x.cost);
