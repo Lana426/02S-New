@@ -2613,7 +2613,7 @@ charges:[
     if(dEl)dEl.textContent=deliveries||0;if(oEl)oEl.textContent=offrents||0;if(bEl)bEl.textContent=pendingBills||0;
   }
   function openMarginPlanModal(){
-    var gmPlan=16.5,gmCurr=14.2,gmProj=22600000;
+    var gmPlan=9.0,gmCurr=10.6,gmProj=16780000;
     var GP=[
       {l:'Equipment',     p:18.0,a:15.2,note:'Re-rent crane premium on BESS — primary gap driver'},
       {l:'Prefab',        p:14.0,a:13.5,note:'Headwall fabrication slightly behind forecast'},
@@ -2648,7 +2648,7 @@ charges:[
     b+='<div style="margin-top:12px;padding:9px 11px;background:var(--g50);border-radius:6px;font-size:12px;color:var(--g600)">'
       +'<b style="color:var(--g800)">Enterprise contribution:</b> '
       +fmtBig(Math.round(gmCurr/100*gmProj))+' gross profit from this project ('
-      +gmCurr+'% of $22.6M). McCarthy portfolio target is 15% GM — this project is currently 0.8 pts below that benchmark.</div>';
+      +gmCurr+'% of $16.8M). McCarthy portfolio target is 15% GM — this project is currently 0.8 pts below that benchmark.</div>';
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
       +'<button class="btn btn-dark" onclick="closeModal();go(\'billing\')">View cost breakdown &rarr;</button></div>';
     openModal('Margin plan — Hercules Solar + BESS', b);
@@ -2656,7 +2656,7 @@ charges:[
   function renderGMDashKPI(){
     var mount=document.getElementById('gmDashKPI'); if(!mount)return;
     var ns=CURRENT==='ns';
-    var gmPlan=16.5,gmCurr=14.2,gmProj=22600000;
+    var gmPlan=9.0,gmCurr=10.6,gmProj=16780000;
     var gmTone=gmCurr<gmPlan-1?'bad':gmCurr<gmPlan?'warn':'ok';
     var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
     var view=window._gmDashView||'summary';
@@ -2676,7 +2676,7 @@ charges:[
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
-        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $22.6M</div></div>'
+        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $16.8M</div></div>'
         +'</div>';
     } else {
       var GP=[{l:'Equipment',p:18.0,a:15.2},{l:'Prefab',p:14.0,a:13.5},{l:'Logistics',p:12.0,a:12.4},{l:'Procurement',p:8.0,a:7.8},{l:'Prof. services',p:22.0,a:21.0}];
@@ -3661,7 +3661,7 @@ charges:[
     }
     h+='</div>';
     if(!BF_PILLAR){
-      var gmPlan=16.5,gmCurr=14.2;
+      var gmPlan=9.0,gmCurr=10.6;
       var gmTone=gmCurr<gmPlan-1.0?'bad':gmCurr<gmPlan?'warn':'ok';
       var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
       h+='<div style="margin-top:16px;padding:14px 16px;background:#fff;border:1px solid var(--g200);border-radius:var(--radius)">';
@@ -3672,7 +3672,7 @@ charges:[
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' below plan</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*22600000))+'</div><div style="font-size:11px;color:var(--g500)">gross profit · '+gmCurr+'% of $22.6M</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*22600000))+'</div><div style="font-size:11px;color:var(--g500)">gross profit · '+gmCurr+'% of $16.8M</div></div>';
       h+='</div>';
       h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)">Tracking against budget &amp; financials — '+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' gap driven by crane re-rent premium on BESS. <span class="lk" onclick="go(\'billing\')">View cost breakdown</span></div>';
       h+='</div>';
@@ -5436,37 +5436,84 @@ charges:[
   }
 
   function fqTaxModal(id){ var r=fqById(id); if(!r)return; dpReview('equipment',r.ref); }
-  function fqOptModal(id){
-    var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
-    fqPickOwned = ns ? Math.min(r.reco,Math.min(r.avail.length,r.qty)) : 0;
-    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'\u00d7 '+r.item+'</div><div class="sub">'+r.project+' \u00b7 need by '+r.needby+' \u00b7 billed to project at '+fmt(r.o2sRate)+'/mo per unit</div></div>';
-    if(ns){ b+='<div class="fq-reco-badge">'+CC_SPARK+'Recommended: '+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u2014 maximizes margin given current availability</div>'; }
-    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" onclick="fqStep(-1)">\u2039</button><span id="fqOwnedN">0</span><button class="fq-sb" onclick="fqStep(1)">\u203a</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
+    function fqOptModal(id){
+    var r=fqById(id); if(!r)return; fqCurId=id;
+    fqPickOwned = Math.min(r.reco, Math.min(r.avail.length, r.qty));
+    var maxOwned=Math.min(r.avail.length,r.qty);
+    // Pre-compute scenarios for recommendation panel
+    var cAll=fqCompute(r,maxOwned), cReco=fqCompute(r,r.reco), cNone=fqCompute(r,0);
+    var ownCheaper=r.ownedCost<r.reRentRate;
+    var savPct=r.reRentRate>0?Math.round(Math.abs(r.reRentRate-r.ownedCost)/r.reRentRate*100):0;
+    var whyTxt;
+    if(maxOwned===0){
+      whyTxt='No owned units available for this class — fully re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/unit/mo (MSA).';
+    } else if(maxOwned>=r.qty){
+      whyTxt='All '+r.qty+' units available from owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. re-rent '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper, fully own to maximize margin.':'re-rent is '+savPct+'% cheaper but owned fleet is already available — use owned to avoid AP.');
+    } else {
+      whyTxt=maxOwned+' of '+r.qty+' units available from owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. '+r.vendor+' MSA rate '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper. Maximize owned units, re-rent only the shortfall.':'re-rent is '+savPct+'% cheaper, but using owned avoids cash outlay — recommend owned first.');
+    }
+    var recoLabel=r.reco+' owned · '+(r.qty-r.reco)+' re-rent · '+cReco.pct.toFixed(1)+'% margin';
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · billed at '+fmt(r.o2sRate)+'/unit/mo</div></div>';
+    // Recommendation panel
+    b+='<div style="background:var(--g50);border:1px solid var(--g200);border-left:3px solid var(--info,#3b82f6);border-radius:7px;padding:12px 14px;margin-bottom:14px">';
+    b+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+    b+='<span style="font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--info,#3b82f6);text-transform:uppercase">'+CC_SPARK+'02S Recommendation</span>';
+    b+='<span id="fqOverrideBadge" style="display:none;font-size:10px;font-weight:700;color:var(--warning);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:4px;padding:1px 7px;letter-spacing:.04em">Override active</span>';
+    b+='</div>';
+    b+='<div style="font-size:14px;font-weight:700;color:var(--charcoal);margin-bottom:4px">'+recoLabel+'</div>';
+    b+='<div style="font-size:11.5px;color:var(--g600);margin-bottom:10px">'+whyTxt+'</div>';
+    // 3-scenario comparison
+    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
+    var scenarios=[
+      {label:'Max owned ('+maxOwned+')',c:cAll,isReco:r.reco===maxOwned},
+      {label:'Recommended',c:cReco,isReco:true,highlight:true},
+      {label:'All re-rent',c:cNone,isReco:r.reco===0}
+    ];
+    scenarios.forEach(function(s){
+      var same=s.highlight;
+      b+='<div style="background:'+(same?'var(--info-tint,#eff6ff)':'#fff')+';border:1px solid '+(same?'var(--info,#3b82f6)':'var(--g200)')+';border-radius:5px;padding:7px 9px;text-align:center">';
+      b+='<div style="font-size:10px;color:'+(same?'var(--info,#3b82f6)':'var(--g500)')+';font-weight:600;margin-bottom:3px">'+s.label+'</div>';
+      b+='<div style="font-size:14px;font-weight:700;color:'+(same?'var(--info,#3b82f6)':s.c.pct<10?'var(--red)':'var(--g800)')+'">'+s.c.pct.toFixed(1)+'%</div>';
+      b+='<div style="font-size:10px;color:var(--g400)">'+fmt(s.c.margin)+'/mo</div>';
+      b+='</div>';
+    });
+    b+='</div></div>';
+    // Allocation controls
+    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
-    b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
+    // Override reason (shown only when deviating from recommendation)
+    b+='<div id="fqOverrideSection" style="display:none;margin-top:12px;padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:6px">';
+    b+='<div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:6px">Reason for override <span style="font-weight:400;color:var(--g500)">(equipment manager note — saved with allocation)</span></div>';
+    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid rgba(245,158,11,.35);border-radius:4px;padding:6px 8px;color:var(--g800);background:#fff;resize:vertical" placeholder="Why are you deviating from the recommendation? e.g., unit reserved for another project, equipment condition issue, yard distance / haul cost, customer request..."></textarea>';
+    b+='</div>';
+    // Source yard
+    b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:8px;border-top:1px solid var(--g100)">';
     b+='<div style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0">Source yard</div>';
     var _yreco=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
     b+='<select id="fqYardSel" style="font-size:12px;border:1px solid var(--g200);border-radius:5px;padding:4px 8px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+((r.yard||_yreco)===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
-    b+='<span style="font-size:11px;color:var(--g400)">'+( ns&&r.avail&&r.avail.length>0?'Recommended based on owned unit location':'Assign fulfillment source')+'</span>';
+    b+='<span style="font-size:11px;color:var(--g400)">'+(r.avail&&r.avail.length>0?'Recommended based on owned unit location':'Assign fulfillment source')+'</span>';
     b+='</div>';
     b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="fqAccept()">Accept &amp; allocate</button></div></div>';
-    openModal('Fulfill \u2014 '+r.item, b); fqRefresh();
+    openModal('Fulfill — '+r.item, b); fqRefresh();
   }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
     if(gel('fqOwnedN'))gel('fqOwnedN').textContent=c.owned;
     if(gel('fqRerentN'))gel('fqRerentN').textContent=c.rerent;
     var used=r.avail.slice(0,c.owned);
-    var usedTxt = used.length ? (used.slice(0,4).map(function(u){return u.id+' \u00b7 '+u.yard;}).join('<br>')+(used.length>4?'<br>+'+(used.length-4)+' more':'')) : (r.avail.length?(r.avail.length+' units available (none selected)'):'No owned units available for this class');
+    var usedTxt = used.length ? (used.slice(0,4).map(function(u){return u.id+'· '+u.yard;}).join('<br>')+(used.length>4?'<br>+'+(used.length-4)+' more':'')) : (r.avail.length?(r.avail.length+' units available (none selected)'):'No owned units available for this class');
     if(gel('fqAvail'))gel('fqAvail').innerHTML=usedTxt;
     if(gel('fqRerentLine'))gel('fqRerentLine').innerHTML=c.rerent>0?(r.vendor+' @ '+fmt(r.reRentRate)+'/mo (MSA)'):'\u2014';
     if(gel('fqAR'))gel('fqAR').textContent=fmt(c.ar)+'/mo';
     if(gel('fqOC'))gel('fqOC').textContent='\u2212'+fmt(c.oc)+'/mo';
     if(gel('fqRC'))gel('fqRC').textContent='\u2212'+fmt(c.rc)+'/mo';
     if(gel('fqMargin'))gel('fqMargin').innerHTML=fmt(c.margin)+'/mo<span class="fq-pct">'+c.pct.toFixed(1)+'%</span>';
+    var isOverride=(fqPickOwned!==r.reco);
+    if(gel('fqOverrideBadge'))gel('fqOverrideBadge').style.display=isOverride?'inline-flex':'none';
+    if(gel('fqOverrideSection'))gel('fqOverrideSection').style.display=isOverride?'block':'none';
   }
   function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
-  function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent \u00b7 '+fmt(c.margin)+'/mo margin'); }
+  function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
   function fqPriceModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
     var b='<div class="fq-req"><div class="fq-req-t">'+r.item+'</div><div class="sub">'+r.project+' \u00b7 '+r.qty+' \u00b7 need by '+r.needby+'</div></div>';
