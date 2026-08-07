@@ -2656,7 +2656,7 @@ charges:[
   function renderGMDashKPI(){
     var mount=document.getElementById('gmDashKPI'); if(!mount)return;
     var ns=CURRENT==='ns';
-    var gmPlan=9.0,gmCurr=10.6,gmProj=16780000;
+    var gmPlan=10.9,gmCurr=10.4,gmProj=16780000;
     var gmTone=gmCurr<gmPlan-1?'bad':gmCurr<gmPlan?'warn':'ok';
     var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
     var view=window._gmDashView||'summary';
@@ -6118,6 +6118,15 @@ charges:[
     });
     h+='</div>';
 
+    var mColor=portMarginPct>12?'var(--success)':portMarginPct>5?'var(--g700)':'var(--red)';
+    h+='<div style="display:flex;align-items:center;gap:14px;padding:10px 16px;background:#f8fafb;border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
+    h+='<div style="font-size:28px;font-weight:800;color:'+mColor+'">'+portMarginPct.toFixed(1)+'%</div>';
+    h+='<div style="border-left:1px solid var(--g200);padding-left:14px">';
+    h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Planned margin · '+projLbl+'</div>';
+    h+='<div style="font-size:12px;color:var(--g500)">'+fmtBig(portMargin)+' · opportunity '+fmtBig(portROM)+' minus budget '+fmtBig(portBudget)+'</div>';
+    h+='</div>';
+    h+='<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="go(\'home\')">→ dashboard</button>';
+    h+='</div>';
     h+='<div class="vitals" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">';
     h+='<div class="vital neu"><div class="vk">02S opportunity (ROM)</div><div class="vv">'+fmtBig(portROM)+'</div>';
     h+='<div class="vsub">planned AR · '+projLbl+'</div></div>';
