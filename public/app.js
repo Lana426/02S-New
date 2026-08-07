@@ -7670,7 +7670,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
         var ahExpId='ahx-'+p+'-'+_rowI;
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="ccGoFulfill(\''+r2.id+'\')"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px">\u2192 Fulfillment queue</button></div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="ccGoFulfill(\''+r2.id+'\')"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(_DP_TONE[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px">\u2192 Fulfillment queue</button></div></div>';
       }
     });
     if(!isDpView&&!dpShowAll&&moreN>0){
@@ -7684,7 +7684,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var gtAH='1.4fr 1.2fr 100px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtAH+'"><span>Request</span><span>Details</span><span>Status</span><span>Action</span></div>';
         _ahRows.forEach(function(r2){
-          h+='<div class="dp-row" style="grid-template-columns:'+gtAH+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(DP_ST[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
+          h+='<div class="dp-row" style="grid-template-columns:'+gtAH+'"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(_DP_TONE[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="dpReview(\''+p+'\',\''+r2.id+'\')">View →</button></div></div>';
         });
         h+='</div>';
       }
