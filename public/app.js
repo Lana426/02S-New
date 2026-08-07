@@ -5463,11 +5463,11 @@ charges:[
     var savPct=r.reRentRate>0?Math.round(Math.abs(r.reRentRate-r.ownedCost)/r.reRentRate*100):0;
     var whyTxt;
     if(maxOwned===0){
-      whyTxt='No owned units available — fully re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/unit/mo (MSA).';
+      whyTxt='No owned units — re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/mo.';
     } else if(maxOwned>=r.qty){
-      whyTxt='All '+r.qty+' units available from the owned fleet. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. re-rent '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper.':'re-rent is '+savPct+'% cheaper but owned fleet is available.');
+      whyTxt=r.qty+' owned available · '+fmt(r.ownedCost)+'/mo owned vs '+fmt(r.reRentRate)+'/mo re-rent'+(ownCheaper?' · '+savPct+'% cheaper to own':' · re-rent '+savPct+'% cheaper')+'. Using full fleet.';
     } else {
-      whyTxt=maxOwned+' of '+r.qty+' units available. Owned cost '+fmt(r.ownedCost)+'/unit/mo vs. '+r.vendor+' MSA '+fmt(r.reRentRate)+'/unit/mo — '+(ownCheaper?'owned is '+savPct+'% cheaper. Maximize owned, re-rent only the shortfall.':'re-rent is '+savPct+'% cheaper, but using owned avoids AP outlay.');
+      whyTxt=maxOwned+' owned available · '+fmt(r.ownedCost)+'/mo owned vs '+fmt(r.reRentRate)+'/mo re-rent ('+r.vendor+')'+(ownCheaper?' · own '+savPct+'% cheaper, maximize fleet use':' · re-rent '+savPct+'% cheaper, but avoids AP outlay')+'.';
     }
     // Request header
     var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · billed at '+fmt(r.o2sRate)+'/unit/mo</div></div>';
@@ -5478,7 +5478,7 @@ charges:[
     b+='<div style="font-size:12px;color:var(--g600);margin-bottom:12px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
-    [{label:'Max owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended',c:cReco,hi:true},{label:'All re-rent',c:cNone,hi:false}].forEach(function(s){
+    [{label:'All owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended mix',c:cReco,hi:true},{label:'All sourced',c:cNone,hi:false}].forEach(function(s){
       b+='<div style="background:'+(s.hi?'#f3f4f6':'#fff')+';border:1px solid '+(s.hi?'var(--g400)':'var(--g200)')+';border-radius:5px;padding:6px 8px;text-align:center">';
       b+='<div style="font-size:9.5px;color:'+(s.hi?'var(--charcoal)':'var(--g400)')+';font-weight:600;margin-bottom:2px">'+s.label+'</div>';
       b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'var(--charcoal)':s.c.pct<8?'#dc2626':'#374151')+'">'+s.c.pct.toFixed(1)+'%</div>';
@@ -5495,7 +5495,7 @@ charges:[
     // Override section (hidden)
     b+='<div id="fqOverrideSec" style="display:none">';
     b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">You are overriding the recommended allocation — adjust the split below and provide a reason.</div>';
-    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
+    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" type="button" id="fqStepDown" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" type="button" id="fqStepUp" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
     // Source yard (inside override section)
     b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
@@ -5524,9 +5524,9 @@ charges:[
     if(gel('fqOC'))gel('fqOC').textContent='\u2212'+fmt(c.oc)+'/mo';
     if(gel('fqRC'))gel('fqRC').textContent='\u2212'+fmt(c.rc)+'/mo';
     if(gel('fqMargin'))gel('fqMargin').innerHTML=fmt(c.margin)+'/mo<span class="fq-pct">'+c.pct.toFixed(1)+'%</span>';
-    var isOverride=(fqPickOwned!==r.reco);
-    if(gel('fqOverrideBadge'))gel('fqOverrideBadge').style.display=isOverride?'inline-flex':'none';
-    if(gel('fqOverrideSection'))gel('fqOverrideSection').style.display=isOverride?'block':'none';
+    var maxO=Math.min(r.avail.length,r.qty);
+    if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
+    if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
   }
   function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
   function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
