@@ -2613,7 +2613,7 @@ charges:[
     if(dEl)dEl.textContent=deliveries||0;if(oEl)oEl.textContent=offrents||0;if(bEl)bEl.textContent=pendingBills||0;
   }
   function openMarginPlanModal(){
-    var gmPlan=9.0,gmCurr=10.6,gmProj=16780000;
+    var gmPlan=10.9,gmCurr=10.4,gmProj=16780000;
     var GP=[
       {l:'Equipment',     p:18.0,a:15.2,note:'Re-rent crane premium on BESS — primary gap driver'},
       {l:'Prefab',        p:14.0,a:13.5,note:'Headwall fabrication slightly behind forecast'},
@@ -3661,7 +3661,7 @@ charges:[
     }
     h+='</div>';
     if(!BF_PILLAR){
-      var gmPlan=9.0,gmCurr=10.6;
+      var gmPlan=10.9,gmCurr=10.4;
       var gmTone=gmCurr<gmPlan-1.0?'bad':gmCurr<gmPlan?'warn':'ok';
       var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
       h+='<div style="margin-top:16px;padding:14px 16px;background:#fff;border:1px solid var(--g200);border-radius:var(--radius)">';
@@ -6066,132 +6066,128 @@ charges:[
   }
   function ceSetProj(p){ _ceProj=p; renderMargin(); }
 
+  var _rmProj='All';
+  function rmSetProj(p){ _rmProj=p; renderMargin(); }
   function renderMargin(){
     var mount=gel('ccMargin'); if(!mount)return;
     var ns=CURRENT==='ns';
     var pillarFilter=_PERSONA_PILLAR[ccPersona];
     var isFSM=!pillarFilter;
-    var PROJS=['Hercules Solar + BESS','Riverside Medical Center','Cimarron Data Center'];
     var PKEYS=['hercules','riverside','cimarron'];
     var PSHORT={hercules:'Hercules',riverside:'Riverside',cimarron:'Cimarron'};
-    var CE_PILLARS=['equipment','logistics','profservices','procurement','prefab'];
-    var CE_LBL={equipment:'Equipment',logistics:'Logistics',profservices:'Professional services',procurement:'Procurement',prefab:'Pre-fab'};
-    var CE_NAV={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
-    var pillars=isFSM?CE_PILLARS:[pillarFilter];
+    var PIL=['equipment','logistics','profservices','procurement','prefab'];
+    var PIL_LBL={equipment:'Equipment',logistics:'Logistics',profservices:'Professional services',procurement:'Procurement',prefab:'Pre-fab'};
+    var PIL_NAV={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
+    var selKeys=_rmProj==='All'?PKEYS:[ceProjKey(_rmProj)];
+    var pillars=isFSM?PIL:[pillarFilter];
 
-    // Pre-aggregate per pillar × project → portfolio totals
     var portROM=0,portBudget=0,portCommit=0,portActuals=0;
     var PD={};
     pillars.forEach(function(pl){
-      var plROM=0,plBudget=0,plCommit=0,plActuals=0,plPend=0;
-      var projRows=[];
-      PKEYS.forEach(function(pk){
+      var plROM=0,plBudget=0,plCommit=0,plActuals=0;
+      var rows=[];
+      selKeys.forEach(function(pk){
         var lin=(CC_DP_LINEAGE[pl]&&CC_DP_LINEAGE[pl][pk])?CC_DP_LINEAGE[pl][pk].margin:null;
         var cm=(CC_CMIC_DATA[pl]&&CC_CMIC_DATA[pl][pk])?CC_CMIC_DATA[pl][pk]:null;
         var rom=lin?ceParseAmt(lin.rom):0;
         var budget=cm?cm.origBudget+(cm.co||0):0;
         var commit=cm?cm.committed:0;
         var actuals=cm?cm.spent:0;
-        var pend=cm?cm.pendingCO:0;
-        plROM+=rom; plBudget+=budget; plCommit+=commit; plActuals+=actuals; plPend+=pend;
-        projRows.push({pk:pk,rom:rom,budget:budget,commit:commit,actuals:actuals,pend:pend,cm:cm,lin:lin});
+        plROM+=rom; plBudget+=budget; plCommit+=commit; plActuals+=actuals;
+        rows.push({pk:pk,rom:rom,budget:budget,commit:commit,actuals:actuals});
       });
       portROM+=plROM; portBudget+=plBudget; portCommit+=plCommit; portActuals+=plActuals;
-      PD[pl]={rom:plROM,budget:plBudget,commit:plCommit,actuals:plActuals,pend:plPend,rows:projRows};
+      PD[pl]={rom:plROM,budget:plBudget,commit:plCommit,actuals:plActuals,rows:rows};
     });
-
-    var budgetCvB=portCommit-portBudget;
-    var budgetPct=portBudget?Math.round(portBudget/portROM*100):0;
+    var portMargin=portROM-portBudget;
+    var portMarginPct=portROM?portMargin/portROM*100:0;
+    var cvbPort=portCommit-portBudget;
     var commitPct=portBudget?Math.round(portCommit/portBudget*100):0;
     var actualsPct=portROM?Math.round(portActuals/portROM*100):0;
 
+    var projLbl=_rmProj==='All'?'All projects':(_rmProj.indexOf('Hercules')>=0?'Hercules':_rmProj.indexOf('Riverside')>=0?'Riverside':'Cimarron');
     var h='<div class="phead"><div><h1>Project margin</h1><div class="meta">';
-    h+='<span class="chip">02S opportunities · CMiC budget · actuals</span>';
-    h+='<span class="chip">All projects · by pillar</span>';
+    h+='<span class="chip">02S opportunity · CMiC budget · actuals</span>';
+    h+='<span class="chip">'+projLbl+'</span>';
     h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>';
     h+='</div></div></div>';
 
-    // Portfolio KPI vitals
-    h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr);margin-bottom:22px">';
-
-    h+='<div class="vital neu"><div class="vk">02S opportunity (ROM)</div>';
-    h+='<div class="vv">'+fmtBig(portROM)+'</div>';
-    h+='<div class="vsub">planned AR · all projects</div></div>';
-
-    h+='<div class="vital neu"><div class="vk">CMiC budget</div>';
-    h+='<div class="vv">'+fmtBig(portBudget)+'</div>';
-    h+='<div class="vsub">'+budgetPct+'% of ROM · '+(portROM-portBudget>0?fmtBig(portROM-portBudget)+' planned margin':'')+'</div></div>';
-
-    var commitTone=budgetCvB>portBudget*0.03?'bad':budgetCvB<-portBudget*0.05?'ok':'neu';
-    h+='<div class="vital '+commitTone+'"><div class="vk">Committed to date</div>';
-    h+='<div class="vv">'+fmtBig(portCommit)+'</div>';
-    h+='<div class="vsub">'+commitPct+'% of budget'+(budgetCvB>0?' · <b style="color:var(--red)">▲ '+fmtBig(budgetCvB)+' over</b>':budgetCvB<0?' · '+fmtBig(-budgetCvB)+' under':' · on track')+'</div></div>';
-
-    h+='<div class="vital neu"><div class="vk">Actuals</div>';
-    h+='<div class="vv">'+fmtBig(portActuals)+'</div>';
-    h+='<div class="vsub">'+actualsPct+'% of ROM · AR billed to projects</div></div>';
-
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">';
+    [{k:'All',l:'All projects'},{k:'Hercules Solar + BESS',l:'Hercules'},{k:'Riverside Medical Center',l:'Riverside'},{k:'Cimarron Data Center',l:'Cimarron'}].forEach(function(p){
+      h+='<button class="bex-fsmp'+(_rmProj===p.k?' active':'')+'" onclick="rmSetProj(\''+p.k+'\')">'+p.l+'</button>';
+    });
     h+='</div>';
 
-    // Per-pillar cards
+    h+='<div class="vitals" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">';
+    h+='<div class="vital neu"><div class="vk">02S opportunity (ROM)</div><div class="vv">'+fmtBig(portROM)+'</div>';
+    h+='<div class="vsub">planned AR · '+projLbl+'</div></div>';
+    h+='<div class="vital neu"><div class="vk">CMiC budget</div><div class="vv">'+fmtBig(portBudget)+'</div>';
+    h+='<div class="vsub">'+(portROM?Math.round(portBudget/portROM*100)+'% of ROM':'—')+'</div></div>';
+    var cvbTone=cvbPort>portBudget*0.03?'bad':cvbPort<-portBudget*0.05?'ok':'neu';
+    h+='<div class="vital '+cvbTone+'"><div class="vk">Committed</div><div class="vv">'+fmtBig(portCommit)+'</div>';
+    h+='<div class="vsub">'+commitPct+'% of budget'+(cvbPort>0?' · <b style="color:var(--red)">▲ '+fmtBig(cvbPort)+' over</b>':cvbPort<0?' · '+fmtBig(-cvbPort)+' under':' · on track')+'</div></div>';
+    h+='<div class="vital neu"><div class="vk">Actuals</div><div class="vv">'+fmtBig(portActuals)+'</div>';
+    h+='<div class="vsub">'+actualsPct+'% of ROM · AR billed</div></div>';
+    var mTone=portMarginPct>12?'ok':portMarginPct>5?'neu':'bad';
+    h+='<div class="vital '+mTone+'"><div class="vk">Planned margin</div><div class="vv">'+fmtBig(portMargin)+'</div>';
+    h+='<div class="vsub">'+portMarginPct.toFixed(1)+'% · ROM minus budget</div></div>';
+    h+='</div>';
+
     pillars.forEach(function(pl){
       var pd=PD[pl];
-      var maxVal=Math.max(pd.rom,pd.budget,pd.commit,pd.actuals)*1.12||1;
-      var cvb=pd.commit-pd.budget;
-      var borderColor=cvb>pd.budget*0.05?'var(--red)':cvb<-pd.budget*0.05?'var(--success)':'var(--g300)';
-      var badge=Math.abs(cvb)<pd.budget*0.01?
-        '<span class="tag ok">On budget</span>':
-        (cvb>0?'<span class="tag bad">▲ '+fmtBig(cvb)+' over</span>':'<span class="tag ok">▼ '+fmtBig(-cvb)+' under</span>');
-
-      h+='<div style="border:1px solid var(--g200);border-left:3px solid '+borderColor+';border-radius:8px;padding:16px 18px;margin-bottom:14px">';
-      // Header
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
-      h+='<div style="font-size:14px;font-weight:700;color:var(--charcoal)">'+CE_LBL[pl]+'</div>'+badge;
-      h+='</div>';
-
-      // 4-rail bar: ROM | Budget | Committed | Actuals
+      var plM=pd.rom-pd.budget;
+      var plMPct=pd.rom?plM/pd.rom*100:0;
+      var cvb2=pd.commit-pd.budget;
+      var bc=cvb2>pd.budget*0.05?'var(--red)':cvb2<-pd.budget*0.05?'var(--success)':'var(--g300)';
+      var badge=Math.abs(cvb2)<pd.budget*0.01?'<span class="tag ok">On budget</span>':
+        (cvb2>0?'<span class="tag bad">▲ '+fmtBig(cvb2)+' over</span>':'<span class="tag ok">▼ '+fmtBig(-cvb2)+' under</span>');
+      var mBadge=plMPct>12?'<span class="tag ok">'+plMPct.toFixed(1)+'% margin</span>':
+        plMPct>5?'<span class="tag neu">'+plMPct.toFixed(1)+'% margin</span>':
+        '<span class="tag bad">'+plMPct.toFixed(1)+'% margin</span>';
+      h+='<div style="border:1px solid var(--g200);border-left:3px solid '+bc+';border-radius:8px;padding:16px 18px;margin-bottom:14px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;justify-content:space-between;margin-bottom:14px">';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--charcoal)">'+PIL_LBL[pl]+'</div>';
+      h+='<div style="display:flex;gap:6px">'+badge+mBadge+'</div></div>';
+      var maxV=Math.max(pd.rom,pd.budget,pd.commit,pd.actuals)*1.12||1;
       var rails=[
-        {label:'ROM',val:pd.rom,color:'var(--g300)',note:fmtBig(pd.rom)+' · 02S opportunity'},
-        {label:'Budget',val:pd.budget,color:'var(--info,#3b82f6)',note:fmtBig(pd.budget)+' · CMiC cost budget'},
-        {label:'Committed',val:pd.commit,color:(cvb>pd.budget*0.05?'var(--red)':cvb<-pd.budget*0.05?'var(--g700)':'var(--g800)'),note:fmtBig(pd.commit)+' · POs + subcontracts'},
-        {label:'Actuals',val:pd.actuals,color:'var(--success)',note:fmtBig(pd.actuals)+' · AR billed to projects'}
+        {lbl:'ROM',val:pd.rom,col:'var(--g400)',note:fmtBig(pd.rom)+' · 02S opportunity'},
+        {lbl:'Budget',val:pd.budget,col:'var(--info,#3b82f6)',note:fmtBig(pd.budget)+' · '+fmtBig(plM)+' margin ('+plMPct.toFixed(1)+'%)'},
+        {lbl:'Committed',val:pd.commit,col:(cvb2>pd.budget*0.05?'var(--red)':'var(--g700)'),note:fmtBig(pd.commit)+' · POs + subcontracts'},
+        {lbl:'Actuals',val:pd.actuals,col:'var(--success)',note:fmtBig(pd.actuals)+' · AR billed to date'}
       ];
       h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">';
       rails.forEach(function(r){
-        var pct=Math.min(100,(r.val/maxVal)*100);
+        var pct2=Math.min(100,(r.val/maxV)*100);
         h+='<div style="display:grid;grid-template-columns:72px 1fr 72px 1fr;align-items:center;gap:10px">';
-        h+='<div style="font-size:11px;font-weight:500;color:var(--g500)">'+r.label+'</div>';
-        h+='<div style="background:var(--g100);border-radius:3px;height:7px"><div style="width:'+pct.toFixed(1)+'%;height:7px;border-radius:3px;background:'+r.color+';transition:width .4s"></div></div>';
+        h+='<div style="font-size:11px;font-weight:500;color:var(--g500)">'+r.lbl+'</div>';
+        h+='<div style="background:var(--g100);border-radius:3px;height:7px"><div style="width:'+pct2.toFixed(1)+'%;height:7px;border-radius:3px;background:'+r.col+';transition:width .4s"></div></div>';
         h+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);text-align:right">'+fmtBig(r.val)+'</div>';
-        h+='<div style="font-size:10.5px;color:var(--g400)">'+r.note+'</div>';
-        h+='</div>';
+        h+='<div style="font-size:10.5px;color:var(--g400)">'+r.note+'</div></div>';
       });
       h+='</div>';
-
-      // Per-project breakdown table
-      var gt='1fr 80px 80px 80px 80px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+';font-size:10.5px">';
-      h+='<span>Project</span><span class="r">ROM</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">Actuals</span></div>';
-      pd.rows.forEach(function(row){
-        var rvb=row.commit-row.budget;
-        var rtone=rvb>row.budget*0.05?'var(--red)':rvb<-row.budget*0.05?'var(--success)':'var(--g700)';
-        h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
-        h+='<div>'+PSHORT[row.pk]+'</div>';
-        h+='<div class="r" style="color:var(--g600)">'+fmtBig(row.rom)+'</div>';
-        h+='<div class="r" style="color:var(--info,#3b82f6)">'+fmtBig(row.budget)+'</div>';
-        h+='<div class="r" style="color:'+rtone+'">'+fmtBig(row.commit)+'</div>';
-        h+='<div class="r" style="color:var(--success)">'+fmtBig(row.actuals)+'</div>';
+      if(selKeys.length>1){
+        var gt='1fr 80px 80px 80px 80px 70px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+';font-size:10.5px">';
+        h+='<span>Project</span><span class="r">ROM</span><span class="r">Budget</span><span class="r">Committed</span><span class="r">Actuals</span><span class="r">Margin</span></div>';
+        pd.rows.forEach(function(row){
+          var rMPct=row.rom?((row.rom-row.budget)/row.rom*100):0;
+          var rMCol=rMPct>12?'var(--success)':rMPct>5?'var(--g700)':'var(--red)';
+          var rvb2=row.commit-row.budget;
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+          h+='<div>'+PSHORT[row.pk]+'</div>';
+          h+='<div class="r" style="color:var(--g600)">'+fmtBig(row.rom)+'</div>';
+          h+='<div class="r" style="color:var(--info,#3b82f6)">'+fmtBig(row.budget)+'</div>';
+          h+='<div class="r" style="color:'+(rvb2>row.budget*0.05?'var(--red)':'var(--g600)')+'">'+fmtBig(row.commit)+'</div>';
+          h+='<div class="r" style="color:var(--success)">'+fmtBig(row.actuals)+'</div>';
+          h+='<div class="r" style="font-weight:600;color:'+rMCol+'">'+rMPct.toFixed(1)+'%</div></div>';
+        });
         h+='</div>';
-      });
-      h+='</div>';
-
-      // Footer CTA
+      }
       h+='<div style="display:flex;justify-content:flex-end;margin-top:12px">';
-      h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\''+CE_NAV[pl]+'\')">'+CE_LBL[pl]+' demand plan →</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="ccGo(\''+PIL_NAV[pl]+'\')">'+PIL_LBL[pl]+' demand plan →</button>';
       h+='</div></div>';
     });
-
-    h+='<div class="cc-arch"><span>ROM = planned 02S AR over project life (MARGIN_DATA plan rate × project months). Budget = CMiC cost baseline + approved COs. Actuals = AR billed to date. Numbers reconcile to per-pillar demand plan monthly rates.</span></div>';
+    h+='<div class="cc-arch"><span>ROM = arP × project months (MARGIN_DATA). Budget = costP × months + approved COs. Actuals = costA × months elapsed.</span></div>';
     mount.innerHTML=h;
   }
   function mgModal(p){
@@ -6370,51 +6366,51 @@ charges:[
 var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
   var CC_DP_LINEAGE={
     equipment:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$3.1M',note:'ROM at opportunity stage — solar + BESS equipment package',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$840K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$1,220K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$390K'},{label:'CCEP · compliance, tracking & handling',est:'$280K'},{label:'Contingency (12%)',est:'$370K'},{label:'Total estimate',est:'$3.1M',bold:true}]},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:12,note:'Baseline at project award — detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration',links:[{label:'Telehandler 10K (Sector 2)',rowIdx:9},{label:'Boom lift 60 ft',rowIdx:10}]}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.8M',note:'ROM for hospital campus earthwork + MEP',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$520K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$840K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$240K'},{label:'CCEP · compliance & tracking',est:'$130K'},{label:'Contingency (4%)',est:'$70K'},{label:'Total estimate',est:'$1.8M',bold:true}]},baseline:{id:'DP-EQ-RIV-BL1',date:'Apr 2025',total:'$1.62M',items:3,note:'Baseline at LOI — earthwork + foundation equipment'},delta:{added:1,value:'+$88K',reason:'Material handling scope expansion',links:[{label:'Tower crane (self-erect)',rowIdx:0}]}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$2.2M',note:'ROM for data center shell + MEP',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$680K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$1,040K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$290K'},{label:'CCEP · compliance & tracking',est:'$140K'},{label:'Contingency (2%)',est:'$50K'},{label:'Total estimate',est:'$2.2M',bold:true}]},baseline:{id:'DP-EQ-CIM-BL1',date:'May 2025',total:'$1.98M',items:2,note:'Baseline at NTP — data center shell and core equipment'},delta:{added:2,value:'+$220K',reason:'Generator + UPS scope added post-design',links:[{label:'Excavator 45K',rowIdx:0},{label:'Excavator 50T',rowIdx:1}]}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$4.2M',note:'ROM at opportunity stage — solar + BESS equipment package',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$840K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$1,220K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$390K'},{label:'CCEP · compliance, tracking & handling',est:'$280K'},{label:'Contingency (12%)',est:'$370K'},{label:'Total estimate',est:'$4.2M',bold:true}]},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:12,note:'Baseline at project award — detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration',links:[{label:'Telehandler 10K (Sector 2)',rowIdx:9},{label:'Boom lift 60 ft',rowIdx:10}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$4.5M',note:'ROM for hospital campus earthwork + MEP',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$520K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$840K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$240K'},{label:'CCEP · compliance & tracking',est:'$130K'},{label:'Contingency (4%)',est:'$70K'},{label:'Total estimate',est:'$4.5M',bold:true}]},baseline:{id:'DP-EQ-RIV-BL1',date:'Apr 2025',total:'$1.62M',items:3,note:'Baseline at LOI — earthwork + foundation equipment'},delta:{added:1,value:'+$88K',reason:'Material handling scope expansion',links:[{label:'Tower crane (self-erect)',rowIdx:0}]}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$3.8M',note:'ROM for data center shell + MEP',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$680K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$1,040K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$290K'},{label:'CCEP · compliance & tracking',est:'$140K'},{label:'Contingency (2%)',est:'$50K'},{label:'Total estimate',est:'$3.8M',bold:true}]},baseline:{id:'DP-EQ-CIM-BL1',date:'May 2025',total:'$1.98M',items:2,note:'Baseline at NTP — data center shell and core equipment'},delta:{added:2,value:'+$220K',reason:'Generator + UPS scope added post-design',links:[{label:'Excavator 45K',rowIdx:0},{label:'Excavator 50T',rowIdx:1}]}}},
     logistics:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$480K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$180K'},{label:'GC/GR Svcs · crane mobilizations',est:'$220K'},{label:'Logistics General · permits, escorts & flagging',est:'$48K'},{label:'Contingency (7%)',est:'$32K'},{label:'Total estimate',est:'$480K',bold:true}]},baseline:{id:'DP-LOG-HRC-BL1',date:'Mar 2025',total:'$412K',items:5,note:'Baseline logistics plan at award'},delta:{added:1,value:'+$38K',reason:'Oversize crane move added',links:[{label:'BESS container placements',rowIdx:1}]}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$290K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$110K'},{label:'GC/GR Svcs · crane mobilizations',est:'$140K'},{label:'Logistics General · permits & escorts',est:'$30K'},{label:'Contingency (3%)',est:'$10K'},{label:'Total estimate',est:'$290K',bold:true}]},baseline:{id:'DP-LOG-RIV-BL1',date:'Apr 2025',total:'$254K',items:3,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$320K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$140K'},{label:'GC/GR Svcs · crane mobilizations',est:'$140K'},{label:'Logistics General · permits & escorts',est:'$28K'},{label:'Contingency (4%)',est:'$12K'},{label:'Total estimate',est:'$320K',bold:true}]},draft:{id:'DP-LOG-CIM-D1',date:'Jul 2026',total:'$310K est.',items:2,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$648K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$180K'},{label:'GC/GR Svcs · crane mobilizations',est:'$220K'},{label:'Logistics General · permits, escorts & flagging',est:'$48K'},{label:'Contingency (7%)',est:'$32K'},{label:'Total estimate',est:'$648K',bold:true}]},baseline:{id:'DP-LOG-HRC-BL1',date:'Mar 2025',total:'$412K',items:5,note:'Baseline logistics plan at award'},delta:{added:1,value:'+$38K',reason:'Oversize crane move added',links:[{label:'BESS container placements',rowIdx:1}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$216K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$110K'},{label:'GC/GR Svcs · crane mobilizations',est:'$140K'},{label:'Logistics General · permits & escorts',est:'$30K'},{label:'Contingency (3%)',est:'$10K'},{label:'Total estimate',est:'$216K',bold:true}]},baseline:{id:'DP-LOG-RIV-BL1',date:'Apr 2025',total:'$254K',items:3,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$220K',note:'ROM logistics envelope',lines:[{label:'Transport & Warehouse · oversize hauls',est:'$140K'},{label:'GC/GR Svcs · crane mobilizations',est:'$140K'},{label:'Logistics General · permits & escorts',est:'$28K'},{label:'Contingency (4%)',est:'$12K'},{label:'Total estimate',est:'$220K',bold:true}]},draft:{id:'DP-LOG-CIM-D1',date:'Jul 2026',total:'$310K est.',items:2,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}}},
     procurement:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$920K',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead electrical (switchgear, transformers)',est:'$480K'},{label:'Sm Tools & Consum · structural & bulk materials',est:'$220K'},{label:'Equip - CFE · instrumentation & controls',est:'$160K'},{label:'Procure General · misc bulk & consumables',est:'$60K'},{label:'Total estimate',est:'$920K',bold:true}]},baseline:{id:'DP-PRO-HRC-BL1',date:'Mar 2025',total:'$840K',items:11,note:'Baseline at award — long-lead items locked'},delta:{added:2,value:'+$118K',reason:'Solar DC cabling + monitoring sensors added',links:[{label:'Solar DC cabling',rowIdx:11},{label:'Monitoring sensors',rowIdx:12}]}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$560K',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead mechanical (pumps, AHU)',est:'$290K'},{label:'Sm Tools & Consum · structural & bulk materials',est:'$140K'},{label:'Procure General · misc bulk & consumables',est:'$80K'},{label:'Contingency (9%)',est:'$50K'},{label:'Total estimate',est:'$560K',bold:true}]},baseline:{id:'DP-PRO-RIV-BL1',date:'Apr 2025',total:'$498K',items:3,note:'Baseline at LOI'},delta:{added:1,value:'+$62K',reason:'Structural bolt order added',links:[{label:'Structural bolt package',rowIdx:3}]}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$680K',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead electrical (UPS, switchgear)',est:'$360K'},{label:'Sm Tools & Consum · structural & architectural',est:'$180K'},{label:'Equip - CFE · instrumentation & low-voltage',est:'$90K'},{label:'Procure General · contingency',est:'$50K'},{label:'Total estimate',est:'$680K',bold:true}]},baseline:{id:'DP-PRO-CIM-BL1',date:'May 2025',total:'$612K',items:4,note:'Baseline at NTP'},delta:{added:1,value:'+$58K',reason:'UPS bypass cable added',links:[{label:'UPS bypass cable assembly',rowIdx:4}]}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$7.6M',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead electrical (switchgear, transformers)',est:'$480K'},{label:'Sm Tools & Consum · structural & bulk materials',est:'$220K'},{label:'Equip - CFE · instrumentation & controls',est:'$160K'},{label:'Procure General · misc bulk & consumables',est:'$60K'},{label:'Total estimate',est:'$7.6M',bold:true}]},baseline:{id:'DP-PRO-HRC-BL1',date:'Mar 2025',total:'$840K',items:11,note:'Baseline at award — long-lead items locked'},delta:{added:2,value:'+$118K',reason:'Solar DC cabling + monitoring sensors added',links:[{label:'Solar DC cabling',rowIdx:11},{label:'Monitoring sensors',rowIdx:12}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$2.3M',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead mechanical (pumps, AHU)',est:'$290K'},{label:'Sm Tools & Consum · structural & bulk materials',est:'$140K'},{label:'Procure General · misc bulk & consumables',est:'$80K'},{label:'Contingency (9%)',est:'$50K'},{label:'Total estimate',est:'$2.3M',bold:true}]},baseline:{id:'DP-PRO-RIV-BL1',date:'Apr 2025',total:'$498K',items:3,note:'Baseline at LOI'},delta:{added:1,value:'+$62K',reason:'Structural bolt order added',links:[{label:'Structural bolt package',rowIdx:3}]}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.5M',note:'ROM procurement scope',lines:[{label:'Equip - CFE · long-lead electrical (UPS, switchgear)',est:'$360K'},{label:'Sm Tools & Consum · structural & architectural',est:'$180K'},{label:'Equip - CFE · instrumentation & low-voltage',est:'$90K'},{label:'Procure General · contingency',est:'$50K'},{label:'Total estimate',est:'$1.5M',bold:true}]},baseline:{id:'DP-PRO-CIM-BL1',date:'May 2025',total:'$612K',items:4,note:'Baseline at NTP'},delta:{added:1,value:'+$58K',reason:'UPS bypass cable added',links:[{label:'UPS bypass cable assembly',rowIdx:4}]}}},
     prefab:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$1.4M',note:'ROM prefab / structural scope',lines:[{label:'Steel · MFAB structural assemblies',est:'$480K'},{label:'Mechanical · ICWC pipe racks + pump skids',est:'$520K'},{label:'Electrical · MFAB / Houston e-houses',est:'$280K'},{label:'Prefab General · misc DfMA assemblies',est:'$120K'},{label:'Total estimate',est:'$1.4M',bold:true}]},baseline:{id:'DP-PFB-HRC-BL1',date:'Mar 2025',total:'$1.24M',items:5,note:'Baseline at award — structural + racking prefab'},delta:{added:1,value:'+$88K',reason:'Combiner box prefab added',links:[{label:'Combiner box prefab array',rowIdx:5}]}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$820K',note:'ROM prefab / structural scope',lines:[{label:'Concrete · headwalls 8 units',est:'$360K'},{label:'Mechanical · ICWC MEP rack modules 6 units',est:'$320K'},{label:'Prefab General · misc architectural assemblies',est:'$140K'},{label:'Total estimate',est:'$820K',bold:true}]},baseline:{id:'DP-PFB-RIV-BL1',date:'Apr 2025',total:'$745K',items:3,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$940K',note:'ROM prefab scope',lines:[{label:'Electrical · MFAB / Houston cable tray & switchgear',est:'$420K'},{label:'Steel · MFAB partitions & enclosures',est:'$280K'},{label:'Mechanical · ICWC MEP modules',est:'$240K'},{label:'Total estimate',est:'$940K',bold:true}]},draft:{id:'DP-PFB-CIM-D1',date:'Jul 2026',total:'$910K est.',items:3,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}}},
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.1M',note:'ROM prefab / structural scope',lines:[{label:'Steel · MFAB structural assemblies',est:'$480K'},{label:'Mechanical · ICWC pipe racks + pump skids',est:'$520K'},{label:'Electrical · MFAB / Houston e-houses',est:'$280K'},{label:'Prefab General · misc DfMA assemblies',est:'$120K'},{label:'Total estimate',est:'$2.1M',bold:true}]},baseline:{id:'DP-PFB-HRC-BL1',date:'Mar 2025',total:'$1.24M',items:5,note:'Baseline at award — structural + racking prefab'},delta:{added:1,value:'+$88K',reason:'Combiner box prefab added',links:[{label:'Combiner box prefab array',rowIdx:5}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$288K',note:'ROM prefab / structural scope',lines:[{label:'Concrete · headwalls 8 units',est:'$360K'},{label:'Mechanical · ICWC MEP rack modules 6 units',est:'$320K'},{label:'Prefab General · misc architectural assemblies',est:'$140K'},{label:'Total estimate',est:'$288K',bold:true}]},baseline:{id:'DP-PFB-RIV-BL1',date:'Apr 2025',total:'$745K',items:3,note:'Baseline at LOI'},delta:{added:0,value:'On baseline',reason:'No scope changes since baseline'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$180K',note:'ROM prefab scope',lines:[{label:'Electrical · MFAB / Houston cable tray & switchgear',est:'$420K'},{label:'Steel · MFAB partitions & enclosures',est:'$280K'},{label:'Mechanical · ICWC MEP modules',est:'$240K'},{label:'Total estimate',est:'$180K',bold:true}]},draft:{id:'DP-PFB-CIM-D1',date:'Jul 2026',total:'$910K est.',items:3,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}}},
     profservices:{
-      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.1M',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering / IE support 2 FTE',est:'$480K'},{label:'VIZ · VDC / BIM coordination 3 FTE',est:'$340K'},{label:'BAS · BESS commissioning agent 2 FTE',est:'$620K'},{label:'Geospatial · site survey & geotech',est:'$180K'},{label:'Mapping · quality & special inspection',est:'$220K'},{label:'Pro Svcs General · contingency',est:'$260K'},{label:'Total estimate',est:'$2.1M',bold:true}]},baseline:{id:'DP-SVC-HRC-BL1',date:'Mar 2025',total:'$1.88M',items:5,note:'Baseline at award'},delta:{added:2,value:'+$145K',reason:'IE + commissioning FTEs added',links:[{label:"Owner's engineer / IE support",rowIdx:0},{label:'BESS commissioning agent',rowIdx:3}]}},
-      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$1.3M',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering support 2 FTE',est:'$280K'},{label:'BAS · MEP commissioning lead 1 FTE',est:'$480K'},{label:'Mapping · structural special inspection',est:'$220K'},{label:'Thermography · safety & environmental monitoring',est:'$180K'},{label:'Pro Svcs General · contingency',est:'$140K'},{label:'Total estimate',est:'$1.3M',bold:true}]},draft:{id:'DP-SVC-RIV-D1',date:'Jun 2026',total:'$1.24M est.',items:3,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}},
-      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$1.6M',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering support 2 FTE',est:'$360K'},{label:'BAS · IT / MEP commissioning 2 FTE',est:'$580K'},{label:'Mapping · testing & special inspection',est:'$240K'},{label:'VIZ · VDC coordination',est:'$180K'},{label:'Pro Svcs General · contingency',est:'$240K'},{label:'Total estimate',est:'$1.6M',bold:true}]},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:2,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added',links:[{label:'Commissioning manager',rowIdx:1}]}}}
+      hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$2.2M',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering / IE support 2 FTE',est:'$480K'},{label:'VIZ · VDC / BIM coordination 3 FTE',est:'$340K'},{label:'BAS · BESS commissioning agent 2 FTE',est:'$620K'},{label:'Geospatial · site survey & geotech',est:'$180K'},{label:'Mapping · quality & special inspection',est:'$220K'},{label:'Pro Svcs General · contingency',est:'$260K'},{label:'Total estimate',est:'$2.2M',bold:true}]},baseline:{id:'DP-SVC-HRC-BL1',date:'Mar 2025',total:'$1.88M',items:5,note:'Baseline at award'},delta:{added:2,value:'+$145K',reason:'IE + commissioning FTEs added',links:[{label:"Owner's engineer / IE support",rowIdx:0},{label:'BESS commissioning agent',rowIdx:3}]}},
+      riverside:{margin:{id:'OPP-RIV-0318',date:'Feb 2025',rom:'$576K',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering support 2 FTE',est:'$280K'},{label:'BAS · MEP commissioning lead 1 FTE',est:'$480K'},{label:'Mapping · structural special inspection',est:'$220K'},{label:'Thermography · safety & environmental monitoring',est:'$180K'},{label:'Pro Svcs General · contingency',est:'$140K'},{label:'Total estimate',est:'$576K',bold:true}]},draft:{id:'DP-SVC-RIV-D1',date:'Jun 2026',total:'$1.24M est.',items:3,note:'Demand plan is still in draft — waiting to be approved by an authorized user as the baseline.'}},
+      cimarron:{margin:{id:'OPP-CIM-0412',date:'Mar 2025',rom:'$380K',note:'ROM professional services',lines:[{label:'Equip - OFE · engineering support 2 FTE',est:'$360K'},{label:'BAS · IT / MEP commissioning 2 FTE',est:'$580K'},{label:'Mapping · testing & special inspection',est:'$240K'},{label:'VIZ · VDC coordination',est:'$180K'},{label:'Pro Svcs General · contingency',est:'$240K'},{label:'Total estimate',est:'$380K',bold:true}]},baseline:{id:'DP-SVC-CIM-BL1',date:'May 2025',total:'$1.42M',items:2,note:'Baseline at NTP'},delta:{added:1,value:'+$96K',reason:'Data center commissioning specialist added',links:[{label:'Commissioning manager',rowIdx:1}]}}}
     };
   var CC_CMIC_DATA={
     equipment:{
-      hercules: {origBudget:19220000,co:0,       pendingCO:0,      committed:13120000,spent:8400000, lastSync:'Jul 28, 2026',coNote:''},
-      riverside:{origBudget:8200000, co:0,       pendingCO:120000, committed:4800000, spent:1800000, lastSync:'Jul 25, 2026',coNote:'$120K pending CO — crane mob scope change'},
-      cimarron: {origBudget:11400000,co:0,       pendingCO:0,      committed:5200000, spent:1900000, lastSync:'Jul 26, 2026',coNote:''}
-    },
-    prefab:{
-      hercules: {origBudget:3340000, co:60000,   pendingCO:80000,  committed:2440000, spent:794000,  lastSync:'Jul 28, 2026',coNote:'+$60K structural assemblies CO'},
-      riverside:{origBudget:1240000, co:0,       pendingCO:0,      committed:740000,  spent:280000,  lastSync:'Jul 25, 2026',coNote:''},
-      cimarron: {origBudget:1280000, co:0,       pendingCO:0,      committed:560000,  spent:180000,  lastSync:'Jul 26, 2026',coNote:''}
+      hercules: {origBudget:3276000,  co:0,      pendingCO:0,      committed:2040000, spent:1729000, lastSync:'Aug 4, 2026', coNote:''},
+      riverside:{origBudget:3528000,  co:0,      pendingCO:120000, committed:3032000, spent:2569000, lastSync:'Aug 1, 2026', coNote:'$120K pending CO — crane mob scope change'},
+      cimarron: {origBudget:2998000,  co:0,      pendingCO:0,      committed:1929000, spent:1635000, lastSync:'Aug 2, 2026', coNote:''}
     },
     logistics:{
-      hercules: {origBudget:960000,  co:0,       pendingCO:0,      committed:460000,  spent:176000,  lastSync:'Jul 28, 2026',coNote:''},
-      riverside:{origBudget:540000,  co:0,       pendingCO:0,      committed:240000,  spent:82000,   lastSync:'Jul 25, 2026',coNote:''},
-      cimarron: {origBudget:480000,  co:0,       pendingCO:0,      committed:200000,  spent:68000,   lastSync:'Jul 26, 2026',coNote:''}
+      hercules: {origBudget:594000,   co:0,      pendingCO:0,      committed:370000,  spent:314000,  lastSync:'Aug 4, 2026', coNote:''},
+      riverside:{origBudget:199000,   co:0,      pendingCO:0,      committed:166000,  spent:141000,  lastSync:'Aug 1, 2026', coNote:''},
+      cimarron: {origBudget:202000,   co:0,      pendingCO:0,      committed:179000,  spent:152000,  lastSync:'Aug 2, 2026', coNote:''}
     },
     procurement:{
-      hercules: {origBudget:1580000, co:40000,   pendingCO:0,      committed:1515000, spent:542000,  lastSync:'Jul 28, 2026',coNote:'+$40K bulk materials CO'},
-      riverside:{origBudget:518000,  co:62000,   pendingCO:0,      committed:380000,  spent:148000,  lastSync:'Jul 25, 2026',coNote:'+$62K structural bolt CO'},
-      cimarron: {origBudget:1240000, co:0,       pendingCO:58000,  committed:920000,  spent:312000,  lastSync:'Jul 26, 2026',coNote:''}
+      hercules: {origBudget:7416000,  co:40000,  pendingCO:0,      committed:4518000, spent:3829000, lastSync:'Aug 4, 2026', coNote:'+$40K bulk materials CO'},
+      riverside:{origBudget:2152000,  co:62000,  pendingCO:0,      committed:1869000, spent:1584000, lastSync:'Aug 1, 2026', coNote:'+$62K structural bolt CO'},
+      cimarron: {origBudget:1490000,  co:0,      pendingCO:58000,  committed:1319000, spent:1118000, lastSync:'Aug 2, 2026', coNote:'$58K pending CO — UPS bypass cable'}
     },
     profservices:{
-      hercules: {origBudget:1700000, co:0,       pendingCO:25000,  committed:1300000, spent:748000,  lastSync:'Jul 28, 2026',coNote:''},
-      riverside:{origBudget:950000,  co:0,       pendingCO:0,      committed:480000,  spent:210000,  lastSync:'Jul 25, 2026',coNote:''},
-      cimarron: {origBudget:720000,  co:0,       pendingCO:0,      committed:360000,  spent:120000,  lastSync:'Jul 26, 2026',coNote:''}
+      hercules: {origBudget:2016000,  co:0,      pendingCO:25000,  committed:1255000, spent:1064000, lastSync:'Aug 4, 2026', coNote:''},
+      riverside:{origBudget:523000,   co:0,      pendingCO:0,      committed:438000,  spent:371000,  lastSync:'Aug 1, 2026', coNote:''},
+      cimarron: {origBudget:346000,   co:0,      pendingCO:0,      committed:307000,  spent:260000,  lastSync:'Aug 2, 2026', coNote:''}
+    },
+    prefab:{
+      hercules: {origBudget:1980000,  co:60000,  pendingCO:80000,  committed:1193000, spent:1011000, lastSync:'Aug 4, 2026', coNote:'+$60K structural assemblies CO'},
+      riverside:{origBudget:276000,   co:0,      pendingCO:0,      committed:231000,  spent:196000,  lastSync:'Aug 1, 2026', coNote:''},
+      cimarron: {origBudget:172000,   co:0,      pendingCO:0,      committed:152000,  spent:129000,  lastSync:'Aug 2, 2026', coNote:''}
     }
   };
   var CC_PREFAB_CAP={
