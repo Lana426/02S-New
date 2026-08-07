@@ -7412,6 +7412,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
   }
   function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
+  function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
@@ -7422,7 +7423,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['riverside','Riverside Medical'],['cimarron','Cimarron Data Center']].forEach(function(pr){
       var act=selProj===pr[0];
-      h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="_dpCcProjMap[\''+p+'\']=\''+pr[0]+'\';renderCcDemand(\''+p+'\')">'+pr[1]+'</button>';
+      h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="dpSetProjFilter(\''+p+'\',\''+pr[0]+'\')">'+pr[1]+'</button>';
     });
     h+='</div>';
     if(selProj!=='all'&&selProj!=='hercules'){
