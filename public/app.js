@@ -5472,16 +5472,16 @@ charges:[
     // Request header
     var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · billed at '+fmt(r.o2sRate)+'/unit/mo</div></div>';
     // GREEN recommendation box
-    b+='<div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
-    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:#16a34a;text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
-    b+='<div style="font-size:20px;font-weight:800;color:#15803d;margin-bottom:4px">'+r.reco+' owned + '+(r.qty-r.reco)+' re-rent</div>';
-    b+='<div style="font-size:12px;color:#166534;margin-bottom:12px">'+whyTxt+'</div>';
+    b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
+    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
+    b+='<div style="font-size:20px;font-weight:800;color:var(--charcoal);margin-bottom:4px">'+r.reco+' owned + '+(r.qty-r.reco)+' re-rent</div>';
+    b+='<div style="font-size:12px;color:var(--g600);margin-bottom:12px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
     [{label:'Max owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended',c:cReco,hi:true},{label:'All re-rent',c:cNone,hi:false}].forEach(function(s){
-      b+='<div style="background:'+(s.hi?'#dcfce7':'rgba(255,255,255,.7)')+';border:1px solid '+(s.hi?'#16a34a':'#bbf7d0')+';border-radius:5px;padding:6px 8px;text-align:center">';
-      b+='<div style="font-size:9.5px;color:'+(s.hi?'#15803d':'#4ade80')+';font-weight:600;margin-bottom:2px">'+s.label+'</div>';
-      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'#15803d':s.c.pct<8?'#dc2626':'#374151')+'">'+s.c.pct.toFixed(1)+'%</div>';
+      b+='<div style="background:'+(s.hi?'#f3f4f6':'#fff')+';border:1px solid '+(s.hi?'var(--g400)':'var(--g200)')+';border-radius:5px;padding:6px 8px;text-align:center">';
+      b+='<div style="font-size:9.5px;color:'+(s.hi?'var(--charcoal)':'var(--g400)')+';font-weight:600;margin-bottom:2px">'+s.label+'</div>';
+      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'var(--charcoal)':s.c.pct<8?'#dc2626':'#374151')+'">'+s.c.pct.toFixed(1)+'%</div>';
       b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
@@ -5490,7 +5490,7 @@ charges:[
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
     b+='<div style="margin-left:auto;display:flex;gap:8px">';
     b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
-    b+='<button class="btn" style="background:#16a34a;color:#fff;border-color:#16a34a" onclick="fqApproveReco()">Approve recommendation</button>';
+    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
     b+='</div></div>';
     // Override section (hidden)
     b+='<div id="fqOverrideSec" style="display:none">';
