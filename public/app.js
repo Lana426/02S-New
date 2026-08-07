@@ -4860,7 +4860,7 @@ charges:[
       {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
     ]
   };
-  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  var CC_KEYS=['ccdash','portfolio','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
   var CC_PERSONA_ACCESS={
     fsm:   ['ccdash','fulfill','mytasks','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
     equip: ['fulfill','mytasks','gap','fleet','dpequip','margin'],
@@ -4980,7 +4980,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else if(s==='portfolio'){ renderCcPortfolio(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -5074,7 +5074,149 @@ charges:[
     return h;
   }
 
-    function renderCcDash(){
+  
+  function ccPfBU(bu){_pfBU=bu;renderCcPortfolio();}
+  function ccPfRegion(r){_pfRegion=r;renderCcPortfolio();}
+  function ccPfClear(){_pfBU='all';_pfRegion='all';renderCcPortfolio();}
+  function renderCcPortfolio(){
+    var mount=gel('ccPortfolio'); if(!mount)return;
+    var ns=CURRENT==='ns';
+    var safeOrders=typeof ORDERS!=='undefined'?ORDERS:[];
+    var safeFQ=typeof FQ!=='undefined'?FQ:[];
+    var safeFQDone=typeof FQ_DONE!=='undefined'?FQ_DONE:[];
+    var allProjs=['hercules','riverside','cimarron'];
+    var visProjs=allProjs.filter(function(proj){
+      var m=_PROJ_META[proj]; if(!m)return false;
+      if(_pfBU!=='all'&&m.bu!==_pfBU)return false;
+      if(_pfRegion!=='all'&&m.region!==_pfRegion)return false;
+      return true;
+    });
+    var visLabels=visProjs.map(function(p){return _PROJ_LABELS[p];});
+    function fmtM(n){return n>=1000000?'$'+(n/1000000).toFixed(1)+'M':n>=1000?'$'+(n/1000).toFixed(0)+'K':'$'+n;}
+    function projFQ(proj){var lbl=_PROJ_LABELS[proj];return safeFQ.filter(function(r){return r.project===lbl&&safeFQDone.indexOf(r.status)<0;}).length;}
+    function projOrderIds(proj){var ids=[];['equipment','prefab','logistics','procurement','profservices'].forEach(function(p){if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]){(CC_PROJ_DP[p][proj].rows||[]).forEach(function(r){if(r.ordId)ids.push(r.ordId);});}});return ids;}
+    function projActiveOrders(proj){var ids=projOrderIds(proj);return safeOrders.filter(function(o){return ids.indexOf(o.id)>=0&&o.stage>=3&&o.stage<=5;}).length;}
+    function projSpend(proj){var t=0;['equipment','prefab','logistics','procurement','profservices'].forEach(function(p){if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]){t+=(CC_PROJ_DP[p][proj].dpSpent||0)+(CC_PROJ_DP[p][proj].adHoc||0);}});return t;}
+    var h='';
+    // Header
+    h+='<div class="phead"><div><h1>Portfolio intelligence</h1>';
+    h+='<div class="meta"><span class="chip">'+svg('<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>')+'All projects · portfolio</span>';
+    h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    // Filter row
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:11px 14px;background:var(--g50);border:1px solid var(--g100);border-radius:8px;margin-bottom:20px">';
+    h+='<span style="font-size:10px;font-weight:700;color:var(--g500);letter-spacing:.05em;margin-right:2px">BU</span>';
+    [['all','All'],['renewables','Renewables'],['civil','Civil'],['mc','Mission Critical']].forEach(function(o){
+      var act=_pfBU===o[0];
+      var col=act?(o[0]==='all'?'var(--charcoal)':(_BU_COLOR[o[0]]||'var(--charcoal)')):'var(--g200)';
+      var bg=act?(o[0]==='all'?'var(--charcoal)':(_BU_COLOR[o[0]]||'var(--charcoal)')):'#fff';
+      h+='<button style="padding:3px 11px;border-radius:5px;border:1px solid '+col+';background:'+bg+';color:'+(act?'#fff':'var(--g700)')+';font-size:11.5px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="ccPfBU(\''+o[0]+'\')">'+o[1]+'</button>';
+    });
+    h+='<span style="width:1px;height:18px;background:var(--g200);margin:0 6px;flex-shrink:0"></span>';
+    h+='<span style="font-size:10px;font-weight:700;color:var(--g500);letter-spacing:.05em;margin-right:2px">REGION</span>';
+    [['all','All'],['southern','Southern'],['sopac','SoPac'],['norpac','NorPac'],['southwest','Southwest'],['central','Central']].forEach(function(o){
+      var act=_pfRegion===o[0];
+      h+='<button style="padding:3px 10px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:11.5px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="ccPfRegion(\''+o[0]+'\')">'+o[1]+'</button>';
+    });
+    if(_pfBU!=='all'||_pfRegion!=='all'){h+='<button class="btn btn-ghost btn-sm" style="margin-left:8px;font-size:11px" onclick="ccPfClear()">Clear filters</button>';}
+    h+='</div>';
+    // BU summary cards
+    var buCols=_pfBU==='all'?['renewables','civil','mc']:[_pfBU];
+    h+='<div style="display:grid;grid-template-columns:repeat('+buCols.length+',1fr);gap:12px;margin-bottom:24px">';
+    buCols.forEach(function(bu){
+      var buProjs=allProjs.filter(function(p){var m=_PROJ_META[p];if(!m||m.bu!==bu)return false;if(_pfRegion!=='all'&&m.region!==_pfRegion)return false;return true;});
+      var active=_pfBU===bu;
+      var col=_BU_COLOR[bu]||'#6b7280';
+      var tFQ=0,tOrd=0,tSpend=0;
+      buProjs.forEach(function(p){tFQ+=projFQ(p);tOrd+=projActiveOrders(p);tSpend+=projSpend(p);});
+      h+='<div style="background:#fff;border:1px solid '+(active?col:'var(--g200)')+';border-top:3px solid '+col+';border-radius:10px;padding:18px 20px;cursor:pointer" onclick="ccPfBU(\''+(active?'all':bu)+'\')">';
+      h+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">';
+      h+='<div><div style="display:flex;align-items:center;gap:7px;margin-bottom:4px"><span style="width:9px;height:9px;border-radius:50%;background:'+col+';flex-shrink:0"></span><span style="font-size:13.5px;font-weight:700;color:var(--g900)">'+_BU_LABELS[bu]+'</span></div>';
+      h+='<div style="font-size:11px;color:var(--g500)">'+buProjs.length+' project'+(buProjs.length===1?'':'s')+'</div></div>';
+      h+='<div style="display:flex;flex-direction:column;gap:3px;align-items:flex-end">';
+      buProjs.forEach(function(p){var rk=(_PROJ_META[p]||{}).region||'';h+='<span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);background:var(--g100);padding:2px 7px;border-radius:3px">'+(_REGION_LABELS[rk]||rk)+'</span>';});
+      h+='</div></div>';
+      h+='<div style="font-size:11px;color:var(--g600);line-height:1.65;margin-bottom:16px">';
+      if(buProjs.length){buProjs.forEach(function(p){h+=_PROJ_LABELS[p]+'<br>';});}
+      else{h+='<span style="color:var(--g400);font-style:italic">No projects in region filter</span>';}
+      h+='</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;border-top:1px solid var(--g100);padding-top:12px">';
+      [[tFQ,'Open FQ'],[tOrd,'Active ord'],[fmtM(tSpend),'Spend YTD']].forEach(function(m){h+='<div><div style="font-size:18px;font-weight:700;color:var(--g900)">'+m[0]+'</div><div style="font-size:10px;color:var(--g500)">'+m[1]+'</div></div>';});
+      h+='</div></div>';
+    });
+    h+='</div>';
+    // Project breakdown
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<path d="M3 9h18M3 15h18M9 3v18"/>')+'Projects'+(visProjs.length!==allProjs.length?' — '+visProjs.length+' of '+allProjs.length:'')+'</span><span class="spacer"></span></div>';
+    if(!visProjs.length){
+      h+='<div class="fq-empty">No projects match the current filter.</div>';
+    } else {
+      var pillarDefs=[{key:'equipment',label:'Equip',screen:'dpequip'},{key:'logistics',label:'Logistics',screen:'dplog'},{key:'prefab',label:'Prefab',screen:'dpprefab'},{key:'procurement',label:'Procure',screen:'dpproc'},{key:'profservices',label:'Prof svcs',screen:'dpsvc'}];
+      h+='<div style="display:grid;grid-template-columns:repeat('+Math.min(visProjs.length,3)+',1fr);gap:10px;margin-bottom:24px">';
+      visProjs.forEach(function(proj){
+        var meta=_PROJ_META[proj]||{bu:'',region:''};
+        var col=_BU_COLOR[meta.bu]||'#6b7280';
+        var fq=projFQ(proj),ords=projActiveOrders(proj),spend=projSpend(proj);
+        h+='<div style="background:#fff;border:1px solid var(--g200);border-top:3px solid '+col+';border-radius:8px;padding:14px 16px">';
+        h+='<div style="font-size:12.5px;font-weight:700;color:var(--g900);margin-bottom:8px">'+_PROJ_LABELS[proj]+'</div>';
+        h+='<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">';
+        h+='<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:'+col+'1a;color:'+col+'">'+(_BU_LABELS[meta.bu]||'')+'</span>';
+        h+='<span style="font-size:10px;font-weight:600;padding:2px 9px;border-radius:10px;background:var(--g100);color:var(--g600)">'+(_REGION_LABELS[meta.region]||meta.region)+'</span>';
+        h+='</div>';
+        h+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px">';
+        pillarDefs.forEach(function(pd){var has=CC_PROJ_DP[pd.key]&&CC_PROJ_DP[pd.key][proj]&&(CC_PROJ_DP[pd.key][proj].rows||[]).length>0;if(has)h+='<span style="font-size:9.5px;padding:2px 7px;border-radius:3px;background:rgba(16,185,129,.1);color:#059669;font-weight:600">'+pd.label+'</span>';});
+        h+='</div>';
+        h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:10px 0;border-top:1px solid var(--g100);border-bottom:1px solid var(--g100);margin-bottom:10px">';
+        [[fq,'Open FQ'],[ords,'Active ord'],[fmtM(spend),'Spend YTD']].forEach(function(m){h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">'+m[0]+'</div><div style="font-size:10px;color:var(--g500)">'+m[1]+'</div></div>';});
+        h+='</div>';
+        h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+        pillarDefs.filter(function(pd){return CC_PROJ_DP[pd.key]&&CC_PROJ_DP[pd.key][proj];}).slice(0,3).forEach(function(pd){h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="_dpCcProjMap[\''+pd.key+'\']=\''+proj+'\';ccGo(\''+pd.screen+'\')">'+pd.label+' →</button>';});
+        h+='</div></div>';
+      });
+      h+='</div>';
+    }
+    // Solution center routing
+    var scCounts={};
+    safeFQ.filter(function(r){return visLabels.indexOf(r.project)>=0&&safeFQDone.indexOf(r.status)<0&&r.yard;}).forEach(function(r){scCounts[r.yard]=(scCounts[r.yard]||0)+1;});
+    var scKeys=Object.keys(scCounts);
+    if(scKeys.length){
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/>')+'Solution center routing</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">Active requests by yard</span></div>';
+      h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:24px">';
+      scKeys.sort(function(a,b){return scCounts[b]-scCounts[a];}).forEach(function(sc){
+        var n=scCounts[sc];
+        h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px"><div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:3px">'+sc+'</div><div style="font-size:11.5px;color:var(--g600)">'+n+' open request'+(n===1?'':'s')+'</div></div>';
+      });
+      h+='</div>';
+    }
+    // Ball in court
+    var pfActs=[
+      {to:'fulfill',proj:'Riverside Medical Center',label:'5× tower crane — owned vs. re-rent decision',sub:'REQ-4471 · Equipment · Riverside Medical',tone:'warn',bu:'civil'},
+      {to:'fulfill',proj:'Cimarron Data Center',label:'REQ-4479 taxonomy — excavator class unmapped',sub:'Equipment · Cimarron Data Center',tone:'warn',bu:'mc'},
+      {to:'fulfill',proj:'Hercules Solar + BESS',label:'6 requests awaiting pricing — Hercules',sub:'Equipment + prefab · Hercules Solar',tone:'warn',bu:'renewables'},
+      {to:'margin',proj:'Hercules Solar + BESS',label:'MV switchgear + BESS containers — PO release',sub:'Procurement · At-risk · Hercules',tone:'bad',bu:'renewables'},
+      {to:'fulfill',proj:'Cimarron Data Center',label:'Excavator 45K (2×) unallocated — Oct phase',sub:'Equipment · Cimarron Data Center',tone:'warn',bu:'mc'},
+      {to:'gap',proj:'all',label:'Excavator shortfall projected — portfolio · October',sub:'Demand–supply gap · all projects',tone:'bad',bu:'all'},
+      {to:'fulfill',proj:'Hercules Solar + BESS',label:'BESS commissioning — 2 FTE unplaced',sub:'Prof. services · Hercules Solar',tone:'warn',bu:'renewables'}
+    ];
+    var toneAcc={warn:'#f59e0b',bad:'#ef4444',ok:'#10b981',neu:'#9ca3af'};
+    var visActs=pfActs.filter(function(a){return a.proj==='all'||visLabels.indexOf(a.proj)>=0;});
+    if(visActs.length){
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>')+'Ball in court — '+visActs.length+' action'+(visActs.length===1?'':'s')+'</span></div>';
+      h+='<div style="display:flex;flex-direction:column;gap:8px">';
+      visActs.forEach(function(a){
+        var buCol=a.bu!=='all'?(_BU_COLOR[a.bu]||'#6b7280'):'#9ca3af';
+        var accCol=toneAcc[a.tone]||'#9ca3af';
+        h+='<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid var(--g100);border-radius:7px;cursor:pointer" onclick="ccGo(\''+a.to+'\')">';
+        h+='<span style="width:4px;height:36px;border-radius:2px;background:'+accCol+';flex-shrink:0"></span>';
+        h+='<div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">'+a.label+'</div>';
+        h+='<div style="font-size:11px;color:var(--g500)">'+a.sub+'</div></div>';
+        if(a.bu!=='all')h+='<span style="font-size:10px;font-weight:600;background:'+buCol+'1a;color:'+buCol+';padding:2px 9px;border-radius:10px;white-space:nowrap">'+(_BU_LABELS[a.bu]||'')+'</span>';
+        h+='<span style="font-size:13px;color:var(--g300)">→</span>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    mount.innerHTML=h;
+  }
+  function renderCcDash(){
     var mount=document.getElementById('ccDash'); if(!mount)return;
     var ns=CURRENT==='ns';
     var SPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
@@ -5240,6 +5382,7 @@ charges:[
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
+  var _pfBU='all', _pfRegion='all';
   function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
   function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
   function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
@@ -6392,7 +6535,11 @@ charges:[
     profservices:{hercules:'DP-SVC-HRC-001',riverside:'DP-SVC-RIV-001',cimarron:'DP-SVC-CIM-001'}
   };
   var _PILLAR_SCREEN={equipment:'dpequip',logistics:'dplog',profservices:'dpsvc',procurement:'dpproc',prefab:'dpprefab'};
-var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'};
+var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical Center',cimarron:'Cimarron Data Center'}
+  var _PROJ_META={hercules:{bu:'renewables',region:'norpac'},riverside:{bu:'civil',region:'sopac'},cimarron:{bu:'mc',region:'southwest'}};
+  var _BU_LABELS={renewables:'Renewables',civil:'Civil',mc:'Mission Critical'};
+  var _BU_COLOR={renewables:'#10b981',civil:'#3b82f6',mc:'#8b5cf6'};
+  var _REGION_LABELS={southern:'Southern',sopac:'SoPac',norpac:'NorPac',southwest:'Southwest',central:'Central'};;
   var CC_DP_LINEAGE={
     equipment:{
       hercules:{margin:{id:'OPP-HRC-0221',date:'Jan 2025',rom:'$4.2M',note:'ROM at opportunity stage — solar + BESS equipment package',lines:[{label:'Fleet + Pers Assets · owned deployment',est:'$840K'},{label:'Equipment Mgmt · re-rent sourcing & mgmt',est:'$1,220K'},{label:'Yard Mgd Fuel · fuel & consumables',est:'$390K'},{label:'CCEP · compliance, tracking & handling',est:'$280K'},{label:'Contingency (12%)',est:'$370K'},{label:'Total estimate',est:'$4.2M',bold:true}]},baseline:{id:'DP-EQ-HRC-BL1',date:'Mar 2025',total:'$2.74M',items:12,note:'Baseline at project award — detailed scope with owner concurrence'},delta:{added:3,value:'+$412K',reason:'2 panel install additions + crane acceleration',links:[{label:'Telehandler 10K (Sector 2)',rowIdx:9},{label:'Boom lift 60 ft',rowIdx:10}]}},
@@ -7419,7 +7566,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var selProj=_dpCcProjMap[p]||'all';
     var pLabel=selProj==='all'?'All projects · portfolio':(_PROJ_NAMES[selProj]||selProj);
     var fmtK=function(n){ return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K'); };
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>'+(selProj!=='all'&&_PROJ_META[selProj]?'<span class="chip" style="background:'+_BU_COLOR[_PROJ_META[selProj].bu]+'1a;color:'+_BU_COLOR[_PROJ_META[selProj].bu]+';font-weight:600">'+_BU_LABELS[_PROJ_META[selProj].bu]+'</span><span class="chip">'+_REGION_LABELS[_PROJ_META[selProj].region]+'</span>':'')+'</div></div></div>';
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['riverside','Riverside Medical'],['cimarron','Cimarron Data Center']].forEach(function(pr){
       var act=selProj===pr[0];
