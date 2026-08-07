@@ -2668,6 +2668,7 @@ charges:[
       +'<select style="font-size:11px;border:1px solid var(--g200);border-radius:4px;padding:2px 6px;color:var(--g700);background:#fff" onchange="window._gmDashView=this.value;renderGMDashKPI()">'
       +'<option value="summary"'+(view==='summary'?' selected':'')+'>Summary</option>'
       +'<option value="pillar"'+(view==='pillar'?' selected':'')+'>By pillar</option>'
+      +'<option value="project"'+(view==='project'?' selected':'')+'>By project</option>'
       +'</select>'
       +'<button class="btn btn-ghost btn-sm" onclick="openMarginPlanModal()">Margin plan</button>'
       +'<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">Full detail</button>'
@@ -2679,8 +2680,9 @@ charges:[
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $16.8M</div></div>'
         +'</div>';
-    } else {
-      var GP=[{l:'Equipment',p:18.0,a:15.2},{l:'Prefab',p:14.0,a:13.5},{l:'Logistics',p:12.0,a:12.4},{l:'Procurement',p:8.0,a:7.8},{l:'Prof. services',p:22.0,a:21.0}];
+    } else if(view==='pillar'){
+      var _pm={'Equipment':'Equipment','Logistics':'Logistics','Professional services':'Prof. services','Procurement':'Procurement','Pre-fab':'Prefab'};
+      var GP=(typeof mgPillarRoll==='function'&&typeof MARGIN_PILLARS!=='undefined')?MARGIN_PILLARS.map(function(pl){var r=mgPillarRoll(pl);return{l:_pm[pl]||pl,p:r.plan.pct,a:r.act.pct};}): [{l:'Equipment',p:18.0,a:15.2},{l:'Prefab',p:14.0,a:13.5},{l:'Logistics',p:12.0,a:12.4},{l:'Procurement',p:8.0,a:7.8},{l:'Prof. services',p:22.0,a:21.0}];
       h+='<div style="font-size:11px">'
         +'<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:4px 8px;padding:4px 0;border-bottom:1px solid var(--g100);color:var(--g500);font-weight:600;text-transform:uppercase;letter-spacing:.04em">'
         +'<span>Pillar</span><span style="text-align:right">Plan%</span><span style="text-align:right">Actual%</span><span style="text-align:right">Var</span></div>';
@@ -2689,11 +2691,32 @@ charges:[
         var vr=(r.a-r.p).toFixed(1);
         h+='<div style="display:grid;grid-template-columns:1fr 60px 60px 60px;gap:4px 8px;padding:5px 0;border-bottom:1px solid var(--g50)">'
           +'<span style="color:var(--g900)">'+r.l+'</span>'
-          +'<span style="text-align:right;color:var(--g600)">'+r.p+'%</span>'
-          +'<span style="text-align:right;font-weight:600;color:'+tone+'">'+r.a+'%</span>'
-          +'<span style="text-align:right;color:'+tone+'">'+(r.a>=r.p?'+':'')+vr+'pp</span>'
+          +'<span style="text-align:right;color:var(--g600)">'+r.p.toFixed(1)+'%</span>'
+          +'<span style="text-align:right;font-weight:600;color:'+tone+'">'+r.a.toFixed(1)+'%</span>'
+          +'<span style="text-align:right;color:'+tone+'">'+( r.a>=r.p?'+':'')+vr+'pp</span>'
           +'</div>';
       });
+      h+='</div>';
+    } else if(view==='project'){
+      var _gt='1fr 60px 60px 60px';
+      h+='<div style="font-size:11px">'
+        +'<div style="display:grid;grid-template-columns:'+_gt+';gap:4px 8px;padding:4px 0;border-bottom:1px solid var(--g100);color:var(--g500);font-weight:600;text-transform:uppercase;letter-spacing:.04em">'
+        +'<span>Project</span><span style="text-align:right">Plan%</span><span style="text-align:right">Actual%</span><span style="text-align:right">Var</span></div>';
+      if(typeof MARGIN_PROJECTS!=='undefined'&&typeof mgProjRoll==='function'){
+        MARGIN_PROJECTS.forEach(function(p){
+          var r=mgProjRoll(p);
+          var pPct=r.plan.pct,aPct=r.act.pct;
+          var tone=aPct<pPct-1?'var(--red)':aPct<pPct?'var(--warning)':'var(--success)';
+          var vr=(aPct-pPct).toFixed(1);
+          var sName=p==='Hercules Solar + BESS'?'Hercules':p==='Riverside Medical Center'?'Riverside':'Cimarron';
+          h+='<div style="display:grid;grid-template-columns:'+_gt+';gap:4px 8px;padding:5px 0;border-bottom:1px solid var(--g50)">'
+            +'<span style="color:var(--g900)">'+sName+'</span>'
+            +'<span style="text-align:right;color:var(--g600)">'+pPct.toFixed(1)+'%</span>'
+            +'<span style="text-align:right;font-weight:600;color:'+tone+'">'+aPct.toFixed(1)+'%</span>'
+            +'<span style="text-align:right;color:'+tone+'">'+( aPct>=pPct?'+':'')+vr+'pp</span>'
+            +'</div>';
+        });
+      }
       h+='</div>';
     }
     if(ns) h+='<div style="margin-top:8px;font-size:11.5px;color:var(--g700);background:var(--g50);border-radius:5px;padding:7px 10px"><b>02S forecast:</b> Equipment re-rent premium is recoverable if crane extension is converted to a planned demand plan line by Jul 30. Projected GM recovery: +0.8 pts to 15.0%.</div>';
@@ -6115,11 +6138,13 @@ charges:[
 
     h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">';
     [{k:'All',l:'All projects'},{k:'Hercules Solar + BESS',l:'Hercules'},{k:'Riverside Medical Center',l:'Riverside'},{k:'Cimarron Data Center',l:'Cimarron'}].forEach(function(p){
-      h+='<button class="bex-fsmp'+(_rmProj===p.k?' active':'')+'" onclick="rmSetProj(\''+p.k+'\')">'+p.l+'</button>';
+      var _act=_rmProj===p.k;
+      h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(_act?'var(--charcoal)':'var(--g200)')+';background:'+(_act?'var(--charcoal)':'#fff')+';color:'+(_act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(_act?'600':'400')+'" onclick="rmSetProj(\''+p.k+'\')">' + p.l+'</button>';
     });
     h+='</div>';
 
-    var dispMPct=(_rmProj==='All'?GM_PLAN:portMarginPct);
+    var _mgProjR=(_rmProj!=='All'&&typeof mgProjRoll==='function')?mgProjRoll(_rmProj):null;
+    var dispMPct=_rmProj==='All'?GM_PLAN:(_mgProjR?_mgProjR.plan.pct:portMarginPct);
     var mColor=dispMPct>12?'var(--success)':dispMPct>5?'var(--g700)':'var(--red)';
     h+='<div style="display:flex;align-items:center;gap:14px;padding:10px 16px;background:#f8fafb;border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
     h+='<div style="font-size:28px;font-weight:800;color:'+mColor+'">'+dispMPct.toFixed(1)+'%</div>';
@@ -7392,12 +7417,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
     var selProj=_dpCcProjMap[p]||'all';
     var pLabel=selProj==='all'?'All projects · portfolio':(_PROJ_NAMES[selProj]||selProj);
-    if(selProj!=='all'&&selProj!=='hercules'){
-      h+='<div style="display:flex;align-items:center;gap:8px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:6px;padding:9px 12px;margin-bottom:10px">';
-      h+='<span style="font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.03em">Demo</span>';
-      h+='<span style="font-size:11.5px;color:var(--g700)">'+(_PROJ_NAMES[selProj]||selProj)+' data shown here for demo purposes only — not yet reflected in customer portal.</span>';
-      h+='</div>';
-    }
     var fmtK=function(n){ return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K'); };
     var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
@@ -7406,6 +7425,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="_dpCcProjMap[\''+p+'\']=\''+pr[0]+'\';renderCcDemand(\''+p+'\')">'+pr[1]+'</button>';
     });
     h+='</div>';
+    if(selProj!=='all'&&selProj!=='hercules'){
+      h+='<div style="display:flex;align-items:center;gap:8px;background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:6px;padding:9px 12px;margin-bottom:10px">';
+      h+='<span style="font-size:11px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:.03em">Demo</span>';
+      h+='<span style="font-size:11.5px;color:var(--g700)">'+(_PROJ_NAMES[selProj]||selProj)+' data shown here for demo purposes only — not yet reflected in customer portal.</span>';
+      h+='</div>';
+    }
     if(selProj==='all'){
     h+='<div class="vitals" style="grid-template-columns:repeat('+cfg.kpis.length+',1fr)">';
     cfg.kpis.forEach(function(k){ var v=k.v, tone=k.tone; if(k.dyn==='tax'){ v=''+pending; tone=pending>0?'warn':'ok'; } h+='<div class="vital '+tone+'"><div class="vk">'+svg(dpIcon(k.icon))+k.k+'</div><div class="vv">'+v+'</div><div class="vsub">'+k.sub+'</div></div>'; });
@@ -8432,7 +8457,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     }
     var h='<div style="margin-top:20px">';
     if(!risks.length){
-      h+='<div style="padding:14px 16px;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:8px;font-size:12px;color:#047857">✓ No capacity risks identified across all projects for this pillar.</div>';
       h+='</div>';
       return h;
     }
