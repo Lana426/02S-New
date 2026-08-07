@@ -6118,19 +6118,13 @@ charges:[
     });
     h+='</div>';
 
-    h+='<div class="vitals" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">';
+    h+='<div class="vitals" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">';
     h+='<div class="vital neu"><div class="vk">02S opportunity (ROM)</div><div class="vv">'+fmtBig(portROM)+'</div>';
     h+='<div class="vsub">planned AR · '+projLbl+'</div></div>';
     h+='<div class="vital neu"><div class="vk">CMiC budget</div><div class="vv">'+fmtBig(portBudget)+'</div>';
     h+='<div class="vsub">'+(portROM?Math.round(portBudget/portROM*100)+'% of ROM':'—')+'</div></div>';
-    var cvbTone=cvbPort>portBudget*0.03?'bad':cvbPort<-portBudget*0.05?'ok':'neu';
-    h+='<div class="vital '+cvbTone+'"><div class="vk">Committed</div><div class="vv">'+fmtBig(portCommit)+'</div>';
-    h+='<div class="vsub">'+commitPct+'% of budget'+(cvbPort>0?' · <b style="color:var(--red)">▲ '+fmtBig(cvbPort)+' over</b>':cvbPort<0?' · '+fmtBig(-cvbPort)+' under':' · on track')+'</div></div>';
     h+='<div class="vital neu"><div class="vk">Actuals</div><div class="vv">'+fmtBig(portActuals)+'</div>';
     h+='<div class="vsub">'+actualsPct+'% of ROM · AR billed</div></div>';
-    var mTone=portMarginPct>12?'ok':portMarginPct>5?'neu':'bad';
-    h+='<div class="vital '+mTone+'"><div class="vk">Planned margin</div><div class="vv">'+fmtBig(portMargin)+'</div>';
-    h+='<div class="vsub">'+portMarginPct.toFixed(1)+'% · ROM minus budget</div></div>';
     h+='</div>';
 
     pillars.forEach(function(pl){
@@ -6152,7 +6146,6 @@ charges:[
       var rails=[
         {lbl:'ROM',val:pd.rom,col:'var(--g400)',note:fmtBig(pd.rom)+' · 02S opportunity'},
         {lbl:'Budget',val:pd.budget,col:'var(--info,#3b82f6)',note:fmtBig(pd.budget)+' · '+fmtBig(plM)+' margin ('+plMPct.toFixed(1)+'%)'},
-        {lbl:'Committed',val:pd.commit,col:(cvb2>pd.budget*0.05?'var(--red)':'var(--g700)'),note:fmtBig(pd.commit)+' · POs + subcontracts'},
         {lbl:'Actuals',val:pd.actuals,col:'var(--success)',note:fmtBig(pd.actuals)+' · AR billed to date'}
       ];
       h+='<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">';
