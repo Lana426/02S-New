@@ -7322,11 +7322,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
       }
     });
-    h+='<div style="display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;font-size:10px;color:var(--g600);padding-top:7px;border-top:1px solid var(--g100)">';
-    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:4px;background:#10b981;border-radius:2px"></div>Completed</div>';
-    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:4px;background:#3b82f6;border-radius:2px"></div>In progress</div>';
+    h+='<div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;font-size:10px;color:var(--g600);padding-top:7px;border-top:1px solid var(--g100);align-items:center">';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:4px;background:#10b981;border-radius:2px"></div>Done</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:4px;background:#3b82f6;border-radius:2px"></div>Active</div>';
     h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:14px;height:4px;background:#e2e8f0;border-radius:2px"></div>Upcoming</div>';
-    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid #6b7280"></div>Milestone (1 day)</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;font-weight:600;color:var(--g400)">MFG</span><span style="font-size:9px;color:var(--g400)"> = type color</span></div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid #94a3b8"></div>1-day event</div>';
     h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:2px;height:12px;background:#dc2626;border-radius:1px"></div>P6 install</div>';
     h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:2px;height:12px;background:#10b981;opacity:.7"></div>Today</div>';
     h+='</div>';
@@ -7443,17 +7444,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
         var mx=pct(it.mo);
         if(mx>=0&&mx<=100)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'%;top:'+(top-1)+'px;width:2px;height:20px;background:#64748b;z-index:2;border-radius:1px"></div>';
-        if(delPct>=0&&delPct<=100)h+='<div title="Delivery ≈ '+it.fe+' +'+it.shipD+'d transit" style="position:absolute;left:calc('+delPct+'% - 4px);top:'+(top+5)+'px;width:8px;height:8px;background:#ef4444;transform:rotate(45deg);z-index:3;border-radius:1px"></div>';
+        if(delPct>=0&&delPct<=100)h+='<div title="Delivery ≈ '+it.fe+' +'+it.shipD+'d transit" style="position:absolute;left:calc('+delPct+'% - 4px);top:'+(top+5)+'px;width:8px;height:8px;background:'+tc+';transform:rotate(45deg);z-index:3;border-radius:1px"></div>';
         if(it.p6Date){var p6d=new Date(it.p6Date);var p6mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var p6x=pct(p6mn[p6d.getMonth()]+' '+p6d.getDate());if(p6x>=0&&p6x<=100){h+='<div title="★ P6 install: '+it.p6Act+' · '+it.p6Date+'" style="position:absolute;left:calc('+p6x+'% - 1px);top:'+(top-2)+'px;width:2px;height:22px;background:#dc2626;z-index:5;border-radius:1px"></div>';h+='<div style="position:absolute;left:calc('+p6x+'% + 3px);top:'+(top-2)+'px;font-size:8px;color:#dc2626;line-height:1;z-index:5">★</div>';}}
       });
       h+='<div style="position:absolute;bottom:0;left:0;right:0;border-top:1.5px dashed rgba(0,0,0,.1)"></div>';
       h+='</div></div>';
     });
-    h+='<div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#3b82f6;border-radius:2px;opacity:.72"></div>Fab window</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:#10b981;border-radius:2px;opacity:.9"></div>In fabrication</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;border:2px dashed var(--g300);background:var(--g50);border-radius:2px"></div>Quote request</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#64748b"></div>Mat. order date</div>';
+    h+='<div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100);align-items:center">';
+    h+='<span style="font-size:10px;color:var(--g400);font-weight:600;text-transform:uppercase;letter-spacing:.04em">Types</span>';
+    Object.keys(TC).forEach(function(t){ if(!TL[t])return; h+='<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;border-radius:2px;background:'+TC[t]+';opacity:.8"></div>'+TL[t]+'</div>'; });
+    h+='<span style="width:1px;height:14px;background:var(--g200);margin:0 4px"></span>';
+    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#64748b"></div>Mat. order</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:8px;height:8px;background:#ef4444;transform:rotate(45deg);flex-shrink:0;border-radius:1px"></div>Delivery date</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.4)"></div>Capacity risk</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#dc2626;border-radius:1px"></div>P6 install date</div>';h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#10b981;opacity:.6"></div>Today</div>';
