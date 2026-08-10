@@ -5312,6 +5312,8 @@ charges:[
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
+  var _pfbDpTab='items';
+  function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
   function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
   function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
   function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
@@ -7287,7 +7289,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var expanded=!!_pfbP6Expanded[idx];
       // header row
       h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:5px 6px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'3px')+'">';
-      h+='<div style="min-width:'+LW+'px;flex-shrink:0;display:flex;align-items:center;gap:5px">';
+      h+='<div style="width:'+LW+'px;flex:0 0 '+LW+'px;overflow:hidden;display:flex;align-items:center;gap:5px">';
       h+='<span style="font-size:9px;color:var(--g400)">'+(expanded?'▼':'▶')+'</span>';
       h+='<div style="overflow:hidden"><div style="font-size:12px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
       h+='<div style="font-size:9px;color:var(--g400)">'+it.qty+'</div></div>';
@@ -7308,14 +7310,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       if(expanded){
         h+='<div style="border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:8px 8px 10px;margin-bottom:3px;background:var(--g50)">';
         h+=xAxis(true);
-        h+=actRow('Demand ID',demId,demId,'#6b7280','long lead','flag');
-        h+=actRow('Order & specs',ordStart,ordEnd,'#8b5cf6','1 wk','bar');
-        h+=actRow('Mat. procured',matStart,matEnd,'#f59e0b','2 wks','bar');
-        h+=actRow('Sched. mfg',schedMfg,schedMfgEnd,'#6366f1','1 day','triangle');
+        h+=actRow('Demand ID',demId,demId,'#94a3b8','long lead','flag');
+        h+=actRow('Order & specs',ordStart,ordEnd,'#94a3b8','1 wk','bar');
+        h+=actRow('Mat. procured',matStart,matEnd,'#94a3b8','2 wks','bar');
+        h+=actRow('Sched. mfg',schedMfg,schedMfgEnd,'#94a3b8','1 day','triangle');
         h+=actRow('Manufacturing',fs,fe,tc,mfgWks+' wks','bar');
-        h+=actRow('Insp. (facility)',inspFacS,inspFacE,'#10b981','1 day','triangle');
-        h+=actRow('Delivery',shipS,shipE,'#0ea5e9',sd+'d','bar');
-        h+=actRow('Insp. (site)',inspSiteS,inspSiteE,'#10b981','1 day','triangle');
+        h+=actRow('Insp. (facility)',inspFacS,inspFacE,'#94a3b8','1 day','triangle');
+        h+=actRow('Delivery',shipS,shipE,'#94a3b8',sd+'d','bar');
+        h+=actRow('Insp. (site)',inspSiteS,inspSiteE,'#94a3b8','1 day','triangle');
         h+=actRow('INSTALL ★',p6,p6,'#dc2626','P6','flag');
         h+='</div>';
       }
@@ -7341,11 +7343,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var projName=_PROJ_LABELS[proj]||proj;
     var pillarQuotes=CC_QUOTES.filter(function(q){return q.pillar==='prefab'&&q.project===projName;});
     var h='';
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>')+'P6-anchored delivery plan</span><span class="spacer"></span><span style="font-size:11px;color:var(--g400)">Milestones computed backward from P6 install date</span></div>';
-    if(CURRENT!=='ns'){h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:7px 12px;margin-bottom:10px;font-size:11px;color:var(--g600)"><b style="color:var(--charcoal)">V1 · Illustrative P6 dates.</b> In production these are live P6 schedule dates ingested via the API.</div>';}
-    h+=renderPrefabP6Schedule(items);
-    h+='<div style="height:20px"></div>';
-        h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="pfbCapAdd(\''+proj+'\')">+ Add line</button></div>';
+            h+='<div class="eq-toolbar" style="margin-top:22px"><span class="dp-sec-t">'+svg(IC.layers)+'Capacity planning</span><span class="spacer"></span><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="pfbCapAdd(\''+proj+'\')">+ Add line</button></div>';
     if(CURRENT!=='ns'){
         h+='<div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:7px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:var(--g600)">'
       +'<b style="color:var(--charcoal)">V1 · Demo data pre-filled.</b> In production each line is manually entered by the prefab team. '
@@ -7827,7 +7825,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="font-size:11px;color:#d97706">2 days behind &middot; inspect Jul 22</div></div>';
     h+='</div>';
     }
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Window</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    var _pfbSchedMode=(p==='prefab'&&isDpView&&_pfbDpTab==='schedule');
+    if(p==='prefab'&&isDpView){
+      h+='<div style="display:flex;gap:2px;margin:0 0 12px;background:var(--g100);border-radius:8px;padding:3px;width:fit-content">';
+      h+='<button onclick="pfbSetTab(\'items\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_pfbDpTab==='items'?'#fff':'transparent')+';color:'+(_pfbDpTab==='items'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_pfbDpTab==='items'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Line items</button>';
+      h+='<button onclick="pfbSetTab(\'schedule\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_pfbDpTab==='schedule'?'#fff':'transparent')+';color:'+(_pfbDpTab==='schedule'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_pfbDpTab==='schedule'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Schedule</button>';
+      h+='</div>';
+      if(_pfbSchedMode){
+        h+=renderPrefabP6Schedule(CC_PREFAB_CAP.plan[selProj]||[]);
+      }
+    }
+    if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'){
@@ -7893,7 +7901,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
           h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
-          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
+          h+='<div>'+row.item+(isDpView&&p==='prefab'?'<div style="font-size:9px;color:#3b82f6;margin-top:1px;font-weight:500">↗ linked to P6 schedule item</div>':'')+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
@@ -7923,7 +7931,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!isDpView&&!dpShowAll&&moreN>0){
       h+='<div style="padding:10px 16px;font-size:11.5px;color:var(--charcoal);font-weight:500;cursor:pointer;border-top:1px solid var(--g100)" onclick="dpToggleAllReqs(\''+p+'\')">Show all '+visRows.length+' requests →</div>';
     }
-    h+='</div>';
+    h+='</div>';}
     if(isDpView){
       var _ahRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
       if(_ahRows.length){
