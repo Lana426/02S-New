@@ -5311,6 +5311,7 @@ charges:[
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _pfBU='all', _pfRegion='all';
+  var _pfbP6Expanded={};
   function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
   function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
   function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
@@ -7166,81 +7167,166 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       openModal('Baseline plan snapshot \u2014 '+pLabel,b);
     }
   }
+  function pfbP6Toggle(idx){_pfbP6Expanded[idx]=!_pfbP6Expanded[idx];renderCcDemand('prefab');}
   function renderPrefabP6Schedule(items){
-    var TODAY_MS=new Date('2026-08-10').getTime();
+    var TODAY_STR='2026-08-10';
+    var TODAY_MS=new Date(TODAY_STR).getTime();
+    var APR1=new Date(2026,3,1).getTime();
+    var DEC31=new Date(2026,11,31).getTime();
+    var SPAN_MS=DEC31-APR1;
+    var LW=148;
     var MN={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-    function pd(s){if(!s)return null;if(s.indexOf('-')>3)return new Date(s);var p=s.trim().split(' ');return new Date(2026,MN[p[0]],parseInt(p[1]));}
+    var MONTHS=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function pd(s){
+      if(!s)return null;
+      if(s.indexOf('-')>3)return new Date(s);
+      var p=s.trim().split(' ');if(p.length<2)return null;
+      return new Date(2026,MN[p[0]],parseInt(p[1]));
+    }
     function addD(d,n){if(!d)return null;var r=new Date(d);r.setDate(r.getDate()+n);return r;}
-    function fmt(d){if(!d)return '—';var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return ms[d.getMonth()]+' '+d.getDate();}
-    function fmtRange(a,b){var fa=fmt(a);var fb=fmt(b);if(!b||fa===fb)return fa;var ma=fa.split(' ')[0];var mb=fb.split(' ')[0];return ma===mb?ma+' '+a.getDate()+'–'+b.getDate():fa+'–'+fb;}
-    function status(start,end){
-      var s=start?start.getTime():null;var e=end?end.getTime():s;
-      if(!s)return 'none';
-      if(e<TODAY_MS)return 'done';
-      if(s<=TODAY_MS)return 'active';
-      return 'upcoming';
+    function pct(d){
+      if(!d)return -999;
+      var ms=d instanceof Date?d.getTime():pd(d);if(!ms)return -999;
+      return parseFloat(((ms-APR1)/SPAN_MS*100).toFixed(2));
     }
-    function dot(label,dateA,dateB,isInstall){
-      var st=status(dateA,dateB);
-      var col=isInstall?'#dc2626':st==='done'?'#10b981':st==='active'?'#3b82f6':'#d1d5db';
-      var bg=isInstall?'#fef2f2':st==='done'?'#ecfdf5':st==='active'?'#eff6ff':'#f9fafb';
-      var icon=isInstall?'★':(st==='done'?'✓':(st==='active'?'●':''));
-      var dateLabel=dateB&&dateA&&dateA.getTime()!==dateB.getTime()?fmtRange(dateA,dateB):fmt(dateA);
-      return '<div style="flex:1;text-align:center;min-width:0">'
-        +'<div style="width:20px;height:20px;border-radius:50%;background:'+col+';margin:0 auto 3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;flex-shrink:0">'+icon+'</div>'
-        +'<div style="font-size:9px;font-weight:600;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">'+label+'</div>'
-        +'<div style="font-size:8.5px;color:var(--g400);white-space:nowrap">'+dateLabel+'</div>'
-        +'</div>';
+    function fmtD(d){
+      if(!d)return '';
+      var ms=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return ms[d.getMonth()]+' '+d.getDate();
     }
-    function arr(){return '<div style="flex:0 0 8px;display:flex;align-items:flex-start;padding-top:5px;color:var(--g300);font-size:12px;justify-content:center">›</div>';}
+    function progress(sMs,eMs){
+      if(TODAY_MS>=eMs)return 100;
+      if(TODAY_MS<=sMs)return 0;
+      return Math.round((TODAY_MS-sMs)/(eMs-sMs)*100);
+    }
+    var todX=pct(new Date(TODAY_STR));
     var TC=CC_PREFAB_CAP.typeColor; var TL=CC_PREFAB_CAP.typeLabel;
     var h='';
-    items.filter(function(it){return !!it.p6Date;}).forEach(function(it){
-      var mo=pd(it.mo); var fs=pd(it.fs); var fe=pd(it.fe); var p6=pd(it.p6Date); var sd=it.shipD||3;
-      var demId=addD(mo,-23); var ordPl=addD(mo,-21); var specs=addD(mo,-18); var conf=addD(mo,-14);
-      var schedMfg=addD(fs,-1);
-      var inspFac=addD(fe,1); var shipped=addD(fe,2); var del=addD(fe,sd);
-      var inspSite=addD(del,1);
-      var tc=TC[it.t]||'#888'; var tl=TL[it.t]||it.t;
-      var p6ms=p6?p6.getTime():null;
-      var p6col=p6ms&&p6ms<TODAY_MS?'#dc2626':'#1d4ed8';
-      var delMs=del?del.getTime():null; var risk=delMs&&p6ms&&delMs>p6ms;
-      h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:10px">';
-      // header
-      h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 14px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-      h+='<div style="display:flex;align-items:center;gap:8px">';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">'+it.item+'</span>';
-      h+='<span style="font-size:9.5px;font-weight:600;color:'+tc+';background:'+tc+'18;padding:2px 7px;border-radius:10px">'+tl+'</span>';
-      h+='<span style="font-size:11px;color:var(--g500)">'+it.qty+'</span>';
-      h+='</div>';
-      h+='<div style="display:flex;align-items:center;gap:8px">';
-      h+='<span style="font-size:11px;color:var(--g500)">'+it.p6Act+'</span>';
-      h+=(risk?'<span style="font-size:9.5px;font-weight:700;color:#b45309;background:#fef3c7;padding:1px 6px;border-radius:4px">⚠ delivery risk</span>':'');
-      h+='<span style="font-size:12px;font-weight:700;color:#fff;background:'+p6col+';padding:3px 10px;border-radius:6px">★ '+fmt(p6)+'</span>';
-      h+='</div></div>';
-      // milestone chain
-      h+='<div style="padding:12px 12px 10px">';
-      // row 1: upstream
-      h+='<div style="display:flex;align-items:flex-start;gap:2px">';
-      h+=dot('Demand ID',demId); h+=arr();
-      h+=dot('Order placed',ordPl); h+=arr();
-      h+=dot('Specs',specs); h+=arr();
-      h+=dot('Confirmed',conf); h+=arr();
-      h+=dot('Mat. procured',mo); h+=arr();
-      h+=dot('Sched. mfg',schedMfg);
-      h+='</div>';
-      h+='<div style="text-align:right;font-size:10px;color:var(--g300);padding-right:2px;margin:-1px 0 1px">⤵</div>';
-      // row 2: downstream
-      h+='<div style="display:flex;align-items:flex-start;gap:2px">';
-      h+=dot('Manufacturing',fs,fe); h+=arr();
-      h+=dot('Inspect (fac.)',inspFac); h+=arr();
-      h+=dot('Shipped',shipped); h+=arr();
-      h+=dot('Delivered',del); h+=arr();
-      h+=dot('Inspect (site)',inspSite); h+=arr();
-      h+=dot('INSTALL',p6,null,true);
-      h+='</div>';
-      h+='</div></div>';
+    // ── X-axis (shared) ──────────────────────────────────────────────────────
+    h+='<div style="display:flex;margin-bottom:2px">';
+    h+='<div style="min-width:'+LW+'px;flex-shrink:0"></div>';
+    h+='<div style="position:relative;flex:1;height:18px;border-bottom:1px solid var(--g200)">';
+    MONTHS.forEach(function(m){
+      var mp=parseFloat(((new Date(2026,MN[m],1).getTime()-APR1)/SPAN_MS*100).toFixed(1));
+      if(mp<-1||mp>101)return;
+      var x=Math.max(0,mp);
+      h+='<div style="position:absolute;left:'+x+'%;font-size:9.5px;color:var(--g400)">'+m+'</div>';
+      if(mp>0.5)h+='<div style="position:absolute;left:'+mp+'%;top:14px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';
     });
+    if(todX>=0&&todX<=100)h+='<div title="Today" style="position:absolute;left:'+todX+'%;top:0;height:2000px;width:1.5px;background:#10b981;opacity:.5;pointer-events:none;z-index:1"></div>';
+    h+='</div></div>';
+    // ── Item rows ────────────────────────────────────────────────────────────
+    items.filter(function(it){return !!it.p6Date;}).forEach(function(it,idx){
+      var mo=pd(it.mo); var fs=pd(it.fs); var fe=pd(it.fe);
+      var p6=pd(it.p6Date); var sd=it.shipD||3;
+      if(!mo||!fs||!fe||!p6)return;
+      // compute milestone dates
+      var demId=addD(mo,-23);
+      var ordStart=addD(mo,-21); var ordEnd=addD(mo,-14);
+      var matStart=addD(mo,-14); var matEnd=mo;
+      var schedMfg=addD(fs,-1); var schedMfgEnd=fs;
+      var inspFacS=addD(fe,1); var inspFacE=addD(fe,2);
+      var shipS=addD(fe,2); var shipE=addD(fe,sd);
+      var inspSiteS=addD(shipE,1); var inspSiteE=addD(shipE,2);
+      var mfgWks=Math.round((fe.getTime()-fs.getTime())/604800000);
+      var tc=TC[it.t]||'#888'; var tl=TL[it.t]||it.t;
+      var p6col=p6.getTime()<TODAY_MS?'#dc2626':'#1d4ed8';
+      var expanded=!!_pfbP6Expanded[idx];
+      // ── collapsed header row ─────────────────────────────────────────────
+      h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:5px 8px 5px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'4px')+'">';
+      h+='<div style="min-width:'+LW+'px;flex-shrink:0;display:flex;align-items:center;gap:6px">';
+      h+='<span style="font-size:9px;color:var(--g400);flex-shrink:0">'+(expanded?'▼':'▶')+'</span>';
+      h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">'+it.item+'</div>';
+      h+='<div style="font-size:9px;color:var(--g400)">'+it.qty+'</div></div>';
+      h+='</div>';
+      h+='<div style="flex:1;position:relative;height:20px">';
+      // full-span background bar (mo → p6)
+      var x0=Math.max(0,pct(mo)); var xp=Math.min(100,pct(p6));
+      h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:12px;top:4px;background:'+tc+';opacity:.1;border-radius:3px"></div>';
+      // fab bar
+      var fx1=Math.max(0,pct(fs)); var fx2=Math.min(100,pct(fe));
+      h+='<div style="position:absolute;left:'+fx1+'%;width:'+(fx2-fx1)+'%;height:12px;top:4px;background:'+tc+';opacity:.65;border-radius:3px"></div>';
+      // p6 flag
+      var px=pct(p6);
+      if(px>=0&&px<=100)h+='<div style="position:absolute;left:calc('+px+'% - 1px);top:0;bottom:0;width:2px;background:#dc2626;border-radius:1px;z-index:2"></div>';
+      // today
+      if(todX>=0&&todX<=100)h+='<div style="position:absolute;left:'+todX+'%;top:0;bottom:0;width:1.5px;background:#10b981;opacity:.6;z-index:2"></div>';
+      h+='</div>';
+      h+='<div style="display:flex;align-items:center;gap:6px;padding-left:10px;flex-shrink:0">';
+      h+='<span style="font-size:9px;font-weight:600;color:'+tc+';background:'+tc+'18;padding:1px 5px;border-radius:8px">'+tl+'</span>';
+      h+='<span style="font-size:11px;font-weight:700;color:#fff;background:'+p6col+';padding:2px 8px;border-radius:5px;white-space:nowrap">★ '+fmtD(p6)+'</span>';
+      h+='</div></div>';
+      // ── expanded Gantt ───────────────────────────────────────────────────
+      if(expanded){
+        h+='<div style="background:var(--g50);border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:8px 8px 10px;margin-bottom:4px">';
+        // inner x-axis
+        h+='<div style="display:flex;margin-bottom:3px">';
+        h+='<div style="min-width:'+LW+'px;flex-shrink:0"></div>';
+        h+='<div style="position:relative;flex:1;height:14px;border-bottom:1px solid var(--g200)">';
+        MONTHS.forEach(function(m){
+          var mp=parseFloat(((new Date(2026,MN[m],1).getTime()-APR1)/SPAN_MS*100).toFixed(1));
+          if(mp<-1||mp>101)return;
+          h+='<div style="position:absolute;left:'+Math.max(0,mp)+'%;font-size:8.5px;color:var(--g400)">'+m+'</div>';
+        });
+        if(todX>=0&&todX<=100)h+='<div style="position:absolute;left:'+todX+'%;top:0;height:1000px;width:1px;background:#10b981;opacity:.3;pointer-events:none"></div>';
+        h+='</div></div>';
+        // helper to render one activity bar row
+        function actRow(label,sD,eD,color,durLabel,isFlag){
+          if(!sD)return '';
+          var x1=pct(sD); var x2=eD?pct(eD):x1;
+          var sMs=sD.getTime(); var eMs=eD?eD.getTime():sMs+86400000;
+          var prog=progress(sMs,eMs);
+          var done=prog===100; var active=prog>0&&prog<100;
+          var clampX1=Math.max(0,x1); var clampX2=Math.min(100,x2);
+          var bw=Math.max(clampX2-clampX1, isFlag?0.25:0.6);
+          var barCol=done?'#10b981':(active?'#3b82f6':(color||'#94a3b8'));
+          var bg=done?'#10b981':(color||'#94a3b8');
+          var dateStr=eD&&fmtD(sD)!==fmtD(eD)?fmtD(sD)+'–'+fmtD(eD):fmtD(sD);
+          var icon=done?'✓':(active?'▶':'');
+          var iconCol=done?'#10b981':(active?'#3b82f6':'var(--g400)');
+          var row='<div style="display:flex;align-items:center;margin:3px 0;height:22px">';
+          row+='<div style="min-width:'+LW+'px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding-right:6px">';
+          row+='<div style="display:flex;align-items:center;gap:4px"><span style="font-size:9px;color:'+iconCol+';width:10px;text-align:center">'+icon+'</span><span style="font-size:9.5px;color:var(--g700)">'+label+'</span></div>';
+          row+='<span style="font-size:8.5px;color:var(--g400)">'+durLabel+'</span>';
+          row+='</div>';
+          row+='<div style="position:relative;flex:1;height:22px">';
+          if(isFlag){
+            row+='<div style="position:absolute;left:'+clampX1+'%;top:2px;bottom:2px;width:2px;background:'+barCol+';border-radius:1px;z-index:2"></div>';
+            if(clampX1>=0&&clampX1<=100)row+='<div style="position:absolute;left:calc('+clampX1+'% + 4px);top:5px;font-size:8px;color:var(--g500);white-space:nowrap">'+dateStr+'</div>';
+          } else {
+            // gray background track
+            if(clampX1<clampX2)row+='<div style="position:absolute;left:'+clampX1+'%;width:'+bw+'%;height:12px;top:5px;background:#e2e8f0;border-radius:3px"></div>';
+            // progress fill
+            if(prog>0&&clampX1<clampX2){
+              var fillW=bw*Math.min(prog,100)/100;
+              row+='<div style="position:absolute;left:'+clampX1+'%;width:'+fillW+'%;height:12px;top:5px;background:'+barCol+';border-radius:3px;opacity:.85"></div>';
+            }
+            // date label
+            row+='<div style="position:absolute;left:calc('+Math.min(100,clampX2)+'% + 3px);top:7px;font-size:8px;color:var(--g400);white-space:nowrap">'+dateStr+'</div>';
+          }
+          row+='</div></div>';
+          return row;
+        }
+        h+=actRow('Demand identified',demId,demId,'#6b7280','long lead',true);
+        h+=actRow('Order & specs',ordStart,ordEnd,'#8b5cf6','1 wk',false);
+        h+=actRow('Materials procured',matStart,matEnd,'#f59e0b','2 wks',false);
+        h+=actRow('Sched. for mfg',schedMfg,schedMfgEnd,'#6366f1','1 day',false);
+        h+=actRow('Manufacturing',fs,fe,tc,mfgWks+' wks',false);
+        h+=actRow('Inspect (facility)',inspFacS,inspFacE,'#10b981','1 day',false);
+        h+=actRow('Delivery / shipping',shipS,shipE,'#0ea5e9',sd+'d',false);
+        h+=actRow('Inspect (site)',inspSiteS,inspSiteE,'#10b981','1 day',false);
+        h+=actRow('INSTALL ★',p6,p6,'#dc2626','P6',true);
+        h+='</div>';
+      }
+    });
+    // legend
+    h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;font-size:10.5px;color:var(--g600);padding-top:8px;border-top:1px solid var(--g100)">';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:4px;background:#10b981;border-radius:2px"></div>Completed</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:4px;background:#3b82f6;border-radius:2px"></div>In progress</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:4px;background:#e2e8f0;border-radius:2px"></div>Upcoming</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:2px;height:12px;background:#dc2626;border-radius:1px"></div>P6 install date</div>';
+    h+='<div style="display:flex;align-items:center;gap:4px"><div style="width:2px;height:12px;background:#10b981;border-radius:1px"></div>Today (Aug 10)</div>';
+    h+='</div>';
     return h;
   }
     function renderPrefabCapPlan(proj){
