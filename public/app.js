@@ -4397,13 +4397,7 @@ charges:[
     var ns=CURRENT==='ns';
     var active=ORDERS.filter(function(o){return o.stage>=3&&o.stage<=4;}).length;
     var pending=ORDERS.filter(function(o){return o.stage<=2;}).length;
-    if(!ns){
-      wrap.classList.remove('hide');
-      wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span>'+
-        '<div><div class="ist">'+active+' orders active &middot; '+pending+' pending delivery confirmation</div><div class="isd">'+
-        'Review open orders to confirm delivery schedules are on track.</div></div></div>';
-      return;
-    }
+    if(!ns){wrap.classList.add('hide');return;}
     wrap.classList.remove('hide');
     wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',0)+'</span>'+
       '<div><div class="ist">2 orders need your attention</div><div class="isd"><b>ORD-3042</b> (excavator) is 2 days behind schedule and blocks crane mobilization · <b>ORD-3031</b> (scissor lifts) idle 9 days — estimated $3.8K/mo exposure · Tower crane mobilization confirmed for Aug 3</div></div></div>';
