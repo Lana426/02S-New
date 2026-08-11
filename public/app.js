@@ -3168,19 +3168,22 @@ charges:[
       h+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+d.replace(/'/g,"\\'")+'\')" >'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
     });
     var _eqRA=_dpRowAssets[l.id]||[];
+    var _onR=_eqRA.filter(function(a){return a.status!=='offrent';}).length;
+    var _offR=_eqRA.length-_onR;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-    h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400)">· '+_eqRA.length+' of '+l.qty+'</span></span>';
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets</span>';
+    h+='<span style="font-size:10.5px;color:var(--g400)">· '+_onR+' on-rent'+(_offR?' · '+_offR+' off-rent':'')+'</span>';
+    h+='<button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
     h+='</div>';
     if(_eqRA.length){
-      h+='<div style="display:flex;flex-direction:column;gap:3px">';
+      h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
       _eqRA.forEach(function(a){
-        h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--g50);border-radius:5px">';
-        h+='<span style="font-family:monospace;font-size:11px;color:var(--g700);min-width:80px">'+a.id+'</span>';
-        h+='<span style="flex:1;font-size:12px;color:var(--g700)">'+a.cls+'</span>';
-        h+='<span style="font-size:12px;color:var(--g500)">'+a.yard+'</span>';
-        h+='<button class="btn btn-ghost btn-sm" style="padding:1px 6px;font-size:10px" onclick="event.stopPropagation();dpRemoveRowAsset(\''+l.id+'\',\''+a.id+'\')">×</button>';
+        var _isOff=a.status==='offrent';
+        h+='<div style="display:inline-flex;align-items:center;gap:4px;padding:3px 6px 3px 8px;border-radius:20px;border:1px solid '+(_isOff?'var(--g200)':'var(--success)')+';background:'+(_isOff?'var(--g50)':'rgba(16,185,129,.06)')+';">';
+        h+='<span style="font-family:monospace;font-size:10.5px;font-weight:600;color:'+(_isOff?'var(--g400)':'var(--g800)')+'">'+a.id+'</span>';
+        if(!_isOff){h+='<button title="Mark off-rent" onclick="event.stopPropagation();dpOffrentRowAsset(\''+l.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:9px;color:var(--g400);line-height:1" title="Off-rent">\u2193</button>';}
+        h+='<button onclick="event.stopPropagation();dpRemoveRowAsset(\''+l.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:11px;color:var(--g300);line-height:1">×</button>';
         h+='</div>';
       });
       h+='</div>';
@@ -7861,6 +7864,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     _dpRowAssets[rowId]=_dpRowAssets[rowId].filter(function(a){return a.id!==assetId;});
     renderCcDemand('equipment'); eqRefreshDrill(rowId);
   }
+  function dpOffrentRowAsset(rowId,assetId){
+    var list=_dpRowAssets[rowId]; if(!list)return;
+    for(var i=0;i<list.length;i++){if(list[i].id===assetId){list[i].status='offrent';break;}}
+    renderCcDemand('equipment'); eqRefreshDrill(rowId);
+  }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
   function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
   function dpRemoveCustomAttr(reqId,attr){if(!_dpItemAttrs[reqId])return;var i=_dpItemAttrs[reqId].indexOf(attr);if(i>=0){_dpItemAttrs[reqId].splice(i,1);renderCcDemand('equipment');}}
@@ -8160,15 +8168,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_itemWord+'\')">+ Assign asset</button>';
             expH+='</div>';
             if(_rowAssets.length){
-              var _ag='90px 1fr 120px 80px 70px';
-              expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';
+              expH+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
               _rowAssets.forEach(function(a){
-                expH+='<div class="dp-row" style="grid-template-columns:'+_ag+'">';
-                expH+='<div style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g900)">'+a.id+'</div>';
-                expH+='<div style="font-size:11px">'+a.cls+'</div>';
-                expH+='<div style="font-size:11px;color:var(--g600)">'+( a.yard||'\u2014')+'</div>';
-                expH+='<div><span class="tag '+(a.status==='onrent'?'ok':a.status==='maint'?'bad':'neu')+'">'+( a.status||'assigned')+'</span></div>';
-                expH+='<div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div>';
+                var _isOff=a.status==='offrent';
+                expH+='<div style="display:inline-flex;align-items:center;gap:4px;padding:3px 6px 3px 8px;border-radius:20px;border:1px solid '+(_isOff?'var(--g200)':'var(--success)')+';background:'+(_isOff?'var(--g50)':'rgba(16,185,129,.06)')+';">';
+                expH+='<span style="font-family:monospace;font-size:10.5px;font-weight:600;color:'+(_isOff?'var(--g400)':'var(--g800)')+'">'+a.id+'</span>';
+                if(!_isOff){expH+='<button title="Mark off-rent" onclick="event.stopPropagation();dpOffrentRowAsset(\''+row.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:9px;color:var(--g400);line-height:1">↓</button>';}
+                expH+='<button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:11px;color:var(--g300);line-height:1">×</button>';
                 expH+='</div>';
               });
               expH+='</div>';
@@ -8212,7 +8218,18 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           expH+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400);font-size:9.5px;text-transform:none">'+_rowAssets2.length+' assigned'+(row.qty?' \u00b7 qty '+row.qty:'')+'</span></div>';
           expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_iw2+'\')">+ Assign asset</button>';
           expH+='</div>';
-          if(_rowAssets2.length){var _ag2='90px 1fr 120px 80px 70px';expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag2+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';_rowAssets2.forEach(function(a){expH+='<div class="dp-row" style="grid-template-columns:'+_ag2+'"><div style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g900)">'+a.id+'</div><div style="font-size:11px">'+a.cls+'</div><div style="font-size:11px;color:var(--g600)">'+(a.yard||'\u2014')+'</div><div><span class="tag '+(a.status==='onrent'?'ok':a.status==='maint'?'bad':'neu')+'">'+(a.status||'assigned')+'</span></div><div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div></div>';});expH+='</div>';}else{expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">No assets assigned yet \u2014 click <b>+ Assign asset</b> to select from fleet or add a custom unit.</div>';}
+          if(_rowAssets2.length){
+              expH+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+              _rowAssets2.forEach(function(a){
+                var _isOff=a.status==='offrent';
+                expH+='<div style="display:inline-flex;align-items:center;gap:4px;padding:3px 6px 3px 8px;border-radius:20px;border:1px solid '+(_isOff?'var(--g200)':'var(--success)')+';background:'+(_isOff?'var(--g50)':'rgba(16,185,129,.06)')+';">';
+                expH+='<span style="font-family:monospace;font-size:10.5px;font-weight:600;color:'+(_isOff?'var(--g400)':'var(--g800)')+'">'+a.id+'</span>';
+                if(!_isOff){expH+='<button title="Mark off-rent" onclick="event.stopPropagation();dpOffrentRowAsset(\''+row.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:9px;color:var(--g400);line-height:1">↓</button>';}
+                expH+='<button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="background:none;border:none;padding:0 1px;cursor:pointer;font-size:11px;color:var(--g300);line-height:1">×</button>';
+                expH+='</div>';
+              });
+              expH+='</div>';
+          }else{expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">No assets assigned yet — click <b>+ Assign asset</b>.</div>';}
           expH+='</div>';
           expH+='</div>';    }
         if(isDpView){
