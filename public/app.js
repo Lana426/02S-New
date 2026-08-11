@@ -1504,7 +1504,7 @@
   };
   var dpActive=null, dpAddPk=null;
 
-  var logPlanView='moves';
+  var logPlanView='gcgr';
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
@@ -1589,7 +1589,6 @@
       // Tabs + toolbar
       h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
       h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='moves'?' active':'')+' onclick="setLogPlanView(\'moves\')">'+'Moves &amp; hauls'+'</button>';
       h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+' onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
       h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+' onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
       h+='</div><span class="spacer"></span>';
@@ -1613,33 +1612,7 @@
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
         return '<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)">'+label+'</div></div>';
       }
-      if(logPlanView==='moves'){
-        var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-        var moveToneMap={'Scheduled':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Projected':'projected'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(LOG_CC,'Move / item',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.item+'</span><span style="font-size:10px;color:var(--g400)">'+(r.firm||r.qty)+'</span></div>';
-            return lbl+nsBar(r,moveToneMap[r.state]||'projected',r.window,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested/pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var lgCols='1fr 80px 110px 120px 90px 114px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Order</span><span>Status</span></div>';
-          LOG_CC.forEach(function(r){
-            var tone=DP_TONE[r.state]||'neu'; var hasFQ=!r.ordId&&(r.state==='Requested'||r.state==='Projected');
-            h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:default">';
-            h+='<div>'+r.item+(r.firm?'<div class="sub">'+r.firm+'</div>':'')+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
-            h+='<div style="font-size:11.5px;font-weight:600;text-align:right">'+(r.cost||'\u2014')+'</div>';
-            h+='<div>'+(r.ordId?'<span style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.ordId+'</span>':(hasFQ?'<button class="btn btn-ghost btn-sm" style="font-size:11px">\u2192 FQ</button>':'\u2014'))+'</div>';
-            h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
-            h+='</div>';
-          });
-          h+='</div>';
-        }
-      } else if(logPlanView==='gcgr'){
+      if(logPlanView==='gcgr'){
         var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
         if(gcgrView==='gantt'){
           h+=nsGantt(GCGR_SERVICES,'Service / vendor',function(r,gGrid){
@@ -2850,7 +2823,7 @@ charges:[
     if(dEl)dEl.textContent=deliveries||0;if(oEl)oEl.textContent=offrents||0;if(bEl)bEl.textContent=pendingBills||0;
   }
   function openMarginPlanModal(){
-    var gmPlan=10.9,gmCurr=10.4,gmProj=16780000;
+    var gmPlan=10.9,gmCurr=10.4,gmProj=21640000;
     var GP=[
       {l:'Equipment',     p:18.0,a:15.2,note:'Re-rent crane premium on BESS — primary gap driver'},
       {l:'Prefab',        p:14.0,a:13.5,note:'Headwall fabrication slightly behind forecast'},
@@ -2882,10 +2855,6 @@ charges:[
       +'<div style="font-size:14px;font-weight:700;color:var(--red);text-align:right">'+gmCurr.toFixed(1)+'%</div>'
       +'<div style="font-size:14px;font-weight:700;color:var(--red);text-align:right">−'+(gmPlan-gmCurr).toFixed(1)+' pts</div>'
       +'</div>';
-    b+='<div style="margin-top:12px;padding:9px 11px;background:var(--g50);border-radius:6px;font-size:12px;color:var(--g600)">'
-      +'<b style="color:var(--g800)">Enterprise contribution:</b> '
-      +fmtBig(Math.round(gmCurr/100*gmProj))+' gross profit from this project ('
-      +gmCurr+'% of $16.8M). McCarthy portfolio target is 15% GM — this project is currently 0.8 pts below that benchmark.</div>';
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button>'
       +'<button class="btn btn-dark" onclick="closeModal();go(\'billing\')">View cost breakdown &rarr;</button></div>';
     openModal('Margin plan — Hercules Solar + BESS', b);
@@ -2893,7 +2862,7 @@ charges:[
   function renderGMDashKPI(){
     var mount=document.getElementById('gmDashKPI'); if(!mount)return;
     var ns=CURRENT==='ns';
-    var gmPlan=GM_PLAN,gmCurr=GM_CURR,gmProj=16780000;
+    var gmPlan=GM_PLAN,gmCurr=GM_CURR,gmProj=21640000;
     var gmTone=gmCurr<gmPlan-1?'bad':gmCurr<gmPlan?'warn':'ok';
     var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
     var view=window._gmDashView||'summary';
@@ -9575,7 +9544,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   };
   var dpActive=null, dpAddPk=null;
 
-  var logPlanView='moves';
+  var logPlanView='gcgr';
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
@@ -9660,7 +9629,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       // Tabs + toolbar
       h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
       h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='moves'?' active':'')+' onclick="setLogPlanView(\'moves\')">'+'Moves &amp; hauls'+'</button>';
       h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+' onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
       h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+' onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
       h+='</div><span class="spacer"></span>';
@@ -9684,33 +9652,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
         return '<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)">'+label+'</div></div>';
       }
-      if(logPlanView==='moves'){
-        var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-        var moveToneMap={'Scheduled':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Projected':'projected'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(LOG_CC,'Move / item',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.item+'</span><span style="font-size:10px;color:var(--g400)">'+(r.firm||r.qty)+'</span></div>';
-            return lbl+nsBar(r,moveToneMap[r.state]||'projected',r.window,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested/pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var lgCols='1fr 80px 110px 120px 90px 114px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Order</span><span>Status</span></div>';
-          LOG_CC.forEach(function(r){
-            var tone=DP_TONE[r.state]||'neu'; var hasFQ=!r.ordId&&(r.state==='Requested'||r.state==='Projected');
-            h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:default">';
-            h+='<div>'+r.item+(r.firm?'<div class="sub">'+r.firm+'</div>':'')+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-            h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
-            h+='<div style="font-size:11.5px;font-weight:600;text-align:right">'+(r.cost||'\u2014')+'</div>';
-            h+='<div>'+(r.ordId?'<span style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.ordId+'</span>':(hasFQ?'<button class="btn btn-ghost btn-sm" style="font-size:11px">\u2192 FQ</button>':'\u2014'))+'</div>';
-            h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
-            h+='</div>';
-          });
-          h+='</div>';
-        }
-      } else if(logPlanView==='gcgr'){
+      if(logPlanView==='gcgr'){
         var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
         if(gcgrView==='gantt'){
           h+=nsGantt(GCGR_SERVICES,'Service / vendor',function(r,gGrid){
