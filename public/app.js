@@ -1589,10 +1589,10 @@
       // Tabs + toolbar
       h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
       h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+' onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
-      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+' onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
+      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+'" onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
+      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+'" onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
       h+='</div><span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+' onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+' onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='</div>';
       // Shared gantt renderer
@@ -2883,7 +2883,6 @@ charges:[
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
-        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $16.8M</div></div>'
         +'</div>';
     } else if(view==='pillar'){
       var _pm={'Equipment':'Equipment','Logistics':'Logistics','Professional services':'Prof. services','Procurement':'Procurement','Pre-fab':'Prefab'};
@@ -3928,7 +3927,7 @@ charges:[
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' below plan</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*22600000))+'</div><div style="font-size:11px;color:var(--g500)">gross profit · '+gmCurr+'% of $16.8M</div></div>';
+      
       h+='</div>';
       h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)">Tracking against budget &amp; financials — '+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' gap driven by crane re-rent premium on BESS. <span class="lk" onclick="go(\'billing\')">View cost breakdown</span></div>';
       h+='</div>';
@@ -9629,10 +9628,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       // Tabs + toolbar
       h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
       h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+' onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
-      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+' onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
+      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+'" onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
+      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+'" onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
       h+='</div><span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+' onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+' onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='</div>';
       // Shared gantt renderer
