@@ -5307,6 +5307,7 @@ charges:[
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
+  var _dpEquipView='table'; var _dpItemAttrs={};
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
   var _pfbP6Overrides={};
@@ -6710,9 +6711,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
       cap:'Every project\u2019s equipment demand, aggregated. 02S confirms each request against the canonical taxonomy, then releases it to the Fulfillment queue for the owned vs re-rent decision.',
       rows:[
-        {id:'REQ-4479',asset:'2\u00d7 excavator, 50-ton \u00b7 dual aux + GPS',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:false,mapLeaf:'50-ton',conf:'94',leafOpts:['30-ton','45-55T','50-ton','80-ton'],dec:'Use owned',decTone:'ok',status:'Needs map'},
-        {id:'REQ-4471',asset:'5\u00d7 tower crane \u00b7 self-erect, ~250 ft',project:'Riverside Medical Center',tax:'Asset \u203a Lifting \u203a Tower crane',taxOk:false,mapLeaf:'Self-erect',conf:'88',leafOpts:['Self-erect','Flat-top','Luffing-jib','Hammerhead'],dec:'Re-rent',decTone:'info',status:'Needs map'},
-        {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready'}
+        {id:'REQ-4479',asset:'2\u00d7 excavator, 50-ton \u00b7 dual aux + GPS',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:false,mapLeaf:'50-ton',conf:'94',leafOpts:['30-ton','45-55T','50-ton','80-ton'],dec:'Use owned',decTone:'ok',status:'Needs map',attrs:['Dual aux','GPS RTK','Mesh track','Cat 390F']},
+        {id:'REQ-4471',asset:'5\u00d7 tower crane \u00b7 self-erect, ~250 ft',project:'Riverside Medical Center',tax:'Asset \u203a Lifting \u203a Tower crane',taxOk:false,mapLeaf:'Self-erect',conf:'88',leafOpts:['Self-erect','Flat-top','Luffing-jib','Hammerhead'],dec:'Re-rent',decTone:'info',status:'Needs map',attrs:['Self-erect','250 ft reach','Remote pendant']},
+        {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready',attrs:['GPS grade control','45K class','Crawler track']}
       ],
       rollCols:['Category','Peak units','Peak month','vs plan'],
       roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Cranes',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'warn'}],
@@ -7732,6 +7733,76 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
   }
   function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
+  function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
+  function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
+  function dpRemoveCustomAttr(reqId,attr){if(!_dpItemAttrs[reqId])return;var i=_dpItemAttrs[reqId].indexOf(attr);if(i>=0){_dpItemAttrs[reqId].splice(i,1);renderCcDemand('equipment');}}
+  function renderEquipGantt(selProj,ns){
+    var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var GSTART=3,GEND=11,GCNT=9;
+    var PC={hercules:'#7a1c1c',riverside:'#1e3a5f',cimarron:'#1a4731'};
+    function mIdx(s){
+      if(!s)return null;
+      if(/^\d{4}-/.test(s)){var p=s.split('-');return(+p[0]-2026)*12+(+p[1]-1);}
+      var MN={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+      var m=s.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i);
+      if(m){var k=m[1].charAt(0).toUpperCase()+m[1].slice(1).toLowerCase();return MN[k]!=null?MN[k]:null;}
+      return null;
+    }
+    function pctG(mi){return Math.max(0,Math.min(100,(mi-GSTART)/GCNT*100));}
+    var eOrds=ORDERS.filter(function(o){return o.pillar==='equipment'&&(selProj==='all'||o.proj===selProj);});
+    var cats={};
+    eOrds.forEach(function(o){
+      var cat='Other equipment';
+      if(/crane/i.test(o.item))cat='Cranes';
+      else if(/excavat/i.test(o.item))cat='Excavators';
+      else if(/lift|mewp|boom|scissor/i.test(o.item))cat='Aerial / Lifts';
+      else if(/truck|vehicle|bus/i.test(o.item))cat='Vehicles';
+      else if(/generator/i.test(o.item))cat='Generators';
+      else if(/compressor|pump/i.test(o.item))cat='Mechanical';
+      if(!cats[cat])cats[cat]=[];
+      cats[cat].push(o);
+    });
+    var todayM=6;
+    var h='<div style="background:#fff;border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-top:4px">';
+    h+='<div style="display:flex;gap:12px;padding:9px 14px;border-bottom:1px solid var(--g100);flex-wrap:wrap;align-items:center">';
+    [{k:'hercules',l:'Hercules Solar + BESS'},{k:'riverside',l:'Riverside Medical'},{k:'cimarron',l:'Cimarron Data Center'}].forEach(function(pr){
+      if(selProj!=='all'&&selProj!==pr.k)return;
+      h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g700)"><span style="width:10px;height:10px;border-radius:2px;background:'+PC[pr.k]+';display:inline-block"></span>'+pr.l+'</span>';
+    });
+    h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="width:10px;height:2px;background:rgba(239,68,68,.5);display:inline-block"></span>Today</span>';
+    h+='<span style="margin-left:auto;font-size:10px;color:var(--g400)">Click any bar for order details</span>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:150px 1fr;background:var(--g50);border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;padding:6px 10px;letter-spacing:.04em">Category</div>';
+    h+='<div style="display:grid;grid-template-columns:repeat('+GCNT+',1fr)">';
+    for(var mi=GSTART;mi<=GEND;mi++){var isTM=(mi===todayM);h+='<div style="font-size:9.5px;color:'+(isTM?'#ef4444':'var(--g500)')+';font-weight:'+(isTM?'700':'400')+';text-align:center;padding:6px 0">'+MONTHS[mi]+'</div>';}
+    h+='</div></div>';
+    var catKeys=Object.keys(cats).sort();
+    if(!catKeys.length){h+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12px">No equipment orders in scope.</div>';}
+    catKeys.forEach(function(cat){
+      var rows=cats[cat];
+      var rowH=Math.max(32,rows.length*18+12);
+      h+='<div style="display:grid;grid-template-columns:150px 1fr;border-bottom:1px solid var(--g100);min-height:'+rowH+'px">';
+      h+='<div style="font-size:11px;font-weight:600;color:var(--g700);padding:8px 10px;border-right:1px solid var(--g100);line-height:1.4">'+cat+'<br><span style="font-size:9.5px;font-weight:400;color:var(--g400)">'+rows.length+' order'+(rows.length===1?'':'s')+'</span></div>';
+      h+='<div style="position:relative;min-height:'+rowH+'px">';
+      for(var gi=1;gi<GCNT;gi++){h+='<div style="position:absolute;left:'+(gi/GCNT*100).toFixed(1)+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';}
+      h+='<div style="position:absolute;left:'+pctG(todayM).toFixed(1)+'%;top:0;bottom:0;width:1.5px;background:rgba(239,68,68,.3);z-index:2"></div>';
+      rows.forEach(function(o,bi){
+        var sm=mIdx(o.onRentSince?o.onRentSince+' 2026':o.od);
+        var em=mIdx(o.rental&&o.rental.offRent?o.rental.offRent:(o.anticipatedOff||o.od));
+        if(sm===null)sm=GSTART;if(em===null)em=sm+1;if(sm>GEND)return;
+        var x0=pctG(sm);var x1=pctG(em+1);var w=Math.max(2,x1-x0);
+        var col=PC[o.proj]||'#6b7280';
+        var top=6+bi*18;
+        h+='<div title="'+o.id+' \u00b7 '+o.item+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:'+top+'px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(''+o.id+'')">';
+        if(w>4){h+='<span style="font-size:8.5px;color:#fff;white-space:nowrap;padding:0 4px;line-height:13px;display:block;overflow:hidden">'+(o.qty?o.qty+'\u00d7 ':'')+o.item.split(/[\u2014\u2013-]/)[0].trim().split(' ').slice(0,4).join(' ')+'</span>';}
+        h+='</div>';
+      });
+      h+='</div></div>';
+    });
+    h+='</div>';
+    return h;
+  }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
@@ -7857,7 +7928,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var rowsToRender=isDpView?visRows:(dpShowAll?visRows:visRows.slice(0,5));
     var moreN=visRows.length-5;
     if(isDpView){
-      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';
+      if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView('table')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView('gantt')">Gantt</button></div>';}
+      h+='<span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
+      if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#equip-list-view{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
     } else {
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
       h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
@@ -7925,7 +7999,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+=renderPrefabP6Schedule(_p6fi);
       }
     }
-    if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by<div style="font-size:9px;color:#3b82f6;font-weight:400;line-height:1.3;margin-top:1px">↗ P6 install date</div></span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by<div style="font-size:9px;color:#3b82f6;font-weight:400;line-height:1.3;margin-top:1px">↗ P6 install date</div></span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'&&isDpView&&p==='prefab'&&_pfbInstFilter!=='all'){
@@ -7945,6 +8019,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             expH+=trackerHTML(_eo,ns);
             expH+=buildDpBillingInline(row.ordId);
             if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
+            var _aa=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
+            expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Attributes</div><div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">';
+            _aa.forEach(function(a){var isCust=(_dpItemAttrs[row.id]||[]).indexOf(a)>=0;expH+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;padding:2px 8px;border-radius:10px;background:'+(isCust?'rgba(59,130,246,.1)':'var(--g100)')+';color:'+(isCust?'#2563eb':'var(--g700)')+';border:1px solid '+(isCust?'rgba(59,130,246,.3)':'var(--g200)')+'">'+a+(ns&&isCust?'<button onclick="event.stopPropagation();dpRemoveCustomAttr(''+row.id+'',''+a+'')" style="background:none;border:none;padding:0;cursor:pointer;color:#93c5fd;margin-left:2px;font-size:12px">\u00d7</button>':'')+'</span>';});
+            if(ns){expH+='<div style="display:inline-flex;align-items:center;gap:3px;background:var(--g50);border:1px dashed var(--g200);border-radius:10px;padding:1px 7px"><input id="dpAttrIn-'+row.id+'" placeholder="Add attribute\u2026" style="border:none;background:transparent;font-size:10.5px;width:100px;outline:none;color:var(--g700)" onkeydown="if(event.key==='Enter')dpAddCustomAttr(''+row.id+'')"><button onclick="event.stopPropagation();dpAddCustomAttr(''+row.id+'')" style="background:none;border:none;padding:0;cursor:pointer;color:#2563eb;font-size:15px;font-weight:700;line-height:1">+</button></div>';}
+            expH+='</div></div>';
             expH+='</div>';
           }
         } else {
@@ -7997,7 +8076,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
           h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
-          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div></div>';
+          var _ra=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
+          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div>'+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'')+'</div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
