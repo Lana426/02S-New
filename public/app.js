@@ -8060,7 +8060,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             rows+='<div id="'+_panId+'" class="gas-panel open">';
             rows+='<div class="gas-panel-hd" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
             if(_rA.length){
-              if(_onR>0)rows+='<span class="gas-badge gas-badge-onrent">● '+_onR+' on-rent</span>';
+              var _rentLbl=stt==='projected'?' allocated':' on-rent';if(_onR>0)rows+='<span class="gas-badge gas-badge-onrent">● '+_onR+_rentLbl+'</span>';
               if(_offR>0)rows+='<span class="gas-badge gas-badge-offrent">✓ '+_offR+' historical</span>';
             }else{rows+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
             rows+='<div class="gas-actions">';
