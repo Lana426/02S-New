@@ -1547,7 +1547,7 @@
     var tabs=[['gcgr','GC/GR Services']].concat(ns?[['trnwh','Transportation &amp; Warehousing']]:[]);
     if(logPlanView==='mobdemob') logPlanView='gcgr';
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
-    if(logPlanView==='delivery') logPlanView='gcgr';
+    // delivery tab enabled for v1
     var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
     if(ns){
       h+='<div class="eq-toolbar" style="margin-bottom:0"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
@@ -1555,7 +1555,77 @@
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      h+='<div class="eq-toolbar" style="margin-bottom:14px"><span style="font-size:12.5px;color:var(--g500)">V1 focused on GC/GR services — pending scoping conversations with pillar leads.</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button></div>';
+      h+='<div class="eq-toolbar" style="margin-bottom:6px">';
+      h+='<div class="log-tabs">';
+      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+'" onclick="setLogPlanView(\'gcgr\')">GC/GR Services</button>';
+      h+='<button class="log-tab'+(logPlanView==='delivery'?' active':'')+'" onclick="setLogPlanView(\'delivery\')">Deliveries</button>';
+      h+='</div>';
+      h+='<span class="spacer"></span>';
+      if(logPlanView==='gcgr'){h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';}
+      h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+      h+='</div>';
+      if(logPlanView==='gcgr'){
+        var GCGR_MO=EQ_MONTHS.slice(1,11);
+        var GN=GCGR_MO.length;
+        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
+        var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
+        var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
+        if(gcgrView==='gantt'){
+          var gmh='';
+          for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
+          h+='<div class="gantt">';
+          h+='<div class="g-head"><div class="gh-label">Service / vendor</div><div class="gh-months">'+gmh+'</div></div>';
+          h+='<div class="g-body">';
+          h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+          GCGR_SERVICES.forEach(function(r){
+            var left=(r.sa/GN)*100; var width=((r.ea-r.sa+1)/GN)*100;
+            var stt=gcgrToneMap[r.status]||'projected';
+            h+='<div class="grow"><div class="g-label" style="flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
+            h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span>';
+            h+='<span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span>';
+            h+='</div>';
+            h+='<div class="g-track" style="background-image:'+gGrid+'">';
+            h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.vendor+' · '+r.monthly+'">'+r.monthly+'</div>';
+            h+='</div></div>';
+          });
+          h+='</div></div>';
+          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ’'+EQ_TODAY.slice(2,4)+'</span></div>';
+        } else {
+          var gcgt='1fr 140px 120px 130px 110px 90px';
+          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
+          GCGR_SERVICES.forEach(function(r){
+            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default">';
+            h+='<div>'+r.svc+'</div>';
+            h+='<div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div>';
+            h+='<div style="font-size:11.5px;color:var(--g700)">'+r.start+' – '+r.end+'</div>';
+            h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div>';
+            h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div>';
+            h+='<div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div>';
+            h+='</div>';
+          });
+          h+='</div>';
+        }
+      } else {
+        var dlvCols='1fr 100px 110px 130px 110px 100px';
+        var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
+        h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
+        dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+f[0]+'</button>';});
+        h+='</div></div></div>';
+        var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Pillar</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
+        dlvRows.forEach(function(d){
+          var tone=d.status==='Delivered'?'ok':d.status==='Scheduled'?'info':d.status==='In fabrication'?'warn':'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+dlvCols+';cursor:default">';
+          h+='<div>'+d.item+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g500)">'+d.pillar+'</div>';
+          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g800)">'+d.needby+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+d.vendor+'</div>';
+          h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+d.order+'</div>';
+          h+='<div><span class="tag '+tone+'">'+d.status+'</span></div>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
     }
     var LOG_ROWS=DP['logistics'].rows;
     if(LOG_ROWS&&LOG_ROWS.length){
