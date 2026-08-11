@@ -3013,7 +3013,8 @@ charges:[
       ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
       ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     }
-    if(EXTRA_LOOKAHEAD.length){EXTRA_LOOKAHEAD.forEach(function(x){ITEMS.push(x);});ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});}
+    if(EXTRA_LOOKAHEAD.length){EXTRA_LOOKAHEAD.forEach(function(x){ITEMS.push(x);});}
+    ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     var pillarTone={'Equipment':'info','Billing':'warn','Prof. services':'ok','Logistics':'neu','Procurement':'neu','Prefab':'info'};
     var toneColor={ok:'var(--success)',warn:'var(--warning)',info:'var(--info)',neu:'var(--g400)'};
     var head='<div style="display:grid;grid-template-columns:190px 1fr;gap:0;margin-bottom:2px">'
@@ -5235,8 +5236,7 @@ charges:[
           var o={}; for(var k in it)o[k]=it[k]; o._proj=p; items.push(o);
         });
       });
-      var tonePri={warn:0,info:1,ok:2,neu:3};
-      items.sort(function(a,b){var ta=tonePri[a.tone]||2,tb=tonePri[b.tone]||2;return ta!==tb?ta-tb:(a.start<b.start?-1:1);});
+      items.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
       items=items.slice(0,8);
     } else {
       items=(CC_LOOKAHEAD[proj]||[]).slice().sort(function(a,b){return a.start<b.start?-1:1;});
