@@ -1400,7 +1400,7 @@
     html+='</tbody></table>';
     box.innerHTML=html;
   }
-  function eqRefresh(){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
+  function eqRefresh(){ initEqOnRentAssets(); renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
 
   /* ═══════════ WORKSPACE LANDING ═══════════ */
   var WS={
@@ -7781,40 +7781,63 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(el&&l)el.innerHTML=buildEqTrack(l);
     renderEqPlan();
   }
+  var _EQ_PFX={gen45:'GEN',lighttower:'LT',tele10:'TH',boom60:'BL',scissor32:'SL',excav20:'EX',excav45:'EX',crane150:'CR',crane90:'RT',crane230:'CR'};
+  function _eqDescPfx(l){
+    if(l.catId&&_EQ_PFX[l.catId])return _EQ_PFX[l.catId];
+    var d=(l.desc||'').toLowerCase();
+    if(d.indexOf('dozer')>=0)return 'DZ';
+    if(d.indexOf('compaction')>=0||d.indexOf('roller')>=0)return 'RL';
+    if(d.indexOf('pile')>=0)return 'PD';
+    if(d.indexOf('crawler')>=0)return 'CR';
+    if(d.indexOf('grader')>=0)return 'GR';
+    if(d.indexOf('excavator')>=0)return 'EX';
+    if(d.indexOf('telehandler')>=0)return 'TH';
+    if(d.indexOf('crane')>=0)return 'CR';
+    if(d.indexOf('generator')>=0)return 'GEN';
+    if(d.indexOf('light')>=0)return 'LT';
+    return 'EQ';
+  }
+  function initEqOnRentAssets(){
+    if(!EQ_LINES)return;
+    for(var i=0;i<EQ_LINES.length;i++){
+      var l=EQ_LINES[i];
+      if(l.status!=='on-rent')continue;
+      if(_dpRowAssets[l.id]&&_dpRowAssets[l.id].length)continue;
+      var pfx=_eqDescPfx(l);
+      var arr=[];
+      for(var k=1;k<=l.qty;k++){
+        var num=k<10?'0'+k:''+k;
+        arr.push({id:pfx+'-HRC-'+num,cls:l.desc,yard:'On site · Hercules',status:'onrent'});
+      }
+      _dpRowAssets[l.id]=arr;
+    }
+  }
   function dpOpenAssetPicker(rowId,itemType){
-    var typeKey=(itemType||'').toLowerCase().replace(/[^a-z]/g,'');
-    var clsMap={excavat:'Excavator',crane:'crane',lift:'lift',scissor:'Scissor',boom:'Boom',generator:'Generator',telehand:'Telehandler',truck:'Truck',loader:'Loader',dozer:'Dozer'};
-    var matchCls=null;
-    Object.keys(clsMap).forEach(function(k){if(typeKey.indexOf(k)>=0)matchCls=clsMap[k];});
-    var options=matchCls?FLEET.filter(function(f){return f.cls.toLowerCase().indexOf(matchCls.toLowerCase())>=0;}):FLEET;
     var assigned=_dpRowAssets[rowId]||[];
-    var assignedIds=assigned.map(function(a){return a.id;});
-    var gt='90px 1fr 130px 80px 100px';
-    var h='<div style="margin-bottom:14px"><div style="font-size:11.5px;color:var(--g600);margin-bottom:10px">Select from owned fleet'+(matchCls?' ('+matchCls+'s)':'')+' or enter a custom unit below.</div>';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';
-    if(!options.length){h+='<div style="padding:12px 14px;font-size:11.5px;color:var(--g400)">No matching fleet assets — use custom entry below.</div>';}
-    options.forEach(function(f){
-      var isA=assignedIds.indexOf(f.id)>=0;
-      var sTone=f.status==='onrent'?'ok':f.status==='maint'?'bad':'warn';
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
-      h+='<div style="font-family:monospace;font-size:11px;font-weight:600">'+f.id+'</div>';
-      h+='<div style="font-size:11px">'+f.cls+'<div class="sub">'+f.hours+' hrs · '+f.cond+'</div></div>';
-      h+='<div style="font-size:11.5px">'+f.yard+'</div>';
-      h+='<div><span class="tag '+sTone+'">'+f.status+'</span></div>';
-      h+='<div>'+(isA?'<span style="font-size:11px;color:var(--g400)">✓ Assigned</span>':'<button class="btn btn-red btn-sm" onclick="dpAssignFleetAsset(\''+rowId+'\',\''+f.id+'\')">Assign</button>')+'</div>';
-      h+='</div>';
-    });
-    h+='</div></div>';
-    h+='<div style="border-top:1px solid var(--g100);padding-top:12px;margin-top:4px">';
-    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Custom / rental unit</div>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
-    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Asset ID</div><input id="dpCA-id" placeholder="e.g. GEN-0990" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
-    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Type / Make</div><input id="dpCA-cls" placeholder="e.g. Generator 125 kW" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
-    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Yard / Location</div><input id="dpCA-yard" placeholder="e.g. North Yard" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
+    var h='';
+    if(assigned.length){
+      h+='<div style="margin-bottom:12px">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Currently assigned</div>';
+      h+='<div style="display:flex;flex-direction:column;gap:4px">';
+      assigned.forEach(function(a){
+        h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--g50);border-radius:5px;font-size:12px">';
+        h+='<span style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g700);min-width:90px">'+a.id+'</span>';
+        h+='<span style="flex:1;color:var(--g600)">'+a.cls+'</span>';
+        h+='<span style="color:var(--g500);font-size:11px">'+( a.yard||'')+'</span>';
+        h+='<button onclick="dpRemoveRowAsset(\''+rowId+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">\u00d7 Remove</button>';
+        h+='</div>';
+      });
+      h+='</div></div>';
+      h+='<div style="border-top:1px solid var(--g150);margin-bottom:12px"></div>';
+    }
+    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px">Add asset</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:4px">Asset ID</div><input id="dpCA-id" placeholder="e.g. GEN-0990" style="width:100%;box-sizing:border-box;padding:6px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;outline:none;font-family:monospace"></div>';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:4px">Type / Make</div><input id="dpCA-cls" placeholder="e.g. Generator 125 kW" style="width:100%;box-sizing:border-box;padding:6px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;outline:none;font-family:inherit"></div>';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:4px">Yard / Location</div><input id="dpCA-yard" placeholder="e.g. On site" style="width:100%;box-sizing:border-box;padding:6px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;outline:none;font-family:inherit"></div>';
     h+='</div>';
-    h+='<button class="btn btn-dark btn-sm" onclick="dpAssignCustomAsset(\''+rowId+'\')">Add custom unit</button>';
-    h+='</div>';
-    openModal('Assign asset — '+rowId,h);
+    h+='<button class="btn btn-red" onclick="dpAssignCustomAsset(\''+rowId+'\')" style="width:100%">+ Add asset</button>';
+    openModal('Assign asset',h);
   }
   function dpAssignFleetAsset(rowId,assetId){
     var f=FLEET.filter(function(x){return x.id===assetId;})[0]; if(!f)return;
