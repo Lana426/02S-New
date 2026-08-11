@@ -8025,7 +8025,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _onR=_rA.filter(function(a){return a.status!=='offrent';}).length;
           var _offR=_rA.length-_onR;
           var _isOff=stt==='offrent';
-          var _hasAss=stt==='onrent'||stt==='offrent';
+          var _hasAss=stt==='onrent'||stt==='offrent'||stt==='projected';
           var qtyNum=(row.qty||'').split(' ')[0];
           rows+='<div class="gas-row-wrap">';
           rows+='<div class="grow" style="min-height:44px;cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panId+'" onclick="gasToggle(this)"':'')+' >';
@@ -8064,8 +8064,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
               if(_offR>0)rows+='<span class="gas-badge gas-badge-offrent">✓ '+_offR+' historical</span>';
             }else{rows+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
             rows+='<div class="gas-actions">';
-            if(!_isOff)rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.ordId+'\',\'equipment\')">+ Assign</button>';
-            if(!_isOff&&_onR>0)rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+row.ordId+'\',\''+row.item.split(/[—–]/)[0].trim()+'\')">↓ Off-rent</button>';
+            if(stt==='projected')rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.ordId+'\',\'equipment\')">+ Assign</button>';
+            if(stt==='onrent'&&_onR>0)rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+row.ordId+'\',\''+row.item.split(/[—–]/)[0].trim()+'\')">↓ Off-rent</button>';
             rows+='</div></div>';
             if(_rA.length){
               rows+='<div class="gas-chips-grid" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
