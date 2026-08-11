@@ -7175,7 +7175,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var TODAY_MS=new Date(TODAY_STR).getTime();
     var APR1=new Date(2026,3,1).getTime();
     var SPAN_MS=274*86400000;
-    var LW=110;
+    var LW=130;
     var MN={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
     var MNAMES=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function pd(s){
@@ -7211,10 +7211,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     }
     // x-axis row
     function xAxis(small){
-      var sz=small?'9px':'10px'; var sc=small?'var(--g400)':'var(--g500)';
+      var sz=small?'10px':'11px'; var sc=small?'var(--g400)':'var(--g500)';
       var h2='<div style="display:flex;margin-bottom:2px">';
       h2+='<div style="min-width:'+LW+'px;flex-shrink:0"></div>';
-      h2+='<div style="position:relative;flex:1;height:'+(small?'14':'18')+'px;border-bottom:1px solid var(--g200)">';
+      h2+='<div style="position:relative;flex:1;height:'+(small?'16':'22')+'px;border-bottom:1px solid var(--g200)">';
       MNAMES.forEach(function(m){
         var mp=parseFloat(((new Date(2026,MN[m],1).getTime()-APR1)/SPAN_MS*100).toFixed(1));
         if(mp<-1||mp>101)return;
@@ -7240,32 +7240,32 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var clampX=Math.max(0,Math.min(100,x1));
       var dateStr=eD&&fmtD(sD)!==fmtD(eD)?fmtD(sD)+'–'+fmtD(eD):fmtD(sD);
       var barCol=done?'#10b981':(active?'#3b82f6':(color||'#94a3b8'));
-      var row='<div style="display:flex;align-items:center;height:22px;margin:1px 0">';
+      var row='<div style="display:flex;align-items:center;height:28px;margin:2px 0">';
       row+='<div style="min-width:'+LW+'px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding-right:6px">';
-      row+='<div style="display:flex;align-items:center;gap:3px"><span style="font-size:9px;color:'+dotCol+';width:9px;text-align:center">'+icon+'</span><span style="font-size:9.5px;color:var(--g700)">'+label+'</span></div>';
-      row+='<span style="font-size:8px;color:var(--g400)">'+durLabel+'</span>';
+      row+='<div style="display:flex;align-items:center;gap:3px"><span style="font-size:10px;color:'+dotCol+';width:12px;text-align:center">'+icon+'</span><span style="font-size:11px;color:var(--g800)">'+label+'</span></div>';
+      row+='<span style="font-size:9.5px;color:var(--g400)">'+durLabel+'</span>';
       row+='</div>';
       row+='<div style="position:relative;flex:1;height:22px">';
       row+=todayLine();
       if(mode==='flag'){
         if(clampX>=0&&clampX<=100){
-          row+='<div style="position:absolute;left:calc('+clampX+'% - 1px);top:3px;bottom:3px;width:2px;background:'+barCol+';border-radius:1px;z-index:2"></div>';
+          row+='<div style="position:absolute;left:calc('+clampX+'% - 1px);top:4px;bottom:4px;width:2px;background:'+barCol+';border-radius:1px;z-index:2"></div>';
           row+='<div style="position:absolute;left:calc('+clampX+'% + 4px);top:6px;font-size:8px;color:var(--g500);white-space:nowrap">'+dateStr+'</div>';
         }
       } else if(mode==='triangle'){
         if(clampX>=0&&clampX<=100){
-          row+='<div style="position:absolute;left:calc('+clampX+'% - 5px);top:4px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid '+barCol+';z-index:2"></div>';
+          row+='<div style="position:absolute;left:calc('+clampX+'% - 5px);top:7px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid '+barCol+';z-index:2"></div>';
           row+='<div style="position:absolute;left:calc('+clampX+'% + 7px);top:5px;font-size:8px;color:var(--g500);white-space:nowrap">'+dateStr+'</div>';
         }
       } else {
         var clampX2=Math.max(clampX,Math.min(100,x2));
         var bw=Math.max(clampX2-clampX,0.6);
-        row+='<div style="position:absolute;left:'+clampX+'%;width:'+bw+'%;height:12px;top:5px;background:#e2e8f0;border-radius:3px"></div>';
+        row+='<div style="position:absolute;left:'+clampX+'%;width:'+bw+'%;height:14px;top:7px;background:#e2e8f0;border-radius:3px"></div>';
         if(p>0){
           var fillW=bw*Math.min(p,100)/100;
-          row+='<div style="position:absolute;left:'+clampX+'%;width:'+fillW+'%;height:12px;top:5px;background:'+barCol+';border-radius:3px;opacity:.85"></div>';
+          row+='<div style="position:absolute;left:'+clampX+'%;width:'+fillW+'%;height:14px;top:7px;background:'+barCol+';border-radius:3px;opacity:.85"></div>';
         }
-        row+='<div style="position:absolute;left:calc('+Math.min(100,clampX2)+'% + 3px);top:7px;font-size:8px;color:var(--g400);white-space:nowrap">'+dateStr+'</div>';
+        row+='<div style="position:absolute;left:calc('+Math.min(100,clampX2)+'% + 3px);top:9px;font-size:9px;color:var(--g400);white-space:nowrap">'+dateStr+'</div>';
       }
       row+='</div></div>';
       return row;
@@ -7288,13 +7288,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var p6col=p6.getTime()<TODAY_MS?'#dc2626':'#1d4ed8';
       var expanded=!!_pfbP6Expanded[idx];
       // header row
-      h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:5px 6px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'3px')+'">';
+      h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:8px 10px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'3px')+'">';
       h+='<div style="width:'+LW+'px;flex:0 0 '+LW+'px;overflow:hidden;display:flex;align-items:center;gap:5px">';
       h+='<span style="font-size:9px;color:var(--g400)">'+(expanded?'▼':'▶')+'</span>';
-      h+='<div style="overflow:hidden"><div style="font-size:12px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
-      h+='<div style="font-size:9px;color:var(--g400)">'+it.qty+'</div></div>';
+      h+='<div style="overflow:hidden"><div style="font-size:13px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
+      h+='<div style="font-size:10.5px;color:var(--g500)">'+it.qty+'</div></div>';
       h+='</div>';
-      h+='<div style="flex:1;position:relative;height:20px">';
+      h+='<div style="flex:1;position:relative;height:26px">';
       h+=todayLine();
       var x0=Math.max(0,pctD(mo)); var xp=Math.min(100,pctD(p6));
       if(xp>x0)h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:10px;top:5px;background:'+tc+';opacity:.1;border-radius:3px"></div>';
@@ -7308,7 +7308,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span style="font-size:11px;font-weight:700;color:#fff;background:'+p6col+';padding:2px 7px;border-radius:5px;white-space:nowrap">★ '+fmtD(p6)+'</span>';
       h+='</div></div>';
       if(expanded){
-        h+='<div style="border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:8px 8px 10px;margin-bottom:3px;background:var(--g50)">';
+        h+='<div style="border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:12px 14px 16px;margin-bottom:6px;background:#fff">';
         h+=xAxis(true);
         h+=actRow('Demand ID',demId,demId,'#94a3b8','long lead','flag');
         h+=actRow('Order & specs',ordStart,ordEnd,'#94a3b8','1 wk','bar');
