@@ -3414,6 +3414,7 @@ charges:[
     var ns=CURRENT==='ns';
     var list=ORDERS.filter(function(o){
       var st=stageStatus(o);
+      if(!ns && o.proj!=='hercules') return false;
       if(fp && o.pillar!==fp) return false;
       if(fs && st!==fs) return false;
       if(fc && o.cost!==fc) return false;
