@@ -7918,8 +7918,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpInitOffrentModal(rowId,desc){
     var list=(_dpRowAssets[rowId]||[]).filter(function(a){return a.status!=='offrent';});
     if(!list.length){return;}
-    var h='<div style="font-size:12px;color:var(--g600);margin-bottom:14px">Select the units to return. This action marks them off-rent — it won\'t remove them from the record.</div>';
-    h+='<div style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;margin-bottom:16px">';
+    var _todayStr=new Date().toISOString().slice(0,10);
+    var h='<div style="display:flex;flex-direction:column;gap:5px;padding:12px 14px;background:var(--g50);border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
+    h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Requested return date</label>';
+    h+='<input type="date" id="ofr-date" value="'+_todayStr+'" min="'+_todayStr+'" style="font-size:13px;padding:7px 10px;border:1.5px solid var(--g250);border-radius:6px;color:var(--g800);background:#fff;font-family:inherit;max-width:200px">';
+    h+='<span style="font-size:10.5px;color:var(--g400)">Equipment will be flagged for collection on this date.</span>';
+    h+='</div>';
+    h+='<div style="font-size:12px;color:var(--g600);margin-bottom:10px">Select the units to return. This action marks them off-rent — it won\'t remove them from the record.</div>';
+    h+='<div style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;margin-bottom:16px">';
     list.forEach(function(a,i){
       h+='<label style="display:flex;align-items:center;gap:10px;padding:7px 10px;border:1px solid var(--g150);border-radius:7px;cursor:pointer;font-size:12.5px;background:var(--g50)">';
       h+='<input type="checkbox" id="ofr-'+i+'" value="'+a.id+'" style="width:15px;height:15px;cursor:pointer;accent-color:var(--success)">';
@@ -7939,7 +7945,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   }
   function dpConfirmOffrent(rowId){
     var checked=document.querySelectorAll('[id^=ofr-]:checked');
+    var _ofrDateEl=document.getElementById('ofr-date'); var _ofrDate=_ofrDateEl?_ofrDateEl.value:''; var _ofrDateFmt=_ofrDate?new Date(_ofrDate+'T00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
     if(!checked.length)return;
+    if(!_ofrDate){if(_ofrDateEl){_ofrDateEl.style.borderColor='var(--red)';_ofrDateEl.focus();}return;}
     var list=_dpRowAssets[rowId]; if(!list)return;
     var ids=[];
     checked.forEach(function(cb){
@@ -7949,7 +7957,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     closeModal();
     renderCcDemand('equipment'); eqRefreshDrill(rowId);
     if(CURRENT!=='ns'){
-      toastHtml('<div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-weight:600;font-size:12.5px">Sent to YardHub</div><div style="font-size:11px;opacity:.75;margin-top:1px">'+ids.length+' unit'+(ids.length===1?'':'s')+' · Off-rent initiated</div></div></div>');
+      toastHtml('<div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-weight:600;font-size:12.5px">Sent to YardHub</div><div style="font-size:11px;opacity:.75;margin-top:1px">'+ids.length+' unit'+(ids.length===1?'':'s')+(_ofrDateFmt?' · Return '+_ofrDateFmt:' · Off-rent initiated')+'</div></div></div>');
     }
   }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
