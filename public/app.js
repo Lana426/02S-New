@@ -921,7 +921,7 @@
         var _gRO=stt==='offrent';
         var _onRE=_gRA.filter(function(a){return a.status!=='offrent';}).length;
         var _offRE=_gRA.length-_onRE;
-        var _hasAss=locked;
+        var _hasAss=locked||stt==='draft';
         rows+='<div class="gas-row-wrap">';
         rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panIdEq+'" onclick="gasToggle(this)"':'')+'>'
           +'<div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span>'
@@ -935,12 +935,12 @@
           rows+='<div id="'+_panIdEq+'" class="gas-panel">';
           rows+='<div class="gas-panel-hd">';
           if(_gRA.length){
-            if(_onRE>0)rows+='<span class="gas-badge gas-badge-onrent">\u25cf '+_onRE+' on-rent</span>';
+            var _portLbl=stt==='draft'?' allocated':' on-rent';if(_onRE>0)rows+='<span class="gas-badge gas-badge-onrent">\u25cf '+_onRE+_portLbl+'</span>';
             if(_offRE>0)rows+='<span class="gas-badge gas-badge-offrent">\u2713 '+_offRE+' historical</span>';
           }else{rows+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
           rows+='<div class="gas-actions">';
-          if(!_gRO){rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">+ Assign</button>';}
-          if(!_gRO&&_onRE>0){rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+l.id+'\',\''+l.desc.replace(/'/g,'\\x27')+'\')">\u2193 Off-rent</button>';}
+          if(stt==='draft'){rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">+ Assign</button>';}
+          if(stt==='onrent'&&_onRE>0){rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+l.id+'\',\''+l.desc.replace(/'/g,'\\x27')+'\')">\u2193 Off-rent</button>';}
           rows+='</div></div>';
           if(_gRA.length){
             rows+='<div class="gas-chips-grid">';
