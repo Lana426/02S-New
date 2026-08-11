@@ -5312,9 +5312,58 @@ charges:[
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
+  var _pfbP6Overrides={};
   var _pfbDpTab='items';var _pfbInstFilter='all';
   function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
+  function pfbCloseEditModal(){var m=document.getElementById('pfb-edit-modal');if(m)m.remove();}
+  function pfbResetEditDates(idx){delete _pfbP6Overrides[idx];pfbCloseEditModal();renderCcDemand('prefab');}
+  function pfbSaveEditDates(idx){var ov={};['demId','ordStart','ordEnd','matStart','matEnd','schedMfg','fs','fe','inspFacS','shipS','shipE','inspSiteS','p6'].forEach(function(k){var el=document.getElementById('pfb-ed-'+k);if(el&&el.value)ov[k]=el.value;});_pfbP6Overrides[idx]=ov;pfbCloseEditModal();renderCcDemand('prefab');}
+  function pfbOpenEditDates(idx,enc){
+    pfbCloseEditModal();
+    var d=JSON.parse(decodeURIComponent(enc));
+    var ov=_pfbP6Overrides[idx]||{};
+    var fmt=function(s){if(!s)return '';return s;};
+    var rows=[
+      ['demId',null,'Demand ID','long lead',false],
+      ['ordStart','ordEnd','Order & specs','1 wk',false],
+      ['matStart','matEnd','Mat. procured','2 wks',false],
+      ['schedMfg',null,'Sched. mfg','1 day',false],
+      ['fs','fe','Manufacturing',d.mfgWks+' wks',false],
+      ['inspFacS',null,'Insp. (facility)','1 day',false],
+      ['shipS','shipE','Delivery',d.shipD+'d transit',false],
+      ['inspSiteS',null,'Insp. (site)','1 day',false],
+      ['p6',null,'INSTALL','P6 anchor',true]
+    ];
+    var h='<div id="pfb-edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)pfbCloseEditModal()">';
+    h+='<div style="background:#fff;border-radius:12px;padding:24px;width:500px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">';
+    h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Edit schedule dates</div>';
+    h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+d.item+'</div></div>';
+    h+='<button onclick="pfbCloseEditModal()" style="font-size:20px;color:var(--g400);background:none;border:none;cursor:pointer;line-height:1;padding:0 2px">×</button>';
+    h+='</div>';
+    h+='<div style="font-size:10.5px;color:var(--g500);background:var(--g50);border-radius:6px;padding:8px 10px;margin:10px 0 14px">Overrides auto-calculation. Changes apply to this session only.</div>';
+    h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;display:grid;grid-template-columns:140px 1fr 16px 1fr;gap:8px;padding:0 0 6px;border-bottom:1px solid var(--g200);margin-bottom:4px">';
+    h+='<span>Activity</span><span>Start</span><span></span><span>End / date</span></div>';
+    rows.forEach(function(r){
+      var k1=r[0],k2=r[1],label=r[2],dur=r[3],isAnchor=r[4];
+      var v1=ov[k1]||d[k1]||'';
+      var borderCol=isAnchor?'#dc2626':'var(--g200)';
+      var labelCol=isAnchor?'#dc2626':'var(--g800)';
+      h+='<div style="display:grid;grid-template-columns:140px 1fr 16px 1fr;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid var(--g100)">';
+      h+='<div><div style="font-size:11.5px;font-weight:'+(isAnchor?700:500)+';color:'+labelCol+'">'+label+'</div>';
+      h+='<div style="font-size:9.5px;color:var(--g400)">'+dur+'</div></div>';
+      h+='<input id="pfb-ed-'+k1+'" type="date" value="'+fmt(v1)+'" style="border:1px solid '+borderCol+';border-radius:6px;padding:5px 8px;font-size:11.5px;color:var(--g800);width:100%;box-sizing:border-box'+(isAnchor?';font-weight:600':'')+'">';
+      if(k2){var v2=ov[k2]||d[k2]||'';h+='<span style="text-align:center;font-size:10px;color:var(--g300)">→</span>';h+='<input id="pfb-ed-'+k2+'" type="date" value="'+fmt(v2)+'" style="border:1px solid var(--g200);border-radius:6px;padding:5px 8px;font-size:11.5px;color:var(--g800);width:100%;box-sizing:border-box">';      }else{h+='<span></span><div style="color:var(--g400);font-size:11px;padding:5px 0">—</div>';}
+      h+='</div>';
+    });
+    h+='<div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end;align-items:center">';
+    if(_pfbP6Overrides[idx])h+='<button onclick="pfbResetEditDates('+idx+')" style="padding:7px 14px;border:1px solid var(--g200);border-radius:7px;font-size:12px;color:var(--g500);background:#fff;cursor:pointer">Reset to default</button>';
+    h+='<button onclick="pfbCloseEditModal()" style="padding:7px 14px;border:1px solid var(--g200);border-radius:7px;font-size:12px;color:var(--g600);background:#fff;cursor:pointer">Cancel</button>';
+    h+='<button onclick="pfbSaveEditDates('+idx+')" style="padding:7px 16px;border:none;border-radius:7px;font-size:12px;font-weight:600;color:#fff;background:#3b82f6;cursor:pointer">Save &amp; update Gantt</button>';
+    h+='</div></div></div>';
+    document.body.insertAdjacentHTML('beforeend',h);
+  }
   function dpSetSrcFilter(pp,v){ _dpCcSrcF[pp]=v; _dpCcLimit[pp]=false; renderCcDemand(pp); }
   function dpToggleAllReqs(pp){ _dpCcLimit[pp]=true; renderCcDemand(pp); }
   function capRiskToggle(p){ _capRiskLimit[p]=!_capRiskLimit[p]; renderCcDemand(p); }
@@ -7186,6 +7235,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       return new Date(2026,MN[p[0]],parseInt(p[1]));
     }
     function addD(d,n){if(!d)return null;var r=new Date(d);r.setDate(r.getDate()+n);return r;}
+    function fmtISO(d){if(!d||!(d instanceof Date))return '';var m=d.getMonth()+1;var dy=d.getDate();return d.getFullYear()+'-'+(m<10?'0'+m:m)+'-'+(dy<10?'0'+dy:dy);}
     function pctD(d){
       if(!d)return -999;
       var ms=d instanceof Date?d.getTime():new Date(d).getTime();
@@ -7289,6 +7339,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var ordEnd=addD(matStart,-1);
       var ordStart=addD(ordEnd,-6);
       var demId=addD(ordStart,-23);
+      // Apply user-edited date overrides if present
+      var _ov=_pfbP6Overrides[idx];
+      function _parseOvD(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+      if(_ov){
+        if(_ov.demId)demId=_parseOvD(_ov.demId);
+        if(_ov.ordStart)ordStart=_parseOvD(_ov.ordStart);
+        if(_ov.ordEnd)ordEnd=_parseOvD(_ov.ordEnd);
+        if(_ov.matStart)matStart=_parseOvD(_ov.matStart);
+        if(_ov.matEnd)matEnd=_parseOvD(_ov.matEnd);
+        if(_ov.schedMfg){schedMfg=_parseOvD(_ov.schedMfg);schedMfgEnd=schedMfg;}
+        if(_ov.fs)fs=_parseOvD(_ov.fs);
+        if(_ov.fe)fe=_parseOvD(_ov.fe);
+        if(_ov.inspFacS){inspFacS=_parseOvD(_ov.inspFacS);inspFacE=inspFacS;}
+        if(_ov.shipS)shipS=_parseOvD(_ov.shipS);
+        if(_ov.shipE)shipE=_parseOvD(_ov.shipE);
+        if(_ov.inspSiteS){inspSiteS=_parseOvD(_ov.inspSiteS);inspSiteE=inspSiteS;}
+        if(_ov.p6)p6=_parseOvD(_ov.p6);
+      }
       var tc=TC[it.t]||'#888'; var tl=TL[it.t]||it.t;
       var p6col=p6.getTime()<TODAY_MS?'#dc2626':'#1d4ed8';
       var expanded=!!_pfbP6Expanded[idx];
@@ -7313,7 +7381,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
       h+='</div></div>';
       if(expanded){
+        var _enc=encodeURIComponent(JSON.stringify({item:it.item,mfgWks:mfgWks,shipD:sd,demId:fmtISO(demId),ordStart:fmtISO(ordStart),ordEnd:fmtISO(ordEnd),matStart:fmtISO(matStart),matEnd:fmtISO(matEnd),schedMfg:fmtISO(schedMfg),fs:fmtISO(fs),fe:fmtISO(fe),inspFacS:fmtISO(inspFacS),shipS:fmtISO(shipS),shipE:fmtISO(shipE),inspSiteS:fmtISO(inspSiteS),p6:fmtISO(p6)}));
+        var _hasOv=!!_pfbP6Overrides[idx];
         h+='<div style="border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:12px 14px 16px;margin-bottom:6px;background:#fff">';
+        h+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px">';
+        h+='<button onclick="event.stopPropagation();pfbOpenEditDates('+idx+',\''+_enc+'\')" style="display:flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid '+(_hasOv?'#3b82f6':'var(--g200)')+';border-radius:7px;font-size:11.5px;font-weight:500;color:'+(_hasOv?'#3b82f6':'var(--g600)')+';background:'+(_hasOv?'#eff6ff':'#fff')+';cursor:pointer">';
+        h+='<span style="font-size:12px">'+(String.fromCharCode(9998))+'</span>';
+        h+=(_hasOv?'Custom dates':'Edit dates')+'</button>';
+        h+='</div>';
         h+=xAxis(true);
         h+=actRow('Demand ID',demId,demId,'#94a3b8','long lead','flag');
         h+=actRow('Order & specs',ordStart,ordEnd,'#94a3b8','1 wk','bar');
