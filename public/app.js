@@ -876,7 +876,7 @@
         else if(stt==='submitted') act=editBtn;
         else act='<span class="eq-lock" title="On rent \u2014 locked">'+svg('<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>',2)+'</span>';
         body+='<div class="eqrow" onclick="toggleEqDrill(\''+l.id+'\')" style="cursor:pointer" title="View full details">'
-          +'<div class="eq-desc">'+l.desc+'<div class="sub">'+l.cat+' \u00b7 '+l.scope+(l.ref?' \u00b7 <span class="eq-ref">'+l.ref+'</span>':'')+'</div></div>'
+          +'<div class="eq-desc">'+l.desc+'<div class="sub">'+l.cat+' \u00b7 '+l.scope+(l.ref?' \u00b7 <span class="eq-ref">'+l.ref+'</span>':'')+'</div>'+(_dpItemAttrs[l.id]&&_dpItemAttrs[l.id].length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_dpItemAttrs[l.id].map(function(a){return '<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'')+'</div>'
           +'<div class="eq-dates">'+eqMonthLabel(l.from)+' \u2019'+l.from.slice(2,4)+' \u2192 '+eqMonthLabel(l.to)+' \u2019'+l.to.slice(2,4)+'<div class="sub">'+mo+' billable months</div></div>'
           +'<div class="eq-qty">\u00d7'+l.qty+'</div>'
           +(stt==='pending'?'<div class="eq-cost pend">Pending<div class="sub">02S to price</div></div>':'<div class="eq-cost">'+fmt(l.rate)+'/mo<div class="sub"><b>'+fmtBig(lt)+'</b> total</div></div>')
@@ -3146,6 +3146,27 @@ charges:[
     docs.forEach(function(d){
       h+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+d.replace(/'/g,"\\'")+'\')" >'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
     });
+    var _eqRA=_dpRowAssets[l.id]||[];
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400)">· '+_eqRA.length+' of '+l.qty+'</span></span>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
+    h+='</div>';
+    if(_eqRA.length){
+      h+='<div style="display:flex;flex-direction:column;gap:3px">';
+      _eqRA.forEach(function(a){
+        h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--g50);border-radius:5px">';
+        h+='<span style="font-family:monospace;font-size:11px;color:var(--g700);min-width:80px">'+a.id+'</span>';
+        h+='<span style="flex:1;font-size:12px;color:var(--g700)">'+a.cls+'</span>';
+        h+='<span style="font-size:12px;color:var(--g500)">'+a.yard+'</span>';
+        h+='<button class="btn btn-ghost btn-sm" style="padding:1px 6px;font-size:10px" onclick="event.stopPropagation();dpRemoveRowAsset(\''+l.id+'\',\''+a.id+'\')">×</button>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }else{
+      h+='<div style="font-size:11.5px;color:var(--g400);font-style:italic">No assets assigned yet — click + Assign to tag specific units.</div>';
+    }
+    h+='</div>';
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
@@ -7733,6 +7754,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
   }
   function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
+  function eqRefreshDrill(id){
+    var el=document.getElementById('eq-drill-'+id);
+    var l=EQ_LINES.filter(function(x){return x.id===id;})[0];
+    if(el&&l)el.innerHTML=buildEqTrack(l);
+    renderEqPlan();
+  }
   function dpOpenAssetPicker(rowId,itemType){
     var typeKey=(itemType||'').toLowerCase().replace(/[^a-z]/g,'');
     var clsMap={excavat:'Excavator',crane:'crane',lift:'lift',scissor:'Scissor',boom:'Boom',generator:'Generator',telehand:'Telehandler',truck:'Truck',loader:'Loader',dozer:'Dozer'};
@@ -7774,7 +7801,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!_dpRowAssets[rowId].some(function(a){return a.id===assetId;})){
       _dpRowAssets[rowId].push({id:f.id,cls:f.cls,yard:f.yard,status:f.status,hours:f.hours,cond:f.cond});
     }
-    closeModal(); renderCcDemand('equipment');
+    closeModal(); renderCcDemand('equipment'); eqRefreshDrill(rowId);
   }
   function dpAssignCustomAsset(rowId){
     var idEl=document.getElementById('dpCA-id');
@@ -7783,12 +7810,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!idEl||!idEl.value.trim()){return;}
     if(!_dpRowAssets[rowId])_dpRowAssets[rowId]=[];
     _dpRowAssets[rowId].push({id:idEl.value.trim(),cls:clsEl?clsEl.value.trim():'',yard:yardEl?yardEl.value.trim():'',status:'assigned',custom:true});
-    closeModal(); renderCcDemand('equipment');
+    closeModal(); renderCcDemand('equipment'); eqRefreshDrill(rowId);
   }
   function dpRemoveRowAsset(rowId,assetId){
     if(!_dpRowAssets[rowId])return;
     _dpRowAssets[rowId]=_dpRowAssets[rowId].filter(function(a){return a.id!==assetId;});
-    renderCcDemand('equipment');
+    renderCcDemand('equipment'); eqRefreshDrill(rowId);
   }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
   function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
