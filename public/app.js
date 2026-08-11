@@ -7806,15 +7806,48 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!EQ_LINES)return;
     for(var i=0;i<EQ_LINES.length;i++){
       var l=EQ_LINES[i];
-      if(l.status!=='on-rent')continue;
+      if(l.status!=='on-rent'&&l.status!=='off-rent')continue;
       if(_dpRowAssets[l.id]&&_dpRowAssets[l.id].length)continue;
+      var _isOffR=l.status==='off-rent';
       var pfx=_eqDescPfx(l);
       var arr=[];
       for(var k=1;k<=l.qty;k++){
         var num=k<10?'0'+k:''+k;
-        arr.push({id:pfx+'-HRC-'+num,cls:l.desc,yard:'On site · Hercules',status:'onrent'});
+        arr.push({id:pfx+'-HRC-'+num,cls:l.desc,yard:_isOffR?'Returned · Hercules':'On site · Hercules',status:_isOffR?'offrent':'onrent'});
       }
       _dpRowAssets[l.id]=arr;
+    }
+  }
+  function initCcEquipAssets(){
+    var _pfxMap=[['generator','GEN'],['light tower','LT'],['telehandler','TH'],['boom lift','BL'],['scissor','SL'],['excavator','EX'],['crane','CR'],['dozer','DZ'],['grader','GR'],['compaction','RL'],['roller','RL'],['forklift','FK'],['pile','PD'],['crawler','CR'],['suv','VH'],['truck','TK']];
+    var _siteMap={hercules:'On site · Hercules',riverside:'On site · Riverside',cimarron:'On site · Cimarron'};
+    if(!ORDERS)return;
+    for(var i=0;i<ORDERS.length;i++){
+      var o=ORDERS[i];
+      if(o.pillar!=='equipment')continue;
+      if(_dpRowAssets[o.id]&&_dpRowAssets[o.id].length)continue;
+      var lat=(o.latest||'').toLowerCase();
+      var isOnRent=lat.indexOf('on-rent')>=0||lat.indexOf('on rent')>=0;
+      var isOffRent=lat.indexOf('off-rent')>=0||lat.indexOf('off rent')>=0;
+      if(!isOnRent&&!isOffRent)continue;
+      var pfx='EQ';
+      var itm=(o.item||'').toLowerCase();
+      for(var pi=0;pi<_pfxMap.length;pi++){if(itm.indexOf(_pfxMap[pi][0])>=0){pfx=_pfxMap[pi][1];break;}}
+      var qty=o.qty||1;
+      var sm=o.sub||'';
+      var qm=sm.match(/^(\d+)\s*(unit|x|×)/i);
+      if(qm)qty=parseInt(qm[1]);
+      if(qty>20)qty=20;
+      var projKey=(o.proj||'hercules').toLowerCase();
+      var yardLbl=_siteMap[projKey]||(isOffRent?'Returned':'On site');
+      if(isOffRent)yardLbl=yardLbl.replace('On site','Returned');
+      var projAbbr=(o.proj||'HRC').toUpperCase().slice(0,3);
+      var arr=[];
+      for(var k=1;k<=qty;k++){
+        var num=k<10?'0'+k:''+k;
+        arr.push({id:pfx+'-'+projAbbr+'-'+num,cls:o.item,yard:yardLbl,status:isOffRent?'offrent':'onrent'});
+      }
+      _dpRowAssets[o.id]=arr;
     }
   }
   function dpOpenAssetPicker(rowId,itemType){
@@ -7912,6 +7945,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
   function dpRemoveCustomAttr(reqId,attr){if(!_dpItemAttrs[reqId])return;var i=_dpItemAttrs[reqId].indexOf(attr);if(i>=0){_dpItemAttrs[reqId].splice(i,1);renderCcDemand('equipment');}}
   function renderEquipGantt(selProj,ns){
+    initCcEquipAssets();
     var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var GSTART=3,GEND=11,GCNT=9;
     var PC={hercules:'#7a1c1c',riverside:'#1e3a5f',cimarron:'#1a4731'};
@@ -7924,20 +7958,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       return null;
     }
     function pctG(mi){return Math.max(0,Math.min(100,(mi-GSTART)/GCNT*100));}
+    var todayM=6;
     var eOrds=ORDERS.filter(function(o){return o.pillar==='equipment'&&(selProj==='all'||o.proj===selProj);});
     var cats={};
     eOrds.forEach(function(o){
-      var cat='Other equipment';
+      var cat='Other';
       if(/crane/i.test(o.item))cat='Cranes';
       else if(/excavat/i.test(o.item))cat='Excavators';
       else if(/lift|mewp|boom|scissor/i.test(o.item))cat='Aerial / Lifts';
-      else if(/truck|vehicle|bus/i.test(o.item))cat='Vehicles';
+      else if(/truck|vehicle|bus|suv/i.test(o.item))cat='Vehicles';
       else if(/generator/i.test(o.item))cat='Generators';
       else if(/compressor|pump/i.test(o.item))cat='Mechanical';
+      else if(/telehandler|forklift/i.test(o.item))cat='Material handling';
+      else if(/dozer|grader|roller|compaction/i.test(o.item))cat='Earthmoving';
+      else if(/pile|drill/i.test(o.item))cat='Foundations';
+      else if(/light/i.test(o.item))cat='Lighting';
       if(!cats[cat])cats[cat]=[];
       cats[cat].push(o);
     });
-    var todayM=6;
     var h='<div style="background:#fff;border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-top:4px">';
     h+='<div style="display:flex;gap:12px;padding:9px 14px;border-bottom:1px solid var(--g100);flex-wrap:wrap;align-items:center">';
     [{k:'hercules',l:'Hercules Solar + BESS'},{k:'riverside',l:'Riverside Medical'},{k:'cimarron',l:'Cimarron Data Center'}].forEach(function(pr){
@@ -7945,41 +7983,78 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g700)"><span style="width:10px;height:10px;border-radius:2px;background:'+PC[pr.k]+';display:inline-block"></span>'+pr.l+'</span>';
     });
     h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="width:10px;height:2px;background:rgba(239,68,68,.5);display:inline-block"></span>Today</span>';
-    h+='<span style="margin-left:auto;font-size:10px;color:var(--g400)">Click any bar for order details</span>';
+    h+='<span style="margin-left:auto;font-size:10px;color:var(--g400)">Click bar for order details \u00b7 Expand assets with arrow</span>';
     h+='</div>';
-    h+='<div style="display:grid;grid-template-columns:150px 1fr;background:var(--g50);border-bottom:1px solid var(--g150)">';
-    h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;padding:6px 10px;letter-spacing:.04em">Category</div>';
-    h+='<div style="display:grid;grid-template-columns:repeat('+GCNT+',1fr)">';
+    h+='<div style="display:flex;border-bottom:1px solid var(--g150)">';
+    h+='<div style="flex-basis:220px;flex-shrink:0;font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;padding:6px 10px;letter-spacing:.04em;border-right:1px solid var(--g100)">Order</div>';
+    h+='<div style="flex:1;display:grid;grid-template-columns:repeat('+GCNT+',1fr)">';
     for(var mi=GSTART;mi<=GEND;mi++){var isTM=(mi===todayM);h+='<div style="font-size:9.5px;color:'+(isTM?'#ef4444':'var(--g500)')+';font-weight:'+(isTM?'700':'400')+';text-align:center;padding:6px 0">'+MONTHS[mi]+'</div>';}
     h+='</div></div>';
     var catKeys=Object.keys(cats).sort();
     if(!catKeys.length){h+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:12px">No equipment orders in scope.</div>';}
     catKeys.forEach(function(cat){
       var rows=cats[cat];
-      var rowH=Math.max(32,rows.length*18+12);
-      h+='<div style="display:grid;grid-template-columns:150px 1fr;border-bottom:1px solid var(--g100);min-height:'+rowH+'px">';
-      h+='<div style="font-size:11px;font-weight:600;color:var(--g700);padding:8px 10px;border-right:1px solid var(--g100);line-height:1.4">'+cat+'<br><span style="font-size:9.5px;font-weight:400;color:var(--g400)">'+rows.length+' order'+(rows.length===1?'':'s')+'</span></div>';
-      h+='<div style="position:relative;min-height:'+rowH+'px">';
-      for(var gi=1;gi<GCNT;gi++){h+='<div style="position:absolute;left:'+(gi/GCNT*100).toFixed(1)+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';}
-      h+='<div style="position:absolute;left:'+pctG(todayM).toFixed(1)+'%;top:0;bottom:0;width:1.5px;background:rgba(239,68,68,.3);z-index:2"></div>';
-      rows.forEach(function(o,bi){
+      h+='<div style="display:flex;align-items:center;background:var(--g50);border-bottom:1px solid var(--g100)">';
+      h+='<div style="flex-basis:220px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--g700);padding:6px 10px;border-right:1px solid var(--g100)">'+cat+'<br><span style="font-size:9.5px;font-weight:400;color:var(--g400)">'+rows.length+' order'+(rows.length===1?'':'s')+'</span></div>';
+      h+='<div style="flex:1;height:6px"></div>';
+      h+='</div>';
+      rows.forEach(function(o){
         var sm=mIdx(o.onRentSince?o.onRentSince+' 2026':o.od);
         var em=mIdx(o.rental&&o.rental.offRent?o.rental.offRent:(o.anticipatedOff||o.od));
         if(sm===null)sm=GSTART;if(em===null)em=sm+1;if(sm>GEND)return;
         var x0=pctG(sm);var x1=pctG(em+1);var w=Math.max(2,x1-x0);
         var col=PC[o.proj]||'#6b7280';
-        var top=6+bi*18;
-        h+='<div title="'+o.id+' \u00b7 '+o.item+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:'+top+'px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(\''+o.id+'\')">';
+        var lat=(o.latest||'').toLowerCase();
+        var isOnRent=lat.indexOf('on-rent')>=0||lat.indexOf('on rent')>=0;
+        var isOffRent=lat.indexOf('off-rent')>=0||lat.indexOf('off rent')>=0;
+        var _rA=_dpRowAssets[o.id]||[];
+        var _onR=_rA.filter(function(a){return a.status!=='offrent';}).length;
+        var _togId='cgas-'+o.id.replace(/[^a-z0-9]/gi,'');
+        h+='<div class="grow" style="flex-wrap:wrap;align-items:flex-start;padding-top:4px;padding-bottom:'+(isOnRent||isOffRent||_rA.length?'0':'4px')+'">';
+        h+='<div style="flex-basis:220px;flex-shrink:0;min-height:30px;padding:4px 10px;border-right:1px solid var(--g100)">';
+        h+='<div style="font-size:11px;font-weight:600;color:var(--g700);cursor:pointer" onclick="ccDpTracker(\''+o.id+'\')">'+o.id+'</div>';
+        h+='<div style="font-size:9.5px;color:var(--g400);margin-top:1px">'+o.sub.replace(/'/g,'\\x27')+'</div>';
+        if(isOffRent)h+='<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--g100);color:var(--g500);margin-top:2px;display:inline-block">off-rent</span>';
+        else if(isOnRent)h+='<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(16,185,129,.1);color:var(--success);margin-top:2px;display:inline-block">on-rent</span>';
+        h+='</div>';
+        h+='<div style="flex:1;position:relative;min-height:30px">';
+        for(var gi=1;gi<GCNT;gi++){h+='<div style="position:absolute;left:'+(gi/GCNT*100).toFixed(1)+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';}
+        h+='<div style="position:absolute;left:'+pctG(todayM).toFixed(1)+'%;top:0;bottom:0;width:1.5px;background:rgba(239,68,68,.3);z-index:2"></div>';
+        h+='<div title="'+o.id+' \u00b7 '+o.item.replace(/'/g,'\\x27')+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:8px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(\''+o.id+'\')">';
         if(w>4){h+='<span style="font-size:8.5px;color:#fff;white-space:nowrap;padding:0 4px;line-height:13px;display:block;overflow:hidden">'+(o.qty?o.qty+'\u00d7 ':'')+o.item.split(/[\u2014\u2013-]/)[0].trim().split(' ').slice(0,4).join(' ')+'</span>';}
         h+='</div>';
+        h+='</div>';
+        if(isOnRent||isOffRent||_rA.length){
+          h+='<div class="g-asset-strip" style="margin-left:220px">';
+          var ct=_rA.length;
+          if(ct>0){h+='<button class="gas-toggle" onclick="var d=document.getElementById(\''+_togId+'\');if(d)d.classList.toggle(\'hide\')">'+(isOffRent?'\u2713 Historical: ':'')+''+ct+' asset'+(ct===1?'':'s')+' \u25be</button>';}
+          else{h+='<span class="gas-ct">No assets assigned</span>';}
+          if(isOnRent){
+            h+='<button class="gas-assign-btn" style="margin-left:auto" onclick="dpOpenAssetPicker(\''+o.id+'\',\'equipment\')">+ Assign</button>';
+            if(_onR>0){h+='<button class="gas-assign-btn" onclick="dpInitOffrentModal(\''+o.id+'\',\''+o.item.split(/[\u2014\u2013-]/)[0].trim().replace(/'/g,'\\x27')+'\')" style="margin-left:4px;border-color:var(--red);color:var(--red)">\u2193 Off-rent</button>';}
+          }
+          h+='</div>';
+          if(ct>0){
+            h+='<div id="'+_togId+'" class="gas-chips hide" style="margin-left:220px">';
+            _rA.forEach(function(a){
+              var isOff=a.status==='offrent';
+              h+='<span class="gas-chip" style="border-color:'+(isOff?'var(--g200)':'var(--success)')+';background:'+(isOff?'var(--g50)':'rgba(16,185,129,.06)')+'">';
+              h+=a.id;
+              if(isOff)h+=' <span style="font-size:9px;color:var(--g400)">off-rent</span>';
+              h+='</span>';
+            });
+            h+='</div>';
+          }
+        }
+        h+='</div>';
       });
-      h+='</div></div>';
     });
     h+='</div>';
     return h;
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
+    if(p==='equipment')initCcEquipAssets();
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
     var selProj=_dpCcProjMap[p]||'all';
