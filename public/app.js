@@ -918,10 +918,29 @@
         var stt=eqLineState(l);
         var locked=(stt==='onrent'||stt==='offrent');
         var btitle=locked?'Click to view details':(stt==='draft'?'Click to adjust qty & dates':stt==='pending'?'Click to adjust the pricing request':'Click to request a change');
+        var _gRA=_dpRowAssets[l.id]||[];
+        var _assetStrip='';
+        if(locked){
+          _assetStrip='<div class="g-asset-strip">';
+          if(_gRA.length){
+            _assetStrip+='<span class="gas-lbl">'+_gRA.length+' asset'+(_gRA.length===1?'':'s')+'</span>';
+            _assetStrip+='<div class="gas-chips">';
+            _gRA.forEach(function(a){_assetStrip+='<span class="gas-chip" title="'+a.cls+' · '+a.yard+'">'+a.id+'</span>';});
+            _assetStrip+='</div>';
+          }else{
+            _assetStrip+='<span style="font-size:11px;color:var(--g400);font-style:italic">No asset records</span>';
+          }
+          _assetStrip+='<button class="gas-assign-btn" style="margin-left:auto" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
+          _assetStrip+='</div>';
+        }else{
+          _assetStrip='<div class="g-asset-strip gas-empty"><button class="gas-assign-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+stt+'\')">'+'+ Assign assets'+'</button>'+(_gRA.length?'<span class="gas-ct">'+_gRA.length+' assigned</span>':'')+'</div>';
+        }
         rows+='<div class="grow"><div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span></div>'
           +'<div class="g-track" style="background-image:'+grid+'">'
           +'<div id="gb-'+l.id+'" class="g-bar '+stt+' '+(locked?'vw':'clk')+'" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" onclick="openEqBar(\''+l.id+'\')" title="'+btitle+'">\u00d7'+l.qty+'</div>'
-          +'</div></div>';
+          +'</div>'
+          +_assetStrip
+          +'</div>';
       }
     }
     var today='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';

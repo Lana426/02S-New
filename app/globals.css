@@ -1050,11 +1050,19 @@
   .g-grp .ggmeta{color:rgba(255,255,255,.6);font-weight:500}
   .g-grp .gg-flag{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:#fff;background:var(--red);padding:2px 7px;border-radius:5px}
   .g-grp .gg-flag svg{width:11px;height:11px}
-  .grow{display:flex;align-items:center;min-height:36px;border-bottom:1px solid var(--g150)}
+  .grow{display:flex;align-items:center;flex-wrap:wrap;min-height:36px;border-bottom:1px solid var(--g150)}
   .grow:last-child{border-bottom:none}
   .g-label{width:220px;flex-shrink:0;padding:0 14px;font-size:12px;font-weight:500;color:var(--g700);display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .g-label .gqty{font-size:10.5px;color:var(--g400);font-weight:600}
   .g-track{flex:1;position:relative;height:36px}
+  .g-asset-strip{flex-basis:100%;margin-left:220px;padding:3px 14px 7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .gas-lbl{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;margin-right:2px}
+  .gas-chips{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+  .gas-chip{font-family:monospace;font-size:10.5px;padding:1px 6px;background:var(--g100);border:1px solid var(--g200);border-radius:4px;color:var(--g700);white-space:nowrap;cursor:default}
+  .gas-empty{padding:4px 14px 7px}
+  .gas-assign-btn{font-size:11px;padding:2px 9px;border:1px solid var(--g200);border-radius:5px;background:var(--g50);color:var(--g600);cursor:pointer;font-family:inherit}
+  .gas-assign-btn:hover{background:var(--g100);border-color:var(--g300)}
+  .gas-ct{font-size:10.5px;color:var(--g400);margin-left:4px}
   .g-bar{position:absolute;top:8px;height:20px;border-radius:4px;display:flex;align-items:center;padding:0 5px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;box-sizing:border-box}
   .g-bar.onrent{background:var(--success);color:#fff}
   .g-bar.projected{background:var(--info-tint);border:1.5px dashed var(--info);color:var(--info)}
