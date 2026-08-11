@@ -2703,7 +2703,7 @@ charges:[
         +'<div style="display:grid;grid-template-columns:'+_gt+';gap:4px 8px;padding:4px 0;border-bottom:1px solid var(--g100);color:var(--g500);font-weight:600;text-transform:uppercase;letter-spacing:.04em">'
         +'<span>Project</span><span style="text-align:right">Plan%</span><span style="text-align:right">Actual%</span><span style="text-align:right">Var</span></div>';
       if(typeof MARGIN_PROJECTS!=='undefined'&&typeof mgProjRoll==='function'){
-        MARGIN_PROJECTS.forEach(function(p){
+        MARGIN_PROJECTS.filter(function(p){return p==='Hercules Solar + BESS';}).forEach(function(p){
           var r=mgProjRoll(p);
           var pPct=r.plan.pct,aPct=r.act.pct;
           var tone=aPct<pPct-1?'var(--red)':aPct<pPct?'var(--warning)':'var(--success)';
