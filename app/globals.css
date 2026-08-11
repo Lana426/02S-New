@@ -1055,12 +1055,28 @@
   .g-label{width:220px;flex-shrink:0;padding:0 14px;font-size:12px;font-weight:500;color:var(--g700);display:flex;align-items:center;gap:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .g-label .gqty{font-size:10.5px;color:var(--g400);font-weight:600}
   .g-track{flex:1;position:relative;height:36px}
-  .g-asset-strip{flex-basis:100%;margin-left:220px;padding:3px 14px 7px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .gas-lbl{font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;margin-right:2px}
-  .gas-chips{flex-basis:100%;margin-left:220px;padding:4px 14px 6px;display:flex;flex-wrap:wrap;gap:4px}
-  .gas-chips.hide{display:none}
-  .gas-chip{font-family:monospace;font-size:10.5px;padding:1px 6px;background:var(--g100);border:1px solid var(--g200);border-radius:4px;color:var(--g700);white-space:nowrap;cursor:default}
-  .gas-empty{padding:4px 14px 7px}
+  /* Gantt asset panel — block-level, below bar row */
+  .gas-row-wrap{border-bottom:1px solid var(--g100)}
+  .g-asset-strip{display:none} /* legacy – kept for portal Gantt compat; panel replaces it */
+  .gas-panel{border-top:1px solid var(--g100);background:var(--g50);padding:5px 12px 8px 0;display:none}
+  .gas-panel.open{display:block}
+  .gas-panel-hd{display:flex;align-items:center;gap:6px;padding:0 0 5px 0;margin-left:220px}
+  .gas-panel-hd-narrow{margin-left:150px}
+  .gas-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.02em;display:inline-flex;align-items:center;gap:4px}
+  .gas-badge-onrent{background:rgba(16,185,129,.1);color:var(--success);border:1px solid rgba(16,185,129,.25)}
+  .gas-badge-offrent{background:var(--g100);color:var(--g500);border:1px solid var(--g200)}
+  .gas-badge-empty{background:var(--g100);color:var(--g400);border:1px solid var(--g200)}
+  .gas-actions{margin-left:auto;display:flex;gap:4px}
+  .gas-btn{font-size:10.5px;padding:2px 9px;border-radius:5px;border:1px solid var(--g250);background:#fff;color:var(--g700);cursor:pointer;font-family:inherit;transition:background .1s}
+  .gas-btn:hover{background:var(--g100)}
+  .gas-btn-red{border-color:#fca5a5;color:#dc2626;background:#fff}
+  .gas-btn-red:hover{background:#fef2f2}
+  .gas-chips-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:4px;margin-left:220px;margin-top:2px;max-height:80px;overflow-y:auto;padding-right:12px}
+  .gas-chips-grid-narrow{margin-left:150px}
+  .gas-chip{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:4px;white-space:nowrap;cursor:default;display:flex;align-items:center;gap:4px}
+  .gas-chip-onrent{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.3);color:#166534}
+  .gas-chip-offrent{background:var(--g50);border:1px solid var(--g200);color:var(--g500)}
+  .gas-chip-offrent .gas-chip-tag{font-size:8.5px;color:var(--g400);font-family:var(--sans)}
   .gas-toggle{font-size:11px;padding:2px 9px;border:1px solid var(--g200);border-radius:5px;background:var(--g50);color:var(--g600);cursor:pointer;font-family:inherit}
   .gas-toggle:hover{background:var(--g100)}
   .gas-assign-btn{font-size:11px;padding:2px 9px;border:1px solid var(--g200);border-radius:5px;background:var(--g50);color:var(--g600);cursor:pointer;font-family:inherit}

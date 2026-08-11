@@ -917,32 +917,43 @@
         var locked=(stt==='onrent'||stt==='offrent');
         var btitle=locked?'Click to view details':(stt==='draft'?'Click to adjust qty & dates':stt==='pending'?'Click to adjust the pricing request':'Click to request a change');
         var _gRA=_dpRowAssets[l.id]||[];
-        var _gTogId='gas-d-'+l.id;
-        var _assetStrip='';
-        if(locked){
-          var _gRO=stt==='offrent';
-          _assetStrip='<div class="g-asset-strip">';
-          _assetStrip+='<button class="gas-toggle" onclick="event.stopPropagation();var d=document.getElementById(\''+_gTogId+'\');if(d)d.classList.toggle(\'hide\')">';
-          _assetStrip+=(_gRA.length?(_gRA.length+' asset'+(_gRA.length===1?'':'s')):'No asset records')+' \u25be';
-          _assetStrip+='</button>';
-          if(!_gRO){
-            _assetStrip+='<button class="gas-assign-btn" style="margin-left:auto" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
-          }
-          _assetStrip+='</div>';
-          if(_gRA.length){
-            _assetStrip+='<div id="'+_gTogId+'" class="g-asset-chips hide">';
-            _gRA.forEach(function(a){_assetStrip+='<span class="gas-chip" title="'+a.cls+' \u00b7 '+a.yard+'">'+a.id+'</span>';});
-            _assetStrip+='</div>';
-          }
-        }else{
-          _assetStrip='<div class="g-asset-strip gas-empty"><button class="gas-assign-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+stt+'\')">'+'+ Assign assets'+'</button>'+(_gRA.length?'<span class="gas-ct">'+_gRA.length+' assigned</span>':'')+'</div>';
-        }
-        rows+='<div class="grow"><div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span></div>'
-          +'<div class="g-track" style="background-image:'+grid+'">'
-          +'<div id="gb-'+l.id+'" class="g-bar '+stt+' '+(locked?'vw':'clk')+'" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" onclick="openEqBar(\''+l.id+'\')" title="'+btitle+'">\u00d7'+l.qty+'</div>'
+        var _panIdEq='egap-'+l.id;
+        var _gRO=stt==='offrent';
+        var _onRE=_gRA.filter(function(a){return a.status!=='offrent';}).length;
+        var _offRE=_gRA.length-_onRE;
+        var _hasAss=locked;
+        var _panTogEq=_hasAss?'onclick="event.stopPropagation();var p=document.getElementById(\\\''+_panIdEq+'\\\');if(p)p.classList.toggle(\\\'open\\\')"':'';
+        rows+='<div class="gas-row-wrap">';
+        rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'" '+_panTogEq+'>'
+          +'<div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span>'
+          +(_hasAss?'<span style="font-size:9px;color:var(--g400);margin-left:auto">'+(_gRA.length||0)+(_gRO?' hist':'\u25be')+'</span>':'')
           +'</div>'
-          +_assetStrip
+          +'<div class="g-track" style="background-image:'+grid+'">'
+          +'<div id="gb-'+l.id+'" class="g-bar '+stt+' '+(locked?'vw':'clk')+'" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" onclick="event.stopPropagation();openEqBar(\''+l.id+'\')" title="'+btitle+'">\u00d7'+l.qty+'</div>'
+          +'</div>'
           +'</div>';
+        if(_hasAss){
+          rows+='<div id="'+_panIdEq+'" class="gas-panel">';
+          rows+='<div class="gas-panel-hd">';
+          if(_gRA.length){
+            if(_onRE>0)rows+='<span class="gas-badge gas-badge-onrent">\u25cf '+_onRE+' on-rent</span>';
+            if(_offRE>0)rows+='<span class="gas-badge gas-badge-offrent">\u2713 '+_offRE+' historical</span>';
+          }else{rows+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
+          rows+='<div class="gas-actions">';
+          if(!_gRO){rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">+ Assign</button>';}
+          if(!_gRO&&_onRE>0){rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+l.id+'\',\''+l.desc.replace(/'/g,'\\x27')+'\')">\u2193 Off-rent</button>';}
+          rows+='</div></div>';
+          if(_gRA.length){
+            rows+='<div class="gas-chips-grid">';
+            _gRA.forEach(function(a){
+              var isOff=a.status==='offrent';
+              rows+='<div class="gas-chip '+(isOff?'gas-chip-offrent':'gas-chip-onrent')+'">'+a.id+(isOff?'<span class="gas-chip-tag">returned</span>':'')+'</div>';
+            });
+            rows+='</div>';
+          }
+          rows+='</div>';
+        }
+        rows+='</div>';
       }
     }
     var today='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
@@ -4402,6 +4413,7 @@ charges:[
   // ── toast ──
   function toggleEl(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'':'none';}
   function toast(msg){ var t=document.getElementById('toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');},2800); }
+  function toastHtml(html,dur){ var t=document.getElementById('toast'); if(!t) return; t.innerHTML=html; t.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(function(){t.classList.remove('show');t.innerHTML='';},dur||3500); }
 
   /* ═══════════ PROJECT PROFILE ═══════════ */
   var ACCESS_LEVELS=['View only','Editor','Approver','Admin'];
@@ -7938,7 +7950,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     closeModal();
     renderCcDemand('equipment'); eqRefreshDrill(rowId);
     if(CURRENT!=='ns'){
-      toast('Off-rent request sent to YardHub · '+ids.length+' unit'+(ids.length===1?'':'s'));
+      toastHtml('<div style="display:flex;align-items:center;gap:10px"><div style="width:28px;height:28px;border-radius:50%;background:rgba(16,185,129,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div><div style="font-weight:600;font-size:12.5px">Sent to YardHub</div><div style="font-size:11px;opacity:.75;margin-top:1px">'+ids.length+' unit'+(ids.length===1?'':'s')+' · Off-rent initiated</div></div></div>');
     }
   }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
@@ -7983,7 +7995,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g700)"><span style="width:10px;height:10px;border-radius:2px;background:'+PC[pr.k]+';display:inline-block"></span>'+pr.l+'</span>';
     });
     h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="width:10px;height:2px;background:rgba(239,68,68,.5);display:inline-block"></span>Today</span>';
-    h+='<span style="margin-left:auto;font-size:10px;color:var(--g400)">Click bar for order details \u00b7 Expand assets with arrow</span>';
+    h+='<span style="margin-left:auto;font-size:10px;color:var(--g400)">Click row to expand assets</span>';
     h+='</div>';
     h+='<div style="display:flex;border-bottom:1px solid var(--g150)">';
     h+='<div style="flex-basis:220px;flex-shrink:0;font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;padding:6px 10px;letter-spacing:.04em;border-right:1px solid var(--g100)">Order</div>';
@@ -7996,8 +8008,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var rows=cats[cat];
       h+='<div style="display:flex;align-items:center;background:var(--g50);border-bottom:1px solid var(--g100)">';
       h+='<div style="flex-basis:220px;flex-shrink:0;font-size:11px;font-weight:600;color:var(--g700);padding:6px 10px;border-right:1px solid var(--g100)">'+cat+'<br><span style="font-size:9.5px;font-weight:400;color:var(--g400)">'+rows.length+' order'+(rows.length===1?'':'s')+'</span></div>';
-      h+='<div style="flex:1;height:6px"></div>';
-      h+='</div>';
+      h+='<div style="flex:1;height:6px"></div></div>';
       rows.forEach(function(o){
         var sm=mIdx(o.onRentSince?o.onRentSince+' 2026':o.od);
         var em=mIdx(o.rental&&o.rental.offRent?o.rental.offRent:(o.anticipatedOff||o.od));
@@ -8009,42 +8020,48 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var isOffRent=lat.indexOf('off-rent')>=0||lat.indexOf('off rent')>=0;
         var _rA=_dpRowAssets[o.id]||[];
         var _onR=_rA.filter(function(a){return a.status!=='offrent';}).length;
-        var _togId='cgas-'+o.id.replace(/[^a-z0-9]/gi,'');
-        h+='<div class="grow" style="flex-wrap:wrap;align-items:flex-start;padding-top:4px;padding-bottom:'+(isOnRent||isOffRent||_rA.length?'0':'4px')+'">';
-        h+='<div style="flex-basis:220px;flex-shrink:0;min-height:30px;padding:4px 10px;border-right:1px solid var(--g100)">';
-        h+='<div style="font-size:11px;font-weight:600;color:var(--g700);cursor:pointer" onclick="ccDpTracker(\''+o.id+'\')">'+o.id+'</div>';
-        h+='<div style="font-size:9.5px;color:var(--g400);margin-top:1px">'+o.sub.replace(/'/g,'\\x27')+'</div>';
-        if(isOffRent)h+='<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--g100);color:var(--g500);margin-top:2px;display:inline-block">off-rent</span>';
-        else if(isOnRent)h+='<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(16,185,129,.1);color:var(--success);margin-top:2px;display:inline-block">on-rent</span>';
-        h+='</div>';
-        h+='<div style="flex:1;position:relative;min-height:30px">';
+        var _offR=_rA.length-_onR;
+        var _panId='cgap-'+o.id.replace(/[^a-z0-9]/gi,'');
+        var hasAssets=isOnRent||isOffRent;
+        var panelToggle=hasAssets?'onclick="var p=document.getElementById(\''+_panId+'\');if(p)p.classList.toggle(\'open\')"':'';
+        h+='<div class="gas-row-wrap">';
+        h+='<div style="display:flex;align-items:stretch;min-height:34px;cursor:'+(hasAssets?'pointer':'default')+'" '+panelToggle+'>';
+        h+='<div style="flex-basis:220px;flex-shrink:0;padding:5px 10px;border-right:1px solid var(--g100)">';
+        h+='<div style="font-size:11px;font-weight:600;color:var(--g700)">'+o.id+'</div>';
+        h+='<div style="display:flex;align-items:center;gap:5px;margin-top:1px">';
+        h+='<span style="font-size:9.5px;color:var(--g400)">'+o.sub.replace(/'/g,'\\x27')+'</span>';
+        if(isOffRent)h+='<span style="font-size:8.5px;padding:1px 5px;border-radius:3px;background:var(--g100);color:var(--g500);white-space:nowrap">off-rent</span>';
+        else if(isOnRent)h+='<span style="font-size:8.5px;padding:1px 5px;border-radius:3px;background:rgba(16,185,129,.1);color:var(--success);white-space:nowrap">on-rent</span>';
+        if(hasAssets)h+='<span style="font-size:9px;color:var(--g400);margin-left:auto">'+(_rA.length||0)+(isOnRent?'\u25be':' hist')+'</span>';
+        h+='</div></div>';
+        h+='<div style="flex:1;position:relative;min-height:34px">';
         for(var gi=1;gi<GCNT;gi++){h+='<div style="position:absolute;left:'+(gi/GCNT*100).toFixed(1)+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';}
         h+='<div style="position:absolute;left:'+pctG(todayM).toFixed(1)+'%;top:0;bottom:0;width:1.5px;background:rgba(239,68,68,.3);z-index:2"></div>';
-        h+='<div title="'+o.id+' \u00b7 '+o.item.replace(/'/g,'\\x27')+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:8px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(\''+o.id+'\')">';
-        if(w>4){h+='<span style="font-size:8.5px;color:#fff;white-space:nowrap;padding:0 4px;line-height:13px;display:block;overflow:hidden">'+(o.qty?o.qty+'\u00d7 ':'')+o.item.split(/[\u2014\u2013-]/)[0].trim().split(' ').slice(0,4).join(' ')+'</span>';}
-        h+='</div>';
-        h+='</div>';
-        if(isOnRent||isOffRent||_rA.length){
-          h+='<div class="g-asset-strip" style="margin-left:220px">';
-          var ct=_rA.length;
-          if(ct>0){h+='<button class="gas-toggle" onclick="var d=document.getElementById(\''+_togId+'\');if(d)d.classList.toggle(\'hide\')">'+(isOffRent?'\u2713 Historical: ':'')+''+ct+' asset'+(ct===1?'':'s')+' \u25be</button>';}
-          else{h+='<span class="gas-ct">No assets assigned</span>';}
+        h+='<div title="'+o.id+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:14px;top:10px;background:'+col+';opacity:.8;border-radius:3px;overflow:hidden;cursor:pointer;z-index:3" onclick="event.stopPropagation();ccDpTracker(\''+o.id+'\')">';
+        if(w>4){h+='<span style="font-size:8.5px;color:#fff;white-space:nowrap;padding:0 5px;line-height:14px;display:block;overflow:hidden">'+(o.qty?o.qty+'\u00d7 ':'')+o.item.split(/[\u2014\u2013-]/)[0].trim().split(' ').slice(0,4).join(' ')+'</span>';}
+        h+='</div></div></div>';
+        if(hasAssets){
+          h+='<div id="'+_panId+'" class="gas-panel">';
+          h+='<div class="gas-panel-hd">';
+          if(_rA.length){
+            if(_onR>0)h+='<span class="gas-badge gas-badge-onrent">\u25cf '+_onR+' on-rent</span>';
+            if(_offR>0)h+='<span class="gas-badge gas-badge-offrent">\u2713 '+_offR+' historical</span>';
+          }else{h+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
+          h+='<div class="gas-actions">';
           if(isOnRent){
-            h+='<button class="gas-assign-btn" style="margin-left:auto" onclick="dpOpenAssetPicker(\''+o.id+'\',\'equipment\')">+ Assign</button>';
-            if(_onR>0){h+='<button class="gas-assign-btn" onclick="dpInitOffrentModal(\''+o.id+'\',\''+o.item.split(/[\u2014\u2013-]/)[0].trim().replace(/'/g,'\\x27')+'\')" style="margin-left:4px;border-color:var(--red);color:var(--red)">\u2193 Off-rent</button>';}
+            h+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+o.id+'\',\'equipment\')">+ Assign</button>';
+            if(_onR>0){h+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+o.id+'\',\''+o.item.split(/[\u2014\u2013-]/)[0].trim().replace(/'/g,'\\x27')+'\')">\u2193 Off-rent</button>';}
           }
-          h+='</div>';
-          if(ct>0){
-            h+='<div id="'+_togId+'" class="gas-chips hide" style="margin-left:220px">';
+          h+='</div></div>';
+          if(_rA.length){
+            h+='<div class="gas-chips-grid">';
             _rA.forEach(function(a){
               var isOff=a.status==='offrent';
-              h+='<span class="gas-chip" style="border-color:'+(isOff?'var(--g200)':'var(--success)')+';background:'+(isOff?'var(--g50)':'rgba(16,185,129,.06)')+'">';
-              h+=a.id;
-              if(isOff)h+=' <span style="font-size:9px;color:var(--g400)">off-rent</span>';
-              h+='</span>';
+              h+='<div class="gas-chip '+(isOff?'gas-chip-offrent':'gas-chip-onrent')+'">'+a.id+(isOff?'<span class="gas-chip-tag">returned</span>':'')+'</div>';
             });
             h+='</div>';
           }
+          h+='</div>';
         }
         h+='</div>';
       });
