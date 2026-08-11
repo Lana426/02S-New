@@ -8086,23 +8086,23 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             expH+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g200)">';
             expH+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
             expH+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400);font-size:9.5px;text-transform:none">'+_rowAssets.length+' assigned'+(row.qty?' · qty '+row.qty:'')+'</span></div>';
-            if(ns){expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_itemWord+'\')">+ Assign asset</button>';}
+            expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_itemWord+'\')">+ Assign asset</button>';
             expH+='</div>';
             if(_rowAssets.length){
-              var _ag='90px 1fr 120px 80px'+(ns?' 70px':'');
-              expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span>'+(ns?'<span></span>':'')+'</div>';
+              var _ag='90px 1fr 120px 80px 70px';
+              expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';
               _rowAssets.forEach(function(a){
                 expH+='<div class="dp-row" style="grid-template-columns:'+_ag+'">';
                 expH+='<div style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g900)">'+a.id+'</div>';
                 expH+='<div style="font-size:11px">'+a.cls+'</div>';
                 expH+='<div style="font-size:11px;color:var(--g600)">'+( a.yard||'\u2014')+'</div>';
                 expH+='<div><span class="tag '+(a.status==='onrent'?'ok':a.status==='maint'?'bad':'neu')+'">'+( a.status||'assigned')+'</span></div>';
-                if(ns){expH+='<div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div>';}
+                expH+='<div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div>';
                 expH+='</div>';
               });
               expH+='</div>';
             } else {
-              expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">'+(ns?'No assets assigned yet — click <b>+ Assign asset</b> to select from fleet or add a custom unit.':'No specific assets assigned to this line yet.')+'</div>';
+              expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">No assets assigned yet — click <b>+ Assign asset</b> to select from fleet or add a custom unit.</div>';
             }
             expH+='</div>';
             expH+='</div>';
