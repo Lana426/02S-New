@@ -7957,7 +7957,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpRemoveCustomAttr(reqId,attr){if(!_dpItemAttrs[reqId])return;var i=_dpItemAttrs[reqId].indexOf(attr);if(i>=0){_dpItemAttrs[reqId].splice(i,1);renderCcDemand('equipment');}}
   function renderEquipGantt(selProj,ns){
     initCcEquipAssets();
-    var N=EQ_MONTHS.length, todayIdx=eqIdx(EQ_TODAY), todayPct=((todayIdx+1)/N)*100;
+    var GMONTHS=EQ_MONTHS.slice(0,11);
+    var N=GMONTHS.length, todayIdx=GMONTHS.indexOf(EQ_TODAY), todayPct=((todayIdx+1)/N)*100;
     var MNS={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
     function toMoKey(s,def){
       if(!s)return def;
@@ -7968,20 +7969,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       return y+'-'+(MNS[k]||'01');
     }
     function parseWinMo(w){
-      if(!w||/ongoing/i.test(w))return{from:EQ_MONTHS[0],to:EQ_MONTHS[N-1]};
+      if(!w||/ongoing/i.test(w))return{from:GMONTHS[0],to:GMONTHS[N-1]};
       var pts=w.split(/[–—]/);
-      var from=toMoKey(pts[0],EQ_MONTHS[0]);
+      var from=toMoKey(pts[0],GMONTHS[0]);
       var to=pts.length>1?toMoKey(pts[pts.length-1],from):from;
       return{from:from,to:to};
     }
-    var LW=280;
+    function gIdx(m){var i=GMONTHS.indexOf(m);return i<0?0:i;}
+    var LW=260, FQW=52;
     var mh='';
     for(var i=0;i<N;i++){
-      var _m=EQ_MONTHS[i];
-      var yrStart=(i===0)||(eqMonthYear(_m)!==eqMonthYear(EQ_MONTHS[i-1]));
-      mh+='<div class="gh-m">'+eqMonthLabel(_m)+(yrStart?'<span class="ghy">’'+_m.slice(2,4)+'</span>':'')+'</div>';
+      var _m=GMONTHS[i];
+      var yrStart=(i===0)||(eqMonthYear(_m)!==eqMonthYear(GMONTHS[i-1]));
+      mh+='<div class="gh-m">'+eqMonthLabel(_m)+(yrStart?'<span class="ghy">''+_m.slice(2,4)+'</span>':'')+'</div>';
     }
-    var head='<div class="g-head"><div class="gh-label" style="width:'+LW+'px">Equipment / billing</div><div class="gh-months">'+mh+'</div></div>';
+    var fqHead='<div style="width:'+FQW+'px;flex-shrink:0;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--g200)">FQ</div>';
+    var head='<div class="g-head"><div class="gh-label" style="width:'+LW+'px">Equipment / billing</div><div class="gh-months">'+mh+'</div>'+fqHead+'</div>';
     var grid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
     var rows='';
     if(selProj==='all'){
@@ -7992,13 +7995,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         rows+='<div class="g-grp"><span class="ggc">'+pRows.length+'</span>'+PC[proj]+'<span class="ggmeta">'+pRows.filter(function(r){return r.state==='On-rent';}).length+' on-rent</span></div>';
         pRows.forEach(function(row){
           var win=parseWinMo(row.window);
-          var a=eqIdx(win.from),b=eqIdx(win.to); if(a<0)a=0; if(b<0)b=N-1;
+          var a=gIdx(win.from),b=gIdx(win.to); if(b>=N)b=N-1;
           var left=(a/N)*100, width=((b-a+1)/N)*100;
           var stt=row.state==='On-rent'?'onrent':row.state==='Off-rent'?'offrent':'projected';
           var qtyNum=(row.qty||'').split(' ')[0];
-          rows+='<div class="grow">';
-          rows+='<div class="g-label" style="width:'+LW+'px"><span style="overflow:hidden;text-overflow:ellipsis">'+row.item+'</span><span class="gqty">×'+qtyNum+'</span></div>';
+          rows+='<div class="grow"><div class="g-label" style="width:'+LW+'px"><span style="overflow:hidden;text-overflow:ellipsis">'+row.item+'</span><span class="gqty">×'+qtyNum+'</span></div>';
           rows+='<div class="g-track" style="background-image:'+grid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)">×'+qtyNum+'</div></div>';
+          rows+='<div style="width:'+FQW+'px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--g100)"><button class="gas-btn" style="font-size:9px;padding:1px 5px" onclick="event.stopPropagation();ccGoFulfill(\''+row.ordId+'\')">FQ</button></div>';
           rows+='</div>';
         });
       });
@@ -8014,7 +8017,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         rows+='<div class="g-grp"><span class="ggc">'+g.rows.length+'</span>'+g.title+'</div>';
         g.rows.forEach(function(row){
           var win=parseWinMo(row.window);
-          var a=eqIdx(win.from),b=eqIdx(win.to); if(a<0)a=0; if(b<0)b=N-1;
+          var a=gIdx(win.from),b=gIdx(win.to); if(b>=N)b=N-1;
           var left=(a/N)*100, width=((b-a+1)/N)*100;
           var stt=g.key;
           var _rA=_dpRowAssets[row.ordId]||[];
@@ -8025,40 +8028,47 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _hasAss=stt==='onrent'||stt==='offrent';
           var qtyNum=(row.qty||'').split(' ')[0];
           rows+='<div class="gas-row-wrap">';
-          rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panId+'" onclick="gasToggle(this)"':'')+' >';
-          rows+='<div class="g-label" style="width:'+LW+'px;flex-direction:column;align-items:flex-start;padding:5px 10px;height:auto;min-height:36px;white-space:normal;gap:2px">';
-          rows+='<div style="display:flex;align-items:center;gap:5px;width:100%;min-width:0">';
+          rows+='<div class="grow" style="min-height:44px;cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panId+'" onclick="gasToggle(this)"':'')+' >';
+          rows+='<div class="g-label" style="width:'+LW+'px;flex-direction:column;align-items:flex-start;padding:5px 10px;height:auto;min-height:44px;white-space:normal;gap:1px">';
+          rows+='<div style="display:flex;align-items:center;gap:4px;width:100%;min-width:0">';
           rows+='<span style="font-size:11.5px;font-weight:600;color:var(--g800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">'+row.item+'</span>';
           rows+='<span class="gqty">×'+qtyNum+'</span>';
-          if(_hasAss)rows+='<span style="font-size:9px;color:var(--g400)">'+(_rA.length||0)+(_isOff?' hist':'▾')+'</span>';
           rows+='</div>';
           rows+='<div style="display:flex;align-items:center;gap:5px;width:100%;min-width:0">';
           if(row.firm)rows+='<span style="font-size:9.5px;color:var(--g500);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+row.firm+'</span>';
           if(row.cost)rows+='<span style="font-size:9.5px;color:var(--g600);font-weight:600;white-space:nowrap">'+row.cost+'</span>';
           rows+='</div>';
-          rows+='</div>';
-          rows+='<div class="g-track" style="background-image:'+grid+'">';
-          rows+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')" title="Click to view order">×'+qtyNum+'</div>';
-          rows+='</div>';
-          if(row.ordId){
-            rows+='<div style="flex-shrink:0;padding:0 6px;display:flex;align-items:center">';
-            rows+='<button class="gas-btn" style="font-size:9.5px;padding:2px 6px" onclick="event.stopPropagation();ccGoFulfill(\''+row.ordId+'\')" title="View in Fulfillment Queue">FQ →</button>';
+          if(_hasAss&&_rA.length){
+            rows+='<div style="display:flex;gap:2px;flex-wrap:wrap;margin-top:2px">';
+            var previewCount=Math.min(_rA.length,4);
+            for(var ai=0;ai<previewCount;ai++){
+              var _a=_rA[ai]; var _isAOff=_a.status==='offrent';
+              rows+='<span style="font-family:var(--mono);font-size:8px;padding:1px 4px;border-radius:3px;background:'+(_isAOff?'var(--g100)':'rgba(16,185,129,.08)')+';border:1px solid '+(_isAOff?'var(--g200)':'rgba(16,185,129,.25)')+';color:'+(_isAOff?'var(--g400)':'#166534')+';white-space:nowrap">'+_a.id+'</span>';
+            }
+            if(_rA.length>4)rows+='<span style="font-size:8px;color:var(--g400);align-self:center">+'+(_rA.length-4)+' more</span>';
             rows+='</div>';
           }
           rows+='</div>';
+          rows+='<div class="g-track" style="background-image:'+grid+';">';
+          rows+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')" title="Click to view order">×'+qtyNum+'</div>';
+          rows+='</div>';
+          rows+='<div style="width:'+FQW+'px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-left:1px solid var(--g100)">';
+          rows+='<button class="gas-btn" style="font-size:9px;padding:2px 6px" onclick="event.stopPropagation();ccGoFulfill(\''+row.ordId+'\')" title="View in Fulfillment Queue">FQ →</button>';
+          rows+='</div>';
+          rows+='</div>';
           if(_hasAss){
-            rows+='<div id="'+_panId+'" class="gas-panel">';
-            rows+='<div class="gas-panel-hd" style="margin-left:'+LW+'px">';
+            rows+='<div id="'+_panId+'" class="gas-panel open">';
+            rows+='<div class="gas-panel-hd" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
             if(_rA.length){
               if(_onR>0)rows+='<span class="gas-badge gas-badge-onrent">● '+_onR+' on-rent</span>';
               if(_offR>0)rows+='<span class="gas-badge gas-badge-offrent">✓ '+_offR+' historical</span>';
             }else{rows+='<span class="gas-badge gas-badge-empty">No assets assigned</span>';}
             rows+='<div class="gas-actions">';
             if(!_isOff)rows+='<button class="gas-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.ordId+'\',\'equipment\')">+ Assign</button>';
-            if(!_isOff&&_onR>0)rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+row.ordId+'\',\''+row.item.split(/[—–]/)[0].trim()+'\')"> Off-rent</button>';
+            if(!_isOff&&_onR>0)rows+='<button class="gas-btn gas-btn-red" onclick="event.stopPropagation();dpInitOffrentModal(\''+row.ordId+'\',\''+row.item.split(/[—–]/)[0].trim()+'\')">↓ Off-rent</button>';
             rows+='</div></div>';
             if(_rA.length){
-              rows+='<div class="gas-chips-grid" style="margin-left:'+LW+'px">';
+              rows+='<div class="gas-chips-grid" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
               _rA.forEach(function(a){
                 var isOff=a.status==='offrent';
                 rows+='<div class="gas-chip '+(isOff?'gas-chip-offrent':'gas-chip-onrent')+'">'+a.id+(isOff?'<span class="gas-chip-tag">returned</span>':'')+'</div>';
@@ -8071,8 +8081,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         });
       });
     }
-    var today='<div class="g-today" style="left:calc('+LW+'px + (100% - '+LW+'px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-    var leg='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>On-rent</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw offrent"></span>Off-rent</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ’'+EQ_TODAY.slice(2,4)+'</span></div>';
+    var today='<div class="g-today" style="left:calc('+LW+'px + (100% - '+(LW+FQW)+'px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+    var leg='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>On-rent</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw offrent"></span>Off-rent</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ''+EQ_TODAY.slice(2,4)+'</span></div>';
     return '<div class="gantt">'+head+'<div class="g-body">'+today+rows+'</div></div>'+leg;
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
