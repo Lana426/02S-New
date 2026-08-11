@@ -5364,7 +5364,7 @@ charges:[
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
-  var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
+  var _dpCcProjMap={equipment:'hercules'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _dpEquipView='table'; var _dpItemAttrs={}; var _dpRowAssets={};
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
