@@ -922,9 +922,8 @@
         var _onRE=_gRA.filter(function(a){return a.status!=='offrent';}).length;
         var _offRE=_gRA.length-_onRE;
         var _hasAss=locked;
-        var _panTogEq=_hasAss?'onclick="event.stopPropagation();var p=document.getElementById(\\\''+_panIdEq+'\\\');if(p)p.classList.toggle(\\\'open\\\')"':'';
         rows+='<div class="gas-row-wrap">';
-        rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'" '+_panTogEq+'>'
+        rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panIdEq+'" onclick="gasToggle(this)"':'')+'>'
           +'<div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span>'
           +(_hasAss?'<span style="font-size:9px;color:var(--g400);margin-left:auto">'+(_gRA.length||0)+(_gRO?' hist':'\u25be')+'</span>':'')
           +'</div>'
@@ -8023,9 +8022,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var _offR=_rA.length-_onR;
         var _panId='cgap-'+o.id.replace(/[^a-z0-9]/gi,'');
         var hasAssets=isOnRent||isOffRent;
-        var panelToggle=hasAssets?'onclick="var p=document.getElementById(\''+_panId+'\');if(p)p.classList.toggle(\'open\')"':'';
         h+='<div class="gas-row-wrap">';
-        h+='<div style="display:flex;align-items:stretch;min-height:34px;cursor:'+(hasAssets?'pointer':'default')+'" '+panelToggle+'>';
+        h+='<div style="display:flex;align-items:stretch;min-height:34px;cursor:'+(hasAssets?'pointer':'default')+'"'+(hasAssets?' data-panel="'+_panId+'" onclick="gasToggle(this)"':'')+'>';
         h+='<div style="flex-basis:220px;flex-shrink:0;padding:5px 10px;border-right:1px solid var(--g100)">';
         h+='<div style="font-size:11px;font-weight:600;color:var(--g700)">'+o.id+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px;margin-top:1px">';
