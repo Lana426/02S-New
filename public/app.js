@@ -5307,7 +5307,7 @@ charges:[
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
   var _dpCcProjMap={}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
-  var _dpEquipView='table'; var _dpItemAttrs={};
+  var _dpEquipView='table'; var _dpItemAttrs={}; var _dpRowAssets={};
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
   var _pfbP6Overrides={};
@@ -7733,6 +7733,63 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     return '<span class="dp-tax warn">'+BOLT+r.tax+' \u00b7 confirm</span>';
   }
   function dpReviewCell(p,r,ns){ if(r.taxOk){ return '<button class="btn btn-ghost btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">View</button>'; } var cls=ns?'btn-red':'btn-dark'; return '<button class="btn '+cls+' btn-sm" onclick="dpReview(\''+p+'\',\''+r.id+'\')">Confirm</button>'; }
+  function dpOpenAssetPicker(rowId,itemType){
+    var typeKey=(itemType||'').toLowerCase().replace(/[^a-z]/g,'');
+    var clsMap={excavat:'Excavator',crane:'crane',lift:'lift',scissor:'Scissor',boom:'Boom',generator:'Generator',telehand:'Telehandler',truck:'Truck',loader:'Loader',dozer:'Dozer'};
+    var matchCls=null;
+    Object.keys(clsMap).forEach(function(k){if(typeKey.indexOf(k)>=0)matchCls=clsMap[k];});
+    var options=matchCls?FLEET.filter(function(f){return f.cls.toLowerCase().indexOf(matchCls.toLowerCase())>=0;}):FLEET;
+    var assigned=_dpRowAssets[rowId]||[];
+    var assignedIds=assigned.map(function(a){return a.id;});
+    var gt='90px 1fr 130px 80px 100px';
+    var h='<div style="margin-bottom:14px"><div style="font-size:11.5px;color:var(--g600);margin-bottom:10px">Select from owned fleet'+(matchCls?' ('+matchCls+'s)':'')+' or enter a custom unit below.</div>';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';
+    if(!options.length){h+='<div style="padding:12px 14px;font-size:11.5px;color:var(--g400)">No matching fleet assets — use custom entry below.</div>';}
+    options.forEach(function(f){
+      var isA=assignedIds.indexOf(f.id)>=0;
+      var sTone=f.status==='onrent'?'ok':f.status==='maint'?'bad':'warn';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
+      h+='<div style="font-family:monospace;font-size:11px;font-weight:600">'+f.id+'</div>';
+      h+='<div style="font-size:11px">'+f.cls+'<div class="sub">'+f.hours+' hrs · '+f.cond+'</div></div>';
+      h+='<div style="font-size:11.5px">'+f.yard+'</div>';
+      h+='<div><span class="tag '+sTone+'">'+f.status+'</span></div>';
+      h+='<div>'+(isA?'<span style="font-size:11px;color:var(--g400)">✓ Assigned</span>':'<button class="btn btn-red btn-sm" onclick="dpAssignFleetAsset(\''+rowId+'\',\''+f.id+'\')">Assign</button>')+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+    h+='<div style="border-top:1px solid var(--g100);padding-top:12px;margin-top:4px">';
+    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Custom / rental unit</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px">';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Asset ID</div><input id="dpCA-id" placeholder="e.g. GEN-0990" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Type / Make</div><input id="dpCA-cls" placeholder="e.g. Generator 125 kW" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
+    h+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Yard / Location</div><input id="dpCA-yard" placeholder="e.g. North Yard" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;outline:none"></div>';
+    h+='</div>';
+    h+='<button class="btn btn-dark btn-sm" onclick="dpAssignCustomAsset(\''+rowId+'\')">Add custom unit</button>';
+    h+='</div>';
+    openModal('Assign asset — '+rowId,h);
+  }
+  function dpAssignFleetAsset(rowId,assetId){
+    var f=FLEET.filter(function(x){return x.id===assetId;})[0]; if(!f)return;
+    if(!_dpRowAssets[rowId])_dpRowAssets[rowId]=[];
+    if(!_dpRowAssets[rowId].some(function(a){return a.id===assetId;})){
+      _dpRowAssets[rowId].push({id:f.id,cls:f.cls,yard:f.yard,status:f.status,hours:f.hours,cond:f.cond});
+    }
+    closeModal(); renderCcDemand('equipment');
+  }
+  function dpAssignCustomAsset(rowId){
+    var idEl=document.getElementById('dpCA-id');
+    var clsEl=document.getElementById('dpCA-cls');
+    var yardEl=document.getElementById('dpCA-yard');
+    if(!idEl||!idEl.value.trim()){return;}
+    if(!_dpRowAssets[rowId])_dpRowAssets[rowId]=[];
+    _dpRowAssets[rowId].push({id:idEl.value.trim(),cls:clsEl?clsEl.value.trim():'',yard:yardEl?yardEl.value.trim():'',status:'assigned',custom:true});
+    closeModal(); renderCcDemand('equipment');
+  }
+  function dpRemoveRowAsset(rowId,assetId){
+    if(!_dpRowAssets[rowId])return;
+    _dpRowAssets[rowId]=_dpRowAssets[rowId].filter(function(a){return a.id!==assetId;});
+    renderCcDemand('equipment');
+  }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
   function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
   function dpRemoveCustomAttr(reqId,attr){if(!_dpItemAttrs[reqId])return;var i=_dpItemAttrs[reqId].indexOf(attr);if(i>=0){_dpItemAttrs[reqId].splice(i,1);renderCcDemand('equipment');}}
@@ -8024,6 +8081,30 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             _aa.forEach(function(a){var isCust=(_dpItemAttrs[row.id]||[]).indexOf(a)>=0;expH+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;padding:2px 8px;border-radius:10px;background:'+(isCust?'rgba(59,130,246,.1)':'var(--g100)')+';color:'+(isCust?'#2563eb':'var(--g700)')+';border:1px solid '+(isCust?'rgba(59,130,246,.3)':'var(--g200)')+'">'+a+(ns&&isCust?'<button onclick="event.stopPropagation();dpRemoveCustomAttr(\''+row.id+'\',\''+a+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#93c5fd;margin-left:2px;font-size:12px">\u00d7</button>':'')+'</span>';});
             if(ns){expH+='<div style="display:inline-flex;align-items:center;gap:3px;background:var(--g50);border:1px dashed var(--g200);border-radius:10px;padding:1px 7px"><input id="dpAttrIn-'+row.id+'" placeholder="Add attribute\u2026" style="border:none;background:transparent;font-size:10.5px;width:100px;outline:none;color:var(--g700)" onkeydown="if(event.key===\'Enter\')dpAddCustomAttr(\''+row.id+'\')"><button onclick="event.stopPropagation();dpAddCustomAttr(\''+row.id+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#2563eb;font-size:15px;font-weight:700;line-height:1">+</button></div>';}
             expH+='</div></div>';
+            var _rowAssets=_dpRowAssets[row.id]||[];
+            var _itemWord=(row.item||'').split(/[\u00d7 ]/)[0].toLowerCase();
+            expH+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g200)">';
+            expH+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+            expH+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400);font-size:9.5px;text-transform:none">'+_rowAssets.length+' assigned'+(row.qty?' · qty '+row.qty:'')+'</span></div>';
+            if(ns){expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_itemWord+'\')">+ Assign asset</button>';}
+            expH+='</div>';
+            if(_rowAssets.length){
+              var _ag='90px 1fr 120px 80px'+(ns?' 70px':'');
+              expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span>'+(ns?'<span></span>':'')+'</div>';
+              _rowAssets.forEach(function(a){
+                expH+='<div class="dp-row" style="grid-template-columns:'+_ag+'">';
+                expH+='<div style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g900)">'+a.id+'</div>';
+                expH+='<div style="font-size:11px">'+a.cls+'</div>';
+                expH+='<div style="font-size:11px;color:var(--g600)">'+( a.yard||'\u2014')+'</div>';
+                expH+='<div><span class="tag '+(a.status==='onrent'?'ok':a.status==='maint'?'bad':'neu')+'">'+( a.status||'assigned')+'</span></div>';
+                if(ns){expH+='<div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div>';}
+                expH+='</div>';
+              });
+              expH+='</div>';
+            } else {
+              expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">'+(ns?'No assets assigned yet — click <b>+ Assign asset</b> to select from fleet or add a custom unit.':'No specific assets assigned to this line yet.')+'</div>';
+            }
+            expH+='</div>';
             expH+='</div>';
           }
         } else {
