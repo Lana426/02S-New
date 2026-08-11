@@ -1606,18 +1606,17 @@
           h+='</div>';
         }
       } else {
-        var dlvCols='1fr 100px 110px 130px 110px 100px';
+        var dlvCols='1fr 120px 140px 110px 100px';
         var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
         h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
         dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+f[0]+'</button>';});
         h+='</div></div></div>';
         var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Pillar</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
         dlvRows.forEach(function(d){
           var tone=d.status==='Delivered'?'ok':d.status==='Scheduled'?'info':d.status==='In fabrication'?'warn':'neu';
           h+='<div class="dp-row" style="grid-template-columns:'+dlvCols+';cursor:default">';
           h+='<div>'+d.item+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g500)">'+d.pillar+'</div>';
           h+='<div style="font-size:11.5px;font-weight:600;color:var(--g800)">'+d.needby+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g600)">'+d.vendor+'</div>';
           h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+d.order+'</div>';
@@ -1658,7 +1657,7 @@
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
-    if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
+    if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
@@ -9520,7 +9519,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   var _dp_pri={'Draft':0,'Pending pricing':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
   function renderDP(pk){
-    if(pk==='profservices'&&CURRENT==='ns'){ renderProfServicesDP(); return; }
+    if(pk==='profservices'){ renderProfServicesDP(); return; }
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
