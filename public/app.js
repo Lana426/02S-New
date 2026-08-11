@@ -6529,24 +6529,24 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   baseline:{mechanical:3,electrical:2,structural:3,misc:4,concrete:2},
   plan:{
     hercules:[
-      {item:'Prefab pipe rack modules',t:'mechanical',qty:'12 modules',mo:'Apr 1',fs:'May 15',fe:'Jul 25',shipD:5,status:'in_fab',p6Date:'2026-09-28',p6Act:'Pipe rack install — Sector 1'},
-      {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14,p6Date:'2026-10-31',p6Act:'BESS e-house commissioning'},
-      {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5,p6Date:'2026-06-20',p6Act:'L2 headwall installation'},
-      {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7,status:'in_fab',p6Date:'2026-10-05',p6Act:'Pump skid commissioning'},
-      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5,p6Date:'2026-08-15',p6Act:'Cable tray installation'},
-      {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true,p6Date:'2026-09-05',p6Act:'Conduit rough-in — add scope'}
+      {item:'Prefab pipe rack modules',t:'mechanical',qty:'12 modules',mo:'Apr 1',fs:'May 15',fe:'Jul 25',shipD:5,status:'in_fab',p6Date:'2026-09-28',p6Act:'Pipe rack install — Sector 1',mfgWks:5},
+      {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14,p6Date:'2026-10-31',p6Act:'BESS e-house commissioning',mfgWks:6},
+      {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5,p6Date:'2026-06-20',p6Act:'L2 headwall installation',mfgWks:3},
+      {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7,status:'in_fab',p6Date:'2026-10-05',p6Act:'Pump skid commissioning',mfgWks:4},
+      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5,p6Date:'2026-08-15',p6Act:'Cable tray installation',mfgWks:2},
+      {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true,p6Date:'2026-09-05',p6Act:'Conduit rough-in — add scope',mfgWks:2}
     ],
     riverside:[
-      {item:'Overhead MEP rack modules',t:'mechanical',qty:'6 modules',mo:'May 15',fs:'Jul 1',fe:'Aug 25',shipD:5,p6Date:'2026-09-10',p6Act:'Overhead MEP install — Level 2'},
-      {item:'L2 headwall assemblies',t:'structural',qty:'8 units',mo:'Mar 15',fs:'Apr 15',fe:'Jun 20',shipD:5,p6Date:'2026-07-05',p6Act:'Level 2 headwall installation'},
-      {item:'Stairwell prefab panels',t:'structural',qty:'4 panels',mo:'Jun 1',fs:'Aug 1',fe:'Sep 25',shipD:5,p6Date:'2026-10-20',p6Act:'Stairwell panel erection'},
-      {item:'Fire suppression header modules',t:'mechanical',qty:'2 units',mo:'Jun 15',fs:'Aug 15',fe:'Sep 20',shipD:5,adhoc:true,p6Date:'2026-10-01',p6Act:'Fire suppression header install'}
+      {item:'Overhead MEP rack modules',t:'mechanical',qty:'6 modules',mo:'May 15',fs:'Jul 1',fe:'Aug 25',shipD:5,p6Date:'2026-09-10',p6Act:'Overhead MEP install — Level 2',mfgWks:4},
+      {item:'L2 headwall assemblies',t:'structural',qty:'8 units',mo:'Mar 15',fs:'Apr 15',fe:'Jun 20',shipD:5,p6Date:'2026-07-05',p6Act:'Level 2 headwall installation',mfgWks:3},
+      {item:'Stairwell prefab panels',t:'structural',qty:'4 panels',mo:'Jun 1',fs:'Aug 1',fe:'Sep 25',shipD:5,p6Date:'2026-10-20',p6Act:'Stairwell panel erection',mfgWks:2},
+      {item:'Fire suppression header modules',t:'mechanical',qty:'2 units',mo:'Jun 15',fs:'Aug 15',fe:'Sep 20',shipD:5,adhoc:true,p6Date:'2026-10-01',p6Act:'Fire suppression header install',mfgWks:2}
     ],
     cimarron:[
-      {item:'Cable tray brackets',t:'electrical',qty:'Lot',mo:'Jun 15',fs:'Aug 1',fe:'Sep 20',shipD:5,p6Date:'2026-10-10',p6Act:'Cable tray install — Server Hall'},
-      {item:'Server room partition panels',t:'misc',qty:'6 panels',mo:'Jun 1',fs:'Jul 15',fe:'Oct 10',shipD:7,status:'in_fab',p6Date:'2026-10-25',p6Act:'Server room partition erection'},
-      {item:'Generator exhaust enclosures',t:'misc',qty:'4 units',mo:'Jul 15',fs:'Sep 1',fe:'Nov 20',shipD:10,p6Date:'2026-12-15',p6Act:'Generator enclosure install'},
-      {item:'UPS battery cabinet frames',t:'electrical',qty:'6 units',mo:'Jul 1',fs:'Aug 1',fe:'Sep 15',shipD:7,adhoc:true,p6Date:'2026-10-05',p6Act:'UPS battery installation'}
+      {item:'Cable tray brackets',t:'electrical',qty:'Lot',mo:'Jun 15',fs:'Aug 1',fe:'Sep 20',shipD:5,p6Date:'2026-10-10',p6Act:'Cable tray install — Server Hall',mfgWks:2},
+      {item:'Server room partition panels',t:'misc',qty:'6 panels',mo:'Jun 1',fs:'Jul 15',fe:'Oct 10',shipD:7,status:'in_fab',p6Date:'2026-10-25',p6Act:'Server room partition erection',mfgWks:3},
+      {item:'Generator exhaust enclosures',t:'misc',qty:'4 units',mo:'Jul 15',fs:'Sep 1',fe:'Nov 20',shipD:10,p6Date:'2026-12-15',p6Act:'Generator enclosure install',mfgWks:4},
+      {item:'UPS battery cabinet frames',t:'electrical',qty:'6 units',mo:'Jul 1',fs:'Aug 1',fe:'Sep 15',shipD:7,adhoc:true,p6Date:'2026-10-05',p6Act:'UPS battery installation',mfgWks:3}
     ]
   },
   gaps:{
@@ -7274,17 +7274,21 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var h='';
     h+=xAxis(false);
     items.filter(function(it){return !!it.p6Date;}).forEach(function(it,idx){
-      var mo=pd(it.mo); var fs=pd(it.fs); var fe=pd(it.fe);
       var p6=pd(it.p6Date); var sd=it.shipD||3;
-      if(!mo||!fs||!fe||!p6)return;
-      var demId=addD(mo,-23);
-      var ordStart=addD(mo,-21); var ordEnd=addD(mo,-14);
-      var matStart=addD(mo,-14); var matEnd=mo;
-      var schedMfg=addD(fs,-1); var schedMfgEnd=addD(fs,-1);
-      var inspFacS=addD(fe,1); var inspFacE=addD(fe,1);
-      var shipS=addD(fe,2); var shipE=addD(fe,sd);
-      var inspSiteS=addD(shipE,1); var inspSiteE=addD(shipE,1);
-      var mfgWks=Math.round((fe.getTime()-fs.getTime())/604800000);
+      if(!p6)return;
+      var mfgWks=it.mfgWks||3;
+      var inspSiteS=addD(p6,-1); var inspSiteE=inspSiteS;
+      var shipE=addD(inspSiteS,-1);
+      var shipS=addD(shipE,-sd+1);
+      var inspFacS=addD(shipS,-1); var inspFacE=inspFacS;
+      var fe=addD(inspFacS,-1);
+      var fs=addD(fe,-(mfgWks*7-1));
+      var schedMfg=addD(fs,-1); var schedMfgEnd=schedMfg;
+      var matEnd=addD(schedMfg,-1);
+      var matStart=addD(matEnd,-13);
+      var ordEnd=addD(matStart,-1);
+      var ordStart=addD(ordEnd,-6);
+      var demId=addD(ordStart,-23);
       var tc=TC[it.t]||'#888'; var tl=TL[it.t]||it.t;
       var p6col=p6.getTime()<TODAY_MS?'#dc2626':'#1d4ed8';
       var expanded=!!_pfbP6Expanded[idx];
@@ -7297,7 +7301,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
       h+='<div style="flex:1;position:relative;height:26px">';
       h+=todayLine();
-      var x0=Math.max(0,pctD(mo)); var xp=Math.min(100,pctD(p6));
+      var x0=Math.max(0,pctD(ordStart)); var xp=Math.min(100,pctD(p6));
       if(xp>x0)h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:10px;top:5px;background:'+tc+';opacity:.1;border-radius:3px"></div>';
       var fx1=Math.max(0,pctD(fs)); var fx2=Math.min(100,pctD(fe));
       if(fx2>fx1)h+='<div style="position:absolute;left:'+fx1+'%;width:'+(fx2-fx1)+'%;height:10px;top:5px;background:'+tc+';opacity:.65;border-radius:3px"></div>';
@@ -7435,18 +7439,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       tItems.forEach(function(it,ri){
         var x1=pct(it.fs); var x2=pct(it.fe); var bw=Math.max(x2-x1,0.8);
         var top=ri*26+4;
-        var delPct=Math.min(100,x2+(it.shipD/TD*100));
         var isAdhoc=!!it.adhoc;
         var isInFab=it.status==='in_fab';
-        var barColor=isInFab?'#10b981':'#3b82f6';
+        var barColor=tc;
         var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;background:'+barColor+';opacity:'+(isInFab?'.92':(isAdhoc?'.5':(gapItem?'.85':'.72')));
         h+='<div title="'+it.item+' \u2502 Fab: '+it.fs+' \u2192 '+it.fe+' \u2502 Delivery ~+'+it.shipD+'d" style="'+barSty+'">';
         if(!isAdhoc)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
         h+='</div>';
         var mx=pct(it.mo);
         if(mx>=0&&mx<=100)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'%;top:'+(top-1)+'px;width:2px;height:20px;background:#64748b;z-index:2;border-radius:1px"></div>';
-        if(delPct>=0&&delPct<=100)h+='<div title="Delivery ≈ '+it.fe+' +'+it.shipD+'d transit" style="position:absolute;left:calc('+delPct+'% - 4px);top:'+(top+5)+'px;width:8px;height:8px;background:'+tc+';transform:rotate(45deg);z-index:3;border-radius:1px"></div>';
-        if(it.p6Date){var p6d=new Date(it.p6Date);var p6mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var p6x=pct(p6mn[p6d.getMonth()]+' '+p6d.getDate());if(p6x>=0&&p6x<=100){h+='<div title="★ P6 install: '+it.p6Act+' · '+it.p6Date+'" style="position:absolute;left:calc('+p6x+'% - 1px);top:'+(top-2)+'px;width:2px;height:22px;background:#dc2626;z-index:5;border-radius:1px"></div>';h+='<div style="position:absolute;left:calc('+p6x+'% + 3px);top:'+(top-2)+'px;font-size:8px;color:#dc2626;line-height:1;z-index:5">★</div>';}}
+        if(it.p6Date){var p6d=new Date(it.p6Date);var p6mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var p6x=pct(p6mn[p6d.getMonth()]+' '+p6d.getDate());if(p6x>=0&&p6x<=100){h+='<div title="★ P6 install: '+it.p6Act+' · '+it.p6Date+'" style="position:absolute;left:calc('+p6x+'% - 1px);top:'+(top-2)+'px;width:2px;height:22px;background:#dc2626;z-index:5;border-radius:1px"></div>';}}
       });
       h+='<div style="position:absolute;bottom:0;left:0;right:0;border-top:1.5px dashed rgba(0,0,0,.1)"></div>';
       h+='</div></div>';
@@ -7456,7 +7458,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     Object.keys(TC).forEach(function(t){ if(!TL[t])return; h+='<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;border-radius:2px;background:'+TC[t]+';opacity:.8"></div>'+TL[t]+'</div>'; });
     h+='<span style="width:1px;height:14px;background:var(--g200);margin:0 4px"></span>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#64748b"></div>Mat. order</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:8px;height:8px;background:#ef4444;transform:rotate(45deg);flex-shrink:0;border-radius:1px"></div>Delivery date</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:24px;height:10px;background:rgba(239,68,68,.15);border:1.5px solid rgba(239,68,68,.4)"></div>Capacity risk</div>';
     h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#dc2626;border-radius:1px"></div>P6 install date</div>';h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:2px;height:14px;background:#10b981;opacity:.6"></div>Today</div>';
     h+='</div>';
