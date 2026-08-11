@@ -1864,10 +1864,6 @@ function renderProfServicesDP(){
        {name:'Mobile elevated work platform \u00d7 3',pillar:'Equipment',qty:'3 units \u00b7 8 weeks',amount:null},
        {name:'Structural special inspection \u00d7 2 FTE',pillar:'Prof. services',qty:'2 FTE \u00b7 4 months',amount:'$64,000'}
      ]},
-    {ref:'Q-63412',submitted:'Jul 26, 2026',project:'Cimarron Data Center',items:1,status:'Draft',pendingN:1,note:'Custom cable tray brackets — not in rate card',
-     lineItems:[
-       {name:'Cable tray bracket assemblies',pillar:'Prefab',qty:'lot',amount:null}
-     ]},
     {ref:'Q-63413',submitted:'Jul 20, 2026',project:'Hercules Solar + BESS',items:1,status:'Draft',pendingN:1,note:'SDS Max rotary hammers \u2014 specialty tool, not in rate card',
      lineItems:[
        {name:'SDS Max rotary hammers, 1-3/4\" \u00d7 8',pillar:'Procurement',qty:'8 units',amount:null}
