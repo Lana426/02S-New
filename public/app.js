@@ -7794,7 +7794,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var x0=pctG(sm);var x1=pctG(em+1);var w=Math.max(2,x1-x0);
         var col=PC[o.proj]||'#6b7280';
         var top=6+bi*18;
-        h+='<div title="'+o.id+' \u00b7 '+o.item+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:'+top+'px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(''+o.id+'')">';
+        h+='<div title="'+o.id+' \u00b7 '+o.item+(o.qty?' \u00b7 qty '+o.qty:'')+'" style="position:absolute;left:'+x0.toFixed(1)+'%;width:'+w.toFixed(1)+'%;height:13px;top:'+top+'px;background:'+col+';opacity:.8;border-radius:2px;overflow:hidden;cursor:pointer;z-index:3" onclick="ccDpTracker(\''+o.id+'\')">';
         if(w>4){h+='<span style="font-size:8.5px;color:#fff;white-space:nowrap;padding:0 4px;line-height:13px;display:block;overflow:hidden">'+(o.qty?o.qty+'\u00d7 ':'')+o.item.split(/[\u2014\u2013-]/)[0].trim().split(' ').slice(0,4).join(' ')+'</span>';}
         h+='</div>';
       });
@@ -7929,7 +7929,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var moreN=visRows.length-5;
     if(isDpView){
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';
-      if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView('table')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView('gantt')">Gantt</button></div>';}
+      if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView(\'table\')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView(\'gantt\')">Gantt</button></div>';}
       h+='<span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
       if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#equip-list-view{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
     } else {
@@ -8021,8 +8021,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
             var _aa=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
             expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Attributes</div><div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">';
-            _aa.forEach(function(a){var isCust=(_dpItemAttrs[row.id]||[]).indexOf(a)>=0;expH+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;padding:2px 8px;border-radius:10px;background:'+(isCust?'rgba(59,130,246,.1)':'var(--g100)')+';color:'+(isCust?'#2563eb':'var(--g700)')+';border:1px solid '+(isCust?'rgba(59,130,246,.3)':'var(--g200)')+'">'+a+(ns&&isCust?'<button onclick="event.stopPropagation();dpRemoveCustomAttr(''+row.id+'',''+a+'')" style="background:none;border:none;padding:0;cursor:pointer;color:#93c5fd;margin-left:2px;font-size:12px">\u00d7</button>':'')+'</span>';});
-            if(ns){expH+='<div style="display:inline-flex;align-items:center;gap:3px;background:var(--g50);border:1px dashed var(--g200);border-radius:10px;padding:1px 7px"><input id="dpAttrIn-'+row.id+'" placeholder="Add attribute\u2026" style="border:none;background:transparent;font-size:10.5px;width:100px;outline:none;color:var(--g700)" onkeydown="if(event.key==='Enter')dpAddCustomAttr(''+row.id+'')"><button onclick="event.stopPropagation();dpAddCustomAttr(''+row.id+'')" style="background:none;border:none;padding:0;cursor:pointer;color:#2563eb;font-size:15px;font-weight:700;line-height:1">+</button></div>';}
+            _aa.forEach(function(a){var isCust=(_dpItemAttrs[row.id]||[]).indexOf(a)>=0;expH+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;padding:2px 8px;border-radius:10px;background:'+(isCust?'rgba(59,130,246,.1)':'var(--g100)')+';color:'+(isCust?'#2563eb':'var(--g700)')+';border:1px solid '+(isCust?'rgba(59,130,246,.3)':'var(--g200)')+'">'+a+(ns&&isCust?'<button onclick="event.stopPropagation();dpRemoveCustomAttr(\''+row.id+'\',\''+a+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#93c5fd;margin-left:2px;font-size:12px">\u00d7</button>':'')+'</span>';});
+            if(ns){expH+='<div style="display:inline-flex;align-items:center;gap:3px;background:var(--g50);border:1px dashed var(--g200);border-radius:10px;padding:1px 7px"><input id="dpAttrIn-'+row.id+'" placeholder="Add attribute\u2026" style="border:none;background:transparent;font-size:10.5px;width:100px;outline:none;color:var(--g700)" onkeydown="if(event.key===\'Enter\')dpAddCustomAttr(\''+row.id+'\')"><button onclick="event.stopPropagation();dpAddCustomAttr(\''+row.id+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#2563eb;font-size:15px;font-weight:700;line-height:1">+</button></div>';}
             expH+='</div></div>';
             expH+='</div>';
           }
