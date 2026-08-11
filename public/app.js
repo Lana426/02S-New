@@ -848,7 +848,7 @@
 
   function renderEqPlan(){
     var ns=CURRENT==='ns';
-    var cap='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span><b>How pricing works:</b> rates are pulled from the 02S catalog \u2014 the team sets quantity, dates, and cost code, never the rate. Specialized items not in the catalog are sent to 02S admin to price.'+(ns?' 02S also rebuilds the month spread automatically whenever the CPM schedule moves.':' Draft lines stay editable until they\u2019re submitted to 02S.')+'</span></div>';
+    var cap='';
     var thead='<div class="eq-thead"><span>Equipment</span><span>On-rent \u2192 off-rent</span><span class="c">Qty</span><span class="r">Monthly / line total</span><span>Status</span><span class="c">Edit</span></div>';
     var body='';
     var GS=eqGroups();
@@ -887,9 +887,7 @@
       }
       body+='</div>';
     }
-    var pend=0; for(var pk=0;pk<EQ_LINES.length;pk++){if(eqLineState(EQ_LINES[pk])==='pending')pend++;}
-    var pendBar=pend?'<div class="eq-pendbar">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>')+'<span><b>'+pend+' line'+(pend===1?'':'s')+' awaiting 02S pricing</b> \u2014 excluded from the projected totals until 02S admin sets the rate.</span></div>':'';
-    gel('eqPlan').innerHTML=cap+pendBar+'<div class="eqtbl">'+thead+body+'</div>';
+    gel('eqPlan').innerHTML=cap+'<div class="eqtbl">'+thead+body+'</div>';
   }
 
   function renderEqGantt(){
@@ -919,19 +917,23 @@
         var locked=(stt==='onrent'||stt==='offrent');
         var btitle=locked?'Click to view details':(stt==='draft'?'Click to adjust qty & dates':stt==='pending'?'Click to adjust the pricing request':'Click to request a change');
         var _gRA=_dpRowAssets[l.id]||[];
+        var _gTogId='gas-d-'+l.id;
         var _assetStrip='';
         if(locked){
+          var _gRO=stt==='offrent';
           _assetStrip='<div class="g-asset-strip">';
-          if(_gRA.length){
-            _assetStrip+='<span class="gas-lbl">'+_gRA.length+' asset'+(_gRA.length===1?'':'s')+'</span>';
-            _assetStrip+='<div class="gas-chips">';
-            _gRA.forEach(function(a){_assetStrip+='<span class="gas-chip" title="'+a.cls+' · '+a.yard+'">'+a.id+'</span>';});
-            _assetStrip+='</div>';
-          }else{
-            _assetStrip+='<span style="font-size:11px;color:var(--g400);font-style:italic">No asset records</span>';
+          _assetStrip+='<button class="gas-toggle" onclick="event.stopPropagation();var d=document.getElementById(\''+_gTogId+'\');if(d)d.classList.toggle(\'hide\')">';
+          _assetStrip+=(_gRA.length?(_gRA.length+' asset'+(_gRA.length===1?'':'s')):'No asset records')+' \u25be';
+          _assetStrip+='</button>';
+          if(!_gRO){
+            _assetStrip+='<button class="gas-assign-btn" style="margin-left:auto" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
           }
-          _assetStrip+='<button class="gas-assign-btn" style="margin-left:auto" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+l.cat.split(' ')[0]+'\')">'+'+ Assign'+'</button>';
           _assetStrip+='</div>';
+          if(_gRA.length){
+            _assetStrip+='<div id="'+_gTogId+'" class="g-asset-chips hide">';
+            _gRA.forEach(function(a){_assetStrip+='<span class="gas-chip" title="'+a.cls+' \u00b7 '+a.yard+'">'+a.id+'</span>';});
+            _assetStrip+='</div>';
+          }
         }else{
           _assetStrip='<div class="g-asset-strip gas-empty"><button class="gas-assign-btn" onclick="event.stopPropagation();dpOpenAssetPicker(\''+l.id+'\',\''+stt+'\')">'+'+ Assign assets'+'</button>'+(_gRA.length?'<span class="gas-ct">'+_gRA.length+' assigned</span>':'')+'</div>';
         }
@@ -8178,6 +8180,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             expH+='</div>';
           }
           if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note \u00b7 </b>'+row.note+'</div>';}
+          var _aa2=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
+          if(_aa2.length){expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Attributes</div><div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">';_aa2.forEach(function(a){var isCust=(_dpItemAttrs[row.id]||[]).indexOf(a)>=0;expH+='<span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;padding:2px 8px;border-radius:10px;background:'+(isCust?'rgba(59,130,246,.1)':'var(--g100)')+';color:'+(isCust?'#2563eb':'var(--g700)')+';border:1px solid '+(isCust?'rgba(59,130,246,.3)':'var(--g200)')+'">' +a+(ns&&isCust?'<button onclick="event.stopPropagation();dpRemoveCustomAttr(\''+row.id+'\',\''+a+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#93c5fd;margin-left:2px;font-size:12px">\u00d7</button>':'')+'</span>';});if(ns){expH+='<div style="display:inline-flex;align-items:center;gap:3px;background:var(--g50);border:1px dashed var(--g200);border-radius:10px;padding:1px 7px"><input id="dpAttrIn-'+row.id+'" placeholder="Add attribute\u2026" style="border:none;background:transparent;font-size:10.5px;width:100px;outline:none;color:var(--g700)" onkeydown="if(event.key===\'Enter\')dpAddCustomAttr(\''+row.id+'\')"><button onclick="event.stopPropagation();dpAddCustomAttr(\''+row.id+'\')" style="background:none;border:none;padding:0;cursor:pointer;color:#2563eb;font-size:15px;font-weight:700;line-height:1">+</button></div>';}expH+='</div></div>';}
+          var _rowAssets2=_dpRowAssets[row.id]||[];
+          var _iw2=(row.asset||row.item||'').split(/[\u00d7 ]/)[0].toLowerCase();
+          expH+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g200)">';
+          expH+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+          expH+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Assigned assets <span style="font-weight:400;color:var(--g400);font-size:9.5px;text-transform:none">'+_rowAssets2.length+' assigned'+(row.qty?' \u00b7 qty '+row.qty:'')+'</span></div>';
+          expH+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="event.stopPropagation();dpOpenAssetPicker(\''+row.id+'\',\''+_iw2+'\')">+ Assign asset</button>';
+          expH+='</div>';
+          if(_rowAssets2.length){var _ag2='90px 1fr 120px 80px 70px';expH+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_ag2+'"><span>Asset ID</span><span>Type</span><span>Yard</span><span>Status</span><span></span></div>';_rowAssets2.forEach(function(a){expH+='<div class="dp-row" style="grid-template-columns:'+_ag2+'"><div style="font-family:monospace;font-size:11px;font-weight:600;color:var(--g900)">'+a.id+'</div><div style="font-size:11px">'+a.cls+'</div><div style="font-size:11px;color:var(--g600)">'+(a.yard||'\u2014')+'</div><div><span class="tag '+(a.status==='onrent'?'ok':a.status==='maint'?'bad':'neu')+'">'+(a.status||'assigned')+'</span></div><div><button onclick="event.stopPropagation();dpRemoveRowAsset(\''+row.id+'\',\''+a.id+'\')" style="font-size:10px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--red)">Remove</button></div></div>';});expH+='</div>';}else{expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">No assets assigned yet \u2014 click <b>+ Assign asset</b> to select from fleet or add a custom unit.</div>';}
+          expH+='</div>';
           expH+='</div>';    }
         if(isDpView){
           var _ordR=row.ordId?ORDERS.filter(function(x){return x.id===row.ordId;})[0]:null;
