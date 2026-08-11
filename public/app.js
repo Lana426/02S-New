@@ -7981,7 +7981,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     for(var i=0;i<N;i++){
       var _m=GMONTHS[i];
       var yrStart=(i===0)||(eqMonthYear(_m)!==eqMonthYear(GMONTHS[i-1]));
-      mh+='<div class="gh-m">'+eqMonthLabel(_m)+(yrStart?'<span class="ghy">''+_m.slice(2,4)+'</span>':'')+'</div>';
+      mh+='<div class="gh-m">'+eqMonthLabel(_m)+(yrStart?'<span class="ghy">\u2019'+_m.slice(2,4)+'</span>':'')+'</div>';
     }
     var fqHead='<div style="width:'+FQW+'px;flex-shrink:0;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--g400);display:flex;align-items:center;justify-content:center;border-left:1px solid var(--g200)">FQ</div>';
     var head='<div class="g-head"><div class="gh-label" style="width:'+LW+'px">Equipment / billing</div><div class="gh-months">'+mh+'</div>'+fqHead+'</div>';
@@ -8082,7 +8082,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
     }
     var today='<div class="g-today" style="left:calc('+LW+'px + (100% - '+(LW+FQW)+'px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-    var leg='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>On-rent</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw offrent"></span>Off-rent</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ''+EQ_TODAY.slice(2,4)+'</span></div>';
+    var leg='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>On-rent</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw offrent"></span>Off-rent</span><span class="lg"><span class="gl-today"></span>Today \u00b7 '+eqMonthLabel(EQ_TODAY)+'\u2019'+EQ_TODAY.slice(2,4)+'</span></div>';
     return '<div class="gantt">'+head+'<div class="g-body">'+today+rows+'</div></div>'+leg;
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
