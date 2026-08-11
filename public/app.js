@@ -7293,14 +7293,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var p6col=p6.getTime()<TODAY_MS?'#dc2626':'#1d4ed8';
       var expanded=!!_pfbP6Expanded[idx];
       // header row
-      h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:8px 10px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'3px')+'">';
+      h+='<div onclick="pfbP6Toggle('+idx+')" style="display:flex;align-items:center;cursor:pointer;padding:8px 14px;background:'+(expanded?'var(--g50)':'#fff')+';border:1px solid var(--g200);border-radius:'+(expanded?'6px 6px 0 0':'6px')+';margin-bottom:'+(expanded?'0':'3px')+'">';
       h+='<div style="width:'+LW+'px;flex:0 0 '+LW+'px;overflow:hidden;display:flex;align-items:center;gap:5px">';
       h+='<span style="font-size:9px;color:var(--g400)">'+(expanded?'▼':'▶')+'</span>';
       h+='<div style="overflow:hidden"><div style="font-size:13px;font-weight:600;color:var(--g900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
       h+='<div style="font-size:10.5px;color:var(--g500)">'+it.qty+'</div></div>';
       h+='</div>';
       h+='<div style="flex:1;position:relative;height:26px">';
-      h+=todayLine();
       var x0=Math.max(0,pctD(ordStart)); var xp=Math.min(100,pctD(p6));
       if(xp>x0)h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:4px;top:8px;background:'+tc+';opacity:.25;border-radius:2px"></div>';
       var fx1=Math.max(0,pctD(fs)); var fx2=Math.min(100,pctD(fe));
@@ -7308,10 +7307,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       if(fx2>fx1)h+='<div style="position:absolute;left:'+fx1+'%;width:'+(fx2-fx1)+'%;height:10px;top:5px;background:'+tc+';opacity:.65;border-radius:3px"></div>';
       var px=pctD(p6);
       if(px>=0&&px<=100)h+='<div style="position:absolute;left:calc('+px+'% - 1px);top:1px;bottom:1px;width:2px;background:#dc2626;border-radius:1px;z-index:3"></div>';
-      h+='</div>';
-      h+='<div style="display:flex;align-items:center;gap:5px;padding-left:8px;flex-shrink:0">';
+      h+='<div style="position:absolute;right:0;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.92);padding-left:6px">';
       h+='<span style="font-size:9px;font-weight:600;color:'+tc+';background:'+tc+'18;padding:1px 5px;border-radius:8px">'+tl+'</span>';
       h+='<span style="font-size:11px;font-weight:700;color:#fff;background:'+p6col+';padding:2px 7px;border-radius:5px;white-space:nowrap">★ '+fmtD(p6)+'</span>';
+      h+='</div>';
       h+='</div></div>';
       if(expanded){
         h+='<div style="border:1px solid var(--g200);border-top:none;border-radius:0 0 6px 6px;padding:12px 14px 16px;margin-bottom:6px;background:#fff">';
