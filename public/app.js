@@ -7302,8 +7302,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="flex:1;position:relative;height:26px">';
       h+=todayLine();
       var x0=Math.max(0,pctD(ordStart)); var xp=Math.min(100,pctD(p6));
-      if(xp>x0)h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:10px;top:5px;background:'+tc+';opacity:.1;border-radius:3px"></div>';
+      if(xp>x0)h+='<div style="position:absolute;left:'+x0+'%;width:'+(xp-x0)+'%;height:4px;top:8px;background:'+tc+';opacity:.25;border-radius:2px"></div>';
       var fx1=Math.max(0,pctD(fs)); var fx2=Math.min(100,pctD(fe));
+      if(xp>fx2)h+='<div style="position:absolute;left:'+fx2+'%;width:'+(xp-fx2)+'%;height:2px;top:9px;background:'+tc+';opacity:.35;border-radius:0;background-image:repeating-linear-gradient(90deg,'+tc+' 0,'+tc+' 4px,transparent 4px,transparent 8px)"></div>';
       if(fx2>fx1)h+='<div style="position:absolute;left:'+fx1+'%;width:'+(fx2-fx1)+'%;height:10px;top:5px;background:'+tc+';opacity:.65;border-radius:3px"></div>';
       var px=pctD(p6);
       if(px>=0&&px<=100)h+='<div style="position:absolute;left:calc('+px+'% - 1px);top:1px;bottom:1px;width:2px;background:#dc2626;border-radius:1px;z-index:3"></div>';
