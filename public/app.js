@@ -2883,6 +2883,7 @@ charges:[
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>'
         +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:19px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*gmProj))+' below plan</div></div>'
+        +'<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:19px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*gmProj))+'</div><div style="font-size:11px;color:var(--g500)">gross profit &middot; '+gmCurr+'% of $21.6M</div></div>'
         +'</div>';
     } else if(view==='pillar'){
       var _pm={'Equipment':'Equipment','Logistics':'Logistics','Professional services':'Prof. services','Procurement':'Procurement','Pre-fab':'Prefab'};
@@ -3926,10 +3927,11 @@ charges:[
       h+='</div>';
       h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px">';
       h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Margin plan target</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+gmPlan+'%</div><div style="font-size:11px;color:var(--g500)">set at project kickoff</div></div>';
-      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' below plan</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Current gross margin</div><div style="font-size:17px;font-weight:700;color:'+gmColor+'">'+gmCurr+'%</div><div style="font-size:11px;color:var(--g500)">'+fmtBig(Math.round((gmPlan-gmCurr)/100*21640000))+' below plan</div></div>';
+      h+='<div><div style="font-size:10px;color:var(--g500);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">Enterprise contribution</div><div style="font-size:17px;font-weight:700;color:var(--charcoal)">'+fmtBig(Math.round(gmCurr/100*21640000))+'</div><div style="font-size:11px;color:var(--g500)">gross profit · '+gmCurr+'% of $21.6M</div></div>';
       
       h+='</div>';
-      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)">Tracking against budget &amp; financials — '+fmtBig(Math.round((gmPlan-gmCurr)/100*22600000))+' gap driven by crane re-rent premium on BESS. <span class="lk" onclick="go(\'billing\')">View cost breakdown</span></div>';
+      h+='<div style="font-size:11.5px;color:var(--g600);padding-top:8px;border-top:1px solid rgba(38,93,159,.12)">Tracking against budget &amp; financials — '+fmtBig(Math.round((gmPlan-gmCurr)/100*21640000))+' gap driven by crane re-rent premium on BESS. <span class="lk" onclick="go(\'billing\')">View cost breakdown</span></div>';
       h+='</div>';
     }
     mount.innerHTML=h;
