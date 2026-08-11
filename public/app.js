@@ -7888,7 +7888,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='<div style="display:flex;gap:8px">';
     h+='<button class="btn btn-ghost btn-sm" onclick="var all=document.querySelectorAll(\'[id^=ofr-]\');all.forEach(function(c){c.checked=true;})" style="font-size:11px">Select all</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="var all=document.querySelectorAll(\'[id^=ofr-]\');all.forEach(function(c){c.checked=false;})" style="font-size:11px">Clear</button>';
-    h+='<button class="btn btn-red" style="margin-left:auto" onclick="dpConfirmOffrent(\''+rowId+'\')">↓ Confirm off-rent</button>';
+    var _isV1=CURRENT!=='ns';
+    h+='<button class="btn btn-red" style="margin-left:auto" onclick="dpConfirmOffrent(\''+rowId+'\')">↓ '+(_isV1?'Send to YardHub':'Confirm off-rent')+'</button>';
     h+='</div>';
     openModal('Initiate off-rent — '+(desc||rowId),h);
   }
@@ -7896,11 +7897,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var checked=document.querySelectorAll('[id^=ofr-]:checked');
     if(!checked.length)return;
     var list=_dpRowAssets[rowId]; if(!list)return;
+    var ids=[];
     checked.forEach(function(cb){
-      var id=cb.value;
+      var id=cb.value; ids.push(id);
       for(var i=0;i<list.length;i++){if(list[i].id===id){list[i].status='offrent';break;}}
     });
-    closeModal(); renderCcDemand('equipment'); eqRefreshDrill(rowId);
+    closeModal();
+    renderCcDemand('equipment'); eqRefreshDrill(rowId);
+    if(CURRENT!=='ns'){
+      toast('Off-rent request sent to YardHub · '+ids.length+' unit'+(ids.length===1?'':'s'));
+    }
   }
   function dpSetEquipView(v){_dpEquipView=v;renderCcDemand('equipment');}
   function dpAddCustomAttr(reqId){var el=document.getElementById('dpAttrIn-'+reqId);if(!el||!el.value.trim())return;var v=el.value.trim();if(!_dpItemAttrs[reqId])_dpItemAttrs[reqId]=[];if(_dpItemAttrs[reqId].indexOf(v)<0)_dpItemAttrs[reqId].push(v);el.value='';renderCcDemand('equipment');}
