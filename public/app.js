@@ -1493,13 +1493,13 @@
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Tower crane mobilization'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane mobilization'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
-        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
-        {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
-        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072'}
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070',sa:1,ea:1},
+        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested',sa:6,ea:6},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
+        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
+        {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested',sa:4,ea:4},
+        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
   var dpActive=null, dpAddPk=null;
@@ -1555,54 +1555,61 @@
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      // v1: GC/GR services + delivery tracker at bottom (no tab switching)
+      // v1: demand plan list/gantt toggle + delivery tracker at bottom
+      var LOG_ROWS_V1=DP['logistics'].rows||[];
+      var logToneMap={'Complete':'offrent','Active':'onrent','Scheduled':'projected','Requested':'submitted','Pending':'submitted'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
-      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">GC/GR Services</span>';
+      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_ROWS_V1.length+' line'+(LOG_ROWS_V1.length===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='</div>';
-      var GCGR_MO=EQ_MONTHS.slice(1,11);
-      var GN=GCGR_MO.length;
-      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
-      var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
       if(gcgrView==='gantt'){
+        var GCGR_MO=EQ_MONTHS.slice(1,11);
+        var GN=GCGR_MO.length;
+        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
         var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         h+='<div class="gantt">';
-        h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Service / vendor</div><div class="gh-months">'+gmh+'</div></div>';
+        h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Move / event</div><div class="gh-months">'+gmh+'</div></div>';
         h+='<div class="g-body" style="position:relative">';
         h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var left=(r.sa/GN)*100; var width=((r.ea-r.sa+1)/GN)*100;
-          var stt=gcgrToneMap[r.status]||'projected';
+        LOG_ROWS_V1.forEach(function(r){
+          var stt=logToneMap[r.state]||'projected';
+          var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
+          var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
           h+='<div class="grow"><div class="g-label" style="width:200px;min-width:200px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
-          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span>';
-          h+='<span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span>';
+          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.move+'</span>';
+          h+='<span style="font-size:10px;color:var(--g400)">'+r.type+'</span>';
           h+='</div>';
           h+='<div class="g-track" style="background-image:'+gGrid+'">';
-          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.vendor+' · '+r.monthly+'">'+r.monthly+'</div>';
+          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.when+' · '+r.gate+'">'+r.when+'</div>';
           h+='</div></div>';
         });
         h+='</div></div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ’'+EQ_TODAY.slice(2,4)+'</span></div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var gcgt='1fr 140px 120px 130px 110px 90px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default">';
-          h+='<div>'+r.svc+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.start+' – '+r.end+'</div>';
-          h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div>';
-          h+='<div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div>';
+        var pmGt='1fr 126px 150px 124px 118px 88px 114px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+        h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
+        LOG_ROWS_V1.forEach(function(r,pmIdx){
+          var tone=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+          h+='<div>'+(r.move||'—')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+          h+='<div>'+(r.type||'—')+'</div>';
+          h+='<div>'+(r.when||'—')+'</div>';
+          h+='<div>'+(r.gate||'—')+'</div>';
+          h+='<div>'+(r.src||'—')+'</div>';
+          var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
+          h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
           h+='</div>';
+          h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
         });
         h+='</div>';
       }
-      // Delivery tracker — always visible below GC/GR services
+      // Delivery tracker — always visible below demand plan
       var dlvCols='1fr 120px 140px 110px 100px';
       var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
       h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
@@ -1627,7 +1634,7 @@
       h+='</div>';
     }
     var LOG_ROWS=DP['logistics'].rows;
-    if(LOG_ROWS&&LOG_ROWS.length){
+    if(ns&&LOG_ROWS&&LOG_ROWS.length){
       h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
@@ -9424,13 +9431,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Crane pick \u2014 module racking'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane pick'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070'},
-        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested'},
-        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested'},
-        {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested'},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested'},
-        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072'}
+        {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070',sa:1,ea:1},
+        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested',sa:6,ea:6},
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Scheduled',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
+        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
+        {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested',sa:4,ea:4},
+        {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
   var dpActive=null, dpAddPk=null;
@@ -9486,54 +9493,61 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       tabs.forEach(function(t){ h+='<button class="log-tab'+(logPlanView===t[0]?' active':'')+'" onclick="setLogPlanView(\''+t[0]+'\')">'+t[1]+'</button>'; });
       h+='</div>';
     } else {
-      // v1: GC/GR services + delivery tracker at bottom (no tab switching)
+      // v1: demand plan list/gantt toggle + delivery tracker at bottom
+      var LOG_ROWS_V1=DP['logistics'].rows||[];
+      var logToneMap={'Complete':'offrent','Active':'onrent','Scheduled':'projected','Requested':'submitted','Pending':'submitted'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
-      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">GC/GR Services</span>';
+      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_ROWS_V1.length+' line'+(LOG_ROWS_V1.length===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='</div>';
-      var GCGR_MO=EQ_MONTHS.slice(1,11);
-      var GN=GCGR_MO.length;
-      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
-      var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
       if(gcgrView==='gantt'){
+        var GCGR_MO=EQ_MONTHS.slice(1,11);
+        var GN=GCGR_MO.length;
+        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
         var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         h+='<div class="gantt">';
-        h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Service / vendor</div><div class="gh-months">'+gmh+'</div></div>';
+        h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Move / event</div><div class="gh-months">'+gmh+'</div></div>';
         h+='<div class="g-body" style="position:relative">';
         h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          var left=(r.sa/GN)*100; var width=((r.ea-r.sa+1)/GN)*100;
-          var stt=gcgrToneMap[r.status]||'projected';
+        LOG_ROWS_V1.forEach(function(r){
+          var stt=logToneMap[r.state]||'projected';
+          var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
+          var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
           h+='<div class="grow"><div class="g-label" style="width:200px;min-width:200px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
-          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span>';
-          h+='<span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span>';
+          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.move+'</span>';
+          h+='<span style="font-size:10px;color:var(--g400)">'+r.type+'</span>';
           h+='</div>';
           h+='<div class="g-track" style="background-image:'+gGrid+'">';
-          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.vendor+' · '+r.monthly+'">'+r.monthly+'</div>';
+          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.when+' · '+r.gate+'">'+r.when+'</div>';
           h+='</div></div>';
         });
         h+='</div></div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today · '+eqMonthLabel(EQ_TODAY)+' ’'+EQ_TODAY.slice(2,4)+'</span></div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var gcgt='1fr 140px 120px 130px 110px 90px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-        GCGR_SERVICES.forEach(function(r){
-          h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default">';
-          h+='<div>'+r.svc+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.start+' – '+r.end+'</div>';
-          h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div>';
-          h+='<div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div>';
+        var pmGt='1fr 126px 150px 124px 118px 88px 114px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
+        h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
+        LOG_ROWS_V1.forEach(function(r,pmIdx){
+          var tone=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
+          h+='<div>'+(r.move||'—')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
+          h+='<div>'+(r.type||'—')+'</div>';
+          h+='<div>'+(r.when||'—')+'</div>';
+          h+='<div>'+(r.gate||'—')+'</div>';
+          h+='<div>'+(r.src||'—')+'</div>';
+          var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
+          h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
           h+='</div>';
+          h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
         });
         h+='</div>';
       }
-      // Delivery tracker — always visible below GC/GR services
+      // Delivery tracker — always visible below demand plan
       var dlvCols='1fr 120px 140px 110px 100px';
       var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
       h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
@@ -9558,7 +9572,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
     }
     var LOG_ROWS=DP['logistics'].rows;
-    if(LOG_ROWS&&LOG_ROWS.length){
+    if(ns&&LOG_ROWS&&LOG_ROWS.length){
       h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
