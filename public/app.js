@@ -391,6 +391,60 @@
     '</div>';
     openModal(p.name, body+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();openDetail(\''+pid+'\',\'catalog\')">Add to request →</button></div>');
   }
+  var BUNDLES={
+    'crane40'   :[{id:'rigging',  name:'Rigging & lift hardware',    why:'Required for every crane lift — slings, shackles, spreader bar'},
+                  {id:'tele10',   name:'Telehandler — 10K',          why:'Material staging & positioning around the crane'}],
+    'tele10'    :[{id:'rigging',  name:'Rigging & lift hardware',    why:'Lift straps & fork attachments needed for most picks'}],
+    'excav20'   :[{id:'compactor',name:'Vibratory Compactor — 84”',  why:'Compact backfill immediately after excavation'},
+                  {id:'dozer-d6', name:'Bulldozer — D6',             why:'Rough grade concurrent with dig'}],
+    'dozer-d6'  :[{id:'motorgrader',name:'Motor Grader — 140M',     why:'Finish grade after dozer pass'},
+                  {id:'compactor',  name:'Vibratory Compactor — 84”',why:'Compaction follow-up on graded subgrade'}],
+    'compactor' :[{id:'motorgrader',name:'Motor Grader — 140M',     why:'Subgrade prep before compaction pass'}],
+    'motorgrader':[{id:'compactor',name:'Vibratory Compactor — 84”', why:'Always paired for grading + compaction cycle'}],
+    'scissor32' :[{id:'boom60',   name:'Boom Lift — 60 ft',          why:'Overhead & angled reach the scissor can’t access'}],
+    'boom60'    :[{id:'scissor32',name:'Scissor Lift — 32 ft',       why:'Flat-surface work alongside boom operations'}],
+    'gen45'     :[{id:'lighttower',name:'Light Tower',               why:'Pair for night-shift coverage at the same location'},
+                  {id:'aircomp',  name:'Air Compressor — 185 CFM',   why:'Common power + air combo for tool stations'}],
+    'lighttower':[{id:'gen45',    name:'Towable Generator — 45kW',   why:'Dedicated power source for the tower'}],
+    'aircomp'   :[{id:'lighttower',name:'Light Tower',               why:'Night-shift tool stations need lighting'}],
+    'headwall'  :[{id:'piperack', name:'Prefab Pipe Rack Module',    why:'Same MEP scope — installed together'},
+                  {id:'crane40',  name:'Hydraulic Crane — 40T',      why:'Required for headwall placement & setting'}],
+    'piperack'  :[{id:'headwall', name:'L2 Headwall Assembly',       why:'Delivered and set as a matched pair'},
+                  {id:'tele10',   name:'Telehandler — 10K',          why:'Positioning during rack installation'}],
+    'restroom'  :[{id:'lighttower',name:'Light Tower',               why:'Site welfare — restroom stations need lighting'}],
+    'rigging'   :[{id:'crane40',  name:'Hydraulic Crane — 40T',      why:'Rigging is required for every crane lift'}],
+    'ppe'       :[{id:'fasteners',name:'Structural fasteners — lot', why:'Co-ordered for the same crew mobilization'}],
+    'fasteners' :[{id:'ppe',      name:'PPE kit (crew of 10)',       why:'Safety kits for the crew installing the fasteners'}]
+  };
+  function quickAddBundle(id){
+    var p=byId(id); if(!p) return;
+    var sg=CC_SUGGEST[id]||CC_SUGGEST_PIL[p.pillar]||{};
+    var cc=sg.val||'';
+    var from='2026-08-04',to='2026-08-29',days=25;
+    var total=p.mrate?p.mrate*days/30:(p.unitPrice||p.est||null);
+    var qtyText=p.mode==='rental'?fmtDate(from)+'–'+fmtDate(to)+' · '+days+'d':'1 unit'+(p.price==='Quote'?' · quote':'');
+    state.cart.push({cid:++CID,pid:p.id,name:p.name,icon:p.icon,pillarKey:p.pillar,pcat:p.pcat,mode:p.mode==='rental'?'rental':(p.price==='Quote'?'quote':'onetime'),costCode:cc,qtyText:qtyText,total:total,plan:p.plan||null,isQuote:p.price==='Quote'||null});
+    renderCart(); flashCount();
+    toast(p.name+' added to request');
+  }
+  function _setBundleHint(pid){
+    var ns=CURRENT==='ns';
+    var h=document.getElementById('nsBundleHint'),r=document.getElementById('nsBundleRows');
+    if(!h||!r){return;}
+    var items=pid&&BUNDLES[pid]||[];
+    if(!ns||!items.length){h.style.display='none';return;}
+    var icons={crane:'<path d="M12 2v6M8 4l4 4 4-4M3 20h18M5 20V10l7-4 7 4v10"/>',lift:'<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',material:'<path d="M5 8h14M5 8a2 2 0 01-2-2V6M5 8l-2 9a2 2 0 002 2h14a2 2 0 002-2l-2-9M19 8a2 2 0 002-2V6M9 3h6"/>',earth:'<path d="M3 6h18M7 12h10M11 18h2M5 3l2 18M19 3l-2 18"/>',power:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>',access:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>',prefab:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v5M9.5 14.5h5"/>',proc:'<path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>'};
+    r.innerHTML=items.map(function(b,i){
+      var ic=icons[byId(b.id)&&byId(b.id).icon||'box']||icons.box;
+      return '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px'+(i?';border-top:1px solid var(--g100)':'')+'">'
+        +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;flex-shrink:0;color:var(--g400)">'+ic+'</svg>'
+        +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--g900)">'+b.name+'</div>'
+        +'<div style="font-size:11px;color:var(--g500);margin-top:1px">'+b.why+'</div></div>'
+        +'<button onclick="quickAddBundle(''+b.id+'')" style="flex-shrink:0;font-size:11px;font-weight:600;color:var(--blue,#2563eb);background:none;border:1px solid var(--blue,#2563eb);border-radius:5px;padding:4px 10px;cursor:pointer">+ Add</button>'
+        +'</div>';
+    }).join('');
+    h.style.display='block';
+  }
   var CC_SUGGEST={
     'crane40'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ref:'ORD-3071'},
     'tele10'    :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ref:'ORD-3085'},
@@ -459,6 +513,7 @@
     document.getElementById('fQtyOnly').value=1;
     recalc();
     _setCcSugg(pid,p?p.pillar:null);
+    _setBundleHint(pid);
     showCompose();
   }
   function inferPillar(term){
@@ -489,6 +544,7 @@
     setTag('tagPillar',false); setTag('tagDesc',false);
     recalc();
     _setCcSugg(null,cfg.custom?cfg.custom.toLowerCase().replace(/\s+/g,''):null);
+    _setBundleHint(null);
     showCompose();
   }
   function parseReq(){
