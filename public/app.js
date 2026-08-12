@@ -784,7 +784,7 @@
   }
 
   /* ═══════════ compose show/hide ═══════════ */
-  function showCompose(){document.getElementById('browseState').classList.add('hide');document.getElementById('composeState').classList.add('active');window.scrollTo(0,0);}
+  function showCompose(){document.getElementById('browseState').classList.add('hide');document.getElementById('composeState').classList.add('active');window.scrollTo(0,0);var _nsH=document.getElementById('nsAiCcHint');if(_nsH)_nsH.style.display=CURRENT==='ns'?'block':'none';}
   function backToCatalog(){document.getElementById('composeState').classList.remove('active');document.getElementById('browseState').classList.remove('hide');var _u=document.getElementById('understood');if(_u){_u.classList.add('hide');_u.innerHTML='';}}
   function optExists(sel,val){var o=document.getElementById(sel).options;for(var i=0;i<o.length;i++){if(o[i].value===val)return true;}return false;}
   function lastOpt(sel){var o=document.getElementById(sel).options;return o[o.length-1].value;}
