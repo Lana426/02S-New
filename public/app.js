@@ -440,7 +440,7 @@
         +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;flex-shrink:0;color:var(--g400)">'+ic+'</svg>'
         +'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:var(--g900)">'+b.name+'</div>'
         +'<div style="font-size:11px;color:var(--g500);margin-top:1px">'+b.why+'</div></div>'
-        +'<button onclick="quickAddBundle(''+b.id+'')" style="flex-shrink:0;font-size:11px;font-weight:600;color:var(--blue,#2563eb);background:none;border:1px solid var(--blue,#2563eb);border-radius:5px;padding:4px 10px;cursor:pointer">+ Add</button>'
+        +'<button onclick="quickAddBundle(\''+b.id+'\')" style="flex-shrink:0;font-size:11px;font-weight:600;color:var(--blue,#2563eb);background:none;border:1px solid var(--blue,#2563eb);border-radius:5px;padding:4px 10px;cursor:pointer">+ Add</button>'
         +'</div>';
     }).join('');
     h.style.display='block';
