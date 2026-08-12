@@ -1605,22 +1605,22 @@
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9,attachments:[{type:'Quotes',name:'Waste management service agreement',ref:'SVC-GCR-001',status:'Executed'},{type:'Safety',name:'OSHA waste handling compliance log',ref:'OSHA-WM-001',status:'Current'}]},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7,attachments:[{type:'Quotes',name:'Sanitation service agreement',ref:'SVC-GCR-002',status:'Executed'}]},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8,attachments:[{type:'Quotes',name:'Modular office lease agreement',ref:'SVC-GCR-003',status:'Executed'},{type:'Safety',name:'Trailer placement & egress plan',ref:'SITE-TRL-001',status:'Approved'}]},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Site security plan — Hercules Solar',ref:'SEC-HRC-001',status:'Approved'},{type:'Safety',name:'Access control protocol',ref:'SEC-HRC-002',status:'Current'},{type:'Quotes',name:'Security services contract',ref:'SVC-GCR-004',status:'Executed'}]},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5,attachments:[{type:'Engineering',name:'Dewatering plan — site drainage',ref:'DEW-HRC-001',status:'Approved'}]},
     {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6}
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6,attachments:[{type:'Safety',name:'Environmental compliance — concrete washout',ref:'ENV-CW-001',status:'Approved'}]}
   ];
   var TRNWH_SERVICES=[
-    {svc:'Flatbed trucking — recurring',vendor:'Ryder Logistics',start:'May 1',end:'Jan 31, 2027',cost:'0400-0100-0000-0001',monthly:'$8,500',status:'Active',sa:1,ea:9},
-    {svc:'Crane rental — tower & mobile',vendor:'Maxim Crane Works',start:'Aug 1',end:'Sep 30',cost:'0100-5100-0000-0001',monthly:'$28,000',status:'Scheduled',sa:4,ea:5},
-    {svc:'Staging area — laydown Yards A–C',vendor:'Self-managed',start:'Apr 15',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$0',status:'Active',sa:0,ea:8},
-    {svc:'Pre-delivery warehouse storage',vendor:'ProLogis — Mesa',start:'Jul 1',end:'Jan 31, 2027',cost:'0400-0200-0000-0001',monthly:'$3,600',status:'Scheduled',sa:3,ea:9},
+    {svc:'Flatbed trucking — recurring',vendor:'Ryder Logistics',start:'May 1',end:'Jan 31, 2027',cost:'0400-0100-0000-0001',monthly:'$8,500',status:'Active',sa:1,ea:9,attachments:[{type:'Quotes',name:'Transportation services agreement',ref:'TRN-001',status:'Executed'},{type:'Shipping',name:'DOT carrier compliance certificate',ref:'DOT-RYD-001',status:'Current'}]},
+    {svc:'Crane rental — tower & mobile',vendor:'Maxim Crane Works',start:'Aug 1',end:'Sep 30',cost:'0100-5100-0000-0001',monthly:'$28,000',status:'Scheduled',sa:4,ea:5,attachments:[{type:'Engineering',name:'Lift plan — tower & mobile crane ops',ref:'LP-MAX-001',status:'Approved'},{type:'Safety',name:'Crane inspection certification',ref:'INSP-MAX-001',status:'Current'},{type:'Quotes',name:'Crane rental agreement',ref:'TRN-002',status:'Executed'}]},
+    {svc:'Staging area — laydown Yards A–C',vendor:'Self-managed',start:'Apr 15',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$0',status:'Active',sa:0,ea:8,attachments:[{type:'Engineering',name:'Site logistics & laydown plan',ref:'LAY-HRC-001',status:'Approved'}]},
+    {svc:'Pre-delivery warehouse storage',vendor:'ProLogis — Mesa',start:'Jul 1',end:'Jan 31, 2027',cost:'0400-0200-0000-0001',monthly:'$3,600',status:'Scheduled',sa:3,ea:9,attachments:[{type:'Quotes',name:'Warehouse storage agreement',ref:'TRN-003',status:'Executed'}]},
     {svc:'Secure laydown — BESS equipment',vendor:'Allied Universal',start:'Oct 1',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$4,200',status:'Scheduled',sa:6,ea:8},
-    {svc:'Hazmat transport — BESS cells',vendor:'Clean Earth Capital',start:'Oct 1',end:'Nov 30',cost:'0400-0300-0000-0001',monthly:'$12,500',status:'Pending',sa:6,ea:7}
+    {svc:'Hazmat transport — BESS cells',vendor:'Clean Earth Capital',start:'Oct 1',end:'Nov 30',cost:'0400-0300-0000-0001',monthly:'$12,500',status:'Pending',sa:6,ea:7,attachments:[{type:'Safety',name:'DOT hazmat transport permit — BESS cells',ref:'HAZ-BESS-001',status:'Approved'},{type:'Safety',name:'Emergency response plan — BESS transport',ref:'ERP-BESS-001',status:'Approved'}]}
   ];
   var MOBDEMOB_EVENTS=[
     {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'0100-5100-0000-0001',notes:'Self-erect · Laydown A · 5 AM window'},
@@ -1719,9 +1719,10 @@
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
           var gcgt='1fr 140px 120px 130px 110px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-          GCGR_SERVICES.forEach(function(r){
-            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div></div>';
+          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
+          GCGR_SERVICES.forEach(function(r,_gi){
+            var _ga=r.attachments||[];
+            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ga.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(GCGR_SERVICES,'+_gi+')">'+_ga.length+' doc'+(_ga.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div></div>';
           });
           h+='</div>';
         }
@@ -1734,10 +1735,11 @@
           });
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Pending</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
-          var twgt='1fr 140px 120px 130px 110px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-          TRNWH_SERVICES.forEach(function(r){
-            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Pending'?'warn':'info')+'">'+r.status+'</span></div></div>';
+          var twgt='1fr 140px 120px 130px 90px 88px 90px';
+          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
+          TRNWH_SERVICES.forEach(function(r,_ti){
+            var _ta=r.attachments||[];
+            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ta.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(TRNWH_SERVICES,'+_ti+')">'+_ta.length+' doc'+(_ta.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Pending'?'warn':'info')+'">'+r.status+'</span></div></div>';
           });
           h+='</div>';
         }
@@ -1836,30 +1838,6 @@
         h+='</div>';
       });
       h+='</div>';
-    }
-    if(ns){
-      var _logCCns=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      if(_logCCns.length){
-        h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
-        h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Logistics moves</span>';
-        h+='<span style="font-size:11.5px;color:var(--g400)">'+_logCCns.length+' line'+(_logCCns.length===1?'':'s')+'</span>';
-        h+='</div>';
-        var _lgC2='1fr 80px 110px 120px 90px 88px 90px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_lgC2+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
-        _logCCns.forEach(function(r,_ri){
-          var _tn=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+_lgC2+';cursor:default">';
-          h+='<div>'+r.item+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
-          var _la=r.attachments||[];h+='<div>'+(_la.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+_ri+')">'+ _la.length+' doc'+(_la.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
-          h+='<div><span class="tag '+_tn+'">'+r.state+'</span></div>';
-          h+='</div>';
-        });
-        h+='</div>';
-      }
     }
     mount.innerHTML=h;
   }
@@ -7970,6 +7948,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var row=rows&&rows[idx]; if(!row)return;
     openModal('Documentation · '+row.item, attachmentsHTML(row.attachments||[]));
   }
+  function svcDocModal(list,idx){var r=list&&list[idx];if(!r)return;openModal('Documents \u00b7 '+r.svc,attachmentsHTML(r.attachments||[]));}
   function logCcDocModal(proj,idx){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;var row=rows&&rows[idx];if(!row)return;openModal('Documents \u00b7 '+row.item,attachmentsHTML(row.attachments||[]));}
   function ccPsDocModal(ri){var row=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri];if(!row)return;openModal('Documents \u00b7 '+row.item,attachmentsHTML(row.attachments||[]));}
   function portalDpDocModal(pk,rowIdx){
@@ -9684,22 +9663,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   var gcgrView='table';
   var deliveryFilter='active';
   var GCGR_SERVICES=[
-    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9},
-    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7},
-    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8},
-    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9},
-    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5},
+    {svc:'Trash hauling & dumpster service',vendor:'Republic Services',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$3,200',status:'Active',sa:1,ea:9,attachments:[{type:'Quotes',name:'Waste management service agreement',ref:'SVC-GCR-001',status:'Executed'},{type:'Safety',name:'OSHA waste handling compliance log',ref:'OSHA-WM-001',status:'Current'}]},
+    {svc:'Portable restrooms',vendor:'United Site Services',start:'May 1',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,800',status:'Active',sa:1,ea:7,attachments:[{type:'Quotes',name:'Sanitation service agreement',ref:'SVC-GCR-002',status:'Executed'}]},
+    {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8,attachments:[{type:'Quotes',name:'Modular office lease agreement',ref:'SVC-GCR-003',status:'Executed'},{type:'Safety',name:'Trailer placement & egress plan',ref:'SITE-TRL-001',status:'Approved'}]},
+    {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Site security plan — Hercules Solar',ref:'SEC-HRC-001',status:'Approved'},{type:'Safety',name:'Access control protocol',ref:'SEC-HRC-002',status:'Current'},{type:'Quotes',name:'Security services contract',ref:'SVC-GCR-004',status:'Executed'}]},
+    {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Scheduled',sa:2,ea:5,attachments:[{type:'Engineering',name:'Dewatering plan — site drainage',ref:'DEW-HRC-001',status:'Approved'}]},
     {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9},
-    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6}
+    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
+    {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Scheduled',sa:2,ea:6,attachments:[{type:'Safety',name:'Environmental compliance — concrete washout',ref:'ENV-CW-001',status:'Approved'}]}
   ];
   var TRNWH_SERVICES=[
-    {svc:'Flatbed trucking — recurring',vendor:'Ryder Logistics',start:'May 1',end:'Jan 31, 2027',cost:'0400-0100-0000-0001',monthly:'$8,500',status:'Active',sa:1,ea:9},
-    {svc:'Crane rental — tower & mobile',vendor:'Maxim Crane Works',start:'Aug 1',end:'Sep 30',cost:'0100-5100-0000-0001',monthly:'$28,000',status:'Scheduled',sa:4,ea:5},
-    {svc:'Staging area — laydown Yards A–C',vendor:'Self-managed',start:'Apr 15',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$0',status:'Active',sa:0,ea:8},
-    {svc:'Pre-delivery warehouse storage',vendor:'ProLogis — Mesa',start:'Jul 1',end:'Jan 31, 2027',cost:'0400-0200-0000-0001',monthly:'$3,600',status:'Scheduled',sa:3,ea:9},
+    {svc:'Flatbed trucking — recurring',vendor:'Ryder Logistics',start:'May 1',end:'Jan 31, 2027',cost:'0400-0100-0000-0001',monthly:'$8,500',status:'Active',sa:1,ea:9,attachments:[{type:'Quotes',name:'Transportation services agreement',ref:'TRN-001',status:'Executed'},{type:'Shipping',name:'DOT carrier compliance certificate',ref:'DOT-RYD-001',status:'Current'}]},
+    {svc:'Crane rental — tower & mobile',vendor:'Maxim Crane Works',start:'Aug 1',end:'Sep 30',cost:'0100-5100-0000-0001',monthly:'$28,000',status:'Scheduled',sa:4,ea:5,attachments:[{type:'Engineering',name:'Lift plan — tower & mobile crane ops',ref:'LP-MAX-001',status:'Approved'},{type:'Safety',name:'Crane inspection certification',ref:'INSP-MAX-001',status:'Current'},{type:'Quotes',name:'Crane rental agreement',ref:'TRN-002',status:'Executed'}]},
+    {svc:'Staging area — laydown Yards A–C',vendor:'Self-managed',start:'Apr 15',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$0',status:'Active',sa:0,ea:8,attachments:[{type:'Engineering',name:'Site logistics & laydown plan',ref:'LAY-HRC-001',status:'Approved'}]},
+    {svc:'Pre-delivery warehouse storage',vendor:'ProLogis — Mesa',start:'Jul 1',end:'Jan 31, 2027',cost:'0400-0200-0000-0001',monthly:'$3,600',status:'Scheduled',sa:3,ea:9,attachments:[{type:'Quotes',name:'Warehouse storage agreement',ref:'TRN-003',status:'Executed'}]},
     {svc:'Secure laydown — BESS equipment',vendor:'Allied Universal',start:'Oct 1',end:'Dec 31',cost:'0100-0100-0000-0001',monthly:'$4,200',status:'Scheduled',sa:6,ea:8},
-    {svc:'Hazmat transport — BESS cells',vendor:'Clean Earth Capital',start:'Oct 1',end:'Nov 30',cost:'0400-0300-0000-0001',monthly:'$12,500',status:'Pending',sa:6,ea:7}
+    {svc:'Hazmat transport — BESS cells',vendor:'Clean Earth Capital',start:'Oct 1',end:'Nov 30',cost:'0400-0300-0000-0001',monthly:'$12,500',status:'Pending',sa:6,ea:7,attachments:[{type:'Safety',name:'DOT hazmat transport permit — BESS cells',ref:'HAZ-BESS-001',status:'Approved'},{type:'Safety',name:'Emergency response plan — BESS transport',ref:'ERP-BESS-001',status:'Approved'}]}
   ];
   var MOBDEMOB_EVENTS=[
     {evt:'Tower crane mobilization',vendor:'Maxim Crane Works',needby:'Aug 3',type:'Mob',cost:'0100-5100-0000-0001',notes:'Self-erect · Laydown A · 5 AM window'},
@@ -9798,9 +9777,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
           var gcgt='1fr 140px 120px 130px 110px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-          GCGR_SERVICES.forEach(function(r){
-            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div></div>';
+          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
+          GCGR_SERVICES.forEach(function(r,_gi){
+            var _ga=r.attachments||[];
+            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ga.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(GCGR_SERVICES,'+_gi+')">'+_ga.length+' doc'+(_ga.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Completed'?'neu':'info')+'">'+r.status+'</span></div></div>';
           });
           h+='</div>';
         }
@@ -9813,10 +9793,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           });
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Pending</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
-          var twgt='1fr 140px 120px 130px 110px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span>Monthly</span><span>Status</span></div>';
-          TRNWH_SERVICES.forEach(function(r){
-            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700)">'+r.monthly+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Pending'?'warn':'info')+'">'+r.status+'</span></div></div>';
+          var twgt='1fr 140px 120px 130px 90px 88px 90px';
+          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
+          TRNWH_SERVICES.forEach(function(r,_ti){
+            var _ta=r.attachments||[];
+            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:default"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ta.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(TRNWH_SERVICES,'+_ti+')">'+_ta.length+' doc'+(_ta.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+(r.status==='Active'?'ok':r.status==='Pending'?'warn':'info')+'">'+r.status+'</span></div></div>';
           });
           h+='</div>';
         }
@@ -9915,30 +9896,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
       });
       h+='</div>';
-    }
-    if(ns){
-      var _logCCns=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      if(_logCCns.length){
-        h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
-        h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Logistics moves</span>';
-        h+='<span style="font-size:11.5px;color:var(--g400)">'+_logCCns.length+' line'+(_logCCns.length===1?'':'s')+'</span>';
-        h+='</div>';
-        var _lgC2='1fr 80px 110px 120px 90px 88px 90px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_lgC2+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
-        _logCCns.forEach(function(r,_ri){
-          var _tn=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+_lgC2+';cursor:default">';
-          h+='<div>'+r.item+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
-          var _la=r.attachments||[];h+='<div>'+(_la.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+_ri+')">'+ _la.length+' doc'+(_la.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
-          h+='<div><span class="tag '+_tn+'">'+r.state+'</span></div>';
-          h+='</div>';
-        });
-        h+='</div>';
-      }
     }
     mount.innerHTML=h;
   }
