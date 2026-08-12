@@ -6169,7 +6169,7 @@ charges:[
     var critN=ranked.filter(function(x){return x.ns.float===0;}).length;
     var s2pN=ranked.filter(function(x){return x.ns.sys==='S2P';}).length;
     h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:14px;color:#fff">';
-    h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:5px">'+critN+' task'+(critN===1?'':'s')+' on the critical path to November energization · '+s2pN+' S2P actions ready to execute</div>';
+    h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:5px">'+critN+' task'+(critN===1?'':'s')+' blocking the November grid commissioning deadline · '+s2pN+' S2P actions ready to execute</div>';
     h+='<div style="font-size:11px;opacity:.65;margin-bottom:10px">Ranked by schedule float · margin impact · vendor window. Tasks with an execute button can be actioned directly once source systems are connected.</div>';
     h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
     [{ic:'<path d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',label:'Schedule float'},{ic:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',label:'Margin impact'},{ic:'<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M9 2h6v4H9z"/>',label:'Vendor window'}].forEach(function(f){
