@@ -9,6 +9,7 @@
     document.head.appendChild(_s);
   })();
   function toggle(id){document.getElementById(id).classList.toggle('open')}
+  function gasToggle(el){var id=el.getAttribute('data-panel');var pan=document.getElementById(id);if(pan)pan.classList.toggle('open');}
   function svg(inner,w){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.5)+'">'+inner+'</svg>';}
 
   /* ═══════════ DATA ═══════════ */
@@ -1015,7 +1016,7 @@
         var _gRO=stt==='offrent';
         var _onRE=_gRA.filter(function(a){return a.status!=='offrent';}).length;
         var _offRE=_gRA.length-_onRE;
-        var _hasAss=locked||stt==='draft';
+        var _hasAss=stt==='onrent'||stt==='offrent'||stt==='draft'||stt==='pending'||stt==='submitted';
         rows+='<div class="gas-row-wrap">';
         rows+='<div class="grow" style="cursor:'+(_hasAss?'pointer':'default')+'"'+(_hasAss?' data-panel="'+_panIdEq+'" onclick="gasToggle(this)"':'')+'>'
           +'<div class="g-label">'+l.desc+'<span class="gqty">\u00d7'+l.qty+'</span>'
@@ -1026,7 +1027,7 @@
           +'</div>'
           +'</div>';
         if(_hasAss){
-          rows+='<div id="'+_panIdEq+'" class="gas-panel">';
+          rows+='<div id="'+_panIdEq+'" class="gas-panel open">';
           rows+='<div class="gas-panel-hd">';
           if(_gRA.length){
             var _portLbl=stt==='draft'?' allocated':' on-rent';if(_onRE>0)rows+='<span class="gas-badge gas-badge-onrent">\u25cf '+_onRE+_portLbl+'</span>';
@@ -1834,7 +1835,7 @@
       h+='</div>';
     }
     var LOG_ROWS=DP['logistics'].rows;
-    if(ns&&LOG_ROWS&&LOG_ROWS.length){
+    if(LOG_ROWS&&LOG_ROWS.length){
       h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
@@ -9904,7 +9905,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div>';
     }
     var LOG_ROWS=DP['logistics'].rows;
-    if(ns&&LOG_ROWS&&LOG_ROWS.length){
+    if(LOG_ROWS&&LOG_ROWS.length){
       h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
       h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
