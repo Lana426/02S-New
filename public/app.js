@@ -1718,7 +1718,7 @@
           });
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
-          var gcgt='1fr 140px 120px 130px 110px 90px';
+          var gcgt='1fr 140px 120px 130px 110px 88px 90px';
           h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
           GCGR_SERVICES.forEach(function(r,_gi){
             var _ga=r.attachments||[];
@@ -1752,7 +1752,7 @@
       h+='<span style="font-size:11.5px;color:var(--g400)">Outstanding orders across Hercules</span>';
       h+='</div>';
       h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
-      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+' onclick="setDeliveryFilter(\''+f[1]+'\')">'+ f[0]+'</button>';});
+      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+ f[0]+'</button>';});
       h+='</div></div></div>';
       var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
@@ -9761,7 +9761,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           });
           h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
         } else {
-          var gcgt='1fr 140px 120px 130px 110px 90px';
+          var gcgt='1fr 140px 120px 130px 110px 88px 90px';
           h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
           GCGR_SERVICES.forEach(function(r,_gi){
             var _ga=r.attachments||[];
@@ -9795,7 +9795,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span style="font-size:11.5px;color:var(--g400)">Outstanding orders across Hercules</span>';
       h+='</div>';
       h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
-      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+' onclick="setDeliveryFilter(\''+f[1]+'\')">'+ f[0]+'</button>';});
+      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+ f[0]+'</button>';});
       h+='</div></div></div>';
       var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
