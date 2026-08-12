@@ -1650,7 +1650,7 @@
     if(logPlanView==='mobdemob') logPlanView='gcgr';
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     // delivery tab enabled for v1
-    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span></div></div></div>';
     if(ns){
       // NS enhanced: scheduling intelligence + 3-tab view
       var NS_INTEL=[
@@ -1868,7 +1868,7 @@
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
-  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -1926,7 +1926,7 @@ function renderProfServicesDP(){
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
-    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
     h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
@@ -2007,20 +2007,20 @@ function renderProfServicesDP(){
     _tog('sec4','hide',!ns);
     _tog(document.querySelector('.lookV1'),'hide',ns);
     _tog(document.querySelector('.lookNS'),'hide',!ns);
-    document.getElementById('verChip').innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    document.getElementById('verChip').innerHTML='';
     ['sec1','sec2','sec3','sec4'].forEach(function(s){document.getElementById(s).classList.remove('open')});
     // browse: copilot is NS-only; refresh an open interstitial for the new version
     _tog('copilotWrap','hide',!ns);
     var _uds=document.getElementById('understood');
     if(_uds && !_uds.classList.contains('hide') && document.getElementById('screen-order').classList.contains('active') && document.getElementById('askInput').value.trim()){ ask02S(); }
     if(ns) renderCopilot();
-    _e=document.getElementById('verChipOrder'); if(_e)_e.innerHTML=ns?'North Star &mdash; vision':'V1 &mdash; standard';
-    var vco2=document.getElementById('verChipOrders'); if(vco2) vco2.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    _e=document.getElementById('verChipOrder'); if(_e)_e.innerHTML='';
+    var vco2=document.getElementById('verChipOrders'); if(vco2) vco2.innerHTML='';
     // billing & budget
-    var vcb=document.getElementById('verChipBilling'); if(vcb) vcb.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    var vcb=document.getElementById('verChipBilling'); if(vcb) vcb.innerHTML='';
     var psub=document.getElementById('pendSub'); if(psub) psub.textContent = ns?'ranked by risk · 02S flags anomalies before you approve':'act before the 10-day window closes';
-    var vcp=document.getElementById('verChipProfile'); if(vcp) vcp.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
-    var vcc=document.getElementById('verChipContact'); if(vcc) vcc.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    var vcp=document.getElementById('verChipProfile'); if(vcp) vcp.innerHTML='';
+    var vcc=document.getElementById('verChipContact'); if(vcc) vcc.innerHTML='';
     renderCart();
     renderPills(); renderCatalog();
     var _bfEl=document.getElementById('billFrom'); if(_bfEl)_bfEl.value='';
@@ -2031,7 +2031,7 @@ function renderProfServicesDP(){
     renderTeam(); renderEscalation(); renderProfileInsights();
     var cv1=document.getElementById('composeV1'); if(cv1) cv1.classList.toggle('hide',ns);
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
-    var vce=document.getElementById('verChipEquip'); if(vce) vce.innerHTML = ns?'North Star &mdash; vision':'V1 &mdash; standard';
+    var vce=document.getElementById('verChipEquip'); if(vce) vce.innerHTML='';
     if(document.getElementById('eqBudget')){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
     if(dpActive){if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);}}
     renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
@@ -5204,7 +5204,7 @@ charges:[
       if(!ok){ nv.setAttribute('onclick','return false;'); } else { nv.setAttribute('onclick','ccGo(\''+k+'\')'); }
     });
   }
-  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML= ns?'North Star &mdash; vision':'V1 &mdash; standard'; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
+  function ccSyncToggle(){ var ns=CURRENT==='ns'; var b1=document.getElementById('ccBtnV1'); if(!b1)return; b1.classList.toggle('on',!ns); var b2=document.getElementById('ccBtnNS'); if(b2)b2.classList.toggle('on',ns); var cv=document.getElementById('ccVerChip'); if(cv)cv.innerHTML=''; var fn=document.getElementById('ccnav-fleet'); if(fn)fn.style.display=ns?'':'none'; if(!ns&&typeof ccActive!=='undefined'&&ccActive==='fleet')ccGo('ccdash'); ccUpdateNavForPersona(); }
   function ccSetTaskFilter(f){ _ccTaskFilter=f; renderFulfill(); }
   function ccSetVer(v){
     CURRENT=v; document.body.setAttribute('data-ver',v);
@@ -5264,7 +5264,7 @@ charges:[
     var mount=document.getElementById('ccDpSvc'); if(!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var h='<div class="phead"><div><h1>Professional services plan</h1><div class="meta"><span class="chip">Specialty services scoped to this project</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Professional services plan</h1><div class="meta"><span class="chip">Specialty services scoped to this project</span></div></div></div>';
     if(ns){
       h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">BAS commissioning specialist starts Dec 1 — confirm BESS and switchgear readiness by Nov 15. VDC coordinator and drone operator have overlapping site windows through Dec.</div></div></div>';
       var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
@@ -5314,7 +5314,7 @@ charges:[
   function ccStub(s){
     var mount=document.getElementById('cc'+s.charAt(0).toUpperCase()+s.slice(1)); if(!mount)return;
     var c=CC_STUBS[s]||{t:'Section',d:''};
-    mount.innerHTML='<div class="phead"><div><h1>'+c.t+'</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span><span class="chip ver">'+(CURRENT==='ns'?'North Star':'V1 \u2014 standard')+'</span></div></div></div><div class="cc-stub">'+svg('<path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6.4 6.4a2.12 2.12 0 003 3l6.4-6.4a4 4 0 005.4-5.4l-2.6 2.6-2.6-.7-.7-2.6 2.5-2.6z"/>')+'<h3>Building this next</h3><p>'+c.d+'</p></div>';
+    mount.innerHTML='<div class="phead"><div><h1>'+c.t+'</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All projects \u00b7 portfolio</span></div></div></div><div class="cc-stub">'+svg('<path d="M14.7 6.3a4 4 0 00-5.4 5.4l-6.4 6.4a2.12 2.12 0 003 3l6.4-6.4a4 4 0 005.4-5.4l-2.6 2.6-2.6-.7-.7-2.6 2.5-2.6z"/>')+'<h3>Building this next</h3><p>'+c.d+'</p></div>';
   }
   function ccLookaheadHTML(proj,ns){
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
@@ -5407,7 +5407,7 @@ charges:[
     var h='';
     h+='<div class="phead"><div><h1>Portfolio intelligence</h1>';
     h+='<div class="meta"><span class="chip">'+svg('<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>')+'· All projects · portfolio</span>';
-    h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    h+='</div></div></div>';
     h+='<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:11px 14px;background:var(--g50);border:1px solid var(--g100);border-radius:8px;margin-bottom:20px">';
     h+='<span style="font-size:10px;font-weight:700;color:var(--g500);letter-spacing:.05em;margin-right:2px">BU</span>';
     [['all','All'],['renewables','Renewables'],['civil','Civil'],['mc','Mission Critical']].forEach(function(o){
@@ -5507,7 +5507,7 @@ charges:[
       {t:'Tower crane capacity \u2014 5\u00d7 decision',s:'Riverside \u00b7 owned vs re-rent \u00b7 Aug 20 need-by',proj:'Riverside Medical Center',tag:{l:'Capacity',tone:'info'},to:'fulfill',fn:"ccGoFulfill('REQ-4471')",reco:'Optimizer: 2 owned (TC-0012, TC-0018) + 3 re-rent \u2014 confirms Aug 20 installation',icon:IC.crane}
     ];
         var scopeLabel=!isFSM?'All projects \u00b7 portfolio':(_ccFSMProj===''?'My projects \u00b7 3 assigned':(_ccFSMProj==='all'?'All projects \u00b7 portfolio':_ccFSMProj));
-    h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+scopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    h+='<div class="phead"><div><h1>Operations dashboard</h1><div class="meta"><span class="chip">'+svg(IC.chart)+scopeLabel+'</span></div></div></div>';
     if(isFSM){
       h+='<div style="display:flex;align-items:center;gap:7px;padding:10px 0 4px;flex-wrap:wrap">';
       h+='<span style="font-size:11px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.04em;margin-right:2px">View:</span>';
@@ -5709,7 +5709,7 @@ charges:[
     openN+=fqQuotesScoped.length;
     awaitN+=fqQuotesScoped.filter(function(q){return q.status==='Needs pricing'||q.status==='Quote in progress';}).length;
     var fqScopeLabel=isFSMFQ?(fsmFQScope&&fsmFQScope.length===1?fsmFQScope[0]:(fsmFQScope?'My projects \u00b7 3 assigned':'All projects \u00b7 portfolio')):'All projects \u00b7 portfolio';
-    var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+fqScopeLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Fulfillment queue</h1><div class="meta"><span class="chip">'+svg(IC.cart)+fqScopeLabel+'</span></div></div></div>';
     var vit=[{k:'Open requests',v:''+openN,sub:'across the portfolio',tone:'ok',icon:IC.cart},{k:'Awaiting pricing',v:''+awaitN,sub:'need a price or quote',tone:awaitN>0?'warn':'ok',icon:IC.clock},{k:'Ready to allocate',v:''+readyN,sub:'equipment',tone:'ok',icon:IC.check},{k:'Est. margin on open',v:'22%',sub:'owned-first mix',tone:'ok',icon:IC.chart}];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">The optimizer can clear the '+readyN+' open equipment requests now \u2014 owned-first, then re-rent \u2014 at a blended ~22% margin. '+awaitN+' more need a price or quote, and the at-risk procurement lines should be released this week.</div></div></div>'; }
@@ -6248,7 +6248,7 @@ charges:[
   function renderFleet(){
     var mount=gel('ccFleet'); if(!mount)return; var ns=CURRENT==='ns';
     var rows=FLEET.filter(function(r){ if(fleetFilter==='all')return true; if(fleetFilter==='replace')return r.life==='replace'; return r.status===fleetFilter; });
-    var h='<div class="phead"><div><h1>Asset lifecycle &amp; replacement</h1><div class="meta"><span class="chip">'+svg(IC.box)+'Owned fleet \u00b7 portfolio</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Asset lifecycle &amp; replacement</h1><div class="meta"><span class="chip">'+svg(IC.box)+'Owned fleet \u00b7 portfolio</span></div></div></div>';
     var vit=[{k:'Owned units',v:'486',sub:'22 classes',tone:'ok',icon:IC.box},{k:'Utilization',v:'82%',sub:'target 85%',tone:'warn',icon:IC.chart},{k:'Idle fleet',v:'$142K/mo',sub:'9 units idle',tone:'bad',icon:IC.warn},{k:'Replace soon',v:'6',sub:'past threshold',tone:'bad',icon:IC.clock}];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">11 units active across 3 projects &middot; 2 units idle &gt;5 days &middot; Fleet utilization: 73%</div><div class="isd">6 units are past their replacement threshold \u2014 a ~$4.2M Q3 CapEx ask. 9 idle units (incl. 3 excavators) can cover open October demand \u2014 redeploying avoids ~$96K in re-rent and lifts utilization to 86%. <b>Demand plan coverage:</b> 68% of Q3 2026 equipment needs planned \u00b7 4 unplanned demand spikes identified for Jul\u2013Aug.</div></div></div>'; }
@@ -6373,7 +6373,7 @@ charges:[
     items.sort(function(a,b){ var ra=(a.reco&&!a.isReplace)?0:(a.isReplace?1:2), rb=(b.reco&&!b.isReplace)?0:(b.isReplace?1:2); if(ra!==rb)return ra-rb; return (b.rerentN||0)-(a.rerentN||0); });
     var recTotal=0,planTotal=0,recCount=0,planCount=0;
     items.forEach(function(it){ if(it.reco){recTotal+=it.capexN;recCount++;} var inPlan=it.isReplace?it.queued:!!capexBuyAdded[it.id]; if(inPlan){planTotal+=it.capexN;planCount++;} });
-    var h='<div class="phead"><div><h1>Demand\u2013supply &amp; CapEx</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All classes \u00b7 next 6 months</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Demand\u2013supply &amp; CapEx</h1><div class="meta"><span class="chip">'+svg(IC.chart)+'All classes \u00b7 next 6 months</span></div></div></div>';
     var vit=[{k:'Peak gap',v:'\u22127',sub:'units short \u00b7 Oct',tone:'bad',icon:IC.warn},{k:'Re-rent spend',v:'$2.4M/yr',sub:'flagged to cover gaps',tone:'warn',icon:IC.dollar},{k:'Recommended CapEx',v:'$'+recTotal.toFixed(1)+'M',sub:recCount+' items \u00b7 ranked by re-rent',tone:'ok',icon:IC.box},{k:'In plan',v:'$'+planTotal.toFixed(1)+'M',sub:planCount+' validated',tone:'ok',icon:IC.check}];
     h+='<div class="vitals" style="grid-template-columns:repeat(4,1fr)">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     if(ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">Four classes run short through Q4 \u2014 excavators, telehandlers, tower cranes, and dozers (peak \u22127 units in October). A ~$4.1M CapEx plan (6 units) retires ~$1.3M/yr of re-rent and rising maintenance at a blended ~19-month payback. Scissor lifts and crawlers are in surplus \u2014 redeploy, don\u2019t buy.</div></div></div>'; }
@@ -6463,7 +6463,7 @@ charges:[
     else if(st==='ap'){ k1={k:'Vendor spend MTD',v:kfmt2(spendAP),sub:'AP \u00b7 MSA rate'}; k2lbl='AP anomalies'; k3lbl='Margin leakage at risk'; recLbl='Recovered MTD'; recV=recAP; }
     else { k1={k:'Billed MTD',v:kfmt2(billedAR),sub:'AR \u00b7 portfolio'}; k2lbl='Open anomalies'; k3lbl='At risk'; recLbl='Recovered MTD'; recV=recAll; }
     var vit=[{k:k1.k,v:k1.v,sub:k1.sub,tone:'ok',icon:IC.dollar},{k:k2lbl,v:''+openN,sub:'this cycle',tone:'bad',icon:IC.warn},{k:k3lbl,v:kfmt(atRisk)+'/mo',sub:'open items',tone:'warn',icon:IC.warn},{k:recLbl,v:kfmt(recV),sub:'resolved',tone:'ok',icon:IC.check}];
-    var h='<div class="phead"><div><h1>Billing &amp; anomalies</h1><div class="meta"><span class="chip">'+svg(IC.warn)+'All projects \u00b7 dual-stream AR/AP</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Billing &amp; anomalies</h1><div class="meta"><span class="chip">'+svg(IC.warn)+'All projects \u00b7 dual-stream AR/AP</span></div></div></div>';
     h+='<div class="vitals">'; vit.forEach(function(x){ h+='<div class="vital '+x.tone+'"><div class="vk">'+svg(x.icon)+x.k+'</div><div class="vv">'+x.v+'</div><div class="vsub">'+x.sub+'</div></div>'; }); h+='</div>';
     var STREAMS=[['all','Combined'],['ar','Receivable (AR)'],['ap','Payable (AP)']];
     h+='<div class="fq-filters"><div class="ff-grp"><span class="ff-lbl">Stream</span><div class="ff-seg">';
@@ -6609,7 +6609,7 @@ charges:[
     var h='<div class="phead"><div><h1>Project margin</h1><div class="meta">';
     h+='<span class="chip">02S opportunity · CMiC budget · actuals</span>';
     h+='<span class="chip">'+projLbl+'</span>';
-    h+='<span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>';
+    h+='';
     h+='</div></div></div>';
 
     h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">';
@@ -8403,7 +8403,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var selProj=_dpCcProjMap[p]||'all';
     var pLabel=selProj==='all'?'All projects · portfolio':(_PROJ_NAMES[selProj]||selProj);
     var fmtK=function(n){ return n>=1000000?('$'+(n/1000000).toFixed(1)+'M'):('$'+(n/1000).toFixed(0)+'K'); };
-    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span>'+(selProj!=='all'&&_PROJ_META[selProj]?'<span class="chip" style="background:'+_BU_COLOR[_PROJ_META[selProj].bu]+'1a;color:'+_BU_COLOR[_PROJ_META[selProj].bu]+';font-weight:600">'+_BU_LABELS[_PROJ_META[selProj].bu]+'</span><span class="chip">'+_REGION_LABELS[_PROJ_META[selProj].region]+'</span>':'')+'</div></div></div>';
+    var h='<div class="phead"><div><h1>'+cfg.title+'</h1><div class="meta"><span class="chip">'+svg(dpIcon(cfg.icon))+pLabel+'</span>'+(selProj!=='all'&&_PROJ_META[selProj]?'<span class="chip" style="background:'+_BU_COLOR[_PROJ_META[selProj].bu]+'1a;color:'+_BU_COLOR[_PROJ_META[selProj].bu]+';font-weight:600">'+_BU_LABELS[_PROJ_META[selProj].bu]+'</span><span class="chip">'+_REGION_LABELS[_PROJ_META[selProj].region]+'</span>':'')+'</div></div></div>';
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['riverside','Riverside Medical'],['cimarron','Cimarron Data Center']].forEach(function(pr){
       var act=selProj===pr[0];
@@ -9720,7 +9720,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(logPlanView==='mobdemob') logPlanView='gcgr';
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
-    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span></div></div></div>';
     if(ns){
       // NS enhanced: scheduling intelligence + 3-tab view
       var NS_INTEL=[
@@ -9938,7 +9938,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var cfg=DP[pk], mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
-  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 \u2014 standard')+'</span></div></div></div>';
+  var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -9996,7 +9996,7 @@ function renderProfServicesDP(){
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
-    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span><span class="chip ver">'+(ns?'North Star':'V1 — standard')+'</span></div></div></div>';
+    var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
     h+='<div class="vitals">'; cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; }); h+='</div>';
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
