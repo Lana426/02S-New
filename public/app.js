@@ -2127,6 +2127,9 @@ function renderProfServicesDP(){
   {id:'ORD-3142',proj:'hercules',od:'2026-07-10',item:'Precision cooling units',sub:'16 units \u00b7 Liebert',pillar:'procurement',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Liebert confirmed, 16-wk lead time. Delivery Nov 2026. Critical.'},
   {id:'ORD-3143',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Riverside Medical. No billing disputes.'},
   {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
+    ,{id:'ORD-5001',proj:'hercules',od:'2026-07-31',item:'BESS commissioning agent',sub:'2 FTE · Nov 2026 – Mar 2027',pillar:'profservices',dates:'Nov 2026 – Mar 2027',cost:'2600-3300-0000-0001 · BESS & Substation',stage:0,status:'Requested',plan:'PS-BESS-001',qty:2,vendor:'TBD',latest:'Submitted to 02S — awaiting acknowledgement.'},
+    {id:'ORD-5002',proj:'hercules',od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:0,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
+    {id:'ORD-5003',proj:'hercules',od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:0,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'}
   ];
   var PORTAL_QUOTES=[
     {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
@@ -2789,7 +2792,7 @@ charges:[
   ];
   var _billExCO='';
   var COST_CODES=['01 · General','03 · Concrete','05 · Metals','09 · Finishes'];
-  function stageStatus(o){var arr=_stageArr(o);return arr[Math.min(o.stage,arr.length-1)];}
+  function stageStatus(o){if(o.status&&o.status==='Requested')return 'Requested';var arr=_stageArr(o);return arr[Math.min(o.stage,arr.length-1)];}
 
   function ordClearDates(){ var a=document.getElementById('ordFrom'); if(a)a.value=''; var b=document.getElementById('ordTo'); if(b)b.value=''; renderOrders(); }
   /* ═══════════ WEEKLY ON-RENT RECERTIFICATION ═══════════ */
