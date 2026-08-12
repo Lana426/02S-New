@@ -1700,8 +1700,8 @@
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         var g='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:220px;min-width:220px">'+hdrLbl+'</div><div class="gh-months">'+gmh+'</div></div><div class="g-body" style="position:relative">';
-        g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+gTodayPct.toFixed(2)+'%)"><span class="gt-lbl">Today</span></div>';
-        rows.forEach(function(r){ g+=rowFn(r,gGrid); });
+        g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        rows.forEach(function(r){ g+='<div class="grow">'+rowFn(r,gGrid)+'</div>'; });
         return g+'</div></div>';
       }
       function nsBar(r,stt,label,gGrid){
@@ -1837,30 +1837,29 @@
       });
       h+='</div>';
     }
-    var LOG_ROWS=DP['logistics'].rows;
-    if(ns&&LOG_ROWS&&LOG_ROWS.length){
-      h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
-      h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 88px 114px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
-      LOG_ROWS.forEach(function(r,pmIdx){
-        var tone=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
-        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
-        h+='<div>'+(r.type||'\u2014')+'</div>';
-        h+='<div>'+(r.when||'\u2014')+'</div>';
-        h+='<div>'+(r.gate||'\u2014')+'</div>';
-        h+='<div>'+(r.src||'\u2014')+'</div>';
-        var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
-        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+    if(ns){
+      var _logCCns=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
+      if(_logCCns.length){
+        h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
+        h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Logistics moves</span>';
+        h+='<span style="font-size:11.5px;color:var(--g400)">'+_logCCns.length+' line'+(_logCCns.length===1?'':'s')+'</span>';
         h+='</div>';
-        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
-      });
-      h+='</div>';
-      h+='<div style="margin-top:24px"></div>';
+        var _lgC2='1fr 80px 110px 120px 90px 88px 90px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_lgC2+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
+        _logCCns.forEach(function(r,_ri){
+          var _tn=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+_lgC2+';cursor:default">';
+          h+='<div>'+r.item+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
+          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
+          var _la=r.attachments||[];h+='<div>'+(_la.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+_ri+')">'+ _la.length+' doc'+(_la.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
+          h+='<div><span class="tag '+_tn+'">'+r.state+'</span></div>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
     }
     mount.innerHTML=h;
   }
@@ -9780,8 +9779,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         var g='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:220px;min-width:220px">'+hdrLbl+'</div><div class="gh-months">'+gmh+'</div></div><div class="g-body" style="position:relative">';
-        g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+gTodayPct.toFixed(2)+'%)"><span class="gt-lbl">Today</span></div>';
-        rows.forEach(function(r){ g+=rowFn(r,gGrid); });
+        g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+        rows.forEach(function(r){ g+='<div class="grow">'+rowFn(r,gGrid)+'</div>'; });
         return g+'</div></div>';
       }
       function nsBar(r,stt,label,gGrid){
@@ -9917,30 +9916,29 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       });
       h+='</div>';
     }
-    var LOG_ROWS=DP['logistics'].rows;
-    if(ns&&LOG_ROWS&&LOG_ROWS.length){
-      h+='<div style="margin-top:0;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:12px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:.05em">Demand plan</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">'+LOG_ROWS.length+' line'+(LOG_ROWS.length===1?'':'s')+'</span>';
-      h+='</div>';
-      var pmGt='1fr 126px 150px 124px 118px 88px 114px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+pmGt+'">';
-      h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Gate / route</span><span>Source</span><span>Documents</span><span>Status</span></div>';
-      LOG_ROWS.forEach(function(r,pmIdx){
-        var tone=DP_TONE[r.state]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+pmGt+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+pmIdx+')" title="View full details">';
-        h+='<div>'+(r.move||'\u2014')+(r.moveSub?'<div class="sub">'+r.moveSub+'</div>':'')+'</div>';
-        h+='<div>'+(r.type||'\u2014')+'</div>';
-        h+='<div>'+(r.when||'\u2014')+'</div>';
-        h+='<div>'+(r.gate||'\u2014')+'</div>';
-        h+='<div>'+(r.src||'\u2014')+'</div>';
-        var _lgDocs=r.attachments||[]; h+='<div>'+(_lgDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">'+_lgDocs.length+' doc'+(_lgDocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+pmIdx+')">&#43; Add</button>')+'</div>';
-        h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
+    if(ns){
+      var _logCCns=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
+      if(_logCCns.length){
+        h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
+        h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Logistics moves</span>';
+        h+='<span style="font-size:11.5px;color:var(--g400)">'+_logCCns.length+' line'+(_logCCns.length===1?'':'s')+'</span>';
         h+='</div>';
-        h+='<div id="dp-drill-logistics-'+pmIdx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,pmIdx)+'</div>';
-      });
-      h+='</div>';
-      h+='<div style="margin-top:24px"></div>';
+        var _lgC2='1fr 80px 110px 120px 90px 88px 90px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_lgC2+'"><span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
+        _logCCns.forEach(function(r,_ri){
+          var _tn=DP_TONE[r.state]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+_lgC2+';cursor:default">';
+          h+='<div>'+r.item+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
+          h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.firm||'\u2014')+'</div>';
+          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
+          var _la=r.attachments||[];h+='<div>'+(_la.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+_ri+')">'+ _la.length+' doc'+(_la.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
+          h+='<div><span class="tag '+_tn+'">'+r.state+'</span></div>';
+          h+='</div>';
+        });
+        h+='</div>';
+      }
     }
     mount.innerHTML=h;
   }
