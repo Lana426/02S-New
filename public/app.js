@@ -1971,8 +1971,8 @@ function renderProfServicesDP(){
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
           var ri=cfg.rows.indexOf(r);
-          var _psDocs=(typeof DP_LINE_DOCS!=='undefined'&&DP_LINE_DOCS['profservices-'+ri])||[];
-          h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'profservices\','+ri+')">'+ _psDocs.length+' doc'+(_psDocs.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          var _psCCRow=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri];var _psDocs=(_psCCRow&&_psCCRow.attachments)||[];
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri+')">'+ _psDocs.length+' doc'+(_psDocs.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
           h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
         });
       });
@@ -7972,6 +7972,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     openModal('Documentation · '+row.item, attachmentsHTML(row.attachments||[]));
   }
   function logCcDocModal(proj,idx){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;var row=rows&&rows[idx];if(!row)return;openModal('Documents \u00b7 '+row.item,attachmentsHTML(row.attachments||[]));}
+  function ccPsDocModal(ri){var row=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri];if(!row)return;openModal('Documents \u00b7 '+row.item,attachmentsHTML(row.attachments||[]));}
   function portalDpDocModal(pk,rowIdx){
     var row=DP[pk]&&DP[pk].rows&&DP[pk].rows[rowIdx]; if(!row)return;
     openModal('Documentation · '+(row.role||row.asm||row.move||row.item||''), attachmentsHTML(row.attachments||[]));
@@ -10049,7 +10050,7 @@ function renderProfServicesDP(){
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
-          var ri2=cfg.rows.indexOf(r);var _psDocs2=(typeof DP_LINE_DOCS!=='undefined'&&DP_LINE_DOCS['profservices-'+ri2])||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'profservices\','+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          var ri2=cfg.rows.indexOf(r);var _psCCRow2=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri2];var _psDocs2=(_psCCRow2&&_psCCRow2.attachments)||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
         });
       });
       h+='</div>';
