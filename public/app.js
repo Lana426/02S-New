@@ -391,6 +391,42 @@
     '</div>';
     openModal(p.name, body+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();openDetail(\''+pid+'\',\'catalog\')">Add to request →</button></div>');
   }
+  var CC_SUGGEST={
+    'crane40'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'J. Reyes used this for ORD-3071 · Jun 12'},
+    'tele10'    :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'M. Webb used this for ORD-3085 · Jun 28'},
+    'excav20'   :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this for ORD-3042 · May 20'},
+    'dozer-d6'  :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this · Jun 5'},
+    'compactor' :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'used last time · Jun 8'},
+    'motorgrader':{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this · Jun 4'},
+    'scissor32' :{val:'01-0540',label:'01-0540 · General conditions',ctx:'M. Webb used this · Jul 8'},
+    'gen45'     :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jul 15'},
+    'boom60'    :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jun 30'},
+    'lighttower':{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jul 10'},
+    'aircomp'   :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jun 25'},
+    'headwall'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ctx:'J. Reyes used this for PF-021 · Jun 5'},
+    'piperack'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ctx:'used last time · May 25'},
+    'restroom'  :{val:'01-0100',label:'01-0100 · General conditions — svc.',ctx:'used last time · Jun 10'},
+    'rigging'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'used last time · Jun 18'},
+    'ppe'       :{val:'06-0200',label:'06-0200 · Hardware & safety',ctx:'M. Webb used this · Jul 5'},
+    'fasteners' :{val:'06-0100',label:'06-0100 · Bulk materials',ctx:'used last time · Jul 12'}
+  };
+  var CC_SUGGEST_PIL={
+    'equipment'   :{val:'01-0540',label:'01-0540 · General conditions',ctx:'most common for equipment on Hercules'},
+    'prefab'      :{val:'05-0500',label:'05-0500 · Prefab structural assemblies',ctx:'most common for prefab on Hercules'},
+    'procurement' :{val:'06-0100',label:'06-0100 · Bulk materials',ctx:'most common for procurement on Hercules'},
+    'profservices':{val:'01-0100',label:'01-0100 · General conditions — svc.',ctx:'most common for prof. services on Hercules'},
+    'logistics'   :{val:'01-5200',label:'01-5200 · Freight & site staging',ctx:'most common for logistics on Hercules'}
+  };
+  var _ccSuggVal='';
+  function applyCcSugg(){var s=document.getElementById('fCostCode');if(s&&_ccSuggVal){s.value=_ccSuggVal;var h=document.getElementById('nsAiCcHint');if(h)h.style.display='none';}}
+  function _setCcSugg(pid,pillar){
+    var ns=CURRENT==='ns';
+    var h=document.getElementById('nsAiCcHint'),t=document.getElementById('nsAiCcText');
+    if(!h)return;
+    var sg=(pid&&CC_SUGGEST[pid])||CC_SUGGEST_PIL[pillar]||null;
+    if(ns&&sg){_ccSuggVal=sg.val;if(t)t.innerHTML='<b>'+sg.label+'</b> — '+sg.ctx;h.style.display='block';}
+    else{_ccSuggVal='';h.style.display='none';}
+  }
   function openDetail(pid,kind){
     var p=byId(pid); if(!p) return;
     cfg={pid:pid,kind:kind,custom:null};
@@ -422,6 +458,7 @@
     document.getElementById('fQty').value=1;
     document.getElementById('fQtyOnly').value=1;
     recalc();
+    _setCcSugg(pid,p?p.pillar:null);
     showCompose();
   }
   function inferPillar(term){
@@ -451,6 +488,7 @@
     document.getElementById('provDesc').innerHTML='Set <em>when you need it</em> and <em>for how long</em> below — then 02S routes this to the <em>'+pillar+'</em> team and sends a quote.';
     setTag('tagPillar',false); setTag('tagDesc',false);
     recalc();
+    _setCcSugg(null,cfg.custom?cfg.custom.toLowerCase().replace(/\s+/g,''):null);
     showCompose();
   }
   function parseReq(){
@@ -784,7 +822,7 @@
   }
 
   /* ═══════════ compose show/hide ═══════════ */
-  function showCompose(){document.getElementById('browseState').classList.add('hide');document.getElementById('composeState').classList.add('active');window.scrollTo(0,0);var _nsH=document.getElementById('nsAiCcHint');if(_nsH)_nsH.style.display=CURRENT==='ns'?'block':'none';}
+  function showCompose(){document.getElementById('browseState').classList.add('hide');document.getElementById('composeState').classList.add('active');window.scrollTo(0,0);}
   function backToCatalog(){document.getElementById('composeState').classList.remove('active');document.getElementById('browseState').classList.remove('hide');var _u=document.getElementById('understood');if(_u){_u.classList.add('hide');_u.innerHTML='';}}
   function optExists(sel,val){var o=document.getElementById(sel).options;for(var i=0;i<o.length;i++){if(o[i].value===val)return true;}return false;}
   function lastOpt(sel){var o=document.getElementById(sel).options;return o[o.length-1].value;}
