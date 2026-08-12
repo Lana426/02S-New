@@ -392,30 +392,30 @@
     openModal(p.name, body+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn btn-red" onclick="closeModal();openDetail(\''+pid+'\',\'catalog\')">Add to request →</button></div>');
   }
   var CC_SUGGEST={
-    'crane40'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'J. Reyes used this for ORD-3071 · Jun 12'},
-    'tele10'    :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'M. Webb used this for ORD-3085 · Jun 28'},
-    'excav20'   :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this for ORD-3042 · May 20'},
-    'dozer-d6'  :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this · Jun 5'},
-    'compactor' :{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'used last time · Jun 8'},
-    'motorgrader':{val:'02-0320',label:'02-0320 · Site earthwork',ctx:'D. Reyes used this · Jun 4'},
-    'scissor32' :{val:'01-0540',label:'01-0540 · General conditions',ctx:'M. Webb used this · Jul 8'},
-    'gen45'     :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jul 15'},
-    'boom60'    :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jun 30'},
-    'lighttower':{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jul 10'},
-    'aircomp'   :{val:'01-0540',label:'01-0540 · General conditions',ctx:'used last time · Jun 25'},
-    'headwall'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ctx:'J. Reyes used this for PF-021 · Jun 5'},
-    'piperack'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ctx:'used last time · May 25'},
-    'restroom'  :{val:'01-0100',label:'01-0100 · General conditions — svc.',ctx:'used last time · Jun 10'},
-    'rigging'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ctx:'used last time · Jun 18'},
-    'ppe'       :{val:'06-0200',label:'06-0200 · Hardware & safety',ctx:'M. Webb used this · Jul 5'},
-    'fasteners' :{val:'06-0100',label:'06-0100 · Bulk materials',ctx:'used last time · Jul 12'}
+    'crane40'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ref:'ORD-3071'},
+    'tele10'    :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ref:'ORD-3085'},
+    'excav20'   :{val:'02-0320',label:'02-0320 · Site earthwork',ref:'ORD-3042'},
+    'dozer-d6'  :{val:'02-0320',label:'02-0320 · Site earthwork',ref:'ORD-3058'},
+    'compactor' :{val:'02-0320',label:'02-0320 · Site earthwork',ref:'ORD-3061'},
+    'motorgrader':{val:'02-0320',label:'02-0320 · Site earthwork',ref:'ORD-3057'},
+    'scissor32' :{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3038'},
+    'gen45'     :{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3044'},
+    'boom60'    :{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3051'},
+    'lighttower':{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3062'},
+    'aircomp'   :{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3048'},
+    'headwall'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ref:'PF-021'},
+    'piperack'  :{val:'22-0000',label:'22-0000 · MEP pipe racks & headwalls',ref:'PF-019'},
+    'restroom'  :{val:'01-0100',label:'01-0100 · General conditions — svc.',ref:'ORD-3055'},
+    'rigging'   :{val:'01-5100',label:'01-5100 · Heavy haul & crane mob.',ref:'ORD-3066'},
+    'ppe'       :{val:'06-0200',label:'06-0200 · Hardware & safety',ref:'PO-4398'},
+    'fasteners' :{val:'06-0100',label:'06-0100 · Bulk materials',ref:'PO-4401'}
   };
   var CC_SUGGEST_PIL={
-    'equipment'   :{val:'01-0540',label:'01-0540 · General conditions',ctx:'most common for equipment on Hercules'},
-    'prefab'      :{val:'05-0500',label:'05-0500 · Prefab structural assemblies',ctx:'most common for prefab on Hercules'},
-    'procurement' :{val:'06-0100',label:'06-0100 · Bulk materials',ctx:'most common for procurement on Hercules'},
-    'profservices':{val:'01-0100',label:'01-0100 · General conditions — svc.',ctx:'most common for prof. services on Hercules'},
-    'logistics'   :{val:'01-5200',label:'01-5200 · Freight & site staging',ctx:'most common for logistics on Hercules'}
+    'equipment'   :{val:'01-0540',label:'01-0540 · General conditions',ref:'ORD-3038'},
+    'prefab'      :{val:'05-0500',label:'05-0500 · Prefab structural assemblies',ref:'PF-019'},
+    'procurement' :{val:'06-0100',label:'06-0100 · Bulk materials',ref:'PO-4401'},
+    'profservices':{val:'01-0100',label:'01-0100 · General conditions — svc.',ref:'ORD-3055'},
+    'logistics'   :{val:'01-5200',label:'01-5200 · Freight & site staging',ref:'ORD-3071'}
   };
   var _ccSuggVal='';
   function applyCcSugg(){var s=document.getElementById('fCostCode');if(s&&_ccSuggVal){s.value=_ccSuggVal;var h=document.getElementById('nsAiCcHint');if(h)h.style.display='none';}}
@@ -424,7 +424,7 @@
     var h=document.getElementById('nsAiCcHint'),t=document.getElementById('nsAiCcText');
     if(!h)return;
     var sg=(pid&&CC_SUGGEST[pid])||CC_SUGGEST_PIL[pillar]||null;
-    if(ns&&sg){_ccSuggVal=sg.val;if(t)t.innerHTML='<b>'+sg.label+'</b> — '+sg.ctx;h.style.display='block';}
+    if(ns&&sg){_ccSuggVal=sg.val;if(t)t.innerHTML='You used this for an order with the same product — see <b>'+sg.ref+'</b> &nbsp;·&nbsp; <b>'+sg.label+'</b>';h.style.display='block';}
     else{_ccSuggVal='';h.style.display='none';}
   }
   function openDetail(pid,kind){
