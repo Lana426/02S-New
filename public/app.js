@@ -6025,16 +6025,16 @@ charges:[
     {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'Cimarron Data Center',pillar:'procurement',due:'Aug 18',priority:'low',source:'fq',done:false,closeNote:''}
   ];
   var _MT_NS=[
-    {id:'mct-001',rank:1,why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
-    {id:'mct-005',rank:2,why:'Scissor lifts are idle-billing at $1.9K/wk with no active schedule dependency. Return window is open — this is pure avoidable spend.',sys:'T3',sysLabel:'Initiate return in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
-    {id:'mct-006',rank:3,why:'Tower crane mobilization window closes Aug 4. Structural steel erection is crane-dependent — missing access confirmation delays critical path by 2+ weeks.',sys:'T3',sysLabel:'Send confirmation in T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>'},
-    {id:'mct-002',rank:4,why:'MV switchgear has a 28-week lead time. Order-by date passed — substation schedule recoverable only if PO is released this week.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
-    {id:'mct-003',rank:5,why:'Solar DC cabling is long-lead and spec-dependent. EPC confirmation can run in parallel — release PO to vendor now to reserve lead time slot.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
-    {id:'mct-004',rank:6,why:'E-house submittal approval gates fabrication slot. Shop is holding capacity — delay past this week risks the Nov delivery window.',sys:'Procore',sysLabel:'Approve submittal in Procore',sysIcon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>'},
-    {id:'mct-007',rank:7,why:'BESS container placement is 6 crane moves. Self-perform crew is available Aug 5–6. Scheduling now locks the slot before competing project needs arise.',sys:'T3',sysLabel:'Assign crew in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
-    {id:'mct-008',rank:8,why:'Commissioning agent needs 8–12 weeks of onboarding lead time. Quote must be initiated now to hit the Nov energization milestone.',sys:'T3',sysLabel:'Request quote via T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
-    {id:'mct-009',rank:9,why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'T3',sysLabel:'Confirm allocation in T3',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
-    {id:'mct-010',rank:10,why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
+    {id:'mct-001',rank:1,float:0,impact:'~$40K/wk',why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-005',rank:2,float:0,impact:'$1.9K/wk idle',why:'Scissor lifts are idle-billing at $1.9K/wk with no active schedule dependency. Return window is open — this is pure avoidable spend.',sys:'T3',sysLabel:'Initiate return in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-006',rank:3,float:0,impact:'2+ wk delay',why:'Tower crane mobilization window closes Aug 4. Structural steel erection is crane-dependent — missing access confirmation delays critical path by 2+ weeks.',sys:'T3',sysLabel:'Send confirmation in T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>'},
+    {id:'mct-002',rank:4,float:0,impact:'28-wk lead',why:'MV switchgear has a 28-week lead time. Order-by date passed — substation schedule recoverable only if PO is released this week.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-003',rank:5,float:3,impact:'Lead at risk',why:'Solar DC cabling is long-lead and spec-dependent. EPC confirmation can run in parallel — release PO to vendor now to reserve lead time slot.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
+    {id:'mct-004',rank:6,float:4,impact:'Nov at risk',why:'E-house submittal approval gates fabrication slot. Shop is holding capacity — delay past this week risks the Nov delivery window.',sys:'Procore',sysLabel:'Approve submittal in Procore',sysIcon:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/>'},
+    {id:'mct-007',rank:7,float:5,impact:'Slot needed',why:'BESS container placement is 6 crane moves. Self-perform crew is available Aug 5–6. Scheduling now locks the slot before competing project needs arise.',sys:'T3',sysLabel:'Assign crew in T3',sysIcon:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/>'},
+    {id:'mct-008',rank:8,float:7,impact:'8-12wk lead',why:'Commissioning agent needs 8–12 weeks of onboarding lead time. Quote must be initiated now to hit the Nov energization milestone.',sys:'T3',sysLabel:'Request quote via T3',sysIcon:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>'},
+    {id:'mct-009',rank:9,float:9,impact:'Q4 rate risk',why:'No owned 230T crane available. Maxim Crane is the preferred vendor — confirm allocation to lock rate before spot market tightens in Q4.',sys:'T3',sysLabel:'Confirm allocation in T3',sysIcon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+    {id:'mct-010',rank:10,float:12,impact:'Non-critical',why:'UPS bypass cable is specialty; electrical spec confirmation can run in parallel. Non-critical-path — place order once spec is verified.',sys:'S2P',sysLabel:'Place order in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'}
   ];
   var _myTasksFilter='all', _myTasksFilterPri='all', _myTasksFilterProj='all', _myTasksSort='due', _myTasksEdit=null;
   function myTaskCheckChange(id,el){
@@ -6152,47 +6152,76 @@ charges:[
     _myTasksBadge();
     var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
     var basePool=MY_CC_TASKS.filter(function(t){return !t.done&&(!pf||t.pillar===pf);});
-    var ranked=[]; var unranked=[];
     var nsMap={}; _MT_NS.forEach(function(n){nsMap[n.id]=n;});
+    var ranked=[]; var unranked=[];
     basePool.forEach(function(t){if(nsMap[t.id])ranked.push({t:t,ns:nsMap[t.id]});else unranked.push(t);});
-    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+'</div></div></div>';
-    h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:18px;color:#fff">';
-    h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:6px">3 tasks on the critical path to November energization. 2 have passed their order-by date.</div>';
-    h+='<div style="font-size:11.5px;opacity:.75;line-height:1.5">Ranked by schedule risk and margin impact. Tasks with an execute button can be actioned directly once source systems are connected — S2P for PO releases, Procore for submittals, T3 for everything else.</div>';
+    if(!window._nsTaskFilter)window._nsTaskFilter='all';
+    var nf=window._nsTaskFilter;
+    var filteredRanked=ranked.filter(function(item){
+      if(nf==='critical')return item.ns.float===0;
+      if(nf==='s2p')return item.ns.sys==='S2P';
+      if(nf==='procore')return item.ns.sys==='Procore';
+      if(nf==='t3')return item.ns.sys==='T3';
+      return true;
+    });
+    var SYS_COLOR={S2P:'#2563eb',Procore:'#ea580c',T3:'var(--charcoal)'};
+    var h='<div class="phead"><div><h1>My Tasks</h1><div class="meta"><span class="chip">'+basePool.length+' open</span>'+(pf?'<span class="chip">'+pf+'</span>':'')+' </div></div></div>';
+    var critN=ranked.filter(function(x){return x.ns.float===0;}).length;
+    var s2pN=ranked.filter(function(x){return x.ns.sys==='S2P';}).length;
+    h+='<div style="background:var(--charcoal);border-radius:10px;padding:14px 16px;margin-bottom:14px;color:#fff">';
+    h+='<div style="font-size:13px;font-weight:600;line-height:1.4;margin-bottom:5px">'+critN+' task'+(critN===1?'':'s')+' on the critical path to November energization · '+s2pN+' S2P actions ready to execute</div>';
+    h+='<div style="font-size:11px;opacity:.65;margin-bottom:10px">Ranked by schedule float · margin impact · vendor window. Tasks with an execute button can be actioned directly once source systems are connected.</div>';
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    [{ic:'<path d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',label:'Schedule float'},{ic:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',label:'Margin impact'},{ic:'<path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M9 2h6v4H9z"/>',label:'Vendor window'}].forEach(function(f){
+      h+='<div style="display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border-radius:5px;padding:4px 9px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;opacity:.8">'+f.ic+'</svg><span style="font-size:10.5px;opacity:.85">'+f.label+'</span></div>';
+    });
+    h+='</div></div>';
+    var tabs=[['all','All ('+ranked.length+')'],['critical','⏱ Critical path'],['s2p','S2P'],['procore','Procore'],['t3','T3']];
+    h+='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
+    tabs.forEach(function(tb){
+      var on=nf===tb[0];
+      var bs='font-size:11.5px;padding:4px 12px;border-radius:20px;border:1px solid '+(on?'var(--charcoal)':'var(--g200)')+';background:'+(on?'var(--charcoal)':'#fff')+';color:'+(on?'#fff':'var(--g600)')+';cursor:pointer;font-weight:'+(on?'600':'400');
+      h+='<button data-f="'+tb[0]+'" onclick="window._nsTaskFilter=this.dataset.f;renderMyTasksNS()" style="'+bs+'">'+tb[1]+'</button>';
+    });
     h+='</div>';
     h+='<div style="display:flex;flex-direction:column;gap:8px">';
-    var SYS_COLOR={S2P:'#2563eb',Procore:'#ea580c'};
-    ranked.forEach(function(item,i){
+    filteredRanked.forEach(function(item,i){
       var t=item.t; var ns=item.ns;
       var sc=SYS_COLOR[ns.sys]||'var(--charcoal)';
+      var floatBadge=ns.float===0
+        ?'<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#fee2e2;color:#dc2626;font-weight:600">Critical path · 0d float</span>'
+        :'<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#fef9c3;color:#92400e;font-weight:600">'+ns.float+'d float</span>';
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px">';
       h+='<div style="display:flex;align-items:flex-start;gap:10px">';
       h+='<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:10.5px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px">'+(i+1)+'</div>';
       h+='<div style="flex:1;min-width:0">';
-      h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+t.label+'</div>';
-      h+='<div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap">';
-      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button onclick="dpOpenFulfill(\''+t.ref+'\')" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
-      if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
+      h+='<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:4px">'+t.label+'</div>';
+      h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px">';
+      h+=floatBadge;
+      if(ns.impact)h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:#f0fdf4;color:#166534;font-weight:600">'+ns.impact+'</span>';
+      if(t.ref){var isLink=t.source==='fq';h+=isLink?'<button data-r="'+t.ref+'" onclick="dpOpenFulfill(this.dataset.r)" style="font-size:10.5px;padding:1px 6px;border-radius:4px;border:1px solid var(--g200);background:#fff;color:var(--info);cursor:pointer">'+t.ref+' →</button>':'<span style="font-size:10.5px;color:var(--g400)">'+t.ref+'</span>';}
       if(t.due)h+='<span style="font-size:10.5px;color:var(--g400)">Due '+t.due+'</span>';
       h+='</div>';
-      h+='<div style="margin-top:8px;padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal)">';
-      h+='<span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span>';
-      h+='</div>';
-      h+='<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">';
-      h+='<button onclick="toast(\''+ns.sysLabel+' — source system connection coming in next release\')" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:'+sc+';color:#fff;cursor:pointer;font-weight:600">'+ns.sysLabel+'</button>';
-      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">Connected: '+ns.sys+'</span>';
-      h+='<div style="flex:1"></div><button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Close task</button>';
-      h+='</div>';
-      h+='</div></div></div>';
+      h+='<div style="padding:7px 10px;background:#f8f9fa;border-radius:6px;border-left:2px solid var(--charcoal);margin-bottom:10px"><span style="font-size:11.5px;color:var(--g700);line-height:1.45">'+ns.why+'</span></div>';
+      h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+      h+='<button data-msg="'+ns.sysLabel+' - source system connection coming in next release" onclick="toast(this.dataset.msg)" style="font-size:11.5px;padding:4px 12px;border-radius:6px;border:none;background:'+sc+';color:#fff;cursor:pointer;font-weight:600">'+ns.sysLabel+'</button>';
+      h+='<span style="font-size:10px;padding:2px 7px;border-radius:10px;border:1px solid var(--g200);color:var(--g500)">via '+ns.sys+'</span>';
+      h+='<div style="flex:1"></div>';
+      h+='<button data-tid="'+t.id+'" onclick="myTaskCloseStart(this.dataset.tid)" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer">Complete →</button>';
+      h+='</div></div></div></div>';
     });
-    unranked.forEach(function(t){
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px">';
-      h+='<label style="flex-shrink:0;margin-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' onchange="myTaskCheckChange(\''+t.id+'\',this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
-      h+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+t.label+'</div>';
-      h+='<div style="font-size:11px;color:var(--g400);margin-top:3px">'+t.ref+(t.project?' \xb7 '+t.project:'')+'</div></div>';
-      h+='<button onclick="myTaskCloseStart(\''+t.id+'\')" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer;flex-shrink:0">Close</button>';
-      h+='</div>';
-    });
+    if(!filteredRanked.length)h+='<div style="padding:36px 0;text-align:center;color:var(--g400);font-size:13px">No tasks match this filter</div>';
+    if(nf==='all'&&unranked.length){
+      h+='<div style="font-size:10.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px">Other open tasks</div>';
+      unranked.forEach(function(t){
+        h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:13px 15px;display:flex;align-items:flex-start;gap:10px">';
+        h+='<label style="flex-shrink:0;margin-top:2px;cursor:pointer"><input type="checkbox"'+(t.done?' checked':'')+' data-cid="'+t.id+'" onchange="myTaskCheckChange(this.dataset.cid,this)" style="width:15px;height:15px;cursor:pointer;accent-color:var(--charcoal)"></label>';
+        h+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+t.label+'</div>';
+        h+='<div style="font-size:11px;color:var(--g400);margin-top:3px">'+t.ref+(t.project?' · '+t.project:'')+'</div></div>';
+        h+='<button data-tid="'+t.id+'" onclick="myTaskCloseStart(this.dataset.tid)" style="font-size:11.5px;padding:3px 10px;border-radius:5px;border:1px solid var(--g200);background:#fff;color:var(--g500);cursor:pointer;flex-shrink:0">Complete →</button>';
+        h+='</div>';
+      });
+    }
     h+='</div>';
     mount.innerHTML=h;
   }
