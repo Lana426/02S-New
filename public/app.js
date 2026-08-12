@@ -963,7 +963,7 @@
         var l=g.lines[j];
         var mo=eqMonths(l.from,l.to), lt=eqLineTotal(l);
         var stt=eqLineState(l);
-        var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Submitted':stt==='pending'?'Pending pricing':'Draft';
+        var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
         var editBtn='<button class="eq-ib" onclick="event.stopPropagation();openEqEdit(\''+l.id+'\')" title="'+(stt==='submitted'?'Request change':'Edit line')+'">'+svg('<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>',2)+'</button>';
         var delBtn='<button class="eq-ib danger" onclick="event.stopPropagation();delEqLine(\''+l.id+'\')" title="'+(stt==='pending'?'Withdraw request':'Remove draft')+'">'+svg('<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',2)+'</button>';
         var act;
@@ -1079,7 +1079,7 @@
     var pop=gel('eqPop'); if(!pop||!eqPop)return;
     var l=eqGetLine(eqPop.id); if(!l){eqPopClose();return;}
     var st=eqLineState(l);
-    var stTxt=st==='onrent'?'On-rent':st==='offrent'?'Off-rent':st==='submitted'?'Submitted':st==='pending'?'Pending pricing':'Draft';
+    var stTxt=st==='onrent'?'On-rent':st==='offrent'?'Off-rent':st==='submitted'?'Requested':st==='pending'?'Pending pricing':'Draft';
     var mo=eqMonths(eqPop.from,eqPop.to), priced=!!l.rate;
     var totTxt=priced?('<b>'+fmtBig(mo*l.rate*eqPop.qty)+'</b> \u00b7 '+eqPop.qty+' \u00d7 '+fmt(l.rate)+'/mo \u00d7 '+mo+' mo'):('<span class="eqp-tbd">Total TBD \u2014 awaiting 02S pricing</span> \u00b7 '+mo+' mo');
     var h='<div class="eqp-head"><div class="eqp-title">'+l.desc+'</div><button class="eqp-x" onclick="eqPopClose()">'+svg('<path d="M18 6L6 18M6 6l12 12"/>',2)+'</button></div>';
@@ -3141,7 +3141,7 @@ charges:[
   function openEqLineDrill(id){
     var l=EQ_LINES.filter(function(x){return x.id===id;})[0]; if(!l)return;
     var stt=eqLineState(l);
-    var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Submitted':stt==='pending'?'Pending pricing':'Draft';
+    var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
     var mo=eqMonths(l.from,l.to), lt=l.rate?eqLineTotal(l):0;
     var dn=l.desc.replace(/—.*/,'').trim().toLowerCase().slice(0,8);
     var ord=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.item&&o.item.toLowerCase().indexOf(dn)>=0;})[0];
