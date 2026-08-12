@@ -2012,8 +2012,8 @@ function renderProfServicesDP(){
     _tog('sec4','hide',!ns);
     _tog(document.querySelector('.lookV1'),'hide',ns);
     _tog(document.querySelector('.lookNS'),'hide',!ns);
-    document.getElementById('verChip').innerHTML='';
-    ['sec1','sec2','sec3','sec4'].forEach(function(s){document.getElementById(s).classList.remove('open')});
+    var _vc=document.getElementById('verChip');if(_vc)_vc.innerHTML='';
+    ['sec1','sec2','sec3','sec4'].forEach(function(s){var _se=document.getElementById(s);if(_se)_se.classList.remove('open');});
     // browse: copilot is NS-only; refresh an open interstitial for the new version
     _tog('copilotWrap','hide',!ns);
     var _uds=document.getElementById('understood');
