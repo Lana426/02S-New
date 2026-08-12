@@ -1803,7 +1803,7 @@
         h+='<span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
         LOG_CC.forEach(function(r,idx){
           var tone=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:default">';
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+idx+')" title="View full details">';
           h+='<div>'+r.item+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
@@ -1812,6 +1812,7 @@
           var _lcc=r.attachments||[];h+='<div>'+(_lcc.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+idx+')">'+ _lcc.length+' doc'+(_lcc.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
           h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
           h+='</div>';
+          h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
         });
         h+='</div>';
       }
@@ -3470,7 +3471,7 @@ charges:[
   function buildDPTrack(pk,r,rowIdx){
     var chain=DP_CHAIN[pk]; if(!chain)return '';
     var chainStage=chain.stageOf(r);
-    var _ordId=chainStage>0?(r.linkOrd||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
+    var _ordId=chainStage>0?(r.linkOrd||r.ordId||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
     var ord=_ordId?ORDERS.filter(function(o){return o.id===_ordId;})[0]:null;
     var bill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
     var steps=chain.labels.map(function(lbl,i){
@@ -9861,7 +9862,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='<span>Move / item</span><span>Qty</span><span>Window</span><span>Firm</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
         LOG_CC.forEach(function(r,idx){
           var tone=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:default">';
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+idx+')" title="View full details">';
           h+='<div>'+r.item+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
@@ -9870,6 +9871,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _lcc=r.attachments||[];h+='<div>'+(_lcc.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+idx+')">'+ _lcc.length+' doc'+(_lcc.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
           h+='<div><span class="tag '+tone+'">'+r.state+'</span></div>';
           h+='</div>';
+          h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
         });
         h+='</div>';
       }
@@ -10005,7 +10007,8 @@ function renderProfServicesDP(){
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
-          var ri2=cfg.rows.indexOf(r);var _psCCRow2=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri2];var _psDocs2=(_psCCRow2&&_psCCRow2.attachments)||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+'"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          var ri2=cfg.rows.indexOf(r);var _psCCRow2=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri2];var _psDocs2=(_psCCRow2&&_psCCRow2.attachments)||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri2+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          h+='<div id="dp-drill-profservices-'+ri2+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri2)+'</div>';
         });
       });
       h+='</div>';
