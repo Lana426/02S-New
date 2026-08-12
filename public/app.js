@@ -1915,30 +1915,7 @@ function renderProfServicesDP(){
     var _baselined=PLAN_BASELINES[pk];
     h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
-    if(ns){
-      var LGM=['Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27'];
-      var N=LGM.length, todayIdx=3;
-      var todayPct=((todayIdx+0.8)/N)*100;
-      var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
-      var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
-      var stateBar={Active:'onrent',Projected:'submitted','Pending pricing':'draft',Draft:'draft',Demobilized:'offrent'};
-      h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Role / firm</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-      h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-      cfg.rows.forEach(function(r){
-        if(typeof r.sa==='undefined') return;
-        var a=r.sa, b=r.ea;
-        var left=(a/N)*100, width=((b-a+1)/N)*100;
-        var barCls=stateBar[r.state]||'draft';
-        h+='<div class="grow" style="min-height:46px">'+'<div class="g-label" style="flex-direction:column;align-items:flex-start;gap:1px;white-space:normal;overflow:visible">'+'<span style="line-height:1.3">'+r.role+'</span>'+'<span style="font-size:10.5px;font-weight:400;color:var(--g400);line-height:1.2">'+r.firm+'</span></div>'
-          +'<div class="g-track" style="background-image:'+gridBg+'">'
-          +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
-          +'</div></div>';
-      });
-      h+='</div>';
-      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Projected</span><span class="lg"><span class="gl-sw draft"></span>Draft / pending</span><span class="lg"><span class="gl-sw offrent"></span>Demobilized</span><span class="lg"><span class="gl-today"></span>Today · Jul 26</span></div>';
-      h+='</div>';
-    } else {
-      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
+          var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
       var scopes=[],scopeMap={};
       cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
       var gt='1fr 92px 176px 150px 100px 88px 118px';
@@ -7103,7 +7080,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-P-0621',asset:'Surgical fixture hardware \u00b7 specialty',project:'Riverside Medical Center',tax:'Material \u203a Specialty \u203a Medical fixture',taxOk:true,leaf:'Medical',dec:'Rate card',decTone:'ok',status:'Requested'},
         {id:'REQ-P-0622',asset:'Fire suppression heads \u00b7 qty 40',project:'Riverside Medical Center',tax:'Material \u203a Life safety \u203a Suppression',taxOk:true,leaf:'Wet pipe',dec:'Rate card',decTone:'ok',status:'Ordered'},
         {id:'REQ-P-0631',asset:'Server rack power strips \u00b7 qty 120',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a PDU',taxOk:true,leaf:'PDU',dec:'Rate card',decTone:'ok',status:'Ordered'},
-        {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued'}
+        {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued',
+        {id:'ORD-3100',asset:'Nut runners — 3/8\' · 48 units · solar racking',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Fastening',taxOk:true,leaf:'48 units',dec:'Jun 1 · 6 wk',decTone:'ok',status:'Delivered'},
+        {id:'ORD-3101',asset:'Battery packs — 20v · 100 units · cordless fleet',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Power',taxOk:true,leaf:'100 units',dec:'Jun 15 · 2 wk',decTone:'ok',status:'Delivered'},
+        {id:'ORD-3102',asset:'Quad charging banks · 20 units · tool charging',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Charging',taxOk:true,leaf:'20 units',dec:'Jun 10 · 3 wk',decTone:'ok',status:'Delivered'},
+        {id:'ORD-3103',asset:'Tone shear wrenches · 12 units · bolt tensioning',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Fastening',taxOk:true,leaf:'12 units',dec:'Jul 18 · 4 wk',decTone:'bad',status:'At-risk'},
+        {id:'ORD-3104',asset:'Angle grinders — 4.5\' · 16 units · metalwork',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Cutting',taxOk:true,leaf:'16 units',dec:'Jun 15 · 6 wk',decTone:'ok',status:'Delivered'},
+        {id:'ORD-3128',asset:'SDS Max rotary hammers · 8 units · BESS pad anchoring',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Drilling',taxOk:true,leaf:'8 units',dec:'Aug 10 · 3 wk',decTone:'ok',status:'PO issued'},
+        {id:'ORD-3105',asset:'HEPA vacuums — 10 gal · 6 units · silica dust control',project:'Hercules Solar + BESS',tax:'Tools & consumables › Safety › Dust control',taxOk:true,leaf:'6 units',dec:'Jul 15 · 2 wk',decTone:'ok',status:'Delivered'},
+        {id:'Q-63414',asset:'Wire crimpers — hydraulic · 8 units · BESS electrical',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Electrical',taxOk:true,leaf:'8 units',dec:'Sep 5 · 4 wk',decTone:'ok',status:'Draft'}}
       ],
       rollCols:['Category','Committed','Order window','vs plan'],
       roll:[{a:'Electrical & HV',b:'$8.1M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$69K',c:'Q2–Q3 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'}],
@@ -9610,7 +9595,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Projected',scope:'BESS & commissioning',sa:7,ea:9},
         {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Draft',scope:'Survey & site monitoring',sa:0,ea:1},
-        {role:'VDC / BIM coordination',firm:'TBD \u2014 not in rate card',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'Pending',state:'Pending pricing',scope:'Engineering & oversight',sa:0,ea:6,quoteRef:'Q-63415'},
+        {role:'VDC / BIM coordination',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:6,linkOrd:'ORD-3120'},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
@@ -9973,31 +9958,7 @@ function renderProfServicesDP(){
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
     h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
-    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
-    if(ns){
-      var LGM=['Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26','Jan 27'];
-      var N=LGM.length, todayIdx=3;
-      var todayPct=((todayIdx+0.8)/N)*100;
-      var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
-      var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
-      var stateBar={Active:'onrent',Projected:'submitted','Pending pricing':'draft',Draft:'draft',Demobilized:'offrent'};
-      h+='<div class="gantt log-gantt"><div class="g-head"><div class="gh-label">Role / firm</div><div class="gh-months">'+mh+'</div></div><div class="g-body">';
-      h+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(todayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-      cfg.rows.forEach(function(r){
-        if(typeof r.sa==='undefined') return;
-        var a=r.sa, b=r.ea;
-        var left=(a/N)*100, width=((b-a+1)/N)*100;
-        var barCls=stateBar[r.state]||'draft';
-        h+='<div class="grow" style="min-height:46px">'+'<div class="g-label" style="flex-direction:column;align-items:flex-start;gap:1px;white-space:normal;overflow:visible">'+'<span style="line-height:1.3">'+r.role+'</span>'+'<span style="font-size:10.5px;font-weight:400;color:var(--g400);line-height:1.2">'+r.firm+'</span></div>'
-          +'<div class="g-track" style="background-image:'+gridBg+'">'
-          +'<div class="g-bar '+barCls+' vw" style="left:'+left.toFixed(3)+'%;width:calc('+width.toFixed(3)+'% - 3px)" title="'+r.window+' · '+r.qty+'">'+r.qty+'</div>'
-          +'</div></div>';
-      });
-      h+='</div>';
-      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw submitted"></span>Projected</span><span class="lg"><span class="gl-sw draft"></span>Draft / pending</span><span class="lg"><span class="gl-sw offrent"></span>Demobilized</span><span class="lg"><span class="gl-today"></span>Today · Jul 26</span></div>';
-      h+='</div>';
-    } else {
-      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
+    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
       var scopes=[],scopeMap={};
       cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
       var gt='1fr 92px 176px 150px 100px 88px 118px';
@@ -10012,7 +9973,6 @@ function renderProfServicesDP(){
         });
       });
       h+='</div>';
-    }
     mount.innerHTML=h;
   }
   function go(screen){
