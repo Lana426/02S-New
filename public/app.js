@@ -1932,7 +1932,6 @@ function renderProfServicesDP(){
         });
       });
       h+='</div>';
-    }
     mount.innerHTML=h;
   }
   function go(screen){
@@ -7080,7 +7079,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-P-0621',asset:'Surgical fixture hardware \u00b7 specialty',project:'Riverside Medical Center',tax:'Material \u203a Specialty \u203a Medical fixture',taxOk:true,leaf:'Medical',dec:'Rate card',decTone:'ok',status:'Requested'},
         {id:'REQ-P-0622',asset:'Fire suppression heads \u00b7 qty 40',project:'Riverside Medical Center',tax:'Material \u203a Life safety \u203a Suppression',taxOk:true,leaf:'Wet pipe',dec:'Rate card',decTone:'ok',status:'Ordered'},
         {id:'REQ-P-0631',asset:'Server rack power strips \u00b7 qty 120',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a PDU',taxOk:true,leaf:'PDU',dec:'Rate card',decTone:'ok',status:'Ordered'},
-        {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued',
+        {id:'REQ-P-0632',asset:'Grounding bus bars \u00b7 lot',project:'Cimarron Data Center',tax:'Material \u203a Electrical \u203a Grounding',taxOk:true,leaf:'Grounding',dec:'Rate card',decTone:'ok',status:'PO issued'},
         {id:'ORD-3100',asset:'Nut runners — 3/8\' · 48 units · solar racking',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Fastening',taxOk:true,leaf:'48 units',dec:'Jun 1 · 6 wk',decTone:'ok',status:'Delivered'},
         {id:'ORD-3101',asset:'Battery packs — 20v · 100 units · cordless fleet',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Power',taxOk:true,leaf:'100 units',dec:'Jun 15 · 2 wk',decTone:'ok',status:'Delivered'},
         {id:'ORD-3102',asset:'Quad charging banks · 20 units · tool charging',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Charging',taxOk:true,leaf:'20 units',dec:'Jun 10 · 3 wk',decTone:'ok',status:'Delivered'},
@@ -7088,7 +7087,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'ORD-3104',asset:'Angle grinders — 4.5\' · 16 units · metalwork',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Cutting',taxOk:true,leaf:'16 units',dec:'Jun 15 · 6 wk',decTone:'ok',status:'Delivered'},
         {id:'ORD-3128',asset:'SDS Max rotary hammers · 8 units · BESS pad anchoring',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Drilling',taxOk:true,leaf:'8 units',dec:'Aug 10 · 3 wk',decTone:'ok',status:'PO issued'},
         {id:'ORD-3105',asset:'HEPA vacuums — 10 gal · 6 units · silica dust control',project:'Hercules Solar + BESS',tax:'Tools & consumables › Safety › Dust control',taxOk:true,leaf:'6 units',dec:'Jul 15 · 2 wk',decTone:'ok',status:'Delivered'},
-        {id:'Q-63414',asset:'Wire crimpers — hydraulic · 8 units · BESS electrical',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Electrical',taxOk:true,leaf:'8 units',dec:'Sep 5 · 4 wk',decTone:'ok',status:'Draft'}}
+        {id:'Q-63414',asset:'Wire crimpers — hydraulic · 8 units · BESS electrical',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Electrical',taxOk:true,leaf:'8 units',dec:'Sep 5 · 4 wk',decTone:'ok',status:'Draft'}
       ],
       rollCols:['Category','Committed','Order window','vs plan'],
       roll:[{a:'Electrical & HV',b:'$8.1M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$69K',c:'Q2–Q3 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'}],
