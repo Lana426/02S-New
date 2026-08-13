@@ -3076,7 +3076,7 @@ charges:[
       {label:'BESS commissioning planning', pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'}
     ];
     if(CURRENT==='ns'){
-      ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
+      ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-08-20',end:'2026-08-20',tone:'warn',note:'Critical path · 2 days float remaining'});
       ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     }
     if(EXTRA_LOOKAHEAD.length){EXTRA_LOOKAHEAD.forEach(function(x){ITEMS.push(x);});}
@@ -3086,9 +3086,9 @@ charges:[
     var head='<div style="display:grid;grid-template-columns:190px 1fr;gap:0;margin-bottom:2px">'
       +'<div></div>'
       +'<div style="display:grid;grid-template-columns:repeat(3,1fr)">'
-      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">May 12–18</div>'
-      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">May 19–25</div>'
-      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px">May 26–Jun 1</div>'
+      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">Aug 1–7</div>'
+      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px;border-right:1px dashed var(--g200)">Aug 8–14</div>'
+      +'<div style="font-size:10px;font-weight:700;color:var(--g500);padding:0 4px">Aug 15–21</div>'
       +'</div></div>';
     var rows=ITEMS.map(function(item){
       var s=dayOffset(item.start), e=dayOffset(item.end)+1;
@@ -8764,7 +8764,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
             if(row.fqRef){_actCell+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;white-space:nowrap;flex-shrink:0" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">→ FQ</button>';}
             _actCell+='</div>';
             _actCell+='<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
-            if(_dispR){_actCell+='<div onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\'" style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px">⚠ Bill issue — click to review</div>';}
+            if(_dispR&&p!=='profservices'){_actCell+='<div onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\'" style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px">⚠ Bill issue — click to review</div>';}
             _actCell+='</div>';
           } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'||row.state==='At-risk'||row.state==='Needs attention'){
             _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">→ Fulfillment queue</button>';
