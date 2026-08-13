@@ -1582,7 +1582,7 @@
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Awaiting pricing',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Requested',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
-      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'4',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane mobilizations',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls \u00b7 this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'3',sub:'2 mob \u00b7 1 demob \u00b7 this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'14',sub:'4 ongoing \u00b7 10 scheduled',tone:'ok',icon:IC.layers}],
       v1:'6 moves this week · 3 oversize hauls pending permits · Tower crane mobilization confirmed Aug 3.',
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
@@ -1592,9 +1592,9 @@
         {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070',sa:1,ea:1},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested',sa:6,ea:6},
         {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Complete',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
+        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Scheduled',sa:5,ea:5},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8,attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Scheduled',sa:4,ea:4},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'In fulfillment',sa:4,ea:4},
         {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
@@ -2024,7 +2024,7 @@ function renderProfServicesDP(){
   var STAGES_FAB=['In fulfillment','QC approved','Delivered'];
   var STAGES_SVC=['SOW executed','Active','Fulfilled'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
-  var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad'};
+  var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
 
   var ORDERS=[
     {id:'ORD-3051',proj:'hercules',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok',rental:{offRent:'Oct 31, 2026',daysLeft:101,idle:false,save:0}},
@@ -2098,10 +2098,10 @@ function renderProfServicesDP(){
     {id:'ORD-3113',proj:'hercules',od:'2026-04-01',item:'Motor grader',sub:'6 units \u00b7 finish grading',pillar:'equipment',dates:'Apr 2026 \u2013 Aug 2026',cost:'3100-2000-0000-0001 \u00b7 Mass Grading',stage:6,plan:null,latest:'Off-rent \u2014 returned Aug 5. Final inspection passed.',rental:{type:'monthly',rate:14000,unit:'unit',units:6}},
     {id:'ORD-3114',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-10-31',item:'Compaction roller',sub:'12 units \u00b7 compaction',pillar:'equipment',dates:'Apr 2026 \u2013 Oct 2026',cost:'3100-2000-0000-0001 \u00b7 Mass Grading',stage:5,plan:null,latest:'On-rent \u2014 compaction testing in progress.',rental:{type:'monthly',rate:6800,unit:'unit',units:12}},
     {id:'ORD-3115',proj:'hercules',od:'2026-08-01',anticipatedOff:'2026-12-31',item:'Hydraulic pile driver',sub:'6 units \u00b7 Sector 2',pillar:'equipment',dates:'Aug 2026 \u2013 Dec 2026',cost:'3100-6300-0000-0001 \u00b7 Solar pile',stage:5,plan:null,latest:'On-rent \u2014 mobilized Aug 1.',rental:{type:'monthly',rate:34500,unit:'unit',units:6}},
-    {id:'ORD-3116',proj:'hercules',od:'2026-10-01',item:'MV switchgear delivery \u2014 oversize haul',sub:'1 load \u00b7 permitted route',pillar:'logistics',dates:'Oct 15, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:0,plan:null,latest:'Submitted \u2014 02S coordinating permit and route survey.'},
+    {id:'ORD-3116',proj:'hercules',od:'2026-10-01',item:'MV switchgear delivery \u2014 oversize haul',sub:'1 load \u00b7 permitted route',pillar:'logistics',dates:'Oct 15, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:0,status:'Requested',plan:null,latest:'Submitted \u2014 02S coordinating permit and route survey.'},
     {id:'ORD-3117',proj:'hercules',od:'2026-09-01',item:'PV module deliveries \u2014 recurring',sub:'daily Sep \u2013 Nov \u00b7 East gate',pillar:'logistics',dates:'Sep \u2013 Nov 2026',cost:'2600-5600-0000-0001 \u00b7 Tracker & Module',stage:0,plan:null,latest:'Submitted \u2014 02S scheduling gate slots.'},
     {id:'ORD-3118',proj:'hercules',od:'2026-12-01',item:'BESS container placement',sub:'haul + crane \u00b7 Pad 3',pillar:'logistics',dates:'Dec 1, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:0,plan:null,latest:'Submitted \u2014 02S coordinating crane and haul.'},
-    {id:'ORD-3119',proj:'hercules',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:0,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'},
+    {id:'ORD-3119',proj:'hercules',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:0,status:'In fulfillment',plan:null,latest:'In fulfillment \u2014 flatbed truck confirmed, Laydown B slot reserved Aug 15.'},
     {id:'ORD-3120',proj:'hercules',od:'2026-07-15',item:'VDC / BIM coordination',sub:'3 FTE \u00b7 Apr\u2013Oct 2026',pillar:'profservices',dates:'Apr 2026 \u2013 Oct 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,plan:null,latest:'WSP engaged \u2014 3 FTE active on site since Apr 2026. BIM execution plan approved; monthly deliverables on track.'},
     {id:'ORD-3121',proj:'hercules',od:'2026-07-20',item:'Telehandler \u2014 10K \u00d7 24 (Sector 1)',sub:'24 units \u00b7 Sep 2026\u2013Apr 2027 \u00b7 Tracker assembly',pillar:'equipment',dates:'Sep 2026 \u2013 Apr 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing allocation; confirm by Aug 15.'},
     {id:'ORD-3122',proj:'hercules',od:'2026-07-20',item:'Boom lift \u2014 60 ft \u00d7 18 (Sector 1)',sub:'18 units \u00b7 Sep 2026\u2013Mar 2027 \u00b7 Module installation',pillar:'equipment',dates:'Sep 2026 \u2013 Mar 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing availability across fleet; confirm by Aug 15.'},
@@ -2109,7 +2109,7 @@ function renderProfServicesDP(){
   {id:'ORD-3124',proj:'hercules',od:'2026-07-01',anticipatedOff:'2026-10-31',item:'Excavator 20T',sub:'2 units \u00b7 Riverside earthwork',pillar:'equipment',dates:'Jul\u2013Oct 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 2 units active, Riverside. Off-rent target Oct 2026.'},
   {id:'ORD-3125',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-02-28',item:'Compaction roller',sub:'4 units \u00b7 Cimarron site prep',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 4 units active, Cimarron Data Center.'},
   {id:'ORD-3126',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-02-28',item:'Motor grader',sub:'2 units \u00b7 Cimarron grading',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 2 units active, Cimarron Data Center.'},
-  {id:'ORD-3127',proj:'hercules',od:'2026-06-01',item:'Excavator demobi',sub:'2 units \u00b7 Hercules site',pillar:'logistics',dates:'Jun 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:2,plan:null,latest:'Scheduled \u2014 demobi window confirmed Jun 2026. Self-perform crew assigned.'},
+  {id:'ORD-3127',proj:'hercules',od:'2026-06-01',item:'Excavator demobi',sub:'2 units \u00b7 Hercules site',pillar:'logistics',dates:'Jun \u2013 Aug 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,status:'Active',plan:null,latest:'Active \u2014 demobi underway, both units in transit off Hercules site. Expected complete Aug 20.'},
   {id:'ORD-3128',proj:'hercules',od:'2026-07-15',item:'Tower crane mobilization (Riverside)',sub:'1 move \u00b7 Riverside Medical',pillar:'logistics',dates:'Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:0,plan:null,latest:'Scheduled \u2014 Bragg Crane confirmed Aug slot. Permit applications filed.'},
   {id:'ORD-3129',proj:'hercules',od:'2026-07-20',item:'Excavator delivery (Riverside)',sub:'1 move \u00b7 Riverside site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:0,plan:null,latest:'Scheduled \u2014 self-perform delivery, Sep window confirmed.'},
   {id:'ORD-3130',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:'Floor-by-floor material hoisting',sub:'8 lifts/mo \u00b7 internal crew',pillar:'logistics',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'On-rent \u2014 internal crew active, 8 lifts/mo average. Ongoing through structural close.'},
@@ -2792,7 +2792,7 @@ charges:[
   ];
   var _billExCO='';
   var COST_CODES=['01 · General','03 · Concrete','05 · Metals','09 · Finishes'];
-  function stageStatus(o){if(o.status&&o.status==='Requested')return 'Requested';var arr=_stageArr(o);return arr[Math.min(o.stage,arr.length-1)];}
+  function stageStatus(o){if(o.status)return o.status;var arr=_stageArr(o);return arr[Math.min(o.stage,arr.length-1)];}
 
   function ordClearDates(){ var a=document.getElementById('ordFrom'); if(a)a.value=''; var b=document.getElementById('ordTo'); if(b)b.value=''; renderOrders(); }
   /* ═══════════ WEEKLY ON-RENT RECERTIFICATION ═══════════ */
@@ -5974,6 +5974,16 @@ charges:[
     b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
     b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
     b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+r.reco+' owned · '+(r.qty-r.reco)+' re-rent</div>';
+    b+='<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">';
+    for(var _ai=0;_ai<r.qty;_ai++){
+      var _isO=_ai<r.reco;var _aD=r.avail[_ai];
+      b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">';
+      b+='<span class="tag '+(_isO?'ok':'neu')+'" style="font-size:10px;padding:1px 7px">'+(_isO?'Own':'Re-rent')+'</span>';
+      if(_isO){b+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_aD?_aD.id:('Unit '+(_ai+1)))+'</span>';if(_aD)b+='<span style="font-size:11.5px;color:var(--g500)"> · '+_aD.yard+'</span>';}
+      else{b+='<span style="font-size:12px;font-weight:600;color:var(--g900)">Unit '+(_ai+1)+'</span><span style="font-size:11.5px;color:var(--g500)"> · '+r.vendor+'</span>';}
+      b+='</div>';
+    }
+    b+='</div>';
     b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
@@ -5984,40 +5994,31 @@ charges:[
       b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
-    // Per-asset allocation (interactive toggles)
-    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:8px">Asset allocation — tap to toggle</div>';
-    b+='<div id="fqAssetAlloc" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">';
-    var _ownIdx2=0;
-    for(var _ai2=0;_ai2<r.qty;_ai2++){
-      var _io2=fqAssetOwn[_ai2];
-      b+='<div onclick="fqToggleAsset('+_ai2+')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid '+(_io2?'rgba(16,185,129,.3)':'var(--g150)')+';border-radius:6px;user-select:none">';
-      b+='<span class="tag '+(_io2?'ok':'neu')+'" style="font-size:10px;padding:2px 8px;flex-shrink:0">'+(_io2?'Own':'Re-rent')+'</span>';
-      if(_io2){
-        var _ud2=r.avail[_ownIdx2]||null;
-        b+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_ud2?_ud2.id:('Unit '+(_ai2+1)))+'</span>';
-        if(_ud2)b+='<span style="font-size:11px;color:var(--g400)"> · '+_ud2.yard+'</span>';
-        _ownIdx2++;
-      }else{
-        b+='<span style="font-size:11.5px;color:var(--g500)">'+r.vendor+'</span>';
-      }
-      b+='</div>';
-    }
-    b+='</div>';
-    // Financial breakdown
+    // Override section (hidden — shown when Override recommendation clicked)
+    b+='<div id="fqOverrideSec" style="display:none">';
+    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">Overriding the recommendation \u2014 click a row to toggle Own / Re-rent, or edit the asset ID.</div>';
+    b+='<div id="fqAssetAlloc" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px"></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
-    // Source yard
     b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
     b+='<div style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0">Source yard</div>';
     var _yreco=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
     b+='<select id="fqYardSel" style="font-size:12px;border:1px solid var(--g200);border-radius:5px;padding:4px 8px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+((r.yard||_yreco)===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
     b+='</div>';
-    // Footer
-    b+='<div class="modal-foot" style="display:flex">';
-    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
-    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669;margin-left:auto" onclick="fqApproveReco()">Confirm allocation</button>';
+    b+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:5px">Reason for override <span style="font-weight:400;color:var(--g400)">(required)</span></div>';
+    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid #fde68a;border-radius:4px;padding:6px 8px;color:var(--g800);background:#fffbeb;resize:vertical" placeholder="Why are you changing the recommended allocation?"></textarea></div>';
+    b+='<div class="modal-foot" style="display:flex;margin-top:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back</button>';
+    b+='<button class="btn btn-red" style="margin-left:auto" onclick="fqApproveReco()">Confirm allocation</button>';
     b+='</div>';
-    openModal('Fulfill — '+r.item, b);
-    fqRefresh();
+    b+='</div>';
+    // Main footer
+    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<div style="margin-left:auto;display:flex;gap:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
+    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
+    b+='</div></div>';
+    openModal('Fulfill \u2014 '+r.item, b);
   }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
@@ -6034,8 +6035,8 @@ charges:[
     var maxO=Math.min(r.avail.length,r.qty);
     if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
     if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
-    // Rebuild per-asset allocation rows
-    if(gel('fqAssetAlloc')&&r){var _rH3='';var _ownIdx3=0;for(var _ri3=0;_ri3<r.qty;_ri3++){var _io3=fqAssetOwn[_ri3];_rH3+='<div onclick="fqToggleAsset('+_ri3+')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid '+(_io3?'rgba(16,185,129,.3)':'var(--g150)')+';border-radius:6px;user-select:none">';_rH3+='<span class="tag '+(_io3?'ok':'neu')+'" style="font-size:10px;padding:2px 8px;flex-shrink:0">'+(_io3?'Own':'Re-rent')+'</span>';if(_io3){var _ud3=r.avail[_ownIdx3]||null;_rH3+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_ud3?_ud3.id:('Unit '+(_ri3+1)))+'</span>';if(_ud3)_rH3+='<span style="font-size:11px;color:var(--g400)"> · '+_ud3.yard+'</span>';_ownIdx3++;}else{_rH3+='<span style="font-size:11.5px;color:var(--g500)">'+r.vendor+'</span>';}_rH3+='</div>';}gel('fqAssetAlloc').innerHTML=_rH3;}
+    // Rebuild per-asset allocation rows (with editable asset ID input for owned)
+    if(gel('fqAssetAlloc')&&r){var _rH3='';var _ownIdx3=0;for(var _ri3=0;_ri3<r.qty;_ri3++){var _io3=fqAssetOwn[_ri3];_rH3+='<div onclick="fqToggleAsset('+_ri3+')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid '+(_io3?'rgba(16,185,129,.3)':'var(--g150)')+';border-radius:6px;user-select:none">';_rH3+='<span class="tag '+(_io3?'ok':'neu')+'" style="font-size:10px;padding:2px 8px;flex-shrink:0">'+(_io3?'Own':'Re-rent')+'</span>';if(_io3){var _ud3=r.avail[_ownIdx3]||null;var _defId3=_ud3?_ud3.id:('Unit '+(_ri3+1));var _prevEl3=gel('fqAssetId_'+_ri3);var _prevId3=_prevEl3?_prevEl3.value:_defId3;_rH3+='<input type="text" id="fqAssetId_'+_ri3+'" onclick="event.stopPropagation()" value="'+_prevId3+'" style="font-size:12px;font-weight:600;font-family:monospace;border:none;border-bottom:1px solid var(--g200);background:transparent;color:var(--g900);width:90px;outline:none;cursor:text">';if(_ud3)_rH3+='<span style="font-size:11px;color:var(--g400)"> \u00b7 '+_ud3.yard+'</span>';_ownIdx3++;}else{_rH3+='<span style="font-size:11.5px;color:var(--g500)">'+r.vendor+'</span>';}_rH3+='</div>';}gel('fqAssetAlloc').innerHTML=_rH3;}
   }
   var fqAssetOwn=[];
   function fqToggleAsset(i){if(!fqAssetOwn.length)return;fqAssetOwn[i]=!fqAssetOwn[i];fqPickOwned=fqAssetOwn.filter(function(v){return v;}).length;fqRefresh();}
@@ -6992,8 +6993,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   },
   gaps:{
     hercules:[{t:'electrical',start:'Aug 1',end:'Oct 10',note:'Modular e-houses + cable tray concurrent \u2014 Electrical at capacity risk Aug\u2013Oct'}],
-    riverside:[],
-    cimarron:[{t:'misc',start:'Sep 1',end:'Oct 10',note:'Partition panels + enclosures concurrent \u2014 Misc Steel at risk Sep\u2013Oct'}]
+    riverside:[{t:'mechanical',start:'Aug 1',end:'Sep 20',note:'MEP rack \u2014 fire suppression header concurrent \u2014 Mechanical at capacity risk Aug\u2013Sep'}],
+    cimarron:[{t:'misc',start:'Sep 1',end:'Oct 10',note:'Partition panels + enclosures concurrent \u2014 Misc Steel at risk Sep\u2013Oct'},{t:'electrical',start:'Aug 1',end:'Sep 20',note:'Cable tray + UPS frames concurrent \u2014 Electrical at capacity risk Aug\u2013Sep'}]
   }
 };
 
@@ -9712,9 +9713,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {move:'Excavator delivery',type:'Heavy haul',when:'May 20 \u00b7 6\u201310 AM',gate:'North gate',src:'ORD-3042',state:'Complete',linkOrd:'ORD-3070',sa:1,ea:1},
         {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',linkOrd:'ORD-3116',when:'Oct 15 \u00b7 TBD',gate:'North gate',src:'Procurement',state:'Requested',sa:6,ea:6},
         {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Complete',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
+        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Scheduled',sa:5,ea:5},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8,attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Scheduled',sa:4,ea:4},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'In fulfillment',sa:4,ea:4},
         {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
