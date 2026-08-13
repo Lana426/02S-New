@@ -1582,7 +1582,7 @@
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Awaiting pricing',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Requested',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
-      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls \u00b7 this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'3',sub:'2 mob \u00b7 1 demob \u00b7 this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'14',sub:'4 ongoing \u00b7 10 scheduled',tone:'ok',icon:IC.layers}],
+      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls \u00b7 this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'2',sub:'1 mob \u00b7 1 demob \u00b7 this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'6',sub:'4 ongoing \u00b7 2 scheduled',tone:'ok',icon:IC.layers}],
       v1:'6 moves this week · 3 oversize hauls pending permits · Tower crane mobilization confirmed Aug 3.',
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
@@ -7014,7 +7014,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Scheduled'},
         {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'Planned'},
         {item:'BESS container placements',cat:'hoisting',qty:'6 moves',start:'Oct 1',end:'Oct 20',state:'Requested'},
-        {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Planned'},
+        {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Scheduled'},
         {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Pending'}
       ],
       riverside:[
@@ -7229,9 +7229,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'3 moves',c:'Aug\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider.',rows:[
         {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Complete',ordId:'ORD-3071',sa:4,ea:4,cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',sa:6,ea:6,ordId:null,cost:'$38K',firm:'Self-perform',fqRef:'REQ-L-3061',attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Pending',sa:7,ea:7,ordId:null,cost:'$8,200',firm:'TBD',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
-        {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Planned',sa:6,ea:7,ordId:null,cost:'$22,000',firm:'TBD'},
-        {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'Scheduled',sa:4,ea:4,ordId:'ORD-3119',cost:'$14,000',firm:'Bragg Crane',attachments:[{type:'Shipping',name:'Haul route map — pipe rack delivery Aug 15',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Oversize load permit — pipe rack transport',ref:'OLP-3119-001',status:'Approved'}]},
+        {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:null,cost:'$8,200',firm:'TBD',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
+        {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Scheduled',sa:6,ea:7,ordId:null,cost:'$22,000',firm:'TBD'},
+        {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'In fulfillment',sa:4,ea:4,ordId:'ORD-3119',cost:'$14,000',firm:'Bragg Crane',attachments:[{type:'Shipping',name:'Haul route map — pipe rack delivery Aug 15',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Oversize load permit — pipe rack transport',ref:'OLP-3119-001',status:'Approved'}]},
         {item:'Excavator demobi',qty:'2 units',window:'Jun 2026',state:'Complete',ordId:'ORD-3127',sa:2,ea:2,cost:'$4,800',firm:'Self-perform',attachments:[{type:'Submittals',name:'Demobilization checklist — excavator fleet',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'},{type:'Change Orders',name:'Final billing summary — 2-unit demobi',ref:'FINBILL-3127-001',status:'Closed'}]}
       ]},
       riverside:{budget:600000,dpSpent:300000,adHoc:180000,
@@ -7921,7 +7921,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var barColor=tc;
         var barSty='position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:'+top+'px;border-radius:4px;overflow:hidden;z-index:1;background:'+barColor+';opacity:'+(isInFab?'.92':(isAdhoc?'.5':(gapItem?'.85':'.72')));
         h+='<div title="'+it.item+' \u2502 Fab: '+it.fs+' \u2192 '+it.fe+' \u2502 Delivery ~+'+it.shipD+'d" style="'+barSty+'">';
-        if(!isAdhoc)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
+        h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
         h+='</div>';
         var mx=pct(it.mo);
         if(mx>=0&&mx<=100)h+='<div title="Mat. order: '+it.mo+'" style="position:absolute;left:'+mx+'%;top:'+(top-1)+'px;width:2px;height:20px;background:#64748b;z-index:2;border-radius:1px"></div>';
@@ -7942,32 +7942,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
       gaps.forEach(function(g){
         var tl2=TL[g.t]||g.t;
-        var tc2=TC[g.t]||'#888';
-        var gItems=items.filter(function(it){return it.t===g.t;});
-        var gs2=pct(g.start); var ge2=pct(g.end);
-        var adhocItems=gItems.filter(function(it){return it.adhoc;});
-        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 12px;margin-bottom:6px">';
-        h+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:'+(gItems.length?'8':'0')+'px">';
-        h+='<span style="color:var(--red);font-weight:600;font-size:11.5px">⚠ Capacity risk · '+tl2+'</span>';
-        h+='<span style="font-size:11px;color:var(--g500)">'+g.note+'</span></div>';
-        if(gItems.length){
-          h+='<div style="position:relative;background:rgba(239,68,68,.04);border-radius:4px;padding:3px 0;overflow:hidden">';
-          h+='<div style="position:absolute;left:'+gs2+'%;width:'+(ge2-gs2)+'%;top:0;bottom:0;background:rgba(239,68,68,.12);border-radius:2px"></div>';
-          gItems.forEach(function(it,ri){
-            var x1=pct(it.fs); var x2=pct(it.fe); var bw=Math.max(x2-x1,2);
-            var isAdhoc=!!it.adhoc;
-            h+='<div style="position:relative;display:flex;align-items:center;padding:2px 0">';
-            h+='<div style="position:relative;width:100%;height:14px">';
-            h+='<div style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:100%;border-radius:3px;background:'+tc2+';opacity:'+(isAdhoc?.8:.45)+';box-sizing:border-box'+(isAdhoc?';border:1px solid rgba(239,68,68,.5)':'')+'"></div>';
-            h+='<div style="position:absolute;left:'+Math.max(x1+.5,0)+'%;font-size:9px;color:#fff;line-height:14px;padding:0 4px;white-space:nowrap;text-shadow:0 0 3px rgba(0,0,0,.5)">'+it.item+(isAdhoc?' ★':'')+' ('+it.qty+')'+'</div>';
-            h+='</div></div>';
-          });
-          h+='</div>';
-        }
-        if(adhocItems.length){
-          h+='<div style="font-size:10.5px;color:var(--red);margin-top:5px;font-weight:500">★ Ad hoc scope within risk window: '+adhocItems.map(function(it){return it.item;}).join(', ')+'</div>';
-        }
-        h+='</div>';
+        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">⚠ Capacity risk · '+tl2+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';
       });
       h+='</div>';
     } else {
@@ -9730,7 +9705,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Awaiting pricing',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Requested',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
-      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls · this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'3',sub:'2 mob · 1 demob · this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'14',sub:'4 ongoing · 10 scheduled',tone:'ok',icon:IC.layers}],
+      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls · this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'2',sub:'1 mob · 1 demob · this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'6',sub:'4 ongoing · 2 scheduled',tone:'ok',icon:IC.layers}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
