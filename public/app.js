@@ -1653,6 +1653,8 @@
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     // delivery tab enabled for v1
     var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span></div></div></div>';
+    // KPI cards
+    if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     if(ns){
       // NS enhanced: scheduling intelligence + 3-tab view
       var NS_INTEL=[
@@ -2070,15 +2072,15 @@ function renderProfServicesDP(){
     {id:'ORD-3061',proj:'hercules',od:'2026-05-15',item:'Modular Restroom Pod',sub:'1 unit · worker welfare',pillar:'prefab',dates:'one-time · deliver Jun 20',cost:'01 · General',stage:1,plan:null,latest:'Submittal submitted — awaiting prefab team review'},
     {id:'ORD-3070',proj:'riverside',od:'2026-05-18',item:'Heavy haul transport — excavator',sub:'1 load · lowboy',pillar:'logistics',dates:'May 20 · one-time',cost:'03 · Concrete',stage:4,plan:null,latest:'Delivery confirmed — excavator on site May 20'},
     {id:'ORD-3071',proj:'hercules',od:'2026-08-01',item:'Tower crane mobilization haul',sub:'1 move · permitted route',pillar:'logistics',dates:'Aug 3 · one-time',cost:'26-330 · BESS & Substation',stage:2,plan:null,latest:'Permits confirmed — crane mobilization window Aug 3, 5 AM · North gate. Haul carrier confirmed.',attachments:[{type:'Safety',name:'JHA — crane mobilization Aug 2026',ref:'JHA-3071-001',status:'Approved'},{type:'Safety',name:'Loading & unloading plan — crane haul',ref:'LULP-3071-01',status:'Approved'},{type:'Crew Design',name:'Lift drawings — tower crane self-erect',ref:'LD-3071-001',status:'Approved'},{type:'Crew Design',name:'Rigging plan — Aug 3 mobilization',ref:'RIG-3071-001',status:'Approved'},{type:'Shipping',name:'Bill of lading — ORD-3071',ref:'BOL-3071-01',status:'Available'},{type:'Shipping',name:'DOT oversize load permit — Route A7',ref:'DOT-3071-01',status:'Approved'}]},
-    {id:'ORD-3072',proj:'hercules',od:'2026-06-10',item:'Material staging & drayage',sub:'ongoing · laydown A',pillar:'logistics',dates:'Jun 10 – Sep 30',cost:'01 · General',stage:3,plan:null,latest:'Staging operations active at laydown A'},
+    {id:'ORD-3072',proj:'hercules',od:'2026-06-10',item:'Material staging & drayage',sub:'ongoing · laydown A',pillar:'logistics',dates:'Jun 10 – Sep 30',cost:'01 · General',stage:1,plan:null,latest:'Staging operations active at laydown A'},
     {id:'ORD-3080',proj:'hercules',od:'2026-05-01',item:'PPE kit — crew of 20',sub:'hard hats, vests, gloves',pillar:'procurement',dates:'one-time',cost:'01 · General',stage:4,plan:null,latest:'Delivered and distributed to crew'},
     {id:'ORD-3081',proj:'riverside',od:'2026-05-10',item:'Concrete form hardware — lot',sub:'snap ties, wedge bolts',pillar:'procurement',dates:'one-time',cost:'03 · Concrete',stage:3,plan:null,latest:'Order acknowledged — fulfillment in progress'},
     {id:'ORD-3082',proj:'hercules',od:'2026-06-01',item:'Temporary fencing & gates',sub:'400 LF + 2 gates',pillar:'procurement',dates:'Jun 1 – project close',cost:'01 · General',stage:2,plan:null,latest:'Fabrication quote received — awaiting PO approval'},
-    {id:'ORD-3090',proj:'riverside',od:'2026-04-25',anticipatedOff:'2026-12-31',item:'Special inspections — concrete',sub:'IBC §1705 · 3rd party',pillar:'profservices',dates:'ongoing',cost:'03 · Concrete',stage:4,plan:null,latest:'Inspector on site as scheduled — reports filed weekly'},
-    {id:'ORD-3091',proj:'hercules',od:'2026-06-01',item:'Structural special inspection',sub:'Terracon · 2 FTE',pillar:'profservices',dates:'Jun 2026 – Feb 2027',cost:'0200-0320-0000-0001 · Site earthwork',stage:3,plan:null,latest:'Active — onsite inspections ongoing through Feb 2027',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Quality',name:'Special inspection reports — Jun 2026',ref:'SIR-3091-006',status:'Available'},{type:'Quality',name:'Storage & handling requirements',ref:'SHR-3091-001',status:'Available'},{type:'Safety',name:'Site safety plan — Terracon crew',ref:'SSP-3091-001',status:'Approved'}]},
-    {id:'ORD-3092',proj:'hercules',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:2,plan:null,latest:'Baseline readings established — monitoring ongoing'},
-    {id:'ORD-3095',proj:'hercules',od:'2026-03-01',item:"Owner's engineer / IE support",sub:'DNV \u00b7 2 FTE',pillar:'profservices',dates:'Mar \u2013 Dec 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'Monthly progress report submitted \u2014 Jun 2026. On track per CPM schedule.'},
-    {id:'ORD-3096',proj:'hercules',od:'2026-03-05',item:'Geotechnical monitoring',sub:'Terracon \u00b7 3 FTE',pillar:'profservices',dates:'Mar \u2013 Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:3,plan:null,latest:'Monitoring ongoing \u2014 no deviations. Jul billing submitted.'},
+    {id:'ORD-3090',proj:'riverside',od:'2026-04-25',anticipatedOff:'2026-12-31',item:'Special inspections — concrete',sub:'IBC §1705 · 3rd party',pillar:'profservices',dates:'ongoing',cost:'03 · Concrete',stage:1,plan:null,latest:'Inspector on site as scheduled — reports filed weekly'},
+    {id:'ORD-3091',proj:'hercules',od:'2026-06-01',item:'Structural special inspection',sub:'Terracon · 2 FTE',pillar:'profservices',dates:'Jun 2026 – Feb 2027',cost:'0200-0320-0000-0001 · Site earthwork',stage:1,plan:null,latest:'Active — onsite inspections ongoing through Feb 2027',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Quality',name:'Special inspection reports — Jun 2026',ref:'SIR-3091-006',status:'Available'},{type:'Quality',name:'Storage & handling requirements',ref:'SHR-3091-001',status:'Available'},{type:'Safety',name:'Site safety plan — Terracon crew',ref:'SSP-3091-001',status:'Approved'}]},
+    {id:'ORD-3092',proj:'hercules',od:'2026-06-15',item:'Environmental monitoring',sub:'dust, noise, stormwater',pillar:'profservices',dates:'Jun – Nov 2026',cost:'01 · General',stage:1,plan:null,latest:'Baseline readings established — monitoring ongoing'},
+    {id:'ORD-3095',proj:'hercules',od:'2026-03-01',item:"Owner's engineer / IE support",sub:'DNV \u00b7 2 FTE',pillar:'profservices',dates:'Mar \u2013 Dec 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,plan:null,latest:'Monthly progress report submitted \u2014 Jun 2026. On track per CPM schedule.'},
+    {id:'ORD-3096',proj:'hercules',od:'2026-03-05',item:'Geotechnical monitoring',sub:'Terracon \u00b7 3 FTE',pillar:'profservices',dates:'Mar \u2013 Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'Monitoring ongoing \u2014 no deviations. Jul billing submitted.'},
     {id:'ORD-3100',proj:'hercules',od:'2026-06-01',item:'Nut runners \u2014 3/8\" cordless',sub:'48 units \u00b7 solar racking',pillar:'procurement',dates:'Jul 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:4,plan:null,latest:'Delivered \u2014 48 nut runners on-site. Solar racking crews active.'},
     {id:'ORD-3101',proj:'hercules',od:'2026-06-15',item:'Battery packs \u2014 20v M18',sub:'100 units \u00b7 site cordless fleet',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Delivered Jun 30 \u2014 distributed to crews. Receiving inspection complete.'},
     {id:'ORD-3102',proj:'hercules',od:'2026-06-10',item:'Quad charging banks \u2014 12-bay',sub:'20 units \u00b7 site-wide tool charging',pillar:'procurement',dates:'Jul 1, 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:4,plan:null,latest:'Installed at tool cribs Jul 1. All stations operational.'},
@@ -2096,11 +2098,11 @@ function renderProfServicesDP(){
     {id:'ORD-3113',proj:'hercules',od:'2026-04-01',item:'Motor grader',sub:'6 units \u00b7 finish grading',pillar:'equipment',dates:'Apr 2026 \u2013 Aug 2026',cost:'3100-2000-0000-0001 \u00b7 Mass Grading',stage:6,plan:null,latest:'Off-rent \u2014 returned Aug 5. Final inspection passed.',rental:{type:'monthly',rate:14000,unit:'unit',units:6}},
     {id:'ORD-3114',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-10-31',item:'Compaction roller',sub:'12 units \u00b7 compaction',pillar:'equipment',dates:'Apr 2026 \u2013 Oct 2026',cost:'3100-2000-0000-0001 \u00b7 Mass Grading',stage:5,plan:null,latest:'On-rent \u2014 compaction testing in progress.',rental:{type:'monthly',rate:6800,unit:'unit',units:12}},
     {id:'ORD-3115',proj:'hercules',od:'2026-08-01',anticipatedOff:'2026-12-31',item:'Hydraulic pile driver',sub:'6 units \u00b7 Sector 2',pillar:'equipment',dates:'Aug 2026 \u2013 Dec 2026',cost:'3100-6300-0000-0001 \u00b7 Solar pile',stage:5,plan:null,latest:'On-rent \u2014 mobilized Aug 1.',rental:{type:'monthly',rate:34500,unit:'unit',units:6}},
-    {id:'ORD-3116',proj:'hercules',od:'2026-10-01',item:'MV switchgear delivery \u2014 oversize haul',sub:'1 load \u00b7 permitted route',pillar:'logistics',dates:'Oct 15, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submitted \u2014 02S coordinating permit and route survey.'},
-    {id:'ORD-3117',proj:'hercules',od:'2026-09-01',item:'PV module deliveries \u2014 recurring',sub:'daily Sep \u2013 Nov \u00b7 East gate',pillar:'logistics',dates:'Sep \u2013 Nov 2026',cost:'2600-5600-0000-0001 \u00b7 Tracker & Module',stage:1,plan:null,latest:'Submitted \u2014 02S scheduling gate slots.'},
-    {id:'ORD-3118',proj:'hercules',od:'2026-12-01',item:'BESS container placement',sub:'haul + crane \u00b7 Pad 3',pillar:'logistics',dates:'Dec 1, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:1,plan:null,latest:'Submitted \u2014 02S coordinating crane and haul.'},
-    {id:'ORD-3119',proj:'hercules',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'},
-    {id:'ORD-3120',proj:'hercules',od:'2026-07-15',item:'VDC / BIM coordination',sub:'3 FTE \u00b7 Apr\u2013Oct 2026',pillar:'profservices',dates:'Apr 2026 \u2013 Oct 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:3,plan:null,latest:'WSP engaged \u2014 3 FTE active on site since Apr 2026. BIM execution plan approved; monthly deliverables on track.'},
+    {id:'ORD-3116',proj:'hercules',od:'2026-10-01',item:'MV switchgear delivery \u2014 oversize haul',sub:'1 load \u00b7 permitted route',pillar:'logistics',dates:'Oct 15, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:0,plan:null,latest:'Submitted \u2014 02S coordinating permit and route survey.'},
+    {id:'ORD-3117',proj:'hercules',od:'2026-09-01',item:'PV module deliveries \u2014 recurring',sub:'daily Sep \u2013 Nov \u00b7 East gate',pillar:'logistics',dates:'Sep \u2013 Nov 2026',cost:'2600-5600-0000-0001 \u00b7 Tracker & Module',stage:0,plan:null,latest:'Submitted \u2014 02S scheduling gate slots.'},
+    {id:'ORD-3118',proj:'hercules',od:'2026-12-01',item:'BESS container placement',sub:'haul + crane \u00b7 Pad 3',pillar:'logistics',dates:'Dec 1, 2026',cost:'2600-3300-0000-0001 \u00b7 BESS & Substation',stage:0,plan:null,latest:'Submitted \u2014 02S coordinating crane and haul.'},
+    {id:'ORD-3119',proj:'hercules',od:'2026-08-15',item:'Prefab pipe rack delivery',sub:'1 load \u00b7 Laydown B',pillar:'logistics',dates:'Aug 15, 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:0,plan:null,latest:'Submitted \u2014 02S confirming truck size and Laydown B availability.'},
+    {id:'ORD-3120',proj:'hercules',od:'2026-07-15',item:'VDC / BIM coordination',sub:'3 FTE \u00b7 Apr\u2013Oct 2026',pillar:'profservices',dates:'Apr 2026 \u2013 Oct 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:1,plan:null,latest:'WSP engaged \u2014 3 FTE active on site since Apr 2026. BIM execution plan approved; monthly deliverables on track.'},
     {id:'ORD-3121',proj:'hercules',od:'2026-07-20',item:'Telehandler \u2014 10K \u00d7 24 (Sector 1)',sub:'24 units \u00b7 Sep 2026\u2013Apr 2027 \u00b7 Tracker assembly',pillar:'equipment',dates:'Sep 2026 \u2013 Apr 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing allocation; confirm by Aug 15.'},
     {id:'ORD-3122',proj:'hercules',od:'2026-07-20',item:'Boom lift \u2014 60 ft \u00d7 18 (Sector 1)',sub:'18 units \u00b7 Sep 2026\u2013Mar 2027 \u00b7 Module installation',pillar:'equipment',dates:'Sep 2026 \u2013 Mar 2027',cost:'2600-5600-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Submitted \u2014 02S reviewing availability across fleet; confirm by Aug 15.'},
   {id:'ORD-3123',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-03-31',item:'Forklift 5K',sub:'4 units \u00b7 Riverside material handling',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 4 units active, Riverside Medical Center site.'},
@@ -2108,11 +2110,11 @@ function renderProfServicesDP(){
   {id:'ORD-3125',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-02-28',item:'Compaction roller',sub:'4 units \u00b7 Cimarron site prep',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 4 units active, Cimarron Data Center.'},
   {id:'ORD-3126',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-02-28',item:'Motor grader',sub:'2 units \u00b7 Cimarron grading',pillar:'equipment',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 2 units active, Cimarron Data Center.'},
   {id:'ORD-3127',proj:'hercules',od:'2026-06-01',item:'Excavator demobi',sub:'2 units \u00b7 Hercules site',pillar:'logistics',dates:'Jun 2026',cost:'0100-0100-0000-0001 \u00b7 General conditions',stage:2,plan:null,latest:'Scheduled \u2014 demobi window confirmed Jun 2026. Self-perform crew assigned.'},
-  {id:'ORD-3128',proj:'hercules',od:'2026-07-15',item:'Tower crane mobilization (Riverside)',sub:'1 move \u00b7 Riverside Medical',pillar:'logistics',dates:'Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 Bragg Crane confirmed Aug slot. Permit applications filed.'},
-  {id:'ORD-3129',proj:'hercules',od:'2026-07-20',item:'Excavator delivery (Riverside)',sub:'1 move \u00b7 Riverside site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 self-perform delivery, Sep window confirmed.'},
-  {id:'ORD-3130',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:'Floor-by-floor material hoisting',sub:'8 lifts/mo \u00b7 internal crew',pillar:'logistics',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:null,latest:'On-rent \u2014 internal crew active, 8 lifts/mo average. Ongoing through structural close.'},
-  {id:'ORD-3131',proj:'hercules',od:'2026-07-20',item:'Excavator delivery + haul',sub:'2 moves \u00b7 Cimarron site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'Scheduled \u2014 self-perform, Sep delivery window confirmed.'},
-  {id:'ORD-3132',proj:'hercules',od:'2026-07-10',item:'PDU site delivery',sub:'3 loads \u00b7 3PL',pillar:'logistics',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 3PL confirmed. Delivery window Oct 2026; receiving team scheduled.'},
+  {id:'ORD-3128',proj:'hercules',od:'2026-07-15',item:'Tower crane mobilization (Riverside)',sub:'1 move \u00b7 Riverside Medical',pillar:'logistics',dates:'Aug 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:0,plan:null,latest:'Scheduled \u2014 Bragg Crane confirmed Aug slot. Permit applications filed.'},
+  {id:'ORD-3129',proj:'hercules',od:'2026-07-20',item:'Excavator delivery (Riverside)',sub:'1 move \u00b7 Riverside site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:0,plan:null,latest:'Scheduled \u2014 self-perform delivery, Sep window confirmed.'},
+  {id:'ORD-3130',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:'Floor-by-floor material hoisting',sub:'8 lifts/mo \u00b7 internal crew',pillar:'logistics',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'On-rent \u2014 internal crew active, 8 lifts/mo average. Ongoing through structural close.'},
+  {id:'ORD-3131',proj:'hercules',od:'2026-07-20',item:'Excavator delivery + haul',sub:'2 moves \u00b7 Cimarron site',pillar:'logistics',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:0,plan:null,latest:'Scheduled \u2014 self-perform, Sep delivery window confirmed.'},
+  {id:'ORD-3132',proj:'hercules',od:'2026-07-10',item:'PDU site delivery',sub:'3 loads \u00b7 3PL',pillar:'logistics',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:0,plan:null,latest:'PO issued \u2014 3PL confirmed. Delivery window Oct 2026; receiving team scheduled.'},
   {id:'ORD-3133',proj:'hercules',od:'2026-06-01',item:'Overhead MEP rack modules',sub:'6 modules \u00b7 shop-fabricated',pillar:'prefab',dates:'Sep 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fabrication \u2014 Piperite Fab. 2 of 6 modules complete. Delivery Sep 2026.'},
   {id:'ORD-3134',proj:'hercules',od:'2026-05-01',item:'L2 headwall assemblies (Riverside)',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:3,plan:null,latest:'Delivered \u2014 all 8 headwall units received Jul 20, 2026. Signed off by site lead.'},
   {id:'ORD-3135',proj:'hercules',od:'2026-06-15',item:'Server room partition panels',sub:'6 panels \u00b7 custom fab',pillar:'prefab',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'In fabrication \u2014 ModSpace. Drawings approved, fabrication underway. Delivery Nov 2026.'},
@@ -2123,8 +2125,8 @@ function renderProfServicesDP(){
   {id:'ORD-3140',proj:'hercules',od:'2026-07-05',item:'Cable management trays',sub:'Lot \u00b7 Panduit',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Panduit order confirmed. Delivery Oct 2026 per schedule.'},
   {id:'ORD-3141',proj:'hercules',od:'2026-07-01',item:'Raised floor panels',sub:'2,000 sqft \u00b7 Tate Access',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Tate Access confirmed. Delivery Oct 2026, coordinating dock access.'},
   {id:'ORD-3142',proj:'hercules',od:'2026-07-10',item:'Precision cooling units',sub:'16 units \u00b7 Liebert',pillar:'procurement',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Liebert confirmed, 16-wk lead time. Delivery Nov 2026. Critical.'},
-  {id:'ORD-3143',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Riverside Medical. No billing disputes.'},
-  {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:4,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
+  {id:'ORD-3143',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Riverside Medical. No billing disputes.'},
+  {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
     ,{id:'ORD-5001',proj:'hercules',fresh:true,od:'2026-07-31',item:'BESS commissioning agent',sub:'2 FTE · Nov 2026 – Mar 2027',pillar:'profservices',dates:'Nov 2026 – Mar 2027',cost:'2600-3300-0000-0001 · BESS & Substation',stage:0,status:'Requested',plan:'PS-BESS-001',qty:2,vendor:'TBD',latest:'Submitted to 02S — awaiting acknowledgement.'},
     {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:0,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
     {id:'ORD-5003',proj:'hercules',fresh:true,od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:0,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'}
@@ -5583,7 +5585,7 @@ charges:[
     {src:'dp',id:'fq5',yard:'Chandler',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'fulfilled',status:'Allocated',doneNote:'WSP engaged — 3 FTE active since Apr 2026',suggest:'$26,000/mo (rate card)',docs:['Scope of work (PDF)','Rate card (PDF)']},
     {src:'adhoc',id:'fq7',yard:'Houston',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'0100-0100-0000-0001',kind:'service',status:'New'},
     {src:'dp',id:'fqS1',yard:'Chandler',ref:'REQ-S-2101',pillar:'services',item:'Owner\u2019s engineer / IE support',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'ongoing',code:'0100-0100-0000-0001',kind:'service',status:'Acknowledged'},
-    {src:'dp',id:'fqS2',yard:'Chandler',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',status:'Requested',suggest:'Quote \u2014 specialty commissioning',docs:['SOW draft (PDF)','Commissioning plan (PDF)']},
+    {src:'dp',id:'fqS2',yard:'Chandler',ref:'REQ-S-2108',pillar:'services',item:'BESS commissioning agent',qty:'2 FTE',project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',actLabel:'Get quote',status:'Requested',suggest:'Quote \u2014 specialty commissioning',docs:['SOW draft (PDF)','Commissioning plan (PDF)']},
     {src:'adhoc',id:'fqS3',yard:'Corona',ref:'REQ-S-2114',pillar:'services',item:'Structural special inspection',qty:'2 FTE',project:'Riverside Medical Center',needby:'Aug 2026',code:'0100-0100-0000-0001',kind:'service',status:'New'},
     {src:'dp',id:'fqP1',yard:'Chandler',ref:'REQ-P-0501',pillar:'procurement',item:'MV switchgear \u00b7 15kV lineup',qty:2,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0100-0000-0001',kind:'flow',status:'Needs attention',actLabel:'Release PO',nextStatus:'In fulfillment',hint:'Order-by passed \u2014 coordinate with procurement to protect substation completion',docs:['Vendor quote (PDF)','Lead time confirmation (PDF)','Technical spec (PDF)']},
     {src:'dp',id:'fqP2',yard:'Chandler',ref:'REQ-P-0508',pillar:'procurement',item:'BESS containers \u00b7 2.5 MWh',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-3300-0000-0001',kind:'flow',status:'Needs attention',actLabel:'Release PO',nextStatus:'In fulfillment',hint:'Order-by passed \u2014 confirm delivery sequence with logistics before releasing',docs:['Vendor quote (PDF)','Delivery schedule (PDF)']},
@@ -5820,7 +5822,7 @@ charges:[
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
       h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span><button style="background:none;border:none;cursor:pointer;padding:1px 3px;color:var(--g400);font-size:11px;line-height:1;border-radius:3px" onclick="fqEditModal(\''+r.id+'\')">&#9998;</button></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
-    h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more requests ↓</button>':'')+'</div>';
+    h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more ↓</button>':'')+'</div>';
     h+='</div>';
     if(ns){
       var _oids=Object.keys(ORDER_TASKS);
@@ -5953,6 +5955,7 @@ charges:[
   function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id;
     fqPickOwned=Math.min(r.reco,Math.min(r.avail.length,r.qty));
+    fqAssetOwn=[];for(var _fai=0;_fai<r.qty;_fai++)fqAssetOwn.push(_fai<fqPickOwned);
     var maxOwned=Math.min(r.avail.length,r.qty);
     var cReco=fqCompute(r,r.reco), cAll=fqCompute(r,maxOwned), cNone=fqCompute(r,0);
     var ownCheaper=r.ownedCost<r.reRentRate;
@@ -5971,19 +5974,7 @@ charges:[
     b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
     b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
     b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+r.reco+' owned · '+(r.qty-r.reco)+' re-rent</div>';
-    // Asset-level breakdown
-    b+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
-    for(var _ai=0;_ai<r.qty;_ai++){
-      var _assetOwn=_ai<r.reco;
-      var _assetData=r.avail[_ai];
-      var _assetId=_assetData?_assetData.id:('Unit '+(_ai+1));
-      var _assetYard=_assetData?(' · '+_assetData.yard):'';
-      var _assetTag=_assetOwn?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';
-      var _assetSub=_assetOwn?_assetYard:(' · '+r.vendor);
-      b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">'+_assetTag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_assetId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_assetSub+'</span></div>';
-    }
-    b+='</div>';
-    b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:2px">'+whyTxt+'</div>';
+    b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
     [{label:'All owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended mix',c:cReco,hi:true},{label:'All sourced',c:cNone,hi:false}].forEach(function(s){
@@ -5993,32 +5984,40 @@ charges:[
       b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
-    // Override section (hidden, shown when Override clicked)
-    b+='<div id="fqOverrideSec" style="display:none">';
-    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">Overriding the recommendation — adjust the split below.</div>';
-    b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" type="button" id="fqStepDown" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" type="button" id="fqStepUp" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
+    // Per-asset allocation (interactive toggles)
+    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:8px">Asset allocation — tap to toggle</div>';
+    b+='<div id="fqAssetAlloc" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px">';
+    var _ownIdx2=0;
+    for(var _ai2=0;_ai2<r.qty;_ai2++){
+      var _io2=fqAssetOwn[_ai2];
+      b+='<div onclick="fqToggleAsset('+_ai2+')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid '+(_io2?'rgba(16,185,129,.3)':'var(--g150)')+';border-radius:6px;user-select:none">';
+      b+='<span class="tag '+(_io2?'ok':'neu')+'" style="font-size:10px;padding:2px 8px;flex-shrink:0">'+(_io2?'Own':'Re-rent')+'</span>';
+      if(_io2){
+        var _ud2=r.avail[_ownIdx2]||null;
+        b+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_ud2?_ud2.id:('Unit '+(_ai2+1)))+'</span>';
+        if(_ud2)b+='<span style="font-size:11px;color:var(--g400)"> · '+_ud2.yard+'</span>';
+        _ownIdx2++;
+      }else{
+        b+='<span style="font-size:11.5px;color:var(--g500)">'+r.vendor+'</span>';
+      }
+      b+='</div>';
+    }
+    b+='</div>';
+    // Financial breakdown
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
-    // Source yard (inside override section)
+    // Source yard
     b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
     b+='<div style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0">Source yard</div>';
     var _yreco=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
     b+='<select id="fqYardSel" style="font-size:12px;border:1px solid var(--g200);border-radius:5px;padding:4px 8px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+((r.yard||_yreco)===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
     b+='</div>';
-    b+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:5px">Reason for override <span style="font-weight:400;color:var(--g400)">(required — saved with allocation)</span></div>';
-    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid #fde68a;border-radius:4px;padding:6px 8px;color:var(--g800);background:#fffbeb;resize:vertical" placeholder="Why are you changing the recommended allocation? e.g., unit reserved for another project, equipment condition, yard distance, customer request…"></textarea></div>';
-    b+='<div class="modal-foot" style="display:flex;margin-top:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back</button>';
-    b+='<button class="btn btn-red" style="margin-left:auto" onclick="fqAccept()">Accept allocation</button>';
-    b+='</div>';
-    b+='</div>';
-    // Main footer: Cancel | Override recommendation | Approve recommendation
-    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
+    // Footer
+    b+='<div class="modal-foot" style="display:flex">';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
-    b+='<div style="margin-left:auto;display:flex;gap:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
-    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
-    b+='</div></div>';
+    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669;margin-left:auto" onclick="fqApproveReco()">Confirm allocation</button>';
+    b+='</div>';
     openModal('Fulfill — '+r.item, b);
+    fqRefresh();
   }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
@@ -6035,7 +6034,11 @@ charges:[
     var maxO=Math.min(r.avail.length,r.qty);
     if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
     if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
+    // Rebuild per-asset allocation rows
+    if(gel('fqAssetAlloc')&&r){var _rH3='';var _ownIdx3=0;for(var _ri3=0;_ri3<r.qty;_ri3++){var _io3=fqAssetOwn[_ri3];_rH3+='<div onclick="fqToggleAsset('+_ri3+')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid '+(_io3?'rgba(16,185,129,.3)':'var(--g150)')+';border-radius:6px;user-select:none">';_rH3+='<span class="tag '+(_io3?'ok':'neu')+'" style="font-size:10px;padding:2px 8px;flex-shrink:0">'+(_io3?'Own':'Re-rent')+'</span>';if(_io3){var _ud3=r.avail[_ownIdx3]||null;_rH3+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_ud3?_ud3.id:('Unit '+(_ri3+1)))+'</span>';if(_ud3)_rH3+='<span style="font-size:11px;color:var(--g400)"> · '+_ud3.yard+'</span>';_ownIdx3++;}else{_rH3+='<span style="font-size:11.5px;color:var(--g500)">'+r.vendor+'</span>';}_rH3+='</div>';}gel('fqAssetAlloc').innerHTML=_rH3;}
   }
+  var fqAssetOwn=[];
+  function fqToggleAsset(i){if(!fqAssetOwn.length)return;fqAssetOwn[i]=!fqAssetOwn[i];fqPickOwned=fqAssetOwn.filter(function(v){return v;}).length;fqRefresh();}
   function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
   function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
   function fqPriceModal(id){
@@ -6971,7 +6974,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5,p6Date:'2026-06-20',p6Act:'L2 headwall installation',mfgWks:3},
       {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7,status:'in_fab',p6Date:'2026-10-05',p6Act:'Pump skid commissioning',mfgWks:4},
       {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'Jul 31',fs:'Aug 14',fe:'Sep 20',shipD:7,p6Date:'2026-10-05',p6Act:'Cable tray installation — module install',mfgWks:5},
-      {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true,p6Date:'2026-09-05',p6Act:'Conduit rough-in — add scope',mfgWks:2}
+      {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true,p6Date:'2026-09-05',p6Act:'Conduit rough-in — add scope',mfgWks:2},
+    {item:'Combiner box prefab array',t:'electrical',qty:'8 units',mo:'Jul 1',fs:'Jul 31',fe:'Aug 28',shipD:5,p6Date:'2026-09-05',p6Act:'Combiner box installation',mfgWks:4}
     ],
     riverside:[
       {item:'Overhead MEP rack modules',t:'mechanical',qty:'6 modules',mo:'May 15',fs:'Jul 1',fe:'Aug 25',shipD:5,p6Date:'2026-09-10',p6Act:'Overhead MEP install — Level 2',mfgWks:4},
@@ -9769,6 +9773,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
     if(logPlanView==='delivery') logPlanView='gcgr';
     var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span></div></div></div>';
+    // KPI cards
+    if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     if(ns){
       // NS enhanced: scheduling intelligence + 3-tab view
       var NS_INTEL=[
