@@ -2022,7 +2022,7 @@ function renderProfServicesDP(){
   var STAGES_LOG=['Scheduled','In transit','Delivered'];
   var STAGES_PROC=['In fulfillment','Ordered','Delivered'];
   var STAGES_FAB=['In fulfillment','QC approved','Delivered'];
-  var STAGES_SVC=['SOW executed','Active','Fulfilled'];
+  var STAGES_SVC=['SOW executed','Active','Demobilized'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
   var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
 
