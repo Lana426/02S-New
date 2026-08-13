@@ -3062,18 +3062,18 @@ charges:[
     function dayOffset(dateStr){
       var parts=dateStr.split('-');
       var d=new Date(+parts[0],+parts[1]-1,+parts[2]);
-      var s=new Date(2026,4,12);
+      var s=new Date(2026,7,1);
       return Math.round((d-s)/(86400000));
     }
     function pct(d){return Math.max(0,Math.min(100,Math.round(d/WIN_DAYS*100)))+'%';}
     var ITEMS=[
-      {label:'Billing approval due',    pillar:'Billing',       ref:'BILL-9012',start:'2026-05-12',end:'2026-05-18',tone:'warn', note:'Auto-finalizes May 18 · action required'},
-      {label:'Env. monitoring demob',   pillar:'Prof. services',ref:'DP-SWPPP', start:'2026-05-16',end:'2026-05-16',tone:'ok',   note:'SWPPP monitoring · Mar–May scope closing'},
-      {label:'Excavator delivery',      pillar:'Logistics',     ref:'ORD-3042', start:'2026-05-20',end:'2026-05-20',tone:'warn', note:'Heavy haul · north gate · 6 AM window'},
-      {label:'Excavator on-rent',       pillar:'Equipment',     ref:'ORD-3042', start:'2026-05-20',end:'2026-06-01',tone:'ok',   note:'Active through Jun · site earthwork'},
-      {label:'Nut runners order-by',    pillar:'Procurement',   ref:'PO-4401',  start:'2026-05-22',end:'2026-05-22',tone:'info',note:'6-wk lead · Jul 15 need-by · solar pile'},
-      {label:'Pipe rack fab milestone', pillar:'Prefab',        ref:'PF-021',   start:'2026-05-25',end:'2026-05-25',tone:'info',note:'Shop drawings approved · Aug 15 need on-site'},
-      {label:'Crane mob permits',       pillar:'Logistics',     ref:'ORD-3071', start:'2026-05-26',end:'2026-06-01',tone:'info',note:'Route permits in process · Aug 3 final mob'}
+      {label:'E-house submittal review',    pillar:'Procurement',   ref:'ORD-5002', start:'2026-08-12',end:'2026-08-14',tone:'warn',note:'Modular BESS e-houses · submittal package under 02S review'},
+      {label:'Crawler crane mobilization',  pillar:'Equipment',     ref:'REQ-4471', start:'2026-08-12',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1 · in progress'},
+      {label:'Pipe rack QC sign-off',       pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-13',end:'2026-08-13',tone:'ok',  note:'Piperite Fab · shop drawings approved · final QC before ship'},
+      {label:'Cable tray fabrication',      pillar:'Prefab',        ref:'ORD-5003', start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Prefab cable tray runs · pricing confirmed · fab start pending'},
+      {label:'Pipe rack on-site delivery',  pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
+      {label:'Geotech field report due',    pillar:'Prof. services',ref:'ORD-3096', start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'},
+      {label:'BESS commissioning planning', pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'}
     ];
     if(CURRENT==='ns'){
       ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-05-22',end:'2026-05-22',tone:'warn',note:'Critical path · 2 days float remaining'});
@@ -8645,7 +8645,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+=renderPrefabP6Schedule(_p6fi);
       }
     }
-    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by<div style="font-size:9px;color:#3b82f6;font-weight:400;line-height:1.3;margin-top:1px">↗ P6 install date</div></span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by'+(p!=='profservices'?'<div style="font-size:9px;color:#3b82f6;font-weight:400;line-height:1.3;margin-top:1px">↗ P6 install date</div>':'')+'</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'&&isDpView&&p==='prefab'&&_pfbInstFilter!=='all'){
@@ -8663,7 +8663,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           if(_eo){
             expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
             expH+=trackerHTML(_eo,ns);
-            expH+=buildDpBillingInline(row.ordId);
+            if(p!=='profservices')expH+=buildDpBillingInline(row.ordId);
             if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
             var _aa=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
             expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Attributes</div><div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">';
