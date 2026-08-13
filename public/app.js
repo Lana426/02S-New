@@ -3303,7 +3303,7 @@ charges:[
     logistics:{
       labels:['Plan line','Requested','Scheduled','Active'],
       icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<path d="M20 6L9 17l-5-5"/>'],
-      stageOf:function(r){var m={Draft:0,Requested:1,Scheduled:2,Active:3,Complete:3,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
+      stageOf:function(r){var m={Draft:0,Requested:1,Scheduled:2,'In fulfillment':2,Active:3,Complete:3,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
     }
   };
   var EQ_LINE_DOCS={
@@ -5936,13 +5936,14 @@ charges:[
   function fqTaxModal(id){ var r=fqById(id); if(!r)return; dpReview('equipment',r.ref); }
     function fqApproveReco(){
     var r=fqById(fqCurId); if(!r)return;
-    fqPickOwned=r.reco;
+    var _nOwned=fqAssetOwn.length?fqAssetOwn.filter(function(v){return v;}).length:r.reco;
+    fqPickOwned=_nOwned;
     var c=fqCompute(r,fqPickOwned);
     var _yr=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
     r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; r.yard=_yr;
     closeModal(); renderFulfill();
-    toast(r.qty+'× '+r.item+' allocated — '+c.owned+' owned, '+c.rerent+' re-rent · '+fmt(c.margin)+'/mo margin');
-  }
+    toast('Allocation confirmed');
+}
   function fqShowOverride(){
     var el=gel('fqOverrideSec'); if(el)el.style.display='block';
     var el2=gel('fqRecoBtns'); if(el2)el2.style.display='none';
@@ -7941,7 +7942,32 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">';
       gaps.forEach(function(g){
         var tl2=TL[g.t]||g.t;
-        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:5px 10px;font-size:11.5px"><span style="color:var(--red);font-weight:600">⚠ Capacity risk · '+tl2+'</span>&nbsp;&nbsp;<span style="color:var(--g600)">'+g.note+'</span></div>';
+        var tc2=TC[g.t]||'#888';
+        var gItems=items.filter(function(it){return it.t===g.t;});
+        var gs2=pct(g.start); var ge2=pct(g.end);
+        var adhocItems=gItems.filter(function(it){return it.adhoc;});
+        h+='<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 12px;margin-bottom:6px">';
+        h+='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:'+(gItems.length?'8':'0')+'px">';
+        h+='<span style="color:var(--red);font-weight:600;font-size:11.5px">⚠ Capacity risk · '+tl2+'</span>';
+        h+='<span style="font-size:11px;color:var(--g500)">'+g.note+'</span></div>';
+        if(gItems.length){
+          h+='<div style="position:relative;background:rgba(239,68,68,.04);border-radius:4px;padding:3px 0;overflow:hidden">';
+          h+='<div style="position:absolute;left:'+gs2+'%;width:'+(ge2-gs2)+'%;top:0;bottom:0;background:rgba(239,68,68,.12);border-radius:2px"></div>';
+          gItems.forEach(function(it,ri){
+            var x1=pct(it.fs); var x2=pct(it.fe); var bw=Math.max(x2-x1,2);
+            var isAdhoc=!!it.adhoc;
+            h+='<div style="position:relative;display:flex;align-items:center;padding:2px 0">';
+            h+='<div style="position:relative;width:100%;height:14px">';
+            h+='<div style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:100%;border-radius:3px;background:'+tc2+';opacity:'+(isAdhoc?.8:.45)+';box-sizing:border-box'+(isAdhoc?';border:1px solid rgba(239,68,68,.5)':'')+'"></div>';
+            h+='<div style="position:absolute;left:'+Math.max(x1+.5,0)+'%;font-size:9px;color:#fff;line-height:14px;padding:0 4px;white-space:nowrap;text-shadow:0 0 3px rgba(0,0,0,.5)">'+it.item+(isAdhoc?' ★':'')+' ('+it.qty+')'+'</div>';
+            h+='</div></div>';
+          });
+          h+='</div>';
+        }
+        if(adhocItems.length){
+          h+='<div style="font-size:10.5px;color:var(--red);margin-top:5px;font-weight:500">★ Ad hoc scope within risk window: '+adhocItems.map(function(it){return it.item;}).join(', ')+'</div>';
+        }
+        h+='</div>';
       });
       h+='</div>';
     } else {
@@ -9704,7 +9730,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Awaiting pricing',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Requested',quoteRef:'Q-63412'}
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
-      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'4',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls · this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'3',sub:'2 mob · 1 demob · this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$314K',sub:'53% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'14',sub:'4 ongoing · 10 scheduled',tone:'ok',icon:IC.layers}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
       cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
