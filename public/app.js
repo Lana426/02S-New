@@ -232,8 +232,8 @@
     {id:'e7',task:'A3010',code:'3100-6300-0000-0001',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-06',to:'2026-10',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)'},
     {id:'e8',task:'A3020',code:'3100-6300-0000-0001',desc:'Hydraulic pile driver',cat:'Foundations \u203a Pile driving',qty:6,rate:34500,from:'2026-08',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 2 (SW/SE)'},
     {id:'e9',task:'A3010',code:'3100-6300-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:16,rate:8800,from:'2026-06',to:'2026-12',status:'on-rent',submitted:true,scope:'Solar Pile Driving \u2014 Sector 1 (NW/NE)',catId:'tele10'},
-    {id:'e10',task:'A4010',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:24,rate:8800,from:'2026-09',to:'2027-04',status:'projected',submitted:true,scope:'Single-Axis Tracker Assembly \u2014 Sector 1',catId:'tele10'},
-    {id:'e11',task:'A4020',code:'2600-5600-0000-0001',desc:'Boom lift \u2014 60ft',cat:'Access equipment \u203a Boom lifts',qty:18,rate:7500,from:'2026-09',to:'2027-03',status:'projected',submitted:true,scope:'Module Installation & String Wiring \u2014 Sector 1',catId:'boom60'},
+    {id:'e10',task:'A4010',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:24,rate:8800,from:'2026-09',to:'2027-04',status:'acknowledged',submitted:true,ordId:'ORD-3121',scope:'Single-Axis Tracker Assembly \u2014 Sector 1',catId:'tele10'},
+    {id:'e11',task:'A4020',code:'2600-5600-0000-0001',desc:'Boom lift \u2014 60ft',cat:'Access equipment \u203a Boom lifts',qty:18,rate:7500,from:'2026-09',to:'2027-03',status:'acknowledged',submitted:true,ordId:'ORD-3122',scope:'Module Installation & String Wiring \u2014 Sector 1',catId:'boom60'},
     {id:'e12',task:'A4030',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:12,rate:8800,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'tele10'},
     {id:'e13',task:'A4030',code:'2600-5600-0000-0001',desc:'Scissor lift \u2014 32ft',cat:'Access equipment \u203a Scissor lifts',qty:64,rate:1900,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'scissor32'},
     {id:'e14',task:'A5010',code:'2600-3300-0000-0001',desc:'Rough-terrain crane \u2014 90T',cat:'Cranes \u203a Rough-terrain',qty:3,rate:42000,from:'2026-12',to:'2027-05',status:'projected',submitted:false,scope:'Inverter & Transformer Setting'},
@@ -963,7 +963,7 @@
         var l=g.lines[j];
         var mo=eqMonths(l.from,l.to), lt=eqLineTotal(l);
         var stt=eqLineState(l);
-        var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
+        var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='acknowledged'?'Acknowledged':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
         var editBtn='<button class="eq-ib" onclick="event.stopPropagation();openEqEdit(\''+l.id+'\')" title="'+(stt==='submitted'?'Request change':'Edit line')+'">'+svg('<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 013 3L12 15l-4 1 1-4z"/>',2)+'</button>';
         var delBtn='<button class="eq-ib danger" onclick="event.stopPropagation();delEqLine(\''+l.id+'\')" title="'+(stt==='pending'?'Withdraw request':'Remove draft')+'">'+svg('<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',2)+'</button>';
         var act;
@@ -1079,7 +1079,7 @@
     var pop=gel('eqPop'); if(!pop||!eqPop)return;
     var l=eqGetLine(eqPop.id); if(!l){eqPopClose();return;}
     var st=eqLineState(l);
-    var stTxt=st==='onrent'?'On-rent':st==='offrent'?'Off-rent':st==='submitted'?'Requested':st==='pending'?'Pending pricing':'Draft';
+    var stTxt=st==='onrent'?'On-rent':st==='offrent'?'Off-rent':st==='acknowledged'?'Acknowledged':st==='submitted'?'Requested':st==='pending'?'Pending pricing':'Draft';
     var mo=eqMonths(eqPop.from,eqPop.to), priced=!!l.rate;
     var totTxt=priced?('<b>'+fmtBig(mo*l.rate*eqPop.qty)+'</b> \u00b7 '+eqPop.qty+' \u00d7 '+fmt(l.rate)+'/mo \u00d7 '+mo+' mo'):('<span class="eqp-tbd">Total TBD \u2014 awaiting 02S pricing</span> \u00b7 '+mo+' mo');
     var h='<div class="eqp-head"><div class="eqp-title">'+l.desc+'</div><button class="eqp-x" onclick="eqPopClose()">'+svg('<path d="M18 6L6 18M6 6l12 12"/>',2)+'</button></div>';
@@ -1154,7 +1154,7 @@
     h+='</div>';
     box.innerHTML=h;
   }
-  function eqLineState(l){ if(l.status==='on-rent')return 'onrent'; if(l.status==='off-rent')return 'offrent'; if(l.submitted)return 'submitted'; if(!l.rate)return 'pending'; return 'draft'; }
+  function eqLineState(l){ if(l.status==='on-rent')return 'onrent'; if(l.status==='off-rent')return 'offrent'; if(l.status==='acknowledged')return 'acknowledged'; if(l.submitted)return 'submitted'; if(!l.rate)return 'pending'; return 'draft'; }
   function eqGetLine(id){ for(var i=0;i<EQ_LINES.length;i++){if(EQ_LINES[i].id===id)return EQ_LINES[i];} return null; }
   function eqMonthOptions(sel){ var o=''; for(var i=0;i<EQ_MONTHS.length;i++){var m=EQ_MONTHS[i]; o+='<option value="'+m+'"'+(m===sel?' selected':'')+'>'+eqMonthLabel(m)+' \u2019'+m.slice(2,4)+'</option>';} return o; }
   function eqCodeOptions(sel){ var o=''; for(var i=0;i<EQ_CODES.length;i++){var c=EQ_CODES[i]; o+='<option value="'+c.code+'"'+(c.code===sel?' selected':'')+'>'+c.code+' \u00b7 '+c.name+'</option>';} return o; }
@@ -3141,7 +3141,7 @@ charges:[
   function openEqLineDrill(id){
     var l=EQ_LINES.filter(function(x){return x.id===id;})[0]; if(!l)return;
     var stt=eqLineState(l);
-    var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
+    var stTxt=stt==='onrent'?'On-rent':stt==='offrent'?'Off-rent':stt==='acknowledged'?'Acknowledged':stt==='submitted'?'Requested':stt==='pending'?'Pending pricing':'Draft';
     var mo=eqMonths(l.from,l.to), lt=l.rate?eqLineTotal(l):0;
     var dn=l.desc.replace(/—.*/,'').trim().toLowerCase().slice(0,8);
     var ord=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.item&&o.item.toLowerCase().indexOf(dn)>=0;})[0];
