@@ -5970,7 +5970,19 @@ charges:[
     // GREEN recommendation box
     b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
     b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
-    b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px"><span id="fqOwnedN">'+r.reco+'</span> owned · <span id="fqRerentN">'+(r.qty-r.reco)+'</span> re-rent</div>';
+    b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+r.reco+' owned · '+(r.qty-r.reco)+' re-rent</div>';
+    // Asset-level breakdown
+    b+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
+    for(var _ai=0;_ai<r.qty;_ai++){
+      var _assetOwn=_ai<r.reco;
+      var _assetData=r.avail[_ai];
+      var _assetId=_assetData?_assetData.id:('Unit '+(_ai+1));
+      var _assetYard=_assetData?(' · '+_assetData.yard):'';
+      var _assetTag=_assetOwn?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';
+      var _assetSub=_assetOwn?_assetYard:(' · '+r.vendor);
+      b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">'+_assetTag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_assetId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_assetSub+'</span></div>';
+    }
+    b+='</div>';
     b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:2px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
@@ -5981,19 +5993,9 @@ charges:[
       b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
-    // Reco action buttons
-    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
-    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
-    b+='<div style="margin-left:auto;display:flex;gap:8px">';
-    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Accept allocation</button>';
-    b+='</div></div>';
-    // Allocation adjustment section (always visible)
-    b+='<div id="fqOverrideSec">';
-    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:8px">Adjust allocation</div>';
-    b+='<div id="fqAssetRows" style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
-    for(var _ai=0;_ai<fqPickOwned;_ai++){var _rD=r.avail[_ai];var _rId=_rD?_rD.id:('Unit '+(_ai+1));var _rSub=_rD?' · '+_rD.yard:'';b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px"><span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span><span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_rId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_rSub+'</span></div>';}
-    for(var _ai=fqPickOwned;_ai<r.qty;_ai++){b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px"><span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span><span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">Unit '+(_ai+1)+'</span><span style="font-size:11.5px;color:var(--g500)"> · '+r.vendor+'</span></div>';}
-    b+='</div>';
+    // Override section (hidden, shown when Override clicked)
+    b+='<div id="fqOverrideSec" style="display:none">';
+    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">Overriding the recommendation — adjust the split below.</div>';
     b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" type="button" id="fqStepDown" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" type="button" id="fqStepUp" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
     // Source yard (inside override section)
@@ -6004,11 +6006,18 @@ charges:[
     b+='</div>';
     b+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:5px">Reason for override <span style="font-weight:400;color:var(--g400)">(required — saved with allocation)</span></div>';
     b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid #fde68a;border-radius:4px;padding:6px 8px;color:var(--g800);background:#fffbeb;resize:vertical" placeholder="Why are you changing the recommended allocation? e.g., unit reserved for another project, equipment condition, yard distance, customer request…"></textarea></div>';
-    b+='<div class="modal-foot" style="margin-top:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back to recommendation</button>';
+    b+='<div class="modal-foot" style="display:flex;margin-top:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back</button>';
     b+='<button class="btn btn-red" style="margin-left:auto" onclick="fqAccept()">Accept allocation</button>';
     b+='</div>';
     b+='</div>';
+    // Main footer: Cancel | Override recommendation | Approve recommendation
+    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<div style="margin-left:auto;display:flex;gap:8px">';
+    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
+    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
+    b+='</div></div>';
     openModal('Fulfill — '+r.item, b);
   }
   function fqRefresh(){
@@ -6026,8 +6035,6 @@ charges:[
     var maxO=Math.min(r.avail.length,r.qty);
     if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
     if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
-    // Rebuild asset rows reactively
-    if(gel('fqAssetRows')&&r){var _rH='';for(var _ri=0;_ri<r.qty;_ri++){var _rOwn=_ri<fqPickOwned;var _rD=r.avail[_ri];var _rId=_rD?_rD.id:('Unit '+(_ri+1));var _rSub=_rOwn?(_rD?' \u00b7 '+_rD.yard:''):(' \u00b7 '+r.vendor);var _rTag=_rOwn?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';_rH+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">'+_rTag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_rId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_rSub+'</span></div>';}gel('fqAssetRows').innerHTML=_rH;}
   }
   function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
   function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
@@ -7885,7 +7892,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="position:absolute;left:'+Math.max(0,x)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+m+'</div>';
       if(x>0.1)h+='<div style="position:absolute;left:'+x+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';
     });
-    var todayPctFab=parseFloat(((122+10-1)/274*100).toFixed(2));h+='<div style="position:absolute;left:'+todayPctFab+'%;top:0;height:1500px;width:1.5px;background:#10b981;opacity:.35;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+todayPctFab+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';
+    var todayPctFab=parseFloat(((122+13-1)/274*100).toFixed(2));h+='<div style="position:absolute;left:'+todayPctFab+'%;top:0;height:1500px;width:1.5px;background:#10b981;opacity:.35;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+todayPctFab+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';
     h+='</div></div>';
     TYPES.forEach(function(type){
       var tItems=items.filter(function(it){return it.t===type;});
@@ -7901,7 +7908,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='<div style="position:absolute;left:'+gs+'%;width:'+(ge-gs)+'%;top:0;bottom:0;background:rgba(239,68,68,.1);border-left:2px solid rgba(239,68,68,.4)"></div>';
       }
       tItems.forEach(function(it,ri){
-        var _p6mn2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var _bp6=it.p6Date?(function(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);})(it.p6Date):null;var x1,x2;if(_bp6){var _bsd=it.shipD||3,_bmw=it.mfgWks||3;var _bfe=new Date(_bp6);_bfe.setDate(_bfe.getDate()-(_bsd+3));var _bfs=new Date(_bp6);_bfs.setDate(_bfs.getDate()-(_bsd+2+_bmw*7));x1=Math.max(0,pct(_p6mn2[_bfs.getMonth()]+' '+_bfs.getDate()));x2=Math.min(100,pct(_p6mn2[_bfe.getMonth()]+' '+_bfe.getDate()));}else{x1=pct(it.fs);x2=pct(it.fe);}var bw=Math.max(x2-x1,0.8);
+        var x1,x2;x1=pct(it.fs);x2=pct(it.fe);var bw=Math.max(x2-x1,0.8);
         var top=ri*26+4;
         var isAdhoc=!!it.adhoc;
         var isInFab=it.status==='in_fab';
@@ -9242,6 +9249,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var mn2=mn+360;
       if(mn2>=lo&&mn2<=rng.hi){h+='<div style="position:absolute;left:'+pctL(mn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(mn2)>1)h+='<div style="position:absolute;left:'+pctL(mn2)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
     }
+    var _todayLogN=_logN('Aug 13');var _todayLogPct=pctL(_todayLogN);if(_todayLogPct>=0&&_todayLogPct<=100){h+='<div style="position:absolute;left:'+_todayLogPct+'%;top:0;height:'+(ganttH+20)+'px;width:1.5px;background:#10b981;opacity:.5;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+_todayLogPct+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';}
     h+='</div></div>';
     items.forEach(function(it){
       var sn=_logN(it.start),en=_logN(it.end);if(en<sn)en+=360;
