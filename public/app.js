@@ -1594,7 +1594,7 @@
         {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Complete',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8,attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested',sa:4,ea:4},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Scheduled',sa:4,ea:4},
         {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
@@ -5970,19 +5970,7 @@ charges:[
     // GREEN recommendation box
     b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
     b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
-    b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+r.reco+' owned · '+(r.qty-r.reco)+' re-rent</div>';
-    // Asset-level breakdown
-    b+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
-    for(var _ai=0;_ai<r.qty;_ai++){
-      var _assetOwn=_ai<r.reco;
-      var _assetData=r.avail[_ai];
-      var _assetId=_assetData?_assetData.id:('Unit '+(_ai+1));
-      var _assetYard=_assetData?(' · '+_assetData.yard):'';
-      var _assetTag=_assetOwn?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';
-      var _assetSub=_assetOwn?_assetYard:(' · '+r.vendor);
-      b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">'+_assetTag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_assetId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_assetSub+'</span></div>';
-    }
-    b+='</div>';
+    b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px"><span id="fqOwnedN">'+r.reco+'</span> owned · <span id="fqRerentN">'+(r.qty-r.reco)+'</span> re-rent</div>';
     b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:2px">'+whyTxt+'</div>';
     // 3-scenario comparison (compact)
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
@@ -5997,12 +5985,15 @@ charges:[
     b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
     b+='<div style="margin-left:auto;display:flex;gap:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
-    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
+    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Accept allocation</button>';
     b+='</div></div>';
-    // Override section (hidden)
-    b+='<div id="fqOverrideSec" style="display:none">';
-    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">You are overriding the recommended allocation — adjust the split below and provide a reason.</div>';
+    // Allocation adjustment section (always visible)
+    b+='<div id="fqOverrideSec">';
+    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:8px">Adjust allocation</div>';
+    b+='<div id="fqAssetRows" style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">';
+    for(var _ai=0;_ai<fqPickOwned;_ai++){var _rD=r.avail[_ai];var _rId=_rD?_rD.id:('Unit '+(_ai+1));var _rSub=_rD?' · '+_rD.yard:'';b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px"><span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span><span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_rId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_rSub+'</span></div>';}
+    for(var _ai=fqPickOwned;_ai<r.qty;_ai++){b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px"><span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span><span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">Unit '+(_ai+1)+'</span><span style="font-size:11.5px;color:var(--g500)"> · '+r.vendor+'</span></div>';}
+    b+='</div>';
     b+='<div class="fq-split"><div class="fq-srow"><div><div class="fq-slbl">From owned fleet</div><div class="fq-savail" id="fqAvail"></div></div><div class="fq-step"><button class="fq-sb" type="button" id="fqStepDown" onclick="fqStep(-1)">‹</button><span id="fqOwnedN">0</span><button class="fq-sb" type="button" id="fqStepUp" onclick="fqStep(1)">›</button></div></div><div class="fq-srow"><div><div class="fq-slbl">Re-rent the remainder</div><div class="fq-savail" id="fqRerentLine"></div></div><div class="fq-rn" id="fqRerentN">0</div></div></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
     // Source yard (inside override section)
@@ -6035,6 +6026,8 @@ charges:[
     var maxO=Math.min(r.avail.length,r.qty);
     if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
     if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
+    // Rebuild asset rows reactively
+    if(gel('fqAssetRows')&&r){var _rH='';for(var _ri=0;_ri<r.qty;_ri++){var _rOwn=_ri<fqPickOwned;var _rD=r.avail[_ri];var _rId=_rD?_rD.id:('Unit '+(_ri+1));var _rSub=_rOwn?(_rD?' \u00b7 '+_rD.yard:''):(' \u00b7 '+r.vendor);var _rTag=_rOwn?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';_rH+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">'+_rTag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+_rId+'</span><span style="font-size:11.5px;color:var(--g500)">'+_rSub+'</span></div>';}gel('fqAssetRows').innerHTML=_rH;}
   }
   function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
   function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
@@ -6788,7 +6781,7 @@ charges:[
           h+='<div onclick="scSet(\'sc\',\''+s+'\')" style="cursor:pointer;border:'+bdr+';border-radius:8px;padding:10px 12px;background:#fff" onmouseenter="this.style.borderColor=\'var(--charcoal)\'" onmouseleave="this.style.borderColor=\''+  (c.risk?'#f87171':'var(--g200)')+'\'";>';
           h+='<div style="font-size:10.5px;font-weight:700;color:var(--g600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px">'+s+'</div>';
           h+='<div style="font-size:20px;font-weight:800;color:var(--g900);line-height:1">'+c.total+'</div>';
-          if(c.risk)h+='<div style="font-size:9.5px;color:#dc2626;margin-top:2px;font-weight:600">'+c.risk+' at-risk</div>';
+          if(c.risk)h+='<div style="font-size:9.5px;color:#d97706;margin-top:2px;font-weight:600">'+c.risk+' need attention</div>';
           h+='<div style="font-size:9.5px;color:var(--g400);margin-top:2px">'+Object.keys(c.p).map(function(p){return p.charAt(0).toUpperCase()+p.slice(1,4);}).join(' &#183; ')+'</div>';
           h+='</div>';
         });
@@ -6970,7 +6963,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       {item:'Modular e-houses (BESS)',t:'electrical',qty:'2 units',mo:'May 1',fs:'Jun 15',fe:'Oct 10',shipD:14,p6Date:'2026-10-31',p6Act:'BESS e-house commissioning',mfgWks:6},
       {item:'L2 headwall assemblies',t:'structural',qty:'4 units',mo:'Feb 15',fs:'Mar 15',fe:'Jun 5',shipD:5,p6Date:'2026-06-20',p6Act:'L2 headwall installation',mfgWks:3},
       {item:'Pump skid assemblies',t:'mechanical',qty:'6 skids',mo:'May 15',fs:'Jul 1',fe:'Sep 15',shipD:7,status:'in_fab',p6Date:'2026-10-05',p6Act:'Pump skid commissioning',mfgWks:4},
-      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'May 15',fs:'Jun 15',fe:'Jul 20',shipD:5,p6Date:'2026-08-15',p6Act:'Cable tray installation',mfgWks:2},
+      {item:'Prefab cable tray runs',t:'electrical',qty:'Lot',mo:'Jul 31',fs:'Aug 14',fe:'Sep 20',shipD:7,p6Date:'2026-10-05',p6Act:'Cable tray installation — module install',mfgWks:5},
       {item:'Electrical conduit add-scope',t:'electrical',qty:'Lot',mo:'Jun 1',fs:'Jul 15',fe:'Aug 20',shipD:5,adhoc:true,p6Date:'2026-09-05',p6Act:'Conduit rough-in — add scope',mfgWks:2}
     ],
     riverside:[
@@ -7099,7 +7092,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
       ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
-      cap:'Equipment demand by project — confirm taxonomy and release to fulfillment queue.',
+      cap:'',
       rows:[
         {id:'REQ-4479',asset:'2\u00d7 excavator, 50-ton \u00b7 dual aux + GPS',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:false,mapLeaf:'50-ton',conf:'94',leafOpts:['30-ton','45-55T','50-ton','80-ton'],dec:'Use owned',decTone:'ok',status:'Needs map',attrs:['Dual aux','GPS RTK','Mesh track','Cat 390F']},
         {id:'REQ-4471',asset:'5\u00d7 tower crane \u00b7 self-erect, ~250 ft',project:'Riverside Medical Center',tax:'Asset \u203a Lifting \u203a Tower crane',taxOk:false,mapLeaf:'Self-erect',conf:'88',leafOpts:['Self-erect','Flat-top','Luffing-jib','Hammerhead'],dec:'Re-rent',decTone:'info',status:'Needs map',attrs:['Self-erect','250 ft reach','Remote pendant']},
@@ -9664,7 +9657,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {role:'Geotechnical inspection',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:4,linkOrd:'ORD-3096',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {role:'Structural special inspection',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:2,ea:9,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Requested',scope:'BESS & commissioning',sa:7,ea:9},
-        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Planned',scope:'Survey & site monitoring',sa:0,ea:1},
+        {role:'Environmental / SWPPP monitoring',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Fulfilled',scope:'Survey & site monitoring',sa:0,ea:1},
         {role:'VDC / BIM coordination',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:6,linkOrd:'ORD-3120'},
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Fulfilled',scope:'Survey & site monitoring',sa:0,ea:3}
       ]},
@@ -9709,7 +9702,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3054',state:'Complete',linkOrd:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',linkOrd:'ORD-3117',when:'Sep \u00b7 daily',gate:'East gate',src:'Procurement',state:'Requested',sa:5,ea:5},
         {move:'BESS container placement',type:'Haul + crane',linkOrd:'ORD-3118',when:'Dec 1',gate:'Pad 3',src:'Procurement',state:'Requested',sa:8,ea:8,attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Requested',sa:4,ea:4},
+        {move:'Prefab pipe rack delivery',type:'Delivery',linkOrd:'ORD-3119',when:'Aug 15',gate:'Laydown B',src:'Prefab',state:'Scheduled',sa:4,ea:4},
         {move:'Site laydown reservation',type:'Laydown',when:'Ongoing',gate:'Yard C',src:'\u2014',state:'Active',linkOrd:'ORD-3072',sa:0,ea:9}
       ]}
   };
