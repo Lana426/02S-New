@@ -1881,7 +1881,7 @@
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
+        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+_ds+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -8688,7 +8688,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         if(_pfbInstFilter==='pending'&&row.state==='Delivered')return;
       }
       if(row._type==='dp'){
-        var dpTone=_DP_TONE[row.state]||'neu';
+        var _dpDisp=(p==='prefab'&&(row.state==='Submittal'||row.state==='In fabrication'))?'In fulfillment':row.state; var dpTone=_DP_TONE[_dpDisp]||'neu';
         var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
         var dpDet=(row.qty||'')+' · '+(row.window||'')+(row.firm?' · '+row.firm:'');
         var expId='dpx-'+p+'-'+(row._proj||'all')+'-'+row._idx;
@@ -8814,7 +8814,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
-          h+='<div><span class="tag '+dpTone+'">'+row.state+'</span></div>';
+          h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span></div>';
           h+='<div>'+dpDocCell(p,row)+'</div>';
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
@@ -8845,7 +8845,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+=dpSrc;
           if(showProjCol){h+='<div style="font-size:11.5px">'+row._projLabel+'</div>';}
           h+='<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div>';
-          h+='<div><span class="tag '+dpTone+'">'+row.state+'</span></div>';
+          h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span></div>';
           h+='<div style="font-size:10px;color:var(--g500)">View \u2192</div>';
           h+='</div>';
         }
@@ -8864,7 +8864,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(isDpView){
       var _ahRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
       if(_ahRows.length){
-        h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">Demand plan orders</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_ahRows.length+' request'+((_ahRows.length===1)?'':'s')+'</span></div>';
+        h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">Ad hoc requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_ahRows.length+' request'+((_ahRows.length===1)?'':'s')+'</span></div>';
         var gtAH='1.4fr 1.2fr 100px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtAH+'"><span>Request</span><span>Details</span><span>Status</span><span>Action</span></div>';
         _ahRows.forEach(function(r2){
@@ -9735,7 +9735,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       rows:[
         {asm:'Prefab pipe rack modules',qty:'12',need:'Aug 15',stage:'Submittal approved \u00b7 in fab',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$146K',state:'In fabrication',linkOrd:'ORD-3060',attachments:[{type:'Engineering',name:'Shop drawings \u00b7 pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification \u00b7 A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule \u00b7 Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'L2 headwall assemblies',qty:'8',need:'Jul 20',stage:'Delivered \u00b7 order PF-021',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'$147K',state:'Delivered',linkOrd:'ORD-3106',attachments:[{type:'Engineering',name:'Pick plan \u00b7 L2 headwall assemblies',ref:'PKP-3106-001',status:'Approved'},{type:'Engineering',name:'Rigging plan \u00b7 L2 headwall install',ref:'RIG-3106-001',status:'Approved'},{type:'Safety',name:'JHA \u00b7 headwall delivery & installation',ref:'JHA-3106-001',status:'Approved'},{type:'Quality',name:'Material receiving report \u00b7 Ironclad Mfg',ref:'MRR-3106-001',status:'Available'},{type:'Quality',name:'Daily visual inspection log \u00b7 Jun 2026',ref:'DVI-3106-001',status:'Available'},{type:'Turnover',name:'Certificate of proper installation (COPI)',ref:'COPI-3106-001',status:'Approved'}]},
-        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Requested'},
+        {asm:'Modular e-houses (BESS)',qty:'2',need:'Nov 1',stage:'Submittal in review',code:'2600-3300-0000-0001 \u00b7 BESS',cost:'Pending',state:'Submittal'},
         {asm:'Skid-mounted pump assemblies',qty:'4',need:'Sep 1',stage:'In fabrication',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$88K',state:'In fabrication',linkOrd:'ORD-3108',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Prefab cable tray runs',qty:'lot',need:'Aug 1',stage:'Awaiting pricing',code:'2600-0540-0000-0001 \u00b7 Module install',cost:'Pending',state:'Requested',quoteRef:'Q-63412'},
         {asm:'Pump skid assemblies',qty:'6',need:'Oct 5',stage:'Planning — scope TBD',code:'0200-0320-0000-0001 · Site earthwork',cost:'$45K',state:'Draft'},
@@ -10038,7 +10038,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
+        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+_ds+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
