@@ -2753,7 +2753,7 @@ function renderProfServicesDP(){
         {desc:'Shop drawings & engineering stamp',qty:1,rate:9400,amt:9400,cost:'2600-0540-0000-0001 \u00b7 Module install'},
         {desc:'Delivery & crane-in coordination',qty:1,rate:8000,amt:8000,cost:'2600-0540-0000-0001 \u00b7 Module install'}
       ]},
-    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Approved',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
+    {id:'BILL-9012',order:'ORD-3031',product:'Scissor Lift — 32 ft (2)',amt:4820,cost:'09 · Finishes',status:'Open',date:'May 10',day:8,anomaly:'12% above order est.',reason:'Idle-day overage — 4 days no badge-ins',notes:2,
 charges:[
   {desc:'Daily rental rate × 2 units × 10 days',qty:20,rate:220,amt:4400,cost:'09 · Finishes'},
   {desc:'Damage inspection & site incident report fee',qty:1,rate:420,amt:420,cost:'09 · Finishes'}
@@ -3043,15 +3043,12 @@ charges:[
     ];
     var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
     var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
-    /* compute totals per pillar */
+    /* per-pillar budget and committed from demand plan data */
+    var PILLAR_PLAN={equipment:{budget:4200000,committed:3800000},profservices:{budget:3200000,committed:1300000},prefab:{budget:1800000,committed:900000},procurement:{budget:8200000,committed:87000},logistics:{budget:1200000,committed:314000}};
     var totals={};
     pillarDefs.forEach(function(pd){
-      var codes=COST_CODES.filter(function(c){return c.pillar===pd.key;});
-      totals[pd.key]={
-        budget:codes.reduce(function(s,c){return s+(c.originalBudget||0)+(c.approvedCO||0);},0),
-        committed:codes.reduce(function(s,c){return s+(c.committed||0);},0),
-        spent:codes.reduce(function(s,c){return s+(c.spent||0);},0)
-      };
+      var pb=PILLAR_PLAN[pd.key]||{budget:0,committed:0};
+      totals[pd.key]={budget:pb.budget,committed:pb.committed,spent:pb.committed};
     });
     /* grand total row */
     var grandB=0,grandC=0;
@@ -3061,7 +3058,7 @@ charges:[
     h+='<div style="display:flex;gap:16px;padding:12px 0 14px;border-bottom:2px solid var(--g150);margin-bottom:4px">';
     h+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:3px">Total budget</div><div style="font-size:18px;font-weight:700;color:var(--charcoal)">'+fmtBig(grandB)+'</div></div>';
     h+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:3px">Committed</div><div style="font-size:18px;font-weight:700;color:var(--charcoal)">'+fmtBig(grandC)+'</div></div>';
-    h+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:3px">Utilization</div><div style="font-size:18px;font-weight:700;color:var(--charcoal)">'+actU+' units on-rent</div></div>';
+    
     h+='<div style="margin-left:auto;align-self:center"><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">View budget detail</button></div>';
     h+='</div>';
     /* per-pillar rows */
