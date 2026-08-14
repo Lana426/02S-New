@@ -3044,7 +3044,7 @@ charges:[
     var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
     var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
     /* per-pillar budget and committed from demand plan data */
-    var PILLAR_PLAN={equipment:{budget:11880000,committed:9761200},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:8200000,committed:7400000},logistics:{budget:1200000,committed:800000}};
+    var PILLAR_PLAN={equipment:{budget:11880000,committed:9761200},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:8200000,committed:7520000},logistics:{budget:1200000,committed:800000}};
     var totals={};
     pillarDefs.forEach(function(pd){
       var pb=PILLAR_PLAN[pd.key]||{budget:0,committed:0};
@@ -3968,7 +3968,7 @@ charges:[
     {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:400000,approvedCO:0,pendingCO:0,committed:313000,spent:120000,pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
     {code:'0600-0100-0000-0001',name:'Bulk materials',   originalBudget:6277000,approvedCO:0,pendingCO:0,committed:6325000,spent:2263000,pillar:'procurement',subJob:'SJ-004'},
-    {code:'0600-0200-0000-0001',name:'Hardware & safety', originalBudget:1923000,approvedCO:0,pendingCO:0,committed:1075000,spent:385000, pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0200-0000-0001',name:'Hardware & safety', originalBudget:1923000,approvedCO:0,pendingCO:0,committed:1195000,spent:385000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
     {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1355000,approvedCO:0,pendingCO:0,committed:1176000,spent:677000,pillar:'profservices',subJob:'SJ-001'},
     {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:361000, approvedCO:0,pendingCO:0,committed:288000, spent:166000,pillar:'profservices',subJob:'SJ-006'},
@@ -7281,7 +7281,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]}
     },
     profservices:{
-      hercules:{budget:1920000,dpSpent:1560000,adHoc:180000,
+      hercules:{budget:1920000,dpSpent:1560000,adHoc:0,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'2 FTE',c:'Mar\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'3 FTE',c:'Mar\u2013Aug 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'VDC/BIM active \u2014 WSP 3 FTE on site Apr\u2013Oct. BESS commissioning SOW in draft; agent mobilizes Nov 2026.',rows:[
         {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
         {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
