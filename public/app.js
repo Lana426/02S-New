@@ -200,12 +200,12 @@
   var EQ_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
   var EQ_TODAY='2026-08';
   var EQ_CODES=[
-    {code:'0100-5000-0000-0001',name:'Temporary Facilities & Controls',phase:'General conditions',budget:2600000,committed:2600000},
-    {code:'0200-2000-0000-0001',name:'Site Clearing & Grubbing',phase:'Phase 1 \u00b7 Site prep',budget:720000,committed:720000},
-    {code:'3100-2000-0000-0001',name:'Mass Grading & Drainage',phase:'Phase 1 \u00b7 Site prep',budget:4800000,committed:4200000},
-    {code:'3100-6300-0000-0001',name:'Solar Pile Foundations',phase:'Phase 2 \u00b7 Piles',budget:3100000,committed:3100000},
-    {code:'2600-5600-0000-0001',name:'PV Racking & Module Install',phase:'Phase 3 \u00b7 Solar',budget:5200000,committed:1900000},
-    {code:'2600-3300-0000-0001',name:'BESS, Inverters & Substation',phase:'Phase 4 \u00b7 Electrical',budget:2800000,committed:600000}
+    {code:'0100-5000-0000-0001',name:'Temporary Facilities & Controls',phase:'General conditions',budget:1476000,committed:1476000},
+    {code:'0200-2000-0000-0001',name:'Site Clearing & Grubbing',phase:'Phase 1 \u00b7 Site prep',budget:243000,committed:243000},
+    {code:'3100-2000-0000-0001',name:'Mass Grading & Drainage',phase:'Phase 1 \u00b7 Site prep',budget:2352000,committed:2352000},
+    {code:'3100-6300-0000-0001',name:'Solar Pile Foundations',phase:'Phase 2 \u00b7 Piles',budget:3055600,committed:3055600},
+    {code:'2600-5600-0000-0001',name:'PV Racking & Module Install',phase:'Phase 3 \u00b7 Solar',budget:3997800,committed:2634600},
+    {code:'2600-3300-0000-0001',name:'BESS, Inverters & Substation',phase:'Phase 4 \u00b7 Electrical',budget:756000,committed:0}
   ];
   var EQ_TASKS=[
     {task:'A1000',name:'Site Mobilization & Laydown Area',code:'0100-5000-0000-0001',phase:'General conditions'},
@@ -3044,7 +3044,7 @@ charges:[
     var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
     var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
     /* per-pillar budget and committed from demand plan data */
-    var PILLAR_PLAN={equipment:{budget:4200000,committed:3800000},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:8200000,committed:7400000},logistics:{budget:1200000,committed:800000}};
+    var PILLAR_PLAN={equipment:{budget:11880000,committed:9761200},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:8200000,committed:7400000},logistics:{budget:1200000,committed:800000}};
     var totals={};
     pillarDefs.forEach(function(pd){
       var pb=PILLAR_PLAN[pd.key]||{budget:0,committed:0};
@@ -3953,12 +3953,12 @@ charges:[
   ];
   var COST_CODES=[
     // Equipment pillar
-    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:632000, approvedCO:0,pendingCO:0,committed:672000, spent:351000,pillar:'equipment',subJob:'SJ-001'},
-    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:987000, approvedCO:0,pendingCO:0,committed:1164000,spent:609000,pillar:'equipment',subJob:'SJ-002'},
-    {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:126000, approvedCO:0,pendingCO:0,committed:0,      spent:0,     pillar:'equipment',subJob:'SJ-003'},
-    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:1444000,approvedCO:0,pendingCO:0,committed:876000, spent:458000,pillar:'equipment',subJob:'SJ-005'},
-    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:722000, approvedCO:0,pendingCO:0,committed:715000, spent:374000,pillar:'equipment',subJob:'SJ-002'},
-    {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:289000, approvedCO:0,pendingCO:0,committed:373000, spent:194000,pillar:'equipment',subJob:'SJ-004'},
+    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:1788000, approvedCO:0,pendingCO:0,committed:1726000,spent:777000, pillar:'equipment',subJob:'SJ-001'},
+    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:2792000, approvedCO:0,pendingCO:0,committed:2990000,spent:1346000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:356000,  approvedCO:0,pendingCO:0,committed:0,      spent:0,     pillar:'equipment',subJob:'SJ-003'},
+    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:4084000, approvedCO:0,pendingCO:0,committed:2250000,spent:1013000,pillar:'equipment',subJob:'SJ-005'},
+    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:2042000, approvedCO:0,pendingCO:0,committed:1837000,spent:827000, pillar:'equipment',subJob:'SJ-002'},
+    {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:818000,  approvedCO:0,pendingCO:0,committed:958200, spent:431000, pillar:'equipment',subJob:'SJ-004'},
     // Prefab pillar
     {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',      originalBudget:487000,approvedCO:0,pendingCO:0,committed:330000,spent:107000,pillar:'prefab',subJob:'SJ-004'},
     {code:'0300-0100-0000-0001',name:'Prefab concrete formwork',         originalBudget:154000,approvedCO:0,pendingCO:0,committed:100000,spent:33000, pillar:'prefab',subJob:'SJ-002'},
@@ -7223,7 +7223,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   var _PROJ_NAMES={'hercules':'Hercules Solar + BESS','riverside':'Riverside Medical Center','cimarron':'Cimarron Data Center'};
   var CC_PROJ_DP={
     equipment:{
-      hercules:{budget:4200000,dpSpent:3800000,adHoc:400000,
+      hercules:{budget:11880000,dpSpent:9361200,adHoc:400000,
       rollCols:['Category','Peak units','Peak month','vs plan'],roll:[{a:'Power & lighting',b:'42 units',c:'Mar\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Earthmoving',b:'20 units',c:'Mar\u2013Sep 2026',v:'on plan',vt:'ok'},{a:'Telehandlers',b:'40 units',c:'Apr\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Cranes',b:'1 unit',c:'Oct 2026',v:'Requested',vt:'warn'}],varSummary:'Crawler crane (230T) requested for Oct \u2014 sourcing in fulfillment queue.',rows:[
         {item:'Generator 125 kW',qty:'16 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3110',cost:'$3,200/mo',firm:'Aggreko',note:'All 16 units active; 5 units cycling off Nov per phased-completion plan.',attachments:[{type:'Engineering',name:'Rental agreement — Aggreko master services',ref:'RA-3110-001',status:'Executed'},{type:'Safety',name:'Equipment inspection record — 125 kW generators',ref:'EIR-3110-001',status:'Current'},{type:'Safety',name:'Site-specific hazard assessment',ref:'SSHA-3110-001',status:'Approved'}]},
         {item:'Light tower',qty:'26 units',window:'Mar–Dec 2026',state:'On-rent',ordId:'ORD-3111',cost:'$2,600/mo',firm:'United Rentals'},
