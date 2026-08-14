@@ -5725,24 +5725,7 @@ charges:[
   function fqById(id){ for(var i=0;i<FQ.length;i++){ if(FQ[i].id===id)return FQ[i]; } return null; }
   function fqCompute(r,owned){ var q=r.qty; var maxOwned=Math.min(r.avail.length,q); owned=Math.max(0,Math.min(owned,maxOwned)); var rerent=q-owned; var ar=q*r.o2sRate; var oc=owned*r.ownedCost; var rc=rerent*r.reRentRate; var margin=ar-oc-rc; var pct=ar?(margin/ar*100):0; return {owned:owned,rerent:rerent,maxOwned:maxOwned,ar:ar,oc:oc,rc:rc,margin:margin,pct:pct}; }
   function fqMarginPct(r){ return fqCompute(r,r.reco).pct.toFixed(0); }
-  function fqRecoCell(r){
-    if(fqIsDone(r)&&r.alloc)return '<span style="font-size:11.5px;font-weight:600;color:var(--charcoal)">'+r.alloc.owned+'× own</span>'+(r.alloc.rerent>0?' · <span style="font-size:11px;color:var(--g600)">'+r.alloc.rerent+'× re-rent</span>':'');
-    if(fqIsDone(r))return '<span style="color:var(--g400);font-size:11px">'+r.status+'</span>';
-    if(r.taxMapped===false)return '<span style="font-size:11px;color:#b45309;font-weight:600">⚡ Confirm taxonomy first</span>';
-    if(r.kind==='flow')return '<span style="font-size:11.5px;color:var(--charcoal);font-weight:500">'+(r.actLabel||'—')+'</span>';
-    if(r.kind==='pending')return '<span style="font-size:11.5px;color:var(--charcoal);font-weight:500">Set price</span>';
-    if(r.kind==='service')return '<span style="font-size:11.5px;color:var(--charcoal);font-weight:500">Acknowledge</span>';
-    if(r.kind==='equip'){
-      var _avN=r.avail?r.avail.length:0;
-      var _maxO=Math.min(_avN,typeof r.qty==='number'?r.qty:1);
-      if(_maxO===0)return '<span style="font-size:11.5px">Re-rent · <span style="color:var(--g500)">'+(r.vendor||'3PL')+'</span></span>';
-      var _rO=Math.min(r.reco||0,_maxO);
-      var _rR=(typeof r.qty==='number'?r.qty:1)-_rO;
-      return '<span style="font-size:11.5px;font-weight:600;color:var(--charcoal)">'+_rO+'× own</span>'+(_rR>0?' · <span style="font-size:11px;color:var(--g600)">'+_rR+'× re-rent</span>':'');
-    }
-    return '<span style="color:var(--g400);font-size:11px">—</span>';
-  }
-  function renderFulfill(){
+    function renderFulfill(){
     var mount=gel('ccFulfill'); if(!mount)return; var ns=CURRENT==='ns';
     var isFSMFQ=ccPersona==='fsm'; var fsmFQScope=isFSMFQ&&_ccFSMProj!=='all'?(_ccFSMProj===''?CC_FSM_PROJECTS:[_ccFSMProj]):null;
     var FQ_scoped=fsmFQScope?FQ.filter(function(r){return fsmFQScope.indexOf(r.project)>=0;}):FQ;
@@ -5825,8 +5808,8 @@ charges:[
     var anyF=(fqFP!=='all'||fqFPr!=='all'||fqFS!=='all'||fqFSrc!=='all');
     h+='<div class="eq-toolbar" style="margin-bottom:10px"><span style="font-size:12px;color:var(--g600)">Showing <b style="color:var(--g900)">'+rows.length+'</b> of '+FQ_scoped.length+' requests</span>'+(anyF?'<span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="fqClearFilters()">Clear filters</button>':'')+'</div>';
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
-    var gt='1fr 168px 92px 128px 160px 72px 220px';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Recommended action</span><span>Docs</span><span>Fulfillment</span></div>';
+    var gt='1fr 168px 92px 128px 72px 300px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Docs</span><span>Fulfillment</span></div>';
     var _fq_pri={'At-risk':0,'Needs attention':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
     rows=rows.slice().sort(function(a,b){var _pp=_PERSONA_PILLAR[ccPersona];if(_pp&&fqFP==='all'){var ao=a.pillar===_pp?0:1,bo=b.pillar===_pp?0:1;if(ao!==bo)return ao-bo;}var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
     var FQ_LIMIT=7;
@@ -5837,7 +5820,7 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span><button style="background:none;border:none;cursor:pointer;padding:1px 3px;color:var(--g400);font-size:11px;line-height:1;border-radius:3px" onclick="fqEditModal(\''+r.id+'\')">&#9998;</button></div><div>'+fqRecoCell(r)+'</div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span><button style="background:none;border:none;cursor:pointer;padding:1px 3px;color:var(--g400);font-size:11px;line-height:1;border-radius:3px" onclick="fqEditModal(\''+r.id+'\')">&#9998;</button></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more ↓</button>':'')+'</div>';
     h+='</div>';
