@@ -3044,7 +3044,7 @@ charges:[
     var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
     var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
     /* per-pillar budget and committed from demand plan data */
-    var PILLAR_PLAN={equipment:{budget:4200000,committed:3800000},profservices:{budget:3200000,committed:1300000},prefab:{budget:1800000,committed:900000},procurement:{budget:8200000,committed:87000},logistics:{budget:1200000,committed:314000}};
+    var PILLAR_PLAN={equipment:{budget:13960000,committed:10410000},profservices:{budget:1700000,committed:1300000},prefab:{budget:3400000,committed:2440000},procurement:{budget:1620000,committed:1515000},logistics:{budget:960000,committed:460000}};
     var totals={};
     pillarDefs.forEach(function(pd){
       var pb=PILLAR_PLAN[pd.key]||{budget:0,committed:0};
