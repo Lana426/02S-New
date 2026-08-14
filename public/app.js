@@ -3953,27 +3953,27 @@ charges:[
   ];
   var COST_CODES=[
     // Equipment pillar
-    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:2100000,approvedCO:0,      pendingCO:45000, committed:1840000,spent:1140000, pillar:'equipment',subJob:'SJ-001'},
-    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:3000000,approvedCO:280000, pendingCO:0,     committed:3190000,spent:2200000,pillar:'equipment',subJob:'SJ-002'},
-    {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:420000, approvedCO:0,      pendingCO:0,     committed:0,      spent:0,      pillar:'equipment',subJob:'SJ-003'},
-    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:4800000,approvedCO:0,      pendingCO:320000,committed:2400000,spent:760000, pillar:'equipment',subJob:'SJ-005'},
-    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:2400000,approvedCO:0,      pendingCO:0,     committed:1960000,spent:980000, pillar:'equipment',subJob:'SJ-002'},
-    {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:960000, approvedCO:0,      pendingCO:0,     committed:1020000,spent:362000, pillar:'equipment',subJob:'SJ-004'},
+    {code:'0100-0540-0000-0001',name:'General conditions',    originalBudget:632000, approvedCO:0,pendingCO:0,committed:672000, spent:351000,pillar:'equipment',subJob:'SJ-001'},
+    {code:'0200-0320-0000-0001',name:'Site earthwork',         originalBudget:987000, approvedCO:0,pendingCO:0,committed:1164000,spent:609000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'0200-0310-0000-0001',name:'Demo & site clearing',   originalBudget:126000, approvedCO:0,pendingCO:0,committed:0,      spent:0,     pillar:'equipment',subJob:'SJ-003'},
+    {code:'2600-3300-0000-0001',name:'BESS & Substation',      originalBudget:1444000,approvedCO:0,pendingCO:0,committed:876000, spent:458000,pillar:'equipment',subJob:'SJ-005'},
+    {code:'3100-6200-0000-0001',name:'Solar pile foundations', originalBudget:722000, approvedCO:0,pendingCO:0,committed:715000, spent:374000,pillar:'equipment',subJob:'SJ-002'},
+    {code:'0500-0120-0000-0001',name:'Metals & structural',    originalBudget:289000, approvedCO:0,pendingCO:0,committed:373000, spent:194000,pillar:'equipment',subJob:'SJ-004'},
     // Prefab pillar
-    {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',       originalBudget:1840000,approvedCO:0,     pendingCO:80000,committed:1120000,spent:560000,pillar:'prefab',subJob:'SJ-004'},
-    {code:'0300-0100-0000-0001',name:'Prefab concrete formwork',          originalBudget:580000, approvedCO:0,     pendingCO:0,    committed:340000, spent:120000,pillar:'prefab',subJob:'SJ-002'},
-    {code:'0500-0500-0000-0001',name:'Prefab structural assemblies',      originalBudget:920000, approvedCO:60000, pendingCO:0,    committed:980000, spent:114000, pillar:'prefab',subJob:'SJ-004'},
+    {code:'2200-0000-0000-0001',name:'MEP pipe racks & headwalls',      originalBudget:487000,approvedCO:0,pendingCO:0,committed:330000,spent:107000,pillar:'prefab',subJob:'SJ-004'},
+    {code:'0300-0100-0000-0001',name:'Prefab concrete formwork',         originalBudget:154000,approvedCO:0,pendingCO:0,committed:100000,spent:33000, pillar:'prefab',subJob:'SJ-002'},
+    {code:'0500-0500-0000-0001',name:'Prefab structural assemblies',     originalBudget:259000,approvedCO:0,pendingCO:0,committed:290000,spent:94000, pillar:'prefab',subJob:'SJ-004'},
     // Logistics pillar
-    {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:640000,approvedCO:0,pendingCO:0,committed:280000,spent:108000, pillar:'logistics',subJob:'SJ-002'},
-    {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:320000,approvedCO:0,pendingCO:0,committed:180000,spent:68000, pillar:'logistics',subJob:'SJ-004'},
+    {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:800000,approvedCO:0,pendingCO:0,committed:487000,spent:186000,pillar:'logistics',subJob:'SJ-002'},
+    {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:400000,approvedCO:0,pendingCO:0,committed:313000,spent:120000,pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
-    {code:'0600-0100-0000-0001',name:'Bulk materials',       originalBudget:1200000,approvedCO:40000,pendingCO:0,committed:1295000,spent:410000,pillar:'procurement',subJob:'SJ-004'},
-    {code:'0600-0200-0000-0001',name:'Hardware & safety',    originalBudget:380000, approvedCO:0,     pendingCO:0,committed:220000, spent:132000, pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0100-0000-0001',name:'Bulk materials',   originalBudget:6277000,approvedCO:0,pendingCO:0,committed:6325000,spent:2263000,pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0200-0000-0001',name:'Hardware & safety', originalBudget:1923000,approvedCO:0,pendingCO:0,committed:1075000,spent:385000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
-    {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1200000,approvedCO:0,pendingCO:0,    committed:980000,spent:560000,pillar:'profservices',subJob:'SJ-001'},
-    {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:320000, approvedCO:0,pendingCO:25000,committed:240000,spent:160000,pillar:'profservices',subJob:'SJ-006'},
-    {code:'0100-0800-0000-0001',name:'Environmental monitoring',           originalBudget:180000, approvedCO:0,pendingCO:0,    committed:80000, spent:28000, pillar:'profservices',subJob:'SJ-006'}
-  ];
+    {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1355000,approvedCO:0,pendingCO:0,committed:1176000,spent:677000,pillar:'profservices',subJob:'SJ-001'},
+    {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:361000, approvedCO:0,pendingCO:0,committed:288000, spent:166000,pillar:'profservices',subJob:'SJ-006'},
+    {code:'0100-0800-0000-0001',name:'Environmental monitoring',           originalBudget:204000, approvedCO:0,pendingCO:0,committed:96000,  spent:55000, pillar:'profservices',subJob:'SJ-006'}
+  ]
   function ccBudget(c){return c.originalBudget+(c.approvedCO||0);}
   function ccProjected(c){return ccBudget(c)+(c.pendingCO||0);}
   function ccTone(c){var b=ccBudget(c);return c.committed>b?'bad':c.committed>b*.95?'warn':'ok';}
