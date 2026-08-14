@@ -1879,7 +1879,7 @@
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -1888,6 +1888,39 @@
     h+='</div>';
     if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
     mount.innerHTML=h;
+  }
+  function openDPEditModal(pk,rowIdx){
+    var cfg=DP[pk]; var row=cfg&&cfg.rows&&cfg.rows[rowIdx]; if(!row)return;
+    var name=row.role||row.item||row.asm||row.move||'Line item';
+    var f='<div class="mform">';
+    cfg.cols.forEach(function(c){
+      if(c.key==='__docs'||c.key==='__state')return;
+      var val=(row[c.key]!=null?String(row[c.key]):'');
+      f+='<div class="mf"><label>'+c.label+'</label><input id="dpe-'+c.key+'" class="rin" value="'+val.replace(/"/g,'&quot;')+'"></div>';
+      if(c.sub&&row[c.sub]!=null){
+        var sv=String(row[c.sub]);
+        f+='<div class="mf"><label>'+c.sub.charAt(0).toUpperCase()+c.sub.slice(1)+'</label><input id="dpe-'+c.sub+'" class="rin" value="'+sv.replace(/"/g,'&quot;')+'"></div>';
+      }
+    });
+    f+='</div>';
+    var docs=(row.attachments||[]);
+    f+=attachmentsHTML(docs);
+    f+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px">'
+      +'<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="dpEditSave(\'' +pk+'\','+rowIdx+')">Save changes</button>'
+      +'</div></div>';
+    openModal('Edit · '+name,f);
+  }
+  function dpEditSave(pk,rowIdx){
+    var cfg=DP[pk]; var row=cfg&&cfg.rows&&cfg.rows[rowIdx]; if(!row)return;
+    cfg.cols.forEach(function(c){
+      if(c.key==='__docs'||c.key==='__state')return;
+      var el=document.getElementById('dpe-'+c.key); if(el)row[c.key]=el.value;
+      if(c.sub){var sl=document.getElementById('dpe-'+c.sub);if(sl)row[c.sub]=sl.value;}
+    });
+    closeModal();
+    if(pk==='profservices')renderProfServicesDP();else renderDP(pk);
+    toast('Line item updated');
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
@@ -1937,7 +1970,7 @@ function renderProfServicesDP(){
           var t=DP_TONE[r.state]||'neu';
           var ri=cfg.rows.indexOf(r);
           var _psCCRow=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri];var _psDocs=(_psCCRow&&_psCCRow.attachments)||[];
-          h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri+')">'+ _psDocs.length+' doc'+(_psDocs.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri+')">'+ _psDocs.length+' doc'+(_psDocs.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'profservices\','+ri+')" title="Edit line item">&#9998;</button></div></div>';
           h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
         });
       });
@@ -10001,7 +10034,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        else if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button></div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -10056,7 +10089,7 @@ function renderProfServicesDP(){
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+sc+'</span>'+(PS_SCOPE_DESCS[sc]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+PS_SCOPE_DESCS[sc]+'</div>':'')+'</div></div>';
         scopeMap[sc].forEach(function(r){
           var t=DP_TONE[r.state]||'neu';
-          var ri2=cfg.rows.indexOf(r);var _psCCRow2=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri2];var _psDocs2=(_psCCRow2&&_psCCRow2.attachments)||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri2+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+t+'">'+r.state+'</span></div></div>';
+          var ri2=cfg.rows.indexOf(r);var _psCCRow2=CC_PROJ_DP&&CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows&&CC_PROJ_DP.profservices.hercules.rows[ri2];var _psDocs2=(_psCCRow2&&_psCCRow2.attachments)||[];h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri2+')" title="View full details"><div>'+r.role+'<div class="sub">'+r.firm+'</div></div><div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div><div>'+(_psDocs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();ccPsDocModal('+ri2+')">'+ _psDocs2.length+' doc'+(_psDocs2.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+t+'">'+r.state+'</span><button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'profservices\','+ri+')" title="Edit line item">&#9998;</button></div></div>';
           h+='<div id="dp-drill-profservices-'+ri2+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri2)+'</div>';
         });
       });
