@@ -236,14 +236,13 @@
     {id:'e12',task:'A4030',code:'2600-5600-0000-0001',desc:'Telehandler \u2014 10K',cat:'Material handling \u203a Telehandlers',qty:12,rate:8800,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'tele10'},
     {id:'e13',task:'A4030',code:'2600-5600-0000-0001',desc:'Scissor lift \u2014 32ft',cat:'Access equipment \u203a Scissor lifts',qty:64,rate:1900,from:'2026-11',to:'2027-04',status:'projected',submitted:false,scope:'Tracker & Module Install \u2014 Sector 2',catId:'scissor32'},
     {id:'e14',task:'A5010',code:'2600-3300-0000-0001',desc:'Rough-terrain crane \u2014 90T',cat:'Cranes \u203a Rough-terrain',qty:3,rate:42000,from:'2026-12',to:'2027-05',status:'projected',submitted:false,scope:'Inverter & Transformer Setting'},
-    {id:'e15',task:'A6010',code:'2600-3300-0000-0001',desc:'Crawler crane \u2014 230T',cat:'Cranes \u203a Crawler (non-catalog)',qty:1,rate:null,from:'2027-01',to:'2027-03',status:'projected',submitted:false,scope:'BESS Block Install & Commissioning'}
+    {id:'e15',task:'A6010',code:'2600-3300-0000-0001',desc:'Crawler crane \u2014 230T',cat:'Cranes \u203a Crawler (non-catalog)',qty:1,rate:58000,from:'2027-01',to:'2027-03',status:'projected',submitted:true,scope:'BESS Block Install & Commissioning'}
   ];
   var eqState={view:'plan'};
   var eqEditId=null, eqSeq=15, eqAddCode=null, ordSeq=3042, eqRefSeq=200;
   var EQ_HISTORY=[
     {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Increased scissor lift qty 48 \u2192 64 for expanded Sector 2 module install footprint (A4030)'},
-    {date:'Aug 2, 2026',who:'Dana Reyes',desc:'Added BESS crawler crane line (A6010) \u2014 draft, no rate set yet, pending 02S quote'},
-    {date:'Jul 15, 2026',who:'C. Navarrete (Supt.)',desc:'Extended Sector 2 pile driving off-rent Nov \u2192 Dec after geotechnical revision added 18% more pile locations'},
+{date:'Jul 15, 2026',who:'C. Navarrete (Supt.)',desc:'Extended Sector 2 pile driving off-rent Nov \u2192 Dec after geotechnical revision added 18% more pile locations'},
     {date:'Jun 1, 2026',who:'Dana Reyes',desc:'Submitted Phase 3 solar racking to 02S \u2014 telehandlers + boom lifts, Sector 1, 42 assets'},
     {date:'May 10, 2026',who:'Dana Reyes',desc:'Submitted Phase 2 pile package to 02S \u2014 6 hydraulic pile drivers + 16 telehandlers across both sectors'},
     {date:'Mar 3, 2026',who:'Dana Reyes',desc:'Created plan from the LNTP budget \u2014 6 cost codes, $19.2M equipment budget'}
@@ -2669,10 +2668,6 @@ function renderProfServicesDP(){
       {who:'Dana Reyes · You',when:'Aug 2',text:'Increased qty 48 → 64 after Sector 2 module footprint expanded per rev. drawings. Draft — not yet submitted.'},
       {who:'02S Admin',when:'Aug 3',text:'Noted. Confirm final qty once Sector 2 layout is locked before submitting to 02S.'}
     ],
-    'e15':[
-      {who:'Dana Reyes · You',when:'Aug 2',text:'Added 230T crawler crane for BESS block install (A6010). Not in rate card — pending 02S specialty quote. Jan–Mar 2027.'},
-      {who:'02S Admin',when:'Aug 3',text:'Crawler crane RFQ issued to 3 specialty vendors. Expect quotes within 5 business days.'}
-    ]
   };
   var DP_LINE_NOTES={
     'prefab-2':[
@@ -3340,19 +3335,6 @@ charges:[
   };
   var EQ_LINE_DOCS={
     'e1':['Generator maintenance log (PDF)','Load test certificate (PDF)','Fuel & hour log (PDF)'],
-    'e2':['Light tower inspection checklist (PDF)','Operating manual (PDF)'],
-    'e3':['Delivery route map (PDF)','Access road load rating (PDF)','Operating manual (PDF)','Delivery receipt (PDF)','Fuel & hour log (PDF)'],
-    'e4':['Dozer operating manual (PDF)','Grade sheet (PDF)'],
-    'e5':['Motor grader inspection log (PDF)','Operating manual (PDF)'],
-    'e6':['Compaction test reports (PDF)','Roller inspection log (PDF)'],
-    'e7':['Pile driving log (PDF)','Vibration monitoring report (PDF)','Operating manual (PDF)','Delivery receipt (PDF)'],
-    'e8':['Pile driving log (PDF)','Operating manual (PDF)'],
-    'e9':['Equipment inspection checklist (PDF)','Operating manual (PDF)','Delivery receipt (PDF)'],
-    'e10':['Equipment specification (PDF)','Delivery checklist (PDF)'],
-    'e11':['Boom lift inspection report (PDF)','Operator training certificate (PDF)'],
-    'e12':['Equipment specification (PDF)','Delivery checklist (PDF)'],
-    'e13':['Scissor lift spec sheet (PDF)','ANSI compliance certificate (PDF)'],
-    'e14':['Crane load chart (PDF)','Rigging plan (PDF)'],
     'e15':['Crawler crane specification (PDF)','Manufacturer assembly manual (PDF)','Rigging & lift plan (PDF)']
   };
   var DP_LINE_DOCS={
