@@ -1693,6 +1693,10 @@
       h+='</div><span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
+      var _logBase=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBase?'Baselined: '+_logBase:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBase?'Baselined':'Approve baseline')+'</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       // Shared gantt renderer
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
@@ -1783,6 +1787,10 @@
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
+      var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseV1?'Baselined: '+_logBaseV1:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       if(gcgrView==='gantt'){
         var GCGR_MO=EQ_MONTHS.slice(1,11);
@@ -9829,6 +9837,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='</div><span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
+      var _logBase=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBase?'Baselined: '+_logBase:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBase?'Baselined':'Approve baseline')+'</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       // Shared gantt renderer
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
@@ -9919,6 +9931,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
+      var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseV1?'Baselined: '+_logBaseV1:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
+      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       if(gcgrView==='gantt'){
         var GCGR_MO=EQ_MONTHS.slice(1,11);
