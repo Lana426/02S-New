@@ -8841,7 +8841,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
           if(showProjCol){h+='<div style="font-size:11.5px">'+row._projLabel+'</div>';}
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+dpDet+'</div>';
           h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span></div>';
           h+='<div style="font-size:10px;color:var(--g500)">View \u2192</div>';
           h+='</div>';
