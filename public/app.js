@@ -1780,7 +1780,7 @@
     } else {
       // v1: logistics moves (list/gantt) = CC_PROJ_DP.logistics.hercules.rows + delivery tracker
       var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      var logToneMap={'Scheduled':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Projected':'projected'};
+      var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_CC.length+' line'+(LOG_CC.length===1?'':'s')+'</span>';
@@ -9924,7 +9924,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     } else {
       // v1: logistics moves (list/gantt) = CC_PROJ_DP.logistics.hercules.rows + delivery tracker
       var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      var logToneMap={'Scheduled':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Projected':'projected'};
+      var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
       h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_CC.length+' line'+(LOG_CC.length===1?'':'s')+'</span>';
