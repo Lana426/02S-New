@@ -3429,7 +3429,7 @@ charges:[
       h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+l.id+'\')">Send</button>';
       h+='</div></div>';
     }
-    var docs=(EQ_LINE_DOCS&&EQ_LINE_DOCS[l.id])?EQ_LINE_DOCS[l.id]:(ord&&ord.recv&&ord.recv.docs?ord.recv.docs:['Equipment specification (PDF)','Delivery receipt (PDF)']);
+    var docs=(EQ_LINE_DOCS&&EQ_LINE_DOCS[l.id])?EQ_LINE_DOCS[l.id]:(ord&&ord.recv&&ord.recv.docs?ord.recv.docs:[]);
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
