@@ -1926,7 +1926,7 @@
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
     f+='<div class="mf"><label>'+cfg.addName.label+'</label><input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'"></div>';
-    var _wDate=(cfg.addWhen.label==='Need on-site'||cfg.addWhen.label==='Need-by date');f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+(_wDate?'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">':'<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">')+'</div></div>';
+    var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
     f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
     f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';
     f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 the rate or quote is sourced from the 02S catalog or priced by 02S admin after you submit.</span></div>';
@@ -1940,7 +1940,7 @@
     row[a.nameKey]=name;
     if(a.subKey){ var sc=dpGv('dpaScope').trim(); if(sc)row[a.subKey]=sc; }
     row[a.qtyKey]=dpGv('dpaQty')||'\u2014';
-    var _dw=dpGv('dpaWhen');if(_dw&&/^\d{4}-\d{2}-\d{2}$/.test(_dw)){var _dm=new Date(_dw+'T00:00:00');var _mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];_dw=_mn[_dm.getMonth()]+' '+_dm.getDate();}row[a.whenKey]=_dw||'\u2014';
+    var _dw=dpGv('dpaWhen'),_dwE=dpGv('dpaWhenEnd'),_dwT=dpGv('dpaWhenTime');var _mn2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];function _fmtD(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(v)){var d=new Date(v+'T00:00:00');return _mn2[d.getMonth()]+' '+d.getDate();}if(/^\d{4}-\d{2}$/.test(v)){var p=v.split('-');return _mn2[parseInt(p[1],10)-1]+' '+p[0];}return v;}_dw=_fmtD(_dw);if(_dwE)_dw=(_dw||'')+' \u2013 '+_fmtD(_dwE);else if(_dwT&&_dw)_dw+=(' \u00b7 '+_dwT);row[a.whenKey]=_dw||'\u2014';
     row.code=dpGv('dpaCode');
     if(a.costKey)row[a.costKey]='Pending';
     cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
@@ -10029,7 +10029,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
     f+='<div class="mf"><label>'+cfg.addName.label+'</label><input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'"></div>';
-    var _wDate=(cfg.addWhen.label==='Need on-site'||cfg.addWhen.label==='Need-by date');f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+(_wDate?'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">':'<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">')+'</div></div>';
+    var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
     f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
     f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';
     f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 the rate or quote is sourced from the 02S catalog or priced by 02S admin after you submit.</span></div>';
@@ -10043,7 +10043,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     row[a.nameKey]=name;
     if(a.subKey){ var sc=dpGv('dpaScope').trim(); if(sc)row[a.subKey]=sc; }
     row[a.qtyKey]=dpGv('dpaQty')||'\u2014';
-    var _dw=dpGv('dpaWhen');if(_dw&&/^\d{4}-\d{2}-\d{2}$/.test(_dw)){var _dm=new Date(_dw+'T00:00:00');var _mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];_dw=_mn[_dm.getMonth()]+' '+_dm.getDate();}row[a.whenKey]=_dw||'\u2014';
+    var _dw=dpGv('dpaWhen'),_dwE=dpGv('dpaWhenEnd'),_dwT=dpGv('dpaWhenTime');var _mn2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];function _fmtD(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(v)){var d=new Date(v+'T00:00:00');return _mn2[d.getMonth()]+' '+d.getDate();}if(/^\d{4}-\d{2}$/.test(v)){var p=v.split('-');return _mn2[parseInt(p[1],10)-1]+' '+p[0];}return v;}_dw=_fmtD(_dw);if(_dwE)_dw=(_dw||'')+' \u2013 '+_fmtD(_dwE);else if(_dwT&&_dw)_dw+=(' \u00b7 '+_dwT);row[a.whenKey]=_dw||'\u2014';
     row.code=dpGv('dpaCode');
     if(a.costKey)row[a.costKey]='Pending';
     cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
