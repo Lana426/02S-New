@@ -3807,8 +3807,10 @@ charges:[
       var st=stageStatus(o);
       var badge='';
       var freshBadge=o.fresh?'<span class="tag ok" style="margin-left:7px">New</span>':'';
-      if(!ns&&o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22'){
-        badge='<span class="tag bad" style="margin-left:7px">Off-rent overdue</span>';
+      if(o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22'){
+        badge=ns
+          ? '<span class="tag bad" style="margin-left:7px">Idle</span>'
+          : '<span class="tag bad" style="margin-left:7px">Off-rent overdue</span>';
       } else if(o.rental&&o.rental.offRent){
         badge='<span style="margin-left:8px;font-size:10.5px;color:var(--g500)">Off-rent: '+o.rental.offRent+'</span>';
       } else if(o.anticipatedOff&&(!o.rental||!o.rental.offRent)){
