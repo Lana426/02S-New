@@ -1143,11 +1143,11 @@
     var pileAssets=0; for(var j=0;j<EQ_LINES.length;j++){if(EQ_LINES[j].code==='31-630')pileAssets+=EQ_LINES[j].qty;}
     var bessCrane=null; for(var m=0;m<EQ_LINES.length;m++){if(EQ_LINES[m].task==='A6010')bessCrane=EQ_LINES[m];}
     var h='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg></span>'
-      +'<div><div class="ist">02S is actively managing this plan</div><div class="isd">Projection rebuilt from the current CPM schedule \u00b7 '+(overs.length+3)+' things to weigh before Sector 2 module install begins.</div></div></div>';
+      +'<div><div class="ist">Plan auto-generated from project inputs</div><div class="isd">Built from estimate data, prior project history, and the P6 schedule \u2014 updated automatically as inputs change \u00b7 '+(overs.length+3)+' things to review before Sector 2 module install begins.</div></div></div>';
     h+='<div class="eq-callouts">';
     if(overs.length){ h+=eqCallout('risk','Cost codes trending over',overTxt+' at the current spread. Still in-flight \u2014 rebalance now, not at closeout.'); }
-    h+=eqCallout('risk','Schedule slip cascades into the plan','The CPM update pushed <b>A3020 Sector 2 pile driving +2 weeks</b>. 02S re-dated '+pileAssets+' pile package assets (drivers + telehandlers) and flagged the knock-on delay to Sector 2 racking mobilization.');
-    h+=eqCallout('opp','Telehandler overlap \u2014 pool instead of double-rent','Pile driving (16 units) and racking (24 units) overlap Sep\u2013Dec. As Sector 1 piling wraps, transfer 8 telehandlers directly to racking instead of off-rent + re-rent \u2192 <b>save ~$85K</b>.');
+    h+=eqCallout('risk','Schedule slip cascades into the plan','The P6 update pushed <b>A3020 Sector 2 pile driving +2 weeks</b>. 02S re-dated '+pileAssets+' pile package assets (drivers + telehandlers) and flagged the knock-on delay to Sector 2 racking mobilization.');
+    h+=eqCallout('opp','Telehandler overlap \u2014 consolidate pool','Pile driving (16 units) and racking (24 units) overlap Sep\u2013Dec. As Sector 1 piling wraps, transfer 8 telehandlers directly to racking instead of releasing and re-mobilizing \u2192 <b>save ~$85K</b>.');
     if(bessCrane&&!bessCrane.rate){ h+=eqCallout('risk','BESS crawler crane (A6010) \u2014 no rate set','The 230T crawler for BESS heavy lift is still in draft with no 02S rate. Procurement window is narrowing \u2014 finalize the spec and submit before Q4 to avoid spot-market pricing.'); }
     h+='</div>';
     box.innerHTML=h;
