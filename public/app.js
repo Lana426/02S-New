@@ -1819,23 +1819,25 @@
         h+='</div></div>';
         h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested / pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var lgCols='1fr 80px 110px 90px 88px 90px';
+        var lgCols='1fr 120px 148px 118px 80px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
-        h+='<span>Move / item</span><span>Qty</span><span>Window</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
+        h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Route / gate</span><span>Docs</span><span>Status</span></div>';
         
         var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
         _cpLogRows.forEach(function(lr,li){
           var _lrTone=DP_TONE[lr.state]||'neu';
           var _lrEd=['Draft','Planned','Pending pricing','Requested'].indexOf(lr.state)>=0;
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
-          var _lrQty=lr.type||lr.qty||'\u2014';
+          var _lrType=lr.type||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
+          var _lrGate=lr.gate||'\u2014';
+          var _lrDocs=lr.attachments||[];
           h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
-           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrType+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
-           +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
-           +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrGate+'</div>'
+           +(_lrDocs.length?'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation()">'+_lrDocs.length+' doc'+(_lrDocs.length===1?'':'s')+'</button></div>':'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>')
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
         });
@@ -10012,23 +10014,25 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div></div>';
         h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested / pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var lgCols='1fr 80px 110px 90px 88px 90px';
+        var lgCols='1fr 120px 148px 118px 80px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
-        h+='<span>Move / item</span><span>Qty</span><span>Window</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
+        h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Route / gate</span><span>Docs</span><span>Status</span></div>';
         
         var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
         _cpLogRows.forEach(function(lr,li){
           var _lrTone=DP_TONE[lr.state]||'neu';
           var _lrEd=['Draft','Planned','Pending pricing','Requested'].indexOf(lr.state)>=0;
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
-          var _lrQty=lr.type||lr.qty||'\u2014';
+          var _lrType=lr.type||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
+          var _lrGate=lr.gate||'\u2014';
+          var _lrDocs=lr.attachments||[];
           h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
-           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrType+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
-           +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
-           +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrGate+'</div>'
+           +(_lrDocs.length?'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation()">'+_lrDocs.length+' doc'+(_lrDocs.length===1?'':'s')+'</button></div>':'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>')
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
         });
