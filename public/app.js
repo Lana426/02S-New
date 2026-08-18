@@ -1780,7 +1780,7 @@
     } else {
       // v1: logistics moves (list/gantt) = CC_PROJ_DP.logistics.hercules.rows + delivery tracker
       var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Active':'onrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Draft':'projected','Projected':'projected'};
+      var logToneMap={'Scheduled':'projected','In fulfillment':'onrent','Complete':'offrent','Active':'onrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Draft':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
       var _totLogLines=(DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0;
@@ -1817,7 +1817,7 @@
           h+='</div></div>';
         });
         h+='</div></div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested / pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
         var lgCols='1fr 120px 148px 118px 80px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
@@ -9976,7 +9976,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     } else {
       // v1: logistics moves (list/gantt) = CC_PROJ_DP.logistics.hercules.rows + delivery tracker
       var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Active':'onrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Draft':'projected','Projected':'projected'};
+      var logToneMap={'Scheduled':'projected','In fulfillment':'onrent','Complete':'offrent','Active':'onrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Draft':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
       var _totLogLines=(DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0;
@@ -10013,7 +10013,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='</div></div>';
         });
         h+='</div></div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Scheduled</span><span class="lg"><span class="gl-sw projected"></span>Projected</span><span class="lg"><span class="gl-sw submitted"></span>Requested / pending</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
         var lgCols='1fr 120px 148px 118px 80px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
