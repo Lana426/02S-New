@@ -1832,7 +1832,7 @@
           var _lrWin=lr.when||lr.window||'\u2014';
           var _lrGate=lr.gate||'\u2014';
           var _lrDocs=lr.attachments||[];
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+li+')">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrType+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
@@ -1840,6 +1840,7 @@
            +(_lrDocs.length?'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation()">'+_lrDocs.length+' doc'+(_lrDocs.length===1?'':'s')+'</button></div>':'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>')
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
+          h+='<div id="dp-drill-logistics-'+li+'" class="otrack" style="display:none">'+buildDPTrack('logistics',lr,li)+'</div>';
         });
         h+='</div>';
       }
@@ -10027,7 +10028,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _lrWin=lr.when||lr.window||'\u2014';
           var _lrGate=lr.gate||'\u2014';
           var _lrDocs=lr.attachments||[];
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+li+')">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrType+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
@@ -10035,6 +10036,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
            +(_lrDocs.length?'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation()">'+_lrDocs.length+' doc'+(_lrDocs.length===1?'':'s')+'</button></div>':'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>')
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
+          h+='<div id="dp-drill-logistics-'+li+'" class="otrack" style="display:none">'+buildDPTrack('logistics',lr,li)+'</div>';
         });
         h+='</div>';
       }
