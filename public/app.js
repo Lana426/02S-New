@@ -4689,10 +4689,7 @@ charges:[
     var disputed=BILLS.filter(function(b){return b.status==='Disputed';}).length;
     if(!ns){
       wrap.classList.remove('hide');
-      wrap.innerHTML='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span>'+
-        '<div><div class="ist">'+pend.length+' bill'+(pend.length===1?'':'s')+' pending your review &middot; Total pending: '+fmt(pendTotal)+'</div><div class="isd">'+
-        (disputed?disputed+' disputed bill'+(disputed===1?'':'s')+' paused for 02S response. ':'No disputed bills this period. ')+
-        'Review and approve or dispute within 10 days to prevent auto-finalization.</div></div></div>';
+      wrap.innerHTML='<div class="rc-banner">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<div><div style="font-size:13px;font-weight:650;color:var(--g900);letter-spacing:-.01em">'+pend.length+' bill'+(pend.length===1?'':'s')+' pending your review &middot; Total pending: '+fmt(pendTotal)+'</div><div style="font-size:12px;color:var(--g700);margin-top:2px;line-height:1.45">'+(disputed?disputed+' disputed bill'+(disputed===1?'':'s')+' paused for 02S response. ':'No disputed bills this period. ')+'Review and approve or dispute within 10 days to prevent auto-finalization.</div></div></div>';
       return;
     }
     wrap.classList.remove('hide');
