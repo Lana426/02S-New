@@ -2133,7 +2133,7 @@ function renderProfServicesDP(){
         docs:['Delivery route map (PDF)','Access road load rating (PDF)','Operating manual (PDF)']}},
     {id:'ORD-3038',proj:'riverside',od:'2026-08-04',item:'Hydraulic Crane — 40T',sub:'1 unit · Aug hold',pillar:'equipment',dates:'Aug 4 – Aug 29',cost:'05 · Metals',stage:1,plan:'EQ-114',latest:'Allocated — rate confirmed, mobilization holds for August'},
     {id:'ORD-3031',proj:'riverside',od:'2026-05-01',item:'Scissor Lift — 32 ft',sub:'2 units',pillar:'equipment',dates:'May 1 – May 15',cost:'09 · Finishes',stage:4,plan:'EQ-091',anticipatedOff:'2026-05-15',qty:2,onRentSince:'May 1',mrate:3800,recert:'pending',note:'MEP rough-in at L2 \u2014 both units idle',nsReco:{rec:'return',why:'No badge-ins at L2 for 9 days \u00b7 BILL-9012 flagged idle-day overage \u00b7 MEP rough-in complete per CPM',save:3800},
-      latest:'On rent — both units idle 4 days (no badge-ins)',latestTone:'warn',
+      latest:'Off-rent overdue — both units idle 4 days, no return request on file',latestTone:'warn',
       rental:{offRent:'May 15, 2026',daysLeft:3,idle:true,save:740},
       recv:{status:'completed',window:'May 1, 7:00 AM – 9:00 AM CT',windowType:'Standard flatbed delivery',carrier:'McCarthy Logistics (internal)',dispatch:'(555) 482-7700',coordinator:'Marcus Webb',coordPhone:'(555) 482-3190',vehicle:'Single flatbed. 2 scissor-lift units. Standard site access.',
         checklist:[
@@ -3808,7 +3808,7 @@ charges:[
       var badge='';
       var freshBadge=o.fresh?'<span class="tag ok" style="margin-left:7px">New</span>':'';
       if(o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22'){
-        badge='<span class="tag bad" style="margin-left:7px">Off-rent overdue</span>';
+        badge='<span class="tag bad" style="margin-left:7px">Idle · off-rent overdue</span>';
       } else if(o.rental&&o.rental.offRent){
         badge='<span style="margin-left:8px;font-size:10.5px;color:var(--g500)">Off-rent: '+o.rental.offRent+'</span>';
       } else if(o.anticipatedOff&&(!o.rental||!o.rental.offRent)){
@@ -3905,7 +3905,7 @@ charges:[
     }).join('');
     var parts=[];
     var _overdueOffRent=o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22';
-    if(_overdueOffRent) parts.push('<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:10px 14px;margin-bottom:4px;display:flex;align-items:flex-start;gap:10px"><span style="flex-shrink:0;color:var(--red);margin-top:1px">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'</span><div><div style="font-size:12px;font-weight:700;color:var(--red)">Off-rent overdue</div><div style="font-size:11.5px;color:var(--g700);margin-top:2px">Anticipated return: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'\u00a0\u2014 no return request on file. Flagged on Customer Portal.</div></div></div>');
+    if(_overdueOffRent) parts.push('<div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:10px 14px;margin-bottom:4px;display:flex;align-items:flex-start;gap:10px"><span style="flex-shrink:0;color:var(--red);margin-top:1px">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2)+'</span><div><div style="font-size:12px;font-weight:700;color:var(--red)">Idle · off-rent overdue</div><div style="font-size:11.5px;color:var(--g700);margin-top:2px">Anticipated return: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'\u00a0\u2014 units idle, no return request on file. Flagged on Customer Portal.</div></div></div>');
     if(o.rental) parts.push(eorHTML(o,ns));                          // show extend/return for all; NS adds savings banner
     parts.push('<div class="trk">'+steps+'</div>');                  // tracker (both versions)
     if(o.stage===5&&o.anticipatedOff&&(!o.rental||!o.rental.offRent)) parts.push('<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>');
