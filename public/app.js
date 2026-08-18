@@ -1783,12 +1783,11 @@
       var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      var _totLogLines=LOG_CC.length+((DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0);
+      var _totLogLines=(DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0;
       h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_totLogLines+' line'+(_totLogLines===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
-      h+='<button id="dp-sel-btn-logistics" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\'logistics\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button>';
-      h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+            h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
       var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
       h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseV1?'Baselined: '+_logBaseV1:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
@@ -1805,16 +1804,16 @@
         h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Move / item</div><div class="gh-months">'+gmh+'</div></div>';
         h+='<div class="g-body" style="position:relative">';
         h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        LOG_CC.forEach(function(r){
+        (DP['logistics']&&DP['logistics'].rows||[]).forEach(function(r){
           var stt=logToneMap[r.state]||'projected';
           var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
           var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
           h+='<div class="grow"><div class="g-label" style="width:200px;min-width:200px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
-          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.item+'</span>';
-          h+='<span style="font-size:10px;color:var(--g400)">'+(r.firm||r.qty||'')+'</span>';
+          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.move||r.item)+'</span>';
+          h+='<span style="font-size:10px;color:var(--g400)">'+(r.type||r.firm||r.qty||'')+'</span>';
           h+='</div>';
           h+='<div class="g-track" style="background-image:'+gGrid+'">';
-          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.qty+' \u00b7 '+r.window+'">'+r.window+'</div>';
+          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.type||r.qty||'')+' \u00b7 '+(r.when||r.window||'')+'">'+(r.when||r.window||'')+'</div>';
           h+='</div></div>';
         });
         h+='</div></div>';
@@ -1823,18 +1822,7 @@
         var lgCols='1fr 80px 110px 90px 88px 90px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
         h+='<span>Move / item</span><span>Qty</span><span>Window</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
-        LOG_CC.forEach(function(r,idx){
-          var tone=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+idx+')" title="View full details">';
-          h+='<div>'+r.item+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
-          var _lcc=r.attachments||[];h+='<div>'+(_lcc.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+idx+')">'+ _lcc.length+' doc'+(_lcc.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
-          h+='<div style="display:flex;align-items:center;gap:5px"><span class="tag '+tone+'">'+r.state+'</span>'+(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openLogCcEdit('+idx+')" title="Edit line item">&#9998;</button>':'')+'</div>';
-          h+='</div>';
-          h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
-        });
+        
         var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
         _cpLogRows.forEach(function(lr,li){
           var _lrTone=DP_TONE[lr.state]||'neu';
@@ -1842,14 +1830,16 @@
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
           var _lrQty=lr.type||lr.qty||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
-           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+'</div>'
+          h+=(_lrEd?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';flex:1">'
+           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
            +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
            +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
-           +'<div style="display:flex;align-items:center;gap:5px">'+(_lrEd?'<input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">':'')+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
+           +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
+          h+=(_lrEd?'</div>':'');
         });
         h+='</div>';
       }
@@ -1894,7 +1884,7 @@
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button id="dp-sel-btn-'+pk+'" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\''+pk+'\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -1903,13 +1893,16 @@
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
+      h+=(_edRow?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer;flex:1" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+(_edRow?'<input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">':'')+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
+        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
+      h+=(_edRow?'</div>':'');
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
@@ -1935,6 +1928,13 @@
     closeModal(); renderLogPlan();
     toast('Line item updated');
   }
+  function dpDeleteRow(pk,rowIdx){
+    var cfg=DP[pk]; if(!cfg||!cfg.rows||cfg.rows[rowIdx]===undefined)return;
+    cfg.rows.splice(rowIdx,1); if(dpSel[pk])dpSel[pk]={}; closeModal();
+    if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk);
+    toast('Line item deleted');
+  }
+
   function openDPEditModal(pk,rowIdx){
     var cfg=DP[pk]; var row=cfg&&cfg.rows&&cfg.rows[rowIdx]; if(!row)return;
     var name=row.role||row.item||row.asm||row.move||'Line item';
@@ -1952,8 +1952,9 @@
     var docs=(row.attachments||[]);
     f+=attachmentsHTML(docs);
     f+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px">'
+      +'<button class="btn btn-ghost btn-sm" style="color:var(--red);margin-right:auto" onclick="dpDeleteRow(\'"+pk+"\',"+rowIdx+")">Delete</button>'
       +'<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-dark" onclick="dpEditSave(\'' +pk+'\','+rowIdx+')">Save changes</button>'
+      +'<button class="btn btn-dark" onclick="dpEditSave(\'"+pk+"\',"+rowIdx+")">Save changes</button>'
       +'</div></div>';
     openModal('Edit · '+name,f);
   }
@@ -1971,9 +1972,6 @@
   function dpToggleSel(pk,idx,checked){
     if(!dpSel[pk])dpSel[pk]={};
     if(checked)dpSel[pk][idx]=true; else delete dpSel[pk][idx];
-    var n=Object.keys(dpSel[pk]).length;
-    var btn=document.getElementById('dp-sel-btn-'+pk);
-    if(btn){btn.style.display=n?'':'none';btn.querySelector('.dp-sel-n').textContent=n;}
   }
   function dpSubmitSelected(pk){
     var cfg=DP[pk]; var sel=dpSel[pk]||{}; var ids=Object.keys(sel).map(Number);
@@ -2006,7 +2004,7 @@
     cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
     toast('Planning line item added \u2014 select and submit to 02S when ready');
   }
-  function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'||r.state==='Planned'){ r.state='Requested'; n++; } }); dpSel[pk]={}; if(!n){ toast('No planned lines to submit'); return; } if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
+  function dpSubmit(pk){ var cfg=DP[pk],n=0; var sel=dpSel[pk]||{}; var selIds=Object.keys(sel).map(Number); if(selIds.length){ selIds.forEach(function(i){ if(cfg.rows[i]&&(cfg.rows[i].state==='Draft'||cfg.rows[i].state==='Planned'||cfg.rows[i].state==='Pending pricing')){cfg.rows[i].state='Requested';n++;} }); } else { cfg.rows.forEach(function(r){ if(r.state==='Draft'||r.state==='Planned'){ r.state='Requested'; n++; } }); } dpSel[pk]={}; if(!n){ toast('No planned lines to submit'); return; } if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
 function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
@@ -2017,7 +2015,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button id="dp-sel-btn-'+pk+'" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\''+pk+'\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
           var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
       var scopes=[],scopeMap={};
@@ -9979,12 +9977,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      var _totLogLines=LOG_CC.length+((DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0);
+      var _totLogLines=(DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0;
       h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_totLogLines+' line'+(_totLogLines===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
-      h+='<button id="dp-sel-btn-logistics" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\'logistics\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button>';
-      h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
+            h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
       var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
       h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseV1?'Baselined: '+_logBaseV1:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
@@ -10001,16 +9998,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Move / item</div><div class="gh-months">'+gmh+'</div></div>';
         h+='<div class="g-body" style="position:relative">';
         h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        LOG_CC.forEach(function(r){
+        (DP['logistics']&&DP['logistics'].rows||[]).forEach(function(r){
           var stt=logToneMap[r.state]||'projected';
           var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
           var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
           h+='<div class="grow"><div class="g-label" style="width:200px;min-width:200px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
-          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.item+'</span>';
-          h+='<span style="font-size:10px;color:var(--g400)">'+(r.firm||r.qty||'')+'</span>';
+          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.move||r.item)+'</span>';
+          h+='<span style="font-size:10px;color:var(--g400)">'+(r.type||r.firm||r.qty||'')+'</span>';
           h+='</div>';
           h+='<div class="g-track" style="background-image:'+gGrid+'">';
-          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+r.qty+' \u00b7 '+r.window+'">'+r.window+'</div>';
+          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.type||r.qty||'')+' \u00b7 '+(r.when||r.window||'')+'">'+(r.when||r.window||'')+'</div>';
           h+='</div></div>';
         });
         h+='</div></div>';
@@ -10019,18 +10016,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var lgCols='1fr 80px 110px 90px 88px 90px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
         h+='<span>Move / item</span><span>Qty</span><span>Window</span><span class="r">Cost</span><span>Documents</span><span>Status</span></div>';
-        LOG_CC.forEach(function(r,idx){
-          var tone=DP_TONE[r.state]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+idx+')" title="View full details">';
-          h+='<div>'+r.item+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g600)">'+r.qty+'</div>';
-          h+='<div style="font-size:11.5px;color:var(--g700)">'+r.window+'</div>';
-          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(r.cost||'\u2014')+'</div>';
-          var _lcc=r.attachments||[];h+='<div>'+(_lcc.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logCcDocModal(\'hercules\','+idx+')">'+ _lcc.length+' doc'+(_lcc.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div>';
-          h+='<div style="display:flex;align-items:center;gap:5px"><span class="tag '+tone+'">'+r.state+'</span>'+(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openLogCcEdit('+idx+')" title="Edit line item">&#9998;</button>':'')+'</div>';
-          h+='</div>';
-          h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
-        });
+        
         var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
         _cpLogRows.forEach(function(lr,li){
           var _lrTone=DP_TONE[lr.state]||'neu';
@@ -10038,14 +10024,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
           var _lrQty=lr.type||lr.qty||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
-           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+'</div>'
+          h+=(_lrEd?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';flex:1">'
+           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
            +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
            +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
-           +'<div style="display:flex;align-items:center;gap:5px">'+(_lrEd?'<input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">':'')+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
+           +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
+          h+=(_lrEd?'</div>':'');
         });
         h+='</div>';
       }
@@ -10090,7 +10078,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button id="dp-sel-btn-'+pk+'" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\''+pk+'\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -10099,13 +10087,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     var _srows=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
+      h+=(_edRow?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer;flex:1" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
-        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+(_edRow?'<input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">':'')+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
+        else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
+      h+=(_edRow?'</div>':'');
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
@@ -10135,7 +10126,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
     toast('Planning line item added \u2014 select and submit to 02S when ready');
   }
-  function dpSubmit(pk){ var cfg=DP[pk],n=0; cfg.rows.forEach(function(r){ if(r.state==='Draft'||r.state==='Planned'){ r.state='Requested'; n++; } }); dpSel[pk]={}; if(!n){ toast('No planned lines to submit'); return; } if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
+  function dpSubmit(pk){ var cfg=DP[pk],n=0; var sel=dpSel[pk]||{}; var selIds=Object.keys(sel).map(Number); if(selIds.length){ selIds.forEach(function(i){ if(cfg.rows[i]&&(cfg.rows[i].state==='Draft'||cfg.rows[i].state==='Planned'||cfg.rows[i].state==='Pending pricing')){cfg.rows[i].state='Requested';n++;} }); } else { cfg.rows.forEach(function(r){ if(r.state==='Draft'||r.state==='Planned'){ r.state='Requested'; n++; } }); } dpSel[pk]={}; if(!n){ toast('No planned lines to submit'); return; } if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
 function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
@@ -10146,7 +10137,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button id="dp-sel-btn-'+pk+'" class="btn btn-red btn-sm" onclick="dpSubmitSelected(\''+pk+'\')" style="display:none">Submit <span class="dp-sel-n">0</span> to 02S</button><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';      var PS_SCOPE_DESCS={'Survey & site monitoring':'Field measurements, geotechnical data, and environmental compliance across active site phases.','Engineering & oversight':'Engineering support, construction management oversight, and VDC coordination.','BESS & commissioning':'Third-party commissioning and technical oversight for BESS, electrical, and MEP systems.'};
       var scopes=[],scopeMap={};
       cfg.rows.forEach(function(r){ var sc=r.scope||'Other'; if(!scopeMap[sc]){scopeMap[sc]=[];scopes.push(sc);} scopeMap[sc].push(r); });
