@@ -1143,7 +1143,7 @@
     var pileAssets=0; for(var j=0;j<EQ_LINES.length;j++){if(EQ_LINES[j].code==='31-630')pileAssets+=EQ_LINES[j].qty;}
     var bessCrane=null; for(var m=0;m<EQ_LINES.length;m++){if(EQ_LINES[m].task==='A6010')bessCrane=EQ_LINES[m];}
     var h='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/></svg></span>'
-      +'<div><div class="ist">Plan auto-generated from project inputs</div><div class="isd">Built from estimate data, prior project history, and the P6 schedule \u2014 updated automatically as inputs change \u00b7 '+(overs.length+3)+' things to review before Sector 2 module install begins.</div></div></div>';
+      +'<div><div class="ist">Plan auto-generated from project inputs</div><div class="isd">Built from project inputs including estimate data, prior project history, P6 schedule, and more \u2014 updated automatically as inputs change \u00b7 '+(overs.length+3)+' things to review before Sector 2 module install begins.</div></div></div>';
     h+='<div class="eq-callouts">';
     if(overs.length){ h+=eqCallout('risk','Cost codes trending over',overTxt+' at the current spread. Still in-flight \u2014 rebalance now, not at closeout.'); }
     h+=eqCallout('risk','Schedule slip cascades into the plan','The P6 update pushed <b>A3020 Sector 2 pile driving +2 weeks</b>. 02S re-dated '+pileAssets+' pile package assets (drivers + telehandlers) and flagged the knock-on delay to Sector 2 racking mobilization.');
