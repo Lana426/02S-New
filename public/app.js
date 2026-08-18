@@ -1783,7 +1783,8 @@
       var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_CC.length+' line'+(LOG_CC.length===1?'':'s')+'</span>';
+      var _totLogLines=LOG_CC.length+((DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0);
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_totLogLines+' line'+(_totLogLines===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
@@ -1832,6 +1833,22 @@
           h+='<div style="display:flex;align-items:center;gap:5px"><span class="tag '+tone+'">'+r.state+'</span>'+(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openLogCcEdit('+idx+')" title="Edit line item">&#9998;</button>':'')+'</div>';
           h+='</div>';
           h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
+        });
+        var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
+        _cpLogRows.forEach(function(lr,li){
+          var _lrTone=DP_TONE[lr.state]||'neu';
+          var _lrEd=['Draft','Planned','Pending pricing','Requested'].indexOf(lr.state)>=0;
+          var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
+          var _lrQty=lr.type||lr.qty||'\u2014';
+          var _lrWin=lr.when||lr.window||'\u2014';
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
+           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
+           +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
+           +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
+           +'<div style="display:flex;align-items:center;gap:5px"><span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
+           +'</div>';
         });
         h+='</div>';
       }
@@ -9946,7 +9963,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       var logToneMap={'Scheduled':'onrent','In fulfillment':'onrent','Complete':'offrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Projected':'projected'};
       h+='<div class="eq-toolbar" style="margin-bottom:6px">';
       h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+LOG_CC.length+' line'+(LOG_CC.length===1?'':'s')+'</span>';
+      var _totLogLines=LOG_CC.length+((DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0);
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_totLogLines+' line'+(_totLogLines===1?'':'s')+'</span>';
       h+='<span class="spacer"></span>';
       h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
@@ -9995,6 +10013,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           h+='<div style="display:flex;align-items:center;gap:5px"><span class="tag '+tone+'">'+r.state+'</span>'+(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openLogCcEdit('+idx+')" title="Edit line item">&#9998;</button>':'')+'</div>';
           h+='</div>';
           h+='<div id="dp-drill-logistics-'+idx+'" class="otrack" style="display:none">'+buildDPTrack('logistics',r,idx)+'</div>';
+        });
+        var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
+        _cpLogRows.forEach(function(lr,li){
+          var _lrTone=DP_TONE[lr.state]||'neu';
+          var _lrEd=['Draft','Planned','Pending pricing','Requested'].indexOf(lr.state)>=0;
+          var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
+          var _lrQty=lr.type||lr.qty||'\u2014';
+          var _lrWin=lr.when||lr.window||'\u2014';
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
+           +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
+           +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
+           +'<div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+(lr.cost||'\u2014')+'</div>'
+           +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
+           +'<div style="display:flex;align-items:center;gap:5px"><span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
+           +'</div>';
         });
         h+='</div>';
       }
