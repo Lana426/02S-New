@@ -1830,8 +1830,7 @@
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
           var _lrQty=lr.type||lr.qty||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
-          h+=(_lrEd?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';flex:1">'
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
@@ -1839,7 +1838,6 @@
            +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
-          h+=(_lrEd?'</div>':'');
         });
         h+='</div>';
       }
@@ -1894,15 +1892,13 @@
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
       var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
-      h+=(_edRow?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer;flex:1" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
         else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
-      h+=(_edRow?'</div>':'');
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
@@ -1942,7 +1938,8 @@
     cfg.cols.forEach(function(c){
       if(c.key==='__docs'||c.key==='__state')return;
       var val=(row[c.key]!=null?String(row[c.key]):'');
-      f+='<div class="mf"><label>'+c.label+'</label><input id="dpe-'+c.key+'" class="rin" value="'+val.replace(/"/g,'&quot;')+'"></div>';
+      var _isDateField=(c.label==='Date &amp; window'||c.label==='Need on-site'||c.label==='Need-by date');
+      f+='<div class="mf"><label>'+c.label+'</label><input id="dpe-'+c.key+'" '+(_isDateField?'type="date" style="cursor:pointer" ':'')+'class="rin" value="'+val.replace(/"/g,'&quot;')+'"></div>';
       if(c.sub&&row[c.sub]!=null){
         var sv=String(row[c.sub]);
         f+='<div class="mf"><label>'+c.sub.charAt(0).toUpperCase()+c.sub.slice(1)+'</label><input id="dpe-'+c.sub+'" class="rin" value="'+sv.replace(/"/g,'&quot;')+'"></div>';
@@ -10024,8 +10021,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _lrItem=lr.move||lr.item||'\u2014'; var _lrSub=lr.moveSub||'';
           var _lrQty=lr.type||lr.qty||'\u2014';
           var _lrWin=lr.when||lr.window||'\u2014';
-          h+=(_lrEd?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-logistics-'+li+'" onchange="dpToggleSel(\'logistics\','+li+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';flex:1">'
+          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+'">'
            +'<div>'+_lrItem+(_lrSub?'<div class="sub">'+_lrSub+'</div>':'')+  '</div>'
            +'<div style="font-size:11.5px;color:var(--g600)">'+_lrQty+'</div>'
            +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
@@ -10033,7 +10029,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
            +'<div><span style="color:var(--g400);font-size:11.5px">&mdash;</span></div>'
            +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
            +'</div>';
-          h+=(_lrEd?'</div>':'');
         });
         h+='</div>';
       }
@@ -10088,15 +10083,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
       var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
-      h+=(_edRow?'<div style="display:flex;align-items:stretch;gap:0"><label style="display:flex;align-items:center;padding:0 10px;cursor:pointer"><input type="checkbox" id="dpchk-'+pk+'-'+origIdx+'" onchange="dpToggleSel(\''+pk+'\','+origIdx+',this.checked)" style="cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()"></label>':'');
-      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer;flex:1" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
+      h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\''+pk+'\','+origIdx+')" title="View full details">';
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
         else if(c.key==='__state'){ var _ds=(pk==='prefab'&&(r.state==='Submittal'||r.state==='In fabrication'))?'In fulfillment':r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+t+'">'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'; }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
-      h+=(_edRow?'</div>':'');
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
