@@ -7176,10 +7176,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ns:'02S tracks all GC/GR site-service contracts across the portfolio — trailers, power, sanitation, fencing, signage, and waste removal. Each service is mapped to the standard taxonomy and linked to the project schedule so renewals and adjustments are flagged automatically.',
       cap:'Every project’s GC/GR service demand, aggregated by category. Active services are on-rent and vendor-confirmed; requested services require vendor selection before mobilization.',
       rows:[
-        {id:'REQ-GC-HRC-01',asset:'Office & storage trailers \u00b7 4 units',project:'Hercules Solar + BESS',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
-        {id:'REQ-GC-BRW-01',asset:'Office & storage trailers \u00b7 3 units',project:'Barry Rose WRF',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
-        {id:'REQ-GC-VDC-01',asset:'Office & storage trailers \u00b7 2 units',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
-        {id:'REQ-GC-VDC-06',asset:'Waste & dumpster service \u00b7 2 dumpsters',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Waste',taxOk:true,leaf:'Dumpsters',dec:'TBD',decTone:'info',status:'Requested'}
+        {id:'REQ-GC-HRC-06',asset:'Waste & dumpster service \u00b7 2 dumpsters',project:'Hercules Solar + BESS',tax:'Logistics \u203a GC/GR \u203a Waste',taxOk:true,leaf:'Dumpsters',dec:'TBD',decTone:'info',status:'Requested'},
+        {id:'REQ-GC-BRW-04',asset:'Fencing & site barriers \u00b7 900 LF',project:'Barry Rose WRF',tax:'Logistics \u203a GC/GR \u203a Fencing',taxOk:true,leaf:'Site fencing',dec:'TBD',decTone:'info',status:'Requested'},
+        {id:'REQ-GC-VDC-06',asset:'Waste & dumpster service \u00b7 2 dumpsters',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Waste',taxOk:true,leaf:'Dumpsters',dec:'TBD',decTone:'info',status:'Requested'},
+        {id:'REQ-GC-HRC-04',asset:'Signage & traffic control \u00b7 BESS pad',project:'Hercules Solar + BESS',tax:'Logistics \u203a GC/GR \u203a Signage',taxOk:true,leaf:'Traffic control',dec:'TrafficSafetyZone',decTone:'ok',status:'In fulfillment'},
+        {id:'REQ-GC-VDC-05',asset:'Signage & traffic control \u00b7 data center',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Signage',taxOk:true,leaf:'Traffic control',dec:'TrafficSafetyZone',decTone:'ok',status:'In fulfillment'}
       ],
       rollCols:['GC/GR service','Units / qty','Period','Status'],
       roll:[{a:'Trailers',b:'9 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Temp power',b:'4 panels',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Sanitation',b:'13 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Fencing',b:'3,300 LF',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Waste service',b:'1 Requested',c:'VDC14 Nov',v:'Requested',vt:'warn'}],
