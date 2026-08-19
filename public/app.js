@@ -199,6 +199,7 @@
   /* ═══════════════════ EQUIPMENT DEMAND PLAN ═══════════════════ */
   var EQ_MONTHS=['2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01','2027-02','2027-03','2027-04','2027-05'];
   var EQ_TODAY='2026-08';
+  var EQ_TODAY_D=12/31;
   var EQ_CODES=[
     {code:'0100-5000-0000-0001',name:'Temporary Facilities & Controls',phase:'General conditions',budget:1476000,committed:1476000},
     {code:'0200-2000-0000-0001',name:'Site Clearing & Grubbing',phase:'Phase 1 \u00b7 Site prep',budget:243000,committed:243000},
@@ -987,7 +988,7 @@
   function _eqGetOrdKey(desc){for(var k in _EQ_ORD_MAP){if(desc.indexOf(k)>=0)return _EQ_ORD_MAP[k];}return null;}
   function renderEqGantt(){
     var ns=CURRENT==='ns';
-    var N=EQ_MONTHS.length, todayIdx=eqIdx(EQ_TODAY), todayPct=((todayIdx+1)/N)*100;
+    var N=EQ_MONTHS.length, todayIdx=eqIdx(EQ_TODAY), todayPct=((todayIdx+EQ_TODAY_D)/N)*100;
     var mh='';
     for(var i=0;i<N;i++){
       var m=EQ_MONTHS[i];
@@ -1699,7 +1700,7 @@
       h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
-      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
+      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
       function nsGantt(rows,hdrLbl,rowFn){
         var gmh='';
@@ -1778,7 +1779,7 @@
       if(gcgrView==='gantt'){
         var GCGR_MO=EQ_MONTHS.slice(1,11);
         var GN=GCGR_MO.length;
-        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
+        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
         var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
@@ -5295,8 +5296,8 @@ charges:[
     if(ns){
       h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S insight</div><div class="isd">BAS commissioning specialist starts Dec 1 — confirm BESS and switchgear readiness by Nov 15. VDC coordinator and drone operator have overlapping site windows through Dec.</div></div></div>';
       var LGM=['Apr ’26','May ’26','Jun ’26','Jul ’26','Aug ’26','Sep ’26','Oct ’26','Nov ’26','Dec ’26','Jan ’27'];
-      var N=LGM.length, todayIdx=3;
-      var todayPct=((todayIdx+0.8)/N)*100;
+      var N=LGM.length, todayIdx=4;
+      var todayPct=((todayIdx+EQ_TODAY_D)/N)*100;
       var mh=''; for(var mi=0;mi<N;mi++){ mh+='<div class="gh-m">'+LGM[mi]+'</div>'; }
       var gridBg='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'% - 1px), var(--g150) calc('+(100/N)+'%))';
       h+='<div class="eq-cap"><span>Resources scheduled on site — people and specialists across all service categories.</span></div>';
@@ -5313,7 +5314,7 @@ charges:[
           +'</div></div>';
       });
       h+='</div>';
-      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>GEO / VIZ</span><span class="lg"><span class="gl-sw submitted"></span>SUM / BAS</span><span class="lg"><span class="gl-sw draft"></span>OFE / IRT</span><span class="lg"><span class="gl-today"></span>Today · Jul ’26</span></div>';
+      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>GEO / VIZ</span><span class="lg"><span class="gl-sw submitted"></span>SUM / BAS</span><span class="lg"><span class="gl-sw draft"></span>OFE / IRT</span><span class="lg"><span class="gl-today"></span>Today · Aug ‘26</span></div>';
       h+='</div>';
     } else {
       h+='<div class="eq-cap"><span>Specialty services grouped by RSI service type — scope, vendor, and scheduling status for each engagement.</span></div>';
@@ -7944,7 +7945,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<div style="position:absolute;left:'+Math.max(0,x)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+m+'</div>';
       if(x>0.1)h+='<div style="position:absolute;left:'+x+'%;top:16px;height:2000px;border-left:1px solid var(--g100);pointer-events:none"></div>';
     });
-    var todayPctFab=parseFloat(((122+13-1)/274*100).toFixed(2));h+='<div style="position:absolute;left:'+todayPctFab+'%;top:0;height:1500px;width:1.5px;background:#10b981;opacity:.35;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+todayPctFab+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';
+    var todayPctFab=parseFloat(((122+12-1)/274*100).toFixed(2));h+='<div style="position:absolute;left:'+todayPctFab+'%;top:0;height:1500px;width:1.5px;background:#10b981;opacity:.35;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+todayPctFab+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';
     h+='</div></div>';
     TYPES.forEach(function(type){
       var tItems=items.filter(function(it){return it.t===type;});
@@ -8368,7 +8369,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   function renderEquipGantt(selProj,ns){
     initCcEquipAssets();
     var GMONTHS=EQ_MONTHS.slice(0,11);
-    var N=GMONTHS.length, todayIdx=GMONTHS.indexOf(EQ_TODAY), todayPct=((todayIdx+1)/N)*100;
+    var N=GMONTHS.length, todayIdx=GMONTHS.indexOf(EQ_TODAY), todayPct=((todayIdx+EQ_TODAY_D)/N)*100;
     var MNS={Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
     function toMoKey(s,def){
       if(!s)return def;
@@ -9862,7 +9863,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
-      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
+      var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
       function nsGantt(rows,hdrLbl,rowFn){
         var gmh='';
@@ -9941,7 +9942,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       if(gcgrView==='gantt'){
         var GCGR_MO=EQ_MONTHS.slice(1,11);
         var GN=GCGR_MO.length;
-        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
+        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
         var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
         var gmh='';
         for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
