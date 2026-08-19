@@ -9292,34 +9292,28 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     h+='</div>';
     h+='<div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="logCapAdd(\''+proj+'\')">+ Add line</button></div>';
     h+='<div class="eq-toolbar" style="margin-top:4px"><span class="dp-sec-t" style="font-size:11.5px">'+svg(IC.chart)+'Deployment &amp; transit schedule</span></div>';
-    h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px 14px;overflow:hidden">';
-    h+='<div style="display:flex;margin-bottom:4px"><div style="min-width:160px"></div>';
-    h+='<div style="position:relative;flex:1;height:20px;border-bottom:1px solid var(--g200)">';
-    for(var lmi=0;lmi<12;lmi++){
-      var mn=(lmi+1)*30+1;
-      if(mn>=lo&&mn<=rng.hi){h+='<div style="position:absolute;left:'+pctL(mn)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(mn)>1)h+='<div style="position:absolute;left:'+pctL(mn)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
-      var mn2=mn+360;
-      if(mn2>=lo&&mn2<=rng.hi){h+='<div style="position:absolute;left:'+pctL(mn2)+'%;font-size:10px;color:var(--g500);white-space:nowrap">'+monthNms[lmi]+'</div>';if(pctL(mn2)>1)h+='<div style="position:absolute;left:'+pctL(mn2)+'%;top:16px;height:'+ganttH+'px;border-left:1px solid var(--g100);pointer-events:none"></div>';}
-    }
-    var _todayLogN=_logN('Aug 13');var _todayLogPct=pctL(_todayLogN);if(_todayLogPct>=0&&_todayLogPct<=100){h+='<div style="position:absolute;left:'+_todayLogPct+'%;top:0;height:'+(ganttH+20)+'px;width:1.5px;background:#10b981;opacity:.5;pointer-events:none;z-index:2"></div>';h+='<div style="position:absolute;left:calc('+_todayLogPct+'% + 2px);top:2px;font-size:8.5px;color:#10b981;font-weight:700;z-index:2">Today</div>';}
-    h+='</div></div>';
+    var _lcMo=EQ_MONTHS.slice(3,11);var _lcN=_lcMo.length;
+    var _lcTodayIdx=_lcMo.indexOf(EQ_TODAY);var _lcTodayPct=_lcTodayIdx>=0?((_lcTodayIdx+0.5)/_lcN)*100:-1;
+    var _lcGrid='repeating-linear-gradient(to right,transparent 0,transparent calc('+(100/_lcN)+'% - 1px),var(--g150) calc('+(100/_lcN)+'% - 1px),var(--g150) calc('+(100/_lcN)+'%))';
+    var _lcTM={'Complete':'offrent','Completed':'offrent','In fulfillment':'onrent','Active':'onrent','On-rent':'onrent','Off-rent':'offrent','Scheduled':'projected','Planned':'projected','Requested':'submitted','Draft':'projected'};
+    function _lcMoIdx(ds){var _mo={Jun:0,Jul:1,Aug:2,Sep:3,Oct:4,Nov:5,Dec:6,Jan:7,Feb:8,Mar:9,Apr:10,May:11};var m=ds&&ds.match(/^([A-Za-z]+)/);return m&&_mo[m[1]]!=null?_mo[m[1]]:0;}
+    var _lcGmh='';for(var _gi=0;_gi<_lcN;_gi++){var _gm=_lcMo[_gi];var _yrS=(_gi===0)||(eqMonthYear(_gm)!==eqMonthYear(_lcMo[_gi-1]));_lcGmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
+    h+='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:180px;min-width:180px">Move / event</div><div class="gh-months">'+_lcGmh+'</div></div>';
+    h+='<div class="g-body" style="position:relative">';
+    if(_lcTodayPct>=0){h+='<div class="g-today" style="left:calc(180px + (100% - 180px) * '+(_lcTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';}
     items.forEach(function(it){
-      var sn=_logN(it.start),en=_logN(it.end);if(en<sn)en+=360;
-      var x1=pctL(sn),x2=pctL(en),bw=Math.max(x2-x1,2);
-      var bc=_sColor(it.state),op=_sOpacity(it.state);
-      h+='<div style="display:flex;align-items:center;margin:3px 0">';
-      h+='<div style="min-width:160px;font-size:11px;color:var(--g700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;flex-shrink:0">'+it.item+'</div>';
-      h+='<div style="position:relative;flex:1;height:22px">';
-      h+='<div title="'+it.item+' · '+it.start+' → '+it.end+'" style="position:absolute;left:'+x1+'%;width:'+bw+'%;height:18px;top:2px;border-radius:4px;background:'+bc+';opacity:'+op+'">';
-      if(bw>5)h+='<div style="font-size:9.5px;color:#fff;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+it.item+'</div>';
-      h+='</div></div></div>';
+      var _sa=_lcMoIdx(it.start),_ea=_lcMoIdx(it.end);
+      var _ll=(_sa/_lcN)*100,_lw=((_ea-_sa+1)/_lcN)*100;
+      var _lst=_lcTM[it.state]||'projected';
+      h+='<div class="grow"><div class="g-label" style="width:180px;min-width:180px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
+      h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+it.item+'</span>';
+      h+='<span style="font-size:10px;color:var(--g400)">'+it.qty+'</span></div>';
+      h+='<div class="g-track" style="background-image:'+_lcGrid+'">';
+      h+='<div class="g-bar '+_lst+' vw" style="left:'+_ll.toFixed(2)+'%;width:calc('+_lw.toFixed(2)+'% - 3px)" title="'+it.item+' \u00b7 '+it.start+' \u2192 '+it.end+'">'+it.state+'</div>';
+      h+='</div></div>';
     });
-    h+='<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--g100)">';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#10b981;border-radius:2px;opacity:.82"></div>Active / Deployed</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#3b82f6;border-radius:2px;opacity:.65"></div>Planned / Projected</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#f59e0b;border-radius:2px;opacity:.55"></div>Requested / Pending</div>';
-    h+='<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g600)"><div style="width:18px;height:10px;background:#9ca3af;border-radius:2px;opacity:.45"></div>Demobilized</div>';
     h+='</div></div>';
+    h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     var catTotals={};items.forEach(function(it){var n=parseInt(it.qty,10)||1;catTotals[it.cat]=(catTotals[it.cat]||0)+n;});
     var withinItems=[],atRiskItems=[];
     items.forEach(function(it){var owned=cap.fleetOwned[it.cat];var used=catTotals[it.cat];var risk=typeof owned==='number'&&used>owned;(risk?atRiskItems:withinItems).push(it);});
