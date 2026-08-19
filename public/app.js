@@ -5545,7 +5545,8 @@ charges:[
       {t:'Excavator shortfall projected \u2014 October',s:'portfolio demand exceeds owned fleet by 3 units',tag:{l:'Gap',tone:'warn'},to:'gap',reco:'Buy 2 (19-mo payback) or pre-position idle units \u2014 both in the ranked buy list',icon:IC.chart},
       {t:'Excavator capacity \u2014 Cimarron Oct phase',s:'2\u00d7 50-ton unallocated \u00b7 excavation start at risk',proj:'Cimarron Data Center',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-4479')",reco:'Assign EX-2205 + EX-2208 from North/South Yard \u2014 confirms Oct 12 excavation start',icon:IC.box},
       {t:'BESS commissioning resource gap',s:'2 FTE unplaced \u00b7 Nov 2026 P6 start \u00b7 SOW unexecuted',proj:'Hercules Solar + BESS',tag:{l:'Capacity',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-S-2108')",reco:'02S: execute SOW by Oct 1 \u2014 slip risk 4\u20136 weeks if unaddressed',icon:IC.box},
-      {t:'MV switchgear + BESS containers \u2014 PO release',s:'2 at-risk lines \u00b7 Nov 15 energization at risk',proj:'Hercules Solar + BESS',tag:{l:'Needs attention',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-P-0501')",reco:'Release both POs today \u2014 order-by window already passed',icon:IC.warn},
+      {t:'MV switchgear \u2014 PO release',s:'Oversize haul \u00b7 Nov 15 energization at risk',proj:'Hercules Solar + BESS',tag:{l:'Needs attention',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-P-0501')",reco:'Release PO now \u2014 order-by window passed. Nov substation commissioning at risk.',icon:IC.warn},
+      {t:'BESS containers \u2014 PO release',s:'6 placements \u00b7 Oct delivery at risk',proj:'Hercules Solar + BESS',tag:{l:'Needs attention',tone:'warn'},to:'fulfill',fn:"ccGoFulfill('REQ-P-0508')",reco:'Release PO now \u2014 coordinate delivery sequence with logistics team.',icon:IC.warn},
       {t:'Tower crane capacity \u2014 5\u00d7 decision',s:'Riverside \u00b7 owned vs re-rent \u00b7 Aug 20 need-by',proj:'Riverside Medical Center',tag:{l:'Capacity',tone:'info'},to:'fulfill',fn:"ccGoFulfill('REQ-4471')",reco:'Optimizer: 2 owned (TC-0012, TC-0018) + 3 re-rent \u2014 confirms Aug 20 installation',icon:IC.crane}
     ];
         var scopeLabel=!isFSM?'All projects \u00b7 portfolio':(_ccFSMProj===''?'My projects \u00b7 3 assigned':(_ccFSMProj==='all'?'All projects \u00b7 portfolio':_ccFSMProj));
@@ -7079,12 +7080,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Storage trailers',cat:'trailer_storage',qty:'3 units',start:'Jul 1',end:'Jan 15',state:'Planned'},
         {item:'Dumpster rotation',cat:'dumpster',qty:'4 units',start:'Jun 1',end:'Jan 30',state:'Active'},
         {item:'Portable power (generator set)',cat:'portable_power',qty:'1 unit',start:'Jun 1',end:'Dec 15',state:'Deployed'},
-        {item:'Excavator demob',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Scheduled'},
-        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Scheduled'},
-        {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'Planned'},
+        {item:'Excavator demob',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Complete'},
+        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Complete'},
+        {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'In fulfillment'},
         {item:'BESS container placements',cat:'hoisting',qty:'6 moves',start:'Oct 1',end:'Oct 20',state:'Requested'},
         {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Scheduled'},
-        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Pending'}
+        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Requested'}
       ],
       riverside:[
         {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',start:'Jul 1',end:'Nov 30',state:'Planned'},
@@ -7298,7 +7299,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'3 moves',c:'Aug\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider.',rows:[
         {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Complete',ordId:'ORD-3071',sa:4,ea:4,cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',sa:6,ea:6,ordId:null,cost:'$38K',firm:'Self-perform',fqRef:'REQ-L-3061',attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:'ORD-3116',cost:'$8,200',firm:'TBD',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
+        {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:'ORD-3116',cost:'$8,200',firm:'TBD',fqRef:'REQ-P-0501',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
         {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Scheduled',sa:6,ea:7,ordId:null,cost:'$22,000',firm:'TBD'},
         {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'In fulfillment',sa:4,ea:4,ordId:'ORD-3119',cost:'$14,000',firm:'Bragg Crane',attachments:[{type:'Shipping',name:'Haul route map — pipe rack delivery Aug 15',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Oversize load permit — pipe rack transport',ref:'OLP-3119-001',status:'Approved'}]},
         {item:'Excavator demobi',qty:'2 units',window:'Jun 2026',state:'Complete',ordId:'ORD-3127',sa:2,ea:2,cost:'$4,800',firm:'Self-perform',attachments:[{type:'Submittals',name:'Demobilization checklist — excavator fleet',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'},{type:'Change Orders',name:'Final billing summary — 2-unit demobi',ref:'FINBILL-3127-001',status:'Closed'}]}
@@ -8714,7 +8715,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+=renderPrefabP6Schedule(_p6fi);
       }
     }
-    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>Need by'+(p!=='profservices'?'<div style="font-size:9px;color:#3b82f6;font-weight:400;line-height:1.3;margin-top:1px">↗ P6 install date</div>':'')+'</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span>'<span>'+(p!=='profservices'?'<span style="color:#3b82f6;font-weight:600">↗ P6 install date</span>':'Need by')+'</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'&&isDpView&&p==='prefab'&&_pfbInstFilter!=='all'){
@@ -8844,7 +8845,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           }
           h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           var _ra=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
-          h+='<div>'+row.item+'<div class="sub" style="font-size:10.5px">'+(row.firm||'')+'</div>'+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'')+'</div>';
+          h+='<div>'+row.item+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'')+'</div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';

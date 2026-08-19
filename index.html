@@ -2956,15 +2956,15 @@
       vitals:[{label:'Moves this week',value:'6',sub:'2 heavy hauls',tone:'info',icon:IC.truck},{label:'Heavy hauls (oversize)',value:'3',sub:'permit required',tone:'warn',icon:IC.warn},{label:'Crane picks',value:'2',sub:'scheduled this month',tone:'ok',icon:IC.crane},{label:'Laydown utilization',value:'78%',sub:'Yards A\u2013C',tone:'warn',icon:IC.chart}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
-      cols:[{key:'move',label:'Move / event',sub:'moveSub',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'src',label:'Source',w:'118px'},{key:'__state',label:'Status',w:'114px'}],
+      cols:[{key:'move',label:'Move / event',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'cost',label:'Cost',w:'86px'},{key:'__state',label:'Status',w:'114px'},{key:'__docs',label:'Docs',w:'72px'}],
       add:{nameKey:'move',subKey:'moveSub',qtyKey:'type',whenKey:'when'}, addName:{label:'Move / event',ph:'e.g. Crane pick \u2014 module racking'}, addQty:{label:'Type',ph:'Delivery / Heavy haul / Crane pick'}, addWhen:{label:'Date &amp; window',ph:'e.g. Aug 15 \u00b7 6 AM'},
       rows:[
-        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3071',state:'Complete',sa:4,ea:4},
-        {move:'BESS container placement',type:'Haul + crane',when:'Oct 2026',gate:'Pad 3',src:'Procurement',state:'Requested',sa:6,ea:6},
-        {move:'MV switchgear delivery',moveSub:'oversize load',type:'Heavy haul',when:'Nov 2026',gate:'North gate',src:'Procurement',state:'Requested',sa:7,ea:7},
-        {move:'PV module deliveries',moveSub:'recurring',type:'Delivery',when:'Oct\u2013Nov 2026',gate:'East gate',src:'Procurement',state:'Scheduled',sa:6,ea:7},
-        {move:'Pipe rack transport',moveSub:'2 loads',type:'Heavy haul',when:'Aug 15 \u00b7 7 AM',gate:'North gate',src:'Bragg Crane',state:'In fulfillment',sa:4,ea:4},
-        {move:'Excavator demobi',moveSub:'2 units',type:'Crane demobi',when:'Jun 2026',gate:'North gate',src:'ORD-3127',state:'Complete',sa:2,ea:2}
+        {move:'Tower crane mobilization',type:'Crane mobilization',when:'Aug 3 \u00b7 5 AM',gate:'Laydown A',src:'ORD-3071',state:'Complete',cost:'$18,500',sa:4,ea:4,attachments:[{name:'Lift plan (PDF)'},{name:'Haul route map (PDF)'},{name:'Traffic control plan (PDF)'}]},
+        {move:'BESS container placement',type:'Haul + crane',when:'Oct 2026',gate:'Pad 3',src:'Procurement',state:'Requested',cost:'$38K',sa:6,ea:6,attachments:[{name:'JHA \u2014 BESS placement (Draft)'},{name:'DOT permit application (Pending)'}]},
+        {move:'MV switchgear delivery',type:'Heavy haul',when:'Nov 2026',gate:'North gate',src:'Procurement',state:'Requested',cost:'$8,200',sa:7,ea:7,attachments:[{name:'Delivery scope (Draft)'},{name:'Oversize haul route (Pending)'}]},
+        {move:'PV module deliveries',type:'Delivery',when:'Oct\u2013Nov 2026',gate:'East gate',src:'Procurement',state:'Scheduled',cost:'$22,000',sa:6,ea:7},
+        {move:'Pipe rack transport',type:'Heavy haul',when:'Aug 15 \u00b7 7 AM',gate:'North gate',src:'Bragg Crane',state:'In fulfillment',cost:'$14,000',sa:4,ea:4,attachments:[{name:'Haul route map (PDF)'},{name:'Oversize permit (PDF)'}]},
+        {move:'Excavator demobi',type:'Crane demobi',when:'Jun 2026',gate:'North gate',src:'ORD-3127',state:'Complete',cost:'$4,800',sa:2,ea:2,attachments:[{name:'Demob completion sign-off (PDF)'}]}
       ],
       cap_items:[
         {item:'Perimeter temp fencing',cat:'Temp fencing',qty:'320 LF',sa:2,ea:9,state:'Deployed'},
@@ -3007,6 +3007,12 @@
       h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
+        else if(c.key==='__docs'){
+          var _da=r.attachments||[];
+          if(_da.length){
+            h+='<div><button style="background:none;border:none;padding:0;cursor:pointer;color:var(--g600);font-size:11.5px;display:inline-flex;align-items:center;gap:3px" onclick="event.stopPropagation();dpShowDocs(\''+pk+'\','+i+')">'+svg('<path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>',1.5)+'<span>'+_da.length+'</span></button></div>';
+          } else { h+='<div><button style="background:none;border:none;padding:0;cursor:pointer;color:var(--g400);font-size:11px" onclick="event.stopPropagation();dpShowDocs(\''+pk+'\','+i+')">+ Add</button></div>'; }
+        }
         else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -3081,6 +3087,38 @@
       }
     }
     mount.innerHTML=h;
+  }
+  function dpShowDocs(pk,idx){
+    var cfg=DP[pk]; if(!cfg)return;
+    var r=cfg.rows[idx]; if(!r)return;
+    var da=r.attachments||[];
+    var body='<div style="padding:2px 0">';
+    if(da.length){
+      da.forEach(function(a){
+        body+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--g150)">';
+        body+=svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',1.5);
+        body+='<span style="font-size:12.5px;color:var(--g800)">'+a.name+'</span>';
+        body+='</div>';
+      });
+    } else {
+      body+='<div style="padding:16px 0;text-align:center;color:var(--g400);font-size:12.5px">No documents attached yet.</div>';
+    }
+    body+='</div>';
+    body+='<div class="modal-foot">';
+    body+='<label class="btn btn-ghost" style="cursor:pointer">'+svg('<path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>',1.5)+'Attach document<input type="file" style="display:none" onchange="dpAttachDoc(\''+pk+'\','+idx+',this)"></label>';
+    body+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    body+='</div>';
+    openModal('Documents — '+r.move, body);
+  }
+  function dpAttachDoc(pk,idx,input){
+    var cfg=DP[pk]; if(!cfg)return;
+    var r=cfg.rows[idx]; if(!r)return;
+    if(!r.attachments)r.attachments=[];
+    var f=input.files[0]; if(!f)return;
+    r.attachments.push({name:f.name});
+    closeModal();
+    renderDP(pk);
+    toast('Document attached');
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
