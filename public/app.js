@@ -1683,26 +1683,27 @@
         h+='</div>';
       });
       h+='</div></div>';
-      // Tabs + toolbar
-      h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
-      h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+'" onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
-      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+'" onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
-      h+='</div><span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+      // Demand plan Gantt + capacity section
+      var _logDPRows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules&&CC_PROJ_DP.logistics.hercules.rows)||[];
+      var _logAdhoc=FQ.filter(function(q){return q.src==='adhoc'&&q.pillar==='logistics'&&q.project==='Hercules Solar + BESS';});
+      var _logAllNS=_logDPRows.concat(_logAdhoc.map(function(q){return {item:q.item,qty:q.qty,window:q.needby,state:q.status,sa:q.sa,ea:q.ea!=null?q.ea:q.sa,cost:q.cost||'—',firm:q.firm||'TBD',_adhoc:true};}));
+      h+='<div class="eq-toolbar" style="margin-bottom:6px">';
+      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_logAllNS.length+' moves · '+_logDPRows.length+' planned · '+_logAdhoc.length+' ad hoc</span>';
+      h+='<span class="spacer"></span>';
+      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
-      var _logBase=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
-      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBase?'Baselined: '+_logBase:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBase?'Baselined':'Approve baseline')+'</button>';
+      var _logBaseNS=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseNS?'Baselined: '+_logBaseNS:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseNS?'Baselined':'Approve baseline')+'</button>';
       h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
-      // Shared gantt renderer
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
       var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
       function nsGantt(rows,hdrLbl,rowFn){
         var gmh='';
-        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
+        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         var g='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:220px;min-width:220px">'+hdrLbl+'</div><div class="gh-months">'+gmh+'</div></div><div class="g-body" style="position:relative">';
         g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
         rows.forEach(function(r){ g+='<div class="grow">'+rowFn(r,gGrid)+'</div>'; });
@@ -1713,50 +1714,33 @@
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
         return '<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)">'+label+'</div></div>';
       }
-      if(logPlanView==='gcgr'){
-        var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(GCGR_SERVICES,'Service / vendor',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span><span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span></div>';
-            return lbl+nsBar(r,gcgrToneMap[r.status]||'projected',r.monthly,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var gcgt='1fr 140px 120px 130px 110px 88px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
-          GCGR_SERVICES.forEach(function(r,_gi){
-            var _ga=r.attachments||[];
-            var _gst=r.status==='Active'?'ok':r.status==='Completed'?'neu':'info';
-            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:pointer" onclick="toggleDPDrill(\'gcgr\','+_gi+')" title="View full details"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ga.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(GCGR_SERVICES,'+_gi+')">'+_ga.length+' doc'+(_ga.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+_gst+'">'+r.status+'</span></div></div>';
-            var _gdp='<div style="padding:14px 18px 12px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="tag '+_gst+'">'+r.status+'</span><span style="font-size:12px;color:var(--g600)">'+r.vendor+' \u00b7 '+r.start+' \u2013 '+r.end+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:12px"><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Cost code</div><div style="font-family:monospace;font-size:11.5px;color:var(--g700)">'+r.cost+'</div></div><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Monthly rate</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.monthly+'</div></div></div>';
-            if(_ga.length){_gdp+='<div style="border-top:1px solid var(--g150);padding-top:10px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div><div style="display:flex;flex-wrap:wrap;gap:5px">';_ga.forEach(function(a){var _l=(a.name||a)+(a.ref?' \u00b7 '+a.ref:'');_gdp+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+_l.replace(/\'/g,"\\\'")+'\')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+_l+'</span>';});_gdp+='</div></div>';}
-            _gdp+='</div>';
-            h+='<div id="dp-drill-gcgr-'+_gi+'" class="otrack" style="display:none">'+_gdp+'</div>';
-          });
-          h+='</div>';
-        }
+      var _logTM={'Complete':'offrent','Completed':'offrent','In fulfillment':'onrent','Active':'onrent','Scheduled':'projected','Planned':'projected','Requested':'submitted','Draft':'projected','On-rent':'onrent','Off-rent':'offrent'};
+      if(gcgrView==='gantt'){
+        h+=nsGantt(_logAllNS,'Move / event',function(r,gGrid){
+          var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.item||r.move||'—')+'</span><span style="font-size:10px;color:'+(r._adhoc?'#3b82f6':'var(--g400)')+'">'+(r._adhoc?'Ad hoc · '+(r.firm||''):(r.qty||''))+'</span></div>';
+          return lbl+nsBar(r,_logTM[r.state||r.status]||'projected',r.window||r.needby||'',gGrid);
+        });
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var trnwhToneMap={'Active':'onrent','Scheduled':'projected','Pending':'submitted','Completed':'offrent'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(TRNWH_SERVICES,'Service / vendor',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span><span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span></div>';
-            return lbl+nsBar(r,trnwhToneMap[r.status]||'projected',r.monthly,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Pending</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var twgt='1fr 140px 120px 130px 90px 88px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
-          TRNWH_SERVICES.forEach(function(r,_ti){
-            var _ta=r.attachments||[];
-            var _tst=r.status==='Active'?'ok':r.status==='Pending'?'warn':'info';
-            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:pointer" onclick="toggleDPDrill(\'trnwh\','+_ti+')" title="View full details"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ta.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(TRNWH_SERVICES,'+_ti+')">'+_ta.length+' doc'+(_ta.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+_tst+'">'+r.status+'</span></div></div>';
-            var _tdp='<div style="padding:14px 18px 12px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="tag '+_tst+'">'+r.status+'</span><span style="font-size:12px;color:var(--g600)">'+r.vendor+' \u00b7 '+r.start+' \u2013 '+r.end+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:12px"><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Cost code</div><div style="font-family:monospace;font-size:11.5px;color:var(--g700)">'+r.cost+'</div></div><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Monthly rate</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.monthly+'</div></div></div>';
-            if(_ta.length){_tdp+='<div style="border-top:1px solid var(--g150);padding-top:10px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div><div style="display:flex;flex-wrap:wrap;gap:5px">';_ta.forEach(function(a){var _l=(a.name||a)+(a.ref?' \u00b7 '+a.ref:'');_tdp+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+_l.replace(/\'/g,"\\\'")+'\')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+_l+'</span>';});_tdp+='</div></div>';}
-            _tdp+='</div>';
-            h+='<div id="dp-drill-trnwh-'+_ti+'" class="otrack" style="display:none">'+_tdp+'</div>';
-          });
-          h+='</div>';
-        }
+        var _llgt='1fr 130px 130px 80px 86px 110px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_llgt+'"><span>Move / event</span><span>Qty / type</span><span>Date &amp; window</span><span>Source</span><span>Cost</span><span>Status</span></div>';
+        _logAllNS.forEach(function(r){
+          var _llt=_logTM[r.state||r.status]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+_llgt+';cursor:default"><div style="font-size:12px;font-weight:500;color:var(--g900)">'+(r.item||r.move||'—')+'</div><div style="font-size:11.5px;color:var(--g600)">'+(r.qty||'—')+'</div><div style="font-size:11.5px;color:var(--g700)">'+(r.window||r.needby||'—')+'</div><div><span style="font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600;background:'+(r._adhoc?'rgba(59,130,246,.1)':'rgba(16,185,129,.1)')+';color:'+(r._adhoc?'#3b82f6':'#059669')+'">'+(r._adhoc?'Ad hoc':'Plan')+'</span></div><div style="font-size:11.5px;color:var(--g600)">'+(r.cost||'—')+'</div><div><span class="tag '+_llt+'">'+(r.state||r.status||'—')+'</span></div></div>';
+        });
+        h+='</div>';
+      }
+      // Capacity & risk
+      var _herCCLog=CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules;
+      h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:18px;display:flex;align-items:center;gap:8px">';
+      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Capacity &amp; risk</span>';
+      h+='</div>';
+      if(_herCCLog&&_herCCLog.varSummary){h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#92400e">⚠</span><span style="font-size:11.5px;color:var(--g800);line-height:1.5">'+_herCCLog.varSummary+'</span></div>';}
+      if(_herCCLog&&_herCCLog.roll){
+        var _capCols='1fr 120px 160px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_capCols+'"><span>Move type</span><span>Peak count</span><span>Peak month</span><span>vs plan</span></div>';
+        _herCCLog.roll.forEach(function(rv){var _rvt=rv.vt==='ok'?'ok':rv.vt==='warn'?'warn':rv.vt==='info'?'info':'neu';h+='<div class="dp-row" style="grid-template-columns:'+_capCols+';cursor:default"><div style="font-size:12px;color:var(--g800)">'+rv.a+'</div><div style="font-size:11.5px;color:var(--g700)">'+rv.b+'</div><div style="font-size:11.5px;color:var(--g600)">'+rv.c+'</div><div><span class="tag '+_rvt+'">'+rv.v+'</span></div></div>';});
+        h+='</div>';
       }
       // Delivery tracker (NS also gets it)
       var dlvCols='1fr 120px 140px 110px 100px';
@@ -5652,6 +5636,7 @@ charges:[
     {src:'adhoc',id:'fq9',yard:'Houston',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'Cimarron Data Center',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2,taxMapped:false,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
     {src:'adhoc',id:'fqL1',yard:'Houston',ref:'REQ-L-3042',pillar:'logistics',item:'Excavator delivery + haul (oversize)',qty:'1 move',project:'Cimarron Data Center',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer',docs:['Oversize permit (PDF)','Haul route map (PDF)']},
     {src:'adhoc',id:'fqL2',yard:'Corona',ref:'REQ-L-3054',pillar:'logistics',item:'Tower crane mobilization (oversize transport)',qty:'1 move',project:'Riverside Medical Center',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'3PL \u00b7 Bragg Crane',docs:['Oversize permit (PDF)','Load & route plan (PDF)','Escort coordination brief (PDF)']},
+    {src:'adhoc',id:'fqL4',yard:'Chandler',ref:'REQ-L-3068',pillar:'logistics',item:'Electrical conduit & cable haul',qty:'2 loads',project:'Hercules Solar + BESS',needby:'Sep 12',code:'3100-6200-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform · yard truck',sa:5,ea:5,cost:'$3,800',firm:'Self-perform',docs:['Delivery manifest (PDF)']},
     {src:'dp',id:'fqL3',yard:'Chandler',ref:'REQ-L-3061',pillar:'logistics',item:'BESS container placement (haul + crane)',qty:'6 moves',project:'Hercules Solar + BESS',needby:'Oct 20',code:'0100-5000-0000-0001',kind:'flow',status:'Requested',actLabel:'Schedule move',nextStatus:'Scheduled',hint:'Self-perform available \u2014 crew + crane free that week',docs:['Site layout plan (PDF)']},
     {src:'dp',id:'fq5',yard:'Chandler',ref:'REQ-4475',pillar:'services',item:'VDC / BIM coordination',qty:'3 FTE',project:'Hercules Solar + BESS',needby:'Oct 2026',code:'0100-0100-0000-0001',kind:'service',status:'In fulfillment',doneNote:'WSP · 3 FTE active · Apr–Oct 2026',docs:['VDC / BIM scope of work (PDF)','BIM execution plan rev B (PDF)','Monthly deliverable log — Aug 2026 (PDF)']},
     {src:'adhoc',id:'fq7',yard:'Houston',ref:'REQ-4477',pillar:'services',item:'Site survey crew',qty:'2 FTE',project:'Cimarron Data Center',needby:'Jul 28',code:'0100-0100-0000-0001',kind:'service',status:'New'},
@@ -7296,8 +7281,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]}
     },
     logistics:{
-      hercules:{budget:1200000,dpSpent:800000,adHoc:0,
-      rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'3 moves',c:'Aug\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider.',rows:[
+      hercules:{budget:1200000,dpSpent:800000,adHoc:3800,
+      rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'4 moves',c:'Aug\u2013Nov 2026',v:'+1 ad hoc',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Ad hoc',b:'1 move',c:'Sep 2026',v:'ad hoc',vt:'info'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider before gate conflict with MV switchgear delivery in Nov.',rows:[
         {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Complete',ordId:'ORD-3071',sa:4,ea:4,cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',sa:6,ea:6,ordId:null,cost:'$38K',firm:'Self-perform',fqRef:'REQ-L-3061',attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
         {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:'ORD-3116',cost:'$8,200',firm:'TBD',fqRef:'REQ-P-0501',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
@@ -9877,26 +9862,27 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         h+='</div>';
       });
       h+='</div></div>';
-      // Tabs + toolbar
-      h+='<div class="eq-toolbar" style="margin-bottom:0;padding-bottom:0">';
-      h+='<div class="log-tabs" style="margin:0">';
-      h+='<button class="log-tab'+(logPlanView==='gcgr'?' active':'')+'" onclick="setLogPlanView(\'gcgr\')">'+'GC/GR Services'+'</button>';
-      h+='<button class="log-tab'+(logPlanView==='trnwh'?' active':'')+'" onclick="setLogPlanView(\'trnwh\')">'+'Warehousing &amp; transport'+'</button>';
-      h+='</div><span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'') +'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+      // Demand plan Gantt + capacity section
+      var _logDPRows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules&&CC_PROJ_DP.logistics.hercules.rows)||[];
+      var _logAdhoc=FQ.filter(function(q){return q.src==='adhoc'&&q.pillar==='logistics'&&q.project==='Hercules Solar + BESS';});
+      var _logAllNS=_logDPRows.concat(_logAdhoc.map(function(q){return {item:q.item,qty:q.qty,window:q.needby,state:q.status,sa:q.sa,ea:q.ea!=null?q.ea:q.sa,cost:q.cost||'—',firm:q.firm||'TBD',_adhoc:true};}));
+      h+='<div class="eq-toolbar" style="margin-bottom:6px">';
+      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
+      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_logAllNS.length+' moves · '+_logDPRows.length+' planned · '+_logAdhoc.length+' ad hoc</span>';
+      h+='<span class="spacer"></span>';
+      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
       h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
       h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
-      var _logBase=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
-      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBase?'Baselined: '+_logBase:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBase?'Baselined':'Approve baseline')+'</button>';
+      var _logBaseNS=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseNS?'Baselined: '+_logBaseNS:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseNS?'Baselined':'Approve baseline')+'</button>';
       h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
-      // Shared gantt renderer
       var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
       var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+1)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
       function nsGantt(rows,hdrLbl,rowFn){
         var gmh='';
-        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
+        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
         var g='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:220px;min-width:220px">'+hdrLbl+'</div><div class="gh-months">'+gmh+'</div></div><div class="g-body" style="position:relative">';
         g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
         rows.forEach(function(r){ g+='<div class="grow">'+rowFn(r,gGrid)+'</div>'; });
@@ -9907,50 +9893,33 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
         return '<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)">'+label+'</div></div>';
       }
-      if(logPlanView==='gcgr'){
-        var gcgrToneMap={'Active':'onrent','Scheduled':'projected','Completed':'offrent'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(GCGR_SERVICES,'Service / vendor',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span><span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span></div>';
-            return lbl+nsBar(r,gcgrToneMap[r.status]||'projected',r.monthly,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var gcgt='1fr 140px 120px 130px 110px 88px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gcgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
-          GCGR_SERVICES.forEach(function(r,_gi){
-            var _ga=r.attachments||[];
-            var _gst=r.status==='Active'?'ok':r.status==='Completed'?'neu':'info';
-            h+='<div class="dp-row" style="grid-template-columns:'+gcgt+';cursor:pointer" onclick="toggleDPDrill(\'gcgr\','+_gi+')" title="View full details"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ga.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(GCGR_SERVICES,'+_gi+')">'+_ga.length+' doc'+(_ga.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+_gst+'">'+r.status+'</span></div></div>';
-            var _gdp='<div style="padding:14px 18px 12px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="tag '+_gst+'">'+r.status+'</span><span style="font-size:12px;color:var(--g600)">'+r.vendor+' \u00b7 '+r.start+' \u2013 '+r.end+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:12px"><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Cost code</div><div style="font-family:monospace;font-size:11.5px;color:var(--g700)">'+r.cost+'</div></div><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Monthly rate</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.monthly+'</div></div></div>';
-            if(_ga.length){_gdp+='<div style="border-top:1px solid var(--g150);padding-top:10px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div><div style="display:flex;flex-wrap:wrap;gap:5px">';_ga.forEach(function(a){var _l=(a.name||a)+(a.ref?' \u00b7 '+a.ref:'');_gdp+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+_l.replace(/\'/g,"\\\'")+'\')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+_l+'</span>';});_gdp+='</div></div>';}
-            _gdp+='</div>';
-            h+='<div id="dp-drill-gcgr-'+_gi+'" class="otrack" style="display:none">'+_gdp+'</div>';
-          });
-          h+='</div>';
-        }
+      var _logTM={'Complete':'offrent','Completed':'offrent','In fulfillment':'onrent','Active':'onrent','Scheduled':'projected','Planned':'projected','Requested':'submitted','Draft':'projected','On-rent':'onrent','Off-rent':'offrent'};
+      if(gcgrView==='gantt'){
+        h+=nsGantt(_logAllNS,'Move / event',function(r,gGrid){
+          var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.item||r.move||'—')+'</span><span style="font-size:10px;color:'+(r._adhoc?'#3b82f6':'var(--g400)')+'">'+(r._adhoc?'Ad hoc · '+(r.firm||''):(r.qty||''))+'</span></div>';
+          return lbl+nsBar(r,_logTM[r.state||r.status]||'projected',r.window||r.needby||'',gGrid);
+        });
+        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
       } else {
-        var trnwhToneMap={'Active':'onrent','Scheduled':'projected','Pending':'submitted','Completed':'offrent'};
-        if(gcgrView==='gantt'){
-          h+=nsGantt(TRNWH_SERVICES,'Service / vendor',function(r,gGrid){
-            var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.svc+'</span><span style="font-size:10px;color:var(--g400)">'+r.vendor+'</span></div>';
-            return lbl+nsBar(r,trnwhToneMap[r.status]||'projected',r.monthly,gGrid);
-          });
-          h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw submitted"></span>Pending</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-        } else {
-          var twgt='1fr 140px 120px 130px 90px 88px 90px';
-          h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+twgt+'"><span>Service</span><span>Vendor</span><span>Window</span><span>Cost code</span><span class=\"r\">Monthly</span><span>Documents</span><span>Status</span></div>';
-          TRNWH_SERVICES.forEach(function(r,_ti){
-            var _ta=r.attachments||[];
-            var _tst=r.status==='Active'?'ok':r.status==='Pending'?'warn':'info';
-            h+='<div class="dp-row" style="grid-template-columns:'+twgt+';cursor:pointer" onclick="toggleDPDrill(\'trnwh\','+_ti+')" title="View full details"><div>'+r.svc+'</div><div style="font-size:11.5px;color:var(--g600)">'+r.vendor+'</div><div style="font-size:11.5px;color:var(--g700)">'+r.start+' \u2013 '+r.end+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+r.cost+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g700);text-align:right">'+r.monthly+'</div><div>'+(_ta.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();svcDocModal(TRNWH_SERVICES,'+_ti+')">'+_ta.length+' doc'+(_ta.length===1?'':'s')+'</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>')+'</div><div><span class="tag '+_tst+'">'+r.status+'</span></div></div>';
-            var _tdp='<div style="padding:14px 18px 12px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span class="tag '+_tst+'">'+r.status+'</span><span style="font-size:12px;color:var(--g600)">'+r.vendor+' \u00b7 '+r.start+' \u2013 '+r.end+'</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-bottom:12px"><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Cost code</div><div style="font-family:monospace;font-size:11.5px;color:var(--g700)">'+r.cost+'</div></div><div><div style="font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Monthly rate</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.monthly+'</div></div></div>';
-            if(_ta.length){_tdp+='<div style="border-top:1px solid var(--g150);padding-top:10px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div><div style="display:flex;flex-wrap:wrap;gap:5px">';_ta.forEach(function(a){var _l=(a.name||a)+(a.ref?' \u00b7 '+a.ref:'');_tdp+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+_l.replace(/\'/g,"\\\'")+'\')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+_l+'</span>';});_tdp+='</div></div>';}
-            _tdp+='</div>';
-            h+='<div id="dp-drill-trnwh-'+_ti+'" class="otrack" style="display:none">'+_tdp+'</div>';
-          });
-          h+='</div>';
-        }
+        var _llgt='1fr 130px 130px 80px 86px 110px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_llgt+'"><span>Move / event</span><span>Qty / type</span><span>Date &amp; window</span><span>Source</span><span>Cost</span><span>Status</span></div>';
+        _logAllNS.forEach(function(r){
+          var _llt=_logTM[r.state||r.status]||'neu';
+          h+='<div class="dp-row" style="grid-template-columns:'+_llgt+';cursor:default"><div style="font-size:12px;font-weight:500;color:var(--g900)">'+(r.item||r.move||'—')+'</div><div style="font-size:11.5px;color:var(--g600)">'+(r.qty||'—')+'</div><div style="font-size:11.5px;color:var(--g700)">'+(r.window||r.needby||'—')+'</div><div><span style="font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600;background:'+(r._adhoc?'rgba(59,130,246,.1)':'rgba(16,185,129,.1)')+';color:'+(r._adhoc?'#3b82f6':'#059669')+'">'+(r._adhoc?'Ad hoc':'Plan')+'</span></div><div style="font-size:11.5px;color:var(--g600)">'+(r.cost||'—')+'</div><div><span class="tag '+_llt+'">'+(r.state||r.status||'—')+'</span></div></div>';
+        });
+        h+='</div>';
+      }
+      // Capacity & risk
+      var _herCCLog=CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules;
+      h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:18px;display:flex;align-items:center;gap:8px">';
+      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Capacity &amp; risk</span>';
+      h+='</div>';
+      if(_herCCLog&&_herCCLog.varSummary){h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#92400e">⚠</span><span style="font-size:11.5px;color:var(--g800);line-height:1.5">'+_herCCLog.varSummary+'</span></div>';}
+      if(_herCCLog&&_herCCLog.roll){
+        var _capCols='1fr 120px 160px 100px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_capCols+'"><span>Move type</span><span>Peak count</span><span>Peak month</span><span>vs plan</span></div>';
+        _herCCLog.roll.forEach(function(rv){var _rvt=rv.vt==='ok'?'ok':rv.vt==='warn'?'warn':rv.vt==='info'?'info':'neu';h+='<div class="dp-row" style="grid-template-columns:'+_capCols+';cursor:default"><div style="font-size:12px;color:var(--g800)">'+rv.a+'</div><div style="font-size:11.5px;color:var(--g700)">'+rv.b+'</div><div style="font-size:11.5px;color:var(--g600)">'+rv.c+'</div><div><span class="tag '+_rvt+'">'+rv.v+'</span></div></div>';});
+        h+='</div>';
       }
       // Delivery tracker (NS also gets it)
       var dlvCols='1fr 120px 140px 110px 100px';
