@@ -7139,7 +7139,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   var CC_DP={
     equipment:{ mount:'ccDpEquip', title:'Equipment demand plan', icon:'box', decCol:'Sourcing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Planned value',v:'$18.4M',sub:'equipment \u00b7 portfolio',tone:'ok',icon:'dollar'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'warn',icon:'tax',dyn:'tax'},{k:'Owned coverage',v:'67%',sub:'vs re-rent',tone:'ok',icon:'chart'}],
-      ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Aerial peaks at 82 units in October, mostly coverable from idle owned fleet.',
+      ns:'Equipment carries the messiest taxonomy \u2014 every rental vendor names classes differently. 02S auto-maps each incoming request to the canonical class and flags the ones that need a human confirm before they can be priced and allocated. Cranes peak at 7 units Jan–Mar 2027 (Riverside 5× self-erect + Hercules 2×). Access & lifts reach 38 units from Nov 2026 across Hercules and Riverside.',
       cap:'',
       rows:[
         {id:'REQ-4479',asset:'2\u00d7 excavator, 50-ton \u00b7 dual aux + GPS',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:false,mapLeaf:'50-ton',conf:'94',leafOpts:['30-ton','45-55T','50-ton','80-ton'],dec:'Use owned',decTone:'ok',status:'Needs map',attrs:['Dual aux','GPS RTK','Mesh track','Cat 390F']},
@@ -7147,9 +7147,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-4472',asset:'4\u00d7 excavator \u00b7 45K class',project:'Cimarron Data Center',tax:'Asset \u203a Earthmoving \u203a Excavator',taxOk:true,leaf:'45-55T',dec:'Use owned',decTone:'ok',status:'Ready',attrs:['GPS grade control','45K class','Crawler track']}
       ],
       rollCols:['Category','Peak units','Peak month','vs plan'],
-      roll:[{a:'Earthmoving',b:'26',c:'Jul 2026',v:'+4 over',vt:'warn'},{a:'Cranes',b:'3',c:'Aug 2026',v:'on plan',vt:'ok'},{a:'Aerial',b:'82',c:'Oct 2026',v:'+14 over',vt:'warn'}],
-      varSummary:'Aerial running 14 units over plan for October \u2014 the main portfolio driver.',
-      consol:{save:'~$62K',cta:'Consolidate aerial',detail:'Aerial demand overlaps all three projects and peaks at 82 units in October, 14 over plan. Consolidate into one fleet re-rent rate instead of per-project spot rentals.'} },
+      roll:[{a:'Power & lighting',b:'42 units',c:'Mar 2026\u2013May 2027',v:'on plan',vt:'ok'},{a:'Earthmoving',b:'36 units',c:'Apr\u2013May 2026',v:'on plan',vt:'ok'},{a:'Telehandlers',b:'40 units',c:'Sep\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Access & lifts',b:'38 units',c:'Nov 2026\u2013Mar 2027',v:'on plan',vt:'ok'},{a:'Cranes',b:'7 units',c:'Jan\u2013Mar 2027',v:'Requested',vt:'warn'}],
+      varSummary:'7 cranes active Jan\u2013Mar 2027 \u2014 Riverside 5\u00d7 self-erect + Hercules tower crane + crawler. Access & lifts peak 38 units (Hercules boom lifts + Riverside scissor lifts) from Nov 2026.',
+      consol:{save:'~$34K/mo',cta:'Consolidate cranes',detail:'Riverside 5\u00d7 self-erect tower cranes and Hercules 2\u00d7 cranes active concurrently Jan\u2013Mar 2027. Consolidate sourcing under one frame agreement to capture volume pricing.'} },
     logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans. Three oversize heavy hauls need permits, and a north-gate conflict on Oct 15 (switchgear haul vs tower-crane mobilization) is flagged for resequencing.',
@@ -7160,9 +7160,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-L-3061',asset:'BESS container placement \u00b7 haul + crane',project:'Hercules Solar + BESS',tax:'Logistics \u203a Transport \u203a Oversize',taxOk:true,leaf:'Haul + crane',dec:'3PL',decTone:'info',status:'Requested'}
       ],
       rollCols:['Move type','Peak count','Peak month','vs plan'],
-      roll:[{a:'Deliveries',b:'24',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'3',c:'Oct 2026',v:'+1 over',vt:'warn'},{a:'Crane mobilizations',b:'2',c:'Aug 2026',v:'on plan',vt:'ok'}],
-      varSummary:'Heavy hauls one over plan \u2014 3 route to the same corridor within a week.',
-      consol:{save:'~$18K + 1 permit',cta:'Combine hauls',detail:'3 heavy hauls route to the same corridor (Cimarron + Riverside) within one week. Combine permits and carrier into a single mobilization.'} },
+      roll:[{a:'Deliveries',b:'16 moves',c:'Oct\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'2',c:'Sep\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'2',c:'Aug 2026',v:'Complete',vt:'ok'}],
+      varSummary:'BESS placements (6 moves, Oct) and PDU delivery (3 loads, Oct) are the peak concentration. MV switchgear heavy haul (Nov) requires North gate coordination.',
+      consol:{save:'~$18K',cta:'Combine Oct hauls',detail:'BESS container placement (Hercules, Oct) and PDU delivery (Cimarron, Oct) peak in the same window. Coordinate carriers and gate access to reduce idle time.'} },
     profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'18',sub:'across 8 firms',tone:'ok',icon:'people'},{k:'Needs pricing',v:'2',sub:'specialty roles unquoted',tone:'warn',icon:'tax'},{k:'Committed',v:'$3.2M',sub:'services · portfolio',tone:'ok',icon:'dollar'}],
       ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule — the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they’re needed on site.',
@@ -7177,9 +7177,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-S-2118',asset:'Environmental compliance · 1 FTE',project:'Cimarron Data Center',tax:'Services › Environmental › SWPPP',taxOk:true,leaf:'SWPPP',dec:'Rate card',decTone:'ok',status:'Active'}
       ],
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],
-      roll:[{a:'Engineering',b:'5 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'4 FTE',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'3 FTE',c:'Q4 2026',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'3 FTE',c:'ongoing',v:'on plan',vt:'ok'}],
-      varSummary:'VDC / BIM one FTE over plan — two projects have overlapping coordination windows.',
-      consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection demand overlaps Riverside and Cimarron. One firm can cover both projects at a blended MSA rate.'} },
+      roll:[{a:'Engineering',b:'5 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'7 FTE',c:'Jul 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Q3 2026',v:'+1 FTE',vt:'warn'},{a:'Commissioning',b:'4 FTE',c:'Q4 2026',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'4 FTE',c:'ongoing',v:'on plan',vt:'ok'}],
+      varSummary:'Survey peak 7 FTE in Jul (Hercules geotech 3 + survey crew 2 + Cimarron crew 2). Commissioning peaks at 4 FTE in Q4 across all three projects.',
+      consol:{save:'~$40K/qtr',cta:'Blend inspection',detail:'Structural inspection (Riverside, 2 FTE) and materials testing (Cimarron, 2 FTE) can be covered under a blended MSA with one firm.'} },
     procurement:{ mount:'ccDpProc', title:'Procurement demand plan', icon:'cart', decCol:'Order-by (lead)',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Long-lead items',v:'5',sub:'12\u201330 wk lead times',tone:'warn',icon:'clock'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Needs attention',v:'4',sub:'action required',tone:'warn',icon:'warn'}],
       ns:'02S back-calculates every order-by date from lead time and the schedule need-by \u2014 two long-lead items (switchgear, BESS containers) are already past order-by and flagged red; releasing the switchgear PO this week recovers the substation date.',
@@ -7202,9 +7202,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'Q-63414',asset:'Wire crimpers — hydraulic · 8 units · BESS electrical',project:'Hercules Solar + BESS',tax:'Tools & consumables › Small tools › Electrical',taxOk:true,leaf:'8 units',dec:'Sep 5 · 4 wk',decTone:'ok',status:'Draft'}
       ],
       rollCols:['Category','Committed','Order window','vs plan'],
-      roll:[{a:'Electrical & HV',b:'$8.1M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$69K',c:'Q2–Q3 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'}],
-      varSummary:'Electrical & HV $0.3M over plan — BESS containers and MV switchgear same OEM across two projects.',
-      consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'Switchgear and transformer share the same OEM across two projects. Combine POs to hit the next volume tier and shorten lead time.'} },
+      roll:[{a:'Electrical & HV',b:'$8.0M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$103K',c:'Q2–Q4 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Specialty items',b:'$58K',c:'Q4 2026',v:'Requested',vt:'neu'}],
+      varSummary:'MV switchgear and BESS containers are past order-by — PO release critical for Nov substation date. Tools & consumables $103K across the portfolio.',
+      consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'MV switchgear and BESS containers share the same OEM (Eaton/Tesla). Combine POs to hit the next volume tier and shorten lead time by 2 weeks.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 riverside \u00b7 cimarron',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'46',sub:'7 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'5 of 7',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
@@ -7218,9 +7218,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {id:'REQ-F-052',asset:'Server room partition panels \u00b7 qty 6',project:'Cimarron Data Center',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],
-      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 At risk Aug\u2013Oct',v:'Modular e-houses + cable tray',vt:'warn'},{a:'Electrical',b:'2 active',c:'On plan',v:'BESS e-houses + cable tray',vt:'ok'},{a:'Structural Steel',b:'1 active',c:'On plan',v:'Headwall assemblies',vt:'ok'},{a:'Misc Steel',b:'1 active',c:'On plan',v:'On plan',vt:'ok'},{a:'Concrete',b:'\u2014',c:'\u2014',v:'No demand',vt:'neu'}],
-      varSummary:'Electrical at risk Aug\u2013Oct (Hercules e-houses + cable tray concurrent) \u00b7 Misc Steel at risk Oct (Cimarron overlap)',
-      consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot. Batch the run to cut setup cost and protect the November date.'} }
+      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 Sep shop conflict',v:'Pipe rack (HRC) + MEP rack (RIV)',vt:'warn'},{a:'Electrical',b:'3 active',c:'\u26a0 Aug\u2013Oct',v:'E-houses + cable tray + CIM brackets',vt:'warn'},{a:'Structural',b:'1 in fab',c:'On plan',v:'Server room panels (CIM)',vt:'ok'},{a:'Delivered',b:'2 complete',c:'Delivered',v:'Headwall assemblies (HRC + RIV)',vt:'ok'}],
+      varSummary:'E-house submittal (Hercules) and cable tray brackets (Cimarron, awaiting pricing) are the open items. Pipe rack + MEP rack both in fab \u2014 Sep shop capacity tight.',
+      consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot at ModSpace. Batch the run to cut setup cost and protect the November energization date.'} }
   };
   var _PROJ_NAMES={'hercules':'Hercules Solar + BESS','riverside':'Riverside Medical Center','cimarron':'Cimarron Data Center'};
   var CC_PROJ_DP={
