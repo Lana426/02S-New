@@ -2077,7 +2077,7 @@ function renderProfServicesDP(){
     var cv1=document.getElementById('composeV1'); if(cv1) cv1.classList.toggle('hide',ns);
     var cns=document.getElementById('composeNS'); if(cns) cns.classList.toggle('hide',!ns);
     var vce=document.getElementById('verChipEquip'); if(vce) vce.innerHTML='';
-    if(document.getElementById('eqBudget')){ renderEqBudget(); renderEqInsights(); setEqView(eqState.view); renderEqHistory(); updateEqSubmitBtn(); }
+    if(document.getElementById('eqBudget')){ eqRefresh(); }
     if(dpActive){if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);}}
     renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
     var _ccv=document.getElementById('ccApp');
@@ -3506,7 +3506,7 @@ charges:[
     h+='</div>';
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+r.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(l.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+l.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
@@ -3561,7 +3561,7 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+r.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(l.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+l.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
@@ -9703,6 +9703,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
       vitals:[{label:'Plan budget',value:'$1.92M',sub:'services \u00b7 15-mo horizon',tone:'ok',icon:IC.dollar},{label:'Committed to date',value:'$1.56M',sub:'81% \u00b7 4 roles active',tone:'ok',icon:IC.check},{label:'Active headcount',value:'10 FTE',sub:'4 roles · 3 firms active',tone:'ok',icon:IC.people},{label:'Projected at complete',value:'$1.8M',sub:'+$120K under plan',tone:'ok',icon:IC.chart}],
+      v1:'6 active roles \u00b7 1 role pending pricing (VDC / BIM) \u00b7 Special inspection on track through current phase.',
       ns:'02S maps each role to the CPM schedule \u2014 the BESS commissioning agent mobilizes as the containers land, and the VDC role is flagged as unpriced before it\u2019s needed on site.',
       cap:'Roles are priced from the 02S rate card; specialty roles are quoted by 02S. The team sets headcount, mobilization window, and cost code.',
       cols:[{key:'role',label:'Role',sub:'firm',w:'1fr'},{key:'qty',label:'Headcount',cls:'c',w:'92px'},{key:'window',label:'Mobilize \u2192 demobilize',w:'176px'},{key:'code',label:'Cost code',w:'160px'},{key:'cost',label:'Monthly',cls:'r',w:'100px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'118px'}],
@@ -9718,6 +9719,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'4',sub:'action required',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
+      v1:'10 items on plan \u00b7 1 at-risk \u00b7 Tone shear wrenches overdue \u2014 needed for structural bolt tensioning.',
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'112px'}],
@@ -9734,6 +9736,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
       vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'5 of 7',sub:'2 in planning · 1 in review',tone:'warn',icon:IC.chart}],
+      v1:'46 assemblies planned \u00b7 16 in fabrication \u00b7 2 in planning \u00b7 1 awaiting submittal approval (BESS e-houses).',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
@@ -9748,6 +9751,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]},
     logistics:{ title:'Logistics demand plan', chip:'Deliveries, hauls &amp; site moves', icon:IC.truck, singular:'logistics',
       vitals:[{label:'Moves this week',value:'3',sub:'2 heavy hauls · this week',tone:'info',icon:IC.truck},{label:'Mob/demob actions',value:'2',sub:'1 mob · 1 demob · this month',tone:'ok',icon:IC.crane},{label:'Committed to date',value:'$800K',sub:'67% of logistics plan',tone:'ok',icon:IC.dollar},{label:'Items on this plan',value:'6',sub:'4 ongoing · 2 scheduled',tone:'ok',icon:IC.layers}],
+      v1:'6 moves this week \u00b7 3 oversize hauls pending permits \u00b7 Tower crane mobilization confirmed Aug 3.',
       ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans \u2014 and flagged a north-gate conflict where the switchgear haul overlaps tower-crane mobilization.',
       cap:'Most moves are auto-created from delivery dates in the other plans. Add ad-hoc moves here; 02S schedules windows, gates, and permits.',
       cols:[{key:'move',label:'Move / event',w:'1fr'},{key:'type',label:'Type',w:'126px'},{key:'when',label:'Date &amp; window',w:'150px'},{key:'gate',label:'Route / gate',w:'124px'},{key:'cost',label:'Cost',w:'86px'},{key:'__state',label:'Status',w:'114px'},{key:'__docs',label:'Docs',w:'72px'}],
