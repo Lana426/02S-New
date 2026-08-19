@@ -1731,18 +1731,6 @@
         });
         h+='</div>';
       }
-      // Capacity & risk
-      var _herCCLog=CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules;
-      h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:18px;display:flex;align-items:center;gap:8px">';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Capacity &amp; risk</span>';
-      h+='</div>';
-      if(_herCCLog&&_herCCLog.varSummary){h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#92400e">⚠</span><span style="font-size:11.5px;color:var(--g800);line-height:1.5">'+_herCCLog.varSummary+'</span></div>';}
-      if(_herCCLog&&_herCCLog.roll){
-        var _capCols='1fr 120px 160px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_capCols+'"><span>Move type</span><span>Peak count</span><span>Peak month</span><span>vs plan</span></div>';
-        _herCCLog.roll.forEach(function(rv){var _rvt=rv.vt==='ok'?'ok':rv.vt==='warn'?'warn':rv.vt==='info'?'info':'neu';h+='<div class="dp-row" style="grid-template-columns:'+_capCols+';cursor:default"><div style="font-size:12px;color:var(--g800)">'+rv.a+'</div><div style="font-size:11.5px;color:var(--g700)">'+rv.b+'</div><div style="font-size:11.5px;color:var(--g600)">'+rv.c+'</div><div><span class="tag '+_rvt+'">'+rv.v+'</span></div></div>';});
-        h+='</div>';
-      }
       // Delivery tracker (NS also gets it)
       var dlvCols='1fr 120px 140px 110px 100px';
       var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
@@ -9893,18 +9881,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
           var _llt=_logTM[r.state||r.status]||'neu';
           h+='<div class="dp-row" style="grid-template-columns:'+_llgt+';cursor:default"><div style="font-size:12px;font-weight:500;color:var(--g900)">'+(r.item||r.move||'—')+'</div><div style="font-size:11.5px;color:var(--g600)">'+(r.qty||'—')+'</div><div style="font-size:11.5px;color:var(--g700)">'+(r.window||r.needby||'—')+'</div><div><span style="font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600;background:'+(r._adhoc?'rgba(59,130,246,.1)':'rgba(16,185,129,.1)')+';color:'+(r._adhoc?'#3b82f6':'#059669')+'">'+(r._adhoc?'Ad hoc':'Plan')+'</span></div><div style="font-size:11.5px;color:var(--g600)">'+(r.cost||'—')+'</div><div><span class="tag '+_llt+'">'+(r.state||r.status||'—')+'</span></div></div>';
         });
-        h+='</div>';
-      }
-      // Capacity & risk
-      var _herCCLog=CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules;
-      h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:18px;display:flex;align-items:center;gap:8px">';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Capacity &amp; risk</span>';
-      h+='</div>';
-      if(_herCCLog&&_herCCLog.varSummary){h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;margin-bottom:10px"><span style="font-size:12px;font-weight:700;color:#92400e">⚠</span><span style="font-size:11.5px;color:var(--g800);line-height:1.5">'+_herCCLog.varSummary+'</span></div>';}
-      if(_herCCLog&&_herCCLog.roll){
-        var _capCols='1fr 120px 160px 100px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_capCols+'"><span>Move type</span><span>Peak count</span><span>Peak month</span><span>vs plan</span></div>';
-        _herCCLog.roll.forEach(function(rv){var _rvt=rv.vt==='ok'?'ok':rv.vt==='warn'?'warn':rv.vt==='info'?'info':'neu';h+='<div class="dp-row" style="grid-template-columns:'+_capCols+';cursor:default"><div style="font-size:12px;color:var(--g800)">'+rv.a+'</div><div style="font-size:11.5px;color:var(--g700)">'+rv.b+'</div><div style="font-size:11.5px;color:var(--g600)">'+rv.c+'</div><div><span class="tag '+_rvt+'">'+rv.v+'</span></div></div>';});
         h+='</div>';
       }
       // Delivery tracker (NS also gets it)
