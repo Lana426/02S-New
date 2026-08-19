@@ -2193,7 +2193,24 @@ function renderProfServicesDP(){
   {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
     ,{id:'ORD-5001',proj:'hercules',fresh:true,od:'2026-07-31',item:'BESS commissioning agent',sub:'2 FTE · Nov 2026 – Mar 2027',pillar:'profservices',dates:'Nov 2026 – Mar 2027',cost:'2600-3300-0000-0001 · BESS & Substation',stage:0,status:'Requested',plan:'PS-BESS-001',qty:2,vendor:'TBD',latest:'Submitted to 02S — awaiting acknowledgement.'},
     {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:2,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
-    {id:'ORD-5003',proj:'hercules',fresh:true,od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:1,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'}
+    {id:'ORD-5003',proj:'hercules',fresh:true,od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:1,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'},
+    {id:'ORD-3200',proj:'hercules',od:'2026-03-01',item:'Office & storage trailers',sub:'4 units · ModSpace',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 4 units active. Monthly service confirmed.'},
+    {id:'ORD-3201',proj:'hercules',od:'2026-03-01',item:'Temporary power',sub:'2 panels · Aggreko',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 2 distribution panels active.'},
+    {id:'ORD-3202',proj:'hercules',od:'2026-03-01',item:'Sanitation units',sub:'6 units · United Site Services',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 6 portable units serviced weekly.'},
+    {id:'ORD-3203',proj:'hercules',od:'2026-03-01',item:'Fencing & site barriers',sub:'1,800 LF · Site Secure',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — perimeter fencing complete.'},
+    {id:'ORD-3204',proj:'hercules',od:'2026-03-01',item:'Signage & traffic control',sub:'Per plan · TrafficSafetyZone',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'Active — site signage and access control in place.'},
+    {id:'ORD-3205',proj:'hercules',od:'2026-03-01',item:'Waste & dumpster service',sub:'3 dumpsters · Waste Management',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — weekly pickup confirmed.'},
+    {id:'ORD-3210',proj:'barryrose',od:'2026-04-01',item:'Office & storage trailers',sub:'3 units · ModSpace',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 3 units active.'},
+    {id:'ORD-3211',proj:'barryrose',od:'2026-04-01',item:'Temporary power',sub:'1 panel · Aggreko',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 1 distribution panel active.'},
+    {id:'ORD-3212',proj:'barryrose',od:'2026-04-01',item:'Sanitation units',sub:'4 units · United Site Services',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 4 units serviced weekly.'},
+    {id:'ORD-3213',proj:'barryrose',od:'2026-04-01',item:'Fencing & site barriers',sub:'900 LF · Site Secure',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — hospital district perimeter complete.'},
+    {id:'ORD-3214',proj:'barryrose',od:'2026-04-01',item:'Signage & traffic control',sub:'Per plan · TrafficSafetyZone',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'Active — hospital campus access and safety signage in place.'},
+    {id:'ORD-3215',proj:'barryrose',od:'2026-04-01',item:'Waste & dumpster service',sub:'2 dumpsters · Waste Management',pillar:'logistics',dates:'Apr 2026 – Dec 2026',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — weekly pickup. Hospital district waste compliance confirmed.'},
+    {id:'ORD-3220',proj:'vdc14',od:'2026-05-01',item:'Office & storage trailers',sub:'2 units · ModSpace',pillar:'logistics',dates:'May 2026 – Feb 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 2 units active.'},
+    {id:'ORD-3221',proj:'vdc14',od:'2026-05-01',item:'Temporary power',sub:'1 panel · Aggreko',pillar:'logistics',dates:'May 2026 – Feb 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 1 distribution panel active.'},
+    {id:'ORD-3222',proj:'vdc14',od:'2026-05-01',item:'Sanitation units',sub:'3 units · United Site Services',pillar:'logistics',dates:'May 2026 – Feb 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 3 units serviced weekly.'},
+    {id:'ORD-3223',proj:'vdc14',od:'2026-05-01',item:'Fencing & site barriers',sub:'600 LF · Site Secure',pillar:'logistics',dates:'May 2026 – Feb 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — data center perimeter complete.'},
+    {id:'ORD-3224',proj:'vdc14',od:'2026-05-01',item:'Signage & traffic control',sub:'Per plan · TrafficSafetyZone',pillar:'logistics',dates:'May 2026 – Feb 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'Active — data center access and safety signage in place.'}
   ];
   var PORTAL_QUOTES=[
     {ref:'Q-51822',submitted:'Jul 10, 2026',project:'Hercules Solar + BESS',items:3,status:'Complete',totalPriced:'$117,700',note:'Scissor lifts + owner\'s engineer + crane mobilization',
@@ -7045,40 +7062,44 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
 };
 
   var CC_LOGISTICS_CAP={
-    typeLabel:{fence:'Temp fencing',trailer_office:'Office trailers',trailer_storage:'Storage trailers',dumpster:'Dumpsters',portable_power:'Portable power',hoisting:'Hoisting / rigging',transport:'Transport / haul'},
-    typeColor:{fence:'#6366f1',trailer_office:'#0ea5e9',trailer_storage:'#14b8a6',dumpster:'#f59e0b',portable_power:'#ef4444',hoisting:'#8b5cf6',transport:'#64748b'},
-    fleetOwned:{fence:80,trailer_office:8,trailer_storage:6,dumpster:15,portable_power:4,hoisting:2},
+    typeLabel:{trailer:'Office & storage trailers',temp_power:'Temporary power',sanitation:'Sanitation units',fencing:'Fencing & site barriers',signage:'Signage & traffic control',waste:'Waste & dumpster service'},
+    typeColor:{trailer:'#0ea5e9',temp_power:'#ef4444',sanitation:'#10b981',fencing:'#6366f1',signage:'#f59e0b',waste:'#64748b'},
+    fleetOwned:{trailer:6,temp_power:2,sanitation:8,fencing:1200,signage:1,waste:0},
     plan:{
       hercules:[
-        {item:'Excavator demobi',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Complete'},
-        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Complete'},
-        {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'In fulfillment'},
-        {item:'BESS container placements',cat:'hoisting',qty:'6 moves',start:'Oct 1',end:'Oct 20',state:'Requested'},
-        {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Scheduled'},
-        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Requested'},
-        {item:'Electrical conduit & cable haul',cat:'transport',qty:'2 loads',start:'Sep 12',end:'Sep 12',state:'Scheduled'}
+        {item:'Office & storage trailers',cat:'trailer',qty:'4 units',start:'Mar 1',end:'Mar 31',state:'On-rent'},
+        {item:'Temporary power',cat:'temp_power',qty:'2 panels',start:'Mar 1',end:'Mar 31',state:'On-rent'},
+        {item:'Sanitation units',cat:'sanitation',qty:'6 units',start:'Mar 1',end:'Mar 31',state:'On-rent'},
+        {item:'Fencing & site barriers',cat:'fencing',qty:'1,800 LF',start:'Mar 1',end:'Mar 31',state:'On-rent'},
+        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Mar 1',end:'Mar 31',state:'On-rent'},
+        {item:'Waste & dumpster service',cat:'waste',qty:'3 dumpsters',start:'Mar 1',end:'Mar 31',state:'On-rent'}
       ],
       barryrose:[
-        {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 8',state:'Complete'},
-        {item:'Excavator delivery',cat:'transport',qty:'1 move',start:'Sep 1',end:'Sep 5',state:'Scheduled'},
-        {item:'Floor-by-floor material hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'},
-        {item:'Tower crane mobilization (oversize transport)',cat:'hoisting',qty:'1 move',start:'Aug 18',end:'Aug 18',state:'Complete'}
+        {item:'Office & storage trailers',cat:'trailer',qty:'3 units',start:'Apr 1',end:'Dec 31',state:'On-rent'},
+        {item:'Temporary power',cat:'temp_power',qty:'1 panel',start:'Apr 1',end:'Dec 31',state:'On-rent'},
+        {item:'Sanitation units',cat:'sanitation',qty:'4 units',start:'Apr 1',end:'Dec 31',state:'On-rent'},
+        {item:'Fencing & site barriers',cat:'fencing',qty:'900 LF',start:'Apr 1',end:'Dec 31',state:'On-rent'},
+        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Apr 1',end:'Dec 31',state:'On-rent'},
+        {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Apr 1',end:'Dec 31',state:'On-rent'}
       ],
       vdc14:[
-        {item:'Excavator delivery + haul',cat:'transport',qty:'2 moves',start:'Sep 1',end:'Sep 8',state:'Scheduled'},
-        {item:'PDU site delivery',cat:'transport',qty:'3 loads',start:'Oct 1',end:'Oct 5',state:'In fulfillment'},
-        {item:'Precision cooling delivery + install',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Planned'},
-        {item:'Excavator delivery + haul (oversize)',cat:'transport',qty:'1 move',start:'Sep 3',end:'Sep 3',state:'Scheduled'}
+        {item:'Office & storage trailers',cat:'trailer',qty:'2 units',start:'May 1',end:'Feb 28',state:'On-rent'},
+        {item:'Temporary power',cat:'temp_power',qty:'1 panel',start:'May 1',end:'Feb 28',state:'On-rent'},
+        {item:'Sanitation units',cat:'sanitation',qty:'3 units',start:'May 1',end:'Feb 28',state:'On-rent'},
+        {item:'Fencing & site barriers',cat:'fencing',qty:'600 LF',start:'May 1',end:'Feb 28',state:'On-rent'},
+        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'May 1',end:'Feb 28',state:'On-rent'},
+        {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Nov 1',end:'Feb 28',state:'Requested'}
       ]
     },
     moveEvents:{
-      hercules:[{week:'Aug 1',events:3,note:'Crane mob + pipe rack hauls'},{week:'Sep 12',events:1,note:'Conduit & cable haul (ad hoc)'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Nov 1',events:2,note:'MV switchgear delivery'}],
-      barryrose:[{week:'Aug 1',events:1,note:'Crane mobilization'},{week:'Aug 18',events:1,note:'Oversize crane transport (ad hoc)'},{week:'Sep 1',events:1,note:'Excavator delivery'}],
-      vdc14:[{week:'Sep 1',events:2,note:'Excavator delivery'},{week:'Sep 3',events:1,note:'Excavator haul oversize (ad hoc)'},{week:'Oct 1',events:3,note:'PDU site delivery'},{week:'Nov 1',events:1,note:'Precision cooling delivery'}]
+      hercules:[{week:'Mar 1',events:6,note:'All 6 GC/GR services mobilized — site ready'},{week:'Apr 1',events:1,note:'Monthly service review'}],
+      barryrose:[{week:'Apr 1',events:6,note:'All 6 GC/GR services mobilized for hospital campus'}],
+      vdc14:[{week:'May 1',events:5,note:'5 GC/GR services mobilized'},{week:'Nov 1',events:1,note:'Waste service requested — vendor pending'}]
     },
     moveCapacity:12,
-    gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — BESS placements + PV delivery near crew capacity'}],barryrose:[],vdc14:[]}
+    gaps:{hercules:[],barryrose:[],vdc14:[{cat:'waste',note:'Waste & dumpster service Requested — e-waste + construction waste classification requires vendor pre-qualification before Nov go-live'}]}
   };
+
   var CC_PROFSERVICES_CAP={
     scopeLabel:{ie:'Industrial Engineering',vdc:'VDC / BIM',pm:'Project Management',commissioning:'Commissioning',survey:'Survey & Inspection',qa:'QA / Quality'},
     scopeColor:{ie:'#3b82f6',vdc:'#8b5cf6',pm:'#0ea5e9',commissioning:'#10b981',survey:'#f59e0b',qa:'#f97316'},
@@ -7150,19 +7171,20 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       roll:[{a:'Power & lighting',b:'42 units',c:'Mar 2026\u2013May 2027',v:'on plan',vt:'ok'},{a:'Earthmoving',b:'36 units',c:'Apr\u2013May 2026',v:'on plan',vt:'ok'},{a:'Telehandlers',b:'40 units',c:'Sep\u2013Dec 2026',v:'on plan',vt:'ok'},{a:'Access & lifts',b:'38 units',c:'Nov 2026\u2013Mar 2027',v:'on plan',vt:'ok'},{a:'Cranes',b:'7 units',c:'Jan\u2013Mar 2027',v:'Requested',vt:'warn'}],
       varSummary:'7 cranes active Jan\u2013Mar 2027 \u2014 Barry Rose WRF 5\u00d7 self-erect + Hercules tower crane + crawler. Access & lifts peak 38 units (Hercules boom lifts + Barry Rose WRF scissor lifts) from Nov 2026.',
       consol:{save:'~$34K/mo',cta:'Consolidate cranes',detail:'Barry Rose WRF 5\u00d7 self-erect tower cranes and Hercules 2\u00d7 cranes active concurrently Jan\u2013Mar 2027. Consolidate sourcing under one frame agreement to capture volume pricing.'} },
-    logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Delivery',
-      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Moves this month',v:'18',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Heavy hauls',v:'3',sub:'permit required',tone:'warn',icon:'warn'}],
-      ns:'02S auto-generates most logistics events from delivery dates across the equipment, procurement, and prefab plans. Three oversize heavy hauls need permits, and a north-gate conflict on Oct 15 (switchgear haul vs tower-crane mobilization) is flagged for resequencing.',
-      cap:'Every project\u2019s move demand, aggregated \u2014 deliveries, heavy hauls, and crane mobilizations. 02S schedules windows, gates, and permits; the supply side is executed downstream in logistics.',
+    logistics:{ mount:'ccDpLog', title:'Logistics demand plan', icon:'truck', decCol:'Vendor',
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Active site services',v:'17',sub:'across the portfolio',tone:'ok',icon:'truck'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'Vendor needed',v:'1',sub:'VDC14 waste service',tone:'warn',icon:'warn'}],
+      ns:'02S tracks all GC/GR site-service contracts across the portfolio — trailers, power, sanitation, fencing, signage, and waste removal. Each service is mapped to the standard taxonomy and linked to the project schedule so renewals and adjustments are flagged automatically.',
+      cap:'Every project’s GC/GR service demand, aggregated by category. Active services are on-rent and vendor-confirmed; requested services require vendor selection before mobilization.',
       rows:[
-        {id:'REQ-L-3042',asset:'Excavator delivery + haul \u00b7 oversize',project:'VDC14',tax:'Logistics \u203a Transport \u203a Heavy haul',taxOk:true,leaf:'Oversize',dec:'Self-perform',decTone:'ok',status:'Scheduled'},
-        {id:'REQ-L-3054',asset:'Tower crane mobilization \u00b7 oversize transport',project:'Barry Rose WRF',tax:'Logistics \u203a Transport \u203a Mobilization',taxOk:true,leaf:'Oversize transport',dec:'3PL',decTone:'info',status:'Complete'},
-        {id:'REQ-L-3061',asset:'BESS container placement \u00b7 haul + crane',project:'Hercules Solar + BESS',tax:'Logistics \u203a Transport \u203a Oversize',taxOk:true,leaf:'Haul + crane',dec:'3PL',decTone:'info',status:'Requested'}
+        {id:'REQ-GC-HRC-01',asset:'Office & storage trailers \u00b7 4 units',project:'Hercules Solar + BESS',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
+        {id:'REQ-GC-BRW-01',asset:'Office & storage trailers \u00b7 3 units',project:'Barry Rose WRF',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
+        {id:'REQ-GC-VDC-01',asset:'Office & storage trailers \u00b7 2 units',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Trailers',taxOk:true,leaf:'Office trailers',dec:'ModSpace',decTone:'ok',status:'On-rent'},
+        {id:'REQ-GC-VDC-06',asset:'Waste & dumpster service \u00b7 2 dumpsters',project:'VDC14',tax:'Logistics \u203a GC/GR \u203a Waste',taxOk:true,leaf:'Dumpsters',dec:'TBD',decTone:'info',status:'Requested'}
       ],
-      rollCols:['Move type','Peak count','Peak month','vs plan'],
-      roll:[{a:'Deliveries',b:'16 moves',c:'Oct\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'2',c:'Sep\u2013Nov 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'2',c:'Aug 2026',v:'Complete',vt:'ok'}],
-      varSummary:'BESS placements (6 moves, Oct) and PDU delivery (3 loads, Oct) are the peak concentration. MV switchgear heavy haul (Nov) requires North gate coordination.',
-      consol:{save:'~$18K',cta:'Combine Oct hauls',detail:'BESS container placement (Hercules, Oct) and PDU delivery (VDC14, Oct) peak in the same window. Coordinate carriers and gate access to reduce idle time.'} },
+      rollCols:['GC/GR service','Units / qty','Period','Status'],
+      roll:[{a:'Trailers',b:'9 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Temp power',b:'4 panels',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Sanitation',b:'13 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Fencing',b:'3,300 LF',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Waste service',b:'1 Requested',c:'VDC14 Nov',v:'Requested',vt:'warn'}],
+      varSummary:'GC/GR services active across all 3 projects. VDC14 waste & dumpster service Requested — e-waste classification requires vendor pre-qualification before Nov go-live.',
+      consol:{save:'~$8K/mo',cta:'Consolidate vendors',detail:'Office trailers, sanitation, and waste service all source from the same supplier network across 3 projects. Consolidate into one master service agreement to capture portfolio pricing.'} }},
     profservices:{ mount:'ccDpSvc', title:'Professional services demand plan', icon:'people', decCol:'Pricing',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Active FTEs',v:'18',sub:'across 8 firms',tone:'ok',icon:'people'},{k:'Needs pricing',v:'2',sub:'specialty roles unquoted',tone:'warn',icon:'tax'},{k:'Committed',v:'$3.2M',sub:'services · portfolio',tone:'ok',icon:'dollar'}],
       ns:'02S maps each role to the canonical service taxonomy and to the CPM schedule — the BESS commissioning agent mobilizes as containers land, and unpriced specialty roles are flagged before they’re needed on site.',
@@ -7261,25 +7283,31 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     },
     logistics:{
       hercules:{budget:1200000,dpSpent:800000,adHoc:3800,
-      rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'4 moves',c:'Aug\u2013Nov 2026',v:'+1 ad hoc',vt:'ok'},{a:'Heavy hauls',b:'1 move',c:'Oct 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'Complete',vt:'ok'},{a:'Ad hoc',b:'1 move',c:'Sep 2026',v:'ad hoc',vt:'info'}],varSummary:'BESS container placements (6 moves) unscheduled for Oct \u2014 confirm logistics provider before gate conflict with MV switchgear delivery in Nov.',rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Complete',ordId:'ORD-3071',sa:4,ea:4,cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {item:'BESS container placements',qty:'6 moves',window:'Oct 2026',state:'Requested',sa:6,ea:6,ordId:null,cost:'$38K',firm:'Self-perform',fqRef:'REQ-L-3061',attachments:[{type:'Safety',name:'JHA — BESS container placement sequence',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Loading & unloading plan — container crane ops',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'DOT permit application — oversize haul',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — self-perform vs. subcontract',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {item:'MV switchgear delivery',qty:'2 pieces',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:null,cost:'$8,200',firm:'TBD',fqRef:'REQ-P-0501',attachments:[{type:'Engineering',name:'MV switchgear delivery scope — 2 lineups',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Oversize haul route — MV switchgear',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Site access plan — north gate heavy haul',ref:'SAP-MV-001',status:'Draft'}]},
-        {item:'PV modules site delivery',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Scheduled',sa:6,ea:7,ordId:null,cost:'$22,000',firm:'TBD'},
-        {item:'Pipe rack transport',qty:'2 loads',window:'Aug 2026',state:'In fulfillment',sa:4,ea:4,ordId:'ORD-3119',cost:'$14,000',firm:'Bragg Crane',attachments:[{type:'Shipping',name:'Haul route map — pipe rack delivery Aug 15',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Oversize load permit — pipe rack transport',ref:'OLP-3119-001',status:'Approved'}]},
-        {item:'Excavator demobi',qty:'2 units',window:'Jun 2026',state:'Complete',ordId:'ORD-3127',sa:2,ea:2,cost:'$4,800',firm:'Self-perform',attachments:[{type:'Submittals',name:'Demobilization checklist — excavator fleet',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'},{type:'Change Orders',name:'Final billing summary — 2-unit demobi',ref:'FINBILL-3127-001',status:'Closed'}]}
+      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Trailers',b:'4 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Temp power',b:'2 panels',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Sanitation',b:'6 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Fencing',b:'1,800 LF',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Signage',b:'Per plan',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Waste',b:'3 dumpsters',c:'Ongoing',v:'on plan',vt:'ok'}],varSummary:'All 6 GC/GR services active on-site. Infrastructure established Mar 2026 — trailers, power, sanitation, fencing, signage, and waste on-rent through project close.',rows:[
+        {item:'Office & storage trailers',qty:'4 units',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3200',cost:'$2,400/mo',firm:'ModSpace',attachments:[{type:'Submittals',name:'Trailer placement plan — Hercules site layout',ref:'TPL-HRC-001',status:'Approved'}]},
+        {item:'Temporary power',qty:'2 panels',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3201',cost:'$1,800/mo',firm:'Aggreko',attachments:[{type:'Safety',name:'Temporary power distribution plan',ref:'TPDP-HRC-001',status:'Approved'}]},
+        {item:'Sanitation units',qty:'6 units',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3202',cost:'$1,200/mo',firm:'United Site Services'},
+        {item:'Fencing & site barriers',qty:'1,800 LF',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3203',cost:'$3,600/mo',firm:'Site Secure'},
+        {item:'Signage & traffic control',qty:'Per plan',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3204',cost:'$800/mo',firm:'TrafficSafetyZone'},
+        {item:'Waste & dumpster service',qty:'3 dumpsters',window:'Mar 2026 – Mar 2027',state:'On-rent',ordId:'ORD-3205',cost:'$1,500/mo',firm:'Waste Management'}
       ]},
       barryrose:{budget:600000,dpSpent:300000,adHoc:180000,
-      rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Crane mobilizations',b:'1',c:'Aug 2026',v:'Complete',vt:'ok'},{a:'Equipment deliveries',b:'1 move',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Material hoisting',b:'8 lifts/mo',c:'Ongoing',v:'on plan',vt:'ok'}],varSummary:'Tower crane mob complete \u2014 Bragg Crane. Excavator delivery scheduled Sep 2026.',rows:[
-        {item:'Tower crane mobilization',qty:'1 move',window:'Aug 2026',state:'Complete',ordId:'ORD-3128',fqRef:'REQ-L-3054',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Lift plan — tower crane mobilization Barry Rose WRF',ref:'LP-3128-001',status:'Approved'},{type:'Shipping',name:'Haul route map — oversize crane transport',ref:'HR-3128-001',status:'Approved'}]},
-        {item:'Excavator delivery',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform'},
-        {item:'Floor-by-floor material hoisting',qty:'8 lifts/mo',window:'Ongoing',state:'On-rent',ordId:'ORD-3130',cost:'$6,400/mo',firm:'Internal crew'}
+      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Trailers',b:'3 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Temp power',b:'1 panel',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Sanitation',b:'4 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Fencing',b:'900 LF',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Signage',b:'Per plan',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Waste',b:'2 dumpsters',c:'Ongoing',v:'on plan',vt:'ok'}],varSummary:'All 6 GC/GR services active for hospital campus earthwork. Site Secure fencing (900 LF) includes hospital-district-compliant access control points.',rows:[
+        {item:'Office & storage trailers',qty:'3 units',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3210',cost:'$1,800/mo',firm:'ModSpace'},
+        {item:'Temporary power',qty:'1 panel',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3211',cost:'$1,200/mo',firm:'Aggreko'},
+        {item:'Sanitation units',qty:'4 units',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3212',cost:'$800/mo',firm:'United Site Services'},
+        {item:'Fencing & site barriers',qty:'900 LF',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3213',cost:'$1,800/mo',firm:'Site Secure'},
+        {item:'Signage & traffic control',qty:'Per plan',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3214',cost:'$600/mo',firm:'TrafficSafetyZone'},
+        {item:'Waste & dumpster service',qty:'2 dumpsters',window:'Apr 2026 – Dec 2026',state:'On-rent',ordId:'ORD-3215',cost:'$900/mo',firm:'Waste Management'}
       ]},
       vdc14:{budget:400000,dpSpent:180000,adHoc:100000,
-      rollCols:['Move type','Peak count','Peak month','vs plan'],roll:[{a:'Deliveries',b:'5 moves',c:'Sep\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Heavy hauls',b:'1',c:'Sep 2026',v:'on plan',vt:'ok'},{a:'Crane mobilizations',b:'0',c:'\u2014',v:'on plan',vt:'ok'}],varSummary:'PDU delivery (3 loads) and excavator haul scheduled. Data center logistics on track.',rows:[
-        {item:'Excavator delivery + haul',qty:'2 moves',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform'},
-        {item:'PDU site delivery',qty:'3 loads',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3132',cost:'$4,200',firm:'3PL'},
-        {item:'Precision cooling delivery + install',qty:'16 units',window:'Nov 2026',state:'Planned',ordId:null,cost:'$44K',firm:'TBD'}
+      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Trailers',b:'2 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Temp power',b:'1 panel',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Sanitation',b:'3 units',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Fencing',b:'600 LF',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Signage',b:'Per plan',c:'Ongoing',v:'on plan',vt:'ok'},{a:'Waste service',b:'2 dumpsters',c:'Nov 2026',v:'Requested',vt:'warn'}],varSummary:'Waste & dumpster service Requested — data center e-waste classification requires vendor pre-qual before Nov go-live. All other services active.',rows:[
+        {item:'Office & storage trailers',qty:'2 units',window:'May 2026 – Feb 2027',state:'On-rent',ordId:'ORD-3220',cost:'$1,200/mo',firm:'ModSpace'},
+        {item:'Temporary power',qty:'1 panel',window:'May 2026 – Feb 2027',state:'On-rent',ordId:'ORD-3221',cost:'$900/mo',firm:'Aggreko'},
+        {item:'Sanitation units',qty:'3 units',window:'May 2026 – Feb 2027',state:'On-rent',ordId:'ORD-3222',cost:'$600/mo',firm:'United Site Services'},
+        {item:'Fencing & site barriers',qty:'600 LF',window:'May 2026 – Feb 2027',state:'On-rent',ordId:'ORD-3223',cost:'$1,200/mo',firm:'Site Secure'},
+        {item:'Signage & traffic control',qty:'Per plan',window:'May 2026 – Feb 2027',state:'On-rent',ordId:'ORD-3224',cost:'$400/mo',firm:'TrafficSafetyZone'},
+        {item:'Waste & dumpster service',qty:'2 dumpsters',window:'Nov 2026+',state:'Requested',ordId:null,cost:'$800/mo',firm:'TBD',fqRef:'REQ-GC-VDC-06',attachments:[{type:'Engineering',name:'Waste classification plan — e-waste + construction debris',ref:'WCP-VDC-001',status:'Draft'},{type:'Submittals',name:'Vendor pre-qualification — licensed waste handler',ref:'VPQ-VDC-001',status:'Pending'}]}
       ]}
     },
     profservices:{
