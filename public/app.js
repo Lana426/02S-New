@@ -7070,28 +7070,20 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
         {item:'Electrical conduit & cable haul',cat:'transport',qty:'2 loads',start:'Sep 12',end:'Sep 12',state:'Scheduled'}
       ],
       riverside:[
-        {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',start:'Jul 1',end:'Nov 30',state:'Planned'},
-        {item:'Office trailer (3-unit)',cat:'trailer_office',qty:'3 units',start:'Jul 15',end:'Dec 15',state:'Planned'},
-        {item:'Storage trailer',cat:'trailer_storage',qty:'2 units',start:'Aug 1',end:'Dec 1',state:'Planned'},
-        {item:'Dumpster service',cat:'dumpster',qty:'2 units',start:'Jul 1',end:'Nov 30',state:'Planned'},
         {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 8',state:'Scheduled'},
         {item:'Excavator delivery',cat:'transport',qty:'1 move',start:'Sep 1',end:'Sep 5',state:'Scheduled'},
-        {item:'Floor-by-floor hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'}
+        {item:'Floor-by-floor material hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'}
       ],
       cimarron:[
-        {item:'Security fencing perimeter',cat:'fence',qty:'480 LF',start:'Aug 1',end:'Feb 28',state:'Planned'},
-        {item:'Office trailers (4-unit)',cat:'trailer_office',qty:'4 units',start:'Aug 15',end:'Feb 28',state:'Planned'},
-        {item:'Storage trailers',cat:'trailer_storage',qty:'2 units',start:'Sep 1',end:'Feb 1',state:'Planned'},
-        {item:'Portable power',cat:'portable_power',qty:'1 unit',start:'Aug 1',end:'Jan 31',state:'Planned'},
         {item:'Excavator delivery + haul',cat:'transport',qty:'2 moves',start:'Sep 1',end:'Sep 8',state:'Scheduled'},
         {item:'PDU site delivery',cat:'transport',qty:'3 loads',start:'Oct 1',end:'Oct 5',state:'In fulfillment'},
-        {item:'Precision cooling delivery',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Planned'}
+        {item:'Precision cooling delivery + install',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Planned'}
       ]
     },
     moveEvents:{
       hercules:[{week:'Aug 1',events:3,note:'Crane mob + pipe rack hauls'},{week:'Sep 12',events:1,note:'Conduit & cable haul (ad hoc)'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Nov 1',events:2,note:'MV switchgear delivery'}],
-      riverside:[{week:'Jul 1',events:4},{week:'Aug 1',events:3,note:'Crane mob'},{week:'Nov 30',events:4,note:'Full demob'}],
-      cimarron:[{week:'Aug 1',events:4,note:'Mob wave'},{week:'Oct 1',events:5,note:'PDU + cooling delivery'},{week:'Feb 28',events:5,note:'Final demob'}]
+      riverside:[{week:'Aug 1',events:1,note:'Crane mobilization'},{week:'Sep 1',events:1,note:'Excavator delivery'}],
+      cimarron:[{week:'Sep 1',events:2,note:'Excavator delivery'},{week:'Oct 1',events:3,note:'PDU site delivery'},{week:'Nov 1',events:1,note:'Precision cooling delivery'}]
     },
     moveCapacity:12,
     gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — BESS placements + PV delivery near crew capacity'}],riverside:[],cimarron:[]}
