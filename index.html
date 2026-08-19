@@ -3003,7 +3003,7 @@
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
-    cfg.rows.forEach(function(r){
+    cfg.rows.forEach(function(r,i){
       h+='<div class="dp-row" style="grid-template-columns:'+gt+'">';
       cfg.cols.forEach(function(c){
         if(c.key==='__state'){ var t=DP_TONE[r.state]||'neu'; h+='<div class="'+(c.cls||'')+'"><span class="tag '+t+'">'+r.state+'</span></div>'; }
