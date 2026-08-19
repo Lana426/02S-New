@@ -7061,17 +7061,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
     fleetOwned:{fence:80,trailer_office:8,trailer_storage:6,dumpster:15,portable_power:4,hoisting:2},
     plan:{
       hercules:[
-        {item:'Perimeter temp fencing',cat:'fence',qty:'320 LF',start:'Jun 1',end:'Jan 15',state:'Deployed'},
-        {item:'Office trailer complex',cat:'trailer_office',qty:'6 units',start:'Jun 15',end:'Jan 30',state:'Deployed'},
-        {item:'Storage trailers',cat:'trailer_storage',qty:'3 units',start:'Jul 1',end:'Jan 15',state:'Planned'},
-        {item:'Dumpster rotation',cat:'dumpster',qty:'4 units',start:'Jun 1',end:'Jan 30',state:'Active'},
-        {item:'Portable power (generator set)',cat:'portable_power',qty:'1 unit',start:'Jun 1',end:'Dec 15',state:'Deployed'},
-        {item:'Excavator demob',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Complete'},
+        {item:'Excavator demobi',cat:'transport',qty:'2 units',start:'Jun 1',end:'Jun 5',state:'Complete'},
         {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 10',state:'Complete'},
         {item:'Pipe rack transport',cat:'transport',qty:'2 loads',start:'Aug 10',end:'Aug 14',state:'In fulfillment'},
         {item:'BESS container placements',cat:'hoisting',qty:'6 moves',start:'Oct 1',end:'Oct 20',state:'Requested'},
         {item:'PV modules site delivery',cat:'transport',qty:'Bulk lot',start:'Oct 15',end:'Nov 20',state:'Scheduled'},
-        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Requested'}
+        {item:'MV switchgear delivery',cat:'transport',qty:'2 pieces',start:'Nov 1',end:'Nov 5',state:'Requested'},
+        {item:'Electrical conduit & cable haul',cat:'transport',qty:'2 loads',start:'Sep 12',end:'Sep 12',state:'Scheduled'}
       ],
       riverside:[
         {item:'Temp fencing (phased)',cat:'fence',qty:'200 LF',start:'Jul 1',end:'Nov 30',state:'Planned'},
@@ -7093,12 +7089,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       ]
     },
     moveEvents:{
-      hercules:[{week:'Jun 1',events:6,note:'Initial mob · fencing + trailers + generator'},{week:'Aug 1',events:5,note:'Crane mob + pipe rack hauls'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Jan 15',events:5,note:'Demob wave'}],
+      hercules:[{week:'Aug 1',events:3,note:'Crane mob + pipe rack hauls'},{week:'Sep 12',events:1,note:'Conduit & cable haul (ad hoc)'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Nov 1',events:2,note:'MV switchgear delivery'}],
       riverside:[{week:'Jul 1',events:4},{week:'Aug 1',events:3,note:'Crane mob'},{week:'Nov 30',events:4,note:'Full demob'}],
       cimarron:[{week:'Aug 1',events:4,note:'Mob wave'},{week:'Oct 1',events:5,note:'PDU + cooling delivery'},{week:'Feb 28',events:5,note:'Final demob'}]
     },
     moveCapacity:12,
-    gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — near crew capacity of 12/wk'}],riverside:[],cimarron:[]}
+    gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — BESS placements + PV delivery near crew capacity'}],riverside:[],cimarron:[]}
   };
   var CC_PROFSERVICES_CAP={
     scopeLabel:{ie:'Industrial Engineering',vdc:'VDC / BIM',pm:'Project Management',commissioning:'Commissioning',survey:'Survey & Inspection',qa:'QA / Quality'},
