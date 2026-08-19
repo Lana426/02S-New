@@ -1202,7 +1202,7 @@
       <div class="wcard-cta">Preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
     </div>
   </div>
-  <div class="lp-foot"><b>02S</b> &middot; McCarthy Building Companies, Inc.</div>
+  <div class="lp-foot"><b>02S</b> &middot; McCarthy Building Companies, Inc. &middot; <span id="dbgVer" style="font-size:10px;opacity:.5"></span></div>
 </div>
 
 <div class="app" style="display:none">
@@ -1975,6 +1975,15 @@
 </div>
 
 <script>
+  // debug: show JS errors visually
+  window.onerror = function(msg,src,line,col,err){
+    var el=document.getElementById('dbgVer');
+    if(el) el.textContent='JS ERR L'+line+': '+msg;
+    document.title = 'ERR L'+line+': '+msg;
+    return false;
+  };
+  // show version
+  (function(){ var el=document.getElementById('dbgVer'); if(el) el.textContent='d80dad5'; })();
   var CURRENT='v1';
   function toggle(id){document.getElementById(id).classList.toggle('open')}
   function svg(inner,w){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.5)+'">'+inner+'</svg>';}
@@ -2890,6 +2899,7 @@
     control:{ name:'Control Tower', who:'For leadership, finance, estimating &amp; pursuit', desc:'The portfolio view across all projects: forecast demand, track financial performance and margin, manage the rate catalog, and steer 02S with data.', caps:['Portfolio forecast','Financials &amp; margin','Rate management','Analytics &amp; reporting'] }
   };
   function enterWorkspace(w){
+    try {
     var lp=document.getElementById('landing'), ap=document.querySelector('.app'), uc=document.getElementById('uc');
     if(w==='portal'){ if(lp)lp.style.display='none'; if(uc)uc.style.display='none'; if(ap)ap.style.display='flex'; go('dashboard'); window.scrollTo(0,0); return; }
     if(w==='command'){ enterCC(); return; }
@@ -2899,6 +2909,11 @@
     document.getElementById('ucDesc').innerHTML=d.desc;
     document.getElementById('ucCaps').innerHTML=d.caps.map(function(c){ return '<span class="cap">'+c+'</span>'; }).join('');
     if(lp)lp.style.display='none'; if(ap)ap.style.display='none'; if(uc)uc.style.display='flex'; window.scrollTo(0,0);
+    } catch(e) {
+      var el=document.getElementById('dbgVer');
+      if(el) el.textContent='EW ERR: '+e.message;
+      document.title = 'EW ERR: '+e.message;
+    }
   }
   function backToLanding(){
     var lp=document.getElementById('landing'), ap=document.querySelector('.app'), uc=document.getElementById('uc');
