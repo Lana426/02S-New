@@ -7072,18 +7072,20 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',riverside:'Riverside Medical 
       riverside:[
         {item:'Tower crane mobilization',cat:'hoisting',qty:'1 move',start:'Aug 1',end:'Aug 8',state:'Scheduled'},
         {item:'Excavator delivery',cat:'transport',qty:'1 move',start:'Sep 1',end:'Sep 5',state:'Scheduled'},
-        {item:'Floor-by-floor material hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'}
+        {item:'Floor-by-floor material hoisting',cat:'hoisting',qty:'8 lifts/mo',start:'Jul 1',end:'Dec 15',state:'On-rent'},
+        {item:'Tower crane mobilization (oversize transport)',cat:'hoisting',qty:'1 move',start:'Aug 18',end:'Aug 18',state:'Scheduled'}
       ],
       cimarron:[
         {item:'Excavator delivery + haul',cat:'transport',qty:'2 moves',start:'Sep 1',end:'Sep 8',state:'Scheduled'},
         {item:'PDU site delivery',cat:'transport',qty:'3 loads',start:'Oct 1',end:'Oct 5',state:'In fulfillment'},
-        {item:'Precision cooling delivery + install',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Planned'}
+        {item:'Precision cooling delivery + install',cat:'transport',qty:'16 units',start:'Nov 1',end:'Nov 15',state:'Planned'},
+        {item:'Excavator delivery + haul (oversize)',cat:'transport',qty:'1 move',start:'Sep 3',end:'Sep 3',state:'Scheduled'}
       ]
     },
     moveEvents:{
       hercules:[{week:'Aug 1',events:3,note:'Crane mob + pipe rack hauls'},{week:'Sep 12',events:1,note:'Conduit & cable haul (ad hoc)'},{week:'Oct 1',events:7,note:'BESS placements + PV delivery — peak'},{week:'Nov 1',events:2,note:'MV switchgear delivery'}],
-      riverside:[{week:'Aug 1',events:1,note:'Crane mobilization'},{week:'Sep 1',events:1,note:'Excavator delivery'}],
-      cimarron:[{week:'Sep 1',events:2,note:'Excavator delivery'},{week:'Oct 1',events:3,note:'PDU site delivery'},{week:'Nov 1',events:1,note:'Precision cooling delivery'}]
+      riverside:[{week:'Aug 1',events:1,note:'Crane mobilization'},{week:'Aug 18',events:1,note:'Oversize crane transport (ad hoc)'},{week:'Sep 1',events:1,note:'Excavator delivery'}],
+      cimarron:[{week:'Sep 1',events:2,note:'Excavator delivery'},{week:'Sep 3',events:1,note:'Excavator haul oversize (ad hoc)'},{week:'Oct 1',events:3,note:'PDU site delivery'},{week:'Nov 1',events:1,note:'Precision cooling delivery'}]
     },
     moveCapacity:12,
     gaps:{hercules:[{cat:'hoisting',note:'Oct move-event load peaks at 7 — BESS placements + PV delivery near crew capacity'}],riverside:[],cimarron:[]}
