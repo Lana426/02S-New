@@ -1551,9 +1551,9 @@
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:1,ea:4,linkOrd:'ORD-3009',attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
-      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'4',sub:'action required',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
-      v1:'10 items on plan · 1 at-risk · Tone shear wrenches overdue — needed for structural bolt tensioning.',
-      ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
+      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'1',sub:'wire crimpers — order by Sep 5',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
+      v1:'8 items on plan · 1 pending order · Wire crimpers order-by Sep 5 for Oct delivery.',
+      ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 7 of 8 items delivered on plan; release wire crimpers PO by Sep 5 to protect Oct 1 delivery.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
@@ -3097,7 +3097,7 @@ charges:[
     var actU=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+l.qty;},0);
     var actMo=EQ_LINES.filter(function(l){return l.status==='on-rent'&&l.from<=EQ_TODAY&&l.to>=EQ_TODAY;}).reduce(function(s,l){return s+(l.rate?l.qty*l.rate:0);},0);
     /* per-pillar budget and committed from demand plan data */
-    var PILLAR_PLAN={equipment:{budget:11880000,committed:9761200},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:8200000,committed:7520000},logistics:{budget:1200000,committed:800000}};
+    var PILLAR_PLAN={equipment:{budget:11880000,committed:9761200},profservices:{budget:1920000,committed:1560000},prefab:{budget:900000,committed:720000},procurement:{budget:90000,committed:87000},logistics:{budget:1200000,committed:800000}};
     var totals={};
     pillarDefs.forEach(function(pd){
       var pb=PILLAR_PLAN[pd.key]||{budget:0,committed:0};
@@ -7358,21 +7358,16 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]}
     },
     procurement:{
-      hercules:{budget:8200000,dpSpent:7400000,adHoc:120000,
-      rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Electrical & HV',b:'$7.8M',c:'Q3\u2013Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Tools & consumables',b:'$34.8K',c:'Mar\u2013Sep 2026',v:'on plan',vt:'ok'}],varSummary:'MV switchgear and BESS containers need attention \u2014 order-by dates passed. Coordinate release with procurement.',rows:[
-        {item:'Nut runners',cat:'sm_tools',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3100',cost:'$8,400',firm:'Hilti'},
-        {item:'Battery pack sets',cat:'sm_tools',qty:'12 sets',window:'Mar 2026',state:'Delivered',ordId:'ORD-3101',cost:'$6,000',firm:'Milwaukee Tool'},
-        {item:'Charging banks',cat:'sm_tools',qty:'6 units',window:'Mar 2026',state:'Delivered',ordId:'ORD-3102',cost:'$4,800',firm:'Milwaukee Tool'},
-        {item:'Tone shear wrenches',cat:'sm_tools',qty:'8 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3103',cost:'$12,800',firm:'Enerpac'},
-        {item:'Angle grinders',cat:'sm_tools',qty:'6 units',window:'Apr 2026',state:'Delivered',ordId:'ORD-3104',cost:'$3,600',firm:'Bosch'},
-        {item:'SDS Max + bits',cat:'sm_tools',qty:'10 units',window:'Sep 2026',state:'Planned',ordId:null,cost:'$7,500',firm:'TBD'},
-        {item:'HEPA vacuums',cat:'sm_tools',qty:'8 units',window:'Sep 2026',state:'Planned',ordId:null,cost:'$4,800',firm:'TBD'},
-        {item:'Wire crimpers',cat:'sm_tools',qty:'12 sets',window:'Oct 2026',state:'Planned',ordId:null,cost:'$9,600',firm:'TBD'},
-        {item:'MV switchgear 15 kV',cat:'elec_commodity',qty:'2 lineups',window:'Nov 2026',state:'Needs attention',ordId:null,cost:'$0.5M+',firm:'Eaton',fqRef:'REQ-P-0501',attachments:[{type:'Quotes',name:'Eaton MV switchgear quote — 2 lineups',ref:'Q-EATON-001',status:'Available'},{type:'Submittals',name:'MV switchgear specification sheet',ref:'SUB-MV-001',status:'Pending'},{type:'Engineering',name:'Installation requirements — MV switchgear',ref:'ENG-MV-001',status:'Draft'}]},
-        {item:'BESS containers 2.5 MWh',cat:'elec_commodity',qty:'6 units',window:'Nov 2026',state:'Needs attention',ordId:null,cost:'$6M+',firm:'Tesla Energy',fqRef:'REQ-P-0508'},
-        {item:'Main power transformer',cat:'elec_commodity',qty:'1 unit',window:'Dec 2026',state:'In fulfillment',ordId:'ORD-3136',fqRef:'REQ-P-0512',cost:'$1.2M',firm:'ABB'},
-        {item:'Solar DC cabling',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'Needs attention',ordId:null,cost:'$100K',firm:'TBD',fqRef:'REQ-P-0531'},
-        {item:'Monitoring sensors',cat:'elec_commodity',qty:'24 units',window:'Sep 2026',state:'Needs attention',ordId:null,cost:'$18K',firm:'TBD',fqRef:'REQ-P-0537'}
+      hercules:{budget:90000,dpSpent:73000,adHoc:0,
+      rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Tools & consumables',b:'$87K',c:'Jul\u2013Oct 2026',v:'on plan',vt:'ok'}],varSummary:'7 of 8 items delivered on plan. Wire crimpers (hydraulic, 8 units) order-by Sep 5 for Oct 1 delivery.',rows:[
+        {item:'Nut runners \u2014 3/8"',cat:'sm_tools',qty:'48 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3100',cost:'$22,000',firm:'Hilti'},
+        {item:'Battery packs \u2014 20v',cat:'sm_tools',qty:'100 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3101',cost:'$11,000',firm:'Milwaukee Tool'},
+        {item:'Quad charging banks',cat:'sm_tools',qty:'20 units',window:'Jul 2026',state:'Delivered',ordId:'ORD-3102',cost:'$14,000',firm:'Milwaukee Tool'},
+        {item:'Tone shear wrenches',cat:'sm_tools',qty:'12 units',window:'Aug 2026',state:'Delivered',ordId:'ORD-3103',cost:'$18,000',firm:'Enerpac'},
+        {item:'Angle grinders \u2014 4.5"',cat:'sm_tools',qty:'16 units',window:'Aug 2026',state:'Delivered',ordId:'ORD-3104',cost:'$4,000',firm:'Bosch'},
+        {item:'SDS Max rotary hammers',cat:'sm_tools',qty:'8 units',window:'Sep 2026',state:'In fulfillment',ordId:'ORD-3128',cost:'$6,000',firm:'Hilti'},
+        {item:'HEPA vacuums \u2014 10 gal',cat:'sm_tools',qty:'6 units',window:'Aug 2026',state:'Delivered',ordId:'ORD-3105',cost:'$4,000',firm:'Hilti'},
+        {item:'Wire crimpers \u2014 hydraulic',cat:'sm_tools',qty:'8 units',window:'Oct 2026',state:'Planned',ordId:null,cost:'$8,000',firm:'TBD'}
       ]},
       barryrose:{budget:450000,dpSpent:180000,adHoc:80000,
       rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Tools & supplies',b:'$45K',c:'Ongoing / Sep–Oct 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Oct 2026',v:'Requested',vt:'warn'}],varSummary:'Structural bolt package and surgical fixture hardware pending order placement.',rows:[
@@ -9756,8 +9751,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {role:'Site survey crew',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
-      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'4',sub:'action required',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
-      ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 tone shear wrenches are overdue; release the PO now to protect August solar-pile completion.',
+      vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'1',sub:'wire crimpers — order by Sep 5',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
+      ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 7 of 8 items delivered on plan; release wire crimpers PO by Sep 5 to protect Oct 1 delivery.',
       cap:'Order-by dates are auto-computed from lead time and the tool deployment schedule. Small tools are sourced from the 02S rate card; specialty items are quoted directly.',
       cols:[{key:'item',label:'Item',sub:'itemSub',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'86px'},{key:'needby',label:'Need-by',w:'96px'},{key:'orderby',label:'Order-by (lead)',w:'146px',flag:'risk'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Ext.',cls:'r',w:'82px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'112px'}],
       add:{nameKey:'item',subKey:'itemSub',qtyKey:'qty',whenKey:'needby',costKey:'cost'}, addName:{label:'Item',ph:'e.g. Medium-voltage switchgear'}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need-by date',ph:'e.g. Oct 15'},
