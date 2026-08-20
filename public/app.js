@@ -5946,7 +5946,7 @@ charges:[
       _tl.forEach(function(r){
         h+='<div class="cc-act">';
         h+='<div class="cc-ab"><div class="cc-at">'+r.item+'</div>';
-        h+='<div class="cc-as">'+r.ref+' \u00b7 '+r.actLabel+' \u00b7 complete in source system</div></div>';
+        h+='<div class="cc-as">'+r.ref+' \u00b7 '+(r.actLabel||fqDefaultAction(r))+' \u00b7 complete in source system</div></div>';
         h+='<span class="tag info">Tasked</span>';
         h+='<button class="btn btn-ghost btn-sm" onclick="fqUntask(\''+r.id+'\')" style="margin-left:8px">Dismiss</button>';
         h+='</div>';
@@ -5997,10 +5997,11 @@ charges:[
     openModal('Documents \u00b7 '+ref, b);
   }
 
+  function fqDefaultAction(r){if(r.status==='Delivered'||r.status==='Complete')return 'Confirm receipt';if(r.pillar==='logistics')return 'Schedule move';if(r.pillar==='procurement')return (r.status==='Needs attention'?'Release PO':'Place order');if(r.pillar==='prefab')return 'Approve submittal';if(r.pillar==='services'||r.pillar==='profservices')return 'Get quote';return 'Advance';}
   function fqCell(r,ns){
     if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
     if(r.status==='Acknowledged'){ return '<div class="fq-done">'+(r.priced?('Priced '+r.priced):'Acknowledged')+'</div>'; }
-    if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; if(!ns){ if(r.tasked) return '<div class="fq-done"><span style="color:var(--success)">✓</span> On task list<div class="sub">'+r.actLabel+' · action in source system</div></div>'; return '<div class="fq-reco-badge" style="margin-bottom:4px">Recommended: '+r.actLabel+'</div><button class="btn btn-ghost btn-sm" onclick="fqTask(\''+r.id+'\')">Add to list</button>'; } return (r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn btn-red btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+r.actLabel+'</button>'; }
+    if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; if(!ns){ if(r.tasked) return '<div class="fq-done"><span style="color:var(--success)">✓</span> On task list<div class="sub">'+(r.actLabel||fqDefaultAction(r))+' · action in source system</div></div>'; return '<div class="fq-reco-badge" style="margin-bottom:4px">Recommended: '+(r.actLabel||fqDefaultAction(r))+'</div><button class="btn btn-ghost btn-sm" onclick="fqTask(\''+r.id+'\')">Add to list</button>'; } return (r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn btn-red btn-sm" onclick="fqAdvance(\''+r.id+'\')">"+(r.actLabel||fqDefaultAction(r))+'</button>'; }
     if(r.kind==='pending'){ return (ns&&r.suggest?'<div class="fq-hint">'+CC_SPARK+r.suggest+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqPriceModal(\''+r.id+'\')">'+(ns?'Price':'Set price')+'</button>'; }
     if(r.kind==='service'){ return '<button class="btn btn-dark btn-sm" onclick="fqAck(\''+r.id+'\')">Acknowledge</button>'; }
     if(r.taxMapped===false){ return '<div class="fq-hint"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Confirm taxonomy to release for allocation</div><button class="btn btn-dark btn-sm" onclick="fqTaxModal(\''+r.id+'\')">⚡ Confirm taxonomy</button>'; }
