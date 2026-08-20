@@ -5645,7 +5645,7 @@ charges:[
     q.status='Priced'; q.pricedAt=val;
     closeModal(); renderFulfill(); toast(q.ref+' priced at '+val+' — quote sent to project team');
   }
-  function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
+  function scissorUnits(){ var y=['San Diego','Chandler','Sacramento','Kansas City']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
     {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Barry Rose WRF',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'San Diego'},{id:'TC-0018',yard:'Kansas City'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
     {src:'adhoc',id:'fq2',yard:'Houston',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'VDC14',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'Sacramento'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
@@ -6038,6 +6038,12 @@ charges:[
   }
   function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id;
+    if(!r.avail)r.avail=[];
+    if(r.reco==null)r.reco=0;
+    if(!r.o2sRate)r.o2sRate=0;
+    if(!r.ownedCost)r.ownedCost=0;
+    if(!r.reRentRate)r.reRentRate=0;
+    if(!r.vendor)r.vendor='—';
     fqPickOwned=Math.min(r.reco,Math.min(r.avail.length,r.qty));
     fqAssetOwn=[];for(var _fai=0;_fai<r.qty;_fai++)fqAssetOwn.push(_fai<fqPickOwned);
     var maxOwned=Math.min(r.avail.length,r.qty);
