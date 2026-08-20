@@ -5763,7 +5763,8 @@ charges:[
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
   var _pfbP6Overrides={};
-  var _pfbDpTab='items';var _pfbInstFilter='all';
+  var _pfbDpTab='items';var _pfbInstFilter='all';var _logCcTab='items';
+  function logCcSetTab(t){_logCcTab=t;renderCcDemand('logistics');}
   function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbCloseEditModal(){var m=document.getElementById('pfb-edit-modal');if(m)m.remove();}
@@ -6178,11 +6179,17 @@ charges:[
     {id:'mct-002',label:'Release PO — Sanitation units · 3 portable restrooms',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'high',source:'fq',done:false,closeNote:''},
     {id:'mct-003',label:'Confirm spec — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'high',source:'fq',done:false,closeNote:''},
     {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'high',source:'fq',done:false,closeNote:''},
-    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'REQ-L-3065',project:'Barry Rose WRF',pillar:'logistics',due:'Aug 4',priority:'high',source:'manual',done:true,closeNote:'Bragg Crane confirmed — permit applications filed Aug 2026'},
-    {id:'mct-007',label:'Schedule move — Temporary power hookup · BESS pad',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'medium',source:'fq',done:false,closeNote:''},
+    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'REQ-L-3065',project:'Barry Rose WRF',pillar:'logistics',due:'Aug 4',priority:'high',source:'manual',done:true,closeNote:'Bragg Crane confirmed — permit applications filed Aug 2026',activity:'Contracting'},
+    {id:'mct-007',label:'Schedule move — Temporary power hookup · BESS pad',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install'},
     {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'medium',source:'fq',done:false,closeNote:''},
     {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'medium',source:'fq',done:false,closeNote:''},
-    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'VDC14',pillar:'procurement',due:'Aug 18',priority:'low',source:'fq',done:false,closeNote:''}
+    {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'VDC14',pillar:'procurement',due:'Aug 18',priority:'low',source:'fq',done:false,closeNote:''},
+    {id:'mct-011',label:'Confirm quote — Temp Toilets & Handwash (United Site Services)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 22',priority:'high',source:'fq',done:false,closeNote:'',activity:'Contracting'},
+    {id:'mct-012',label:'Select vendor — Temp Power Distribution (RFP responses due)',ref:'REQ-L-3070',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 28',priority:'high',source:'fq',done:false,closeNote:'',activity:'RFP'},
+    {id:'mct-013',label:'Issue PO — Temp Fencing (Oct 15 need-by, 6-wk lead)',ref:'REQ-L-3117',project:'Hercules Solar + BESS',pillar:'logistics',due:'Sep 3',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Contracting'},
+    {id:'mct-014',label:'Select vendor — Drinking Water & Bagged Ice (Barry Rose WRF)',ref:'REQ-L-3145',project:'Barry Rose WRF',pillar:'logistics',due:'Sep 5',priority:'medium',source:'fq',done:false,closeNote:'',activity:'RFP'},
+    {id:'mct-015',label:'Confirm IT equipment delivery window — VDC14 Oct 2026',ref:'REQ-L-3148',project:'VDC14',pillar:'logistics',due:'Sep 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install'},
+    {id:'mct-016',label:'Select vendor — Sanitation Units (VDC14, Nov 2026 need-by)',ref:'REQ-L-3133',project:'VDC14',pillar:'logistics',due:'Sep 12',priority:'low',source:'fq',done:false,closeNote:'',activity:'RFP'}
   ];
   var _MT_NS=[
     {id:'mct-001',rank:1,float:0,impact:'~$40K/wk',why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
@@ -6237,6 +6244,17 @@ charges:[
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
     _myTasksBadge();
     var isFSM=ccPersona==='fsm'; var pf=isFSM?null:(_PERSONA_PILLAR[ccPersona]||null);
+    var basePool=MY_CC_TASKS.filter(function(t){return !pf||t.pillar===pf;});
+    var _openTasks=basePool.filter(function(t){return !t.done;}).slice().sort(function(a,b){return _taskDueSort(a.due)-_taskDueSort(b.due);});
+    var _overdue=_openTasks.filter(function(t){return t.due&&_taskDueSort(t.due)<_taskDueSort('Aug 20');});
+    var _upcoming=_openTasks.filter(function(t){return !t.due||_taskDueSort(t.due)>=_taskDueSort('Aug 20');}).slice(0,3);
+    var h_surface='';
+    if(_overdue.length||_upcoming.length){
+      h_surface+='<div style="margin-bottom:16px">';
+      if(_overdue.length){h_surface+='<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px;margin-bottom:8px">';h_surface+='<div style="font-size:10.5px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">⚠ '+_overdue.length+' overdue task'+(1===_overdue.length?'':'s')+'</div>';_overdue.forEach(function(t){h_surface+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:10.5px;color:#ef4444;font-weight:700;min-width:48px">'+t.due+'</span><span style="font-size:11.5px;color:var(--g800);font-weight:500">'+t.label+'</span><span style="font-size:10px;color:var(--g400)">'+t.project+'</span></div>';});h_surface+='</div>';}
+      if(_upcoming.length){h_surface+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:8px;padding:10px 14px">';h_surface+='<div style="font-size:10.5px;font-weight:700;color:var(--g600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Coming up</div>';_upcoming.forEach(function(t){var hiPri=t.priority==='high';h_surface+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="font-size:10.5px;color:var(--g500);font-weight:600;min-width:48px">'+t.due+'</span>'+(hiPri?'<span style="font-size:9px;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:3px;padding:0 4px">HIGH</span>':'')+'<span style="font-size:11.5px;color:var(--g800);font-weight:500">'+t.label+'</span><span style="font-size:10px;color:var(--g400)">'+t.project+(t.activity?' · '+t.activity:'')+'</span></div>';});h_surface+='</div>';}
+      h_surface+='</div>';
+    }
     var basePool=MY_CC_TASKS.filter(function(t){return !pf||t.pillar===pf;});
     var projs=[]; basePool.forEach(function(t){if(t.project&&projs.indexOf(t.project)<0)projs.push(t.project);}); projs.sort();
     var tasks=basePool.filter(function(t){
@@ -6303,7 +6321,7 @@ charges:[
       h+='</div>';
     });
     h+='</div>';
-    mount.innerHTML=h;
+    mount.innerHTML=h_surface+h;
   }
   function renderMyTasksNS(){
     var mount=document.getElementById('ccMyTasks'); if(!mount)return;
@@ -7337,29 +7355,100 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]}
     },
     logistics:{
-      hercules:{budget:1200000,dpSpent:800000,adHoc:3800,
-      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Office & storage trailers',b:'4 units',c:'Aug 2026',v:'Complete',vt:'ok'},{a:'Temp power',b:'1 generator',c:'Oct 2026',v:'Requested',vt:'warn'},{a:'Sanitation units',b:'3 portable units',c:'Nov 2026',v:'Requested',vt:'warn'},{a:'Fencing & barriers',b:'Bulk lot',c:'Oct–Nov 2026',v:'Scheduled',vt:'ok'},{a:'Signage & traffic',b:'2 zones',c:'Aug 2026',v:'In fulfillment',vt:'ok'},{a:'Waste service',b:'2 dumpsters',c:'Jun 2026',v:'Complete',vt:'ok'}],varSummary:'Temporary power (Requested, Oct 2026) and sanitation units (Requested, Nov 2026) — confirm provider before site access conflicts.',rows:[
-        {item:'Office & storage trailers',qty:'4 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3071',sa:4,ea:4,cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {item:'Temporary power',qty:'1 generator',window:'Oct 2026',state:'Requested',sa:6,ea:6,ordId:null,cost:'$38K',firm:'Self-perform',fqRef:'REQ-L-3061',attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Safety',name:'Electrical connection plan — temp power panels',ref:'LULP-BESS-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'},{type:'Change Orders',name:'Scope TBD — temp power vendor selection',ref:'CO-LOG-BESS-001',status:'Draft'}]},
-        {item:'Sanitation units',qty:'3 portable units',window:'Nov 2026',state:'Requested',sa:7,ea:7,ordId:null,cost:'$8,200',firm:'TBD',fqRef:'REQ-P-0501',attachments:[{type:'Engineering',name:'Sanitation unit placement plan — 3 units',ref:'SCOPE-MV-001',status:'Draft'},{type:'Shipping',name:'Site access plan — sanitation delivery',ref:'HR-MV-001',status:'Pending'},{type:'Safety',name:'Service schedule — sanitation units',ref:'SAP-MV-001',status:'Draft'}]},
-        {item:'Fencing & site barriers',qty:'Bulk lot',window:'Oct–Nov 2026',state:'Scheduled',sa:6,ea:7,ordId:'ORD-3117',cost:'$22,000',firm:'TBD'},
-        {item:'Signage & traffic control',qty:'2 zones',window:'Aug 2026',state:'In fulfillment',sa:4,ea:4,ordId:'ORD-3119',cost:'$14,000',firm:'Bragg Crane',attachments:[{type:'Shipping',name:'Haul route map — pipe rack delivery Aug 15',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Oversize load permit — pipe rack transport',ref:'OLP-3119-001',status:'Approved'}]},
-        {item:'Waste & dumpster service',qty:'2 dumpsters',window:'Jun 2026',state:'Complete',ordId:'ORD-3127',sa:2,ea:2,cost:'$4,800',firm:'Self-perform',attachments:[{type:'Submittals',name:'Demobilization checklist — excavator fleet',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'},{type:'Change Orders',name:'Final billing summary — 2-unit demobi',ref:'FINBILL-3127-001',status:'Closed'}]}
+      hercules:{budget:1200000,dpSpent:820000,adHoc:3800,
+      rollCols:['GC/GR service','Delivery date','Progress','Status'],
+      roll:[
+        {a:'Office Trailers',b:'Aug 1, 2026',c:'100%',v:'Complete',vt:'ok'},
+        {a:'Restroom Facility',b:'Sep 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Storage Containers',b:'Aug 15, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Temp Toilets & Handwash',b:'Sep 15, 2026',c:'50%',v:'Quoted',vt:'info'},
+        {a:'Waste Hauling',b:'Jun 1, 2026',c:'100%',v:'Complete',vt:'ok'},
+        {a:'Site Construction Signage',b:'Aug 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Temp Power Distribution',b:'Oct 1, 2026',c:'25%',v:'Requested',vt:'warn'},
+        {a:'Temp Fencing',b:'Oct 15, 2026',c:'0%',v:'Planned',vt:'neu'}
+      ],
+      varSummary:'3 services in fulfillment · 1 quote ready for approval (USS) · 2 requiring vendor selection by Oct.',
+      rows:[
+        {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Complete',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
+         attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
+        {item:'Restroom Facility',qty:'1 unit',window:'Sep 1, 2026',state:'In fulfillment',ordId:'ORD-3116',fqRef:'REQ-L-3116',cost:'$14,200/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:4},{n:'Install',st:'In progress',s:4,e:5}]},
+        {item:'Storage Containers',qty:'12 units',window:'Aug 15, 2026',state:'In fulfillment',ordId:'ORD-3113',fqRef:'REQ-L-3113',cost:'$21,600',firm:'WillScot',poc:'Lou Rosswick',phone:'(314) 288-7895',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
+        {item:'Temp Toilets \u0026 Handwash Stations',qty:'26 units',window:'Sep 15, 2026',state:'Quoted',ordId:null,fqRef:'REQ-L-3061',cost:'$4,600',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'In progress',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
+        {item:'Waste Hauling',qty:'2 dumpsters',window:'Jun 1, 2026',state:'Complete',ordId:'ORD-3127',fqRef:'REQ-L-3127',cost:'$4,800',firm:'GFL Environmental',poc:'Dan Smith',phone:'(314) 713-6329',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:0,e:1},{n:'Contracting',st:'Done',s:0,e:1},{n:'Install',st:'Done',s:1,e:2}]},
+        {item:'Site Construction Signage',qty:'2 zones',window:'Aug 1, 2026',state:'In fulfillment',ordId:'ORD-3119',fqRef:'REQ-L-3119',cost:'$14,000',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
+        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Oct 1, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Not started',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
       ]},
-      barryrose:{budget:600000,dpSpent:300000,adHoc:180000,
-      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Office & storage trailers',b:'3 units',c:'Aug 2026',v:'Complete',vt:'ok'},{a:'Temporary power',b:'1 move',c:'Sep 2026',v:'Scheduled',vt:'ok'},{a:'Sanitation units',b:'3 units',c:'Ongoing',v:'In fulfillment',vt:'ok'}],varSummary:'Office & storage trailers mobilization complete — Bragg Crane. Temporary power delivery scheduled Sep 2026.',rows:[
-        {item:'Office & storage trailers',qty:'3 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3139',fqRef:'REQ-L-3054',cost:'$18,500',firm:'Bragg Crane',attachments:[{type:'Safety',name:'Delivery plan — office trailers Barry Rose WRF',ref:'LP-3139-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Barry Rose WRF',ref:'HR-3139-001',status:'Approved'}]},
-        {item:'Temporary power',qty:'1 move',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform'},
-        {item:'Sanitation units',qty:'3 units',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3130',cost:'$6,400/mo',firm:'Internal crew'}
+      barryrose:{budget:600000,dpSpent:310000,adHoc:180000,
+      rollCols:['GC/GR service','Delivery date','Progress','Status'],
+      roll:[
+        {a:'Office \u0026 Storage Trailers',b:'Aug 2026',c:'100%',v:'Complete',vt:'ok'},
+        {a:'Sanitation Units',b:'Sep 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Waste \u0026 Recycling',b:'Ongoing',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Site Security \u0026 Cameras',b:'Aug 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Site Internet',b:'Sep 2026',c:'50%',v:'Scheduled',vt:'ok'},
+        {a:'Fuel Station Setup',b:'Oct 2026',c:'50%',v:'Scheduled',vt:'ok'},
+        {a:'Drinking Water \u0026 Ice',b:'Ongoing',c:'25%',v:'Requested',vt:'warn'},
+        {a:'Temp Power',b:'Sep 2026',c:'100%',v:'Complete',vt:'ok'}
+      ],
+      varSummary:'7 of 8 services active or in fulfillment · Drinking water vendor selection pending.',
+      rows:[
+        {item:'Office \u0026 Storage Trailers',qty:'3 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3139',fqRef:'REQ-L-3054',cost:'$18,500',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
+         attachments:[{type:'Safety',name:'Delivery plan — office trailers Barry Rose WRF',ref:'LP-3139-001',status:'Approved'},{type:'Shipping',name:'Haul route map',ref:'HR-3139-001',status:'Approved'}]},
+        {item:'Temp Power',qty:'1 move',window:'Sep 2026',state:'Complete',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform',poc:'Site PM',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:5}]},
+        {item:'Sanitation Units',qty:'3 units',window:'Sep 2026',state:'In fulfillment',ordId:'ORD-3130',cost:'$6,400/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:4},{n:'Install',st:'In progress',s:4,e:5}]},
+        {item:'Site Security \u0026 Cameras',qty:'12 cameras',window:'Aug 2026',state:'In fulfillment',ordId:'ORD-3141',fqRef:'REQ-L-3141',cost:'$8,400',firm:'UFY Cameras',poc:'UFY Support',phone:'(888) 839-2866',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
+        {item:'Site Internet \u0026 Network',qty:'1 system',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3142',fqRef:'REQ-L-3142',cost:'$12,000',firm:'IT McCarthy',poc:'Nick Herrera',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
+        {item:'Fuel Station Setup',qty:'1 station',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3143',fqRef:'REQ-L-3143',cost:'$6,200',firm:'Energy Petroleum',poc:'Tony Mancini',phone:'(314) 974-6517',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'In progress',s:3,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Waste Hauling \u0026 Recycling',qty:'2 dumpsters',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3144',cost:'$5,200/mo',firm:'Central Solutions Center',poc:'Lou Rosswick',phone:'(314) 374-6824',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:7}]},
+        {item:'Drinking Water \u0026 Bagged Ice',qty:'Weekly delivery',window:'Ongoing',state:'Requested',ordId:null,fqRef:'REQ-L-3145',cost:'$1,800/mo est.',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'In progress',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
       ]},
-      vdc14:{budget:400000,dpSpent:180000,adHoc:100000,
-      rollCols:['GC/GR service','Units / qty','Period','Status'],roll:[{a:'Office & storage trailers',b:'2 units',c:'Sep–Oct 2026',v:'Scheduled',vt:'ok'},{a:'Temporary power',b:'3 loads',c:'Oct 2026',v:'In fulfillment',vt:'ok'},{a:'Sanitation units',b:'16 units',c:'Nov 2026',v:'Requested',vt:'warn'}],varSummary:'Temporary power delivery (3 loads) and office trailer haul scheduled. Data center logistics on track.',rows:[
-        {item:'Office & storage trailers',qty:'2 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform'},
-        {item:'Temporary power',qty:'3 loads',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3132',cost:'$4,200',firm:'3PL'},
-        {item:'Sanitation units',qty:'16 units',window:'Nov 2026',state:'Requested',ordId:null,cost:'$44K',firm:'TBD'}
+      vdc14:{budget:400000,dpSpent:185000,adHoc:100000,
+      rollCols:['GC/GR service','Delivery date','Progress','Status'],
+      roll:[
+        {a:'Office \u0026 Storage Trailers',b:'Sep 2026',c:'75%',v:'Scheduled',vt:'ok'},
+        {a:'Temp Power',b:'Oct 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'IT Equipment \u0026 Network',b:'Oct 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Site Security',b:'Sep 2026',c:'75%',v:'Scheduled',vt:'ok'},
+        {a:'Office Furniture',b:'Oct 2026',c:'50%',v:'Scheduled',vt:'ok'},
+        {a:'Sanitation Units',b:'Nov 2026',c:'25%',v:'Requested',vt:'warn'},
+        {a:'Temp Structures',b:'Nov 2026',c:'0%',v:'Planned',vt:'neu'}
+      ],
+      varSummary:'Data center logistics on track · Sanitation units vendor selection needed by Sep · Temp structures planning not started.',
+      rows:[
+        {item:'Office \u0026 Storage Trailers',qty:'2 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform',poc:'Site PM',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
+        {item:'Temp Power',qty:'3 loads',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3132',cost:'$4,200',firm:'3PL',poc:'3PL Ops',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:5},{n:'Install',st:'In progress',s:5,e:6}]},
+        {item:'IT Equipment \u0026 Network Install',qty:'Full suite',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3148',fqRef:'REQ-L-3148',cost:'$48,000',firm:'Lenovo / IT McCarthy',poc:'Nick Herrera',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:5},{n:'Install',st:'In progress',s:5,e:6}]},
+        {item:'Site Security',qty:'8 cameras',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3149',fqRef:'REQ-L-3149',cost:'$5,600',firm:'UFY Cameras',poc:'UFY Support',phone:'(888) 839-2866',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
+        {item:'Office Furniture Package',qty:'1 lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3150',fqRef:'REQ-L-3150',cost:'$22,000',firm:'Mike Furniture',poc:'Mike Larson',phone:'(314) 713-6329',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Done',s:3,e:4},{n:'Contracting',st:'In progress',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Sanitation Units',qty:'16 units',window:'Nov 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3133',cost:'$44K est.',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'In progress',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+        {item:'Temp Structures',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,fqRef:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'In progress',s:4,e:5},{n:'RFP',st:'Not started',s:5,e:6},{n:'Contracting',st:'Not started',s:6,e:7},{n:'Install',st:'Not started',s:7,e:8}]}
       ]}
     },
-    profservices:{
+        profservices:{
       hercules:{budget:1920000,dpSpent:1560000,adHoc:0,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'4 FTE',c:'Jun 2026\u2013Feb 2027',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'5 FTE',c:'Apr\u2013Jul 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'Engineering peak 4 FTE Jun\u2013Feb (OE + structural inspection). VDC/BIM active Apr\u2013Oct. BESS commissioning agent requested Nov 2026.',rows:[
         {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
@@ -8126,6 +8215,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     openModal('Documentation · '+(row.role||row.asm||row.move||row.item||''), attachmentsHTML(row.attachments||[]));
   }
   function dpRowClick(p,proj,idx){
+    if(p==='logistics'){dpLogActModal(proj,idx);return;}
     var rows=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;
     var row=rows&&rows[idx];
     if(row&&row.ordId){ccDpTracker(row.ordId);return;}
@@ -8728,6 +8818,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     h+='<div style="font-size:11px;color:#d97706">2 days behind &middot; inspect Jul 22</div></div>';
     h+='</div>';
     }
+    var _logActMode=(p==='logistics'&&isDpView&&_logCcTab==='tracker');
     var _pfbSchedMode=(p==='prefab'&&isDpView&&_pfbDpTab==='schedule');
     if(p==='prefab'&&isDpView){
       h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">';
@@ -8753,7 +8844,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+=renderPrefabP6Schedule(_p6fi);
       }
     }
-    if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+(p!=='profservices'?'Date &amp; window':'Need by')+'</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    if(p==='logistics'&&isDpView){
+      h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content">';
+      h+='<button onclick="logCcSetTab(\'items\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logCcTab==='items'?'#fff':'transparent')+';color:'+(_logCcTab==='items'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logCcTab==='items'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Line items</button>';
+      h+='<button onclick="logCcSetTab(\'tracker\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logCcTab==='tracker'?'#fff':'transparent')+';color:'+(_logCcTab==='tracker'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logCcTab==='tracker'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Activity tracker</button>';
+      h+='</div>';
+    }
+    if(!_pfbSchedMode&&!_logActMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+(p!=='profservices'?'Date &amp; window':'Need by')+'</span><span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
       if(row._type==='dp'&&isDpView&&p==='prefab'&&_pfbInstFilter!=='all'){
@@ -8883,7 +8980,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           }
           h+='<div class="dp-row" id="dprow-'+p+'-'+row._proj+'-'+row._idx+'" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="dpRowClick(\''+p+'\',\''+row._proj+'\','+row._idx+')">';
           var _ra=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
-          h+='<div>'+row.item+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'')+'</div>';
+          var _logPct=(p==='logistics'&&row.acts)?Math.round(row.acts.filter(function(a){return a.st==='Done';}).length/row.acts.length*100):null;
+          h+='<div>'+row.item+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'');
+          if(_logPct!==null){h+='<div style="display:flex;align-items:center;gap:6px;margin-top:5px"><div style="width:64px;height:5px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+_logPct+'%;height:100%;background:'+(p==='logistics'&&_logPct===100?'#10b981':_logPct>50?'#10b981':'#f59e0b')+';border-radius:3px"></div></div><span style="font-size:9.5px;color:var(--g500)">'+_logPct+'%</span></div>';}
+          h+='</div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.window||'\u2014')+'</div>';
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
@@ -8933,7 +9033,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div style="padding:10px 16px;font-size:11.5px;color:var(--charcoal);font-weight:500;cursor:pointer;border-top:1px solid var(--g100)" onclick="dpToggleAllReqs(\''+p+'\')">Show all '+visRows.length+' requests →</div>';
     }
     h+='</div>';}
-    if(isDpView){
+    if(_logActMode){h+=renderLogActTracker(allReqRows,selProj);}
+    if(isDpView&&!_logActMode){
       var _ahRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
       if(_ahRows.length){
         h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">Ad hoc requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_ahRows.length+' request'+((_ahRows.length===1)?'':'s')+'</span></div>';
@@ -8978,6 +9079,107 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
 
   // ─── SHARED HELPERS ─────────────────────────────────────────────────────────
+  function renderLogActTracker(rows, selProj){
+    if(!rows||!rows.length)return '<div class="fq-empty">No logistics services for this project.</div>';
+    var ACT_NAMES=['Project Plan','RFP','Contracting','Install'];
+    var cols='2fr 110px 100px 100px 90px 110px 130px 140px 120px';
+    var h='<div class="dp-tbl" style="margin-top:0">';
+    h+='<div class="dp-head" style="grid-template-columns:'+cols+'"><span>Service</span><span class="c">Need by</span><span class="c">Progress</span>';
+    ACT_NAMES.forEach(function(n){h+='<span class="c">'+n+'</span>';});
+    h+='<span>Awarded Vendor</span><span>POC</span><span>Phone</span></div>';
+    var _tone={Done:'ok','In progress':'info','Not started':'neu'};
+    var _col={Done:'#10b981','In progress':'#3b82f6','Not started':'#e2e8f0'};
+    var _tcol={Done:'#fff','In progress':'#fff','Not started':'#9ca3af'};
+    rows.forEach(function(row,ri){
+      if(!row||row._type!=='dp')return;
+      var acts=row.acts||[];
+      var doneCt=acts.filter(function(a){return a.st==='Done';}).length;
+      var pct=acts.length?Math.round(doneCt/acts.length*100):0;
+      var pColor=pct===100?'#10b981':pct>=50?'#10b981':'#f59e0b';
+      var _stToneM={Complete:'ok','In fulfillment':'ok',Scheduled:'info',Quoted:'info',Requested:'warn',Planned:'neu',Closed:'neu'};
+      var stTone=_stToneM[row.state]||'neu';
+      h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer;align-items:center" onclick="dpLogActModal(\''+row._proj+'\','+row._idx+')">';
+      h+='<div style="display:flex;flex-direction:column;gap:2px">';
+      h+='<span style="font-size:12px;font-weight:500;color:var(--g900)">'+row.item+'</span>';
+      h+='<span class="chip '+stTone+'" style="font-size:10px;width:fit-content">'+row.state+'</span>';
+      h+='</div>';
+      h+='<div class="c" style="font-size:11px;color:var(--g600)">'+(row.window||'—')+'</div>';
+      h+='<div class="c"><div style="display:flex;flex-direction:column;align-items:center;gap:3px">';
+      h+='<div style="width:72px;height:8px;background:var(--g150);border-radius:4px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+pColor+';border-radius:4px"></div></div>';
+      h+='<span style="font-size:10px;color:var(--g500)">'+pct+'%</span></div></div>';
+      ACT_NAMES.forEach(function(an){
+        var act=acts.find(function(a){return a.n===an;});
+        var st=act?act.st:'Not started';
+        var bg=_col[st]||'#e2e8f0';
+        var tc=_tcol[st]||'#9ca3af';
+        h+='<div class="c"><span style="display:inline-block;font-size:10px;font-weight:600;padding:3px 8px;border-radius:12px;background:'+bg+';color:'+tc+';white-space:nowrap">'+st+'</span></div>';
+      });
+      h+='<div style="font-size:11px;color:var(--g700)">'+(row.firm||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g700)">'+(row.poc||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(row.phone||'—')+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+    return h;
+  }
+  function dpLogActModal(proj,idx){
+    var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;
+    var row=rows&&rows[idx]; if(!row)return;
+    var EQ_MO=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+    var _actCol={Done:'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
+    var _actTxt={Done:'#fff','In progress':'#fff','Not started':'#9ca3af'};
+    var _stToneM={Complete:'ok','In fulfillment':'ok',Scheduled:'info',Quoted:'info',Requested:'warn',Planned:'neu',Closed:'neu'};
+    var stTone=_stToneM[row.state]||'neu';
+    var acts=row.acts||[];
+    var doneCt=acts.filter(function(a){return a.st==='Done';}).length;
+    var pct=acts.length?Math.round(doneCt/acts.length*100):0;
+    var b='<div style="padding:4px 0 12px">';
+    b+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+    b+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Status</div><span class="chip '+stTone+'" style="font-size:11px">'+row.state+'</span></div>';
+    b+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Need by</div><div style="font-size:12px;font-weight:500">'+(row.window||'—')+'</div></div>';
+    b+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Progress</div>';
+    b+='<div style="display:flex;align-items:center;gap:6px"><div style="width:80px;height:6px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+(pct===100?'#10b981':'#3b82f6')+';border-radius:3px"></div></div><span style="font-size:11px;color:var(--g600)">'+pct+'%</span></div></div>';
+    b+='<div><div style="font-size:10.5px;color:var(--g500);margin-bottom:3px">Cost</div><div style="font-size:12px;font-weight:500">'+(row.cost||'—')+'</div></div>';
+    b+='</div>';
+    if(row.firm||row.poc||row.phone){
+      b+='<div style="display:flex;gap:20px;padding:10px 14px;background:var(--g50);border:1px solid var(--g150);border-radius:8px;margin-bottom:16px">';
+      if(row.firm){b+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Awarded Vendor</div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+row.firm+'</div></div>';}
+      if(row.poc){b+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">POC</div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+row.poc+'</div></div>';}
+      if(row.phone){b+='<div><div style="font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Phone</div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+row.phone+'</div></div>';}
+      b+='</div>';
+    }
+    b+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Activity timeline</div>';
+    b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
+    b+='<div style="display:grid;grid-template-columns:120px repeat(10,1fr);background:var(--g50);border-bottom:1px solid var(--g150)">';
+    b+='<div style="padding:6px 10px;font-size:10px;font-weight:700;color:var(--g500)">Activity</div>';
+    EQ_MO.forEach(function(m){b+='<div style="padding:6px 2px;font-size:9.5px;font-weight:600;color:var(--g400);text-align:center">'+m+'</div>';});
+    b+='</div>';
+    acts.forEach(function(act){
+      var s=Math.max(0,Math.min(9,act.s||0));
+      var e=Math.max(s+1,Math.min(10,act.e||s+1));
+      var bg=_actCol[act.st]||'#e5e7eb';
+      var tc=_actTxt[act.st]||'#9ca3af';
+      b+='<div style="display:grid;grid-template-columns:120px repeat(10,1fr);border-top:1px solid var(--g100);align-items:center;min-height:32px">';
+      b+='<div style="padding:4px 10px;font-size:11px;font-weight:500;color:var(--g700)">'+act.n+'</div>';
+      for(var mi=0;mi<10;mi++){
+        if(mi===s){
+          var span=Math.max(1,e-s);
+          b+='<div style="grid-column:span '+span+';padding:3px 4px">';
+          b+='<div style="background:'+bg+';border-radius:4px;height:22px;display:flex;align-items:center;justify-content:center">';
+          b+='<span style="font-size:9.5px;font-weight:600;color:'+tc+';white-space:nowrap">'+act.st+'</span>';
+          b+='</div></div>';
+          mi+=span-1;
+        } else {
+          b+='<div style="padding:3px 2px"><div style="height:22px"></div></div>';
+        }
+      }
+      b+='</div>';
+    });
+    b+='</div>';
+    if(row.fqRef){b+='<div><button class="btn btn-ghost btn-sm" onclick="closeModal();ccGoFulfill(\''+row.fqRef+'\')">View in fulfillment queue →</button></div>';}
+    b+='</div>';
+    openModal(row.item+' — Activity plan', b);
+  }
   function _sColor(s){
     if(/active|on.rent|in.fab|deployed|scheduled|delivered|po.issued|ordered/i.test(s||''))return '#10b981';
     if(/projected|planned/i.test(s||''))return '#3b82f6';
