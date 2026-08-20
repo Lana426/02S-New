@@ -5679,12 +5679,12 @@ charges:[
     {src:'dp',id:'fqHe1',yard:'Chandler',ref:'REQ-4480',pillar:'equipment',item:'¾-Ton Crew Truck',qty:2,project:'Hercules Solar + BESS',needby:'May 2026',code:'0100-0100-0000-0001',kind:'equip',status:'Allocated',doneNote:'2 units · on-rent since May 20 · civil support',docs:['Equipment checklist (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe2',yard:'Chandler',ref:'REQ-4481',pillar:'equipment',item:'Tower Crane — self-erect',qty:1,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'26-330 · BESS & Substation',kind:'equip',status:'Allocated',doneNote:'On-rent Aug 3 · structure phase critical path',docs:['Lift plan (PDF)','Site access plan (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe3',yard:'Chandler',ref:'REQ-4482',pillar:'equipment',item:'Telehandler 10K — Sector 1',qty:16,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'equip',status:'Allocated',doneNote:'16 units · on-rent since Apr 1 · module installation',docs:['Equipment inspection checklist (PDF)','Rental agreement (PDF)']},
-    {src:'dp',id:'fqHe4',yard:'Chandler',ref:'REQ-4483',pillar:'equipment',item:'SUV AWD',qty:1,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'equip',status:'Fulfilled',doneNote:'Returned Apr 30, 2026 · final bill settled',docs:['Rental agreement (PDF)']},
+    {src:'dp',id:'fqHe4',yard:'Chandler',ref:'REQ-4483',pillar:'equipment',item:'SUV AWD',qty:1,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0100-0100-0000-0001',kind:'equip',status:'Fulfilled',doneNote:'Returned Apr 30, 2026 · final bill settled',docs:['Rental agreement (PDF)'],o2sRate:900,ownedCost:450,reRentRate:750,reco:0,avail:[],vendor:'Enterprise Fleet'},
     {src:'dp',id:'fqHe5',yard:'Chandler',ref:'REQ-4484',pillar:'equipment',item:'Hydraulic Pile Driver — Sector 1',qty:4,project:'Hercules Solar + BESS',needby:'Jun 2026',code:'3100-6300-0000-0001',kind:'equip',status:'Allocated',doneNote:'4 units · on-rent since Jun 1 · Sector 1 pile driving',docs:['Equipment checklist (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe6',yard:'Chandler',ref:'REQ-4485',pillar:'equipment',item:'Generator — 125 kW',qty:16,project:'Hercules Solar + BESS',needby:'Mar 2026',code:'0100-5000-0000-0001',kind:'equip',status:'Allocated',doneNote:'16 units · on-rent since Mar 1 · site power',docs:['Generator inspection log (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe7',yard:'Chandler',ref:'REQ-4486',pillar:'equipment',item:'Light Towers',qty:26,project:'Hercules Solar + BESS',needby:'Mar 2026',code:'0100-5000-0000-0001',kind:'equip',status:'Allocated',doneNote:'26 units · on-rent Mar 2026 · all operational',docs:['Safety inspection checklist (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe8',yard:'Chandler',ref:'REQ-4487',pillar:'equipment',item:'Dozer — D6',qty:12,project:'Hercules Solar + BESS',needby:'Mar 2026',code:'3100-2000-0000-0001',kind:'equip',status:'Allocated',doneNote:'12 units · on-rent · mass grading 92% complete',docs:['Equipment spec sheet (PDF)','Rental agreement (PDF)']},
-    {src:'dp',id:'fqHe9',yard:'Chandler',ref:'REQ-4488',pillar:'equipment',item:'Motor Grader',qty:6,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'3100-2000-0000-0001',kind:'equip',status:'Fulfilled',doneNote:'Off-rent Aug 5, 2026 · final inspection passed',docs:['Return inspection checklist (PDF)','Final bill (PDF)']},
+    {src:'dp',id:'fqHe9',yard:'Chandler',ref:'REQ-4488',pillar:'equipment',item:'Motor Grader',qty:6,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'3100-2000-0000-0001',kind:'equip',status:'Fulfilled',doneNote:'Off-rent Aug 5, 2026 · final inspection passed',docs:['Return inspection checklist (PDF)','Final bill (PDF)'],o2sRate:14000,ownedCost:9600,reRentRate:11500,reco:0,avail:[],vendor:'Sunbelt'},
     {src:'dp',id:'fqHe10',yard:'Chandler',ref:'REQ-4489',pillar:'equipment',item:'Compaction Roller',qty:12,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'3100-2000-0000-0001',kind:'equip',status:'Allocated',doneNote:'12 units · on-rent Apr–Oct 2026 · compaction testing',docs:['Equipment checklist (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe11',yard:'Chandler',ref:'REQ-4490',pillar:'equipment',item:'Hydraulic Pile Driver — Sector 2',qty:6,project:'Hercules Solar + BESS',needby:'Aug 2026',code:'3100-6300-0000-0001',kind:'equip',status:'Allocated',doneNote:'6 units · mobilized Aug 1 · Sector 2',docs:['Lift plan (PDF)','Rental agreement (PDF)']},
     {src:'dp',id:'fqHe12',yard:'Chandler',ref:'REQ-4491',pillar:'equipment',item:'Forklift 5K',qty:4,project:'Hercules Solar + BESS',needby:'Apr 2026',code:'0200-0320-0000-0001',kind:'equip',status:'Allocated',doneNote:'4 units · on-rent Apr 2026 · Barry Rose WRF material handling',docs:['Equipment checklist (PDF)','Rental agreement (PDF)']},
@@ -6087,6 +6087,13 @@ charges:[
     // Override section (hidden — shown when Override recommendation clicked)
     b+='<div id="fqOverrideSec" style="display:none">';
     b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">Overriding the recommendation \u2014 click a row to toggle Own / Re-rent, or edit the asset ID.</div>';
+    b+='<div style="display:flex;align-items:center;gap:8px;padding:7px 12px;background:#f8fafc;border:1px solid var(--g150);border-radius:6px;margin-bottom:10px">';
+    b+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Owned</span>';
+    b+='<button id="fqStepDown" onclick="fqStep(-1)" style="width:24px;height:24px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;font-size:15px;line-height:1;color:var(--g700);display:flex;align-items:center;justify-content:center">&minus;</button>';
+    b+='<span id="fqOwnedN" style="font-size:13px;font-weight:700;color:var(--charcoal);min-width:20px;text-align:center"></span>';
+    b+='<button id="fqStepUp" onclick="fqStep(1)" style="width:24px;height:24px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;font-size:15px;line-height:1;color:var(--g700);display:flex;align-items:center;justify-content:center">+</button>';
+    b+='<span style="font-size:11px;color:var(--g400);margin-left:2px">units · click a row to pick specific assets</span>';
+    b+='</div>';
     b+='<div id="fqAssetAlloc" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px"></div>';
     b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
     b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
@@ -6109,6 +6116,7 @@ charges:[
     b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
     b+='</div></div>';
     openModal('Fulfill \u2014 '+r.item, b);
+    fqRefresh();
   }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
@@ -6132,7 +6140,7 @@ charges:[
   }
   var fqAssetOwn=[];
   function fqToggleAsset(i){if(!fqAssetOwn.length)return;fqAssetOwn[i]=!fqAssetOwn[i];fqPickOwned=fqAssetOwn.filter(function(v){return v;}).length;fqRefresh();}
-  function fqStep(d){ fqPickOwned+=d; fqRefresh(); }
+  function fqStep(d){ var _fsr=fqById(fqCurId); if(!_fsr)return; var _fsmax=Math.min(_fsr.avail.length,_fsr.qty); fqPickOwned=Math.max(0,Math.min(fqPickOwned+d,_fsmax)); fqAssetOwn=[];for(var _fsi=0;_fsi<_fsr.qty;_fsi++)fqAssetOwn.push(_fsi<fqPickOwned); fqRefresh(); }
   function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
   function fqPriceModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
