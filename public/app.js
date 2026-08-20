@@ -1,5 +1,5 @@
   var CURRENT='v1';
-  var GM_PLAN=10.9, GM_CURR=10.4;
+  var GM_PLAN=10.9, GM_CURR=10.9;
   (function(){
     document.body.setAttribute('data-ver','v1');
     var _s=document.createElement('style');
@@ -2979,7 +2979,7 @@ charges:[
     if(dEl)dEl.textContent=deliveries||0;if(oEl)oEl.textContent=offrents||0;if(bEl)bEl.textContent=pendingBills||0;
   }
   function openMarginPlanModal(){
-    var gmPlan=10.9,gmCurr=10.4,gmProj=21640000;
+    var gmPlan=10.9,gmCurr=10.9,gmProj=21640000;
     var GP=[
       {l:'Equipment',     p:18.0,a:15.2,note:'Re-rent crane premium on BESS — primary gap driver'},
       {l:'Prefab',        p:14.0,a:13.5,note:'Headwall fabrication slightly behind forecast'},
@@ -4060,7 +4060,7 @@ charges:[
     }
     h+='</div>';
     if(!BF_PILLAR){
-      var gmPlan=10.9,gmCurr=10.4;
+      var gmPlan=10.9,gmCurr=10.9;
       var gmTone=gmCurr<gmPlan-1.0?'bad':gmCurr<gmPlan?'warn':'ok';
       var gmColor={ok:'var(--success)',warn:'var(--warning)',bad:'var(--red)'}[gmTone];
       h+='<div style="margin-top:16px;padding:14px 16px;background:#fff;border:1px solid var(--g200);border-radius:var(--radius)">';
