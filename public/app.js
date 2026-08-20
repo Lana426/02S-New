@@ -7257,16 +7257,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       varSummary:'MV switchgear and BESS containers are past order-by — PO release critical for Nov substation date. Tools & consumables $103K across the portfolio.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'MV switchgear and BESS containers share the same OEM (Eaton/Tesla). Combine POs to hit the next volume tier and shorten lead time by 2 weeks.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
-      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'46',sub:'7 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'5 of 7',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'54',sub:'8 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'5 of 7',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Every project\u2019s prefab demand, aggregated. Assemblies are made-to-order, so pricing is quoted by 02S after submittal; the pillar signal is fabrication stage.',
       rows:[
         {id:'REQ-F-021',asset:'Prefab pipe rack modules \u00b7 qty 12',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pipe rack',taxOk:true,leaf:'Pipe rack',dec:'In fab',decTone:'info',status:'In fabrication'},
         {id:'REQ-F-034',asset:'Modular e-houses \u00b7 BESS \u00b7 qty 2',project:'Hercules Solar + BESS',tax:'Assembly \u203a Electrical \u203a E-house',taxOk:true,leaf:'E-house',dec:'Submittal',decTone:'info',status:'Submittal'},
+        {id:'REQ-F-052',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Hercules Solar + BESS',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'},
         {id:'REQ-F-041',asset:'L2 headwall assemblies \u00b7 qty 8',project:'Barry Rose WRF',tax:'Assembly \u203a Structural \u203a Headwall',taxOk:true,leaf:'Headwall',dec:'Delivered',decTone:'ok',status:'Delivered'},
-        {id:'REQ-F-042',asset:'Skid-mounted pump assemblies \u00b7 qty 4',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pump skid',taxOk:true,leaf:'Pump skid',dec:'In fab',decTone:'info',status:'In fabrication'},
+        {id:'REQ-F-053',asset:'Skid-mounted pump assemblies \u00b7 qty 4',project:'Hercules Solar + BESS',tax:'Assembly \u203a Mechanical \u203a Pump skid',taxOk:true,leaf:'Pump skid',dec:'In fab',decTone:'info',status:'In fabrication'},
         {id:'REQ-F-051',asset:'Cable tray bracket assemblies \u00b7 lot',project:'VDC14',tax:'Assembly \u203a Electrical \u203a Cable tray',taxOk:true,leaf:'Cable tray',dec:'Needs quote',decTone:'warn',status:'Awaiting pricing'},
-        {id:'REQ-F-052',asset:'Server room partition panels \u00b7 qty 6',project:'VDC14',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
+        {id:'REQ-F-056',asset:'Server room partition panels \u00b7 qty 6',project:'VDC14',tax:'Assembly \u203a Structural \u203a Partition',taxOk:true,leaf:'Partition',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],
       roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 Sep shop conflict',v:'Pipe rack (HRC) + MEP rack (RIV)',vt:'warn'},{a:'Electrical',b:'3 active',c:'\u26a0 Aug\u2013Oct',v:'E-houses + cable tray + CIM brackets',vt:'warn'},{a:'Structural',b:'1 in fab',c:'On plan',v:'Server room panels (CIM)',vt:'ok'},{a:'Delivered',b:'2 complete',c:'Delivered',v:'Headwall assemblies (HRC + RIV)',vt:'ok'}],
@@ -7391,7 +7392,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Prefab pipe rack modules',qty:'12 modules',window:'Sep 28',state:'In fabrication',ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 31',state:'Submittal',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
         {item:'L2 headwall assemblies',qty:'8 units',window:'Jun 20',state:'Delivered',ordId:'ORD-3106',cost:'$147K',firm:'Ironclad Mfg'},
-        {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 5',state:'Draft',ordId:null,cost:'$45K',firm:'TBD'},
+        {item:'Pump skid assemblies',qty:'4 skids',window:'Oct 5',state:'In fabrication',ordId:null,fqRef:'REQ-F-053',cost:'$45K',firm:'TBD'},
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 15',state:'Requested',ordId:'ORD-5003',cost:'Pending',firm:'TBD',fqRef:'REQ-4476'},
         {item:'Combiner box prefab array',qty:'8 units',window:'Sep 5',state:'Draft',ordId:null,cost:'$88K',firm:'TBD'}
       ]},
