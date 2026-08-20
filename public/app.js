@@ -4010,8 +4010,8 @@ charges:[
     {code:'0100-5100-0000-0001',name:'Heavy haul & crane mobilization',originalBudget:800000,approvedCO:0,pendingCO:0,committed:487000,spent:186000,pillar:'logistics',subJob:'SJ-002'},
     {code:'0100-5200-0000-0001',name:'Freight & site staging',         originalBudget:400000,approvedCO:0,pendingCO:0,committed:313000,spent:120000,pillar:'logistics',subJob:'SJ-004'},
     // Procurement pillar
-    {code:'0600-0100-0000-0001',name:'Bulk materials',   originalBudget:6277000,approvedCO:0,pendingCO:0,committed:6325000,spent:2263000,pillar:'procurement',subJob:'SJ-004'},
-    {code:'0600-0200-0000-0001',name:'Hardware & safety', originalBudget:1923000,approvedCO:0,pendingCO:0,committed:1195000,spent:385000, pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0100-0000-0001',name:'Small tools — power & cordless', originalBudget:54000, approvedCO:0,pendingCO:0,committed:54000,spent:47000,pillar:'procurement',subJob:'SJ-004'},
+    {code:'0600-0200-0000-0001',name:'Small tools — safety & specialty', originalBudget:36000, approvedCO:0,pendingCO:0,committed:33000, spent:26000, pillar:'procurement',subJob:'SJ-004'},
     // Prof services pillar
     {code:'0100-0100-0000-0001',name:'General conditions — services',      originalBudget:1355000,approvedCO:0,pendingCO:0,committed:1176000,spent:677000,pillar:'profservices',subJob:'SJ-001'},
     {code:'0200-0100-0000-0001',name:'Geotechnical & special inspection',  originalBudget:361000, approvedCO:0,pendingCO:0,committed:288000, spent:166000,pillar:'profservices',subJob:'SJ-006'},
@@ -7098,7 +7098,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     fleetOwned:{trailer:6,temp_power:2,sanitation:8,fencing:1200,signage:1,waste:0},
     plan:{
       hercules:[
-        {item:'Office & storage trailers',cat:'trailer',qty:'4 units',start:'Jun',end:'Aug',state:'Complete'},
+        {item:'Office & storage trailers',cat:'trailer',qty:'4 units',start:'Jun',end:'Jul',state:'Complete'},
         {item:'Temporary power',cat:'temp_power',qty:'1 generator',start:'Oct',end:'Oct',state:'Requested'},
         {item:'Sanitation units',cat:'sanitation',qty:'3 portable units',start:'Nov',end:'Nov',state:'Requested'},
         {item:'Fencing & site barriers',cat:'fencing',qty:'Bulk lot',start:'Oct',end:'Nov',state:'Scheduled'},
@@ -7106,7 +7106,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Jun',end:'Jun',state:'Complete'}
       ],
       barryrose:[
-        {item:'Office & storage trailers',cat:'trailer',qty:'3 units',start:'Jun',end:'Aug',state:'Complete'},
+        {item:'Office & storage trailers',cat:'trailer',qty:'3 units',start:'Jun',end:'Jul',state:'Complete'},
         {item:'Temporary power',cat:'temp_power',qty:'1 panel',start:'Sep',end:'Dec',state:'Scheduled'},
         {item:'Sanitation units',cat:'sanitation',qty:'3 units',start:'Jun',end:'Dec',state:'In fulfillment'},
         {item:'Fencing & site barriers',cat:'fencing',qty:'900 LF',start:'Jun',end:'Dec',state:'In fulfillment'},
