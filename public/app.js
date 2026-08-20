@@ -7426,7 +7426,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     ],
     'ORD-3093':[
       {inv:'BILL-ALL-0626',period:'Jun 2026',amount:108000,status:'Paid',cc:'3100-6300-0000-0001'},
-      {inv:'BILL-ALL-0726',period:'Jul 2026',amount:111000,status:'Pending',cc:'3100-6300-0000-0001',dispute:'Vendor billed $18,500/unit \u00d7 6; MSA confirms $18,000/unit. $3,000 overage flagged for credit \u2014 ref BILL-9021.'}
+      {inv:'BILL-ALL-0726',period:'Jul 2026',amount:108000,status:'Paid',cc:'3100-6300-0000-0001'}
     ],
     'ORD-3029':[
       {inv:'BILL-JLG-0426',period:'Apr 2026',amount:19200,status:'Paid',cc:'0100-0100-0000-0001'},
