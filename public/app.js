@@ -8503,7 +8503,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           rows+='</div>';
           rows+='</div>';
           if(_hasAss){
-            rows+='<div id="'+_panId+'" class="gas-panel">';
+            rows+='<div id="'+_panId+'" class="gas-panel open">';
             rows+='<div class="gas-panel-hd" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
             if(_rA.length){
               var _rentLbl=stt==='projected'?' allocated':' on-rent';if(_onR>0)rows+='<span class="gas-badge gas-badge-onrent">● '+_onR+_rentLbl+'</span>';
@@ -8872,7 +8872,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
             var _lonR=_lrA.filter(function(a){return a.status!=='offrent';}).length;
             var _loffR=_lrA.length-_lonR;
             var _lisOff=row.state==='Off-rent';
-            h+='<div id="'+_lpId+'" class="gas-panel" style="border-top:1px solid var(--g100)">';
+            h+='<div id="'+_lpId+'" class="gas-panel open" style="border-top:1px solid var(--g100)">';
             h+='<div class="gas-panel-hd" style="margin-left:0;padding:5px 14px">';
             if(_lonR>0)h+='<span class="gas-badge gas-badge-onrent">● '+_lonR+' on-rent</span>';
             if(_loffR>0)h+='<span class="gas-badge gas-badge-offrent">✓ '+_loffR+' historical</span>';
