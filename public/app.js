@@ -5647,11 +5647,11 @@ charges:[
   }
   function scissorUnits(){ var y=['South Yard','Central Yard','North Yard','West Yard']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
-    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Barry Rose WRF',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'Southern Yard'},{id:'TC-0018',yard:'Central Yard'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
-    {src:'adhoc',id:'fq2',yard:'Houston',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'VDC14',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'North Yard'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
+    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Barry Rose WRF',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'San Diego'},{id:'TC-0018',yard:'Kansas City'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
+    {src:'adhoc',id:'fq2',yard:'Houston',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'VDC14',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'Sacramento'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
     {src:'dp',id:'fq3',yard:'Chandler',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'Requested',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0,docs:['Vendor quote (PDF)','Scope of work (PDF)']},
     {src:'adhoc',id:'fq4',yard:'Corona',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Barry Rose WRF',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8,docs:['Safety inspection checklist (PDF)']},
-    {src:'adhoc',id:'fq9',yard:'Houston',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'VDC14',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'North Yard'},{id:'EX-2208',yard:'South Yard'}],reRentRate:11000,vendor:'United Rentals',reco:2,taxMapped:false,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
+    {src:'adhoc',id:'fq9',yard:'Houston',ref:'REQ-4479',pillar:'equipment',item:'Excavator, 50-ton',qty:2,project:'VDC14',needby:'Sep 12',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:14000,ownedCost:8000,avail:[{id:'EX-2205',yard:'Sacramento'},{id:'EX-2208',yard:'San Diego'}],reRentRate:11000,vendor:'United Rentals',reco:2,taxMapped:false,docs:['Equipment spec sheet (PDF)','Rental quote (PDF)']},
     {src:'adhoc',id:'fqL1',yard:'Houston',ref:'REQ-L-3042',pillar:'logistics',item:'Office & storage trailers (VDC14)',qty:'1 move',project:'VDC14',needby:'Sep 3',code:'0100-5000-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform \u00b7 crew + trailer',docs:['Oversize permit (PDF)','Haul route map (PDF)']},
     {src:'adhoc',id:'fqL2',yard:'Corona',ref:'REQ-L-3054',pillar:'logistics',item:'Office & storage trailers (Barry Rose WRF)',qty:'1 move',project:'Barry Rose WRF',needby:'Aug 18',code:'0100-5000-0000-0001',kind:'flow',status:'Complete',doneNote:'3PL \u00b7 Bragg Crane',docs:['Oversize permit (PDF)','Load & route plan (PDF)','Escort coordination brief (PDF)']},
     {src:'adhoc',id:'fqL4',yard:'Chandler',ref:'REQ-L-3068',pillar:'logistics',item:'Electrical conduit & cable haul',qty:'2 loads',project:'Hercules Solar + BESS',needby:'Sep 12',code:'3100-6200-0000-0001',kind:'flow',status:'Scheduled',doneNote:'Self-perform · yard truck',sa:5,ea:5,cost:'$3,800',firm:'Self-perform',docs:['Delivery manifest (PDF)']},
@@ -6021,11 +6021,20 @@ charges:[
   function fqShowOverride(){
     var el=gel('fqOverrideSec'); if(el)el.style.display='block';
     var el2=gel('fqRecoBtns'); if(el2)el2.style.display='none';
+    if(gel('fqCurLbl'))gel('fqCurLbl').textContent='Current mix';
     fqRefresh();
   }
   function fqHideOverride(){
     var el=gel('fqOverrideSec'); if(el)el.style.display='none';
     var el2=gel('fqRecoBtns'); if(el2)el2.style.display='flex';
+    var _hr=fqById(fqCurId);
+    if(_hr){var _cR=fqCompute(_hr,_hr.reco);
+      if(gel('fqCurPct'))gel('fqCurPct').textContent=_cR.pct.toFixed(1)+'%';
+      if(gel('fqCurMgn'))gel('fqCurMgn').textContent=fmt(_cR.margin)+'/mo';
+      if(gel('fqCurLbl'))gel('fqCurLbl').textContent='Recommended mix';
+      fqPickOwned=Math.min(_hr.reco,Math.min(_hr.avail.length,_hr.qty));
+      fqAssetOwn=[];for(var _fhi=0;_fhi<_hr.qty;_fhi++)fqAssetOwn.push(_fhi<fqPickOwned);
+    }
   }
   function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id;
@@ -6064,9 +6073,9 @@ charges:[
     b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
     [{label:'All owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended mix',c:cReco,hi:true},{label:'All sourced',c:cNone,hi:false}].forEach(function(s){
       b+='<div style="background:'+(s.hi?'#f3f4f6':'#fff')+';border:1px solid '+(s.hi?'var(--g400)':'var(--g200)')+';border-radius:5px;padding:6px 8px;text-align:center">';
-      b+='<div style="font-size:9.5px;color:'+(s.hi?'var(--charcoal)':'var(--g400)')+';font-weight:600;margin-bottom:2px">'+s.label+'</div>';
-      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'var(--charcoal)':s.c.pct<8?'#dc2626':'#374151')+'">'+s.c.pct.toFixed(1)+'%</div>';
-      b+='<div style="font-size:10px;color:#6b7280">'+fmt(s.c.margin)+'/mo</div></div>';
+      b+='<div style="font-size:9.5px;color:'+(s.hi?'var(--charcoal)':'var(--g400)')+';font-weight:600;margin-bottom:2px"'+(s.hi?' id="fqCurLbl"':'')+'>'+s.label+'</div>';
+      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'var(--charcoal)':s.c.pct<8?'#dc2626':'#374151')+'"'+(s.hi?' id="fqCurPct"':'')+'>'+s.c.pct.toFixed(1)+'%</div>';
+      b+='<div style="font-size:10px;color:#6b7280"'+(s.hi?' id="fqCurMgn"':'')+'>'+fmt(s.c.margin)+'/mo</div></div>';
     });
     b+='</div></div>';
     // Override section (hidden — shown when Override recommendation clicked)
@@ -6107,6 +6116,8 @@ charges:[
     if(gel('fqOC'))gel('fqOC').textContent='\u2212'+fmt(c.oc)+'/mo';
     if(gel('fqRC'))gel('fqRC').textContent='\u2212'+fmt(c.rc)+'/mo';
     if(gel('fqMargin'))gel('fqMargin').innerHTML=fmt(c.margin)+'/mo<span class="fq-pct">'+c.pct.toFixed(1)+'%</span>';
+    if(gel('fqCurPct'))gel('fqCurPct').textContent=c.pct.toFixed(1)+'%';
+    if(gel('fqCurMgn'))gel('fqCurMgn').textContent=fmt(c.margin)+'/mo';
     var maxO=Math.min(r.avail.length,r.qty);
     if(gel('fqStepDown'))gel('fqStepDown').disabled=(fqPickOwned<=0);
     if(gel('fqStepUp'))gel('fqStepUp').disabled=(fqPickOwned>=maxO);
@@ -6343,12 +6354,12 @@ charges:[
   function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks — view in sidebar'); }
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
-    {id:'TC-0012',cls:'Tower crane',yard:'Southern Yard',status:'idle',idleDays:12,util:41,age:9,hours:'11,800',cond:'Fair',life:'replace',capex:'$1.2M',reco:'Replace \u2014 add to Q3 CapEx (~$1.2M)'},
-    {id:'TC-0018',cls:'Tower crane',yard:'Central Yard',status:'idle',idleDays:5,util:78,age:3,hours:'4,200',cond:'Good',life:'redeploy',covers:'Barry Rose WRF REQ-4471',coversProject:'Barry Rose WRF',reco:'Redeploy \u2014 covers Barry Rose WRF REQ-4471'},
-    {id:'EX-2201',cls:'Excavator, 45K',yard:'North Yard',status:'idle',idleDays:8,util:63,age:5,hours:'6,900',cond:'Good',life:'redeploy',covers:'VDC14 REQ-4472',coversProject:'VDC14',save:'$9,500/mo',reco:'Redeploy \u2014 covers VDC14 REQ-4472'},
+    {id:'TC-0012',cls:'Tower crane',yard:'San Diego',status:'idle',idleDays:12,util:41,age:9,hours:'11,800',cond:'Fair',life:'replace',capex:'$1.2M',reco:'Replace \u2014 add to Q3 CapEx (~$1.2M)'},
+    {id:'TC-0018',cls:'Tower crane',yard:'Kansas City',status:'idle',idleDays:5,util:78,age:3,hours:'4,200',cond:'Good',life:'redeploy',covers:'Barry Rose WRF REQ-4471',coversProject:'Barry Rose WRF',reco:'Redeploy \u2014 covers Barry Rose WRF REQ-4471'},
+    {id:'EX-2201',cls:'Excavator, 45K',yard:'Sacramento',status:'idle',idleDays:8,util:63,age:5,hours:'6,900',cond:'Good',life:'redeploy',covers:'VDC14 REQ-4472',coversProject:'VDC14',save:'$9,500/mo',reco:'Redeploy \u2014 covers VDC14 REQ-4472'},
     {id:'EX-2205',cls:'Excavator, 45K',yard:'West Yard',status:'idle',idleDays:21,util:38,age:6,hours:'8,100',cond:'Good',life:'redeploy',covers:'VDC14 REQ-4472',coversProject:'VDC14',save:'$9,500/mo',reco:'Redeploy \u2014 covers VDC14 REQ-4472'},
-    {id:'EX-2208',cls:'Excavator, 45K',yard:'South Yard',status:'idle',idleDays:15,util:44,age:6,hours:'7,400',cond:'Fair',life:'redeploy',covers:'VDC14 demand',coversProject:'VDC14',save:'$9,500/mo',reco:'Redeploy \u2014 covers VDC14 demand'},
-    {id:'SL-3301',cls:'Scissor lift, 32 ft',yard:'South Yard',status:'idle',idleDays:6,util:52,age:4,hours:'\u2014',cond:'Good',life:'redeploy',covers:'Barry Rose WRF REQ-4474',coversProject:'Barry Rose WRF',note:'returned from Hercules (recert)',reco:'Redeploy \u2014 covers Barry Rose WRF REQ-4474'},
+    {id:'EX-2208',cls:'Excavator, 45K',yard:'San Diego',status:'idle',idleDays:15,util:44,age:6,hours:'7,400',cond:'Fair',life:'redeploy',covers:'VDC14 demand',coversProject:'VDC14',save:'$9,500/mo',reco:'Redeploy \u2014 covers VDC14 demand'},
+    {id:'SL-3301',cls:'Scissor lift, 32 ft',yard:'San Diego',status:'idle',idleDays:6,util:52,age:4,hours:'\u2014',cond:'Good',life:'redeploy',covers:'Barry Rose WRF REQ-4474',coversProject:'Barry Rose WRF',note:'returned from Hercules (recert)',reco:'Redeploy \u2014 covers Barry Rose WRF REQ-4474'},
     {id:'DZ-0210',cls:'Dozer, D6',yard:'West Yard',status:'idle',idleDays:34,util:22,age:11,hours:'14,200',cond:'Poor',life:'replace',capex:'$0.9M',reco:'Replace \u2014 aging, low use (~$0.9M)'},
     {id:'CR-0440',cls:'Crawler crane, 150T',yard:'\u2014',status:'onrent',project:'VDC14',util:91,age:4,hours:'5,100',cond:'Good',life:'ok'},
     {id:'TH-1120',cls:'Telehandler',yard:'\u2014',status:'onrent',project:'Hercules Solar + BESS',util:88,age:3,hours:'3,600',cond:'Good',life:'ok'},
