@@ -1584,7 +1584,7 @@
       ]},
     logistics:{
     title:'Moves & Events',chip:'Site logistics services',icon:IC.truck,singular:'logistics',
-    addName:{label:'Service',ph:'e.g. Crane operator'},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
+    addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
       {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
       {label:'Pending quotes',value:'2',sub:'02S quoting in progress',tone:'warn',icon:IC.dollar},
@@ -1733,12 +1733,17 @@
     h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
-    h+='<div style="background:#e0f2fe;border:1px solid #bae6fd;border-radius:8px;padding:13px 16px;margin-bottom:16px">';
-    h+='<div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:7px">02S logistics support — Hercules Solar + BESS</div>';
-    h+='<div style="font-size:12px;color:var(--g700);line-height:1.6;margin-bottom:6px"><b>Standard services included (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
-    h+='<div style="font-size:12px;color:var(--g700);line-height:1.6;margin-bottom:8px"><b>Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
-    h+='<div style="font-size:11.5px;color:#0369a1">Need something else? Click <b>+ Add service</b> above to request additional 02S support.</div>';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer" onclick="logIntakeToggle()">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
+    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
+    h+='<span style="flex:1"></span>';
+    h+='<span id="log-intake-chevron" style="font-size:11px;color:var(--g400)">16 services &nbsp;&#9660;</span>';
     h+='</div>';
+    h+='<div id="log-intake-body" style="display:none;padding:0 14px 12px;border-top:1px solid var(--g200)">';
+    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;padding-top:10px"><b style="color:var(--g800)">Standard services (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
+    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;margin-top:6px"><b style="color:var(--g800)">Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
+    h+='</div></div>';
     h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
     h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
@@ -1779,7 +1784,7 @@
         h+='<div style="font-size:10.5px;color:var(--g500);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(row.costCode||'—')+'</div>';
         if(isQuoted){
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
-          h+='<div><button onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:400;color:#16a34a">✓ Quoted</span></button></div>';
+          h+='<div><button onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:500;color:#15803d;letter-spacing:.01em">· View quote →</span></button></div>';
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
@@ -1971,7 +1976,7 @@
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
-    f+='<div class="mf"><label>'+cfg.addName.label+'</label><input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'"></div>';
+    f+='<div class="mf"><label>'+cfg.addName.label+'</label>';if(cfg.addName.opts&&cfg.addName.opts.length){f+='<select id="dpaName" class="acc-sel wfull"><option value="">— select a service —</option>'+cfg.addName.opts.map(function(o){return '<option value="'+o+'">'+o+'</option>';}).join('')+'</select>';}else{f+='<input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'">';}f+='</div>';
     var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
     f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
     f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';
@@ -3394,7 +3399,7 @@ charges:[
     logistics:{
       labels:['Plan line','Requested','Scheduled','In fulfillment','Complete'],
       icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>','<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>'],
-      stageOf:function(r){var m={Draft:0,Requested:1,Scheduled:2,'In fulfillment':3,Active:3,Complete:4,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
+      stageOf:function(r){var s=r.status||r.state;var m={Draft:0,Planned:0,Quoted:2,Requested:1,Scheduled:2,'In fulfillment':3,Active:3,Complete:4,Closed:4,'At-risk':1,'Needs attention':1};return m[s]!=null?m[s]:0;}
     }
   };
   var EQ_LINE_DOCS={
@@ -3562,18 +3567,17 @@ charges:[
     }
     if(r.linkOrd){var _bl=buildDpBillingInline(r.linkOrd);if(_bl)h+=_bl;}
     var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
-    if(notes.length){
-      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
-      notes.forEach(function(n){
-        h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
-        h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
-      });
-      h+='<div style="display:flex;gap:6px;margin-top:4px">';
-      h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+pk+'-'+rowIdx+'">';
-      h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')">Send</button>';
-      h+='</div></div>';
-    }
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    notes.forEach(function(n){
+      h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
+      h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
+    });
+    h+='<div style="display:flex;gap:6px;margin-top:4px">';
+    h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+pk+'-'+rowIdx+'">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')" >Send</button>';
+    h+='</div></div>';
+    
     var _rAtts=r.attachments&&r.attachments.length?r.attachments.map(function(a){return (a.name||a)+(a.ref?' · '+a.ref:'');}):null;var docs=_rAtts||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
@@ -9787,7 +9791,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]},
     logistics:{
     title:'Moves & Events',chip:'Site logistics services',icon:IC.truck,singular:'logistics',
-    addName:{label:'Service',ph:'e.g. Crane operator'},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
+    addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
       {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
       {label:'Pending quotes',value:'2',sub:'02S quoting in progress',tone:'warn',icon:IC.dollar},
@@ -9936,12 +9940,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
-    h+='<div style="background:#e0f2fe;border:1px solid #bae6fd;border-radius:8px;padding:13px 16px;margin-bottom:16px">';
-    h+='<div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:7px">02S logistics support — Hercules Solar + BESS</div>';
-    h+='<div style="font-size:12px;color:var(--g700);line-height:1.6;margin-bottom:6px"><b>Standard services included (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
-    h+='<div style="font-size:12px;color:var(--g700);line-height:1.6;margin-bottom:8px"><b>Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
-    h+='<div style="font-size:11.5px;color:#0369a1">Need something else? Click <b>+ Add service</b> above to request additional 02S support.</div>';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer" onclick="logIntakeToggle()">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
+    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
+    h+='<span style="flex:1"></span>';
+    h+='<span id="log-intake-chevron" style="font-size:11px;color:var(--g400)">16 services &nbsp;&#9660;</span>';
     h+='</div>';
+    h+='<div id="log-intake-body" style="display:none;padding:0 14px 12px;border-top:1px solid var(--g200)">';
+    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;padding-top:10px"><b style="color:var(--g800)">Standard services (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
+    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;margin-top:6px"><b style="color:var(--g800)">Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
+    h+='</div></div>';
     h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
     h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
@@ -9982,7 +9991,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='<div style="font-size:10.5px;color:var(--g500);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(row.costCode||'—')+'</div>';
         if(isQuoted){
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
-          h+='<div><button onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:400;color:#16a34a">✓ Quoted</span></button></div>';
+          h+='<div><button onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:500;color:#15803d;letter-spacing:.01em">· View quote →</span></button></div>';
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
@@ -10174,7 +10183,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
-    f+='<div class="mf"><label>'+cfg.addName.label+'</label><input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'"></div>';
+    f+='<div class="mf"><label>'+cfg.addName.label+'</label>';if(cfg.addName.opts&&cfg.addName.opts.length){f+='<select id="dpaName" class="acc-sel wfull"><option value="">— select a service —</option>'+cfg.addName.opts.map(function(o){return '<option value="'+o+'">'+o+'</option>';}).join('')+'</select>';}else{f+='<input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'">';}f+='</div>';
     var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
     f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
     f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';
