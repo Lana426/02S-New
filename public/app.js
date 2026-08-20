@@ -1792,7 +1792,7 @@
       var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
       var gmh='';
-      for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">''+_gm.slice(2,4)+'</span>':'')+' </div>';}
+      for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+' </div>';}
       var logToneMap={'Complete':'offrent','Closed':'offrent','In fulfillment':'onrent','Requested':'submitted','Planned':'projected','Quoted':'projected'};
       h+='<div class="gantt"><div class="gh-row"><div class="gh-label" style="width:220px;min-width:220px">Service / event</div><div class="gh-months">'+gmh+'</div></div>';
       h+='<div class="g-body" style="position:relative"><div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
@@ -1834,7 +1834,7 @@
         h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="showLogNotes('+ri+')">'+(notesCount>0?'<span style="color:var(--blue);font-weight:700">'+notesCount+'</span>':'+')+' </button></div>';
         h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="logShowDocs('+ri+')">'+(docsCount>0?docsCount:'+')+'</button></div>';
         h+='</div>';
-        h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack(\'logistics\',row,ri)+'</div>';
+        h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
       });
       h+='</div>';
     }
@@ -9973,213 +9973,186 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   function renderLogPlan(){
     var mount=document.getElementById('dp-logistics'); if(!mount)return;
     var ns=CURRENT==='ns';
-    var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
-    var tabs=[['gcgr','GC/GR Services']].concat(ns?[['trnwh','Transportation &amp; Warehousing']]:[]);
-    if(logPlanView==='mobdemob') logPlanView='gcgr';
-    if(!ns&&logPlanView==='trnwh') logPlanView='gcgr';
-    if(logPlanView==='delivery') logPlanView='gcgr';
-    var h='<div class="phead"><div><h1>Logistics plan <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">Deliveries, ongoing services &amp; mobilization</span></div></div></div>';
-    // KPI cards
+    var _logRows=(DP['logistics']&&DP['logistics'].rows)||[];
+    var _intake=(DP['logistics']&&DP['logistics'].intake)||{core:[],archetype:[],optional:[]};
+    var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
+    var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
+    var h='';
+    h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
-    if(ns){
-      // NS enhanced: scheduling intelligence + 3-tab view
-      var NS_INTEL=[
-        {type:'warn',msg:'Gate conflict: MV switchgear (Nov, North gate) and BESS placements (Oct, 6 moves) overlap at North gate in late Oct — coordinate haul windows to avoid interference.',action:'Resolve'},
-        {type:'alert',msg:'DOT oversize permit required for Bragg crane mobilization (Aug 3). Application window closes Jul 25 — initiate with logistics team.',action:'Open checklist'},
-        {type:'ok',msg:'Opportunity: Excavator demobi and tower crane mob can share the same Bragg Crane window — estimated $2,400 savings on mobilization fees.',action:'Combine moves'},
-        {type:'info',msg:'02S auto-routed PV module deliveries → East gate, Sep daily. No schedule conflicts detected across active haul windows.'}
-      ];
-      var intelColors={warn:'#fef3c7',alert:'#fee2e2',ok:'#dcfce7',info:'#e0f2fe'};
-      var intelBorder={warn:'#fcd34d',alert:'#fca5a5',ok:'#86efac',info:'#7dd3fc'};
-      var intelTxt={warn:'#92400e',alert:'#991b1b',ok:'#166534',info:'#075985'};
-      var intelMark={warn:'⚠️',alert:'🔔',ok:'✓',info:'→'};
-      var warnCount=NS_INTEL.filter(function(x){return x.type==='warn'||x.type==='alert';}).length;
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;margin-bottom:14px;overflow:hidden">';
-      h+='<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid var(--g150);background:#f8fafc;cursor:pointer" onclick="var b=document.getElementById(\'ns-ib\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'">';
-      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;color:var(--g500)"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
-      h+='<span style="font-size:12px;font-weight:700;color:var(--g800);letter-spacing:.03em">02S Scheduling Intelligence</span>';
-      if(warnCount)h+='<span style="background:var(--red);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 7px">'+warnCount+' item'+(warnCount===1?'':'s')+' need attention</span>';
-      h+='<span style="flex:1"></span><span style="font-size:11px;color:var(--g400)">'+(warnCount?'':'All clear \u00b7 ')+'click to expand</span>';
-      h+='</div>';
-      h+='<div id="ns-ib" style="padding:10px 14px;display:grid;gap:6px">';
-      NS_INTEL.forEach(function(item){
-        h+='<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 10px;background:'+intelColors[item.type]+';border:1px solid '+intelBorder[item.type]+';border-radius:6px">';
-        h+='<span style="font-size:12px;font-weight:700;color:'+intelTxt[item.type]+'">'+intelMark[item.type]+'</span>';
-        h+='<span style="font-size:11.5px;color:var(--g800);flex:1;line-height:1.5">'+item.msg+'</span>';
-        if(item.action)h+='<button style="white-space:nowrap;font-size:11px;padding:3px 9px;border-radius:4px;border:1px solid var(--g300);background:#fff;color:var(--g700);cursor:pointer">'+item.action+'</button>';
-        h+='</div>';
+    var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
+    h+='<div style="background:#f8fafc;border:1px solid var(--g200);border-radius:8px;margin-bottom:16px;overflow:hidden">';
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--g200);cursor:pointer" onclick="logIntakeToggle()">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15" style="color:var(--g500);flex-shrink:0"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 12h6M9 16h4"/></svg>';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Service intake — request 02S support</span>';
+    h+='<span style="font-size:11.5px;color:var(--g400);margin-left:4px">SOW-style checklist · '+(_coreLen+_archLen)+' pre-selected</span>';
+    h+='<span style="flex:1"></span><span id="log-intake-chevron" style="font-size:11px;color:var(--g400);font-family:monospace">▼ expand</span></div>';
+    h+='<div id="log-intake-body" style="display:none">';
+    h+='<div style="padding:10px 14px 6px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Standard services · always included</div>';
+    _intake.core.forEach(function(svc){
+      var pr=_prereqs[svc.service]||[];
+      h+='<div style="display:grid;grid-template-columns:20px 1fr auto;align-items:flex-start;gap:8px;padding:5px 0;border-top:1px solid var(--g100)">';
+      h+='<input type="checkbox" checked disabled style="margin-top:3px;accent-color:var(--blue)">';
+      h+='<div><span style="font-size:12px;font-weight:600;color:var(--g800)">'+svc.service+'</span><span style="font-size:10.5px;color:var(--g400);margin-left:6px">'+svc.productLine+'</span>';
+      if(pr.length)h+='<div style="font-size:10.5px;color:#b45309;margin-top:2px">⚠ Prerequisites: '+pr.join(' · ')+'</div>';
+      h+='</div><span style="font-size:10.5px;color:var(--g400);white-space:nowrap">'+svc.leadTime+'-day lead</span></div>';
+    });
+    h+='</div>';
+    if(_intake.archetype.length){
+      h+='<div style="padding:10px 14px 6px;border-bottom:1px solid var(--g150)">';
+      h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="font-size:10.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em">Renewables project services</div><span style="font-size:10px;background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 6px">Pre-selected for your project type</span></div>';
+      _intake.archetype.forEach(function(svc){
+        var pr=_prereqs[svc.service]||[];
+        h+='<div style="display:grid;grid-template-columns:20px 1fr auto;align-items:flex-start;gap:8px;padding:5px 0;border-top:1px solid var(--g100)">';
+        h+='<input type="checkbox" checked style="margin-top:3px;accent-color:var(--blue)" onchange="logIntakeSvcToggle(this,\''+svc.service+'\')">';
+        h+='<div><span style="font-size:12px;font-weight:600;color:var(--g800)">'+svc.service+'</span><span style="font-size:10.5px;color:var(--g400);margin-left:6px">'+svc.productLine+'</span>';
+        if(pr.length)h+='<div style="font-size:10.5px;color:#b45309;margin-top:2px">⚠ Prerequisites: '+pr.join(' · ')+'</div>';
+        h+='</div><span style="font-size:10.5px;color:var(--g400);white-space:nowrap">'+svc.leadTime+'-day lead</span></div>';
       });
-      h+='</div></div>';
-      // Demand plan Gantt + capacity section
-      var _logDPRows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules&&CC_PROJ_DP.logistics.hercules.rows)||[];
-      var _logAdhoc=FQ.filter(function(q){return q.src==='adhoc'&&q.pillar==='logistics'&&q.project==='Hercules Solar + BESS';});
-      var _logAllNS=_logDPRows.concat(_logAdhoc.map(function(q){return {item:q.item,qty:q.qty,window:q.needby,state:q.status,sa:q.sa,ea:q.ea!=null?q.ea:q.sa,cost:q.cost||'—',firm:q.firm||'TBD',_adhoc:true};}));
-      h+='<div class="eq-toolbar" style="margin-bottom:6px">';
-      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_logAllNS.length+' moves · '+_logDPRows.length+' planned · '+_logAdhoc.length+' ad hoc</span>';
-      h+='<span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
-      h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
-      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
-      var _logBaseNS=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
-      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseNS?'Baselined: '+_logBaseNS:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseNS?'Baselined':'Approve baseline')+'</button>';
-      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
       h+='</div>';
-      var GCGR_MO=EQ_MONTHS.slice(1,11); var GN=GCGR_MO.length;
+    }
+    h+='<div style="padding:10px 14px 8px">';
+    h+='<div style="font-size:10.5px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Additional services — add as needed</div>';
+    _intake.optional.forEach(function(svc){
+      var pr=_prereqs[svc.service]||[];
+      h+='<div style="display:grid;grid-template-columns:20px 1fr auto;align-items:flex-start;gap:8px;padding:5px 0;border-top:1px solid var(--g100)">';
+      h+='<input type="checkbox" style="margin-top:3px;accent-color:var(--blue)" onchange="logIntakeSvcToggle(this,\''+svc.service+'\')">';
+      h+='<div><span style="font-size:12px;font-weight:600;color:var(--g800)">'+svc.service+'</span><span style="font-size:10.5px;color:var(--g400);margin-left:6px">'+svc.productLine+'</span>';
+      if(pr.length)h+='<div style="font-size:10.5px;color:#b45309;margin-top:2px">⚠ Prerequisites: '+pr.join(' · ')+'</div>';
+      h+='</div><span style="font-size:10.5px;color:var(--g400);white-space:nowrap">'+svc.leadTime+'-day lead</span></div>';
+    });
+    h+='<div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn-dark btn-sm" onclick="logSubmitIntake()">Submit intake to 02S</button><button class="btn btn-ghost btn-sm" onclick="logIntakeToggle()">Close</button></div>';
+    h+='</div></div></div>';
+    var _activeCnt=_logRows.filter(function(r){return r.status!=='Closed';}).length;
+    h+='<div class="dp-toolbar" style="margin-bottom:6px">';
+    h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Moves &amp; Events</span>';
+    h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_activeCnt+' active · '+_logRows.length+' total</span>';
+    h+='<span class="spacer"></span>';
+    h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+    h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
+    h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Moves &amp; Events\')">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
+    h+='</div>';
+    if(gcgrView==='gantt'){
+      var GCGR_MO=EQ_MONTHS.slice(1,11);
+      var GN=GCGR_MO.length;
       var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
       var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
-      function nsGantt(rows,hdrLbl,rowFn){
-        var gmh='';
-        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">’'+_gm.slice(2,4)+'</span>':'')+'</div>';}
-        var g='<div class="gantt"><div class="g-head"><div class="gh-label" style="width:220px;min-width:220px">'+hdrLbl+'</div><div class="gh-months">'+gmh+'</div></div><div class="g-body" style="position:relative">';
-        g+='<div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        rows.forEach(function(r){ g+='<div class="grow">'+rowFn(r,gGrid)+'</div>'; });
-        return g+'</div></div>';
-      }
-      function nsBar(r,stt,label,gGrid){
+      var gmh='';
+      for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+' </div>';}
+      var logToneMap={'Complete':'offrent','Closed':'offrent','In fulfillment':'onrent','Requested':'submitted','Planned':'projected','Quoted':'projected'};
+      h+='<div class="gantt"><div class="gh-row"><div class="gh-label" style="width:220px;min-width:220px">Service / event</div><div class="gh-months">'+gmh+'</div></div>';
+      h+='<div class="g-body" style="position:relative"><div class="g-today" style="left:calc(220px + (100% - 220px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
+      _logRows.forEach(function(r){
+        var stt=logToneMap[r.status]||'projected';
         var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
-        return '<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)">'+label+'</div></div>';
-      }
-      var _logTM={'Complete':'offrent','Completed':'offrent','In fulfillment':'onrent','Active':'onrent','Scheduled':'projected','Planned':'projected','Requested':'submitted','Draft':'projected','On-rent':'onrent','Off-rent':'offrent'};
-      if(gcgrView==='gantt'){
-        h+=nsGantt(_logAllNS,'Move / event',function(r,gGrid){
-          var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.item||r.move||'—')+'</span><span style="font-size:10px;color:'+(r._adhoc?'#3b82f6':'var(--g400)')+'">'+(r._adhoc?'Ad hoc · '+(r.firm||''):(r.qty||''))+'</span></div>';
-          return lbl+nsBar(r,_logTM[r.state||r.status]||'projected',r.window||r.needby||'',gGrid);
-        });
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-      } else {
-        var _llgt='1fr 130px 130px 80px 86px 110px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_llgt+'"><span>Move / event</span><span>Qty / type</span><span>Date &amp; window</span><span>Source</span><span>Cost</span><span>Status</span></div>';
-        _logAllNS.forEach(function(r){
-          var _llt=_logTM[r.state||r.status]||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+_llgt+';cursor:default"><div style="font-size:12px;font-weight:500;color:var(--g900)">'+(r.item||r.move||'—')+'</div><div style="font-size:11.5px;color:var(--g600)">'+(r.qty||'—')+'</div><div style="font-size:11.5px;color:var(--g700)">'+(r.window||r.needby||'—')+'</div><div><span style="font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600;background:'+(r._adhoc?'rgba(59,130,246,.1)':'rgba(16,185,129,.1)')+';color:'+(r._adhoc?'#3b82f6':'#059669')+'">'+(r._adhoc?'Ad hoc':'Plan')+'</span></div><div style="font-size:11.5px;color:var(--g600)">'+(r.cost||'—')+'</div><div><span class="tag '+_llt+'">'+(r.state||r.status||'—')+'</span></div></div>';
-        });
+        h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span><span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span></div>';
+        h+='<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.needBy||r.status)+'">'+(r.needBy||r.status)+'</div></div></div>';
+      });
+      h+='</div></div>';
+      h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Planned / Quoted</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
+    } else {
+      var meCols='1fr 140px 100px 160px 120px 160px 48px 48px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
+      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Cost code</span><span>Cost</span><span>Status</span><span style="text-align:center">Notes</span><span style="text-align:center">Docs</span></div>';
+      _logRows.forEach(function(row,ri){
+        var isQuoted=row.quoted&&row.cost!=null;
+        var docsCount=(row.attachments||[]).length;
+        var notesCount=(row.notes||[]).length;
+        h+='<div class="dp-row" style="grid-template-columns:'+meCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+ri+')">';
+        h+='<div><div style="font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'</div><div style="font-size:10.5px;color:var(--g400)">'+row.productLine+'</div></div>';
+        h+='<div style="font-size:11.5px;color:'+(row.vendor?'var(--g700)':'var(--g400)')+'">'+(row.vendor||'TBD — 02S to source')+'</div>';
+        h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.needBy||'—')+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g500);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(row.costCode||'—')+'</div>';
+        if(isQuoted){
+          var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
+          h+='<div><button onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:400;color:#16a34a">✓ Quoted</span></button></div>';
+        } else {
+          h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
+        }
+        h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center"><select style="font-size:11px;border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;color:var(--g700);cursor:pointer;max-width:155px" onchange="setLogRowStatus('+ri+',this.value)">';
+        h+='<option value="Planned"'+(row.status==="Planned"?' selected':'')+'>Planned</option>';
+        h+='<option value="Requested"'+(row.status==="Requested"?' selected':'')+'>Requested</option>';
+        h+='<option value="Quoted"'+(row.status==="Quoted"?' selected':'')+'>Quoted</option>';
+        h+='<option value="In fulfillment"'+(row.status==="In fulfillment"?' selected':'')+'>In fulfillment</option>';
+        h+='<option value="Closed"'+(row.status==="Closed"?' selected':'')+'>Closed</option>';
+        h+='</select></div>';
+        h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="showLogNotes('+ri+')">'+(notesCount>0?'<span style="color:var(--blue);font-weight:700">'+notesCount+'</span>':'+')+' </button></div>';
+        h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="logShowDocs('+ri+')">'+(docsCount>0?docsCount:'+')+'</button></div>';
         h+='</div>';
-      }
-      // Deployment & transit schedule
-      h+='<div style="margin:24px 0 10px;border-top:1px solid var(--g150);padding-top:18px;display:flex;align-items:center;gap:8px">';
-      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--g600)"><path d="M3 3v18h18M7 16l4-4 4 4 4-6"/></svg>';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Deployment &amp; transit schedule</span>';
-      h+='</div>';
-      if(_logDPRows.length){
-        h+=nsGantt(_logDPRows,'Move / event',function(r,gGrid){
-          var lbl='<div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.item||r.move||'\u2014')+'</span><span style="font-size:10px;color:var(--g400)">'+(r.qty||'')+'</span></div>';
-          return lbl+nsBar(r,_logTM[r.state||r.status]||'projected',r.window||r.needby||'',gGrid);
-        });
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active / In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Scheduled / Planned</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-      }
-      // Delivery tracker (NS also gets it)
-      var dlvCols='1fr 120px 140px 110px 100px';
-      var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
-      h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Delivery tracker</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">Outstanding orders across Hercules</span>';
-      h+='</div>';
-      h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
-      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+ f[0]+'</button>';});
-      h+='</div></div></div>';
-      var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
-      dlvRows.forEach(function(d){
-        var tone=d.status==='Delivered'?'ok':d.status==='Scheduled'?'info':d.status==='In fabrication'?'warn':'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+dlvCols+';cursor:default"><div>'+d.item+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g800)">'+d.needby+'</div><div style="font-size:11.5px;color:var(--g600)">'+d.vendor+'</div><div style="font-family:monospace;font-size:11px;color:var(--g500)">'+d.order+'</div><div><span class="tag '+tone+'">'+d.status+'</span></div></div>';
+        h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
       });
       h+='</div>';
-    } else {
-      // v1: logistics moves (list/gantt) = CC_PROJ_DP.logistics.hercules.rows + delivery tracker
-      var LOG_CC=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
-      var logToneMap={'Scheduled':'projected','In fulfillment':'onrent','Complete':'offrent','Active':'onrent','Requested':'submitted','Pending':'submitted','Planned':'projected','Draft':'projected','Projected':'projected'};
-      h+='<div class="eq-toolbar" style="margin-bottom:6px">';
-      h+='<span style="font-size:13px;font-weight:600;color:var(--g700)">Demand plan</span>';
-      var _totLogLines=(DP['logistics']&&DP['logistics'].rows)?DP['logistics'].rows.length:0;
-      h+='<span style="font-size:11.5px;color:var(--g400);margin-left:6px">'+_totLogLines+' line'+(_totLogLines===1?'':'s')+'</span>';
-      h+='<span class="spacer"></span>';
-      h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
-            h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add demand line</button>';
-      h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button>';
-      var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
-      h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Logistics demand plan\')" title="'+(_logBaseV1?'Baselined: '+_logBaseV1:'Approve as the version of record for forecasting')+'">'+(svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2))+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
-      h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
-      h+='</div>';
-      if(gcgrView==='gantt'){
-        var GCGR_MO=EQ_MONTHS.slice(1,11);
-        var GN=GCGR_MO.length;
-        var gTodayIdx=GCGR_MO.indexOf(EQ_TODAY); var gTodayPct=((gTodayIdx+EQ_TODAY_D)/GN)*100;
-        var gGrid='repeating-linear-gradient(to right, transparent 0, transparent calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'% - 1px), var(--g150) calc('+(100/GN)+'%))';
-        var gmh='';
-        for(var gi=0;gi<GN;gi++){var _gm=GCGR_MO[gi];var _yrS=(gi===0)||(eqMonthYear(_gm)!==eqMonthYear(GCGR_MO[gi-1]));gmh+='<div class="gh-m">'+eqMonthLabel(_gm)+(_yrS?'<span class="ghy">\u2019'+_gm.slice(2,4)+'</span>':'')+'</div>';}
-        h+='<div class="gantt">';
-        h+='<div class="g-head"><div class="gh-label" style="width:200px;min-width:200px">Move / event</div><div class="gh-months">'+gmh+'</div></div>';
-        h+='<div class="g-body" style="position:relative">';
-        h+='<div class="g-today" style="left:calc(200px + (100% - 200px) * '+(gTodayPct/100).toFixed(4)+')"><span class="gt-lbl">Today</span></div>';
-        (DP['logistics']&&DP['logistics'].rows||[]).forEach(function(r){
-          var stt=logToneMap[r.state]||'projected';
-          var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
-          var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
-          h+='<div class="grow"><div class="g-label" style="width:200px;min-width:200px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
-          h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+(r.move||r.item)+'</span>';
-          h+='<span style="font-size:10px;color:var(--g400)">'+(r.type||r.firm||r.qty||'')+'</span>';
-          h+='</div>';
-          h+='<div class="g-track" style="background-image:'+gGrid+'">';
-          h+='<div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.type||r.qty||'')+' \u00b7 '+(r.when||r.window||'')+'">'+(r.when||r.window||'')+'</div>';
-          h+='</div></div>';
-        });
-        h+='</div></div>';
-        h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Active</span><span class="lg"><span class="gl-sw projected"></span>Scheduled</span><span class="lg"><span class="gl-sw offrent"></span>Completed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
-      } else {
-        var lgCols='1fr 120px 148px 80px 80px 110px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+lgCols+'">';
-        h+='<span>Move / event</span><span>Type</span><span>Date &amp; window</span><span>Cost</span><span>Docs</span><span>Status</span></div>';
-        
-        var _cpLogRows=(DP['logistics']&&DP['logistics'].rows)||[];
-        _cpLogRows.forEach(function(lr,li){
-          var _lrTone=DP_TONE[lr.state]||'neu';
-          var _lrEd=['Draft','Planned','Pending pricing','Requested'].indexOf(lr.state)>=0;
-          var _lrItem=lr.move||lr.item||'\u2014';
-          var _lrType=lr.type||'\u2014';
-          var _lrWin=lr.when||lr.window||'\u2014';
-          var _lrGate=lr.gate||'\u2014';
-          var _lrDocs=lr.attachments||[];
-          h+='<div class="dp-row" style="grid-template-columns:'+lgCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+li+')">'
-           +'<div>'+_lrItem+'</div>'
-           +'<div style="font-size:11.5px;color:var(--g600)">'+_lrType+'</div>'
-           +'<div style="font-size:11.5px;color:var(--g700)">'+_lrWin+'</div>'
-           
-           +'<div style="font-size:11.5px;color:var(--g600)">'+(lr.cost||'\u2014')+'</div>'
-           +(_lrDocs.length?'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logShowDocs('+li+')">'+svg('<path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>',1.5)+_lrDocs.length+'</button></div>':'<div><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();logShowDocs('+li+')">+ Add</button></div>')
-           +'<div style="display:flex;align-items:center;gap:5px">'+'<span class="tag '+_lrTone+'">'+lr.state+'</span>'+(_lrEd?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'logistics\','+li+')" title="Edit line item">&#9998;</button>':'')+'</div>'
-           +'</div>';
-          h+='<div id="dp-drill-logistics-'+li+'" class="otrack" style="display:none">'+buildDPTrack('logistics',lr,li)+'</div>';
-        });
-        h+='</div>';
-      }
-      // Delivery tracker
-      var dlvCols='1fr 120px 140px 110px 100px';
-      var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
-      h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px">';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g800)">Delivery tracker</span>';
-      h+='<span style="font-size:11.5px;color:var(--g400)">Outstanding orders across Hercules</span>';
-      h+='</div>';
-      h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
-      dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+f[0]+'</button>';});
-      h+='</div></div></div>';
-      var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Need by</span><span>Vendor</span><span>Reference</span><span>Status</span></div>';
+    }
+    var dlvCols='1fr 120px 140px 110px 100px';
+    var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
+    h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px;display:flex;align-items:center;gap:10px"><span style="font-size:13px;font-weight:700;color:var(--g800)">Delivery tracker</span><span style="font-size:11.5px;color:var(--g400)">Outstanding orders across Hercules</span></div>';
+    h+='<div class="fq-filters" style="margin:0 0 10px"><div class="ff-grp"><span class="ff-lbl">Filter</span><div class="ff-seg">';
+    dlvFilters.forEach(function(f){h+='<button class="ff-b'+(deliveryFilter===f[1]?' on':'')+'" onclick="setDeliveryFilter(\''+f[1]+'\')">'+f[0]+'</button>';});
+    h+='</div></div></div>';
+    var dlvRows=deliveryFilter==='active'?DELIVERIES:DELIVERIES.filter(function(d){return d.status.toLowerCase().replace(/ /g,'-')===deliveryFilter;});
+    if(!dlvRows.length){h+='<div style="text-align:center;padding:24px;color:var(--g400);font-size:12px">No deliveries match this filter</div>';}
+    else{
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+dlvCols+'"><span>Item</span><span>Pillar</span><span>Need by</span><span>Vendor</span><span>Status</span></div>';
       dlvRows.forEach(function(d){
-        var tone=d.status==='Delivered'?'ok':d.status==='Scheduled'?'info':d.status==='In fabrication'?'warn':'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+dlvCols+';cursor:default">';
-        h+='<div>'+d.item+'</div>';
-        h+='<div style="font-size:11.5px;font-weight:600;color:var(--g800)">'+d.needby+'</div>';
-        h+='<div style="font-size:11.5px;color:var(--g600)">'+d.vendor+'</div>';
-        h+='<div style="font-family:monospace;font-size:11px;color:var(--g500)">'+d.order+'</div>';
-        h+='<div><span class="tag '+tone+'">'+d.status+'</span></div>';
-        h+='</div>';
+        var tone={Scheduled:'neu',Requested:'warn',Delivered:'ok','In fabrication':'info',Submittal:'info',Draft:'neu'}[d.status]||'neu';
+        h+='<div class="dp-row" style="grid-template-columns:'+dlvCols+'"><div style="font-size:12px;color:var(--g800)">'+d.item+'</div><div style="font-size:11.5px;color:var(--g500)">'+d.pillar+'</div><div style="font-size:11.5px;color:var(--g600)">'+d.needby+'</div><div style="font-size:11px;color:var(--g500)">'+d.vendor+'</div><div><span class="tag '+tone+'">'+d.status+'</span></div></div>';
       });
       h+='</div>';
     }
     mount.innerHTML=h;
   }
+  function logIntakeToggle(){
+    var b=document.getElementById('log-intake-body');var ch=document.getElementById('log-intake-chevron');
+    if(b)b.style.display=b.style.display==='none'?'block':'none';
+    if(ch)ch.textContent=(b&&b.style.display!=='none')?'▲ collapse':'▼ expand';
+  }
+  function openQuoteModal(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row||!row.quoteData)return;
+    var qd=row.quoteData;
+    var total=(qd.lines||[]).reduce(function(s,l){return s+(l.ext||0);},0);
+    var QUALS=['Sales tax, environmental fee, and fuel surcharges will be applied at time of invoice.','Does not include overtime rates and expedited requests; rates specified at time of request.','Rates include normal wear & tear; all other damages identified at service completion.','Any new scope requests/changes will require a re-quote.','Delivery & pickup fees subject to change based on service request date.','Recurring services will be billed on a 28-day billing cycle.'];
+    var mh='<div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #e2e8f0">';
+    mh+='<div style="display:grid;gap:5px">';
+    var flds=[['Vendor',qd.vendor||'—'],['Quote #',qd.quoteNum||'—'],['Quote Date',qd.quoteDate||'—'],['Expiration',qd.expDate||'—'],['Project','Hercules Solar + BESS'],['02S Service',row.service||'—'],['Annual Rate Increase','3%']];
+    flds.forEach(function(f){mh+='<div style="display:flex;gap:8px;font-size:12px"><span style="color:#64748b;min-width:130px">'+f[0]+':</span><span style="font-weight:600;color:#1e293b">'+f[1]+'</span></div>';});
+    mh+='</div><div style="background:#f8fafc;border-radius:6px;padding:10px 12px;border:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Qualifications</div>';
+    QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">• '+q+'</div>';});
+    mh+='</div></div>';
+    mh+='<div style="font-size:10.5px;font-weight:700;color:#dc2626;text-align:center;padding:5px;background:#fff1f2;border:1px solid #fecaca;border-radius:4px;margin-bottom:12px;letter-spacing:.05em">LOCK QUOTE BEFORE SENDING FOR APPROVAL</div>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor Price</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Markup</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    (qd.lines||[]).forEach(function(l,li){
+      mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
+      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.vendorPrice||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;color:#64748b">'+(((l.markup||0)*100).toFixed(0))+'%</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
+    });
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="7" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
+    mh+='</table><div style="margin-top:8px;font-size:10.5px;color:#94a3b8;text-align:right">02S Quote Ref: '+(row.quoteRef||'—')+'</div></div>';
+    openModal('02S Quote — '+row.service,mh);
+  }
+  function setLogRowStatus(ri,status){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];if(rows[ri]){rows[ri].status=status;renderLogPlan();}
+  }
+  function showLogNotes(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row)return;
+    var notes=row.notes||[];
+    var mh='<div style="min-width:360px">';
+    if(notes.length){notes.forEach(function(n){mh+='<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 12px;margin-bottom:8px"><div style="display:flex;gap:8px;margin-bottom:4px"><span style="font-size:11.5px;font-weight:600;color:#1e293b">'+n.author+'</span><span style="font-size:11px;color:#94a3b8">'+n.date+'</span></div><div style="font-size:12px;color:#334155;line-height:1.5">'+n.text+'</div></div>';});}
+    else{mh+='<div style="color:#94a3b8;font-size:12px;font-style:italic;padding:8px 0">No notes yet — add the first one below.</div>';}
+    mh+='<div style="margin-top:10px;display:flex;gap:6px"><input type="text" id="log-note-input-'+ri+'" placeholder="Add a note about this service..." style="flex:1;font-size:12px;border:1px solid #e2e8f0;border-radius:4px;padding:5px 10px"><button class="btn btn-dark btn-sm" onclick="logAddNote('+ri+')">Add</button></div></div>';
+    openModal('Notes — '+row.service,mh);
+  }
+  function logAddNote(ri){
+    var inp=document.getElementById('log-note-input-'+ri);if(!inp)return;var txt=inp.value.trim();if(!txt)return;
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    if(rows[ri]){if(!rows[ri].notes)rows[ri].notes=[];rows[ri].notes.push({author:'You',date:'Now',text:txt});closeModal();renderLogPlan();}
+  }
+  function logIntakeSvcToggle(cb,svcName){toast((cb.checked?'Added: ':'Removed: ')+svcName+' — submit intake to request from 02S');}
+  function logSubmitIntake(){logIntakeToggle();toast('Service intake submitted to 02S — they\'ll confirm lead times and send quotes');}
+  
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
   var _dp_pri={'Draft':0,'Pending pricing':0,'Needs attention':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7};
@@ -10217,6 +10190,79 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     h+='</div>';
     if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
     mount.innerHTML=h;
+  }
+  function openLogCcEdit(idx){
+    var rows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
+    var r=rows[idx]; if(!r)return;
+    var f='<div class="mform">';
+    f+='<div class="mf"><label>Move / item</label><input id="dlpe-item" class="rin" value="'+r.item.replace(/"/g,'&quot;')+'" placeholder="e.g. Tower crane mobilization"></div>';
+    f+='<div class="mf2"><div class="mf"><label>Qty / units</label><input id="dlpe-qty" class="rin" value="'+(r.qty||'').replace(/"/g,'&quot;')+'" placeholder="e.g. 2 loads"></div>';
+    f+='<div class="mf"><label>Window</label><input id="dlpe-window" class="rin" value="'+(r.window||'').replace(/"/g,'&quot;')+'" placeholder="e.g. Aug 2026"></div></div>';
+    f+='</div>';
+    openModal('Edit · '+r.item, f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="logCcEditSave('+idx+')">Save changes</button></div></div>');
+  }
+  function logCcEditSave(idx){
+    var rows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
+    var r=rows[idx]; if(!r)return;
+    var v_item=document.getElementById('dlpe-item'); if(v_item&&v_item.value.trim())r.item=v_item.value.trim();
+    var v_qty=document.getElementById('dlpe-qty'); if(v_qty)r.qty=v_qty.value;
+    var v_win=document.getElementById('dlpe-window'); if(v_win)r.window=v_win.value;
+    closeModal(); renderLogPlan();
+    toast('Line item updated');
+  }
+  function dpDeleteRow(pk,rowIdx){
+    var cfg=DP[pk]; if(!cfg||!cfg.rows||cfg.rows[rowIdx]===undefined)return;
+    cfg.rows.splice(rowIdx,1); if(dpSel[pk])dpSel[pk]={}; closeModal();
+    if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk);
+    toast('Line item deleted');
+  }
+
+  function openDPEditModal(pk,rowIdx){
+    var cfg=DP[pk]; var row=cfg&&cfg.rows&&cfg.rows[rowIdx]; if(!row)return;
+    var name=row.role||row.item||row.asm||row.move||'Line item';
+    var f='<div class="mform">';
+    cfg.cols.forEach(function(c){
+      if(c.key==='__docs'||c.key==='__state')return;
+      var val=(row[c.key]!=null?String(row[c.key]):'');
+      var _isDateField=(c.label==='Date &amp; window'||c.label==='Need on-site'||c.label==='Need-by date');
+      f+='<div class="mf"><label>'+c.label+'</label><input id="dpe-'+c.key+'" '+(_isDateField?'type="date" style="cursor:pointer" ':'')+'class="rin" value="'+val.replace(/"/g,'&quot;')+'"></div>';
+      if(c.sub&&row[c.sub]!=null){
+        var sv=String(row[c.sub]);
+        f+='<div class="mf"><label>'+c.sub.charAt(0).toUpperCase()+c.sub.slice(1)+'</label><input id="dpe-'+c.sub+'" class="rin" value="'+sv.replace(/"/g,'&quot;')+'"></div>';
+      }
+    });
+    f+='</div>';
+    var docs=(row.attachments||[]);
+    f+=attachmentsHTML(docs);
+    f+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto;display:flex;gap:8px">'
+      +'<button class="btn btn-ghost btn-sm" style="color:var(--red);margin-right:auto" onclick="dpDeleteRow(\'"+pk+"\',"+rowIdx+")">Delete</button>'
+      +'<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark" onclick="dpEditSave(\'"+pk+"\',"+rowIdx+")">Save changes</button>'
+      +'</div></div>';
+    openModal('Edit · '+name,f);
+  }
+  function dpEditSave(pk,rowIdx){
+    var cfg=DP[pk]; var row=cfg&&cfg.rows&&cfg.rows[rowIdx]; if(!row)return;
+    cfg.cols.forEach(function(c){
+      if(c.key==='__docs'||c.key==='__state')return;
+      var el=document.getElementById('dpe-'+c.key); if(el)row[c.key]=el.value;
+      if(c.sub){var sl=document.getElementById('dpe-'+c.sub);if(sl)row[c.sub]=sl.value;}
+    });
+    closeModal();
+    if(pk==='profservices')renderProfServicesDP();else renderDP(pk);
+    toast('Line item updated');
+  }
+  function dpToggleSel(pk,idx,checked){
+    if(!dpSel[pk])dpSel[pk]={};
+    if(checked)dpSel[pk][idx]=true; else delete dpSel[pk][idx];
+  }
+  function dpSubmitSelected(pk){
+    var cfg=DP[pk]; var sel=dpSel[pk]||{}; var ids=Object.keys(sel).map(Number);
+    if(!ids.length)return;
+    ids.forEach(function(i){ if(cfg.rows[i])cfg.rows[i].state='Requested'; });
+    dpSel[pk]={};
+    if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk);
+    toast(ids.length+' line item'+(ids.length===1?'':'s')+' submitted to 02S');
   }
   function openDPAdd(pk){ dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
