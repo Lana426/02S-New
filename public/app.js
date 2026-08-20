@@ -6358,7 +6358,7 @@ charges:[
     h+='</div>';
     mount.innerHTML=h;
   }
-  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; myTaskAdd(r.item,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(r.item+' added to My Tasks — view in sidebar'); }
+  function fqTask(id){ var r=fqById(id); if(!r)return; r.tasked=true; var lbl=(r.actLabel||fqDefaultAction(r))+' — '+r.item; myTaskAdd(lbl,r.ref,r.project,r.pillar,r.needby||''); renderFulfill(); toast(lbl+' added to My Tasks — view in sidebar'); }
   /* ═══════════ FLEET & ASSET LIFECYCLE ═══════════ */
   var FLEET=[
     {id:'TC-0012',cls:'Tower crane',yard:'San Diego',status:'idle',idleDays:12,util:41,age:9,hours:'11,800',cond:'Fair',life:'replace',capex:'$1.2M',reco:'Replace \u2014 add to Q3 CapEx (~$1.2M)'},
