@@ -7108,17 +7108,17 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       barryrose:[
         {item:'Office & storage trailers',cat:'trailer',qty:'3 units',start:'Jun',end:'Aug',state:'Complete'},
         {item:'Temporary power',cat:'temp_power',qty:'1 panel',start:'Sep',end:'Dec',state:'Scheduled'},
-        {item:'Sanitation units',cat:'sanitation',qty:'4 units',start:'Jun',end:'Dec',state:'On-rent'},
-        {item:'Fencing & site barriers',cat:'fencing',qty:'900 LF',start:'Jun',end:'Dec',state:'On-rent'},
-        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Jun',end:'Dec',state:'On-rent'},
-        {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Jun',end:'Dec',state:'On-rent'}
+        {item:'Sanitation units',cat:'sanitation',qty:'3 units',start:'Jun',end:'Dec',state:'In fulfillment'},
+        {item:'Fencing & site barriers',cat:'fencing',qty:'900 LF',start:'Jun',end:'Dec',state:'In fulfillment'},
+        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Jun',end:'Dec',state:'In fulfillment'},
+        {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Jun',end:'Dec',state:'In fulfillment'}
       ],
       vdc14:[
         {item:'Office & storage trailers',cat:'trailer',qty:'2 units',start:'Sep',end:'Jan',state:'Scheduled'},
         {item:'Temporary power',cat:'temp_power',qty:'1 panel',start:'Oct',end:'Jan',state:'In fulfillment'},
-        {item:'Sanitation units',cat:'sanitation',qty:'3 units',start:'Nov',end:'Jan',state:'Planned'},
-        {item:'Fencing & site barriers',cat:'fencing',qty:'600 LF',start:'Jun',end:'Jan',state:'On-rent'},
-        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Jun',end:'Jan',state:'On-rent'},
+        {item:'Sanitation units',cat:'sanitation',qty:'16 units',start:'Nov',end:'Jan',state:'Requested'},
+        {item:'Fencing & site barriers',cat:'fencing',qty:'600 LF',start:'Jun',end:'Jan',state:'In fulfillment'},
+        {item:'Signage & traffic control',cat:'signage',qty:'Per plan',start:'Jun',end:'Jan',state:'In fulfillment'},
         {item:'Waste & dumpster service',cat:'waste',qty:'2 dumpsters',start:'Nov',end:'Jan',state:'Requested'}
       ]
     },
