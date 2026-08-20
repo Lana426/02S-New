@@ -8503,7 +8503,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           rows+='</div>';
           rows+='</div>';
           if(_hasAss){
-            rows+='<div id="'+_panId+'" class="gas-panel open">';
+            rows+='<div id="'+_panId+'" class="gas-panel">';
             rows+='<div class="gas-panel-hd" style="margin-left:'+LW+'px;padding-right:'+(FQW+6)+'px">';
             if(_rA.length){
               var _rentLbl=stt==='projected'?' allocated':' on-rent';if(_onR>0)rows+='<span class="gas-badge gas-badge-onrent">● '+_onR+_rentLbl+'</span>';
