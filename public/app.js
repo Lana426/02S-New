@@ -2730,7 +2730,7 @@ function renderProfServicesDP(){
     ],
   };
   var DP_LINE_NOTES={
-    'prefab-2':[
+    'prefab-4':[
       {who:'Dana Reyes · You',when:'Jul 20',text:'Submittal package sent for BESS e-houses — 2 units, Nov 1 need-on-site. Approval needed this week to protect Nov energization.'},
       {who:'02S Prefab',when:'Jul 21',text:'Submittal received. Engineering review in progress — expect approval or RFI within 5 business days.'}
     ],
@@ -3413,11 +3413,11 @@ charges:[
     'procurement-5':["SDS Max spec sheet (PDF)","BESS safety plan (PDF)"],
     'procurement-6':["Purchase order PO-4403 (PDF)","OSHA Table 1 compliance log (PDF)"],
     'procurement-7':["Wire crimper spec (PDF)","BESS & electrical plan (PDF)"],
-    'prefab-0':["Shop drawings (PDF)","Submittal approval letter (PDF)","Fabrication schedule (PDF)","Receiving inspection checklist (PDF)"],
-    'prefab-1':["Delivery receipt (PDF)","Installation drawings (PDF)","Quality inspection report (PDF)","As-built record (PDF)"],
-    'prefab-2':["Submittal package (PDF)","BESS e-house shop drawings (PDF)","Vendor fabrication proposal (PDF)"],
+    'prefab-0':["Cable tray submittal (PDF)","Product data sheet (PDF)"],
+    'prefab-2':["Shop drawings (PDF)","Submittal approval letter (PDF)","Fabrication schedule (PDF)","Receiving inspection checklist (PDF)"],
     'prefab-3':["Shop drawings (PDF)","Pump assembly spec (PDF)","Fabrication progress photos (PDF)"],
-    'prefab-4':["Cable tray submittal (PDF)","Product data sheet (PDF)"],
+    'prefab-4':["Submittal package (PDF)","BESS e-house shop drawings (PDF)","Vendor fabrication proposal (PDF)"],
+    'prefab-5':["Delivery receipt (PDF)","Installation drawings (PDF)","Quality inspection report (PDF)","As-built record (PDF)"],
     'logistics-0':["Heavy haul permit (PDF)","Delivery route map (PDF)","Delivery receipt (PDF)","Access road load rating (PDF)"],
     'logistics-1':["Oversize load permit application (PDF)","Route survey (PDF)"],
     'logistics-2':["Crane mobilization permit (PDF)","Rigging plan (PDF)","Mobilization checklist (PDF)","Escort vehicle agreement (PDF)"],
@@ -7392,7 +7392,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Prefab cable tray runs',qty:'Lot',window:'Aug 15',state:'Requested',ordId:'ORD-5003',cost:'Pending',firm:'TBD',fqRef:'REQ-4476'},
         {item:'Combiner box prefab array',qty:'8 units',window:'Sep 5',state:'Draft',ordId:null,cost:'$88K',firm:'TBD'},
         {item:'Prefab pipe rack modules',qty:'12 modules',window:'Sep 28',state:'In fabrication',ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe rack modules rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
-        {item:'Pump skid assemblies',qty:'4 skids',window:'Oct 5',state:'In fabrication',ordId:null,fqRef:'REQ-F-053',cost:'$45K',firm:'TBD'},
+        {item:'Pump skid assemblies',qty:'6 skids',window:'Oct 5',state:'In fabrication',ordId:null,fqRef:'REQ-F-053',cost:'$45K',firm:'TBD'},
         {item:'Modular e-houses (BESS)',qty:'2 units',window:'Oct 31',state:'Submittal',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
         {item:'L2 headwall assemblies',qty:'8 units',window:'Jun 20',state:'Delivered',ordId:'ORD-3106',cost:'$147K',firm:'Ironclad Mfg'}
       ]},
