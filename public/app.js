@@ -5763,7 +5763,8 @@ charges:[
   var _pfBU='all', _pfRegion='all';
   var _pfbP6Expanded={};
   var _pfbP6Overrides={};
-  var _pfbDpTab='items';var _pfbInstFilter='all';var _logExpanded={};
+  var _pfbDpTab='items';var _pfbInstFilter='all';var _logExpanded={};var _logTasksView='items';
+  function logSetTasksView(v){_logTasksView=v;renderCcDemand('logistics');}
   function logExpandToggle(k){_logExpanded[k]=!_logExpanded[k];renderCcDemand('logistics');}
   function logSetActStatus(proj,ri,ai,val){
     var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;
@@ -5786,6 +5787,141 @@ charges:[
     if(due)due.value='';
     toast('Task added to My Tasks');
     renderCcDemand('logistics');
+  }
+  function logQuickTask(proj,ri,item,actName,fqRef){
+    var lbl=prompt('Task label for "'+actName+'"?','');
+    if(!lbl||!lbl.trim())return;
+    var pName=proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14';
+    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:'',priority:'medium',source:'manual',done:false,closeNote:'',activity:actName});
+    _myTasksBadge();
+    toast('Task added \u2014 '+actName);
+    renderCcDemand('logistics');
+  }
+  function ccOpenLogQuote(proj,ri){
+    var ccRow=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows&&CC_PROJ_DP.logistics[proj].rows[ri];
+    if(!ccRow)return;
+    var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var cpRow=dpRows.find(function(r){return r.fqRef===ccRow.fqRef||r.id===ccRow.fqRef;});
+    var qd=cpRow&&cpRow.quoteData;
+    if(!qd){toast('No quote data available for this service');return;}
+    var tot=qd.lines.reduce(function(a,l){return a+(l.ext||0);},0);
+    var b='<div style="padding:4px 0">';
+    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Vendor</div><div style="font-size:12px;font-weight:600">'+qd.vendor+'</div></div>';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Quote #</div><div style="font-size:12px;font-weight:600">'+qd.quoteNum+'</div></div>';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Valid until</div><div style="font-size:12px;font-weight:600">'+qd.expDate+'</div></div>';
+    b+='</div>';
+    b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
+    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Vendor $</span><span class="r">Rate</span><span class="r">Extension</span></div>';
+    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.vendorPrice.toLocaleString()+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
+    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 5;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
+    b+='</div>';
+    b+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    if(ccRow.state==='Quoted'){b+='<button class="btn btn-dark" onclick="closeModal();toast(\'Quote approved \u2014 moving to Scheduling\')">Approve \u2192 Scheduling</button>';}
+    b+='</div>';
+    b+='</div>';
+    openModal(ccRow.item+' \u2014 Quote details', b);
+  }
+  function renderLogisticsTasksView(proj){
+    var tasks=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&(proj==='all'||t.project===(proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14'));});
+    var open=tasks.filter(function(t){return !t.done;});
+    var done=tasks.filter(function(t){return t.done;});
+    var h='<div style="margin-top:4px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
+    h+='<div style="font-size:11.5px;color:var(--g500)">'+open.length+' open \u00b7 '+done.length+' done</div>';
+    h+='<span class="spacer"></span>';
+    h+='</div>';
+    if(!open.length&&!done.length){h+='<div class="fq-empty">No logistics tasks yet. Add tasks from the demand plan expand panels.</div></div>';return h;}
+    var _act=['Project Plan','RFP','Contracting','Install',''];
+    _act.forEach(function(actN){
+      var grp=open.filter(function(t){return t.activity===(actN||t.activity||'');});
+      if(actN&&!grp.length)return;
+      if(!actN)grp=open.filter(function(t){return !t.activity;});
+      if(!grp.length)return;
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin:10px 0 5px">'+(actN||'Untagged')+'</div>';
+      grp.forEach(function(t){
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:#fff;border:1px solid var(--g150);border-radius:6px;margin-bottom:4px">';
+        h+='<input type="checkbox" onclick="event.stopPropagation()" onchange="myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;margin-top:2px;flex-shrink:0">';
+        h+='<div style="flex:1;min-width:0">';
+        h+='<div style="font-size:11.5px;font-weight:500;color:var(--g800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
+        if(t.project||t.due||t.ref){h+='<div style="font-size:9.5px;color:var(--g400);margin-top:1px">'+(t.project||'')+(t.due?' \u00b7 '+t.due:'')+(t.ref?' \u00b7 '+t.ref:'')+'</div>';}
+        h+='</div>';
+        if(t.priority==='high'){h+='<span style="font-size:9px;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:3px;padding:0 4px;flex-shrink:0">HIGH</span>';}
+        h+='</div>';
+      });
+    });
+    if(done.length){
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin:14px 0 5px">Done ('+done.length+')</div>';
+      done.forEach(function(t){
+        h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;margin-bottom:3px">';
+        h+='<input type="checkbox" checked onclick="event.stopPropagation()" onchange="myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;flex-shrink:0">';
+        h+='<div style="font-size:11.5px;color:var(--g400);text-decoration:line-through;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
+        h+='</div>';
+      });
+    }
+    h+='</div>';
+    return h;
+  }
+  function renderLogisticsQuoteQueue(proj,isDpView){
+    var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var relevant=dpRows.filter(function(r){
+      if(proj==='all')return r.quoted||r.status==='Requested';
+      var projMatch={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
+      return (r.quoted||r.status==='Requested')&&(!projMatch[proj]||r.project===projMatch[proj]);
+    });
+    var needAction=relevant.filter(function(r){return r.status==='Quoted'||r.status==='Requested';});
+    var done=relevant.filter(function(r){return r.status==='In fulfillment'||r.status==='Complete'||r.status==='Closed'||r.status==='Scheduled';});
+    var h='<div style="margin-top:22px">';
+    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(IC.truck)+'Incoming portal quotes</span><span class="spacer"></span>';
+    if(needAction.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+needAction.length+' need response</span>';
+    h+='</div>';
+    if(!relevant.length){h+='<div class="fq-empty">No incoming quotes for this project.</div></div>';return h;}
+    var cols='1.6fr 1fr 120px 100px 110px 150px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'"><span>Service</span><span>Project</span><span>Vendor</span><span>Total</span><span>Status</span><span>Action</span></div>';
+    relevant.forEach(function(r,ri){
+      var qd=r.quoteData;
+      var tot=qd?qd.lines.reduce(function(a,l){return a+(l.ext||0);},0):null;
+      var _stTone={Quoted:'info',Requested:'warn','In fulfillment':'ok',Complete:'ok',Closed:'neu',Scheduled:'info'};
+      var tone=_stTone[r.status]||'neu';
+      h+='<div class="dp-row" style="grid-template-columns:'+cols+'">';
+      h+='<div style="font-size:11.5px;font-weight:500;color:var(--g900)">'+r.item+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(r.project||'\u2014')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(qd?qd.vendor:r.vendor||'\u2014')+'</div>';
+      h+='<div style="font-size:11px;font-weight:500">'+(tot?'$'+tot.toLocaleString():'\u2014')+'</div>';
+      h+='<div><span class="chip '+tone+'" style="font-size:10px">'+r.status+'</span></div>';
+      h+='<div style="display:flex;gap:5px">';
+      if(r.quoted&&qd){h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="ccOpenLogQuoteByRef(\''+r.id+'\')">View quote \u2192</button>';}
+      if(r.status==='Quoted'){h+='<button class="btn btn-dark btn-sm" style="font-size:10px;padding:1px 8px" onclick="toast(\'Approved \u00b7 moving to Scheduling\')">Approve</button>';}
+      if(r.status==='Requested'){h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="toast(\'Vendor sourcing initiated\')">Source vendor</button>';}
+      h+='</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+    return h;
+  }
+  function ccOpenLogQuoteByRef(dpRowId){
+    var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var cpRow=dpRows.find(function(r){return r.id===dpRowId;});
+    if(!cpRow||!cpRow.quoteData){toast('No quote data available');return;}
+    var qd=cpRow.quoteData;
+    var tot=qd.lines.reduce(function(a,l){return a+(l.ext||0);},0);
+    var b='<div style="padding:4px 0">';
+    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Vendor</div><div style="font-size:12px;font-weight:600">'+qd.vendor+'</div></div>';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Quote #</div><div style="font-size:12px;font-weight:600">'+qd.quoteNum+'</div></div>';
+    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Valid until</div><div style="font-size:12px;font-weight:600">'+qd.expDate+'</div></div>';
+    b+='</div>';
+    b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
+    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Vendor $</span><span class="r">Rate</span><span class="r">Extension</span></div>';
+    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.vendorPrice.toLocaleString()+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
+    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 5;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
+    b+='</div>';
+    b+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    if(cpRow.status==='Quoted'){b+='<button class="btn btn-dark" onclick="closeModal();toast(\'Approved \u00b7 releasing to scheduling\')">Approve \u2192 Scheduling</button>';}
+    b+='</div></div>';
+    openModal(cpRow.item+' \u2014 Quote details', b);
   }
   function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
@@ -8797,6 +8933,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView(\'table\')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView(\'gantt\')">Gantt</button></div>';}
       h+='<span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
       if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#equip-list-view{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
+      if(p==='logistics'&&isDpView){
+        h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content">';
+        var _logOpenN=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&!t.done;}).length;
+        h+='<button onclick="logSetTasksView(\'items\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logTasksView==='items'?'#fff':'transparent')+';color:'+(_logTasksView==='items'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logTasksView==='items'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Demand plan</button>';
+        h+='<button onclick="logSetTasksView(\'tasks\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logTasksView==='tasks'?'#fff':'transparent')+';color:'+(_logTasksView==='tasks'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logTasksView==='tasks'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">\u2713 Tasks '+(_logOpenN?'<span style="background:#ef4444;color:#fff;border-radius:8px;padding:0 5px;font-size:9.5px;font-weight:700;margin-left:3px">'+_logOpenN+'</span>':'')+' </button>';
+        h+='</div>';
+        if(_logTasksView==='tasks'){h+=renderLogisticsTasksView(selProj);mount.innerHTML=h;return;}
+      }
       if(p==='logistics'){
         var _lqNeed=allReqRows.filter(function(r){return r._type==='dp'&&(r.state==='Quoted'||r.state==='Requested');});
         if(_lqNeed.length){
@@ -8815,7 +8959,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         }
       }
     } else {
-      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
+      var _allHdr=p==='logistics'?'Quote requests':'All requests';
+      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+_allHdr+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
       if(p==='logistics'){
         var _lProjs=['hercules','barryrose','vdc14'];
         var _lShort={hercules:'Hercules',barryrose:'Barry Rose',vdc14:'VDC14'};
@@ -9082,70 +9227,54 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
               var _lActBg={Done:'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
               var _lActTc={Done:'#fff','In progress':'#fff','Not started':'#94a3b8'};
               var _lActOpts=['Done','In progress','Not started'];
-              h+='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g200);border-bottom:2px solid var(--g200)">';
-              h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">';
-              h+='<div>';
+              h+='<div style="padding:16px;background:var(--g50);border-top:1px solid var(--g200);border-bottom:2px solid var(--g200)">';
+              if(row.firm||row.poc||row.phone){
+                h+='<div style="display:flex;gap:20px;flex-wrap:wrap;padding:8px 12px;background:#fff;border:1px solid var(--g150);border-radius:6px;margin-bottom:12px">';
+                if(row.firm)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">Vendor</div><div style="font-size:11.5px;font-weight:600;color:var(--g900)">'+row.firm+'</div></div>';
+                if(row.poc)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">POC</div><div style="font-size:11.5px;font-weight:500">'+row.poc+'</div></div>';
+                if(row.phone)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">Phone</div><div style="font-size:11.5px"><a href="tel:'+row.phone+'" onclick="event.stopPropagation()" style="color:var(--info);text-decoration:none">'+row.phone+'</a></div></div>';
+                if(row.cost)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">Cost</div><div style="font-size:11.5px;font-weight:600">'+row.cost+'</div></div>';
+                h+='<div style="margin-left:auto;display:flex;gap:6px;align-items:center">';
+                if(row.fqRef)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccOpenLogQuote(\''+row._proj+'\','+row._idx+')">View quote →</button>';
+                h+='</div></div>';
+              }
               h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Activity timeline</div>';
               h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
-              h+='<div style="display:grid;grid-template-columns:100px repeat(10,1fr);background:var(--g100);border-bottom:1px solid var(--g200)">';
-              h+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';
-              _EQ_MO.forEach(function(m){h+='<div style="padding:5px 2px;font-size:8.5px;font-weight:600;color:var(--g400);text-align:center">'+m+'</div>';});
+              h+='<div style="display:grid;grid-template-columns:110px 1fr 96px 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';
+              h+='<div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';
+              h+='<div style="padding:6px 4px;font-size:9px;font-weight:700;color:var(--g500);display:flex;justify-content:space-between">';
+              _EQ_MO.forEach(function(m){h+='<span style="font-size:8px;font-weight:600;color:var(--g400)">'+m+'</span>';});
+              h+='</div>';
+              h+='<div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:center">Lead time</div>';
+              h+='<div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:right">Tasks</div>';
               h+='</div>';
               _lActs.forEach(function(act,ai){
                 var _ls=Math.max(0,Math.min(9,act.s||0));
                 var _le=Math.max(_ls+1,Math.min(10,act.e||_ls+1));
                 var _lbg=_lActBg[act.st]||'#e5e7eb';
                 var _ltc=_lActTc[act.st]||'#94a3b8';
-                h+='<div style="display:grid;grid-template-columns:100px repeat(10,1fr);border-top:1px solid var(--g100);align-items:center;min-height:28px">';
-                h+='<div style="padding:3px 8px">';
-                h+='<select style="font-size:9px;border:1px solid var(--g200);border-radius:3px;background:#fff;color:var(--g700);cursor:pointer;font-family:inherit;padding:1px 2px;width:100%" onchange="event.stopPropagation();logSetActStatus(\''+row._proj+'\','+row._idx+','+ai+',this.value)">';
+                var _leadWks=act.leadWeeks||((_le-_ls)*4);
+                h+='<div style="display:grid;grid-template-columns:110px 1fr 96px 80px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';
+                h+='<div style="padding:4px 10px">';
+                h+='<div style="font-size:11px;font-weight:500;color:var(--g800)">'+act.n+'</div>';
+                h+='<select style="font-size:9px;border:none;background:none;color:var(--g500);cursor:pointer;font-family:inherit;padding:0;margin-top:1px" onchange="event.stopPropagation();logSetActStatus(\''+row._proj+'\','+row._idx+','+ai+',this.value)">';
                 h+=_lActOpts.map(function(o){return'<option value="'+o+'"'+(o===act.st?' selected':'')+'>'+o+'</option>';}).join('');
-                h+='</select>';
-                h+='<div style="font-size:8.5px;color:var(--g400);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+act.n+'</div></div>';
+                h+='</select></div>';
+                h+='<div style="padding:3px 6px;position:relative;height:100%">';
+                h+='<div style="position:absolute;inset:4px 2px;display:grid;grid-template-columns:repeat(10,1fr)">';
                 for(var _mi=0;_mi<10;_mi++){
-                  if(_mi===_ls){var _sp=Math.max(1,_le-_ls);h+='<div style="grid-column:span '+_sp+';padding:2px 3px"><div style="background:'+_lbg+';border-radius:3px;height:16px;display:flex;align-items:center;justify-content:center"><span style="font-size:7.5px;font-weight:700;color:'+_ltc+'">'+act.n+'</span></div></div>';_mi+=_sp-1;}
-                  else{h+='<div style="padding:2px 3px"><div style="height:16px"></div></div>';}
+                  if(_mi===_ls){var _sp=Math.max(1,_le-_ls);h+='<div style="grid-column:span '+_sp+';padding:1px 2px"><div style="background:'+_lbg+';border-radius:4px;height:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:'+_ltc+';white-space:nowrap">'+act.n+'</span></div></div>';_mi+=_sp-1;}
+                  else{h+='<div style="border-right:1px solid var(--g100)"></div>';}
                 }
+                h+='</div></div>';
+                h+='<div style="padding:4px 8px;text-align:center">';
+                h+='<span contenteditable="true" style="font-size:10.5px;color:var(--g600);border-bottom:1px dashed var(--g300);outline:none;cursor:text" onclick="event.stopPropagation()" onblur="event.stopPropagation();var v=parseInt(this.innerText,10);if(v>0){CC_PROJ_DP.logistics[\''+row._proj+'\'].rows['+row._idx+'].acts['+ai+'].leadWeeks=v;}">'+_leadWks+'</span>';
+                h+='<span style="font-size:9px;color:var(--g400)"> wks</span></div>';
+                h+='<div style="padding:4px 8px;text-align:right">';
+                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();logQuickTask(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
+                h+='</div>';
                 h+='</div>';
               });
-              h+='</div>';
-              if(row.firm||row.poc||row.phone){
-                h+='<div style="margin-top:8px;padding:8px 10px;background:#fff;border:1px solid var(--g150);border-radius:6px;display:flex;gap:16px;flex-wrap:wrap">';
-                if(row.firm)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">Vendor</div><div style="font-size:11.5px;font-weight:600;color:var(--g900)">'+row.firm+'</div></div>';
-                if(row.poc)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">POC</div><div style="font-size:11.5px;font-weight:500;color:var(--g800)">'+row.poc+'</div></div>';
-                if(row.phone)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">Phone</div><div style="font-size:11.5px"><a href="tel:'+row.phone+'" style="color:var(--info);text-decoration:none" onclick="event.stopPropagation()">'+row.phone+'</a></div></div>';
-                h+='</div>';
-              }
-              h+='</div>';
-              h+='<div>';
-              var _lTasks=MY_CC_TASKS.filter(function(t){return t.ref===(row.fqRef||'__none__');});
-              h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Tasks \u2014 '+_lTasks.filter(function(t){return !t.done;}).length+' open</div>';
-              if(_lTasks.length){
-                h+='<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">';
-                _lTasks.forEach(function(t){
-                  h+='<div style="display:flex;align-items:flex-start;gap:7px;padding:6px 9px;background:#fff;border:1px solid var(--g150);border-radius:6px">';
-                  h+='<input type="checkbox"'+(t.done?' checked':'')+' onclick="event.stopPropagation()" onchange="event.stopPropagation();myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;margin-top:2px;flex-shrink:0">';
-                  h+='<div style="flex:1;min-width:0">';
-                  h+='<div style="font-size:11.5px;font-weight:500;'+(t.done?'text-decoration:line-through;color:var(--g400);':'color:var(--g800);')+'overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
-                  if(t.activity||t.due){h+='<div style="font-size:9.5px;color:var(--g400);margin-top:1px">'+(t.activity||'')+(t.activity&&t.due?' \u00b7 ':'')+(t.due||'')+'</div>';}
-                  h+='</div>';
-                  if(t.priority==='high'){h+='<span style="font-size:9px;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:3px;padding:0 4px;flex-shrink:0">HIGH</span>';}
-                  h+='</div>';
-                });
-                h+='</div>';
-              } else {
-                h+='<div style="font-size:11px;color:var(--g400);font-style:italic;margin-bottom:10px">No tasks yet \u2014 add one below</div>';
-              }
-              h+='<div style="display:flex;flex-direction:column;gap:6px;padding:10px;background:#fff;border:1px solid var(--g200);border-radius:7px">';
-              h+='<div style="font-size:10px;font-weight:600;color:var(--g600);margin-bottom:2px">Add task</div>';
-              h+='<input id="ltask-inp-'+row._proj+'-'+row._idx+'" onclick="event.stopPropagation()" placeholder="Task label\u2026" style="border:1px solid var(--g200);border-radius:5px;padding:5px 9px;font-size:11.5px;font-family:inherit;color:var(--g800);outline:none;width:100%;box-sizing:border-box">';
-              h+='<div style="display:flex;gap:5px">';
-              h+='<select id="ltask-act-'+row._proj+'-'+row._idx+'" onclick="event.stopPropagation()" style="flex:1;border:1px solid var(--g200);border-radius:5px;padding:4px 7px;font-size:11px;font-family:inherit;color:var(--g600);background:#fff;cursor:pointer"><option value="">Activity (optional)</option><option>Project Plan</option><option>RFP</option><option>Contracting</option><option>Install</option></select>';
-              h+='<input id="ltask-due-'+row._proj+'-'+row._idx+'" onclick="event.stopPropagation()" placeholder="Due date" style="width:90px;border:1px solid var(--g200);border-radius:5px;padding:4px 7px;font-size:11px;font-family:inherit;color:var(--g800);outline:none">';
-              h+='<button class="btn btn-dark btn-sm" style="white-space:nowrap" onclick="event.stopPropagation();logAddTaskFromRow(\''+row._proj+'\','+row._idx+',\''+(row.fqRef||'')+'\',\''+row.item.replace(/'/g,'')+'\')">+ Add</button>';
-              h+='</div></div>';
-              if(row.fqRef){h+='<div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">View in fulfillment queue \u2192</button></div>';}
-              h+='</div>';
               h+='</div>';
               h+='</div>';
             }
@@ -9221,6 +9350,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       });
       h+='</div>';
     }
+    if(p!=='logistics'){
     var _rollSrc=(isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll)?CC_PROJ_DP[p][selProj]:cfg;
     var _rollLabel=isDpView?(p==='prefab'?'Project assembly roll-up':'Project demand roll-up'):(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up');
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+_rollLabel+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_rollSrc.varSummary+'</span></div>';
@@ -9229,8 +9359,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     _rollSrc.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
     if(selProj==='all'){ h+=renderCapAtRiskSummary(p); }
+    }
     if(p==='prefab'&&isDpView){h+=renderPrefabCapPlan(selProj);}
-    if(p==='logistics'&&isDpView){h+=renderLogisticsCapPlan(selProj);}
+    if(p==='logistics'){h+=renderLogisticsQuoteQueue(selProj,isDpView);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
     mount.innerHTML=h;
