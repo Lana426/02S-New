@@ -1732,6 +1732,21 @@
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
+    if(!ns&&window._cpNudges&&window._cpNudges.length){
+      h+='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(window._cpNudges.length>1?'6':'0')+'px">';
+      h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1d4ed8">'+(window._cpNudges.length===1?'1 new notification from 02S':window._cpNudges.length+' notifications from 02S')+'</span>';
+      h+='<span class="spacer"></span>';
+      h+='<button onclick="window._cpNudges=[];renderLogPlan()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
+      h+='</div>';
+      window._cpNudges.forEach(function(n,ni){
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+'">'
+;        h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#3b82f6;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">02S</span>';
+        h+='<div style="flex:1"><div style="font-size:12px;color:#1e293b;font-weight:500">'+n.msg+'</div>';
+        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div></div></div>';
+      });
+      h+='</div>';
+    }
     h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
@@ -5979,7 +5994,7 @@ charges:[
       h+='<div style="font-size:11.5px;font-weight:500;color:var(--g900)">'+r.item+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+(r.project||'—')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+(r.qty||'—')+'</div>';
-      h+='<div style="font-size:11px;color:var(--g600)">'+(r.window||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(r.needBy||r.window||'—')+'</div>';
       h+='<div><button class="btn btn-dark btn-sm" style="font-size:10px;padding:3px 12px" onclick="openLogQuoteBuilder(\''+r.id+'\')">Fill out quote →</button></div>';
       h+='</div>';
     });
