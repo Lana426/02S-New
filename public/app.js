@@ -5788,13 +5788,54 @@ charges:[
     toast('Task added to My Tasks');
     renderCcDemand('logistics');
   }
-  function logQuickTask(proj,ri,item,actName,fqRef){
-    var lbl=prompt('Task label for "'+actName+'"?','');
-    if(!lbl||!lbl.trim())return;
+  function openLogTaskModal(proj,ri,item,actName,fqRef){
     var pName=proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14';
-    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:'',priority:'medium',source:'manual',done:false,closeNote:'',activity:actName});
+    var actOpts=['Project Plan','RFP','Contracting','Install'];
+    var b='<div style="display:flex;flex-direction:column;gap:16px">';
+    b+='<div style="background:var(--g50);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Project</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+pName+'</div></div>';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Service</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+item+'</div></div>';
+    b+='</div>';
+    b+='<div><label style="font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px">Task description</label>';
+    b+='<input id="lgtm-lbl" type="text" placeholder="What needs to be done?" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px">Activity</label>';
+    b+='<select id="lgtm-act" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g800);font-family:inherit;background:#fff;outline:none">';
+    actOpts.forEach(function(o){b+='<option value="'+o+'"'+(o===actName?' selected':'')+'>'+o+'</option>';});
+    b+='</select></div>';
+    b+='<div><label style="font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px">Due date</label>';
+    b+='<input id="lgtm-due" type="date" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g800);font-family:inherit;outline:none">';
+    b+='</div></div>';
+    b+='<div><label style="font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:7px">Priority</label>';
+    b+='<div style="display:flex;gap:6px">';
+    [['high','#dc2626','#fee2e2'],['medium','#f59e0b','#fffbeb'],['low','#16a34a','#dcfce7']].forEach(function(pri){
+      b+='<label style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:6px 14px;border-radius:20px;border:1.5px solid '+pri[1]+'30;background:'+pri[2]+';user-select:none">';
+      b+='<input type="radio" name="lgtm-pri" value="'+pri[0]+'"'+(pri[0]==='medium'?' checked':'')+' style="accent-color:'+pri[1]+'">';
+      b+='<span style="font-size:11.5px;font-weight:600;color:'+pri[1]+'">'+pri[0].charAt(0).toUpperCase()+pri[0].slice(1)+'</span>';
+      b+='</label>';
+    });
+    b+='</div></div>';
+    b+='<div class="modal-foot" style="margin-top:4px">';
+    b+='<span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="submitLogTask(\''+proj+'\','+ri+',\''+item.replace(/'/g,'')+'\',\''+fqRef+'\')">Add task →</button>';
+    b+='</div>';
+    b+='</div>';
+    openModal('New task — '+actName, b);
+    setTimeout(function(){var el=document.getElementById('lgtm-lbl');if(el)el.focus();},80);
+  }
+  function submitLogTask(proj,ri,item,fqRef){
+    var lbl=document.getElementById('lgtm-lbl');
+    var act=document.getElementById('lgtm-act');
+    var due=document.getElementById('lgtm-due');
+    var priEl=document.querySelector('input[name="lgtm-pri"]:checked');
+    if(!lbl||!lbl.value.trim()){if(lbl){lbl.style.borderColor='#dc2626';}return;}
+    var pName=proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14';
+    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item});
     _myTasksBadge();
-    toast('Task added \u2014 '+actName);
+    closeModal();
+    toast('Task added');
     renderCcDemand('logistics');
   }
   function ccOpenLogQuote(proj,ri){
@@ -5828,36 +5869,48 @@ charges:[
     var open=tasks.filter(function(t){return !t.done;});
     var done=tasks.filter(function(t){return t.done;});
     var h='<div style="margin-top:4px">';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
-    h+='<div style="font-size:11.5px;color:var(--g500)">'+open.length+' open \u00b7 '+done.length+' done</div>';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+    h+='<div style="font-size:11.5px;color:var(--g500)">'+open.length+' open · '+done.length+' done</div>';
     h+='<span class="spacer"></span>';
     h+='</div>';
-    if(!open.length&&!done.length){h+='<div class="fq-empty">No logistics tasks yet. Add tasks from the demand plan expand panels.</div></div>';return h;}
-    var _act=['Project Plan','RFP','Contracting','Install',''];
-    _act.forEach(function(actN){
-      var grp=open.filter(function(t){return t.activity===(actN||t.activity||'');});
-      if(actN&&!grp.length)return;
-      if(!actN)grp=open.filter(function(t){return !t.activity;});
-      if(!grp.length)return;
-      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin:10px 0 5px">'+(actN||'Untagged')+'</div>';
+    if(!open.length&&!done.length){h+='<div class="fq-empty">No logistics tasks yet — add tasks from the demand plan expand panels below.</div></div>';return h;}
+    var svcMap={};
+    open.forEach(function(t){var svc=t.item||t.ref||'General';if(!svcMap[svc])svcMap[svc]=[];svcMap[svc].push(t);});
+    var svcs=Object.keys(svcMap);
+    svcs.forEach(function(svc){
+      var grp=svcMap[svc];
+      h+='<div style="margin-bottom:16px">';
+      h+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+svc+'</div>';
+      h+='<span style="background:var(--g150);color:var(--g500);border-radius:8px;padding:0 6px;font-size:9.5px;font-weight:700">'+grp.length+'</span>';
+      h+='</div>';
       grp.forEach(function(t){
-        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:#fff;border:1px solid var(--g150);border-radius:6px;margin-bottom:4px">';
-        h+='<input type="checkbox" onclick="event.stopPropagation()" onchange="myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;margin-top:2px;flex-shrink:0">';
+        var _priColor={high:'#dc2626',medium:'#f59e0b',low:'#16a34a'};
+        var _priBg={high:'#fee2e2',medium:'#fffbeb',low:'#dcfce7'};
+        h+='<div style="display:flex;align-items:flex-start;gap:9px;padding:9px 12px;background:#fff;border:1px solid var(--g150);border-radius:8px;margin-bottom:5px">';
+        h+='<input type="checkbox" onclick="event.stopPropagation()" onchange="myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;margin-top:3px;flex-shrink:0">';
         h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:11.5px;font-weight:500;color:var(--g800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
-        if(t.project||t.due||t.ref){h+='<div style="font-size:9.5px;color:var(--g400);margin-top:1px">'+(t.project||'')+(t.due?' \u00b7 '+t.due:'')+(t.ref?' \u00b7 '+t.ref:'')+'</div>';}
+        h+='<div style="font-size:12px;font-weight:500;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
+        var _sub=[];
+        if(t.activity)_sub.push(t.activity);
+        if(t.project&&proj==='all')_sub.push(t.project);
+        if(t.due)_sub.push(t.due);
+        if(_sub.length){h+='<div style="font-size:9.5px;color:var(--g400);margin-top:2px">'+_sub.join(' · ')+'</div>';}
         h+='</div>';
-        if(t.priority==='high'){h+='<span style="font-size:9px;font-weight:700;color:#dc2626;background:#fee2e2;border-radius:3px;padding:0 4px;flex-shrink:0">HIGH</span>';}
+        if(t.priority&&t.priority!=='medium'){h+='<span style="font-size:9px;font-weight:700;color:'+(_priColor[t.priority]||'#94a3b8')+';background:'+(_priBg[t.priority]||'#f1f5f9')+';border-radius:4px;padding:1px 6px;flex-shrink:0;text-transform:uppercase">'+t.priority+'</span>';}
         h+='</div>';
       });
+      h+='</div>';
     });
     if(done.length){
-      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin:14px 0 5px">Done ('+done.length+')</div>';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin:4px 0 6px">Done ('+done.length+')</div>';
       done.forEach(function(t){
-        h+='<div style="display:flex;align-items:center;gap:8px;padding:5px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:6px;margin-bottom:3px">';
+        h+='<div style="display:flex;align-items:center;gap:9px;padding:7px 12px;background:var(--g50);border:1px solid var(--g150);border-radius:8px;margin-bottom:4px">';
         h+='<input type="checkbox" checked onclick="event.stopPropagation()" onchange="myTaskCheckChange(\''+t.id+'\',this)" style="accent-color:var(--charcoal);cursor:pointer;flex-shrink:0">';
+        h+='<div style="flex:1;min-width:0">';
         h+='<div style="font-size:11.5px;color:var(--g400);text-decoration:line-through;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t.label+'</div>';
-        h+='</div>';
+        if(t.item){h+='<div style="font-size:9.5px;color:var(--g300)">'+t.item+'</div>';}
+        h+='</div></div>';
       });
     }
     h+='</div>';
@@ -5865,40 +5918,208 @@ charges:[
   }
   function renderLogisticsQuoteQueue(proj,isDpView){
     var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
-    var relevant=dpRows.filter(function(r){
-      if(proj==='all')return r.quoted||r.status==='Requested';
+    var requested=dpRows.filter(function(r){
+      if(proj==='all')return r.status==='Requested';
       var projMatch={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
-      return (r.quoted||r.status==='Requested')&&(!projMatch[proj]||r.project===projMatch[proj]);
+      return r.status==='Requested'&&(!projMatch[proj]||r.project===projMatch[proj]);
     });
-    var needAction=relevant.filter(function(r){return r.status==='Quoted'||r.status==='Requested';});
-    var done=relevant.filter(function(r){return r.status==='In fulfillment'||r.status==='Complete'||r.status==='Closed'||r.status==='Scheduled';});
     var h='<div style="margin-top:22px">';
     h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(IC.truck)+'Incoming portal quotes</span><span class="spacer"></span>';
-    if(needAction.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+needAction.length+' need response</span>';
+    if(requested.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+requested.length+' open</span>';
     h+='</div>';
-    if(!relevant.length){h+='<div class="fq-empty">No incoming quotes for this project.</div></div>';return h;}
-    var cols='1.6fr 1fr 120px 100px 110px 150px';
-    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'"><span>Service</span><span>Project</span><span>Vendor</span><span>Total</span><span>Status</span><span>Action</span></div>';
-    relevant.forEach(function(r,ri){
-      var qd=r.quoteData;
-      var tot=qd?qd.lines.reduce(function(a,l){return a+(l.ext||0);},0):null;
-      var _stTone={Quoted:'info',Requested:'warn','In fulfillment':'ok',Complete:'ok',Closed:'neu',Scheduled:'info'};
-      var tone=_stTone[r.status]||'neu';
-      h+='<div class="dp-row" style="grid-template-columns:'+cols+'">';
+    if(!requested.length){h+='<div class="fq-empty">No open quote requests at this time.</div></div>';return h;}
+    var cols='2fr 1.2fr 90px 130px 170px';
+    h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'"><span>Service</span><span>Project</span><span>Qty</span><span>Need by</span><span>Action</span></div>';
+    requested.forEach(function(r){
+      h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:default">';
       h+='<div style="font-size:11.5px;font-weight:500;color:var(--g900)">'+r.item+'</div>';
-      h+='<div style="font-size:11px;color:var(--g600)">'+(r.project||'\u2014')+'</div>';
-      h+='<div style="font-size:11px;color:var(--g600)">'+(qd?qd.vendor:r.vendor||'\u2014')+'</div>';
-      h+='<div style="font-size:11px;font-weight:500">'+(tot?'$'+tot.toLocaleString():'\u2014')+'</div>';
-      h+='<div><span class="chip '+tone+'" style="font-size:10px">'+r.status+'</span></div>';
-      h+='<div style="display:flex;gap:5px">';
-      if(r.quoted&&qd){h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="ccOpenLogQuoteByRef(\''+r.id+'\')">View quote \u2192</button>';}
-      if(r.status==='Quoted'){h+='<button class="btn btn-dark btn-sm" style="font-size:10px;padding:1px 8px" onclick="toast(\'Approved \u00b7 moving to Scheduling\')">Approve</button>';}
-      if(r.status==='Requested'){h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px" onclick="toast(\'Vendor sourcing initiated\')">Source vendor</button>';}
-      h+='</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(r.project||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(r.qty||'—')+'</div>';
+      h+='<div style="font-size:11px;color:var(--g600)">'+(r.window||'—')+'</div>';
+      h+='<div><button class="btn btn-dark btn-sm" style="font-size:10px;padding:3px 12px" onclick="openLogQuoteBuilder(\''+r.id+'\')">Fill out quote →</button></div>';
       h+='</div>';
     });
     h+='</div></div>';
     return h;
+  }
+  function openLogQuoteBuilder(dpRowId){
+    var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var cpRow=dpRows.find(function(r){return r.id===dpRowId;});
+    if(!cpRow){toast('Request not found');return;}
+    var _vMap={
+      'toilet':['United Site Services|(800) 424-0385','ZTERS|(888) 993-7736','Landmark Infrastructure|(855) 552-6275'],
+      'fenc':['American Fence Company|(888) 873-3623','Bison Building Materials|(800) 247-6661','United Rentals|(800) UR-RENTS'],
+      'power':['Sunbelt Rentals|(800) 667-9328','Aggreko|(877) 333-3797','United Rentals|(800) UR-RENTS'],
+      'wast':['Clean Harbors|(800) 282-0058','Republic Services|(480) 627-2700','TransWaste Solutions|(866) 872-9278'],
+      'trail':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226']
+    };
+    var _rcMap={
+      'toilet':[[130,0.15,'Standard portable restroom — monthly service','EA'],[200,0.15,'ADA-accessible restroom — monthly service','EA'],[100,0.15,'Handwash station — monthly service','EA'],[650,0.15,'Initial setup & site delivery','LS']],
+      'fenc':[[3.5,0.15,'Chain-link fencing panel (per LF)','LF'],[180,0.15,'Security gate — per unit/month','EA'],[1.2,0.15,'Barbed wire top rail (per LF)','LF'],[1200,0.15,'Installation & teardown','LS']],
+      'power':[[2800,0.12,'Generator rental — diesel 100kW/month','EA'],[5.5,0.12,'Fuel management (per gallon)','GAL'],[800,0.12,'Distribution panel & cabling','LS'],[600,0.12,'Delivery & setup','LS']],
+      'wast':[[480,0.15,'20-yd roll-off dumpster — 2-week haul','EA'],[95,0.15,'Debris haul-away (per ton)','TON'],[320,0.15,'Hazardous waste disposal (per drum)','DRUM'],[650,0.15,'Monthly service fee','MO']],
+      'trail':[[950,0.12,'10×44 office trailer — monthly lease','EA'],[800,0.12,'Delivery & setup','LS'],[400,0.12,'Steps, tie-downs & skirting','LS'],[180,0.12,'Monthly service (cleaning/maint)','MO']]
+    };
+    var _itemLow=(cpRow.item||'').toLowerCase();
+    var _vKey=Object.keys(_vMap).find(function(k){return _itemLow.indexOf(k)>=0;})||'toilet';
+    window._lqbVendors=_vMap[_vKey];
+    window._lqbRcItems=_rcMap[_vKey];
+    window._lqbLines=[];
+    window._lqbDpId=dpRowId;
+    var vendors=window._lqbVendors;
+    var rcItems=window._lqbRcItems;
+    var ob='<div id="log-qb-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9998;display:flex;align-items:center;justify-content:center;padding:20px" onclick="if(event.target.id===\'log-qb-overlay\'){var el=document.getElementById(\'log-qb-overlay\');if(el)el.remove();}">';
+    ob+='<div style="background:#fff;border-radius:14px;width:820px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.25);display:flex;flex-direction:column">';
+    ob+='<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px 14px;border-bottom:1px solid var(--g150);flex-shrink:0">';
+    ob+='<div><div style="font-size:16px;font-weight:700;color:var(--g900)">Fill out quote</div>';
+    ob+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+cpRow.item+'</div></div>';
+    ob+='<button onclick="var el=document.getElementById(\'log-qb-overlay\');if(el)el.remove();" style="font-size:22px;color:var(--g400);background:none;border:none;cursor:pointer;line-height:1;padding:0 4px;border-radius:6px">×</button>';
+    ob+='</div>';
+    ob+='<div style="padding:18px 22px;flex:1;overflow-y:auto">';
+    ob+='<div style="background:var(--g50);border-radius:8px;padding:10px 16px;display:grid;grid-template-columns:2fr 1fr 80px 130px;gap:8px;margin-bottom:18px">';
+    [['Service',cpRow.item],['Project',cpRow.project||'—'],['Qty',cpRow.qty||'—'],['Need by',cpRow.window||'—']].forEach(function(f){
+      ob+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">'+f[0]+'</div>';
+      ob+='<div style="font-size:12px;font-weight:500;color:var(--g800)">'+f[1]+'</div></div>';
+    });
+    ob+='</div>';
+    ob+='<div style="display:grid;grid-template-columns:210px 1fr;gap:16px;margin-bottom:18px">';
+    ob+='<div>';
+    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Vendors — click to select</div>';
+    vendors.forEach(function(v){
+      var vp=v.split('|');
+      ob+='<div style="padding:9px 11px;background:#fff;border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:border-color .12s" onmouseenter="this.style.borderColor=\'#3b82f6\'" onmouseleave="this.style.borderColor=\'var(--g200)\'" onclick="var inp=document.getElementById(\'lqb-vendor\');if(inp)inp.value=\''+vp[0]+'\'">';
+      ob+='<div style="font-size:11.5px;font-weight:600;color:var(--g900)">'+vp[0]+'</div>';
+      ob+='<div style="font-size:9.5px;color:var(--g500);margin-top:2px">'+vp[1]+'</div>';
+      ob+='</div>';
+    });
+    ob+='</div>';
+    ob+='<div>';
+    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">02S rate card — click to add</div>';
+    rcItems.forEach(function(item,ii){
+      var rate=Math.round(item[0]*(1+item[1]));
+      ob+='<div style="padding:7px 11px;background:#f8fafc;border:1px solid var(--g150);border-radius:7px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseenter="this.style.background=\'#eff6ff\'" onmouseleave="this.style.background=\'#f8fafc\'" onclick="lqbAddRcLine('+ii+')">';
+      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+item[2]+'</div>';
+      ob+='<span style="font-size:11px;font-weight:600;color:var(--charcoal);white-space:nowrap">$'+rate+'/'+item[3]+'</span>';
+      ob+='<span style="font-size:9px;background:var(--g200);border-radius:4px;padding:1px 6px;color:var(--g600);white-space:nowrap">+ add</span>';
+      ob+='</div>';
+    });
+    ob+='</div>';
+    ob+='</div>';
+    ob+='<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px;margin-bottom:18px">';
+    [['lqb-vendor','Vendor','Select or type vendor name','text'],['lqb-qnum','Quote #','Vendor quote reference','text'],['lqb-exp','Valid until','','date']].forEach(function(f){
+      ob+='<div><label style="font-size:10px;font-weight:600;color:var(--g600);display:block;margin-bottom:5px">'+f[1]+'</label>';
+      ob+='<input id="'+f[0]+'" type="'+f[3]+'" placeholder="'+f[2]+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 11px;font-size:12px;font-family:inherit;outline:none;transition:border-color .15s" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+      ob+='</div>';
+    });
+    ob+='</div>';
+    ob+='<div>';
+    ob+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Line items</div>';
+    ob+='<span class="spacer"></span>';
+    ob+='<button onclick="lqbAddLine()" style="font-size:10px;padding:3px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff;cursor:pointer;color:var(--g700)">+ Add blank line</button>';
+    ob+='</div>';
+    ob+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;background:var(--g50);border-bottom:1px solid var(--g200)">';
+    ['Description','Qty','UOM','Vendor $','Markup','Rate','Ext',''].forEach(function(c){ob+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">'+c+'</div>';});
+    ob+='</div>';
+    ob+='<div id="lqb-lines-tbl"></div>';
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g150);background:var(--g50)">';
+    ob+='<div style="padding:7px 8px;font-size:11.5px;font-weight:700;color:var(--g700);grid-column:span 6;text-align:right;padding-right:12px">Total</div>';
+    ob+='<div id="lqb-total" style="padding:7px 8px;font-size:12px;font-weight:700;color:var(--g900)">$0</div>';
+    ob+='<div></div></div>';
+    ob+='</div></div>';
+    ob+='</div>';
+    ob+='<div style="display:flex;gap:8px;justify-content:flex-end;padding:14px 22px;border-top:1px solid var(--g150);flex-shrink:0">';
+    ob+='<button class="btn btn-ghost" onclick="var el=document.getElementById(\'log-qb-overlay\');if(el)el.remove();">Cancel</button>';
+    ob+='<button class="btn btn-ghost" onclick="submitLogQuote(true)">Save draft</button>';
+    ob+='<button class="btn btn-dark" onclick="submitLogQuote(false)">Submit quote →</button>';
+    ob+='</div>';
+    ob+='</div></div>';
+    document.body.insertAdjacentHTML('beforeend', ob);
+    lqbRefreshLines();
+  }
+  function lqbAddRcLine(ii){
+    var rc=window._lqbRcItems;
+    if(!rc||!rc[ii])return;
+    var vp=rc[ii][0],mk=rc[ii][1],desc=rc[ii][2],uom=rc[ii][3];
+    var rate=Math.round(vp*(1+mk)*100)/100;
+    window._lqbLines.push({desc:desc,qty:1,uom:uom,vp:vp,mk:Math.round(mk*100),rate:rate,ext:rate});
+    lqbRefreshLines();
+  }
+  function lqbAddLine(){
+    window._lqbLines=window._lqbLines||[];
+    window._lqbLines.push({desc:'',qty:1,uom:'EA',vp:0,mk:15,rate:0,ext:0});
+    lqbRefreshLines();
+  }
+  function lqbRemLine(i){
+    window._lqbLines.splice(i,1);
+    lqbRefreshLines();
+  }
+  function lqbCalcLine(i){
+    var lines=window._lqbLines;
+    if(!lines||!lines[i])return;
+    var l=lines[i];
+    l.rate=Math.round(l.vp*(1+l.mk/100)*100)/100;
+    l.ext=Math.round(l.rate*l.qty*100)/100;
+    lqbRefreshLines();
+  }
+  function lqbRefreshLines(){
+    var tbl=document.getElementById('lqb-lines-tbl');
+    var totEl=document.getElementById('lqb-total');
+    if(!tbl)return;
+    var lines=window._lqbLines||[];
+    var is='width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:5px;padding:4px 6px;font-size:11.5px;font-family:inherit;outline:none;background:#fff';
+    var h='';
+    lines.forEach(function(l,i){
+      h+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g100);align-items:center;padding:3px 0">';
+      h+='<div style="padding:2px 6px"><input style="'+is+'" value="'+l.desc.replace(/"/g,'&quot;')+'" placeholder="Description" onchange="window._lqbLines['+i+'].desc=this.value"></div>';
+      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" value="'+l.qty+'" onchange="window._lqbLines['+i+'].qty=+this.value||1;lqbCalcLine('+i+')"></div>';
+      h+='<div style="padding:2px 4px"><input style="'+is+'" value="'+l.uom+'" onchange="window._lqbLines['+i+'].uom=this.value"></div>';
+      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" step="0.01" value="'+l.vp+'" onchange="window._lqbLines['+i+'].vp=+this.value||0;lqbCalcLine('+i+')"></div>';
+      h+='<div style="padding:2px 4px;display:flex;align-items:center;gap:2px"><input style="'+is+';text-align:right;max-width:40px" type="number" min="0" max="99" value="'+l.mk+'" onchange="window._lqbLines['+i+'].mk=+this.value||0;lqbCalcLine('+i+')">';
+      h+='<span style="font-size:10px;color:var(--g500)">%</span></div>';
+      h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:500;color:var(--g800);text-align:right">$'+l.rate.toLocaleString()+'</div>';
+      h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:600;color:var(--g900);text-align:right">$'+l.ext.toLocaleString()+'</div>';
+      h+='<div style="padding:2px 2px;text-align:center"><button onclick="lqbRemLine('+i+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;line-height:1;padding:2px 4px">×</button></div>';
+      h+='</div>';
+    });
+    if(!lines.length){h='<div style="padding:16px;text-align:center;color:var(--g400);font-size:11.5px">Add lines from the rate card above or click &ldquo;+ Add blank line&rdquo;</div>';}
+    tbl.innerHTML=h;
+    if(totEl){
+      var tot=lines.reduce(function(a,l){return a+l.ext;},0);
+      totEl.textContent='$'+Math.round(tot).toLocaleString();
+    }
+  }
+  function submitLogQuote(isDraft){
+    var vendorEl=document.getElementById('lqb-vendor');
+    var qnumEl=document.getElementById('lqb-qnum');
+    var expEl=document.getElementById('lqb-exp');
+    var vendor=vendorEl?vendorEl.value.trim():'';
+    var qnum=qnumEl?qnumEl.value.trim():'';
+    var expDate=expEl?expEl.value:'';
+    var lines=window._lqbLines||[];
+    if(!isDraft&&!vendor){if(vendorEl)vendorEl.style.borderColor='#dc2626';toast('Enter a vendor name');return;}
+    if(!isDraft&&!lines.length){toast('Add at least one line item');return;}
+    var dpId=window._lqbDpId;
+    var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var cpRow=dpRows.find(function(r){return r.id===dpId;});
+    if(!cpRow){toast('Row not found');return;}
+    var today=new Date();
+    var _mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var _fmtDate=function(d){return _mo[d.getMonth()]+' '+d.getDate()+' '+d.getFullYear();};
+    var qd={
+      vendor:vendor||'(Draft)',
+      quoteNum:qnum||'DRAFT-'+Date.now(),
+      quoteDate:_fmtDate(today),
+      expDate:expDate?_fmtDate(new Date(expDate+' 12:00')):'TBD',
+      lines:lines.map(function(l){return{desc:l.desc,qty:l.qty,uom:l.uom,vendorPrice:l.vp,markup:l.mk/100,unitRate:l.rate,ext:l.ext};})
+    };
+    cpRow.quoteData=qd;
+    if(!isDraft){cpRow.status='Quoted';cpRow.quoted=true;}
+    var el=document.getElementById('log-qb-overlay');
+    if(el)el.remove();
+    toast(isDraft?'Draft saved':'Quote submitted — visible on project portal');
+    renderCcDemand('logistics');
   }
   function ccOpenLogQuoteByRef(dpRowId){
     var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
@@ -9009,6 +9230,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         });
         h+='</div>';
         h+='</div>';
+        h+=renderLogisticsQuoteQueue('all',false);
+        mount.innerHTML=h;
+        return;
       }
       h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
       [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){
@@ -9270,8 +9494,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
                 h+='<div style="padding:4px 8px;text-align:center">';
                 h+='<span contenteditable="true" style="font-size:10.5px;color:var(--g600);border-bottom:1px dashed var(--g300);outline:none;cursor:text" onclick="event.stopPropagation()" onblur="event.stopPropagation();var v=parseInt(this.innerText,10);if(v>0){CC_PROJ_DP.logistics[\''+row._proj+'\'].rows['+row._idx+'].acts['+ai+'].leadWeeks=v;}">'+_leadWks+'</span>';
                 h+='<span style="font-size:9px;color:var(--g400)"> wks</span></div>';
-                h+='<div style="padding:4px 8px;text-align:right">';
-                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();logQuickTask(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
+                h+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px">';
+                var _tCt=MY_CC_TASKS.filter(function(t){return !t.done&&t.pillar==='logistics'&&t.activity===act.n&&t.item===row.item;}).length;
+                if(_tCt>0)h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:0 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">'+_tCt+'</span>';
+                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
                 h+='</div>';
                 h+='</div>';
               });
