@@ -2100,7 +2100,7 @@ function renderProfServicesDP(){
   var STAGES_FAB=['Plan line','Requested','Submittal','In fabrication','QC approved','Delivered'];
   var STAGES_SVC=['Requested','Active','Demobilized'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
-  var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','In fabrication':'info','Submittal':'info','QC approved':'ok','Plan line':'neu','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Demobilized':'neu','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
+  var STATUS_TAG={'Requested':'neu','Acknowledged':'neu','In fulfillment':'info','In fabrication':'info','Submittal':'info','QC approved':'ok','Plan line':'neu','Delivered':'ok','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Demobilized':'neu','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
 
   var ORDERS=[
     {id:'ORD-3051',proj:'hercules',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok',rental:{offRent:'Oct 31, 2026',daysLeft:101,idle:false,save:0}},
@@ -2205,7 +2205,7 @@ function renderProfServicesDP(){
   {id:'ORD-3143',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Barry Rose WRF. No billing disputes.'},
   {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
     ,{id:'ORD-5001',proj:'hercules',fresh:true,od:'2026-07-31',item:'BESS commissioning agent',sub:'2 FTE · Nov 2026 – Mar 2027',pillar:'profservices',dates:'Nov 2026 – Mar 2027',cost:'2600-3300-0000-0001 · BESS & Substation',stage:0,status:'Requested',plan:'PS-BESS-001',qty:2,vendor:'TBD',latest:'Submitted to 02S — awaiting acknowledgement.'},
-    {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:2,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
+    {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:2,status:'Submittal',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
     {id:'ORD-5003',proj:'hercules',fresh:true,od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:1,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'},
     {id:'ORD-3200',proj:'hercules',od:'2026-03-01',item:'Office & storage trailers',sub:'4 units · ModSpace',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 4 units active. Monthly service confirmed.'},
     {id:'ORD-3201',proj:'hercules',od:'2026-03-01',item:'Temporary power',sub:'2 panels · Aggreko',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 2 distribution panels active.'},
@@ -5032,11 +5032,11 @@ charges:[
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
   function openOrderPreviewModal(id){
     var ord=ORDERS.filter(function(o){return o.id===id;})[0]; if(!ord)return;
-    var stgLbl={1:'Submitted',2:'Acknowledged',3:'In fulfillment',4:'On rent · active',5:'Off-rent · billing',6:'Closed'};
+    var _ss=stageStatus(ord);
     var b='<div class="fq-req"><div class="fq-req-t">'+ord.id+' · '+ord.item+'</div>';
     if(ord.sub)b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+ord.sub+'</div>';
     b+='</div><div class="fq-calc">';
-    b+='<div class="fq-crow"><span>Status</span><span><span class="tag ok">'+( stgLbl[ord.stage]||'Stage '+ord.stage)+'</span></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+(STATUS_TAG[_ss]||'neu')+'">'+_ss+'</span></span></div>';
     if(ord.dates)b+='<div class="fq-crow"><span>Period</span><span>'+ord.dates+'</span></div>';
     if(ord.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+ord.cost+'</span></div>';
     if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>$'+ord.mrate.toLocaleString()+'·unit</span></div>';
@@ -6965,7 +6965,7 @@ charges:[
 
   function fqEditModal(id){
     var r=fqById(id); if(!r)return;
-    var _pst={equipment:['New','Requested','Planned','Scheduled','PO issued','Allocated','Needs attention','At-risk'],logistics:['New','Requested','Planned','Scheduled','Active','Delivered','Needs attention','At-risk'],procurement:['New','Requested','Planned','Awaiting pricing','In fulfillment','Delivered','Needs attention','At-risk'],prefab:['New','Requested','Planned','Awaiting pricing','Submittal','Scheduled','In fulfillment','Delivered','Needs attention','At-risk'],services:['New','Requested','Planned','Awaiting pricing','Acknowledged','Active','Delivered','Needs attention','At-risk']};var statuses=_pst[r.pillar]||['New','Requested','Scheduled','Active','Delivered','At-risk'];
+    var _pst={equipment:['New','Requested','Planned','Scheduled','PO issued','Allocated','Needs attention','At-risk'],logistics:['New','Requested','Planned','Scheduled','Active','Delivered','Needs attention','At-risk'],procurement:['New','Requested','Planned','Awaiting pricing','In fulfillment','Delivered','Needs attention','At-risk'],prefab:['New','Requested','Planned','Awaiting pricing','Submittal','In fabrication','QC approved','Delivered','Needs attention','At-risk'],services:['New','Requested','Planned','Awaiting pricing','Acknowledged','Active','Delivered','Needs attention','At-risk']};var statuses=_pst[r.pillar]||['New','Requested','Scheduled','Active','Delivered','At-risk'];
     var h='<div style="display:flex;flex-direction:column;gap:12px">';
     h+='<div><label style="font-size:11px;color:var(--g500);display:block;margin-bottom:4px">Status</label>';
     h+='<select id="fqEditStatus" style="width:100%;font-size:12.5px;border:1px solid var(--g200);border-radius:6px;padding:6px 10px">';
