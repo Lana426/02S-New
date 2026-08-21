@@ -1568,8 +1568,8 @@
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
-      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'5 of 7',sub:'2 in planning · 1 in review',tone:'warn',icon:IC.chart}],
-      v1:'46 assemblies planned · 16 in fabrication · 2 in planning · 1 awaiting submittal approval (BESS e-houses).',
+      vitals:[{label:'Assemblies planned',value:'46',sub:'6 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'18',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$426K',sub:'47% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'6 of 7',sub:'1 in planning',tone:'warn',icon:IC.chart}],
+      v1:'46 assemblies planned · 18 in fabrication · 1 in planning.',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
@@ -9767,7 +9767,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
-      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'5 of 7',sub:'2 in planning · 1 in review',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies planned',value:'46',sub:'6 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'18',sub:'2 shops',tone:'info',icon:IC.box},{label:'Committed',value:'$426K',sub:'47% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'6 of 7',sub:'1 in planning',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'114px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
