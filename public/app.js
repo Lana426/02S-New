@@ -8778,7 +8778,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,ordId:r.ordId||null,fqRef:r.fqRef||null,attachments:r.attachments||[]});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,attachments:r.attachments||[]});
         });
       }
     });
@@ -8818,29 +8818,51 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'All requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
       if(p==='logistics'){
         var _lProjs=['hercules','barryrose','vdc14'];
-        var _lPNames={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
-        h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">';
+        var _lShort={hercules:'Hercules',barryrose:'Barry Rose',vdc14:'VDC14'};
+        var _lStTone={Complete:'ok','In fulfillment':'ok',Scheduled:'info',Quoted:'info',Requested:'warn',Planned:'neu',Closed:'neu','Not started':'neu'};
+        var _lSvcMap={};
         _lProjs.forEach(function(pr){
-          var _lpd=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[pr];
-          var _lprows=(_lpd&&_lpd.rows)||[];
-          var _ldone=_lprows.filter(function(r){return r.state==='Complete'||r.state==='Closed';}).length;
-          var _lactive=_lprows.filter(function(r){return r.state==='In fulfillment'||r.state==='Scheduled';}).length;
-          var _lact=_lprows.filter(function(r){return r.state==='Requested'||r.state==='Quoted';}).length;
-          var _lpct=_lprows.length?Math.round(_lprows.reduce(function(a,r){
-            return a+(r.acts?r.acts.filter(function(aa){return aa.st==='Done';}).length/(r.acts.length||1):0);
-          },0)/_lprows.length*100):0;
-          h+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpSetProjFilter(\'logistics\',\''+pr+'\')'+'">';
-          h+='<div style="font-size:11px;font-weight:700;color:var(--g900);margin-bottom:6px">'+_lPNames[pr]+'</div>';
-          h+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px"><div style="flex:1;height:6px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+_lpct+'%;height:100%;background:'+(_lpct===100?'#10b981':'#3b82f6')+';border-radius:3px"></div></div><span style="font-size:10px;color:var(--g500)">'+_lpct+'%</span></div>';
-          h+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
-          h+='<span class="chip ok" style="font-size:9.5px">'+_ldone+' done</span>';
-          h+='<span class="chip info" style="font-size:9.5px">'+_lactive+' active</span>';
-          if(_lact)h+='<span class="chip warn" style="font-size:9.5px">'+_lact+' need action</span>';
-          h+='</div>';
-          if(_lpd)h+='<div style="font-size:10px;color:var(--g400);margin-top:7px">Budget $'+(_lpd.budget/1000).toFixed(0)+'K · spent $'+(_lpd.dpSpent/1000).toFixed(0)+'K</div>';
-          h+='<div style="font-size:10px;color:var(--info);margin-top:5px">View plan →</div>';
+          var rows=(CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[pr]&&CC_PROJ_DP.logistics[pr].rows)||[];
+          rows.forEach(function(r,ri){
+            if(!_lSvcMap[r.item])_lSvcMap[r.item]={name:r.item,projs:{}};
+            _lSvcMap[r.item].projs[pr]={state:r.state,acts:r.acts||[],cost:r.cost,fqRef:r.fqRef,ri:ri};
+          });
+        });
+        var _lSvcs=Object.keys(_lSvcMap);
+        h+='<div style="margin-bottom:14px">';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Services at a glance — all projects</div>';
+        h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
+        h+='<div style="display:grid;grid-template-columns:1.6fr repeat(3,1fr) 84px;background:var(--g50);border-bottom:1px solid var(--g200)">';
+        h+='<div style="padding:7px 12px;font-size:10px;font-weight:700;color:var(--g500)">Service</div>';
+        _lProjs.forEach(function(pr){h+='<div style="padding:7px 8px;font-size:10px;font-weight:700;color:var(--g500)">'+_lShort[pr]+'</div>';});
+        h+='<div style="padding:7px 8px;font-size:10px;font-weight:700;color:var(--g500);text-align:center">Progress</div>';
+        h+='</div>';
+        _lSvcs.forEach(function(svc){
+          var _sd=_lSvcMap[svc];
+          var _allActs=[];
+          _lProjs.forEach(function(pr){if(_sd.projs[pr])(_sd.projs[pr].acts||[]).forEach(function(a){_allActs.push(a);});});
+          var _doneCt=_allActs.filter(function(a){return a.st==='Done';}).length;
+          var _pct=_allActs.length?Math.round(_doneCt/_allActs.length*100):0;
+          var _pcol=_pct===100?'#10b981':_pct>50?'#10b981':'#f59e0b';
+          h+='<div style="display:grid;grid-template-columns:1.6fr repeat(3,1fr) 84px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';
+          h+='<div style="padding:6px 12px;font-size:11.5px;font-weight:500;color:var(--g900)">'+svc+'</div>';
+          _lProjs.forEach(function(pr){
+            var _pd=_sd.projs[pr];
+            if(_pd){
+              var _nt=_lStTone[_pd.state]||'neu';
+              h+='<div style="padding:4px 8px"><span class="chip '+_nt+'" style="font-size:9px;cursor:pointer" onclick="dpSetProjFilter(\'logistics\',\''+pr+'\')">'+_pd.state+'</span></div>';
+            } else {
+              h+='<div style="padding:4px 8px"><span style="font-size:10px;color:var(--g300)">—</span></div>';
+            }
+          });
+          h+='<div style="padding:4px 8px;display:flex;justify-content:center">';
+          h+='<div style="display:flex;flex-direction:column;align-items:center;gap:2px">';
+          h+='<div style="width:52px;height:5px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+_pct+'%;height:100%;background:'+_pcol+';border-radius:3px"></div></div>';
+          h+='<span style="font-size:9px;color:var(--g400)">'+_pct+'%</span>';
+          h+='</div></div>';
           h+='</div>';
         });
+        h+='</div>';
         h+='</div>';
       }
       h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
@@ -9052,7 +9074,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           h+='<div>'+dpDocCell(p,row)+'</div>';
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
-          if(p==='logistics'&&isDpView&&row.acts){
+          if(p==='logistics'&&row.acts){
             var _lKey=row._proj+'-'+row._idx;
             if(_logExpanded[_lKey]){
               var _EQ_MO=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
