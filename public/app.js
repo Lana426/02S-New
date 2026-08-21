@@ -5882,25 +5882,34 @@ charges:[
     var cpRow=dpRows.find(function(r){return r.fqRef===ccRow.fqRef||r.id===ccRow.fqRef;});
     var qd=cpRow&&cpRow.quoteData;
     if(!qd){toast('No quote data available for this service');return;}
-    var tot=qd.lines.reduce(function(a,l){return a+(l.ext||0);},0);
-    var b='<div style="padding:4px 0">';
-    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
-    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Vendor</div><div style="font-size:12px;font-weight:600">'+qd.vendor+'</div></div>';
-    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Quote #</div><div style="font-size:12px;font-weight:600">'+qd.quoteNum+'</div></div>';
-    b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Valid until</div><div style="font-size:12px;font-weight:600">'+qd.expDate+'</div></div>';
-    b+='</div>';
-    b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
-    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Vendor $</span><span class="r">Rate</span><span class="r">Extension</span></div>';
-    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.vendorPrice.toLocaleString()+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
-    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 5;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
-    b+='</div>';
-    b+='<div style="display:flex;gap:8px;justify-content:flex-end">';
-    b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
-    if(ccRow.state==='Quoted'){b+='<button class="btn btn-dark" onclick="closeModal();toast(\'Quote approved \u2014 moving to Scheduling\')">Approve \u2192 Scheduling</button>';}
-    b+='</div>';
-    b+='</div>';
-    openModal(ccRow.item+' \u2014 Quote details', b);
+    var total=(qd.lines||[]).reduce(function(s,l){return s+(l.ext||0);},0);
+    var pName=proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14';
+    var QUALS=['Sales tax, environmental fee, and fuel surcharges will be applied at time of invoice.','Does not include overtime rates and expedited requests; rates specified at time of request.','Rates include normal wear & tear; all other damages identified at service completion.','Any new scope requests/changes will require a re-quote.','Delivery & pickup fees subject to change based on service request date.','Recurring services will be billed on a 28-day billing cycle.'];
+    var mh='<div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #e2e8f0">';
+    mh+='<div style="display:grid;gap:5px">';
+    var flds=[['Vendor',qd.vendor||'\u2014'],['Quote #',qd.quoteNum||'\u2014'],['Quote Date',qd.quoteDate||'\u2014'],['Expiration',qd.expDate||'\u2014'],['Project',pName],['02S Service',ccRow.item||'\u2014'],['Annual Rate Increase','3%']];
+    flds.forEach(function(f){mh+='<div style="display:flex;gap:8px;font-size:12px"><span style="color:#64748b;min-width:130px">'+f[0]+':</span><span style="font-weight:600;color:#1e293b">'+f[1]+'</span></div>';});
+    mh+='</div><div style="background:#f8fafc;border-radius:6px;padding:10px 12px;border:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Qualifications</div>';
+    QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">\u2022 '+q+'</div>';});
+    mh+='</div></div>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor Price</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Markup</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    (qd.lines||[]).forEach(function(l,li){
+      mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
+      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.vendorPrice||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;color:#64748b">'+(((l.markup||0)*100).toFixed(0))+'%</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
+    });
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="7" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
+    mh+='</table><div style="margin-top:8px;font-size:10.5px;color:#94a3b8;text-align:right">02S Quote Ref: '+(cpRow&&cpRow.quoteRef||'\u2014')+'</div>';
+    if(ccRow.state==='Quoted'){
+      mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px">';
+      mh+='<div style="font-size:12px;color:#475569;line-height:1.5">02S has submitted this quote for your review. <b>Approve</b> to release the service for scheduling.</div>';
+      mh+='<button class="btn btn-dark btn-sm" style="white-space:nowrap" onclick="closeModal();toast(\'Quote approved \u2014 moving to Scheduling\')">Approve \u2192 Scheduling</button>';
+      mh+='</div>';
+    }
+    mh+='</div>';
+    openModal('02S Quote \u2014 '+ccRow.item,mh);
   }
+
   function _renderLogTaskCard(t,proj,showAct){
     var _priColor={high:'#dc2626',medium:'#f59e0b',low:'#16a34a'};
     var _priBg={high:'#fee2e2',medium:'#fffbeb',low:'#dcfce7'};
@@ -5930,7 +5939,7 @@ charges:[
     var h='<div style="margin-top:4px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
     h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px">';
-    [['activity','By activity'],['person','By person']].forEach(function(v){
+    [['activity','By activity'],['person','By person'],['service','By service']].forEach(function(v){
       h+='<button onclick="window._logTaskTab=\''+v[0]+'\';renderCcDemand(\'logistics\')" style="font-size:11px;font-weight:'+(tab===v[0]?700:500)+';padding:4px 12px;border-radius:6px;border:none;cursor:pointer;background:'+(tab===v[0]?'#fff':'transparent')+';color:'+(tab===v[0]?'var(--g900)':'var(--g500)')+';box-shadow:'+(tab===v[0]?'0 1px 3px rgba(0,0,0,.08)':'none')+'">'+v[1]+'</button>';
     });
     h+='</div>';
@@ -5952,7 +5961,7 @@ charges:[
         grp.forEach(function(t){h+=_renderLogTaskCard(t,proj,false);});
         h+='</div>';
       });
-    } else {
+    } else if(tab==='person'){
       var personMap={};
       open.forEach(function(t){var p=t.assignee||'You';if(!personMap[p])personMap[p]=[];personMap[p].push(t);});
       Object.keys(personMap).sort(function(a,b){return a==='You'?-1:b==='You'?1:a.localeCompare(b);}).forEach(function(person){
@@ -5961,6 +5970,19 @@ charges:[
         h+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">';
         h+='<div style="width:22px;height:22px;border-radius:50%;background:'+(person==='You'?'#1d4ed8':'var(--g300)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:10px;font-weight:700;color:#fff">'+(person==='You'?'You':person.split(' ').map(function(n){return n[0];}).join(''))+'</span></div>';
         h+='<div style="font-size:12px;font-weight:600;color:var(--g800)">'+person+'</div>';
+        h+='<span style="background:var(--g150);color:var(--g600);border-radius:8px;padding:0 6px;font-size:9.5px;font-weight:700">'+grp.length+'</span>';
+        h+='</div>';
+        grp.forEach(function(t){h+=_renderLogTaskCard(t,proj,true);});
+        h+='</div>';
+      });
+    } else {
+      var svcMap={};
+      open.forEach(function(t){var s=t.item||'Other';if(!svcMap[s])svcMap[s]=[];svcMap[s].push(t);});
+      Object.keys(svcMap).sort().forEach(function(svc){
+        var grp=svcMap[svc];
+        h+='<div style="margin-bottom:16px">';
+        h+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:7px">';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+svc+'</div>';
         h+='<span style="background:var(--g150);color:var(--g600);border-radius:8px;padding:0 6px;font-size:9.5px;font-weight:700">'+grp.length+'</span>';
         h+='</div>';
         grp.forEach(function(t){h+=_renderLogTaskCard(t,proj,true);});
@@ -7820,7 +7842,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:0,e:1},{n:'Contracting',st:'Done',s:0,e:1},{n:'Install',st:'Done',s:1,e:2}]},
         {item:'Site Construction Signage',qty:'2 zones',window:'Aug 1, 2026',state:'In fulfillment',ordId:'ORD-3119',fqRef:'REQ-L-3119',cost:'$14,000',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
-        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Oct 1, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
+        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
         {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Not started',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
@@ -7839,12 +7861,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ],
       varSummary:'7 of 8 services active or in fulfillment · Drinking water vendor selection pending.',
       rows:[
-        {item:'Office \u0026 Storage Trailers',qty:'3 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3139',fqRef:'REQ-L-3054',cost:'$18,500',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+        {item:'Office Trailers',qty:'3 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3139',fqRef:'REQ-L-3054',cost:'$18,500',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
          attachments:[{type:'Safety',name:'Delivery plan — office trailers Barry Rose WRF',ref:'LP-3139-001',status:'Approved'},{type:'Shipping',name:'Haul route map',ref:'HR-3139-001',status:'Approved'}]},
-        {item:'Temp Power',qty:'1 move',window:'Sep 2026',state:'Complete',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform',poc:'Site PM',phone:'',
+        {item:'Temp Power Distribution Equip.',qty:'1 move',window:'Sep 2026',state:'Complete',ordId:'ORD-3129',cost:'$3,200',firm:'Self-perform',poc:'Site PM',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:5}]},
-        {item:'Sanitation Units',qty:'3 units',window:'Sep 2026',state:'In fulfillment',ordId:'ORD-3130',cost:'$6,400/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
+        {item:'Temp Toilets \u0026 Handwash Stations',qty:'3 units',window:'Sep 2026',state:'In fulfillment',ordId:'ORD-3130',cost:'$6,400/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:4},{n:'Install',st:'In progress',s:4,e:5}]},
         {item:'Site Security \u0026 Cameras',qty:'12 cameras',window:'Aug 2026',state:'In fulfillment',ordId:'ORD-3141',fqRef:'REQ-L-3141',cost:'$8,400',firm:'UFY Cameras',poc:'UFY Support',phone:'(888) 839-2866',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
@@ -7852,10 +7874,18 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
         {item:'Fuel Station Setup',qty:'1 station',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3143',fqRef:'REQ-L-3143',cost:'$6,200',firm:'Energy Petroleum',poc:'Tony Mancini',phone:'(314) 974-6517',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'In progress',s:3,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Waste Hauling \u0026 Recycling',qty:'2 dumpsters',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3144',cost:'$5,200/mo',firm:'Central Solutions Center',poc:'Lou Rosswick',phone:'(314) 374-6824',
+        {item:'Waste Hauling',qty:'2 dumpsters',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3144',cost:'$5,200/mo',firm:'Central Solutions Center',poc:'Lou Rosswick',phone:'(314) 374-6824',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:7}]},
-        {item:'Drinking Water \u0026 Bagged Ice',qty:'Weekly delivery',window:'Ongoing',state:'Requested',ordId:null,fqRef:'REQ-L-3145',cost:'$1,800/mo est.',firm:'TBD',poc:'TBD',phone:'',
-         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'In progress',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
+        {item:'Drinking Water \u0026 Bagged Ice',qty:'Weekly delivery',window:'Aug 10, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3145',cost:'$1,800/mo est.',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'In progress',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+        {item:'Restroom Facility',qty:'1 unit',window:'Sep 2026',state:'In fulfillment',ordId:'ORD-3160',cost:'$11,800/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:5}]},
+        {item:'Storage Containers',qty:'6 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3161',cost:'$10,800',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}]},
+        {item:'Site Construction Signage',qty:'1 zone',window:'Aug 2026',state:'In fulfillment',ordId:'ORD-3162',cost:'$7,200',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
+        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3163',cost:'$11,000',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Done',s:3,e:4},{n:'Contracting',st:'In progress',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]}
       ]},
       vdc14:{budget:400000,dpSpent:185000,adHoc:100000,
       rollCols:['GC/GR service','Delivery date','Progress','Status'],
@@ -7870,9 +7900,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ],
       varSummary:'Data center logistics on track · Sanitation units vendor selection needed by Sep · Temp structures planning not started.',
       rows:[
-        {item:'Office \u0026 Storage Trailers',qty:'2 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform',poc:'Site PM',phone:'',
+        {item:'Office Trailers',qty:'2 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform',poc:'Site PM',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
-        {item:'Temp Power',qty:'3 loads',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3132',cost:'$4,200',firm:'3PL',poc:'3PL Ops',phone:'',
+        {item:'Temp Power Distribution Equip.',qty:'3 loads',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3132',cost:'$4,200',firm:'3PL',poc:'3PL Ops',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:5},{n:'Install',st:'In progress',s:5,e:6}]},
         {item:'IT Equipment \u0026 Network Install',qty:'Full suite',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3148',fqRef:'REQ-L-3148',cost:'$48,000',firm:'Lenovo / IT McCarthy',poc:'Nick Herrera',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:5},{n:'Install',st:'In progress',s:5,e:6}]},
@@ -7880,10 +7910,20 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
         {item:'Office Furniture Package',qty:'1 lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3150',fqRef:'REQ-L-3150',cost:'$22,000',firm:'Mike Furniture',poc:'Mike Larson',phone:'(314) 713-6329',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Done',s:3,e:4},{n:'Contracting',st:'In progress',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Sanitation Units',qty:'16 units',window:'Nov 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3133',cost:'$44K est.',firm:'TBD',poc:'TBD',phone:'',
+        {item:'Temp Toilets \u0026 Handwash Stations',qty:'16 units',window:'Aug 8, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3133',cost:'$44K est.',firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'In progress',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
         {item:'Temp Structures',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,fqRef:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
-         acts:[{n:'Project Plan',st:'In progress',s:4,e:5},{n:'RFP',st:'Not started',s:5,e:6},{n:'Contracting',st:'Not started',s:6,e:7},{n:'Install',st:'Not started',s:7,e:8}]}
+         acts:[{n:'Project Plan',st:'In progress',s:4,e:5},{n:'RFP',st:'Not started',s:5,e:6},{n:'Contracting',st:'Not started',s:6,e:7},{n:'Install',st:'Not started',s:7,e:8}]},
+        {item:'Restroom Facility',qty:'1 unit',window:'Nov 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+        {item:'Storage Containers',qty:'4 units',window:'Oct 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Waste Hauling',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+        {item:'Site Construction Signage',qty:'TBD',window:'Oct 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Temp Fencing',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Not started',s:4,e:5},{n:'RFP',st:'Not started',s:5,e:6},{n:'Contracting',st:'Not started',s:6,e:7},{n:'Install',st:'Not started',s:7,e:8}]}
       ]}
     },
         profservices:{
@@ -9104,11 +9144,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<span style="font-size:11.5px;color:var(--g700)">'+(_PROJ_NAMES[selProj]||selProj)+' data shown here for demo purposes only — not yet reflected in customer portal.</span>';
       h+='</div>';
     }
-    if(selProj==='all'){
-    h+='<div class="vitals" style="grid-template-columns:repeat('+cfg.kpis.length+',1fr)">';
-    cfg.kpis.forEach(function(k){ var v=k.v, tone=k.tone; if(k.dyn==='tax'){ v=''+pending; tone=pending>0?'warn':'ok'; } h+='<div class="vital '+tone+'"><div class="vk">'+svg(dpIcon(k.icon))+k.k+'</div><div class="vv">'+v+'</div><div class="vsub">'+k.sub+'</div></div>'; });
-    h+='</div>';
-    }
+
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     if(selProj!=='all'){
@@ -9221,23 +9257,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='</div>';
         if(_logTasksView==='tasks'){h+=renderLogisticsTasksView(selProj);mount.innerHTML=h;return;}
       }
-      if(p==='logistics'){
-        var _lqNeed=allReqRows.filter(function(r){return r._type==='dp'&&(r.state==='Quoted'||r.state==='Requested');});
-        if(_lqNeed.length){
-          h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:10px">';
-          h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#92400e;margin-bottom:8px">⚠️ Portal activity — '+_lqNeed.length+' service'+((_lqNeed.length===1)?'':'s')+' needing action</div>';
-          h+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
-          _lqNeed.forEach(function(r){
-            var _nt=r.state==='Quoted'?'info':'warn';
-            h+='<div style="display:flex;align-items:center;gap:7px;padding:5px 10px 5px 8px;background:#fff;border:1px solid var(--g200);border-radius:6px">';
-            h+='<span class="chip '+_nt+'" style="font-size:9.5px">'+r.state+'</span>';
-            h+='<span style="font-size:11.5px;font-weight:500;color:var(--g900)">'+r.item+'</span>';
-            h+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 7px" onclick="logExpandToggle(\''+r._proj+'-'+r._idx+'\')">↓ View</button>';
-            h+='</div>';
-          });
-          h+='</div></div>';
-        }
-      }
     } else {
       var _allHdr=p==='logistics'?'Quote requests':'All requests';
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+_allHdr+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
@@ -9259,9 +9278,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var _lNeedQuote=0;
         var _lOnTrack=0;
         var _lAllIntake=((DP.logistics.intake&&DP.logistics.intake.core)||[]).concat((DP.logistics.intake&&DP.logistics.intake.archetype)||[]).concat((DP.logistics.intake&&DP.logistics.intake.optional)||[]);
+        var _lpDate=function(s){if(!s||s==='Ongoing'||s==='TBD')return null;var MO={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};var m=s.match(/([A-Za-z]+)\s+(\d+),\s*(\d{4})/);if(m)return new Date(+m[3],MO[m[1].slice(0,3)],+m[2]);m=s.match(/([A-Za-z]+)\s+(\d{4})/);if(m)return new Date(+m[2],MO[m[1].slice(0,3)],1);return null;};
+        var _today=new Date(2026,7,21);
         _lSvcs.forEach(function(svc){
           var _sd=_lSvcMap[svc];var hasRisk=false;var isOnTrack=true;
-          _lProjs.forEach(function(pr){var _pd=_sd.projs[pr];if(_pd){if(_pd.state==='Requested'||_pd.state==='Planned'){isOnTrack=false;}if(_pd.state==='Requested'){hasRisk=true;_lNeedQuote++;}}});
+          _lProjs.forEach(function(pr){var _pd=_sd.projs[pr];if(_pd){if(_pd.state==='Requested'||_pd.state==='Planned'){isOnTrack=false;}if(_pd.state==='Requested'){_lNeedQuote++;var _dt=_lpDate(_pd.window||'');if(_dt&&_dt<_today){hasRisk=true;}}}});
           if(hasRisk)_lAtRisk.push(svc);
           if(isOnTrack)_lOnTrack++;
         });
@@ -9279,7 +9300,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
             var _svcEntry=_lAllIntake.find(function(s){return s.service===svc;});
             var _lt=_svcEntry?_svcEntry.leadTime:null;
             var _atProjs=_lProjs.filter(function(pr){return _sd.projs[pr]&&_sd.projs[pr].state==='Requested';});
-            h+='<div style="background:#fff;border:1px solid #fca5a5;border-radius:6px;padding:6px 10px">';
+            h+='<div style="background:#fff;border:1px solid #fca5a5;border-radius:6px;padding:6px 10px;cursor:pointer" onclick="dpSetProjFilter(\'logistics\',\''+_atProjs[0]+'\')">';
             h+='<div style="font-size:11.5px;font-weight:600;color:#991b1b">'+svc+'</div>';
             h+='<div style="font-size:10px;color:#dc2626;margin-top:2px">'+_atProjs.map(function(pr){return _lShort[pr];}).join(', ')+(': quote needed')+(_lt?' · '+_lt+'d lead time':'')+'</div>';
             h+='</div>';
@@ -9332,7 +9353,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='</div>';
         h+='</div>';
 
-        h+=renderLogisticsQuoteQueue('all',false);
         mount.innerHTML=h;
         return;
       }
@@ -9566,12 +9586,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
               }
               h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Activity timeline</div>';
               h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
-              h+='<div style="display:grid;grid-template-columns:110px 1fr 96px 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';
+              h+='<div style="display:grid;grid-template-columns:110px 1fr 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';
               h+='<div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';
               h+='<div style="padding:6px 4px;font-size:9px;font-weight:700;color:var(--g500);display:flex;justify-content:space-between">';
               _EQ_MO.forEach(function(m){h+='<span style="font-size:8px;font-weight:600;color:var(--g400)">'+m+'</span>';});
               h+='</div>';
-              h+='<div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:center">Lead time</div>';
+              
               h+='<div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:right">Tasks</div>';
               h+='</div>';
               _lActs.forEach(function(act,ai){
@@ -9580,7 +9600,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
                 var _lbg=_lActBg[act.st]||'#e5e7eb';
                 var _ltc=_lActTc[act.st]||'#94a3b8';
                 var _leadWks=act.leadWeeks||((_le-_ls)*4);
-                h+='<div style="display:grid;grid-template-columns:110px 1fr 96px 80px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';
+                h+='<div style="display:grid;grid-template-columns:110px 1fr 80px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';
                 h+='<div style="padding:4px 10px">';
                 h+='<div style="font-size:11px;font-weight:500;color:var(--g800)">'+act.n+'</div>';
                 h+='<select style="font-size:9px;border:none;background:none;color:var(--g500);cursor:pointer;font-family:inherit;padding:0;margin-top:1px" onchange="event.stopPropagation();logSetActStatus(\''+row._proj+'\','+row._idx+','+ai+',this.value)">';
@@ -9593,9 +9613,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
                   else{h+='<div style="border-right:1px solid var(--g100)"></div>';}
                 }
                 h+='</div></div>';
-                h+='<div style="padding:4px 8px;text-align:center">';
-                h+='<span contenteditable="true" style="font-size:10.5px;color:var(--g600);border-bottom:1px dashed var(--g300);outline:none;cursor:text" onclick="event.stopPropagation()" onblur="event.stopPropagation();var v=parseInt(this.innerText,10);if(v>0){CC_PROJ_DP.logistics[\''+row._proj+'\'].rows['+row._idx+'].acts['+ai+'].leadWeeks=v;}">'+_leadWks+'</span>';
-                h+='<span style="font-size:9px;color:var(--g400)"> wks</span></div>';
                 h+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px">';
                 var _tCt=MY_CC_TASKS.filter(function(t){return !t.done&&t.pillar==='logistics'&&t.activity===act.n&&t.item===row.item;}).length;
                 if(_tCt>0)h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:0 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">'+_tCt+'</span>';
