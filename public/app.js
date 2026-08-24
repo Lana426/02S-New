@@ -2096,7 +2096,7 @@ function renderProfServicesDP(){
   var STAGES_EQ=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
   var STAGES_OTHER=['Requested','Acknowledged','Fulfilled'];
   var STAGES_LOG=['Requested','Scheduled','In fulfillment','Complete'];
-  var STAGES_PROC=['Requested','PO submitted','PO issued','Delivered'];
+  var STAGES_PROC=['Requested','PO submitted','In fulfillment','Delivered'];
   var STAGES_FAB=['Plan line','Requested','Submittal','In fabrication','QC approved','Delivered'];
   var STAGES_SVC=['Requested','In fulfillment','Demobilized'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
@@ -2196,8 +2196,8 @@ function renderProfServicesDP(){
   {id:'ORD-3134',proj:'hercules',od:'2026-05-01',item:'L2 headwall assemblies (Barry Rose WRF)',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:'DP-PREFAB-RIV-134',latest:'Delivered \u2014 all 8 headwall units received Jul 20, 2026. Signed off by site lead.'},
   {id:'ORD-3135',proj:'hercules',od:'2026-06-15',item:'Server room partition panels',sub:'6 panels \u00b7 custom fab',pillar:'prefab',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:3,plan:'DP-PREFAB-CIM-135',latest:'In fabrication \u2014 ModSpace. Drawings approved, fabrication underway. Delivery Nov 2026.'},
   {id:'ORD-3136',proj:'hercules',od:'2026-06-15',item:'Main power transformer',sub:'1 unit \u00b7 custom spec 345/12.5kV',pillar:'procurement',dates:'Dec 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:2,plan:null,latest:'PO issued \u2014 ABB confirmed 26-wk lead time. Delivery Dec 2026. Critical path item.',attachments:[{type:'Quotes',name:'ABB transformer quote rev 2',ref:'Q-ABB-3136-R2',status:'Available'},{type:'Submittals',name:'Transformer shop drawings \u2014 ABB',ref:'SUB-3136-001',status:'Pending'},{type:'Submittals',name:'Factory acceptance test plan',ref:'FAT-3136-001',status:'In review'},{type:'Shipping',name:'Carrier details \u2014 heavy haul logistics',ref:'SHIP-3136-001',status:'Draft'},{type:'Safety',name:'MSDS \u2014 transformer insulating oil',ref:'MSDS-3136-001',status:'Available'}]},
-  {id:'ORD-3137',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Surgical unit supply runs',sub:'Ongoing \u00b7 McKesson',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'In fulfillment \u2014 McKesson supply runs ongoing. Weekly deliveries per spec.'},
-  {id:'ORD-3138',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Safety signage + PPE bundles',sub:'Lot \u00b7 MSA Safety',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'In fulfillment \u2014 MSA Safety standing order. Restocked monthly.'},
+  {id:'ORD-3137',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Surgical unit supply runs',sub:'Ongoing \u00b7 McKesson',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fulfillment \u2014 McKesson supply runs ongoing. Weekly deliveries per spec.'},
+  {id:'ORD-3138',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Safety signage + PPE bundles',sub:'Lot \u00b7 MSA Safety',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:2,plan:null,latest:'In fulfillment \u2014 MSA Safety standing order. Restocked monthly.'},
   {id:'ORD-3139',proj:'hercules',od:'2026-07-01',item:'High-density PDUs',sub:'24 units \u00b7 Vertiv',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Vertiv confirmed. Lead time 10 wks, delivery Oct 2026.'},
   {id:'ORD-3140',proj:'hercules',od:'2026-07-05',item:'Cable management trays',sub:'Lot \u00b7 Panduit',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Panduit order confirmed. Delivery Oct 2026 per schedule.'},
   {id:'ORD-3141',proj:'hercules',od:'2026-07-01',item:'Raised floor panels',sub:'2,000 sqft \u00b7 Tate Access',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Tate Access confirmed. Delivery Oct 2026, coordinating dock access.'},
@@ -3378,9 +3378,9 @@ charges:[
       stageOf:function(r){var m={Draft:0,Projected:0,'Pending pricing':0,Requested:1,Acknowledged:1,Active:2,'In fulfillment':2,Demobilized:3,Fulfilled:3};return m[r.state]!=null?m[r.state]:0;}
     },
     procurement:{
-      labels:['Plan line','Requested','PO submitted','PO issued','Delivered'],
+      labels:['Plan line','Requested','PO submitted','In fulfillment','Delivered'],
       icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>','<path d="M20 6L9 17l-5-5"/>'],
-      stageOf:function(r){var m={Draft:0,'Pending pricing':0,'Planned':0,Requested:1,Acknowledged:1,'PO submitted':2,'PO issued':3,Delivered:4,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
+      stageOf:function(r){var m={Draft:0,'Pending pricing':0,'Planned':0,Requested:1,Acknowledged:1,'PO submitted':2,'PO issued':3,'In fulfillment':3,Delivered:4,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
     },
     prefab:{
       labels:['Plan line','Requested','Submittal','In fabrication','QC approved','Delivered'],
@@ -7380,10 +7380,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]},
       vdc14:{budget:1200000,dpSpent:920000,adHoc:50000,
       rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Electrical & HV',b:'$182K',c:'Q3\u2013Q4 2026',v:'on plan',vt:'ok'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Specialty items',b:'$58K',c:'Dec 2026',v:'Requested',vt:'neu'}],varSummary:'Data center procurement on track. UPS bypass cable pending spec confirmation.',rows:[
-        {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
-        {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'PO issued',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
-        {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
-        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'},
+        {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
+        {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
+        {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
+        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'In fulfillment',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'},
         {item:'UPS bypass cable assembly',cat:'elec_commodity',qty:'2 sets',window:'Dec 2026',state:'Requested',ordId:null,cost:'$58K',firm:'TBD',fqRef:'REQ-P-0614'}
       ]}
     },
