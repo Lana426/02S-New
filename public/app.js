@@ -371,7 +371,7 @@
     var specs = [
       {k:'Category',v:p.pcat||p.cat},
       {k:'Specification',v:p.spec},
-      {k:'Rate',v:price+(p.mrate?' · $'+fmtBig(p.mrate)+'/mo (est.)':'')},
+      {k:'Rate',v:price+(p.mrate?' · '+fmtBig(p.mrate)+'/mo (est.)':'')},
       {k:'Lead time',v:lead},
       {k:'Pillar',v:pillarLabel(p.pillar)},
       {k:'Mode',v:p.mode==='rental'?'Rental — daily/monthly rate':'One-time procurement'}
@@ -2196,8 +2196,8 @@ function renderProfServicesDP(){
   {id:'ORD-3134',proj:'hercules',od:'2026-05-01',item:'L2 headwall assemblies (Barry Rose WRF)',sub:'8 units \u00b7 fabricated & delivered',pillar:'prefab',dates:'Jul 2026',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:5,plan:'DP-PREFAB-RIV-134',latest:'Delivered \u2014 all 8 headwall units received Jul 20, 2026. Signed off by site lead.'},
   {id:'ORD-3135',proj:'hercules',od:'2026-06-15',item:'Server room partition panels',sub:'6 panels \u00b7 custom fab',pillar:'prefab',dates:'Nov 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:3,plan:'DP-PREFAB-CIM-135',latest:'In fabrication \u2014 ModSpace. Drawings approved, fabrication underway. Delivery Nov 2026.'},
   {id:'ORD-3136',proj:'hercules',od:'2026-06-15',item:'Main power transformer',sub:'1 unit \u00b7 custom spec 345/12.5kV',pillar:'procurement',dates:'Dec 2026',cost:'3100-6200-0000-0001 \u00b7 Solar pile',stage:2,plan:null,latest:'PO issued \u2014 ABB confirmed 26-wk lead time. Delivery Dec 2026. Critical path item.',attachments:[{type:'Quotes',name:'ABB transformer quote rev 2',ref:'Q-ABB-3136-R2',status:'Available'},{type:'Submittals',name:'Transformer shop drawings \u2014 ABB',ref:'SUB-3136-001',status:'Pending'},{type:'Submittals',name:'Factory acceptance test plan',ref:'FAT-3136-001',status:'In review'},{type:'Shipping',name:'Carrier details \u2014 heavy haul logistics',ref:'SHIP-3136-001',status:'Draft'},{type:'Safety',name:'MSDS \u2014 transformer insulating oil',ref:'MSDS-3136-001',status:'Available'}]},
-  {id:'ORD-3137',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Surgical unit supply runs',sub:'Ongoing \u00b7 McKesson',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 McKesson supply runs ongoing. Weekly deliveries per spec.'},
-  {id:'ORD-3138',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Safety signage + PPE bundles',sub:'Lot \u00b7 MSA Safety',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'Active \u2014 MSA Safety standing order. Restocked monthly.'},
+  {id:'ORD-3137',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Surgical unit supply runs',sub:'Ongoing \u00b7 McKesson',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'In fulfillment \u2014 McKesson supply runs ongoing. Weekly deliveries per spec.'},
+  {id:'ORD-3138',proj:'hercules',od:'2026-04-01',anticipatedOff:'2026-12-31',item:'Safety signage + PPE bundles',sub:'Lot \u00b7 MSA Safety',pillar:'procurement',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:4,plan:null,latest:'In fulfillment \u2014 MSA Safety standing order. Restocked monthly.'},
   {id:'ORD-3139',proj:'hercules',od:'2026-07-01',item:'High-density PDUs',sub:'24 units \u00b7 Vertiv',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Vertiv confirmed. Lead time 10 wks, delivery Oct 2026.'},
   {id:'ORD-3140',proj:'hercules',od:'2026-07-05',item:'Cable management trays',sub:'Lot \u00b7 Panduit',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Panduit order confirmed. Delivery Oct 2026 per schedule.'},
   {id:'ORD-3141',proj:'hercules',od:'2026-07-01',item:'Raised floor panels',sub:'2,000 sqft \u00b7 Tate Access',pillar:'procurement',dates:'Oct 2026',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:2,plan:null,latest:'PO issued \u2014 Tate Access confirmed. Delivery Oct 2026, coordinating dock access.'},
@@ -3319,7 +3319,7 @@ charges:[
       b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:6px;padding:10px 12px;cursor:pointer" onclick="closeModal();gotoBill(\''+data.bill.id+'\')">';
       b+='<div style="font-size:11px;color:var(--g500);font-family:monospace;margin-bottom:6px">'+shortCode+'</div>';
       b+='<div style="font-size:12px;font-weight:600;color:var(--charcoal);margin-bottom:4px">'+data.bill.id+'</div>';
-      b+='<div style="font-size:11.5px;color:var(--g700)">$'+fmtBig(data.bill.amt)+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
+      b+='<div style="font-size:11.5px;color:var(--g700)">'+fmtBig(data.bill.amt)+' <span class="tag '+bTone+'">'+data.bill.status+'</span></div>';
       b+='</div>';
     } else if(data.quote){
       var qDraft=data.quote.status==='Draft';
@@ -5039,7 +5039,7 @@ charges:[
     b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+(STATUS_TAG[_ss]||'neu')+'">'+_ss+'</span></span></div>';
     if(ord.dates)b+='<div class="fq-crow"><span>Period</span><span>'+ord.dates+'</span></div>';
     if(ord.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+ord.cost+'</span></div>';
-    if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>$'+fmtBig(ord.mrate)+'·unit</span></div>';
+    if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>'+fmtBig(ord.mrate)+'·unit</span></div>';
     if(ord.latest)b+='<div class="fq-crow" style="align-items:flex-start"><span>Latest</span><span style="color:var(--g700);max-width:260px">'+ord.latest+'</span></div>';
     b+='</div>';
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
@@ -7337,25 +7337,25 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     profservices:{
       hercules:{budget:1920000,dpSpent:1560000,adHoc:0,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'4 FTE',c:'Jun 2026\u2013Feb 2027',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'5 FTE',c:'Apr\u2013Jul 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'Engineering peak 4 FTE Jun\u2013Feb (OE + structural inspection). VDC/BIM active Apr\u2013Oct. BESS commissioning agent requested Nov 2026.',rows:[
-        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
-        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
-        {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
+        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'In fulfillment',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
+        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'In fulfillment',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
+        {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'In fulfillment',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Requested',ordId:'ORD-5001',cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108',attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {item:'Environmental / SWPPP monitoring',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA',attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
-        {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'Active',ordId:'ORD-3120',fqRef:'REQ-4475',cost:'$24K/mo',firm:'WSP',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
+        {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'In fulfillment',ordId:'ORD-3120',fqRef:'REQ-4475',cost:'$24K/mo',firm:'WSP',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
         {item:'Site survey crew',qty:'2 FTE',window:'Apr–Jul 2026',state:'Demobilized',ordId:'ORD-3009',cost:'$12K/mo',firm:'Bowman',attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ]},
       barryrose:{budget:950000,dpSpent:320000,adHoc:420000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'1 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Safety & inspection',b:'2 FTE',c:'Aug 2026+',v:'Active',vt:'ok'},{a:'Commissioning',b:'1 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'Structural special inspection active Aug 2026+ (Terracon, 2 FTE). MEP commissioning lead planned Nov 2026 — SOW pending.',rows:[
-        {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3143',cost:'$22K/mo',firm:'HDR'},
-        {item:'Structural special inspection',qty:'2 FTE',window:'Aug 2026+',state:'Active',ordId:'ORD-3145',cost:'$14K/mo',firm:'TBD',fqRef:'REQ-S-2114'},
+        {item:"Owner's rep",qty:'1 FTE',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3143',cost:'$22K/mo',firm:'HDR'},
+        {item:'Structural special inspection',qty:'2 FTE',window:'Aug 2026+',state:'In fulfillment',ordId:'ORD-3145',cost:'$14K/mo',firm:'TBD',fqRef:'REQ-S-2114'},
         {item:'MEP commissioning lead',qty:'1 FTE',window:'Nov 2026+',state:'Planned',ordId:null,cost:'$82K est.',firm:'TBD',fqRef:'REQ-S-2117'}
       ]},
       vdc14:{budget:600000,dpSpent:120000,adHoc:150000,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Survey & monitoring',b:'2 FTE',c:'Jul\u2013Sep 2026',v:'Active',vt:'ok'},{a:'Materials testing',b:'2 FTE',c:'ongoing',v:'on plan',vt:'ok'},{a:'Commissioning',b:'1 FTE',c:'Dec 2026+',v:'on plan',vt:'ok'}],varSummary:'Survey crew active Jul–Sep (Bowman, 2 FTE). Materials testing lab on plan. Commissioning manager planned Dec 2026.',rows:[
-        {item:'Site survey crew',qty:'2 FTE',window:'Jul–Sep 2026',state:'Active',ordId:'ORD-3146',cost:'$12K/mo',firm:'Bowman',fqRef:'REQ-4477'},
+        {item:'Site survey crew',qty:'2 FTE',window:'Jul–Sep 2026',state:'In fulfillment',ordId:'ORD-3146',cost:'$12K/mo',firm:'Bowman',fqRef:'REQ-4477'},
         {item:'Commissioning manager',qty:'1 FTE',window:'Dec 2026+',state:'Planned',ordId:null,cost:'$96K est.',firm:'TBD'},
-        {item:'Material testing lab',qty:'2 FTE',window:'Ongoing',state:'Active',ordId:'ORD-3144',cost:'$8,400/mo',firm:'GeoTech Labs'}
+        {item:'Material testing lab',qty:'2 FTE',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3144',cost:'$8,400/mo',firm:'GeoTech Labs'}
       ]}
     },
     procurement:{
@@ -7372,18 +7372,18 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]},
       barryrose:{budget:450000,dpSpent:180000,adHoc:80000,
       rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Tools & supplies',b:'$45K',c:'Ongoing / Sep–Oct 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Oct 2026',v:'Requested',vt:'warn'}],varSummary:'Structural bolt package and surgical fixture hardware pending order placement.',rows:[
-        {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'Active',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
-        {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'Active',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
+        {item:'Surgical unit supply runs',cat:'sm_tools',qty:'Ongoing',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3137',cost:'$8,500',firm:'McKesson'},
+        {item:'Safety signage + PPE bundles',cat:'safety',qty:'Lot',window:'Ongoing',state:'In fulfillment',ordId:'ORD-3138',cost:'$3,200',firm:'MSA Safety'},
         {item:'Specialty fasteners',cat:'sm_tools',qty:'Lot',window:'Oct 2026',state:'Planned',ordId:null,cost:'$5,400',firm:'TBD'},
         {item:'Structural bolt package',cat:'struct_steel',qty:'Lot',window:'Oct 2026',state:'Requested',ordId:null,cost:'$62K',firm:'TBD',fqRef:'REQ-P-0619',attachments:[{type:'Engineering',name:'Structural bolt specification sheet',ref:'SPEC-SB-001',status:'Available'},{type:'Quotes',name:'Vendor quote — structural bolt package',ref:'Q-SB-3137-001',status:'Pending'}]},
         {item:'Surgical fixture hardware',cat:'sm_tools',qty:'Lot',window:'Sep 2026',state:'Requested',ordId:null,cost:'$28K est.',firm:'TBD',fqRef:'REQ-P-0621',note:'New request REQ-P-0621 — sourcing in fulfillment queue.'}
       ]},
       vdc14:{budget:1200000,dpSpent:920000,adHoc:50000,
       rollCols:['Category','Committed','Order window','vs plan'],roll:[{a:'Electrical & HV',b:'$182K',c:'Q3\u2013Q4 2026',v:'on plan',vt:'ok'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Specialty items',b:'$58K',c:'Dec 2026',v:'Requested',vt:'neu'}],varSummary:'Data center procurement on track. UPS bypass cable pending spec confirmation.',rows:[
-        {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
-        {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'Ordered',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
-        {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'In fulfillment',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
-        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'In fulfillment',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'},
+        {item:'High-density PDUs',cat:'elec_commodity',qty:'24 units',window:'Oct 2026',state:'PO issued',ordId:'ORD-3139',cost:'$144K',firm:'Vertiv'},
+        {item:'Cable management trays',cat:'elec_commodity',qty:'Lot',window:'Oct 2026',state:'PO issued',ordId:'ORD-3140',cost:'$38,000',firm:'Panduit'},
+        {item:'Raised floor panels',cat:'mech_commodity',qty:'2,000 sqft',window:'Oct 2026',state:'PO issued',ordId:'ORD-3141',cost:'$180K',firm:'Tate Access'},
+        {item:'Precision cooling units',cat:'mech_commodity',qty:'16 units',window:'Nov 2026',state:'PO issued',ordId:'ORD-3142',cost:'$640K',firm:'Liebert'},
         {item:'UPS bypass cable assembly',cat:'elec_commodity',qty:'2 sets',window:'Dec 2026',state:'Requested',ordId:null,cost:'$58K',firm:'TBD',fqRef:'REQ-P-0614'}
       ]}
     },
@@ -8156,7 +8156,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="event.stopPropagation();var nx=this.nextElementSibling;if(nx){nx.style.display=nx.style.display===\'none\'?\'block\':\'none\';if(nx.style.display===\'block\')nx.scrollIntoView({block:\'nearest\',behavior:\'smooth\'});}"':'')+'>';
       h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
-      h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+fmtBig(b.amount)):'Pending')+'</div>';
+      h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?(fmtBig(b.amount)):'Pending')+'</div>';
       h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
       h+='<div style="font-size:10px;font-family:monospace;color:var(--g500)">'+b.cc+(b.status==='Paid'?'<br><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;margin-top:2px" onclick="event.stopPropagation();toast(\'Bill PDF \u2014 '+b.inv+'\')">Bill PDF</button>':'')+'</div>';
       h+='</div>';
