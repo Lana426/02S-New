@@ -1568,7 +1568,7 @@
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
-      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'5 of 7',sub:'2 in planning · 1 in review',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'6 of 7',sub:'1 off track · needs attention',tone:'warn',icon:IC.chart}],
       v1:'46 assemblies planned · 16 in fabrication · 2 in planning · 1 awaiting submittal approval (BESS e-houses).',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
@@ -1918,7 +1918,7 @@
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
-    var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return aOT-bOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
@@ -1934,8 +1934,7 @@
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
-    if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
-    mount.innerHTML=h;
+        mount.innerHTML=h;
   }
   function openLogCcEdit(idx){
     var rows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
@@ -2250,7 +2249,7 @@ function renderProfServicesDP(){
   {id:'ORD-3143',proj:'hercules',od:'2026-04-01',anticipatedOff:'2027-04-30',item:"Owner's rep",sub:'1 FTE \u00b7 HDR',pillar:'profservices',dates:'Apr 2026 \u2013 ongoing',cost:'0200-0320-0000-0001 \u00b7 Site earthwork',stage:1,plan:null,latest:'Active \u2014 HDR owner\u2019s rep onsite, Barry Rose WRF. No billing disputes.'},
   {id:'ORD-3144',proj:'hercules',od:'2026-05-01',anticipatedOff:'2027-04-30',item:'Material testing lab',sub:'2 FTE \u00b7 GeoTech Labs',pillar:'profservices',dates:'May 2026 \u2013 ongoing',cost:'2600-0540-0000-0001 \u00b7 Module install',stage:1,plan:null,latest:'Active \u2014 GeoTech Labs 2 FTE onsite. Compaction and concrete testing per project specs.'}
     ,{id:'ORD-5001',proj:'hercules',fresh:true,od:'2026-07-31',item:'BESS commissioning agent',sub:'2 FTE · Nov 2026 – Mar 2027',pillar:'profservices',dates:'Nov 2026 – Mar 2027',cost:'2600-3300-0000-0001 · BESS & Substation',stage:0,status:'Requested',plan:'PS-BESS-001',qty:2,vendor:'TBD',latest:'Submitted to 02S — awaiting acknowledgement.'},
-    {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:2,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'Submittal package submitted — awaiting 02S review.'},
+    {id:'ORD-5002',proj:'hercules',fresh:true,od:'2026-07-31',item:'Modular e-houses (BESS)',sub:'2 units · submittal in review',pillar:'prefab',dates:'Nov 1, 2026',cost:'2600-3300-0000-0001 · BESS',stage:2,status:'Requested',plan:'PF-BESS-002',qty:2,vendor:'ModSpace',latest:'⚠ Date shift — need-by moved Oct 15 → Oct 31. Submittal under review; Nov energization at risk if approval delays further.',latestTone:'warn'},
     {id:'ORD-5003',proj:'hercules',fresh:true,od:'2026-07-31',item:'Prefab cable tray runs',sub:'lot · module install',pillar:'prefab',dates:'Aug 1, 2026',cost:'2600-0540-0000-0001 · Module install',stage:1,status:'Requested',plan:'PF-CABLE-003',qty:1,vendor:'TBD',latest:'Awaiting 02S pricing confirmation.'},
     {id:'ORD-3200',proj:'hercules',od:'2026-03-01',item:'Office & storage trailers',sub:'4 units · ModSpace',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 4 units active. Monthly service confirmed.'},
     {id:'ORD-3201',proj:'hercules',od:'2026-03-01',item:'Temporary power',sub:'2 panels · Aggreko',pillar:'logistics',dates:'Mar 2026 – Mar 2027',cost:'01-100 · General conditions',stage:5,plan:null,latest:'On-rent — 2 distribution panels active.'},
@@ -3597,6 +3596,7 @@ charges:[
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
+    if(r.dateShifted&&r.shiftNote){h+='<div style="margin:0 18px 10px;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#b45309;margin-bottom:5px">⚠ Schedule impact — 02S note</div>'+(r.origNeed?'<div style="font-size:11px;margin-bottom:4px;color:#92400e">Original date: <span style="text-decoration:line-through">'+r.origNeed+'</span> → <b>'+r.need+'</b></div>':'')+'<div style="font-size:11.5px;color:#92400e;line-height:1.5">'+r.shiftNote+'</div></div>';}
     if(!ord){
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+((r.state==='At-risk'||r.state==='Needs attention')?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+((r.state==='At-risk'||r.state==='Needs attention')?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state]||r.state)+'</div>';
@@ -6228,6 +6228,7 @@ charges:[
     openModal(cpRow.item+' \u2014 Quote details', b);
   }
   function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
+  function pfbSetCcView(v){window._pfbCcView=v;renderCcDemand('prefab');}
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbUpdateState(proj,idx,state){var rows=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows;if(rows&&rows[idx]!==undefined){rows[idx].state=state;renderCcDemand('prefab');}}
   function pfbStatusModal(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var _mo=STAGES_PREFAB_OPS.map(function(s){return '<option value="'+s+'"'+(s===row.state?' selected':'')+'>'+s+'</option>';}).join('');openModal('Update status — '+row.item,'<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+row.state+'</span></div><div class="fq-crow"><span>New status</span><span><select id="pfbStatSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px">'+_mo+'</select></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="(function(){var s=document.getElementById(\'pfbStatSel\');if(s&&s.value){pfbUpdateState(\''+proj+'\','+idx+',s.value);closeModal();}})();">Save</button></div>');}
@@ -7765,7 +7766,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       varSummary:'MV switchgear and BESS containers are past order-by — PO release critical for Nov substation date. Tools & consumables $103K across the portfolio.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'MV switchgear and BESS containers share the same OEM (Eaton/Tesla). Combine POs to hit the next volume tier and shorten lead time by 2 weeks.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
-      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'54',sub:'8 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'5 of 7',sub:'1 awaiting submittal',tone:'warn',icon:'chart'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'54',sub:'8 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'6 of 7',sub:'1 date-shifted · off track',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Every project\u2019s prefab demand, aggregated. Assemblies are made-to-order, so pricing is quoted by 02S after submittal; the pillar signal is fabrication stage.',
       rows:[
@@ -9235,7 +9236,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,attachments:r.attachments||[]});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[]});
         });
       }
     });
@@ -9252,6 +9253,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(isDpView){
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';
       if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView(\'table\')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView(\'gantt\')">Gantt</button></div>';}
+      if(p==='prefab'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+((window._pfbCcView||'table')==='table'?' on':'')+' btn-sm" onclick="pfbSetCcView(\'table\')">Table</button><button class="ff-b'+((window._pfbCcView||'table')==='gantt'?' on':'')+' btn-sm" onclick="pfbSetCcView(\'gantt\')">Gantt</button></div>';}
       h+='<span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';
       if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#equip-list-view{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
       if(p==='logistics'&&isDpView){
@@ -9371,22 +9373,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(!isDpView){ h+='<div class="eq-cap" style="margin-bottom:10px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>Recommended actions for all pending requests are in the fulfillment queue. Click any request for more information.</span></div>'; }
     var _pfbSchedMode=false;
     if(p==='prefab'&&isDpView){
-      var _dsR=cfg.rows.filter(function(r){return r.dateShifted;});
+      var _pfbDpRows=allReqRows.filter(function(r){return r._type==='dp';});var _dsR=_pfbDpRows.filter(function(r){return r.dateShifted;});
       if(_dsR.length){
         h+='<div style="margin-bottom:12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px">';
         h+='<div style="font-size:11.5px;font-weight:700;color:#b45309;margin-bottom:7px">⚠ '+_dsR.length+' item'+(_dsR.length!==1?'s':'')+' rescheduled — project team notification needed</div>';
         _dsR.forEach(function(r){
-          var _ri=cfg.rows.indexOf(r);
-          h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#fff;border:1px solid rgba(245,158,11,.2);border-radius:6px;margin-bottom:5px">';
+                    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#fff;border:1px solid rgba(245,158,11,.2);border-radius:6px;margin-bottom:5px">';
           h+='<div>';
           h+='<div style="font-size:12px;font-weight:600;color:var(--g800)">'+r.item+'</div>';
           if(r.origWindow)h+='<div style="font-size:11px;color:var(--g500)">Was: '+r.origWindow+' → Now: '+r.window+'</div>';
           h+='</div>';
-          h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;color:#b45309;border-color:rgba(245,158,11,.4);white-space:nowrap" onclick="event.stopPropagation();pfbInformTeam(\''+selProj+'\','+_ri+')">Inform project team →</button>';
+          h+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;color:#b45309;border-color:rgba(245,158,11,.4);white-space:nowrap" onclick="event.stopPropagation();pfbInformTeam(\''+r._proj+'\','+r._idx+')">Inform project team →</button>';
           h+='</div>';
         });
         h+='</div>';
       }
+      if((window._pfbCcView||'table')==='gantt'){
       var _gMO={Apr:0,May:30,Jun:61,Jul:91,Aug:122,Sep:153,Oct:183,Nov:213,Dec:244};
       var _gTD=274;
       var _gP=function(d){if(!d)return -1;var pt=d.trim().split(' ');if(pt.length<2)return -1;var b=_gMO[pt[0]];return b===undefined?-1:Math.max(0,Math.min(100,parseFloat(((b+parseInt(pt[1])-1)/_gTD*100).toFixed(2))));};
@@ -9399,7 +9401,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         if(x>0.1)h+='<div style="position:absolute;left:'+x+'%;top:16px;height:400px;border-left:1px dashed var(--g100);pointer-events:none"></div>';
       });
       h+='</div>';
-      cfg.rows.forEach(function(r){
+      _pfbDpRows.forEach(function(r){
         var gx=_gP(r.window);
         var gc=r.dateShifted?'#b45309':(r.onTrack===false?'#ef4444':'#10b981');
         h+='<div style="display:flex;align-items:center;margin:4px 0">';
@@ -9416,6 +9418,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500)"><div style="width:10px;height:10px;border-radius:50%;background:#b45309"></div>Date shifted</div>';
       h+='<div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500)"><div style="width:10px;height:10px;border-radius:50%;background:#ef4444"></div>Off track</div>';
       h+='</div></div>';
+      mount.innerHTML=h;return;
+    }
     }
     if(!_pfbSchedMode){h+='<div class="dp-tbl" id="equip-list-view"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
@@ -9463,6 +9467,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
             } else {
               expH+='<div style="color:var(--g400);font-size:11px;padding:6px 0">No assets assigned yet — click <b>+ Assign asset</b> to select from fleet or add a custom unit.</div>';
             }
+            if(p==='prefab'&&row.dateShifted&&row.shiftNote){expH+='<div style="margin-top:8px;padding:8px 10px;background:#fef3c7;border:1px solid #fcd34d;border-radius:5px;font-size:11.5px;color:#92400e">⚠️ <b>Date shifted</b> — '+row.shiftNote+'</div>';expH+='<div style="margin-top:6px"><button class="btn btn-ghost btn-sm" style="font-size:10.5px;color:#b45309;border-color:rgba(245,158,11,.4)" onclick="event.stopPropagation();pfbInformTeam(\''+row._proj+'\','+row._idx+')">Inform project team →</button></div>';}if(p==='prefab'){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g50);border-radius:7px;border:1px solid var(--g200);display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--g500)">Status:</span><button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="event.stopPropagation();pfbStatusModal(\''+row._proj+'\','+row._idx+')">'+row.state+' — update →</button></div>';}
             expH+='</div>';
             expH+='</div>';
           }
@@ -10520,7 +10525,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',
-      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'5 of 7',sub:'2 in planning · 1 in review',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies planned',value:'46',sub:'7 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'16',sub:'order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$720K',sub:'80% of $900K plan',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'6 of 7',sub:'1 off track · needs attention',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
@@ -10854,7 +10859,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
-    var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return aOT-bOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
@@ -10870,8 +10875,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div id="dp-drill-'+pk+'-'+origIdx+'" class="otrack" style="display:none">'+buildDPTrack(pk,r,origIdx)+'</div>';
     });
     h+='</div>';
-    if(pk==='prefab'){var _pq=cfg.rows.filter(function(r){return r.cost==='Pending';}).length;if(_pq){h+='<div class="eqf-rate pending" style="margin-top:14px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',2)+'<span><b>'+_pq+' '+(    _pq===1?'assembly':'assemblies')+' being priced by 02S</b> — quotes confirmed before fabrication begins.</span></div>';}}
-    mount.innerHTML=h;
+        mount.innerHTML=h;
   }
   function openLogCcEdit(idx){
     var rows=(CC_PROJ_DP&&CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics.hercules)?CC_PROJ_DP.logistics.hercules.rows||[]:[];
