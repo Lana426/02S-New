@@ -1830,7 +1830,7 @@
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
-        var _logStT={'Planned':'neu','Requested':'warn','Quoted':'info','In fulfillment':'ok','Closed':'neu','Complete':'ok'}[row.status]||'neu';
+        var _logStT={'Planned':'neu','Requested':'warn','Quoted':'warn','In fulfillment':'ok','Closed':'ok','Complete':'ok'}[row.status]||'neu';
         h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
         
         h+='</div>';
@@ -10933,7 +10933,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
-        var _logStT={'Planned':'neu','Requested':'warn','Quoted':'info','In fulfillment':'ok','Closed':'neu','Complete':'ok'}[row.status]||'neu';
+        var _logStT={'Planned':'neu','Requested':'warn','Quoted':'warn','In fulfillment':'ok','Closed':'ok','Complete':'ok'}[row.status]||'neu';
         h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
         
         h+='</div>';
