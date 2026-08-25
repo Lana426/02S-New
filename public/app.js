@@ -5794,6 +5794,9 @@ charges:[
       rows[ri].acts[ai].st=val;renderCcDemand('logistics');
     }
   }
+
+  function openLogActEdit(proj,ri,ai){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;if(!rows||!rows[ri]||!rows[ri].acts||!rows[ri].acts[ai])return;var row=rows[ri];var act=row.acts[ai];var MOS=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];var mo=function(sel){return MOS.map(function(m,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+m+'</option>';}).join('');};var mh='<div style="display:flex;flex-direction:column;gap:12px">';mh+='<div style="background:var(--g50);border-radius:7px;padding:9px 13px;font-size:12px;font-weight:600;color:var(--g800)">'+row.item+' — '+act.n+'</div>';mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Start month</label><select id="lae-s" style="width:100%;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;outline:none">'+mo(act.s!=null?act.s:0)+'</select></div>';mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">End month</label><select id="lae-e" style="width:100%;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;outline:none">'+mo(act.e!=null?act.e:1)+'</select></div>';mh+='</div></div>';openModal('Edit dates — '+act.n,mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="logActEditSave(\''+proj+'\','+ri+','+ai+')">Save</button></div>');}
+  function logActEditSave(proj,ri,ai){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;if(!rows||!rows[ri]||!rows[ri].acts||!rows[ri].acts[ai])return;var act=rows[ri].acts[ai];var s=document.getElementById('lae-s');var e=document.getElementById('lae-e');if(s)act.s=+s.value;if(e)act.e=+e.value;closeModal();renderCcDemand('logistics');}
   function logAddTaskFromRow(proj,ri,fqRef,item){
     var inp=document.getElementById('ltask-inp-'+proj+'-'+ri);
     var sel=document.getElementById('ltask-act-'+proj+'-'+ri);
@@ -5939,7 +5942,7 @@ charges:[
     h+='</div>';
     if(t.priority&&t.priority!=='medium'){h+='<span style="font-size:9px;font-weight:700;color:'+(_priColor[t.priority]||'#94a3b8')+';background:'+(_priBg[t.priority]||'#f1f5f9')+';border-radius:4px;padding:1px 6px;flex-shrink:0;text-transform:uppercase">'+t.priority+'</span>';}
     if(t.nudge){h+='<span style="font-size:9px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 5px;flex-shrink:0">nudged</span>';}
-    h+='<button onclick="event.stopPropagation();openLogTaskEditById(\'"+ t.id +"\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
+    h+='<button onclick="event.stopPropagation();openLogTaskEditById(\''+t.id+'\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
     h+='</div>';
     return h;
   }
@@ -9681,7 +9684,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
                 h+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px">';
                 var _tCt=MY_CC_TASKS.filter(function(t){return !t.done&&t.pillar==='logistics'&&t.activity===act.n&&t.item===row.item;}).length;
                 if(_tCt>0)h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:0 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">'+_tCt+'</span>';
-                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
+                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px" onclick="event.stopPropagation();openLogActEdit(\''+row._proj+'\','+row._idx+','+ai+')">Edit</button>';h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
                 h+='</div>';
                 h+='</div>';
               });
