@@ -3324,7 +3324,7 @@ charges:[
     var dpBill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
     var dpQuote=r.quoteRef?PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0]:null;
     var data={
-      title:name,pillar:pillarNames[pk]||pk,statusText:state,
+      title:name,pillar:pillarNames[pk]||pk,statusText:state,statusTone:DP_TONE[r.state]||'neu',subState:r.subState||null,
       category:sub,scope:when,task:null,
       dates:when,qty:qty,
       costDisplay:cost,costCode:code,
@@ -3335,6 +3335,29 @@ charges:[
     };
     renderPlanDrillModal(data);
   }
+  function buildFulfillmentStepper(subState){
+    var steps=SUB_STATUSES_FULFILLMENT;
+    var ai=steps.indexOf(subState);
+    var h='<div style="margin-bottom:14px">';
+    h+='<div style="font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Fulfillment progress</div>';
+    h+='<div style="display:flex;align-items:flex-start">';
+    steps.forEach(function(s,i){
+      var done=i<ai;var active=i===ai;
+      var dc=active?'var(--info)':done?'var(--success)':'var(--g200)';
+      var tc=active?'var(--info)':done?'var(--g700)':'var(--g400)';
+      var fw=active?'700':'400';
+      h+='<div style="display:flex;flex-direction:column;align-items:center;flex:1;min-width:0">';
+      h+='<div style="display:flex;align-items:center;width:100%">';
+      h+=(i>0?'<div style="flex:1;height:2px;background:'+(done?'var(--success)':'var(--g200)')+'">'+'</div>':'<div style="flex:1"></div>');
+      h+='<div style="width:10px;height:10px;border-radius:50%;background:'+dc+';flex-shrink:0;border:2px solid '+dc+'"></div>';
+      h+=(i<steps.length-1?'<div style="flex:1;height:2px;background:var(--g200)"></div>':'<div style="flex:1"></div>');
+      h+='</div>';
+      h+='<div style="font-size:9px;text-align:center;margin-top:5px;color:'+tc+';font-weight:'+fw+';line-height:1.3;padding:0 2px;word-break:break-word">'+s+'</div>';
+      h+='</div>';
+    });
+    h+='</div></div>';
+    return h;
+  }
   function renderPlanDrillModal(data){
     var ICO_DOC='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;display:inline;margin-right:3px;vertical-align:middle"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';
     var ICO_ORD='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;margin-right:4px;vertical-align:middle"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>';
@@ -3344,6 +3367,8 @@ charges:[
     b+='<div class="fq-req-t">'+data.title+'</div>';
     if(data.category) b+='<div class="sub">'+data.category+(data.scope?' · '+data.scope:'')+'</div>';
     b+='</div>';
+    if(data.statusText&&data.statusText!=='—'){b+='<div style="margin-bottom:12px"><span class="chip '+(data.statusTone||'neu')+'" style="font-size:11.5px">'+data.statusText+'</span></div>';}
+    if(data.subState&&data.pillar==='Prefab'){b+=buildFulfillmentStepper(data.subState);}
     b+='<div class="fq-calc" style="margin-bottom:14px">';
     b+='<div class="fq-crow"><span>Dates / window</span><span>'+data.dates+'</span></div>';
     b+='<div class="fq-crow"><span>Quantity</span><span>'+data.qty+'</span></div>';
@@ -9569,7 +9594,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           var _eo=ORDERS.filter(function(x){return x.id===row.ordId;})[0];
           if(_eo){
             expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
-            expH+=trackerHTML(_eo,ns);
+            if(p==='prefab'&&row.state==='In fulfillment'){expH+=buildFulfillmentStepper(row.subState);}else{expH+=trackerHTML(_eo,ns);}
             if(p!=='profservices')expH+=buildDpBillingInline(row.ordId);
             if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
             var _aa=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
@@ -9609,14 +9634,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         } else {
           expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
           var _sToneMap={Active:'ok','On-rent':'ok',Delivered:'ok',Scheduled:'ok',Demobilized:'info','Off-rent':'info',
-            'In fabrication':'info',Submittal:'info','PO issued':'info',Projected:'neu',Draft:'neu',
-            Requested:'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad',Pending:'neu'};
+            'In fulfillment':'info',Submittal:'info','PO issued':'info',Projected:'neu',Draft:'neu',
+            Requested:'neu','Pending pricing':'warn','Awaiting pricing':'warn','At-risk':'bad',Pending:'neu',Completed:'ok'};
           var _sLineMap={Draft:'Draft — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',
             'Pending pricing':'Pending 02S quote — price confirmed before order is placed.',
             'Awaiting pricing':'Awaiting 02S pricing confirmation.',Projected:'Projected demand — not yet submitted.',
             'At-risk':'At-risk — order-by date approaching. Expedite required.','Needs attention':'Needs attention — action required to keep schedule.',
             Scheduled:'Scheduled — window confirmed.',Pending:'Submitted — order processing.',
-            'In fabrication':'In fabrication — production in progress.',Submittal:'Submittal under review.'};
+            'In fulfillment':'In fulfillment — see progress detail below.',Submittal:'Submittal under review.',Completed:'Delivered and complete.'};
           expH+='<div class="latest-line '+(_sToneMap[row.state]||'neu')+'" style="margin-bottom:10px">'
             +'<span class="ll-k">Status</span>'+(_sLineMap[row.state]||row.state)+'</div>';
           expH+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding:6px 0;font-size:11.5px">';
