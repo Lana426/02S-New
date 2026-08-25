@@ -9594,7 +9594,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           var _eo=ORDERS.filter(function(x){return x.id===row.ordId;})[0];
           if(_eo){
             expH='<div style="padding:14px 16px 16px;background:var(--g50);border-top:1px solid var(--g100);border-bottom:2px solid var(--g200)">';
-            if(p==='prefab'&&row.state==='In fulfillment'){expH+=buildFulfillmentStepper(row.subState);}else{expH+=trackerHTML(_eo,ns);}
+            console.log('02S-DBG:',{p:p,state:row.state,sub:row.subState,oid:row.ordId});if(p==='prefab'&&(row.state==='In fulfillment'||row.state==='Completed')){expH+=buildFulfillmentStepper(row.subState);}else{expH+=trackerHTML(_eo,ns);}
             if(p!=='profservices')expH+=buildDpBillingInline(row.ordId);
             if(row.note){expH+='<div style="margin-top:10px;padding:8px 10px;background:var(--g100);border-radius:5px;font-size:11.5px;color:var(--g700)"><b>Note · </b>'+row.note+'</div>';}
             var _aa=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
@@ -9650,6 +9650,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Rate / cost</div><div style="font-weight:500;color:var(--g900)">'+( row.cost||'\u2014')+'</div></div>';
           expH+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Vendor / firm</div><div style="font-weight:500;color:var(--g900)">'+( row.firm||'TBD')+'</div></div>';
           expH+='</div>';
+          if(p==='prefab'&&(row.state==='In fulfillment'||row.state==='Completed')){expH+=buildFulfillmentStepper(row.subState);}
           if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'||row.state==='At-risk'||row.state==='Needs attention'){
             expH+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';
             expH+='<button class="btn btn-red btn-sm" onclick="dpExpandToggle(\''+expId+'\');'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">View in fulfillment queue \u2192</button>';
