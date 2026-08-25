@@ -1665,15 +1665,15 @@
       '3PL Management':['Shipment volume and frequency estimated','Scope of work boundary confirmed']
     },
     rows:[
-      {id:'REQ-L-3071',item:'Office Trailers',service:'Office Trailers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 1, 2026',costCode:'0100-0100-0000-0001',cost:18500,quoted:true,quoteRef:'QT-L-0041',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4412',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Office Trailers',lines:[{desc:'24x60 office trailer — delivery and setup',qty:2,uom:'EA',vendorPrice:7200,markup:0.15,unitRate:8280,ext:16560},{desc:'ADA compliance ramp installation',qty:2,uom:'EA',vendorPrice:420,markup:0.15,unitRate:483,ext:966}]},status:'Complete',ordId:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
+      {id:'REQ-L-3071',item:'Office Trailers',service:'Office Trailers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 1, 2026',costCode:'0100-0100-0000-0001',cost:18500,quoted:true,quoteRef:'QT-L-0041',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4412',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Office Trailers',lines:[{desc:'24x60 office trailer — delivery and setup',qty:2,uom:'EA',vendorPrice:7200,markup:0.15,unitRate:8280,ext:16560},{desc:'ADA compliance ramp installation',qty:2,uom:'EA',vendorPrice:420,markup:0.15,unitRate:483,ext:966}]},status:'Complete',ordId:'ORD-3071',sa:4,ea:8,attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
       {id:'REQ-L-3116',item:'Restroom Facility',service:'Restroom Facility',productLine:'Temp Facilities',vendor:'United Site Services',needBy:'Sep 1, 2026',costCode:'0100-0100-0000-0001',cost:12800,quoted:true,quoteRef:'QT-L-0043',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-8801',quoteDate:'Jul 15 2026',expDate:'Oct 15 2026',service:'Restroom Facility',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}]},status:'In fulfillment',ordId:'ORD-3116',sa:5,ea:8,notes:[{author:'Manning Steven',date:'Aug 5 2026',text:'Confirmed placement at southeast corner of trailer city — ADA route marked.'}],attachments:[{type:'Safety',name:'ADA restroom placement plan',ref:'ADA-3116-001',status:'Approved'}]},
-      {id:'REQ-L-3113',item:'Storage Containers',service:'Storage Containers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:6200,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4413',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Storage Containers',lines:[{desc:'20ft storage container — delivery and placement',qty:2,uom:'EA',vendorPrice:2696,markup:0.15,unitRate:3100,ext:6200}]},status:'In fulfillment',ordId:'ORD-3113',sa:4,ea:4,attachments:[{type:'Shipping',name:'Container placement map — laydown area',ref:'PM-3113-001',status:'Approved'}]},
+      {id:'REQ-L-3113',item:'Storage Containers',service:'Storage Containers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:6200,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4413',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Storage Containers',lines:[{desc:'20ft storage container — delivery and placement',qty:2,uom:'EA',vendorPrice:2696,markup:0.15,unitRate:3100,ext:6200}]},status:'In fulfillment',ordId:'ORD-3113',sa:4,ea:7,attachments:[{type:'Shipping',name:'Container placement map — laydown area',ref:'PM-3113-001',status:'Approved'}]},
       {id:'REQ-L-3061',item:'Temp Toilets & Handwash Stations',service:'Temp Toilets & Handwash Stations',productLine:'Site Services',vendor:'United Site Services',needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:4600,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-8847',quoteDate:'Aug 12 2026',expDate:'Nov 12 2026',service:'Temp Toilets & Handwash Stations',lines:[{desc:'Standard portable restroom — monthly service (4-week cycle)',qty:18,uom:'EA',vendorPrice:130,markup:0.15,unitRate:150,ext:2700},{desc:'ADA-accessible portable restroom — monthly service',qty:2,uom:'EA',vendorPrice:200,markup:0.15,unitRate:230,ext:460},{desc:'Handwash station — monthly service',qty:6,uom:'EA',vendorPrice:100,markup:0.15,unitRate:115,ext:690},{desc:'Initial setup & site delivery fee',qty:1,uom:'LS',vendorPrice:652,markup:0.15,unitRate:750,ext:750}]},status:'Quoted',fqRef:'REQ-P-0501',sa:5,ea:9,notes:[{author:'Yates Cody',date:'Aug 10 2026',text:'02S to source options — peak crew ~180. Need 1 unit per 10 workers + 1 ADA unit.'},{author:'02S Ops',date:'Aug 12 2026',text:'Quote from United Site Services: 20 units + 6 handwash stations for Sep–Oct. Awaiting your approval to proceed to scheduling.'}]},
-      {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:2,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
-      {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:4,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
-      {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:6,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
+      {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:5,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
+      {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:9,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
+      {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:9,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
       {id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]},
-      {id:'REQ-L-3145',item:'Drinking Water & Bagged Ice',service:'Drinking Water & Bagged Ice',productLine:'Temp Facilities',vendor:null,needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Barry Rose WRF',qty:'Lot',sa:4,ea:5,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Crew expecting drinking water and ice station at laydown. Need quote before Sep site mob.'}]},
+      {id:'REQ-L-3145',item:'Drinking Water & Bagged Ice',service:'Drinking Water & Bagged Ice',productLine:'Temp Facilities',vendor:null,needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Barry Rose WRF',qty:'Lot',sa:4,ea:8,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Crew expecting drinking water and ice station at laydown. Need quote before Sep site mob.'}]},
       {id:'REQ-L-3148',item:'IT Network & Internet Install',service:'Internet Service & Network Install',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'VDC14',qty:'1 system',sa:5,ea:7,notes:[{author:'Burns David',date:'Aug 15 2026',text:'VDC14 site office coming online Oct. Need fiber run and network install quoted — coordinate with ISP lead time (90d).'}]}
     ]
   }
@@ -1689,8 +1689,8 @@
     {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8,attachments:[{type:'Quotes',name:'Modular office lease agreement',ref:'SVC-GCR-003',status:'Executed'},{type:'Safety',name:'Trailer placement & egress plan',ref:'SITE-TRL-001',status:'Approved'}]},
     {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Site security plan — Hercules Solar',ref:'SEC-HRC-001',status:'Approved'},{type:'Safety',name:'Access control protocol',ref:'SEC-HRC-002',status:'Current'},{type:'Quotes',name:'Security services contract',ref:'SVC-GCR-004',status:'Executed'}]},
     {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Active',sa:2,ea:5,attachments:[{type:'Engineering',name:'Dewatering plan — site drainage',ref:'DEW-HRC-001',status:'Approved'}]},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
+    {svc:'Temporary fencing & barricade',vendor:'American Fence Company',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Aggreko Power Solutions',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
     {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Active',sa:2,ea:6,attachments:[{type:'Safety',name:'Environmental compliance — concrete washout',ref:'ENV-CW-001',status:'Approved'}]}
   ];
   var TRNWH_SERVICES=[
@@ -1750,22 +1750,18 @@
     h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
-    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
-    h+='<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer" onclick="logIntakeToggle()">';
-    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
-    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
-    h+='<span style="flex:1"></span>';
-    h+='<span id="log-intake-chevron" style="font-size:11px;color:var(--g400)">16 services &nbsp;&#9660;</span>';
-    h+='</div>';
-    h+='<div id="log-intake-body" style="display:none;padding:0 14px 12px;border-top:1px solid var(--g200)">';
-    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;padding-top:10px"><b style="color:var(--g800)">Standard services (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
-    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;margin-top:6px"><b style="color:var(--g800)">Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
-    h+='</div></div>';
-    h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+    h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px">';
+    h+='<div style="display:flex;gap:2px;margin-right:4px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
     h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Moves &amp; Events\')">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
+    h+='</div>';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" onclick="openLogScopeModal()">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
+    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
+    h+='<span style="flex:1"></span>';
+    h+='<span style="font-size:11px;color:var(--g400)">16 services &nbsp;↗</span>';
     h+='</div>';
     if(gcgrView==='gantt'){
       var GCGR_MO=EQ_MONTHS.slice(1,11);
@@ -1781,15 +1777,22 @@
         var stt=logToneMap[r.status]||'projected';
         var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
-        h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span><span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span></div>';
+        var _lgRi=_logRows.indexOf(r);
+        h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+        h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span>';
+        h+='<button onclick="event.stopPropagation();openLogGanttEdit('+_lgRi+')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g600);flex-shrink:0">Edit</button>';
+        h+='</div>';
+        h+='<span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span>';
+        h+='</div>';
         h+='<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.needBy||r.status)+'">'+(r.needBy||r.status)+'</div></div></div>';
       });
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Planned / Quoted</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 160px 120px 160px 48px';
+      var meCols='1fr 140px 100px 160px 120px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
-      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Cost code</span><span>Cost</span><span>Status</span><span style="text-align:center">Docs</span></div>';
+      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
       _logRows.forEach(function(row,ri){
         var isQuoted=row.quoted&&row.cost!=null;
         var docsCount=(row.attachments||[]).length;
@@ -1808,7 +1811,6 @@
         var _logStT={'Planned':'neu','Requested':'warn','Quoted':'info','In fulfillment':'ok','Closed':'neu','Complete':'ok'}[row.status]||'neu';
         h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
         
-        h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="logShowDocs('+ri+')">'+(docsCount>0?docsCount:'+')+'</button></div>';
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
       });
@@ -3623,7 +3625,7 @@ charges:[
     });
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+r.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(r.fqRef&&!ns) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+r.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
@@ -5851,9 +5853,11 @@ charges:[
     b+='</div>';
     b+='<div style="display:flex;flex-direction:column;justify-content:flex-end">';
     b+='<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px">';
-    b+='<input type="checkbox" id="lgtm-nudge" style="accent-color:#3b82f6;width:14px;height:14px">';
-    b+='<div><div style="font-size:11.5px;font-weight:600;color:#1d4ed8">Nudge project team</div><div style="font-size:10px;color:#3b82f6">Sends notification to GC portal</div></div>';
-    b+='</label></div></div>';
+    b+='<input type="checkbox" id="lgtm-nudge" onchange="var ta=document.getElementById(\'lgtm-nudge-msg\');if(ta)ta.style.display=this.checked?\'block\':\'none\'" style="accent-color:#3b82f6;width:14px;height:14px">';
+    b+='<div><div style="font-size:11.5px;font-weight:600;color:#1d4ed8">Nudge project team</div><div style="font-size:10px;color:#3b82f6">Optional — attach a question to 02S</div></div>';
+    b+='</label>';
+    b+='<textarea id="lgtm-nudge-msg" placeholder="Please provide…" rows="2" style="display:none;width:100%;box-sizing:border-box;border:1.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11.5px;font-family:inherit;outline:none;resize:vertical;margin-top:6px;color:#1d4ed8;background:#f0f8ff"></textarea>';
+    b+='</div></div>';
     b+='<div class="modal-foot" style="margin-top:2px">';
     b+='<span class="spacer"></span>';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
@@ -5871,7 +5875,11 @@ charges:[
     var priEl=document.querySelector('input[name="lgtm-pri"]:checked');
     if(!lbl||!lbl.value.trim()){if(lbl){lbl.style.borderColor='#dc2626';}return;}
     var pName=proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14';
-    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item});
+    var _nudgeChk=document.getElementById('lgtm-nudge');
+    var _nudgeMsg=document.getElementById('lgtm-nudge-msg');
+    var _nudgeTxt=_nudgeChk&&_nudgeChk.checked&&_nudgeMsg?_nudgeMsg.value.trim():'';
+    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item,nudge:!!_nudgeTxt});
+    if(_nudgeTxt){window._ccNudges=window._ccNudges||[];window._ccNudges.unshift({id:'nudge-'+Date.now(),svc:item,project:pName,question:_nudgeTxt,from:'GC Ops',ts:'Just now',answered:false});}
     _myTasksBadge();
     closeModal();
     toast('Task added');
@@ -5930,18 +5938,105 @@ charges:[
     h+='</div>';
     if(t.priority&&t.priority!=='medium'){h+='<span style="font-size:9px;font-weight:700;color:'+(_priColor[t.priority]||'#94a3b8')+';background:'+(_priBg[t.priority]||'#f1f5f9')+';border-radius:4px;padding:1px 6px;flex-shrink:0;text-transform:uppercase">'+t.priority+'</span>';}
     if(t.nudge){h+='<span style="font-size:9px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 5px;flex-shrink:0">nudged</span>';}
+    h+='<button onclick="event.stopPropagation();openLogTaskEdit(t)" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
     h+='</div>';
     return h;
   }
+  function openLogScopeModal(){
+    var std=['Office Trailers','Restroom Facility','Office Containers','Storage Containers','Office Furniture Package','Office Printer/Copiers','Security Cameras','Temp Toilets & Handwash Stations','Waste Hauling','Drinking Water','Bagged Ice','Site Construction Signage'];
+    var ren=['Temp Power Utility Coordination','Temp Power Installation','Construction Water Hauling & Storage','Remote Access Communication'];
+    var mh='<div style="padding:2px 0 8px">';
+    mh+='<div style="font-size:11.5px;color:var(--g600);margin-bottom:14px;padding:9px 12px;background:var(--g50);border-radius:6px">Automatically generated from 02S standard scope for Renewables construction projects. 12 core services; 4 Renewables-specific services added.</div>';
+    mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Standard services (12)</div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin-bottom:16px">';
+    std.forEach(function(s){mh+='<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;color:var(--g800)"><span style="width:16px;height:16px;border-radius:50%;background:#d1fae5;color:#059669;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700">&#10003;</span>'+s+'</div>';});
+    mh+='</div><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Added for Renewables projects</div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px">';
+    ren.forEach(function(s){mh+='<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;color:var(--g800)"><span style="width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700">+</span>'+s+'</div>';});
+    mh+='</div></div>';
+    openModal('Service scope — Renewables plan',mh);
+  }
+  function openLogGanttEdit(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row)return;
+    var MOS=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
+    var mo=function(v,sel){return MOS.map(function(m,i){return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+m+'</option>';}).join('');};
+    var mh='<div style="display:flex;flex-direction:column;gap:12px">';
+    mh+='<div style="background:var(--g50);border-radius:7px;padding:9px 13px;font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'</div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Start month</label><select id="lge-sa" style="width:100%;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;outline:none">'+mo(row.sa,row.sa!=null?row.sa:0)+'</select></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">End month</label><select id="lge-ea" style="width:100%;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;outline:none">'+mo(row.ea,row.ea!=null?row.ea:0)+'</select></div>';
+    mh+='</div></div>';
+    openModal('Edit duration — '+row.service,'<div>'+mh+'</div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="logGanttEditSave('+ri+')">Save</button></div>');
+  }
+  function logGanttEditSave(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row)return;
+    var sa=document.getElementById('lge-sa');var ea=document.getElementById('lge-ea');
+    if(sa)row.sa=+sa.value;if(ea)row.ea=+ea.value;
+    closeModal();renderLogPlan();
+  }
+  window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
+  function openNsNudgeModal(idx){
+    var n=(window._ccNudges||[])[idx];if(!n)return;
+    var mh='<div style="display:flex;flex-direction:column;gap:14px">';
+    mh+='<div style="background:var(--g50);border-radius:7px;padding:10px 13px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    mh+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Service</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+n.svc+'</div></div>';
+    mh+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">From</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+n.from+' · '+n.ts+'</div></div></div>';
+    mh+='<div><div style="font-size:10.5px;font-weight:700;color:var(--g600);margin-bottom:6px">Request from project team</div><div style="font-size:12.5px;color:var(--g800);line-height:1.6;padding:10px 13px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px">'+n.question+'</div></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Your response</label><textarea id="ns-nudge-resp" rows="3" placeholder="Type your response here…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;outline:none;resize:vertical"></textarea></div>';
+    mh+='</div>';
+    openModal('Respond to project team — '+n.svc,mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Dismiss</button><button class="btn btn-dark" onclick="nsNudgeRespond('+idx+')">Send response</button></div>');
+  }
+  function nsNudgeRespond(idx){
+    var n=(window._ccNudges||[])[idx];if(!n)return;
+    var resp=document.getElementById('ns-nudge-resp');var txt=resp&&resp.value.trim();
+    if(!txt){if(resp)resp.style.borderColor='#dc2626';return;}
+    n.answered=true;n.response=txt;
+    window._cpNudges=window._cpNudges||[];
+    window._cpNudges.unshift({msg:'02S responded to your request for '+n.svc+': '+txt,ts:'Just now'});
+    closeModal();renderLogPlan();toast('Response sent to project team');
+  }
+  function openLogTaskEdit(t){
+    if(!t)return;
+    var peopleOpts=['You','Dana Reyes','Manning Steven','Yates Cody','Sarah Chen','Burns David'];
+    var inpStyle='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none';
+    var lblStyle='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var b='<div style="display:flex;flex-direction:column;gap:12px">';
+    b+='<div><label style="'+lblStyle+'">Task description</label><input id="lte-lbl" value="'+t.label.replace(/"/g,'&quot;')+'" type="text" style="'+inpStyle+';padding:9px 12px"></div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lblStyle+'">Assign to</label><select id="lte-assignee" style="'+inpStyle+';background:#fff">';
+    peopleOpts.forEach(function(p){b+='<option value="'+p+'"'+(p===(t.assignee||'You')?' selected':'')+'>'+p+'</option>';});
+    b+='</select></div><div><label style="'+lblStyle+'">Due date</label><input id="lte-due" type="date" value="'+(t.due||'')+'" style="'+inpStyle+'"></div></div>';
+    b+='<div><label style="'+lblStyle+'">Priority</label><div style="display:flex;gap:6px;margin-top:2px">';
+    [['high','#dc2626','#fee2e2'],['medium','#f59e0b','#fffbeb'],['low','#16a34a','#dcfce7']].forEach(function(pri){
+      b+='<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:5px 11px;border-radius:20px;border:1.5px solid '+pri[1]+'30;background:'+pri[2]+';user-select:none"><input type="radio" name="lte-pri" value="'+pri[0]+'"'+(pri[0]===(t.priority||'medium')?' checked':'')+' style="accent-color:'+pri[1]+'"><span style="font-size:11px;font-weight:600;color:'+pri[1]+'">'+pri[0].charAt(0).toUpperCase()+pri[0].slice(1)+'</span></label>';
+    });
+    b+='</div></div><div><label style="'+lblStyle+'">Notes</label><textarea id="lte-notes" rows="2" style="'+inpStyle+';resize:vertical;line-height:1.5">'+(t.notes||'')+'</textarea></div>';
+    b+='</div>';
+    openModal('Edit task',b+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="logTaskEditSave()">Save</button></div>');
+    window._editingTask=t;
+  }
+  function logTaskEditSave(){
+    var t=window._editingTask;if(!t)return;
+    var lbl=document.getElementById('lte-lbl');var ass=document.getElementById('lte-assignee');
+    var due=document.getElementById('lte-due');var notes=document.getElementById('lte-notes');
+    var pri=document.querySelector('input[name="lte-pri"]:checked');
+    if(lbl&&lbl.value.trim())t.label=lbl.value.trim();
+    if(ass)t.assignee=ass.value;if(due)t.due=due.value;
+    if(notes)t.notes=notes.value;if(pri)t.priority=pri.value;
+    closeModal();renderCcDemand('logistics');
+  }
   function renderLogisticsTasksView(proj){
     var tasks=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&(proj==='all'||t.project===(proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14'));});
-    var open=tasks.filter(function(t){return !t.done;});
+    var _priOrd={high:0,medium:1,low:2};
+    var open=tasks.filter(function(t){return !t.done;}).sort(function(a,b){
+      return (_priOrd[a.priority]!=null?_priOrd[a.priority]:1)-(_priOrd[b.priority]!=null?_priOrd[b.priority]:1);
+    });
     var done=tasks.filter(function(t){return t.done;});
     var tab=window._logTaskTab||'activity';
     var h='<div style="margin-top:4px">';
     h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">';
     h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px">';
-    [['activity','By activity'],['person','By person'],['service','By service']].forEach(function(v){
+    [['activity','By activity'],['person','By person'],['service','By item']].forEach(function(v){
       h+='<button onclick="window._logTaskTab=\''+v[0]+'\';renderCcDemand(\'logistics\')" style="font-size:11px;font-weight:'+(tab===v[0]?700:500)+';padding:4px 12px;border-radius:6px;border:none;cursor:pointer;background:'+(tab===v[0]?'#fff':'transparent')+';color:'+(tab===v[0]?'var(--g900)':'var(--g500)')+';box-shadow:'+(tab===v[0]?'0 1px 3px rgba(0,0,0,.08)':'none')+'">'+v[1]+'</button>';
     });
     h+='</div>';
@@ -6031,8 +6126,8 @@ charges:[
     if(!cpRow){toast('Request not found');return;}
     var _vMap={
       'toilet':['United Site Services|(800) 424-0385','ZTERS|(888) 993-7736','Landmark Infrastructure|(855) 552-6275'],
-      'fenc':['American Fence Company|(888) 873-3623','Bison Building Materials|(800) 247-6661','United Rentals|(800) UR-RENTS'],
-      'power':['Sunbelt Rentals|(800) 667-9328','Aggreko|(877) 333-3797','United Rentals|(800) UR-RENTS'],
+      'fenc':['American Fence Company|(888) 873-3623','Bison Building Materials|(800) 247-6661','National Fence Systems|(800) 733-3621'],
+      'power':['Aggreko|(877) 333-3797','Atlas Copco Power|(877) 322-4348','TeraPower Solutions|(800) 952-8872'],
       'wast':['Clean Harbors|(800) 282-0058','Republic Services|(480) 627-2700','TransWaste Solutions|(866) 872-9278'],
       'trail':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226']
     };
@@ -9229,7 +9324,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>10?'#f59e0b':'var(--g700)')+'">'+driftPct+'% ad hoc vs. baseline</span>';
       h+='</div></div>';
     }
-    h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    if(cfg.cap){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
     var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
     var showProjCol=(selProj==='all');
@@ -9634,7 +9729,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<div style="padding:10px 16px;font-size:11.5px;color:var(--charcoal);font-weight:500;cursor:pointer;border-top:1px solid var(--g100)" onclick="dpToggleAllReqs(\''+p+'\')">Show all '+visRows.length+' requests →</div>';
     }
     h+='</div>';}
-    if(isDpView&&p!=='prefab'){
+    if(isDpView&&p!=='prefab'&&p!=='logistics'){
       var _ahRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
       if(_ahRows.length){
         h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">Ad hoc requests</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_ahRows.length+' request'+((_ahRows.length===1)?'':'s')+'</span></div>';
@@ -10592,15 +10687,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       '3PL Management':['Shipment volume and frequency estimated','Scope of work boundary confirmed']
     },
     rows:[
-      {id:'REQ-L-3071',item:'Office Trailers',service:'Office Trailers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 1, 2026',costCode:'0100-0100-0000-0001',cost:18500,quoted:true,quoteRef:'QT-L-0041',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4412',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Office Trailers',lines:[{desc:'24x60 office trailer — delivery and setup',qty:2,uom:'EA',vendorPrice:7200,markup:0.15,unitRate:8280,ext:16560},{desc:'ADA compliance ramp installation',qty:2,uom:'EA',vendorPrice:420,markup:0.15,unitRate:483,ext:966}]},status:'Complete',ordId:'ORD-3071',sa:4,ea:4,attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
+      {id:'REQ-L-3071',item:'Office Trailers',service:'Office Trailers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 1, 2026',costCode:'0100-0100-0000-0001',cost:18500,quoted:true,quoteRef:'QT-L-0041',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4412',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Office Trailers',lines:[{desc:'24x60 office trailer — delivery and setup',qty:2,uom:'EA',vendorPrice:7200,markup:0.15,unitRate:8280,ext:16560},{desc:'ADA compliance ramp installation',qty:2,uom:'EA',vendorPrice:420,markup:0.15,unitRate:483,ext:966}]},status:'Complete',ordId:'ORD-3071',sa:4,ea:8,attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
       {id:'REQ-L-3116',item:'Restroom Facility',service:'Restroom Facility',productLine:'Temp Facilities',vendor:'United Site Services',needBy:'Sep 1, 2026',costCode:'0100-0100-0000-0001',cost:12800,quoted:true,quoteRef:'QT-L-0043',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-8801',quoteDate:'Jul 15 2026',expDate:'Oct 15 2026',service:'Restroom Facility',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}]},status:'In fulfillment',ordId:'ORD-3116',sa:5,ea:8,notes:[{author:'Manning Steven',date:'Aug 5 2026',text:'Confirmed placement at southeast corner of trailer city — ADA route marked.'}],attachments:[{type:'Safety',name:'ADA restroom placement plan',ref:'ADA-3116-001',status:'Approved'}]},
-      {id:'REQ-L-3113',item:'Storage Containers',service:'Storage Containers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:6200,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4413',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Storage Containers',lines:[{desc:'20ft storage container — delivery and placement',qty:2,uom:'EA',vendorPrice:2696,markup:0.15,unitRate:3100,ext:6200}]},status:'In fulfillment',ordId:'ORD-3113',sa:4,ea:4,attachments:[{type:'Shipping',name:'Container placement map — laydown area',ref:'PM-3113-001',status:'Approved'}]},
+      {id:'REQ-L-3113',item:'Storage Containers',service:'Storage Containers',productLine:'Temp Facilities',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:6200,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4413',quoteDate:'Jul 8 2026',expDate:'Oct 8 2026',service:'Storage Containers',lines:[{desc:'20ft storage container — delivery and placement',qty:2,uom:'EA',vendorPrice:2696,markup:0.15,unitRate:3100,ext:6200}]},status:'In fulfillment',ordId:'ORD-3113',sa:4,ea:7,attachments:[{type:'Shipping',name:'Container placement map — laydown area',ref:'PM-3113-001',status:'Approved'}]},
       {id:'REQ-L-3061',item:'Temp Toilets & Handwash Stations',service:'Temp Toilets & Handwash Stations',productLine:'Site Services',vendor:'United Site Services',needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:4600,quoted:true,quoteRef:'QT-L-0042',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-8847',quoteDate:'Aug 12 2026',expDate:'Nov 12 2026',service:'Temp Toilets & Handwash Stations',lines:[{desc:'Standard portable restroom — monthly service (4-week cycle)',qty:18,uom:'EA',vendorPrice:130,markup:0.15,unitRate:150,ext:2700},{desc:'ADA-accessible portable restroom — monthly service',qty:2,uom:'EA',vendorPrice:200,markup:0.15,unitRate:230,ext:460},{desc:'Handwash station — monthly service',qty:6,uom:'EA',vendorPrice:100,markup:0.15,unitRate:115,ext:690},{desc:'Initial setup & site delivery fee',qty:1,uom:'LS',vendorPrice:652,markup:0.15,unitRate:750,ext:750}]},status:'Quoted',fqRef:'REQ-P-0501',sa:5,ea:9,notes:[{author:'Yates Cody',date:'Aug 10 2026',text:'02S to source options — peak crew ~180. Need 1 unit per 10 workers + 1 ADA unit.'},{author:'02S Ops',date:'Aug 12 2026',text:'Quote from United Site Services: 20 units + 6 handwash stations for Sep–Oct. Awaiting your approval to proceed to scheduling.'}]},
-      {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:2,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
-      {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:4,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
-      {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:6,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
+      {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:5,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
+      {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:9,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
+      {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:9,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
       {id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]},
-      {id:'REQ-L-3145',item:'Drinking Water & Bagged Ice',service:'Drinking Water & Bagged Ice',productLine:'Temp Facilities',vendor:null,needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Barry Rose WRF',qty:'Lot',sa:4,ea:5,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Crew expecting drinking water and ice station at laydown. Need quote before Sep site mob.'}]},
+      {id:'REQ-L-3145',item:'Drinking Water & Bagged Ice',service:'Drinking Water & Bagged Ice',productLine:'Temp Facilities',vendor:null,needBy:'Sep 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Barry Rose WRF',qty:'Lot',sa:4,ea:8,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Crew expecting drinking water and ice station at laydown. Need quote before Sep site mob.'}]},
       {id:'REQ-L-3148',item:'IT Network & Internet Install',service:'Internet Service & Network Install',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'VDC14',qty:'1 system',sa:5,ea:7,notes:[{author:'Burns David',date:'Aug 15 2026',text:'VDC14 site office coming online Oct. Need fiber run and network install quoted — coordinate with ISP lead time (90d).'}]}
     ]
   }
@@ -10616,8 +10711,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     {svc:'Site office trailers (4 units)',vendor:'WillScot',start:'Apr 15',end:'Dec 15',cost:'0100-0100-0000-0001',monthly:'$4,600',status:'Active',sa:0,ea:8,attachments:[{type:'Quotes',name:'Modular office lease agreement',ref:'SVC-GCR-003',status:'Executed'},{type:'Safety',name:'Trailer placement & egress plan',ref:'SITE-TRL-001',status:'Approved'}]},
     {svc:'Security services — 24/7',vendor:'Allied Universal',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$18,400',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Site security plan — Hercules Solar',ref:'SEC-HRC-001',status:'Approved'},{type:'Safety',name:'Access control protocol',ref:'SEC-HRC-002',status:'Current'},{type:'Quotes',name:'Security services contract',ref:'SVC-GCR-004',status:'Executed'}]},
     {svc:'Dewatering — sumps & pumping',vendor:'Rain Bird Industrial',start:'Jun 1',end:'Sep 30',cost:'0200-0320-0000-0001',monthly:'$5,100',status:'Active',sa:2,ea:5,attachments:[{type:'Engineering',name:'Dewatering plan — site drainage',ref:'DEW-HRC-001',status:'Approved'}]},
-    {svc:'Temporary fencing & barricade',vendor:'Sunbelt Rentals',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
-    {svc:'Lighting towers (8 units)',vendor:'Sunbelt Rentals',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
+    {svc:'Temporary fencing & barricade',vendor:'American Fence Company',start:'Apr 15',end:'Nov 30',cost:'0100-0100-0000-0001',monthly:'$1,400',status:'Active',sa:0,ea:7},
+    {svc:'Lighting towers (8 units)',vendor:'Aggreko Power Solutions',start:'May 1',end:'Jan 31, 2027',cost:'0100-0100-0000-0001',monthly:'$2,800',status:'Active',sa:1,ea:9,attachments:[{type:'Safety',name:'Lighting tower inspection records',ref:'LT-INSP-001',status:'Current'}]},
     {svc:'Concrete washout service',vendor:'US LBM',start:'Jun 15',end:'Oct 31',cost:'0300-0100-0000-0001',monthly:'$900',status:'Active',sa:2,ea:6,attachments:[{type:'Safety',name:'Environmental compliance — concrete washout',ref:'ENV-CW-001',status:'Approved'}]}
   ];
   var TRNWH_SERVICES=[
@@ -10659,25 +10754,49 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
+    if(ns&&window._ccNudges&&window._ccNudges.filter(function(n){return !n.answered;}).length>0){
+      var _unans=window._ccNudges.filter(function(n){return !n.answered;});
+      h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b45309">'+_unans.length+' pending request'+(_unans.length>1?'s':'')+' from project team</span>';
+      h+='</div>';
+      _unans.forEach(function(n,ni){
+        var _ni=window._ccNudges.indexOf(n);
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #fde68a':'')+'"><span style="font-size:9.5px;font-weight:700;color:#fff;background:#f59e0b;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">GC</span>';
+        h+='<div style="flex:1"><div style="font-size:12px;color:#78350f;font-weight:500">'+n.svc+' — '+n.question.slice(0,80)+(n.question.length>80?'…':'')+'</div>';
+        h+='<div style="font-size:10px;color:#b45309;margin-top:2px">'+n.from+' · '+n.ts+'</div></div>';
+        h+='<button class="btn btn-dark btn-sm" style="font-size:10px;white-space:nowrap" onclick="openNsNudgeModal('+_ni+')">Respond →</button></div>';
+      });
+      h+='</div>';
+    }
+    if(!ns&&window._cpNudges&&window._cpNudges.length){
+      h+='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(window._cpNudges.length>1?'6':'0')+'px">';
+      h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#1d4ed8">'+(window._cpNudges.length===1?'1 new notification from 02S':window._cpNudges.length+' notifications from 02S')+'</span>';
+      h+='<span class="spacer"></span><button onclick="window._cpNudges=[];renderLogPlan()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
+      h+='</div>';
+      window._cpNudges.forEach(function(n,ni){
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+'"><span style="font-size:9.5px;font-weight:700;color:#fff;background:#3b82f6;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">02S</span>';
+        h+='<div style="flex:1"><div style="font-size:12px;color:#1e293b;font-weight:500">'+n.msg+'</div>';
+        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div></div></div>';
+      });
+      h+='</div>';
+    }
     h+='<div class="phead"><div><h1>Moves &amp; Events <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">DP-LOG-HRC-001</span></h1><div class="meta"><span class="chip">02S logistics services · Hercules Solar + BESS</span></div></div></div>';
     if(DP&&DP.logistics&&DP.logistics.vitals){h+='<div class="vitals">';DP.logistics.vitals.forEach(function(v){h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>';});h+='</div>';}
     var _coreLen=_intake.core.length,_archLen=_intake.archetype.length;
-    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:16px">';
-    h+='<div style="display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer" onclick="logIntakeToggle()">';
-    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
-    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
-    h+='<span style="flex:1"></span>';
-    h+='<span id="log-intake-chevron" style="font-size:11px;color:var(--g400)">16 services &nbsp;&#9660;</span>';
-    h+='</div>';
-    h+='<div id="log-intake-body" style="display:none;padding:0 14px 12px;border-top:1px solid var(--g200)">';
-    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;padding-top:10px"><b style="color:var(--g800)">Standard services (12):</b> Office Trailers · Restroom Facility · Office Containers · Storage Containers · Office Furniture Package · Office Printer/Copiers · Security Cameras · Temp Toilets &amp; Handwash Stations · Waste Hauling · Drinking Water · Bagged Ice · Site Construction Signage</div>';
-    h+='<div style="font-size:11.5px;color:var(--g700);line-height:1.7;margin-top:6px"><b style="color:var(--g800)">Added for Renewables projects:</b> Temp Power Utility Coordination · Temp Power Installation · Construction Water Hauling &amp; Storage · Remote Access Communication</div>';
-    h+='</div></div>';
-    h+='<div style="display:flex;gap:2px;margin-right:8px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
+    h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px">';
+    h+='<div style="display:flex;gap:2px;margin-right:4px"><button class="ff-b'+(gcgrView==='table'?' on':'')+'" onclick="setGcgrView(\'table\')">List</button><button class="ff-b'+(gcgrView==='gantt'?' on':'')+'" onclick="setGcgrView(\'gantt\')">Gantt</button></div>';
     h+='<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Moves &amp; Events\')">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
+    h+='</div>';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" onclick="openLogScopeModal()">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
+    h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
+    h+='<span style="flex:1"></span>';
+    h+='<span style="font-size:11px;color:var(--g400)">16 services &nbsp;↗</span>';
     h+='</div>';
     if(gcgrView==='gantt'){
       var GCGR_MO=EQ_MONTHS.slice(1,11);
@@ -10693,15 +10812,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var stt=logToneMap[r.status]||'projected';
         var sa=r.sa!=null?r.sa:0; var ea=r.ea!=null?r.ea:sa;
         var left=(sa/GN)*100; var width=((ea-sa+1)/GN)*100;
-        h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal"><span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span><span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span></div>';
+        var _lgRi=_logRows.indexOf(r);
+        h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+        h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span>';
+        h+='<button onclick="event.stopPropagation();openLogGanttEdit('+_lgRi+')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g600);flex-shrink:0">Edit</button>';
+        h+='</div>';
+        h+='<span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span>';
+        h+='</div>';
         h+='<div class="g-track" style="background-image:'+gGrid+'"><div class="g-bar '+stt+' vw" style="left:'+left.toFixed(2)+'%;width:calc('+width.toFixed(2)+'% - 3px)" title="'+(r.needBy||r.status)+'">'+(r.needBy||r.status)+'</div></div></div>';
       });
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Planned / Quoted</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 160px 120px 160px 48px';
+      var meCols='1fr 140px 100px 160px 120px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
-      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Cost code</span><span>Cost</span><span>Status</span><span style="text-align:center">Docs</span></div>';
+      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
       _logRows.forEach(function(row,ri){
         var isQuoted=row.quoted&&row.cost!=null;
         var docsCount=(row.attachments||[]).length;
@@ -10720,7 +10846,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var _logStT={'Planned':'neu','Requested':'warn','Quoted':'info','In fulfillment':'ok','Closed':'neu','Complete':'ok'}[row.status]||'neu';
         h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
         
-        h+='<div onclick="event.stopPropagation()" style="display:flex;align-items:center;justify-content:center"><button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 7px;min-width:28px" onclick="logShowDocs('+ri+')">'+(docsCount>0?docsCount:'+')+'</button></div>';
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
       });
