@@ -3570,7 +3570,7 @@ charges:[
     h+='</div>';
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(l.fqRef) h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+l.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
+    if(l.fqRef&&CURRENT!=='ns') h+='<button class="btn btn-red btn-sm" onclick="event.stopPropagation();ccGoFulfill(\''+l.fqRef+'\')">→ FQ</button>'; else if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
@@ -3629,6 +3629,7 @@ charges:[
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
+    if(pk==='logistics')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogGanttEdit('+rowIdx+')">Edit dates</button>';
     h+='</div>';
     if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
     return h;
@@ -5854,7 +5855,7 @@ charges:[
     b+='<div style="display:flex;flex-direction:column;justify-content:flex-end">';
     b+='<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:8px">';
     b+='<input type="checkbox" id="lgtm-nudge" onchange="var ta=document.getElementById(\'lgtm-nudge-msg\');if(ta)ta.style.display=this.checked?\'block\':\'none\'" style="accent-color:#3b82f6;width:14px;height:14px">';
-    b+='<div><div style="font-size:11.5px;font-weight:600;color:#1d4ed8">Nudge project team</div><div style="font-size:10px;color:#3b82f6">Optional — attach a question to 02S</div></div>';
+    b+='<div><div style="font-size:11.5px;font-weight:600;color:#1d4ed8">Nudge project team</div><div style="font-size:10px;color:#3b82f6">Optional — ask the project team something</div></div>';
     b+='</label>';
     b+='<textarea id="lgtm-nudge-msg" placeholder="Please provide…" rows="2" style="display:none;width:100%;box-sizing:border-box;border:1.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11.5px;font-family:inherit;outline:none;resize:vertical;margin-top:6px;color:#1d4ed8;background:#f0f8ff"></textarea>';
     b+='</div></div>';
@@ -5938,7 +5939,7 @@ charges:[
     h+='</div>';
     if(t.priority&&t.priority!=='medium'){h+='<span style="font-size:9px;font-weight:700;color:'+(_priColor[t.priority]||'#94a3b8')+';background:'+(_priBg[t.priority]||'#f1f5f9')+';border-radius:4px;padding:1px 6px;flex-shrink:0;text-transform:uppercase">'+t.priority+'</span>';}
     if(t.nudge){h+='<span style="font-size:9px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 5px;flex-shrink:0">nudged</span>';}
-    h+='<button onclick="event.stopPropagation();openLogTaskEdit(t)" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
+    h+='<button onclick="event.stopPropagation();openLogTaskEditById(\'"+ t.id +"\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
     h+='</div>';
     return h;
   }
@@ -6025,6 +6026,7 @@ charges:[
     if(notes)t.notes=notes.value;if(pri)t.priority=pri.value;
     closeModal();renderCcDemand('logistics');
   }
+  function openLogTaskEditById(id){openLogTaskEdit(MY_CC_TASKS.find(function(x){return x.id===id;}));}
   function renderLogisticsTasksView(proj){
     var tasks=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&(proj==='all'||t.project===(proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14'));});
     var _priOrd={high:0,medium:1,low:2};
@@ -6740,17 +6742,17 @@ charges:[
     {id:'mct-002',label:'Release PO — Sanitation units · 3 portable restrooms',ref:'REQ-P-0501',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 5',priority:'high',source:'fq',done:false,closeNote:''},
     {id:'mct-003',label:'Confirm spec — Solar DC cabling',ref:'REQ-P-0531',project:'Hercules Solar + BESS',pillar:'procurement',due:'Aug 6',priority:'high',source:'fq',done:false,closeNote:''},
     {id:'mct-004',label:'Approve submittal — modular e-houses (BESS)',ref:'REQ-F-034',project:'Hercules Solar + BESS',pillar:'prefab',due:'Aug 8',priority:'high',source:'fq',done:false,closeNote:''},
-    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'REQ-L-3065',project:'Barry Rose WRF',pillar:'logistics',due:'Aug 4',priority:'high',source:'manual',done:true,closeNote:'Bragg Crane confirmed — permit applications filed Aug 2026',activity:'Contracting'},
-    {id:'mct-007',label:'Schedule move — Temporary power hookup · BESS pad',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install'},
+    {id:'mct-006',label:'Confirm site access — tower crane mobilization',ref:'REQ-L-3065',project:'Barry Rose WRF',pillar:'logistics',due:'Aug 4',priority:'high',source:'manual',done:true,closeNote:'Bragg Crane confirmed — permit applications filed Aug 2026',activity:'Contracting',item:'Tower Crane Mobilization'},
+    {id:'mct-007',label:'Schedule move — Temporary power hookup · BESS pad',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install',item:'Temp Power Distribution Equip.'},
     {id:'mct-008',label:'Get quote — BESS commissioning agent',ref:'REQ-S-2108',project:'Hercules Solar + BESS',pillar:'services',due:'Aug 12',priority:'medium',source:'fq',done:false,closeNote:''},
     {id:'mct-009',label:'Allocate crawler crane 230T — Hercules',ref:'REQ-4473',project:'Hercules Solar + BESS',pillar:'equipment',due:'Aug 15',priority:'medium',source:'fq',done:false,closeNote:''},
     {id:'mct-010',label:'Place order — UPS bypass cable assembly',ref:'REQ-P-0614',project:'VDC14',pillar:'procurement',due:'Aug 18',priority:'low',source:'fq',done:false,closeNote:''},
-    {id:'mct-011',label:'Confirm quote — Temp Toilets & Handwash (United Site Services)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 22',priority:'high',source:'fq',done:false,closeNote:'',activity:'Contracting'},
-    {id:'mct-012',label:'Select vendor — Temp Power Distribution (RFP responses due)',ref:'REQ-L-3070',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 28',priority:'high',source:'fq',done:false,closeNote:'',activity:'RFP'},
-    {id:'mct-013',label:'Issue PO — Temp Fencing (Oct 15 need-by, 6-wk lead)',ref:'REQ-L-3117',project:'Hercules Solar + BESS',pillar:'logistics',due:'Sep 3',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Contracting'},
-    {id:'mct-014',label:'Select vendor — Drinking Water & Bagged Ice (Barry Rose WRF)',ref:'REQ-L-3145',project:'Barry Rose WRF',pillar:'logistics',due:'Sep 5',priority:'medium',source:'fq',done:false,closeNote:'',activity:'RFP'},
-    {id:'mct-015',label:'Confirm IT equipment delivery window — VDC14 Oct 2026',ref:'REQ-L-3148',project:'VDC14',pillar:'logistics',due:'Sep 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install'},
-    {id:'mct-016',label:'Select vendor — Sanitation Units (VDC14, Nov 2026 need-by)',ref:'REQ-L-3133',project:'VDC14',pillar:'logistics',due:'Sep 12',priority:'low',source:'fq',done:false,closeNote:'',activity:'RFP'}
+    {id:'mct-011',label:'Confirm quote — Temp Toilets & Handwash (United Site Services)',ref:'REQ-L-3061',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 22',priority:'high',source:'fq',done:false,closeNote:'',activity:'Contracting',item:'Temp Toilets & Handwash Stations'},
+    {id:'mct-012',label:'Select vendor — Temp Power Distribution (RFP responses due)',ref:'REQ-L-3070',project:'Hercules Solar + BESS',pillar:'logistics',due:'Aug 28',priority:'high',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Temp Power Distribution Equip.'},
+    {id:'mct-013',label:'Issue PO — Temp Fencing (Oct 15 need-by, 6-wk lead)',ref:'REQ-L-3117',project:'Hercules Solar + BESS',pillar:'logistics',due:'Sep 3',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Contracting',item:'Temp Fencing'},
+    {id:'mct-014',label:'Select vendor — Drinking Water & Bagged Ice (Barry Rose WRF)',ref:'REQ-L-3145',project:'Barry Rose WRF',pillar:'logistics',due:'Sep 5',priority:'medium',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Drinking Water & Bagged Ice'},
+    {id:'mct-015',label:'Confirm IT equipment delivery window — VDC14 Oct 2026',ref:'REQ-L-3148',project:'VDC14',pillar:'logistics',due:'Sep 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install',item:'IT Network & Internet Install'},
+    {id:'mct-016',label:'Select vendor — Sanitation Units (VDC14, Nov 2026 need-by)',ref:'REQ-L-3133',project:'VDC14',pillar:'logistics',due:'Sep 12',priority:'low',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Temp Toilets & Handwash Stations'}
   ];
   var _MT_NS=[
     {id:'mct-001',rank:1,float:0,impact:'~$40K/wk',why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
