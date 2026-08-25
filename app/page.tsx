@@ -11,7 +11,7 @@ export default function Page() {
         if (!root) return;
         root.innerHTML = html;
         const script = document.createElement('script');
-        script.src = '/app.js';
+        script.src = '/app.js?v=' + Date.now();
         document.body.appendChild(script);
       });
   }, []);
