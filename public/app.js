@@ -1732,6 +1732,29 @@
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
+    if(!ns&&window._ptNudges&&window._ptNudges.filter(function(n){return !n.answered;}).length){
+      var _ptN=window._ptNudges.filter(function(n){return !n.answered;});
+      h+='<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;margin-bottom:10px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(_ptN.length>1?'6':'0')+'px">';
+      var _ptHdr=_ptN.length===1?'1 request from GC Ops':_ptN.length+' requests from GC Ops';
+      h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#c2410c">'+_ptHdr+'</span>';
+      h+='<span class="spacer"></span>';
+      h+='<button onclick="window._ptNudges.forEach(function(n){n.answered=true;});renderLogPlan()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
+      h+='</div>';
+      _ptN.forEach(function(n,ni){
+        var _ptIdx=window._ptNudges.indexOf(n);
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #fed7aa':'')+'">';
+        h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#ea580c;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">GC</span>';
+        h+='<div style="flex:1">';
+        h+='<div style="font-size:11.5px;color:#1e293b;font-weight:500;margin-bottom:2px">'+n.svc+' — '+n.project+'</div>';
+        h+='<div style="font-size:11px;color:#78350f;line-height:1.4;margin-bottom:4px">'+(n.question.length>140?n.question.slice(0,140)+'…':n.question)+'</div>';
+        h+='<div style="display:flex;align-items:center;gap:8px">';
+        h+='<span style="font-size:10px;color:#9a3412">'+n.from+' · '+n.ts+'</span>';
+        h+='<button onclick="openPtNudgeModal('+_ptIdx+')" style="font-size:10px;padding:2px 9px;border-radius:4px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600">Respond →</button>';
+        h+='</div></div></div>';
+      });
+      h+='</div>';
+    }
     if(!ns&&window._cpNudges&&window._cpNudges.length){
       h+='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(window._cpNudges.length>1?'6':'0')+'px">';
@@ -5796,7 +5819,7 @@ charges:[
   }
 
   function openLogActsEdit(proj,ri){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;if(!rows||!rows[ri])return;var row=rows[ri];var acts=row.acts||[];var MO_ISO=['2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10','2026-11','2026-12','2027-01'];var toDate=function(i,d){return d||(MO_ISO[Math.max(0,Math.min(9,i||0))]+'-01');};var inp='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)';var mh='<div style="display:flex;flex-direction:column;gap:14px">';mh+='<div style="background:var(--g50);border-radius:7px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between">';mh+='<span style="font-size:12px;font-weight:600;color:var(--g800)">'+row.item+'</span>';mh+='<div style="display:flex;align-items:center;gap:8px"><label style="font-size:10.5px;font-weight:600;color:var(--g600)">Lead time</label><input id="lae-lt" type="number" min="0" placeholder="days" value="'+(row.leadTime!=null?row.leadTime:'')+'" style="width:72px;border:1.5px solid var(--g200);border-radius:7px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;text-align:center"><span style="font-size:11px;color:var(--g500)"> days</span></div>';mh+='</div>';mh+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';mh+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--g100);border-bottom:1px solid var(--g200);padding:8px 12px">';mh+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Activity</div>';mh+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Start date</div>';mh+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">End date</div>';mh+='</div>';acts.forEach(function(act,ai){var bg=ai%2===0?'#fff':'var(--g50)';mh+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:10px 12px;border-top:1px solid var(--g100);background:'+bg+'">';mh+='<input id="lae-n-'+ai+'" type="text" value="'+act.n+'" style="'+inp+'">';mh+='<input id="lae-s-'+ai+'" type="date" value="'+toDate(act.s,act.sd)+'" style="'+inp+'">';mh+='<input id="lae-e-'+ai+'" type="date" value="'+toDate(act.e,act.ed)+'" style="'+inp+'">';mh+='</div>';});mh+='</div></div>';openModal('Edit activity plan — '+row.item,mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="logActsEditSave(\''+proj+'\','+ri+')">Save</button></div>');}
-  function logActsEditSave(proj,ri){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;if(!rows||!rows[ri])return;var row=rows[ri];var lt=document.getElementById('lae-lt');if(lt&&lt.value!=='')row.leadTime=+lt.value;var MO_TO_IDX=function(d){if(!d)return 0;var p=d.split('-');var yr=+p[0];var mo=+p[1];return Math.max(0,Math.min(9,(yr-2026)*12+(mo-4)));};(row.acts||[]).forEach(function(act,ai){var n=document.getElementById('lae-n-'+ai);var s=document.getElementById('lae-s-'+ai);var e=document.getElementById('lae-e-'+ai);if(n&&n.value.trim())act.n=n.value.trim();if(s&&s.value){act.sd=s.value;act.s=MO_TO_IDX(s.value);}if(e&&e.value){act.ed=e.value;act.e=MO_TO_IDX(e.value);}});closeModal();renderCcDemand('logistics');}
+  function logActsEditSave(proj,ri){var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;if(!rows||!rows[ri])return;var row=rows[ri];var lt=document.getElementById('lae-lt');if(lt&&lt.value!=='')row.leadTime=+lt.value;var MO_TO_IDX=function(d){if(!d)return 0;var p=d.split('-');var yr=+p[0];var mo=+p[1];return Math.max(0,Math.min(9,(yr-2026)*12+(mo-4)));};(row.acts||[]).forEach(function(act,ai){var n=document.getElementById('lae-n-'+ai);var s=document.getElementById('lae-s-'+ai);var e=document.getElementById('lae-e-'+ai);if(n&&n.value.trim())act.n=n.value.trim();if(s&&s.value){act.sd=s.value;act.s=MO_TO_IDX(s.value);}if(e&&e.value){act.ed=e.value;act.e=MO_TO_IDX(e.value);}});var _allA=row.acts||[];if(_allA.length){var _minS=Math.min.apply(null,_allA.map(function(a){return a.s!=null?a.s:0;}));var _maxE=Math.max.apply(null,_allA.map(function(a){return a.e!=null?a.e:_minS+1;}));var _dpRs=(DP&&DP.logistics&&DP.logistics.rows)||[];var _dpM=_dpRs.find(function(r){return r.service&&row.item&&r.service.toLowerCase()===row.item.toLowerCase();});if(_dpM){_dpM.sa=_minS;_dpM.ea=_maxE;}}closeModal();renderCcDemand('logistics');}
   function logAddTaskFromRow(proj,ri,fqRef,item){
     var inp=document.getElementById('ltask-inp-'+proj+'-'+ri);
     var sel=document.getElementById('ltask-act-'+proj+'-'+ri);
@@ -5924,6 +5947,7 @@ charges:[
     openModal('02S Quote \u2014 '+ccRow.item,mh);
   }
 
+  function logTaskReassign(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t){t.assignee=val;renderCcDemand('logistics');}}
   function _renderLogTaskCard(t,proj,showAct){
     var _priColor={high:'#dc2626',medium:'#f59e0b',low:'#16a34a'};
     var _priBg={high:'#fee2e2',medium:'#fffbeb',low:'#dcfce7'};
@@ -5941,9 +5965,15 @@ charges:[
     if(t.notes){h+='<div style="font-size:10.5px;color:var(--g500);margin-top:3px;line-height:1.4">'+t.notes+'</div>';}
     h+='</div>';
     if(t.priority&&t.priority!=='medium'){h+='<span style="font-size:9px;font-weight:700;color:'+(_priColor[t.priority]||'#94a3b8')+';background:'+(_priBg[t.priority]||'#f1f5f9')+';border-radius:4px;padding:1px 6px;flex-shrink:0;text-transform:uppercase">'+t.priority+'</span>';}
-    if(t.nudge){h+='<span style="font-size:9px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 5px;flex-shrink:0">nudged</span>';}
-    h+='<button onclick="event.stopPropagation();openLogTaskEditById(\''+t.id+'\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0;margin-left:auto">Edit</button>';
+    if(t.nudge&&!t.nudgeReply){h+='<span style="font-size:9px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:1px 5px;flex-shrink:0">nudged</span>';}
+    if(t.nudgeReply){h+='<span style="font-size:9px;font-weight:600;color:#059669;background:#d1fae5;border:1px solid #6ee7b7;border-radius:4px;padding:1px 5px;flex-shrink:0">&#10003; replied</span>';}
+    h+='<select onchange="event.stopPropagation();logTaskReassign(\''+t.id+'\',this.value)" style="font-size:10px;border:1px solid var(--g200);border-radius:4px;padding:1px 5px;background:#fff;cursor:pointer;color:var(--g600);flex-shrink:0">';
+    ['You','Dana Reyes','Manning Steven','Yates Cody','Sarah Chen','Burns David'].forEach(function(pp){h+='<option value="'+pp+'"'+(pp===(t.assignee||'You')?' selected':'')+'>'+(pp==='You'?'You (me)':pp)+'</option>';});
+    h+='</select>';
+    h+='<button onclick="event.stopPropagation();openTaskNudgeModal(\''+t.id+'\')" title="Nudge project team" style="font-size:10px;padding:1px 7px;border:1px solid #bfdbfe;border-radius:4px;background:#eff6ff;cursor:pointer;color:#1d4ed8;flex-shrink:0">Nudge ↗</button>';
+    h+='<button onclick="event.stopPropagation();openLogTaskEditById(\''+t.id+'\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0">Edit</button>';
     h+='</div>';
+    if(t.nudgeReply){h+='<div style="margin-top:4px;padding:7px 10px;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;font-size:11px;color:#15803d;line-height:1.4"><span style="font-weight:700">Project team replied · </span>'+t.nudgeReply+'</div>';}
     return h;
   }
   function openLogScopeModal(){
@@ -5979,6 +6009,7 @@ charges:[
     closeModal();renderLogPlan();
   }
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
+  window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
     var mh='<div style="display:flex;flex-direction:column;gap:14px">';
@@ -5989,6 +6020,28 @@ charges:[
     mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Your response</label><textarea id="ns-nudge-resp" rows="3" placeholder="Type your response here…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;outline:none;resize:vertical"></textarea></div>';
     mh+='</div>';
     openModal('Respond to project team — '+n.svc,mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Dismiss</button><button class="btn btn-dark" onclick="nsNudgeRespond('+idx+')">Send response</button></div>');
+  }
+  function openPtNudgeModal(idx){
+    var n=(window._ptNudges||[])[idx];if(!n)return;
+    var mh='<div style="display:flex;flex-direction:column;gap:14px">';
+    mh+='<div style="background:var(--g50);border-radius:7px;padding:10px 13px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    mh+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Service</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+n.svc+'</div></div>';
+    mh+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">From</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+n.from+' · '+n.ts+'</div></div></div>';
+    mh+='<div><div style="font-size:10.5px;font-weight:700;color:var(--g600);margin-bottom:6px">Request from GC Ops logistics team</div><div style="font-size:12.5px;color:var(--g800);line-height:1.6;padding:10px 13px;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px">'+n.question+'</div></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Your response</label><textarea id="pt-nudge-resp" rows="3" placeholder="Type your response here…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;outline:none;resize:vertical"></textarea></div>';
+    mh+='</div>';
+    openModal('Respond to GC Ops — '+n.svc,mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Dismiss</button><button class="btn btn-dark" onclick="ptNudgeRespond('+idx+')">Send response</button></div>');
+  }
+  function ptNudgeRespond(idx){
+    var n=(window._ptNudges||[])[idx];if(!n)return;
+    var resp=document.getElementById('pt-nudge-resp');
+    var txt=resp&&resp.value.trim();
+    if(!txt){if(resp)resp.style.borderColor='#dc2626';return;}
+    n.answered=true;n.response=txt;
+    if(n.taskId){var _t=MY_CC_TASKS.find(function(x){return x.id===n.taskId;});if(_t){_t.nudgeReply=txt;}}
+    window._ccNudges=window._ccNudges||[];
+    window._ccNudges.unshift({id:'nudge-resp-'+Date.now(),svc:n.svc,project:n.project,question:'Project team responded re: '+n.svc+' — '+txt,from:'Project Team',ts:'Just now',answered:true});
+    closeModal();renderLogPlan();toast('Response sent');
   }
   function nsNudgeRespond(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
@@ -6035,6 +6088,26 @@ charges:[
     closeModal();renderCcDemand('logistics');
   }
   function openLogTaskEditById(id){openLogTaskEdit(MY_CC_TASKS.find(function(x){return x.id===id;}));}
+  function openTaskNudgeModal(id){
+    var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(!t)return;
+    var mh='<div style="display:flex;flex-direction:column;gap:12px">';
+    mh+='<div style="background:var(--g50);border-radius:7px;padding:9px 13px">';
+    mh+='<div style="font-size:11.5px;font-weight:600;color:var(--g800);margin-bottom:2px">'+t.label+'</div>';
+    mh+='<div style="font-size:10.5px;color:var(--g400)">'+(t.item||t.pillar||'')+' · '+(t.due?'Due '+t.due:'')+' · '+(t.project||'')+'</div></div>';
+    if(t.nudgeReply){mh+='<div style="padding:8px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;font-size:11.5px;color:#15803d"><b>Project team\'s last reply · </b>'+t.nudgeReply+'</div>';}
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Message to project team</label><textarea id="tnm-msg" rows="3" placeholder="What do you need from the project team?" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 11px;font-size:12px;font-family:inherit;outline:none;resize:vertical"></textarea></div>';
+    mh+='</div>';
+    openModal('Nudge project team — '+(t.item||t.label),mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="taskNudgeSend(\''+id+'\')">Send nudge ↗</button></div>');
+  }
+  function taskNudgeSend(id){
+    var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(!t)return;
+    var msg=document.getElementById('tnm-msg');var txt=msg&&msg.value.trim();
+    if(!txt){if(msg)msg.style.borderColor='#dc2626';return;}
+    t.nudge=true;
+    window._ptNudges=window._ptNudges||[];
+    window._ptNudges.unshift({id:'ptn-'+Date.now(),taskId:id,svc:t.item||t.pillar||'',project:t.project||'',question:txt,from:'GC Ops',ts:'Just now',answered:false});
+    closeModal();renderCcDemand('logistics');toast('Nudge sent to project team');
+  }
   function renderLogisticsTasksView(proj){
     var tasks=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&(proj==='all'||t.project===(proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14'));});
     var _priOrd={high:0,medium:1,low:2};
@@ -9629,7 +9702,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           var _ra=(row.attrs||[]).concat(_dpItemAttrs[row.id]||[]);
           var _logPct=(p==='logistics'&&row.acts)?Math.round(row.acts.filter(function(a){return a.st==='Done';}).length/row.acts.length*100):null;
           h+='<div>'+row.item+(_ra.length?'<div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">'+_ra.map(function(a){return'<span style="font-size:9px;padding:1px 5px;border-radius:8px;background:var(--g100);color:var(--g600);border:1px solid var(--g150)">'+a+'</span>';}).join('')+'</div>':'');
-          if(_logPct!==null){h+='<div style="display:flex;align-items:center;gap:6px;margin-top:5px"><div style="width:64px;height:5px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+_logPct+'%;height:100%;background:'+(p==='logistics'&&_logPct===100?'#10b981':_logPct>50?'#10b981':'#f59e0b')+';border-radius:3px"></div></div><span style="font-size:9.5px;color:var(--g500)">'+_logPct+'%</span></div>';}
+          if(_logPct!==null){h+='<div style="display:flex;align-items:center;gap:6px;margin-top:5px"><div style="width:64px;height:5px;background:var(--g150);border-radius:3px;overflow:hidden"><div style="width:'+_logPct+'%;height:100%;background:'+(p==='logistics'&&_logPct===100?'#10b981':_logPct>50?'#10b981':'#f59e0b')+';border-radius:3px"></div></div><span style="font-size:9.5px;color:var(--g500)">'+_logPct+'%</span>'+(row.leadTime?'<span style="font-size:9px;color:var(--g400);background:var(--g100);border-radius:4px;padding:0 5px;margin-left:2px">'+row.leadTime+'d lead</span>':'')+'</div>';}
           h+='</div>';
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:'+(p==='prefab'&&row.dateShifted?'#b45309':'var(--g700)')+'">'+(row.window||'\u2014')+'</div>'+(p==='prefab'?'<div style="font-size:11px;color:var(--g600)">'+(row.p6Act||'\u2014')+'</div>':'');
@@ -9647,7 +9720,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
               var _lActTc={Done:'#fff','In progress':'#fff','Not started':'#94a3b8'};
               var _lActOpts=['Done','In progress','Not started'];
               h+='<div style="padding:16px;background:var(--g50);border-top:1px solid var(--g200);border-bottom:2px solid var(--g200)">';
-              if(row.firm||row.poc||row.phone){
+              if(row.firm||row.poc||row.phone||row.cost||row.leadTime){
                 h+='<div style="display:flex;gap:20px;flex-wrap:wrap;padding:8px 12px;background:#fff;border:1px solid var(--g150);border-radius:6px;margin-bottom:12px">';
                 if(row.firm)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">Vendor</div><div style="font-size:11.5px;font-weight:600;color:var(--g900)">'+row.firm+'</div></div>';
                 if(row.poc)h+='<div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">POC</div><div style="font-size:11.5px;font-weight:500">'+row.poc+'</div></div>';
