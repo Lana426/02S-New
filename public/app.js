@@ -1804,7 +1804,6 @@
         h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
         h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span>';
-        h+='<button onclick="event.stopPropagation();openLogGanttEdit('+_lgRi+')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g600);flex-shrink:0">Edit</button>';
         h+='</div>';
         h+='<span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span>';
         h+='</div>';
@@ -8013,7 +8012,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ],
       varSummary:'3 services in fulfillment · 1 quote ready for approval (USS) · 2 requiring vendor selection by Oct.',
       rows:[
-        {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Complete',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+        {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Complete',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',leadTime:21,firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
          attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
         {item:'Restroom Facility',qty:'1 unit',window:'Sep 1, 2026',state:'In fulfillment',ordId:'ORD-3116',fqRef:'REQ-L-3116',cost:'$14,200/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
@@ -8026,9 +8025,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:0,e:1},{n:'Contracting',st:'Done',s:0,e:1},{n:'Install',st:'Done',s:1,e:2}]},
         {item:'Site Construction Signage',qty:'2 zones',window:'Aug 1, 2026',state:'In fulfillment',ordId:'ORD-3119',fqRef:'REQ-L-3119',cost:'$14,000',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
-        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
+        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',leadTime:42,firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',firm:'TBD',poc:'TBD',phone:'',
+        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Not started',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
       ]},
       barryrose:{budget:600000,dpSpent:310000,adHoc:180000,
@@ -10852,6 +10851,29 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       });
       h+='</div>';
     }
+    if(!ns&&window._ptNudges&&window._ptNudges.filter(function(n){return !n.answered;}).length){
+      var _ptN=window._ptNudges.filter(function(n){return !n.answered;});
+      h+='<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 14px;margin-bottom:10px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(_ptN.length>1?'6':'0')+'px">';
+      var _ptHdr=_ptN.length===1?'1 request from GC Ops':_ptN.length+' requests from GC Ops';
+      h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#c2410c">'+_ptHdr+'</span>';
+      h+='<span class="spacer"></span>';
+      h+='<button onclick="window._ptNudges.forEach(function(n){n.answered=true;});renderLogPlan()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
+      h+='</div>';
+      _ptN.forEach(function(n,ni){
+        var _ptIdx=window._ptNudges.indexOf(n);
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #fed7aa':'')+'">';
+        h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#ea580c;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">GC</span>';
+        h+='<div style="flex:1">';
+        h+='<div style="font-size:11.5px;color:#1e293b;font-weight:500;margin-bottom:2px">'+n.svc+'</div>';
+        h+='<div style="font-size:11px;color:#78350f;line-height:1.4;margin-bottom:4px">'+(n.question.length>140?n.question.slice(0,140)+'…':n.question)+'</div>';
+        h+='<div style="display:flex;align-items:center;gap:8px">';
+        h+='<span style="font-size:10px;color:#9a3412">'+n.from+' · '+n.ts+'</span>';
+        h+='<button onclick="openPtNudgeModal('+_ptIdx+')" style="font-size:10px;padding:2px 9px;border-radius:4px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600">Respond →</button>';
+        h+='</div></div></div>';
+      });
+      h+='</div>';
+    }
     if(!ns&&window._cpNudges&&window._cpNudges.length){
       h+='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(window._cpNudges.length>1?'6':'0')+'px">';
@@ -10899,7 +10921,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='<div class="grow"><div class="g-label" style="width:220px;min-width:220px;flex-direction:column;align-items:flex-start;gap:1px;padding:5px 14px;height:auto;white-space:normal">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
         h+='<span style="font-size:11.5px;font-weight:600;color:var(--g800)">'+r.service+'</span>';
-        h+='<button onclick="event.stopPropagation();openLogGanttEdit('+_lgRi+')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g600);flex-shrink:0">Edit</button>';
         h+='</div>';
         h+='<span style="font-size:10px;color:var(--g400)">'+(r.vendor||'TBD — 02S to source')+'</span>';
         h+='</div>';
