@@ -3984,6 +3984,13 @@ charges:[
   }
 
   function trackerHTML(o, ns){
+    if(o&&o.pillar==='prefab'&&o.proj&&CC_PROJ_DP&&CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[o.proj]){
+      var _pfbRows=CC_PROJ_DP.prefab[o.proj].rows||[];
+      var _pfbR=_pfbRows.filter(function(r){return r.ordId===o.id;})[0];
+      if(_pfbR&&(_pfbR.state==='In fulfillment'||_pfbR.state==='Completed')){
+        return buildFulfillmentStepper(_pfbR.subState);
+      }
+    }
     var arr=_stageArr(o);
     var icons=['<path d="M5 12h14M12 5l7 7-7 7"/>','<path d="M20 6L9 17l-5-5"/>','<path d="M20 7l-8-4-8 4m16 0l-8 4"/>','<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/>','<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>','<path d="M21 12a9 9 0 11-6.2-8.5"/>'];
     var steps=arr.map(function(lbl,i){
