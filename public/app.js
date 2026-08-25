@@ -10943,24 +10943,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     }
     var dlvCols='1fr 120px 140px 110px 100px';
     var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
-        var _outRows=_logRows.filter(function(r){return r.status!=='Complete'&&r.status!=='Closed';});
-    if(_outRows.length){
-      h+='<div style="margin:28px 0 10px;border-top:1px solid var(--g150);padding-top:20px"><span style="font-size:13px;font-weight:700;color:var(--g800)">Outstanding orders across Hercules</span></div>';
-      var _oCols='2fr 1fr 1fr 1fr 1fr';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_oCols+'"><span>Service</span><span>Status</span><span>Need by</span><span>Vendor</span><span>Cost</span></div>';
-      _outRows.forEach(function(r){
-        var _ot=DP_TONE[r.status]||'neu';
-        h+='<div class="dp-row" style="grid-template-columns:'+_oCols+'">';
-        h+='<div style="font-size:12px;font-weight:500;color:var(--g800)">'+r.service+'</div>';
-        h+='<div><span class="chip '+_ot+'">'+r.status+'</span></div>';
-        h+='<div style="font-size:11.5px;color:var(--g600)">'+(r.needBy||'TBD')+'</div>';
-        h+='<div style="font-size:11px;color:var(--g500)">'+(r.vendor||'02S to source')+'</div>';
-        h+='<div style="font-size:11.5px;color:var(--g700)">'+(r.cost?'$'+r.cost.toLocaleString():'—')+'</div>';
-        h+='</div>';
-      });
-      h+='</div>';
-    }
-    mount.innerHTML=h;
+        mount.innerHTML=h;
   }
   function logIntakeToggle(){
     var b=document.getElementById('log-intake-body');var ch=document.getElementById('log-intake-chevron');
