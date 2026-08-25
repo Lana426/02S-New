@@ -9428,7 +9428,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:r.leadTime||null,dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[]});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,subState:r.subState||null,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:r.leadTime||null,dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[]});
         });
       }
     });
