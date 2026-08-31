@@ -1531,7 +1531,7 @@
   }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Quoted':'warn','Closed':'ok','Completed':'ok'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -1545,11 +1545,11 @@
         {role:'Owner\u2019s engineer / IE support',service:'Project Delivery',category:'Owner Furnished Equipment',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:9,linkOrd:'ORD-3095',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
         {role:'Geotechnical inspection',service:'Subsurface Utility Mapping',category:'Mapping',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:5,linkOrd:'ORD-3096',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {role:'Structural special inspection',service:'Field Engineering',category:'Geospatial',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:3,ea:11,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
-        {role:'BESS commissioning agent',service:'Direct Digital Controls (DDC)',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Requested',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
+        {role:'BESS commissioning agent',service:'Direct Digital Controls (DDC)',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Proposal received',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {role:'Environmental / SWPPP monitoring',service:'Field Engineering',category:'Geospatial',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:2,linkOrd:'ORD-3092',attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
         {role:'VDC / BIM coordination',service:'Construction Data Preparation',category:'Geospatial',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
         {role:'Site survey crew',service:'Topography & Aerial Imagery',category:'Mapping',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:1,ea:4,linkOrd:'ORD-3009',attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
-      ]},
+      ],proposals:[{id:'PS-PROP-001',rowIdx:3,service:'BESS commissioning agent',category:'Building Automation Services',firm:'ABB Enterprise Software',cost:'$34K/mo',window:'Nov 2026 \u2013 Mar 2027',scope:'Full BESS commissioning: factory acceptance testing support, field commissioning including grid interconnect and functional performance testing, and final commissioning report.',attachments:[{type:'Proposal',name:'BESS commissioning proposal \u2014 ABB Enterprise Software',ref:'PROP-BESS-001',status:'For review'}],state:'Pending CP approval',sent:'Aug 14, 2026',expires:'Sep 5, 2026'}]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'1',sub:'wire crimpers — order by Sep 5',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
       v1:'8 items on plan · 1 pending order · Wire crimpers order-by Sep 5 for Oct delivery.',
@@ -2136,14 +2136,14 @@
   };
   function psSearchFilter(val){
     var drop=document.getElementById('ps-search-drop');if(!drop)return;
-    if(!val||val.length<2){drop.style.display='none';return;}
+    if(!val||val.length<1){drop.style.display='none';return;}
     var lv=val.toLowerCase();var matches=[];
     Object.keys(PS_TAXONOMY).forEach(function(cat){PS_TAXONOMY[cat].forEach(function(svc){if(svc.toLowerCase().indexOf(lv)>=0||cat.toLowerCase().indexOf(lv)>=0)matches.push({cat:cat,svc:svc});});});
     if(!matches.length){drop.innerHTML='<div style="padding:10px 12px;font-size:11.5px;color:var(--g600)">No taxonomy match — <button style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:11.5px;padding:0;text-decoration:underline" onclick="psFreeTextRoute()">route to 02S team for review</button></div>';drop.style.display='block';return;}
     drop.innerHTML=matches.slice(0,8).map(function(m){return '<div style="padding:8px 12px;border-bottom:1px solid var(--g100);cursor:pointer" onmousedown="event.preventDefault();openPsAddModal(\''+m.cat+'\',\''+m.svc+'\')" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'\'"><div style="font-size:12px;font-weight:600;color:var(--g900)">'+m.svc+'</div><div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+m.cat+'</div></div>';}).join('');
     drop.style.display='block';
   }
-  function openPsAddService(){var inp=document.getElementById('ps-svc-search');if(inp)inp.focus();}
+  function openPsAddService(){openPsBrowseModal();}
   function openPsAddModal(cat,svc){
     var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
     var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
@@ -2171,6 +2171,281 @@
     body+='<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
     openModal('Documents · '+(r.service||r.role||''),body);
   }
+
+  function psShowBrowseHint(){
+    var drop=document.getElementById('ps-search-drop');if(!drop)return;
+    var inp=document.getElementById('ps-svc-search');var val=inp?inp.value:'';
+    if(val.length>0){psSearchFilter(val);return;}
+    drop.innerHTML='<div style="padding:10px 12px;font-size:11.5px;color:var(--g600)">Type to search, or <span style="color:#2563eb;cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'ps-search-drop\').style.display=\'none\';openPsBrowseModal()">browse all categories</span></div>';
+    drop.style.display='block';
+  }
+  function openPsBrowseModal(){
+    var cats=Object.keys(PS_TAXONOMY);
+    var body='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 0">';
+    cats.forEach(function(cat,ci){
+      var svcs=PS_TAXONOMY[cat];
+      body+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px;cursor:pointer" onclick="psBrowseShowCat('+ci+')">';
+      body+='<div style="font-size:12.5px;font-weight:700;color:var(--g900);margin-bottom:5px">'+cat+'</div>';
+      body+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px">'+svcs.length+' service'+(svcs.length===1?'':'s')+'</div>';
+      body+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
+      svcs.slice(0,3).forEach(function(s){body+='<span style="font-size:10px;padding:2px 6px;background:var(--g50);border:1px solid var(--g200);border-radius:3px;color:var(--g600)">'+s+'</span>';});
+      if(svcs.length>3)body+='<span style="font-size:10px;color:var(--g400)">+more</span>';
+      body+='</div></div>';
+    });
+    body+='</div><div style="margin-top:14px;border-top:1px solid var(--g100);padding-top:14px;display:flex;align-items:center;justify-content:space-between">';
+    body+='<span style="font-size:11px;color:var(--g500)">Not sure what you need?</span>';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal();psFreeTextRoute()">\u2192 Describe to 02S team</button>';
+    body+='</div>';
+    openModal('Add service \u2014 browse taxonomy',body);
+  }
+  function psBrowseShowCat(ci){
+    var cats=Object.keys(PS_TAXONOMY);var cat=cats[ci];
+    var svcs=PS_TAXONOMY[cat]||[];var std=PS_STD_DOCS[cat]||[];
+    var body='<div style="padding:2px 0">';
+    body+='<button style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;margin-bottom:12px;padding:0" onclick="closeModal();openPsBrowseModal()">\u2190 All categories</button>';
+    body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:10px">'+cat+'</div>';
+    svcs.forEach(function(svc,si){
+      body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--g200);border-radius:6px;margin-bottom:6px">';
+      body+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+svc+'</div>';
+      body+='<button class="btn btn-dark btn-sm" onclick="psBrowseSelectSvc('+ci+','+si+')">\u2192 Add</button>';
+      body+='</div>';
+    });
+    if(std.length){
+      body+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g100)">';
+      body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Standard docs for '+cat+'</div>';
+      std.forEach(function(d){body+='<div style="font-size:11.5px;color:var(--g700);padding:3px 0">\u25aa '+d+'</div>';});
+      body+='</div>';
+    }
+    body+='<div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal();openPsBrowseModal()">Back</button></div></div>';
+    openModal(cat,body);
+  }
+  function psBrowseSelectSvc(ci,si){
+    var cats=Object.keys(PS_TAXONOMY);var cat=cats[ci];
+    var svcs=PS_TAXONOMY[cat]||[];var svc=svcs[si];
+    closeModal();openPsAddModal(cat,svc);
+  }
+  function openPsProposalModal(idx){
+    var props=DP.profservices&&DP.profservices.proposals;
+    var prop=props&&props[idx];if(!prop)return;
+    var body='<div style="padding:2px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
+    [['Proposed firm',prop.firm],['Cost / rate',prop.cost],['Engagement window',prop.window],['Sent',prop.sent],['Expires',prop.expires||'\u2014']].forEach(function(f){
+      body+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:2px">'+f[0]+'</div>';
+      body+='<div style="font-size:12.5px;font-weight:500;color:var(--g900)">'+f[1]+'</div></div>';
+    });
+    body+='</div>';
+    if(prop.scope){
+      body+='<div style="background:var(--g50);border-radius:7px;padding:10px 12px;margin-bottom:14px">';
+      body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:5px">Scope</div>';
+      body+='<div style="font-size:12px;color:var(--g700);line-height:1.6">'+prop.scope+'</div></div>';
+    }
+    if(prop.attachments&&prop.attachments.length){
+      body+='<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Documents</div>'+attachmentsHTML(prop.attachments)+'</div>';
+    }
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>';
+    body+='<button class="btn btn-ghost btn-sm" onclick="psSendBack('+idx+')">Send back with comments</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="approvePsProposal('+idx+')">Approve \u0026 activate \u2192</button>';
+    body+='</div></div>';
+    openModal('Proposal \u2014 '+prop.service,body);
+  }
+  function approvePsProposal(idx){
+    var props=DP.profservices&&DP.profservices.proposals;
+    var prop=props&&props[idx];if(!prop)return;
+    var rows=DP.profservices.rows;
+    if(rows&&rows[prop.rowIdx]){
+      rows[prop.rowIdx].state='Active';
+      if(prop.firm)rows[prop.rowIdx].firm=prop.firm;
+      if(prop.cost)rows[prop.rowIdx].cost=prop.cost;
+      if(prop.window)rows[prop.rowIdx].window=prop.window;
+    }
+    prop.state='Approved';
+    closeModal();renderProfServicesDP();
+    toast('Service activated \u2014 '+prop.service);
+  }
+  function psSendBack(idx){
+    var props=DP.profservices&&DP.profservices.proposals;
+    var prop=props&&props[idx];if(!prop)return;
+    closeModal();
+    openModal('Send back \u2014 '+prop.service,
+      '<div style="padding:2px 0"><p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Describe what needs to change so 02S can revise the proposal.</p>'
+      +'<textarea id="ps-sb-note" rows="3" placeholder="e.g. Please include MEP systems commissioning in scope..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
+      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
+      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark btn-sm" onclick="(function(){closeModal();toast(\'Feedback sent to 02S team\');})()">Send to 02S \u2192</button>'
+      +'</div></div>');
+  }
+  function renderCcProfServices(){
+    var mount=document.getElementById('ccDpSvc');if(!mount)return;
+    var selProj=_dpCcProjMap['profservices']||'all';
+    var allProjs=['hercules','barryrose','vdc14'];
+    var projs=selProj==='all'?allProjs:[selProj];
+    var MO=['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+    var N=13;
+    var ACT_COL={'Done':'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
+    var ACT_FC={'Done':'#fff','In progress':'#fff','Not started':'var(--g500)'};
+    var TON={ok:'#10b981',info:'#3b82f6',warn:'#f59e0b',bad:'#ef4444',neu:'#9ca3af'};
+    var PROJ_NAMES={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
+    var reqs=[];
+    projs.forEach(function(proj){
+      var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows)||[];
+      rows.forEach(function(row,ri){if(row.state==='Requested')reqs.push({proj:proj,row:row,ri:ri});});
+    });
+    var proposals=DP.profservices&&DP.profservices.proposals||[];
+    var sentProps=proposals.filter(function(p){return p.state!=='Approved';});
+    var h='<div class="phead"><div><h1>Professional services</h1>';
+    h+='<div class="meta"><span class="chip">02S \u00b7 services demand</span></div></div></div>';
+    h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:16px">';
+    [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
+      var act=selProj===pr[0];
+      h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="dpSetProjFilter(\'profservices\',\''+pr[0]+'\')">'+pr[1]+'</button>';
+    });
+    h+='</div>';
+    if(reqs.length){
+      h+='<div style="margin-bottom:20px;border:1.5px solid #f59e0b;border-radius:10px;overflow:hidden">';
+      h+='<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fcd34d;display:flex;align-items:center;justify-content:space-between">';
+      h+='<div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.04em">'+reqs.length+' pending request'+(reqs.length===1?'':'s')+' from CP</div>';
+      h+='</div>';
+      reqs.forEach(function(req){
+        var r=req.row;var docs=r.attachments||[];
+        h+='<div style="padding:12px 14px;border-bottom:1px solid var(--g100);background:#fff">';
+        h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">';
+        h+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.item+'</div>';
+        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+r.qty+' \u00b7 '+(r.window||'')+(r.cost?' \u00b7 '+r.cost:'')+'</div>';
+        if(docs.length){
+          h+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">';
+          docs.forEach(function(d){h+='<span style="font-size:10.5px;padding:2px 8px;border:1px solid var(--g200);border-radius:4px;color:var(--g600);background:var(--g50)">'+d.name+'</span>';});
+          h+='</div>';
+        }
+        h+='</div><div style="display:flex;gap:6px;flex-shrink:0">';
+        h+='<button class="btn btn-ghost btn-sm" onclick="openCcPsViewRequest(\''+req.proj+'\','+req.ri+')">View request</button>';
+        h+='<button class="btn btn-dark btn-sm" onclick="openCcPsProposalCreate(\''+req.proj+'\','+req.ri+')">Create proposal \u2192</button>';
+        h+='</div></div></div>';
+      });
+      h+='</div>';
+    }
+    projs.forEach(function(proj){
+      var ccData=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj];if(!ccData)return;
+      var rows=ccData.rows||[];
+      var activeRows=rows.filter(function(r){return r.state!=='Requested';});
+      if(!activeRows.length)return;
+      h+='<div style="margin-bottom:24px">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--g150)">'+(PROJ_NAMES[proj]||proj)+'</div>';
+      h+='<div style="display:grid;grid-template-columns:200px 1fr;gap:10px;margin-bottom:4px">';
+      h+='<div></div><div style="display:grid;grid-template-columns:repeat(13,1fr);font-size:8px;color:var(--g400);text-align:center">';
+      MO.forEach(function(m){h+='<span>'+m+'</span>';});
+      h+='</div></div>';
+      activeRows.forEach(function(row){
+        var acts=row.acts||[];
+        var tc=TON[DP_TONE[row.state]]||TON.neu;
+        h+='<div style="display:grid;grid-template-columns:200px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--g50)">';
+        h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900);line-height:1.3">'+row.item+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+row.firm+' \u00b7 '+row.qty+'</div>';
+        h+='<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:10px;font-weight:600;color:'+tc+'">'+row.state+'</div></div>';
+        h+='<div style="position:relative">';
+        h+='<div style="position:relative;height:26px;background:var(--g50);border-radius:4px;overflow:hidden">';
+        acts.forEach(function(act){
+          var l=(act.s/N*100).toFixed(2);
+          var w=((act.e-act.s)/N*100).toFixed(2);
+          var bg=ACT_COL[act.st]||'#e5e7eb';
+          var fc=ACT_FC[act.st]||'var(--g500)';
+          h+='<div style="position:absolute;left:'+l+'%;width:'+w+'%;background:'+bg+';height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden" title="'+act.n+': '+act.st+'">';
+          h+='<span style="font-size:8px;color:'+fc+';white-space:nowrap;padding:0 3px">'+act.n+'</span></div>';
+        });
+        h+='<div style="position:absolute;left:'+(4/N*100).toFixed(2)+'%;top:0;bottom:0;width:2px;background:rgba(239,68,68,.75);z-index:3" title="Today (Aug 2026)"></div>';
+        h+='</div>';
+        if(acts.length){
+          h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
+          acts.forEach(function(act){var c=ACT_COL[act.st]||'#e5e7eb';h+='<span style="font-size:9px;color:var(--g600);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:2px;background:'+c+';display:inline-block"></span>'+act.n+'</span>';});
+          h+='</div>';
+        }
+        h+='</div></div>';
+      });
+      h+='</div>';
+    });
+    if(sentProps.length){
+      h+='<div style="margin-top:8px;padding-top:16px;border-top:1px solid var(--g100)">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:10px">Sent proposals</div>';
+      sentProps.forEach(function(prop,pi){
+        h+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">';
+        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+prop.service+'</div>';
+        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+prop.firm+' \u00b7 '+prop.cost+' \u00b7 '+prop.window+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g400);margin-top:3px">Sent '+prop.sent+(prop.expires?' \u00b7 Expires '+prop.expires:'')+' \u00b7 Awaiting CP approval</div></div>';
+        h+='<div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="ccPsViewProposal('+pi+')">View</button><button class="btn btn-ghost btn-sm" onclick="ccPsRecallProposal('+pi+')">Recall</button></div></div>';
+      });
+      h+='</div>';
+    }
+    mount.innerHTML=h;
+  }
+  function openCcPsViewRequest(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var body='<div style="padding:2px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
+    [['Service',row.item],['Qty',row.qty],['Window',row.window||'\u2014'],['Cost',row.cost||'TBD']].forEach(function(f){
+      body+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:3px">'+f[0]+'</div><div style="font-size:12.5px;color:var(--g900)">'+f[1]+'</div></div>';
+    });
+    body+='</div>';
+    if(row.attachments&&row.attachments.length){body+='<div style="margin-bottom:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Attached documents</div>'+attachmentsHTML(row.attachments)+'</div>';}
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcPsProposalCreate(\''+proj+'\','+ri+')">Create proposal \u2192</button></div></div>';
+    openModal('Request \u2014 '+row.item,body);
+  }
+  function openCcPsProposalCreate(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var body='<div style="padding:2px 0">';
+    body+='<div style="font-size:11.5px;color:var(--g600);margin-bottom:14px;padding:8px 12px;background:var(--g50);border-radius:6px">';
+    body+='<div style="font-weight:600;color:var(--g900)">'+row.item+'</div>';
+    body+='<div style="font-size:11px;margin-top:2px">'+row.qty+' \u00b7 '+(row.window||'window TBD')+'</div>';
+    if(row.attachments&&row.attachments.length){body+='<div style="margin-top:5px;font-size:10.5px;color:var(--g500)">CP attached: '+row.attachments.map(function(a){return a.name;}).join(', ')+'</div>';}
+    body+='</div>';
+    [['ps-prop-firm','Proposed firm','e.g. ABB Inc.'],['ps-prop-cost','Cost / rate','e.g. $34K/mo'],['ps-prop-win','Engagement window','e.g. Nov 2026 \u2013 Mar 2027']].forEach(function(f){
+      body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[1]+'</label><input id="'+f[0]+'" type="text" placeholder="'+f[2]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
+    });
+    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Scope summary</label>';
+    body+='<textarea id="ps-prop-scope" rows="3" placeholder="Describe scope, deliverables, and key terms..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea></div>';
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="ccPsProposalSave(\''+proj+'\','+ri+')">Send proposal to CP \u2192</button></div></div>';
+    openModal('Create proposal \u2014 '+row.item,body);
+  }
+  function ccPsProposalSave(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var gv=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+    var prop={
+      id:'PS-PROP-'+(101+((DP.profservices.proposals&&DP.profservices.proposals.length)||0)),
+      rowIdx:ri,service:row.item,category:row.category||'Professional Services',
+      firm:gv('ps-prop-firm')||'TBD',cost:gv('ps-prop-cost')||'TBD',
+      window:gv('ps-prop-win')||row.window||'TBD',
+      scope:gv('ps-prop-scope'),attachments:[],
+      state:'Pending CP approval',sent:'Aug 2026',expires:'Sep 2026'
+    };
+    if(!DP.profservices.proposals)DP.profservices.proposals=[];
+    DP.profservices.proposals.push(prop);
+    if(DP.profservices.rows&&DP.profservices.rows[ri])DP.profservices.rows[ri].state='Proposal received';
+    row.state='Proposal sent';
+    closeModal();renderCcProfServices();
+    toast('Proposal sent to CP \u2014 '+row.item);
+  }
+  function ccPsViewProposal(pi){
+    var props=DP.profservices&&DP.profservices.proposals;if(!props||!props[pi])return;
+    var prop=props[pi];
+    var body='<div style="padding:2px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
+    [['Firm',prop.firm],['Cost',prop.cost],['Window',prop.window],['Sent',prop.sent],['Status',prop.state]].forEach(function(f){
+      body+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:2px">'+f[0]+'</div><div style="font-size:12.5px;color:var(--g900)">'+f[1]+'</div></div>';
+    });
+    body+='</div>';
+    if(prop.scope){body+='<div style="background:var(--g50);border-radius:7px;padding:10px 12px;margin-bottom:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:5px">Scope</div><div style="font-size:12px;color:var(--g700);line-height:1.6">'+prop.scope+'</div></div>';}
+    body+='<div style="display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
+    openModal('Proposal \u2014 '+prop.service,body);
+  }
+  function ccPsRecallProposal(pi){
+    var props=DP.profservices&&DP.profservices.proposals;if(!props||!props[pi])return;
+    var prop=props[pi];
+    if(DP.profservices.rows&&DP.profservices.rows[prop.rowIdx])DP.profservices.rows[prop.rowIdx].state='Requested';
+    var ccRows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices.hercules&&CC_PROJ_DP.profservices.hercules.rows;
+    if(ccRows&&ccRows[prop.rowIdx])ccRows[prop.rowIdx].state='Requested';
+    props.splice(pi,1);
+    renderCcProfServices();toast('Proposal recalled');
+  }
 function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
@@ -2181,15 +2456,17 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
     h+='<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;position:relative">';
-    h+='<input id="ps-svc-search" type="text" placeholder="Search by service — e.g. drone survey, thermography, BIM..." style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;background:#fff;box-sizing:border-box;outline:none" oninput="psSearchFilter(this.value)" onfocus="psSearchFilter(this.value)" onblur="setTimeout(function(){var d=document.getElementById(\'ps-search-drop\');if(d)d.style.display=\'none\';},150)">';
+    h+='<input id="ps-svc-search" type="text" placeholder="Search by service — e.g. drone survey, thermography, BIM..." style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;background:#fff;box-sizing:border-box;outline:none" oninput="psSearchFilter(this.value)" onfocus="psShowBrowseHint()" onblur="setTimeout(function(){var d=document.getElementById(\'ps-search-drop\');if(d)d.style.display=\'none\';},150)">';
     h+='<div id="ps-search-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--g200);border-top:none;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:100;max-height:220px;overflow-y:auto"></div>';
     h+='</div><button class="btn btn-ghost btn-sm" style="white-space:nowrap;flex-shrink:0" onclick="psFreeTextRoute()">Route to 02S team →</button></div>';
     h+='</div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    var _props=cfg.proposals||[];
+    if(_props.length){var _ph='<div style="border:1.5px solid #f59e0b;border-radius:10px;margin-bottom:14px;overflow:hidden"><div style="background:#fffbeb;padding:9px 14px;border-bottom:1px solid #fcd34d;display:flex;align-items:center;justify-content:space-between"><div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.04em">'+_props.length+' proposal'+(_props.length===1?'':'s')+' from 02S</div><span style="font-size:10.5px;color:var(--g500)">Review and approve to activate service</span></div>';_props.forEach(function(prop,pi){if(prop.state==='Approved')return;_ph+='<div style="padding:12px 14px;border-bottom:1px solid var(--g100);background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px"><div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+prop.service+'</div><div style="font-size:11px;color:var(--g600);margin-top:2px">'+prop.firm+' \u00b7 '+prop.cost+' \u00b7 '+prop.window+'</div><div style="font-size:10.5px;color:var(--g400);margin-top:2px">Sent '+prop.sent+(prop.expires?' \u00b7 Expires '+prop.expires:'')+'</div></div><button class="btn btn-dark btn-sm" onclick="openPsProposalModal('+pi+')">Review proposal \u2192</button></div>';});_ph+='</div>';h+=_ph;}
     var PS_CATS=['Mapping','Visualization','Geospatial','Owner Furnished Equipment','Infrared Thermography','Building Automation Services'];
     var _catDescs={'Mapping':'Field measurement, survey, and aerial imaging services.','Visualization':'Construction documentation through images, video, and virtual reality.','Geospatial':'Engineering data collection, preparation, and construction automation.','Owner Furnished Equipment':'Design, planning, procurement, and project delivery coordination.','Infrared Thermography':'Thermal imaging for building systems quality assurance.','Building Automation Services':'DDC and PLC systems commissioning and integration.'};
     var groupMap={};
@@ -2206,7 +2483,7 @@ function renderProfServicesDP(){
         var r=entry.r;var ri=entry.ri;var t=DP_TONE[r.state]||'neu';
         var dName=r.service||r.role||'';var dSub=r.firm||'';
         var _docs=r.attachments||[];var _dn=_docs.length;
-        var _needsDocs=['Active','Requested','Acknowledged'].indexOf(r.state)>=0&&!_dn;
+        var _needsDocs=['Active','Requested','Acknowledged','Planned','Draft','Proposal received'].indexOf(r.state)>=0&&!_dn;
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details">';
         h+='<div>'+dName+'<div class="sub">'+dSub+'</div></div>';
         h+='<div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
@@ -8326,7 +8603,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'In progress',s:2,e:9},{n:'Closeout',st:'Not started',s:9,e:10}],note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
         {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'In progress',s:2,e:5},{n:'Closeout',st:'Not started',s:5,e:6}],attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:3,e:4},{n:'Mobilization',st:'Done',s:4,e:5},{n:'Active delivery',st:'In progress',s:5,e:11},{n:'Closeout',st:'Not started',s:11,e:12}],attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
-        {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Requested',ordId:'ORD-5001',cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108',acts:[{n:'Scope definition',st:'In progress',s:6,e:8},{n:'Contracting',st:'Not started',s:8,e:9},{n:'Active delivery',st:'Not started',s:9,e:12},{n:'Closeout',st:'Not started',s:12,e:13}],attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
+        {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Proposal sent',ordId:'ORD-5001',cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108',acts:[{n:'Scope definition',st:'In progress',s:6,e:8},{n:'Contracting',st:'Not started',s:8,e:9},{n:'Active delivery',st:'Not started',s:9,e:12},{n:'Closeout',st:'Not started',s:12,e:13}],attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {item:'Environmental / SWPPP monitoring',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'Done',s:2,e:3},{n:'Closeout',st:'Done',s:3,e:4}],attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
         {item:'VDC / BIM coordination',qty:'3 FTE',window:'Apr–Oct 2026',state:'Active',ordId:'ORD-3120',fqRef:'REQ-4475',cost:'$24K/mo',firm:'WSP',acts:[{n:'Scope & contracting',st:'Done',s:1,e:2},{n:'Mobilization',st:'Done',s:2,e:3},{n:'Active delivery',st:'In progress',s:3,e:7},{n:'Closeout',st:'Not started',s:7,e:8}],attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
         {item:'Site survey crew',qty:'2 FTE',window:'Apr–Jul 2026',state:'Demobilized',ordId:'ORD-3009',cost:'$12K/mo',firm:'Bowman',acts:[{n:'Scope & contracting',st:'Done',s:1,e:2},{n:'Mobilization',st:'Done',s:2,e:3},{n:'Active delivery',st:'Done',s:3,e:4},{n:'Closeout',st:'Done',s:4,e:5}],attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
@@ -9522,6 +9799,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
+    if(p==='profservices'){renderCcProfServices();return;}
     if(p==='equipment')initCcEquipAssets();
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
     var pending=0,ready=0; cfg.rows.forEach(function(r){ if(!r.taxOk)pending++; if(r.status==='Ready')ready++; });
@@ -10858,7 +11136,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   function ccGoFulfill(ref){ fqView='orders'; fqFP='all'; fqFPr='all'; fqFS='all'; _fqShowAll=!!ref; if(ref)ccHighlight=ref; ccGo('fulfill'); }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Quoted':'warn','Closed':'ok','Completed':'ok'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -10871,11 +11149,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {role:'Owner\u2019s engineer / IE support',service:'Project Delivery',category:'Owner Furnished Equipment',firm:'DNV',qty:'2 FTE',window:'Mar 2026 \u2013 Dec 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$28K/mo',state:'Active',scope:'Engineering & oversight',sa:0,ea:9,linkOrd:'ORD-3095',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
         {role:'Geotechnical inspection',service:'Subsurface Utility Mapping',category:'Mapping',firm:'Terracon',qty:'3 FTE',window:'Mar 2026 \u2013 Aug 2026',code:'0200-0320-0000-0001 \u00b7 Site earthwork',cost:'$18K/mo',state:'Active',scope:'Survey & site monitoring',sa:0,ea:5,linkOrd:'ORD-3096',attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {role:'Structural special inspection',service:'Field Engineering',category:'Geospatial',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:3,ea:11,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
-        {role:'BESS commissioning agent',service:'Direct Digital Controls (DDC)',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Requested',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
+        {role:'BESS commissioning agent',service:'Direct Digital Controls (DDC)',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Proposal received',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {role:'Environmental / SWPPP monitoring',service:'Field Engineering',category:'Geospatial',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
         {role:'VDC / BIM coordination',service:'Construction Data Preparation',category:'Geospatial',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
         {role:'Site survey crew',service:'Topography & Aerial Imagery',category:'Mapping',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
-      ]},
+      ],proposals:[{id:'PS-PROP-001',rowIdx:3,service:'BESS commissioning agent',category:'Building Automation Services',firm:'ABB Enterprise Software',cost:'$34K/mo',window:'Nov 2026 \u2013 Mar 2027',scope:'Full BESS commissioning: factory acceptance testing support, field commissioning including grid interconnect and functional performance testing, and final commissioning report.',attachments:[{type:'Proposal',name:'BESS commissioning proposal \u2014 ABB Enterprise Software',ref:'PROP-BESS-001',status:'For review'}],state:'Pending CP approval',sent:'Aug 14, 2026',expires:'Sep 5, 2026'}]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
       vitals:[{label:'Committed',value:'$87K',sub:'small tools on plan',tone:'ok',icon:IC.dollar},{label:'Items on plan',value:'8',sub:'3 cost codes',tone:'ok',icon:IC.check},{label:'Needs attention',value:'1',sub:'wire crimpers — order by Sep 5',tone:'warn',icon:IC.warn},{label:'On-time to need-by',value:'88%',sub:'7 of 8 tracking',tone:'warn',icon:IC.chart}],
       ns:'02S auto-calculates reorder points from the tool deployment schedule \u2014 7 of 8 items delivered on plan; release wire crimpers PO by Sep 5 to protect Oct 1 delivery.',
@@ -11465,15 +11743,17 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
     h+='<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;position:relative">';
-    h+='<input id="ps-svc-search" type="text" placeholder="Search by service — e.g. drone survey, thermography, BIM..." style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;background:#fff;box-sizing:border-box;outline:none" oninput="psSearchFilter(this.value)" onfocus="psSearchFilter(this.value)" onblur="setTimeout(function(){var d=document.getElementById(\'ps-search-drop\');if(d)d.style.display=\'none\';},150)">';
+    h+='<input id="ps-svc-search" type="text" placeholder="Search by service — e.g. drone survey, thermography, BIM..." style="width:100%;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;font-size:12.5px;background:#fff;box-sizing:border-box;outline:none" oninput="psSearchFilter(this.value)" onfocus="psShowBrowseHint()" onblur="setTimeout(function(){var d=document.getElementById(\'ps-search-drop\');if(d)d.style.display=\'none\';},150)">';
     h+='<div id="ps-search-drop" style="display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--g200);border-top:none;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:100;max-height:220px;overflow-y:auto"></div>';
     h+='</div><button class="btn btn-ghost btn-sm" style="white-space:nowrap;flex-shrink:0" onclick="psFreeTextRoute()">Route to 02S team →</button></div>';
     h+='</div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
+    var _props=cfg.proposals||[];
+    if(_props.length){var _ph='<div style="border:1.5px solid #f59e0b;border-radius:10px;margin-bottom:14px;overflow:hidden"><div style="background:#fffbeb;padding:9px 14px;border-bottom:1px solid #fcd34d;display:flex;align-items:center;justify-content:space-between"><div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.04em">'+_props.length+' proposal'+(_props.length===1?'':'s')+' from 02S</div><span style="font-size:10.5px;color:var(--g500)">Review and approve to activate service</span></div>';_props.forEach(function(prop,pi){if(prop.state==='Approved')return;_ph+='<div style="padding:12px 14px;border-bottom:1px solid var(--g100);background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px"><div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+prop.service+'</div><div style="font-size:11px;color:var(--g600);margin-top:2px">'+prop.firm+' \u00b7 '+prop.cost+' \u00b7 '+prop.window+'</div><div style="font-size:10.5px;color:var(--g400);margin-top:2px">Sent '+prop.sent+(prop.expires?' \u00b7 Expires '+prop.expires:'')+'</div></div><button class="btn btn-dark btn-sm" onclick="openPsProposalModal('+pi+')">Review proposal \u2192</button></div>';});_ph+='</div>';h+=_ph;}
     var PS_CATS=['Mapping','Visualization','Geospatial','Owner Furnished Equipment','Infrared Thermography','Building Automation Services'];
     var _catDescs={'Mapping':'Field measurement, survey, and aerial imaging services.','Visualization':'Construction documentation through images, video, and virtual reality.','Geospatial':'Engineering data collection, preparation, and construction automation.','Owner Furnished Equipment':'Design, planning, procurement, and project delivery coordination.','Infrared Thermography':'Thermal imaging for building systems quality assurance.','Building Automation Services':'DDC and PLC systems commissioning and integration.'};
     var groupMap={};
@@ -11490,7 +11770,7 @@ function renderProfServicesDP(){
         var r=entry.r;var ri=entry.ri;var t=DP_TONE[r.state]||'neu';
         var dName=r.service||r.role||'';var dSub=r.firm||'';
         var _docs=r.attachments||[];var _dn=_docs.length;
-        var _needsDocs=['Active','Requested','Acknowledged'].indexOf(r.state)>=0&&!_dn;
+        var _needsDocs=['Active','Requested','Acknowledged','Planned','Draft','Proposal received'].indexOf(r.state)>=0&&!_dn;
         h+='<div class="dp-row" style="grid-template-columns:'+gt+';cursor:pointer" onclick="toggleDPDrill(\'profservices\','+ri+')" title="View full details">';
         h+='<div>'+dName+'<div class="sub">'+dSub+'</div></div>';
         h+='<div class="c">'+r.qty+'</div><div>'+r.window+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
