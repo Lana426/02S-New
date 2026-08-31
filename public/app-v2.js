@@ -2148,10 +2148,10 @@
     var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
     var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
     var stdDocs=PS_STD_DOCS[cat]||[];
-    var docsHtml=stdDocs.length?('<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--g100)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Documents that will be requested on submission</div><div style="display:flex;flex-direction:column;gap:5px">'+stdDocs.map(function(d){return '<div style="display:flex;align-items:center;gap:8px;font-size:11.5px"><input type="checkbox" style="accent-color:var(--red)" checked> <span>'+d+'</span></div>';}).join('')+'</div></div>'):'';
+    window._psDocStatus={};stdDocs.forEach(function(d){window._psDocStatus[d]=false;});var docsHtml=stdDocs.length?('<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Required documents — attach before submitting</div><div id="ps-req-docs" style="display:flex;flex-direction:column;gap:6px">'+stdDocs.map(function(d,di){return '<div id="psdoc-'+di+'" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff"><div style="display:flex;align-items:center;gap:8px"><span id="psdoc-chk-'+di+'" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--g300);display:inline-block;flex-shrink:0"></span><span style="font-size:11.5px;color:var(--g800)">'+d+'</span></div><button style="font-size:11px;padding:3px 10px;border:1px solid var(--g200);border-radius:4px;cursor:pointer;background:#fff;color:var(--g700)" onclick="psMarkDocAttached('+di+',this,'+JSON.stringify(d)+')">Attach</button></div>';}).join('')+'</div></div>'):'' ;
     var body='<div style="padding:2px 0"><div style="font-size:11.5px;color:var(--g600);margin-bottom:12px;padding:6px 10px;background:var(--g50);border-radius:5px"><span style="font-weight:600;color:var(--g900)">'+cat+'</span> &rsaquo; '+svc+'</div>';
-    [['Scope / description','What is needed and for how long?'],['Quantity / units','e.g. 1 FTE, 2 scans, 1 system'],['Window / timeline','e.g. Nov 2026 – Mar 2027'],['Cost code','e.g. 0100-0100-0000-0001'],['Vendor / firm','e.g. Terracon, WSP, TBD']].forEach(function(f){body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[0]+'</label><input type="text" placeholder="'+f[1]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';});
-    body+=docsHtml+'<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-dark btn-sm" onclick="psSvcSubmit()">Add to plan →</button></div></div>';
+    [['Scope / description','What is needed and for how long?'],['Quantity / units','e.g. 1 FTE, 2 scans, 1 system'],['Window / timeline','e.g. Nov 2026 – Mar 2027'],['Cost code','e.g. 0100-0100-0000-0001']].forEach(function(f){body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[0]+'</label><input type="text" placeholder="'+f[1]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';});
+    body+=docsHtml+'<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button id="ps-submit-btn" class="btn btn-dark btn-sm" onclick="psSvcSubmit()" style="opacity:0.4;pointer-events:none">Add to plan →</button></div></div>';
     window._psAddCat=cat;window._psAddSvc=svc;
     openModal('Add service · '+svc,body);
   }
@@ -2172,6 +2172,18 @@
     openModal('Documents · '+(r.service||r.role||''),body);
   }
 
+
+  function psMarkDocAttached(di,btn,docName){
+    if(!window._psDocStatus)window._psDocStatus={};
+    window._psDocStatus[docName]=true;
+    var chk=document.getElementById('psdoc-chk-'+di);
+    if(chk){chk.style.background='#10b981';chk.style.borderColor='#10b981';chk.innerHTML='<svg viewBox="0 0 12 12" style="width:10px;height:10px;display:block;margin:1px auto" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';}
+    var row=document.getElementById('psdoc-'+di);if(row)row.style.background='#f0fdf4';
+    btn.textContent='Attached';btn.style.background='#ecfdf5';btn.style.borderColor='#10b981';btn.style.color='#059669';btn.disabled=true;
+    var allDone=Object.values(window._psDocStatus).every(function(v){return v;});
+    var sub=document.getElementById('ps-submit-btn');
+    if(sub&&allDone){sub.style.opacity='1';sub.style.pointerEvents='auto';}
+  }
   function psShowBrowseHint(){
     var drop=document.getElementById('ps-search-drop');if(!drop)return;
     var inp=document.getElementById('ps-svc-search');var val=inp?inp.value:'';
@@ -2274,17 +2286,19 @@
       +'<button class="btn btn-dark btn-sm" onclick="(function(){closeModal();toast(\'Feedback sent to 02S team\');})()">Send to 02S \u2192</button>'
       +'</div></div>');
   }
+
   function renderCcProfServices(){
     var mount=document.getElementById('ccDpSvc');if(!mount)return;
     var selProj=_dpCcProjMap['profservices']||'all';
-    var allProjs=['hercules','barryrose','vdc14'];
-    var projs=selProj==='all'?allProjs:[selProj];
+    var projs=selProj==='all'?['hercules','barryrose','vdc14']:[selProj];
     var MO=['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
-    var N=13;
-    var ACT_COL={'Done':'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
-    var ACT_FC={'Done':'#fff','In progress':'#fff','Not started':'var(--g500)'};
+    var N=13; var TOD=5;
+    var ABGC={'Done':'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
+    var AFCC={'Done':'#fff','In progress':'#fff','Not started':'var(--g500)'};
     var TON={ok:'#10b981',info:'#3b82f6',warn:'#f59e0b',bad:'#ef4444',neu:'#9ca3af'};
+    var TBG={ok:'#ecfdf5',info:'#eff6ff',warn:'#fffbeb',bad:'#fef2f2',neu:'var(--g100)'};
     var PROJ_NAMES={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
+    if(!window._ccPsExp)window._ccPsExp={};
     var reqs=[];
     projs.forEach(function(proj){
       var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows)||[];
@@ -2292,9 +2306,8 @@
     });
     var proposals=DP.profservices&&DP.profservices.proposals||[];
     var sentProps=proposals.filter(function(p){return p.state!=='Approved';});
-    var h='<div class="phead"><div><h1>Professional services</h1>';
-    h+='<div class="meta"><span class="chip">02S \u00b7 services demand</span></div></div></div>';
-    h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:16px">';
+    var h='<div class="phead"><div><h1>Professional services</h1><div class="meta"><span class="chip">02S · services demand</span></div></div></div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:16px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
       var act=selProj===pr[0];
       h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="dpSetProjFilter(\'profservices\',\''+pr[0]+'\')">'+pr[1]+'</button>';
@@ -2302,61 +2315,88 @@
     h+='</div>';
     if(reqs.length){
       h+='<div style="margin-bottom:20px;border:1.5px solid #f59e0b;border-radius:10px;overflow:hidden">';
-      h+='<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fcd34d;display:flex;align-items:center;justify-content:space-between">';
-      h+='<div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.04em">'+reqs.length+' pending request'+(reqs.length===1?'':'s')+' from CP</div>';
-      h+='</div>';
+      h+='<div style="background:#fffbeb;padding:10px 14px;border-bottom:1px solid #fcd34d"><div style="font-size:11px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.04em">'+reqs.length+' pending request'+(reqs.length===1?'':'s')+' from CP</div></div>';
       reqs.forEach(function(req){
         var r=req.row;var docs=r.attachments||[];
-        h+='<div style="padding:12px 14px;border-bottom:1px solid var(--g100);background:#fff">';
-        h+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">';
+        h+='<div style="padding:12px 14px;border-bottom:1px solid var(--g100);background:#fff;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">';
         h+='<div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.item+'</div>';
-        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+r.qty+' \u00b7 '+(r.window||'')+(r.cost?' \u00b7 '+r.cost:'')+'</div>';
-        if(docs.length){
-          h+='<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:5px">';
-          docs.forEach(function(d){h+='<span style="font-size:10.5px;padding:2px 8px;border:1px solid var(--g200);border-radius:4px;color:var(--g600);background:var(--g50)">'+d.name+'</span>';});
-          h+='</div>';
-        }
+        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+r.qty+' · '+(r.window||'')+'</div>';
+        if(docs.length){h+='<div style="margin-top:7px;display:flex;flex-wrap:wrap;gap:4px">';docs.forEach(function(d){h+='<span style="font-size:10.5px;padding:2px 7px;border:1px solid var(--g200);border-radius:4px;color:var(--g600);background:var(--g50)">'+d.name+'</span>';});h+='</div>';}
         h+='</div><div style="display:flex;gap:6px;flex-shrink:0">';
-        h+='<button class="btn btn-ghost btn-sm" onclick="openCcPsViewRequest(\''+req.proj+'\','+req.ri+')">View request</button>';
-        h+='<button class="btn btn-dark btn-sm" onclick="openCcPsProposalCreate(\''+req.proj+'\','+req.ri+')">Create proposal \u2192</button>';
-        h+='</div></div></div>';
+        h+='<button class="btn btn-ghost btn-sm" onclick="openCcPsViewRequest(\''+req.proj+'\','+req.ri+')">View</button>';
+        h+='<button class="btn btn-dark btn-sm" onclick="openCcPsProposalCreate(\''+req.proj+'\','+req.ri+')">Create proposal →</button>';
+        h+='</div></div>';
       });
       h+='</div>';
     }
     projs.forEach(function(proj){
       var ccData=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj];if(!ccData)return;
       var rows=ccData.rows||[];
-      var activeRows=rows.filter(function(r){return r.state!=='Requested';});
-      if(!activeRows.length)return;
+      var planRows=rows.filter(function(r){return r.state!=='Requested';});
+      if(!planRows.length)return;
       h+='<div style="margin-bottom:24px">';
-      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--g150)">'+(PROJ_NAMES[proj]||proj)+'</div>';
-      h+='<div style="display:grid;grid-template-columns:200px 1fr;gap:10px;margin-bottom:4px">';
-      h+='<div></div><div style="display:grid;grid-template-columns:repeat(13,1fr);font-size:8px;color:var(--g400);text-align:center">';
-      MO.forEach(function(m){h+='<span>'+m+'</span>';});
-      h+='</div></div>';
-      activeRows.forEach(function(row){
-        var acts=row.acts||[];
-        var tc=TON[DP_TONE[row.state]]||TON.neu;
-        h+='<div style="display:grid;grid-template-columns:200px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--g50)">';
-        h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900);line-height:1.3">'+row.item+'</div>';
-        h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+row.firm+' \u00b7 '+row.qty+'</div>';
-        h+='<div style="display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:10px;font-weight:600;color:'+tc+'">'+row.state+'</div></div>';
-        h+='<div style="position:relative">';
-        h+='<div style="position:relative;height:26px;background:var(--g50);border-radius:4px;overflow:hidden">';
-        acts.forEach(function(act){
-          var l=(act.s/N*100).toFixed(2);
-          var w=((act.e-act.s)/N*100).toFixed(2);
-          var bg=ACT_COL[act.st]||'#e5e7eb';
-          var fc=ACT_FC[act.st]||'var(--g500)';
-          h+='<div style="position:absolute;left:'+l+'%;width:'+w+'%;background:'+bg+';height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden" title="'+act.n+': '+act.st+'">';
-          h+='<span style="font-size:8px;color:'+fc+';white-space:nowrap;padding:0 3px">'+act.n+'</span></div>';
-        });
-        h+='<div style="position:absolute;left:'+(4/N*100).toFixed(2)+'%;top:0;bottom:0;width:2px;background:rgba(239,68,68,.75);z-index:3" title="Today (Aug 2026)"></div>';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:12px">'+(PROJ_NAMES[proj]||proj)+'</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 108px 72px 120px;padding:0 10px;margin-bottom:4px">';
+      ['ITEM','QTY','DATE & WINDOW','COST','STATUS','DOCS','ACTION'].forEach(function(c){h+='<div style="font-size:9.5px;font-weight:700;color:var(--g400);letter-spacing:.05em;text-transform:uppercase">'+c+'</div>';});
+      h+='</div>';
+      planRows.forEach(function(row,rowIdx){
+        var rowId=proj+'-'+rowIdx;
+        var isExp=!!window._ccPsExp[rowId];
+        var tone=DP_TONE[row.state]||'neu';
+        var tc=TON[tone];var tbc=TBG[tone];
+        var docs=row.attachments||[];var acts=row.acts||[];
+        h+='<div style="border:1px solid var(--g150);border-radius:8px;margin-bottom:6px;overflow:hidden">';
+        h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 108px 72px 120px;cursor:pointer;padding:11px 10px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+        h+='<div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g500);margin-top:2px">'+row.firm+'</div></div>';
+        h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
+        h+='<div style="font-size:12px;color:var(--g700)">'+row.window+'</div>';
+        h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(row.cost||'—')+'</div>';
+        h+='<div><span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;background:'+tbc+';color:'+tc+'">'+row.state+'</span></div>';
+        h+='<div>';
+        if(docs.length){h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="event.stopPropagation();ccPsViewDocs(\''+proj+'\','+rowIdx+')">'+docs.length+' docs</button>';}
+        else{h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;color:var(--g400)" onclick="event.stopPropagation()">+ Add</button>';}
+        h+='</div>';
+        h+='<div style="display:flex;align-items:center;gap:6px">';
+        if(row.ordId){h+='<span style="font-size:11px;color:#2563eb;font-weight:500">'+row.ordId+'</span>';}
+        h+='<span style="font-size:10px;color:var(--g400);margin-left:auto">'+(isExp?'▲':'▼')+'</span>';
+        h+='</div></div>';
+        h+='<div id="ccps-'+rowId+'" style="display:'+(isExp?'block':'none')+';border-top:1px solid var(--g100);padding:14px 10px 10px;background:#fafafa">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Activity timeline</div>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="openCcPsAddActivity(\''+proj+'\','+rowIdx+')">+ Add activity</button>';
         h+='</div>';
         if(acts.length){
-          h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">';
-          acts.forEach(function(act){var c=ACT_COL[act.st]||'#e5e7eb';h+='<span style="font-size:9px;color:var(--g600);display:flex;align-items:center;gap:3px"><span style="width:7px;height:7px;border-radius:2px;background:'+c+';display:inline-block"></span>'+act.n+'</span>';});
-          h+='</div>';
+          h+='<div style="display:grid;grid-template-columns:150px 75px 1fr 90px;margin-bottom:3px">';
+          h+='<div></div><div></div>';
+          h+='<div style="display:grid;grid-template-columns:repeat(13,1fr);font-size:8px;color:var(--g400);text-align:center">';
+          MO.forEach(function(m){h+='<span>'+m+'</span>';});
+          h+='</div><div></div></div>';
+          acts.forEach(function(act,ai){
+            var bg=ABGC[act.st]||'#e5e7eb';var fc=AFCC[act.st]||'var(--g500)';
+            var stc=act.st==='Done'?'#10b981':act.st==='In progress'?'#3b82f6':'#9ca3af';
+            var l=(act.s/N*100).toFixed(1);var w=((act.e-act.s)/N*100).toFixed(1);
+            var who=act.who||'';var ini=who?who.split(' ').map(function(p){return p[0];}).join('').toUpperCase().slice(0,2):'';
+            h+='<div style="display:grid;grid-template-columns:150px 75px 1fr 90px;align-items:center;padding:4px 0;border-top:1px solid var(--g50)">';
+            h+='<div style="font-size:11.5px;color:var(--g800);padding-right:6px">'+act.n+'</div>';
+            h+='<div><span style="font-size:10px;font-weight:600;color:'+stc+'">'+act.st+'</span></div>';
+            h+='<div style="position:relative;height:22px">';
+            h+='<div style="position:absolute;left:0;right:0;height:100%;background:var(--g100);border-radius:3px"></div>';
+            h+='<div style="position:absolute;left:'+l+'%;width:'+w+'%;background:'+bg+';height:100%;border-radius:3px;display:flex;align-items:center;justify-content:center;overflow:hidden">';
+            h+='<span style="font-size:8.5px;color:'+fc+';white-space:nowrap;padding:0 4px">'+act.n+(ini?' · '+ini:'')+'</span></div>';
+            h+='<div style="position:absolute;left:'+(TOD/N*100).toFixed(1)+'%;top:-2px;bottom:-2px;width:2px;background:rgba(239,68,68,.65)" title="Today (Aug 2026)"></div>';
+            h+='</div>';
+            h+='<div style="display:flex;align-items:center;gap:5px;padding-left:8px">';
+            if(who){
+              h+='<div style="width:22px;height:22px;border-radius:50%;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--g700);flex-shrink:0" title="'+who+'">'+ini+'</div>';
+              h+='<button style="font-size:10.5px;color:var(--g700);background:none;border:none;cursor:pointer;padding:0" onclick="openCcPsAssign(\''+proj+'\','+rowIdx+','+ai+')">'+who.split(' ')[0]+'</button>';
+            }else{
+              h+='<button style="font-size:10px;color:var(--g400);background:none;border:1px dashed var(--g300);border-radius:12px;padding:2px 8px;cursor:pointer" onclick="openCcPsAssign(\''+proj+'\','+rowIdx+','+ai+')">+ Assign</button>';
+            }
+            h+='</div></div>';
+          });
+        }else{
+          h+='<div style="color:var(--g400);font-size:12px;text-align:center;padding:16px">No activities yet</div>';
         }
         h+='</div></div>';
       });
@@ -2368,15 +2408,80 @@
       sentProps.forEach(function(prop,pi){
         h+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">';
         h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+prop.service+'</div>';
-        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+prop.firm+' \u00b7 '+prop.cost+' \u00b7 '+prop.window+'</div>';
-        h+='<div style="font-size:10.5px;color:var(--g400);margin-top:3px">Sent '+prop.sent+(prop.expires?' \u00b7 Expires '+prop.expires:'')+' \u00b7 Awaiting CP approval</div></div>';
+        h+='<div style="font-size:11px;color:var(--g600);margin-top:2px">'+prop.firm+' · '+prop.cost+' · '+prop.window+'</div>';
+        h+='<div style="font-size:10.5px;color:var(--g400);margin-top:3px">Sent '+prop.sent+(prop.expires?' · Expires '+prop.expires:'')+' · Awaiting CP approval</div></div>';
         h+='<div style="display:flex;gap:6px"><button class="btn btn-ghost btn-sm" onclick="ccPsViewProposal('+pi+')">View</button><button class="btn btn-ghost btn-sm" onclick="ccPsRecallProposal('+pi+')">Recall</button></div></div>';
       });
       h+='</div>';
     }
     mount.innerHTML=h;
   }
-  function openCcPsViewRequest(proj,ri){
+  function ccPsToggleRow(rowId){
+    if(!window._ccPsExp)window._ccPsExp={};
+    window._ccPsExp[rowId]=!window._ccPsExp[rowId];
+    renderCcProfServices();
+  }
+  function ccPsViewDocs(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    openModal('Documents — '+row.item,'<div style="padding:2px 0">'+attachmentsHTML(row.attachments||[])+'<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>');
+  }
+  function openCcPsAddActivity(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var MO=['Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+    var people=['Alex R.','Jordan P.','Marcus T.','Sarah K.','Chris D.'];
+    var body='<div style="padding:2px 0">';
+    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Activity name</label><input id="cca-name" type="text" placeholder="e.g. Site mobilization" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
+    body+='<div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Start month</label><select id="cca-s" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;background:#fff">';
+    MO.slice(0,-1).forEach(function(m,i){body+='<option value="'+i+'">'+i+' — '+m+'</option>';});
+    body+='</select></div>';
+    body+='<div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">End month</label><select id="cca-e" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;background:#fff">';
+    MO.slice(1).forEach(function(m,i){body+='<option value="'+(i+1)+'">'+(i+1)+' — '+m+'</option>';});
+    body+='</select></div></div>';
+    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Assigned to</label><select id="cca-who" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;background:#fff"><option value="">Unassigned</option>';
+    people.forEach(function(p){body+='<option>'+p+'</option>';});
+    body+='</select></div>';
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-dark btn-sm" onclick="ccPsAddActivitySave(\''+proj+'\','+ri+')">Add activity</button></div></div>';
+    openModal('Add activity — '+row.item,body);
+  }
+  function ccPsAddActivitySave(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var n=document.getElementById('cca-name');var s=document.getElementById('cca-s');var e=document.getElementById('cca-e');var who=document.getElementById('cca-who');
+    if(!n||!n.value.trim())return;
+    if(!row.acts)row.acts=[];
+    row.acts.push({n:n.value.trim(),st:'Not started',s:parseInt(s.value)||0,e:parseInt(e.value)||1,who:who?who.value:''});
+    closeModal();renderCcProfServices();toast('Activity added');
+  }
+  function openCcPsAssign(proj,ri,ai){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var act=row.acts&&row.acts[ai];if(!act)return;
+    var people=['Alex R.','Jordan P.','Marcus T.','Sarah K.','Chris D.'];
+    var body='<div style="padding:2px 0"><div style="font-size:12px;color:var(--g600);margin-bottom:12px">Assign to <strong>'+act.n+'</strong></div><div style="display:flex;flex-direction:column;gap:6px">';
+    people.forEach(function(p){
+      var sel=act.who===p;
+      var ini=p.split(' ').map(function(x){return x[0];}).join('');
+      body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid '+(sel?'var(--charcoal)':'var(--g200)')+';border-radius:6px;cursor:pointer;background:'+(sel?'#f9fafb':'#fff')+'" onclick="ccPsDoAssign(\''+proj+'\','+ri+','+ai+',\''+p+'\')">';
+      body+='<div style="display:flex;align-items:center;gap:8px"><div style="width:26px;height:26px;border-radius:50%;background:var(--g200);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g700)">'+ini+'</div>';
+      body+='<span style="font-size:12.5px;color:var(--g900)">'+p+'</span></div>';
+      if(sel)body+='<span style="color:#10b981;font-weight:700">✓</span>';
+      body+='</div>';
+    });
+    body+='<div style="margin-top:6px"><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border:1px solid var(--g200);border-radius:6px;cursor:pointer" onclick="ccPsDoAssign(\''+proj+'\','+ri+','+ai+',\'\')"><span style="font-size:12.5px;color:var(--g500)">Unassigned</span></div></div>';
+    body+='</div></div>';
+    openModal('Assign — '+act.n,body);
+  }
+  function ccPsDoAssign(proj,ri,ai,who){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    var act=row.acts&&row.acts[ai];if(!act)return;
+    act.who=who;closeModal();renderCcProfServices();
+  }
+
+    function openCcPsViewRequest(proj,ri){
     var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
     var row=rows&&rows[ri];if(!row)return;
     var body='<div style="padding:2px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
@@ -8600,8 +8705,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         profservices:{
       hercules:{budget:1920000,dpSpent:1560000,adHoc:0,
       rollCols:['Discipline','Peak FTE','Peak period','vs plan'],roll:[{a:'Engineering',b:'4 FTE',c:'Jun 2026\u2013Feb 2027',v:'on plan',vt:'ok'},{a:'Survey & monitoring',b:'5 FTE',c:'Apr\u2013Jul 2026',v:'on plan',vt:'ok'},{a:'VDC / BIM',b:'3 FTE',c:'Apr\u2013Oct 2026',v:'on plan',vt:'ok'},{a:'Commissioning',b:'2 FTE',c:'Nov 2026+',v:'on plan',vt:'ok'}],varSummary:'Engineering peak 4 FTE Jun\u2013Feb (OE + structural inspection). VDC/BIM active Apr\u2013Oct. BESS commissioning agent requested Nov 2026.',rows:[
-        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'In progress',s:2,e:9},{n:'Closeout',st:'Not started',s:9,e:10}],note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
-        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'In progress',s:2,e:5},{n:'Closeout',st:'Not started',s:5,e:6}],attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
+        {item:"Owner's engineer / IE support",qty:'2 FTE',window:'Mar–Dec 2026',state:'Active',ordId:'ORD-3095',fqRef:'REQ-S-2101',cost:'$28K/mo',firm:'DNV',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1,who:'Alex R.'},{n:'Mobilization',st:'Done',s:1,e:2,who:'Alex R.'},{n:'Active delivery',st:'In progress',s:2,e:9,who:'Jordan P.'},{n:'Closeout',st:'Not started',s:9,e:10,who:''}],note:'2 FTE active. Apr cost code reallocated to engineering support line. No billing disputes.',attachments:[{type:'Engineering',name:'Owner\'s engineer master services agreement',ref:'MSA-DNV-HRC-001',status:'Executed'},{type:'Engineering',name:'Monthly IE report — Aug 2026',ref:'IE-DNV-AUG',status:'Current'},{type:'Safety',name:'IE inspection checklist — structural & civil',ref:'IECL-DNV-001',status:'Current'}]},
+        {item:'Geotechnical inspection',qty:'3 FTE',window:'Mar–Aug 2026',state:'Active',ordId:'ORD-3096',cost:'$18K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1,who:'Jordan P.'},{n:'Mobilization',st:'Done',s:1,e:2,who:'Jordan P.'},{n:'Active delivery',st:'In progress',s:2,e:5,who:'Marcus T.'},{n:'Closeout',st:'Not started',s:5,e:6,who:''}],attachments:[{type:'Engineering',name:'Geotechnical investigation report — Hercules phase 2',ref:'GIR-3096-001',status:'Approved'},{type:'Engineering',name:'Field inspection log — Jul 2026',ref:'FIL-3096-JUL',status:'Current'},{type:'Safety',name:'Scope of work — geotech inspection',ref:'SOW-3096-001',status:'Executed'}]},
         {item:'Structural special inspection',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',cost:'$16K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:3,e:4},{n:'Mobilization',st:'Done',s:4,e:5},{n:'Active delivery',st:'In progress',s:5,e:11},{n:'Closeout',st:'Not started',s:11,e:12}],attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {item:'BESS commissioning agent',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Proposal sent',ordId:'ORD-5001',cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108',acts:[{n:'Scope definition',st:'In progress',s:6,e:8},{n:'Contracting',st:'Not started',s:8,e:9},{n:'Active delivery',st:'Not started',s:9,e:12},{n:'Closeout',st:'Not started',s:12,e:13}],attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {item:'Environmental / SWPPP monitoring',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA',acts:[{n:'Scope & contracting',st:'Done',s:0,e:1},{n:'Mobilization',st:'Done',s:1,e:2},{n:'Active delivery',st:'Done',s:2,e:3},{n:'Closeout',st:'Done',s:3,e:4}],attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
