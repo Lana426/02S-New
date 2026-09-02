@@ -7020,7 +7020,7 @@ charges:[
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
-  var _dpCcProjMap={equipment:'hercules'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
+  var _dpCcProjMap={equipment:'hercules',logistics:'hercules',prefab:'hercules'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _dpEquipView='table'; var _dpItemAttrs={};
   function _mkA(pfx,n,st){var a=[];for(var i=1;i<=n;i++){a.push({id:pfx+'-A'+('00'+i).slice(-3),status:st||'onrent'});}return a;}
   var _dpRowAssets={
@@ -10580,7 +10580,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
-    console.log('[CC-ENTRY] p='+p);
+    
     if(p==='profservices'){renderCcProfServices();return;}
     if(p==='equipment')initCcEquipAssets();
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
@@ -10849,9 +10849,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       
     }
     if(!_pfbSchedMode&&!(p==='prefab'&&selProj==='all')){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
-    if((p==='logistics'||p==='prefab'))console.log('[PRE-LOOP] rowsToRender='+rowsToRender.length+' allReqRows='+allReqRows.length+' visRows='+visRows.length+' isDpView='+isDpView+' selProj='+selProj+' p='+p);if((p==='logistics'||p==='prefab')&&isDpView){h+='<div style="font-size:10px;color:red;padding:4px">[DEBUG] rowsToRender='+rowsToRender.length+' allReqRows='+allReqRows.length+' selProj='+selProj+'</div>';}if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
+    if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
-      if((p==='logistics'||p==='prefab'))console.log('[ROW]',_rowI,'type='+row._type,'state='+(row.state||'?'),'isDpView='+isDpView);
+      
       if(row._type==='dp'){
         var _dpDisp=row.state; var dpTone=_DP_TONE[_dpDisp]||'neu';
         var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
@@ -11195,7 +11195,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(p==='logistics'){h+=renderLogisticsQuoteQueue(selProj,isDpView);h+=renderCcTransport(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
-    console.log('[MOUNT-DIAG] p='+p+' isDpView='+isDpView+' hasDpTbl='+(h.indexOf('dp-tbl')>=0)+' dpRowCount='+((h.match(/dp-row/g)||[]).length)+' hLen='+h.length);
+    
     mount.innerHTML=h;
   }
 
