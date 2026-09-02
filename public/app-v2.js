@@ -10847,6 +10847,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       }
       
     }
+    if((p==='logistics'||p==='prefab')&&isDpView){console.log('[DP-DIAG] pillar='+p+' isDpView='+isDpView+' selProj='+selProj+' _pfbSchedMode='+_pfbSchedMode+' rowsToRender='+rowsToRender.length+' gateResult='+(!_pfbSchedMode&&!(p==='prefab'&&selProj==='all')));}
     if(!_pfbSchedMode&&!(p==='prefab'&&selProj==='all')){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
