@@ -10508,7 +10508,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
   function renderCcDemand(p){
-    
     if(p==='profservices'){renderCcProfServices();return;}
     if(p==='equipment')initCcEquipAssets();
     var cfg=CC_DP[p]; if(!cfg)return; var mount=gel(cfg.mount); if(!mount)return; var ns=CURRENT==='ns';
@@ -10530,8 +10529,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div>';
     }
 
-    if((ns&&cfg.ns)&&!(p==='prefab'&&selProj==='all')){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
-    else if((!ns&&cfg.v1)&&!(p==='prefab'&&selProj==='all')){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
+    if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+CC_SPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
+    else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     if(selProj!=='all'){
       var lin=CC_DP_LINEAGE[p]&&CC_DP_LINEAGE[p][selProj];
       if(lin){
@@ -10605,7 +10604,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>10?'#f59e0b':'var(--g700)')+'">'+driftPct+'% ad hoc vs. baseline</span>';
       h+='</div></div>';
     }
-    if(cfg.cap&&!(p==='prefab'&&selProj==='all')){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
+    if(cfg.cap){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
     var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
     var showProjCol=(selProj==='all');
@@ -10643,7 +10642,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         if(_logTasksView==='tasks'){h+=renderLogisticsTasksView(selProj);mount.innerHTML=h;return;}
       }
     } else {
-      if(!(p==='prefab'&&selProj==='all')){
       var _allHdr=p==='logistics'?'Quote requests':'All requests';
       h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+_allHdr+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
       if(p==='logistics'){
@@ -10756,7 +10754,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div></div></div>';
     }
     var gtA=isDpView?(p==='prefab'?'1.4fr 70px 110px 150px 100px 120px 80px 130px':'1.6fr 80px 150px 105px 120px 90px 175px'):(showProjCol?'1.3fr 90px 116px 150px 1fr 100px 110px':'1.3fr 90px 116px 1.2fr 100px 110px');
-    
+    if(!isDpView){ h+='<div class="eq-cap" style="margin-bottom:10px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>Recommended actions for all pending requests are in the fulfillment queue. Click any request for more information.</span></div>'; }
     var _pfbSchedMode=false;
     if(p==='prefab'&&isDpView){
       var _pfbDpRows=allReqRows.filter(function(r){return r._type==='dp';});var _dsR=_pfbDpRows.filter(function(r){return r.dateShifted;});
@@ -10776,10 +10774,71 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       }
       
     }
-    if(!_pfbSchedMode&&!(p==='prefab'&&selProj==='all')){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
+    if(p==='prefab'&&selProj==='all'){
+      var _pfbAll=allReqRows.filter(function(r){return r._type==='dp';});
+      var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In fulfillment';}).length;
+      var _pfbNA=_pfbAll.filter(function(r){return r.state==='Awaiting pricing'||r.dateShifted;}).length;
+      var _pfbOT=_pfbAll.filter(function(r){return r.onTrack===true;}).length;
+      h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+      [{k:'Assemblies tracked',v:_pfbAll.length+'',sub:'Across all projects',tone:'ok'},
+       {k:'In fabrication',v:_pfbInFab+'',sub:'Active fab orders',tone:'info'},
+       {k:'On track',v:_pfbOT+' of '+_pfbAll.length,sub:'vs. need date',tone:_pfbOT===_pfbAll.length?'ok':'warn'},
+       {k:'Needs attention',v:_pfbNA?_pfbNA+'':'\u2014',sub:_pfbNA?'Awaiting pricing or date-shifted':'All clear',tone:_pfbNA?'warn':'neu'}
+      ].forEach(function(k){h+='<div class="vital '+k.tone+'"><div class="vk">'+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div></div>';});
+      h+='</div>';
+      var _PFBCOL={hercules:'#1e6b4f',barryrose:'#2e4e8e',vdc14:'#7a3d8e'};
+      var _PFBCODE={hercules:'HRC',barryrose:'BRW',vdc14:'VDC'};
+      var _pfbLA=[
+        {lbl:'Combiner box prefab array',sub:'Need-by Sep 5 \u2014 draft in progress',proj:'hercules',bc:'#b45309',wk:0},
+        {lbl:'Cable tray brackets',sub:'Awaiting pricing \u2014 fit-out dependency',proj:'vdc14',bc:'#b45309',wk:0},
+        {lbl:'MEP rack modules delivery',sub:'Barry Rose WRF \u2014 on track Sep 10',proj:'barryrose',bc:'#3d6b4f',wk:1},
+        {lbl:'E-house submittal decision',sub:'BESS e-houses \u2014 02S review in progress',proj:'hercules',bc:'#b45309',wk:1},
+        {lbl:'Pipe rack final QC',sub:'Shop drawings approved \u2014 4 of 12 complete',proj:'hercules',bc:'#2e6e8e',wk:1},
+        {lbl:'Pump skid assemblies',sub:'Manufacturing \u2014 need-by Oct 5',proj:'hercules',bc:'#3d6b4f',wk:2},
+        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2}
+      ];
+      var _pfbGt='220px 1fr 1fr 1fr';
+      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+      h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
+      h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
+      h+='<span style="font-size:12px;color:var(--g400)">Sep 1\u201321, 2026</span>';
+      h+='</div>';
+      h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
+      h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';margin-bottom:2px">';
+      h+='<div></div>';
+      ['Sep 1\u20137','Sep 8\u201314','Sep 15\u201321'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+      h+='</div>';
+      h+='<div style="max-height:300px;overflow-y:auto">';
+      _pfbLA.forEach(function(r){
+        var tipTxt=(r.lbl+' \u00b7 '+r.sub).replace(/'/g,'\u2019');
+        h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';align-items:center;min-height:38px;border-top:1px solid var(--g100)">';
+        h+='<div style="padding:5px 10px 5px 0;display:flex;align-items:center;gap:6px;min-width:0">';
+        h+='<span style="background:'+(_PFBCOL[r.proj]||'#555')+';color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0">'+(_PFBCODE[r.proj]||r.proj.toUpperCase())+'</span>';
+        h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.lbl+'</span>';
+        h+='</div>';
+        [0,1,2].forEach(function(wi){
+          h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
+          if(wi===r.wk){
+            h+='<div data-tip="'+tipTxt+'" '+
+               'onmouseenter="var _t=document.getElementById(\'_pfbTip\');if(_t){_t.textContent=this.dataset.tip;_t.style.display=\'block\';var _r=this.getBoundingClientRect();_t.style.left=(_r.left+_r.width/2)+\'px\';_t.style.top=(_r.top-6)+\'px\';}" '+
+               'onmouseleave="var _t=document.getElementById(\'_pfbTip\');if(_t)_t.style.display=\'none\';" '+
+               'style="background:'+r.bc+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+r.sub+'</div>';
+          }
+          h+='</div>';
+        });
+        h+='</div>';
+      });
+      h+='</div>';
+      h+='<div id="_pfbTip" style="display:none;position:fixed;z-index:9999;background:rgba(24,24,27,.92);color:#fff;font-size:11.5px;padding:5px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-6px"></div>';
+      h+='</div>';
+    }
+    
+      mount.innerHTML=h;
+      return;
+    }
+        if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
-      h+='<div style="background:red;padding:4px;font-size:10px">forEach row '+_rowI+' type='+row._type+'</div>';
       if(row._type==='dp'){
         var _dpDisp=row.state; var dpTone=_DP_TONE[_dpDisp]||'neu';
         var dpSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(59,130,246,.1);color:#3b82f6;font-weight:600;white-space:nowrap">Demand plan</span>';
@@ -11035,8 +11094,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     }
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
         var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
-      }
-    if(pillarQ&&pillarQ.length&&p!=='prefab'){
+    if(pillarQ.length&&p!=='prefab'){
       h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.cart)+'Portal quotes — pending pricing</span><span class="spacer"></span></div>';
       var gtq='1fr 168px 90px 130px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtq+'"><span>Request / item</span><span>Project</span><span>Need-by</span><span>Status</span><span>Action</span></div>';
@@ -11053,65 +11111,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     }
     if(p!=='logistics'){
     var _rollSrc=(isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll)?CC_PROJ_DP[p][selProj]:cfg;
-    if(p==='prefab'&&selProj==='all'){
-      var _pfbAll=allReqRows.filter(function(r){return r._type==='dp';});
-      var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In fulfillment';}).length;
-      var _pfbNA=_pfbAll.filter(function(r){return r.state==='Awaiting pricing'||r.dateShifted;}).length;
-      var _pfbOT=_pfbAll.filter(function(r){return r.onTrack===true;}).length;
-      h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
-      [{k:'Assemblies tracked',v:_pfbAll.length+'',sub:'Across all projects',tone:'ok'},
-       {k:'In fabrication',v:_pfbInFab+'',sub:'Active fab orders',tone:'info'},
-       {k:'On track',v:_pfbOT+' of '+_pfbAll.length,sub:'vs. need date',tone:_pfbOT===_pfbAll.length?'ok':'warn'},
-       {k:'Needs attention',v:_pfbNA?_pfbNA+'':'\u2014',sub:_pfbNA?'Awaiting pricing or date-shifted':'All clear',tone:_pfbNA?'warn':'neu'}
-      ].forEach(function(k){h+='<div class="vital '+k.tone+'"><div class="vk">'+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div></div>';});
-      h+='</div>';
-      var _PFBCOL={hercules:'#1e6b4f',barryrose:'#2e4e8e',vdc14:'#7a3d8e'};
-      var _PFBCODE={hercules:'HRC',barryrose:'BRW',vdc14:'VDC'};
-      var _pfbLA=[
-        {lbl:'Combiner box prefab array',sub:'Need-by Sep 5 \u2014 draft in progress',proj:'hercules',bc:'#b45309',wk:0},
-        {lbl:'Cable tray brackets',sub:'Awaiting pricing \u2014 fit-out dependency',proj:'vdc14',bc:'#b45309',wk:0},
-        {lbl:'MEP rack modules delivery',sub:'Barry Rose WRF \u2014 on track Sep 10',proj:'barryrose',bc:'#3d6b4f',wk:1},
-        {lbl:'E-house submittal decision',sub:'BESS e-houses \u2014 02S review in progress',proj:'hercules',bc:'#b45309',wk:1},
-        {lbl:'Pipe rack final QC',sub:'Shop drawings approved \u2014 4 of 12 complete',proj:'hercules',bc:'#2e6e8e',wk:1},
-        {lbl:'Pump skid assemblies',sub:'Manufacturing \u2014 need-by Oct 5',proj:'hercules',bc:'#3d6b4f',wk:2},
-        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2}
-      ];
-      var _pfbGt='220px 1fr 1fr 1fr';
-      h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
-      h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
-      h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-      h+='<span style="font-size:12px;color:var(--g400)">Sep 1\u201321, 2026</span>';
-      h+='</div>';
-      h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
-      h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';margin-bottom:2px">';
-      h+='<div></div>';
-      ['Sep 1\u20137','Sep 8\u201314','Sep 15\u201321'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
-      h+='</div>';
-      h+='<div style="max-height:300px;overflow-y:auto">';
-      _pfbLA.forEach(function(r){
-        var tipTxt=(r.lbl+' \u00b7 '+r.sub).replace(/'/g,'\u2019');
-        h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';align-items:center;min-height:38px;border-top:1px solid var(--g100)">';
-        h+='<div style="padding:5px 10px 5px 0;display:flex;align-items:center;gap:6px;min-width:0">';
-        h+='<span style="background:'+(_PFBCOL[r.proj]||'#555')+';color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0">'+(_PFBCODE[r.proj]||r.proj.toUpperCase())+'</span>';
-        h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.lbl+'</span>';
-        h+='</div>';
-        [0,1,2].forEach(function(wi){
-          h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
-          if(wi===r.wk){
-            h+='<div data-tip="'+tipTxt+'" '+
-               'onmouseenter="var _t=document.getElementById(\'_pfbTip\');if(_t){_t.textContent=this.dataset.tip;_t.style.display=\'block\';var _r=this.getBoundingClientRect();_t.style.left=(_r.left+_r.width/2)+\'px\';_t.style.top=(_r.top-6)+\'px\';}" '+
-               'onmouseleave="var _t=document.getElementById(\'_pfbTip\');if(_t)_t.style.display=\'none\';" '+
-               'style="background:'+r.bc+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+r.sub+'</div>';
-          }
-          h+='</div>';
-        });
-        h+='</div>';
-      });
-      h+='</div>';
-      h+='<div id="_pfbTip" style="display:none;position:fixed;z-index:9999;background:rgba(24,24,27,.92);color:#fff;font-size:11.5px;padding:5px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-6px"></div>';
-      h+='</div>';
-    }
-    if(!(p==='prefab'&&selProj==='all')){
     var _rollLabel=isDpView?(p==='prefab'?'Project assembly roll-up':'Project demand roll-up'):(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up');
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+_rollLabel+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+_rollSrc.varSummary+'</span></div>';
     var gt2='1fr 150px 1fr 120px';
@@ -11119,11 +11118,10 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     _rollSrc.roll.forEach(function(rr){ h+='<div class="dp-row" style="grid-template-columns:'+gt2+'"><div>'+rr.a+'</div><div>'+rr.b+'</div><div style="font-weight:400;color:var(--g600)">'+rr.c+'</div><div><span class="tag '+(rr.vt||'neu')+'">'+rr.v+'</span></div></div>'; });
     h+='</div>';
     if(selProj==='all'){ h+=renderCapAtRiskSummary(p); }
-    } }
+    }
     if(p==='logistics'){h+=renderLogisticsQuoteQueue(selProj,isDpView);h+=renderCcTransport(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
-    
     mount.innerHTML=h;
   }
 
