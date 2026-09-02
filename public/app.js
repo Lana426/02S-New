@@ -2322,7 +2322,7 @@
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+' onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -2330,7 +2330,6 @@
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Completed'&&r.state!=='Delivered'&&r.state!=='Cancelled';});}
-    if(pk==='prefab'){h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span style="font-size:11.5px;color:var(--g500)">'+_srows.length+' items</span></div>';}
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
@@ -11115,14 +11114,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(_pfbAhRows.length){
         h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">'
           +svg(dpIcon('layers'))+'Ad hoc orders</span><span class="spacer"></span>'
-          +'<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="ccGo(\"fulfill\")">View fulfillment queue →</button>'
+          +'<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="ccGo(\'fulfill\')">View fulfillment queue →</button>'
           +'<span style="font-size:11px;color:var(--g500);margin-left:8px">'+_pfbAhRows.length+' order'+(_pfbAhRows.length!==1?'s':'')+'</span></div>';
         var _pfbAhGt='1fr 1.3fr 110px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_pfbAhGt+'">'
           +'<span>Order</span><span>Asset</span><span>Stage</span><span>Status</span></div>';
         _pfbAhRows.forEach(function(r2){
           var tone=r2.decTone||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+_pfbAhGt+'">'
+          h+='<div class="dp-row" style="grid-template-columns:'+_pfbAhGt+';cursor:pointer" onclick="ccGoFulfill(\''+r2.id+'\')">'
             +'<div style="font-weight:600">'+r2.id+'</div>'
             +'<div style="font-size:11.5px;color:var(--g600)">'+r2.asset+'</div>'
             +'<div><span class="tag '+tone+'">'+r2.dec+'</span></div>'
@@ -12356,6 +12355,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     }
     var dlvCols='1fr 120px 140px 110px 100px';
     var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
+        h+=renderCpTransport();
         mount.innerHTML=h;
   }
   function logIntakeToggle(){
@@ -12438,7 +12438,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add to plan</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+' onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'">';
@@ -12446,7 +12446,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Completed'&&r.state!=='Delivered'&&r.state!=='Cancelled';});}
-    if(pk==='prefab'){h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span style="font-size:11.5px;color:var(--g500)">'+_srows.length+' items</span></div>';}
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
