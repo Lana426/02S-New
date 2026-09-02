@@ -2239,6 +2239,7 @@
     }
     var dlvCols='1fr 120px 140px 110px 100px';
     var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
+        h+=renderCpTransport();
         mount.innerHTML=h;
   }
   function logIntakeToggle(){
@@ -2328,6 +2329,8 @@
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Completed'&&r.state!=='Delivered'&&r.state!=='Cancelled';});}
+    if(pk==='prefab'){h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span style="font-size:11.5px;color:var(--g500)">'+_srows.length+' items</span></div>';}
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
@@ -7600,7 +7603,7 @@ charges:[
   }
   function pfbSetTab(t){_pfbDpTab=t;renderCcDemand('prefab');}
   function pfbSetCcView(v){window._pfbCcView=v;renderCcDemand('prefab');}
-  function pfbToggleActiveOnly(){window._pfbActiveOnly=!window._pfbActiveOnly;renderCcDemand('prefab');}
+  function pfbToggleActiveOnly(){window._pfbActiveOnly=!window._pfbActiveOnly;renderCcDemand('prefab');renderDP('prefab');}
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbUpdateState(proj,idx,state,subState){var rows=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows;if(rows&&rows[idx]!==undefined){rows[idx].state=state;if(subState!==undefined)rows[idx].subState=subState;else if(state!=='In fulfillment')rows[idx].subState=null;renderCcDemand('prefab');}}
   function pfbStatusModal(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var _mo=STAGES_PREFAB_OPS.map(function(s){return '<option value="'+s+'"'+(s===row.state?' selected':'')+'>'+s+'</option>';}).join('');var _ms=SUB_STATUSES_FULFILLMENT.map(function(s){return '<option value="'+s+'"'+(s===row.subState?' selected':'')+'>'+s+'</option>';}).join('');var _subDisp=row.state==='In fulfillment'?'flex':'none';openModal('Update status — '+row.item,'<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+row.state+(row.subState?' · '+row.subState:'')+'</span></div><div class="fq-crow"><span>New status</span><span><select id="pfbStatSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px" onchange="var r=document.getElementById(\'pfbSubRow\');if(r)r.style.display=this.value===\'In fulfillment\'?\'flex\':\'none\'">'+_mo+'</select></span></div><div id="pfbSubRow" class="fq-crow" style="display:'+_subDisp+'"><span>Fulfillment detail</span><span><select id="pfbSubSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px">'+_ms+'</select></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="(function(){var s=document.getElementById(\'pfbStatSel\');if(s&&s.value){var sub=document.getElementById(\'pfbSubSel\');pfbUpdateState(\''+proj+'\','+idx+',s.value,(s.value===\'In fulfillment\'&&sub)?sub.value:undefined);closeModal();}})();">Save</button></div>');}
@@ -10838,6 +10841,19 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       }
       
     }
+    if(p==='prefab'&&isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll){
+      var _rtSrc=CC_PROJ_DP[p][selProj];
+      h+='<div class="vitals" style="margin-bottom:16px">';
+      _rtSrc.roll.forEach(function(rr){
+        var tone=rr.vt||'neu';
+        h+='<div class="vital '+tone+'">';
+        h+='<div class="vk">'+rr.a+'</div>';
+        h+='<div class="vv">'+rr.b+'</div>';
+        h+='<div class="vsub">'+(rr.c&&rr.c!=='On plan'?rr.c+' · ':'')+rr.v+'</div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
     if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -11099,7 +11115,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(_pfbAhRows.length){
         h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">'
           +svg(dpIcon('layers'))+'Ad hoc orders</span><span class="spacer"></span>'
-          +'<span style="font-size:11px;color:var(--g500)">'+_pfbAhRows.length+' order'+(_pfbAhRows.length!==1?'s':'')+'</span></div>';
+          +'<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="ccGo(\"fulfill\")">View fulfillment queue →</button>'
+          +'<span style="font-size:11px;color:var(--g500);margin-left:8px">'+_pfbAhRows.length+' order'+(_pfbAhRows.length!==1?'s':'')+'</span></div>';
         var _pfbAhGt='1fr 1.3fr 110px 110px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_pfbAhGt+'">'
           +'<span>Order</span><span>Asset</span><span>Stage</span><span>Status</span></div>';
@@ -11131,7 +11148,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       });
       h+='</div>';
     }
-    if(p!=='logistics'){
+    if(p!=='logistics'&&p!=='prefab'){
     var _rollSrc=(isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll)?CC_PROJ_DP[p][selProj]:cfg;
     var _rollLabel=isDpView?(p==='prefab'?'Project assembly roll-up':'Project demand roll-up'):(p==='prefab'?'Assembly type rollup':'Portfolio demand roll-up');
     h+='<div class="eq-toolbar" style="margin-top:20px"><span class="dp-sec-t">'+svg(IC.chart)+_rollLabel+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+(_rollSrc.varSummary||'')+'</span></div>';
@@ -12428,6 +12445,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
+    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Completed'&&r.state!=='Delivered'&&r.state!=='Cancelled';});}
+    if(pk==='prefab'){h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span style="font-size:11.5px;color:var(--g500)">'+_srows.length+' items</span></div>';}
     if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
