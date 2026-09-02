@@ -7230,6 +7230,7 @@ charges:[
     closeModal();renderLogPlan();
   }
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
+  window._cpNudges=window._cpNudges||[{msg:'Temp Power Distribution quote is ready for review — United Site Services, $4,200/mo, available Sep 1. Approve to activate service.',ts:'Aug 26, 2026 · 11:42 AM'}];
   window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
