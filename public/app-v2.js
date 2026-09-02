@@ -11194,6 +11194,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(p==='logistics'){h+=renderLogisticsQuoteQueue(selProj,isDpView);h+=renderCcTransport(selProj);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
+    console.log('[MOUNT-DIAG] p='+p+' isDpView='+isDpView+' hasDpTbl='+(h.indexOf('dp-tbl')>=0)+' dpRowCount='+((h.match(/dp-row/g)||[]).length)+' hLen='+h.length);
     mount.innerHTML=h;
   }
 
