@@ -2054,7 +2054,7 @@
     if(open.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+open.length+' active</span>';
     h+='</div>';
     if(!rows.length){h+='<div class="fq-empty">No transport requests for this project.</div></div>';return h;}
-    var cols='1.4fr 90px 1.1fr 110px 130px 130px 100px';
+    var cols='1.4fr 80px 1fr 100px 120px 120px 130px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'"><span>Request</span><span>Type</span><span>Route</span><span>Pickup</span><span>Coordinator</span><span>Status</span><span>Actions</span></div>';
     rows.forEach(function(r){
       var desc=r.transferType==='Material/Tools'?(r.materialDesc||'').split('\n')[0].replace('[A]: ',''):r.transferType==='Vehicle'?(r.model||'').split('\n')[0].replace('[A]: ',''):(r.model||'').split('\n')[0].replace('[A]: ','');
@@ -2071,12 +2071,80 @@
       h+='<div><select onchange="trUpdateStatus(\''+r.id+'\',this.value)" style="font-size:11px;padding:3px 6px;border:1px solid var(--g200);border-radius:4px;color:var(--g700);width:100%">';
       _TR_STATUS_ORDER.forEach(function(s){h+='<option value="'+s+'"'+(r.status===s?' selected':'')+'>'+s+'</option>';});
       h+='</select></div>';
-      h+='<div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="openTransportDetailModal(\''+r.id+'\')">View</button>';
+      h+='<div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="showTransportRequest(\''+r.id+'\')">Show request</button>';
       if(r.status==='Requested')h+='<button class="btn btn-dark btn-sm" style="font-size:10px;padding:2px 8px" onclick="trScheduleModal(\''+r.id+'\')">Schedule</button>';
       h+='</div></div>';
     });
     h+='</div></div>';
     return h;
+  }
+
+  function showTransportRequest(id){
+    var r=TRANSPORT_REQUESTS.filter(function(x){return x.id===id;})[0];
+    if(!r)return;
+    var _f='background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--g800);line-height:1.4';
+    var _l='font-size:11px;font-weight:600;color:var(--g500);margin-bottom:3px;display:block';
+    var _s='font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g100);padding-bottom:4px;margin:14px 0 10px';
+    var fld=function(lbl,val){return '<div><span style="'+_l+'">'+lbl+'</span><div style="'+_f+'">'+(val||'—')+'</div></div>';};
+    var pre=function(lbl,val){return '<div><span style="'+_l+'">'+lbl+'</span><pre style="margin:0;'+_f+'white-space:pre-wrap;font-family:inherit">'+(val||'—')+'</pre></div>';};
+    var h='';
+    var _stClr={Requested:'#d97706',Scheduled:'#2563eb','In Delivery':'#2563eb',Delivered:'#16a34a'};
+    var sc=_stClr[r.status]||'#6b7280';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:8px 14px;background:var(--g50);border-radius:7px">';
+    h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Status</span>';
+    h+='<span style="font-size:12px;font-weight:700;color:'+sc+'">'+r.status+'</span>';
+    if(r.scheduledDate)h+='<span style="font-size:11.5px;color:var(--g500);margin-left:auto">Scheduled '+r.scheduledDate+(r.scheduledTime?' · '+r.scheduledTime:'')+'</span>';
+    h+='</div>';
+    h+='<div style="'+_s+'">Request details</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+    h+=fld('Requested by',r.requestedBy);
+    h+=fld('Email',r.requestedByEmail);
+    h+=fld('Region',r.region);
+    h+=fld('Jobsite',r.jobsite);
+    h+=fld('Cost code',r.costCode);
+    h+=fld('Expenditure code',r.expenditureCode);
+    h+=fld('Requested pickup date',r.pickupDate);
+    h+=fld('Delivery by',r.deliveryDate);
+    h+='</div>';
+    h+='<div style="'+_s+'">Pickup</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">';
+    h+=fld('Contact',r.pickupContact);
+    h+=fld('Email',r.pickupEmail||'—');
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+    h+=fld('Address',r.pickupAddress);
+    h+=fld('Hours',r.pickupHours);
+    h+='</div>';
+    h+='<div style="'+_s+'">Dropoff</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">';
+    h+=fld('Contact',r.dropoffContact);
+    h+=fld('Email',r.dropoffEmail||'—');
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+    h+=fld('Address',r.dropoffAddress);
+    h+=fld('Hours',r.dropoffHours||'—');
+    h+='</div>';
+    h+='<div style="'+_s+'">'+r.transferType+' details</div>';
+    if(r.transferType==='Material/Tools'){
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+      h+=pre('Materials',r.materialDesc);
+      h+=pre('Quantity',r.materialQty);
+      h+='</div>';
+    }else{
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">';
+      if(r.assetNumbers)h+=pre('Asset numbers',r.assetNumbers);
+      if(r.model)h+=pre('Model',r.model);
+      if(r.vin)h+=pre('VIN',r.vin);
+      if(r.weight)h+=pre('Weight',r.weight);
+      if(r.attachments)h+=pre('Attachments',r.attachments);
+      h+='</div>';
+    }
+    if(r.notes){h+='<div style="'+_s+'">Notes</div>';h+=fld('',r.notes);}
+    h+='<div class="modal-foot">';
+    if(r.status==='Requested')h+='<button class="btn btn-dark" onclick="closeModal();trScheduleModal(\''+r.id+'\')">→ Schedule</button>';
+    h+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    h+='</div>';
+    openModal('Transport request — '+r.id,h);
   }
 
   function trAssignCoord(id,name){
