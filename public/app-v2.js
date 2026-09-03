@@ -2758,6 +2758,8 @@
     closeModal();
     toast('Question sent to project team');
   }
+  function psToggleActiveOnly(){window._psActiveOnly=!window._psActiveOnly;renderProfServicesDP();}
+  function ccPsToggleActiveOnly(){window._ccPsActiveOnly=!window._ccPsActiveOnly;renderCcProfServices();}
 
 
   function renderCcProfServices(){
@@ -2799,6 +2801,8 @@
       var act=selProj===pr[0];
       h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="dpSetProjFilter(\'profservices\',\''+pr[0]+'\')">'+pr[1]+'</button>';
     });
+    h+='<span class="spacer"></span>';
+    h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
     h+='</div>';
 
     // KPI cards — using .vital CSS class matching logistics look
@@ -3043,7 +3047,8 @@
       }
     }
 
-    // ── Incoming requests from project teams (bottom, always shown) ──
+    if(!window._ccPsActiveOnly){
+    // ── Incoming requests from project teams ──
     var allReqs=[];
     projs.forEach(function(proj){
       var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows)||[];
@@ -3101,6 +3106,7 @@
       });
       h+='</div>';
     }
+    } // end _ccPsActiveOnly
 
     mount.innerHTML=h;
   }
@@ -7279,7 +7285,7 @@ charges:[
     closeModal();renderLogPlan();
   }
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
-  window._cpNudges=window._cpNudges||[{msg:'Temp Power Distribution quote is ready for review — United Site Services, $4,200/mo, available Sep 1. Approve to activate service.',ts:'Aug 26, 2026 · 11:42 AM'}];
+  window._cpNudges=window._cpNudges||[{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'},{msg:'Temp Power Distribution quote is ready for review — United Site Services, $4,200/mo, available Sep 1. Approve to activate service.',ts:'Aug 26, 2026 · 11:42 AM'}];
   window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
@@ -12744,7 +12750,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button><button class="ff-b'+(window._psActiveOnly?' on':'')+' btn-sm" onclick="psToggleActiveOnly()">'+(window._psActiveOnly?'&#10003; Active only':'Active only')+'</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
     h+='<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;position:relative">';
@@ -12768,7 +12774,9 @@ function renderProfServicesDP(){
       var entries=groupMap[cat];if(!entries||!entries.length)return;anyRows=true;
       h+='<div class="dp-row" style="grid-template-columns:'+gt+';background:var(--g50);padding:5px 10px;border-top:1px solid var(--g200)"><div style="grid-column:1/-1"><span class="dp-sec-t" style="font-size:12px">'+cat+'</span>'+(_catDescs[cat]?'<div class="sub" style="font-weight:400;margin-top:1px;font-size:11px">'+_catDescs[cat]+'</div>':'')+'</div></div>';
       entries.forEach(function(entry){
-        var r=entry.r;var ri=entry.ri;var t=DP_TONE[r.state]||'neu';
+        var r=entry.r;var ri=entry.ri;
+        if(window._psActiveOnly&&['Demobilized','Cancelled'].indexOf(r.state)>=0)return;
+        var t=DP_TONE[r.state]||'neu';
         var dName=r.service||r.role||'';var dSub=r.firm||'';
         var _docs=r.attachments||[];var _dn=_docs.length;
         var _needsDocs=['Active','Requested','Acknowledged','Planned','Draft','Proposal received'].indexOf(r.state)>=0&&!_dn;
@@ -12779,6 +12787,8 @@ function renderProfServicesDP(){
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         h+='<span class="tag '+t+'">'+r.state+'</span>';
+        var _pIdx=-1;_props.forEach(function(p,pi){if(p.rowIdx===ri&&p.state!=='Approved')_pIdx=pi;});
+        if(_pIdx>=0){h+='<button class="btn btn-dark btn-sm" style="font-size:11px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();openPsProposalModal('+_pIdx+')">Review \u2192</button>';}
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'profservices\','+ri+')" title="Edit line item">&#9998;</button>';}
         h+='</div></div>';
         h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
