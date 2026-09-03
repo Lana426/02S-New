@@ -2344,6 +2344,7 @@
     mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px">';
     mh+='<div style="font-size:12px;color:#475569;line-height:1.5">02S has submitted this quote for your review. <b>Confirm</b> to send back to 02S for scheduling — they will lock in dates and mobilize.</div>';
     mh+='<button class="btn btn-dark btn-sm" style="white-space:nowrap" onclick="confirmLogQuote('+ri+')">Confirm → Send to 02S for scheduling</button>';
+    mh+='<button class="btn btn-ghost btn-sm" style="white-space:nowrap;margin-left:8px" onclick="returnLogQuote('+ri+')">Return with feedback ←</button>';
     mh+='</div>';
   }
   openModal('02S Quote — '+row.service,mh);
@@ -12621,6 +12622,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px">';
     mh+='<div style="font-size:12px;color:#475569;line-height:1.5">02S has submitted this quote for your review. <b>Confirm</b> to send back to 02S for scheduling — they will lock in dates and mobilize.</div>';
     mh+='<button class="btn btn-dark btn-sm" style="white-space:nowrap" onclick="confirmLogQuote('+ri+')">Confirm → Send to 02S for scheduling</button>';
+    mh+='<button class="btn btn-ghost btn-sm" style="white-space:nowrap;margin-left:8px" onclick="returnLogQuote('+ri+')">Return with feedback ←</button>';
     mh+='</div>';
   }
   openModal('02S Quote — '+row.service,mh);
