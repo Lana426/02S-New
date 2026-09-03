@@ -1525,6 +1525,7 @@
     document.getElementById('ucCaps').innerHTML=d.caps.map(function(c){ return '<span class="cap">'+c+'</span>'; }).join('');
     if(lp)lp.style.display='none'; if(ap)ap.style.display='none'; if(uc)uc.style.display='flex'; window.scrollTo(0,0);
   }
+  window.enterWorkspace=enterWorkspace;
   function backToLanding(){
     var lp=document.getElementById('landing'), ap=document.querySelector('.app'), uc=document.getElementById('uc');
     if(ap)ap.style.display='none'; if(uc)uc.style.display='none'; if(lp)lp.style.display='flex'; window.scrollTo(0,0);
@@ -1587,7 +1588,7 @@
     addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
       {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
-      {label:'Quotes to review',value:'2',sub:'Temp Power + Temp Toilets quotes ready',tone:'warn',icon:IC.dollar},
+      {label:'Quotes to review',value:'1',sub:'Temp Toilets & Handwash Stations quote ready',tone:'warn',icon:IC.dollar},
       {label:'Vendors',value:'3',sub:'WillScot · GFL · Bragg Crane',tone:'ok',icon:IC.crane},
       {label:'Committed to date',value:'$56K',sub:'Quoted services · 4 items',tone:'ok',icon:IC.dollar}
     ],
@@ -2358,6 +2359,30 @@
     renderLogPlan();
     toast(svcName+' confirmed — sent to 02S for scheduling');
   }
+  function returnLogQuote(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var row=rows[ri]||{};
+    openModal('Return quote to 02S',
+      '<div style="padding:4px 0">'
+      +'<div style="font-size:12px;color:#475569;margin-bottom:8px">Returning quote for: <strong>'+(row.service||row.item||'—')+'</strong></div>'
+      +'<div style="font-size:12px;color:#475569;margin-bottom:8px">Provide feedback so 02S can revise or re-source:</div>'
+      +'<textarea id="retQuoteTxt" rows="4" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px" placeholder="e.g. Price exceeds budget — please source 2+ alternatives under $3,500/mo."></textarea></div>',
+      '<button class="btn btn-primary" onclick="returnLogQuoteSubmit('+ri+')">Send feedback to 02S</button>'
+    );
+  }
+  function returnLogQuoteSubmit(ri){
+    var txt=(document.getElementById('retQuoteTxt')||{}).value||'';
+    if(!txt.trim())return;
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];
+    var row=rows[ri]||{};
+    if(row.status==='Quoted'||row.status==='Pending pricing')row.status='Needs attention';
+    window._ccNudges=window._ccNudges||[];
+    window._ccNudges.unshift({id:'return-'+Date.now(),svc:row.service||row.item||'Service',project:'Hercules',question:txt.trim(),from:'GC Ops',ts:'Just now',answered:false});
+    closeModal();
+    toast('Feedback sent to 02S — quote returned for revision');
+    renderLogPlan();
+  }
+
   function setLogRowStatus(ri,status){
     var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];if(rows[ri]){rows[ri].status=status;renderLogPlan();}
   }
@@ -7308,10 +7333,10 @@ charges:[
     closeModal();renderLogPlan();
   }
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
-  window._cpNudges=window._cpNudges||[
-    {msg:'Temp Power Distribution quote is ready for review — United Site Services, $4,200/mo, available Sep 1. Approve to activate service.',ts:'Aug 26, 2026 · 11:42 AM',rowIdx:6},
-    {msg:'Temp Toilets & Handwash Stations — United Site Services quote received, $4,600 total. 20 portable units + 6 handwash stations for Sep–Oct. Awaiting approval to schedule.',ts:'Aug 29, 2026 · 9:14 AM',rowIdx:3}
-  ];
+  if(!window._cpNudgesV||window._cpNudgesV<4){
+  window._cpNudges=[{msg:'Temp Toilets & Handwash Stations — United Site Services quote received, $4,600 total. 20 portable units + 6 handwash stations for Sep–Oct. Awaiting approval to schedule.',ts:'Aug 29, 2026 · 9:14 AM',rowIdx:3}];
+  window._cpNudgesV=4;
+}
   window._psCpNudges=window._psCpNudges||[{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'}];
   window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
@@ -12223,7 +12248,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
       {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
-      {label:'Quotes to review',value:'2',sub:'Temp Power + Temp Toilets quotes ready',tone:'warn',icon:IC.dollar},
+      {label:'Quotes to review',value:'1',sub:'Temp Toilets & Handwash Stations quote ready',tone:'warn',icon:IC.dollar},
       {label:'Vendors',value:'3',sub:'WillScot · GFL · Bragg Crane',tone:'ok',icon:IC.crane},
       {label:'Committed to date',value:'$56K',sub:'Quoted services · 4 items',tone:'ok',icon:IC.dollar}
     ],
