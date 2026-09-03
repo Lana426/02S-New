@@ -2227,10 +2227,14 @@
       h+='<button onclick="window._cpNudges=[];renderLogPlan()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
       h+='</div>';
       window._cpNudges.forEach(function(n,ni){
-        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+'">'
-;        h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#3b82f6;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">02S</span>';
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+"'>"
+;
+        h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#3b82f6;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">02S</span>';
         h+='<div style="flex:1"><div style="font-size:12px;color:#1e293b;font-weight:500">'+n.msg+'</div>';
-        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div></div></div>';
+        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div>';
+        if(n.reply){h+='<div style="margin-top:6px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:5px 8px;font-size:11px;color:#166534"><span style="font-weight:700">You:</span> '+n.reply+'</div>';}
+        else{h+='<button onclick="cpNudgeReply('+ni+',\'log\')" style="margin-top:4px;font-size:11px;color:#1d4ed8;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">Reply to 02S</button>';}
+        h+='</div></div>';
       });
       h+='</div>';
     }
@@ -2758,6 +2762,24 @@
     closeModal();
     toast('Question sent to project team');
   }
+function cpNudgeReply(ni,type){
+  var arr=type==='ps'?(window._psCpNudges||[]):(window._cpNudges||[]);
+  var n=arr[ni]||{};
+  openModal('Reply to 02S','<div style="padding:4px 0"><div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.5">'+n.msg+'</div>'
+    +'<textarea id="cpReplyTxt" rows="3" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px" placeholder="Type your reply to 02S..."></textarea></div>',
+    '<button class="btn btn-primary" onclick="cpNudgeReplySubmit('+ni+',\''+type+'\')"  >Send reply</button>');
+}
+function cpNudgeReplySubmit(ni,type){
+  var txt=(document.getElementById('cpReplyTxt')||{}).value||'';
+  if(!txt.trim())return;
+  var arr=type==='ps'?(window._psCpNudges||[]):(window._cpNudges||[]);
+  if(arr[ni])arr[ni].reply=txt.trim();
+  window._ccNudges=window._ccNudges||[];
+  window._ccNudges.unshift({id:'reply-'+Date.now(),svc:'Reply from project team',project:'Hercules',question:txt.trim(),from:'GC Ops',ts:'Just now',answered:true});
+  closeModal();
+  toast('Reply sent to 02S');
+  if(type==='ps')renderProfServicesDP();else renderLogPlan();
+}
   function psToggleActiveOnly(){window._psActiveOnly=!window._psActiveOnly;renderProfServicesDP();}
   function ccPsToggleActiveOnly(){window._ccPsActiveOnly=!window._ccPsActiveOnly;renderCcProfServices();}
 
@@ -12759,10 +12781,13 @@ function renderProfServicesDP(){
       h+='<span class="spacer"></span><button onclick="window._psCpNudges=[];renderProfServicesDP()" style="font-size:10.5px;color:#64748b;background:none;border:none;cursor:pointer;padding:0">Dismiss all ×</button>';
       h+='</div>';
       window._psCpNudges.forEach(function(n,ni){
-        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+'">';
+        h+='<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;'+(ni>0?'border-top:1px solid #dbeafe':'')+"'>";
         h+='<span style="font-size:9.5px;font-weight:700;color:#fff;background:#3b82f6;border-radius:4px;padding:1px 5px;flex-shrink:0;margin-top:1px">02S</span>';
         h+='<div style="flex:1"><div style="font-size:12px;color:#1e293b;font-weight:500">'+n.msg+'</div>';
-        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div></div></div>';
+        h+='<div style="font-size:10px;color:#64748b;margin-top:1px">'+n.ts+'</div>';
+        if(n.reply){h+='<div style="margin-top:6px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:5px 8px;font-size:11px;color:#166534"><span style="font-weight:700">You:</span> '+n.reply+'</div>';}
+        else{h+='<button onclick="cpNudgeReply('+ni+',\'ps\')" style="margin-top:4px;font-size:11px;color:#1d4ed8;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline">Reply to 02S</button>';}
+        h+='</div></div>';
       });
       h+='</div>';
     }
