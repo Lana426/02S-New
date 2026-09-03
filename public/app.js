@@ -7249,14 +7249,14 @@ charges:[
     b+='</label>';
     b+='<textarea id="lgtm-nudge-msg" placeholder="Please provide…" rows="2" style="display:none;width:100%;box-sizing:border-box;border:1.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11.5px;font-family:inherit;outline:none;resize:vertical;margin-top:6px;color:#1d4ed8;background:#f0f8ff"></textarea>';
     b+='</div></div>';
-    b+='<div class="modal-foot" style="margin-top:2px">';
+    b+='<div><label style="'+lblStyle+'">Documents</label>';b+='<div id="lgtm-doc-list" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px"></div>';b+='<div style="display:flex;gap:6px;align-items:center">';b+='<select id="lgtm-doc-type" style="font-size:11.5px;border:1.5px solid var(--g200);border-radius:7px;padding:5px 8px;color:var(--g700);background:#fff;cursor:pointer"><option>Contract</option><option>Quote</option><option>Spec</option><option>Invoice</option><option>Other</option></select>';b+='<input id="lgtm-doc-name" type="text" placeholder="Document name" style="flex:1;border:1.5px solid var(--g200);border-radius:7px;padding:5px 10px;font-size:11.5px;color:var(--g900);font-family:inherit;outline:none">';b+='<button onclick="lgtmAddDoc()" style="font-size:11.5px;padding:5px 12px;border-radius:7px;border:1.5px solid var(--charcoal);background:var(--charcoal);color:#fff;cursor:pointer;white-space:nowrap">+ Add</button>';b+='</div></div>';b+='<div class="modal-foot" style="margin-top:2px">';
     b+='<span class="spacer"></span>';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
     b+='<button class="btn btn-dark" onclick="submitLogTask(\''+proj+'\','+ri+',\''+item.replace(/'/g,'')+'\',' +'\''+fqRef+'\')">→ Add task</button>';
     b+='</div>';
     b+='</div>';
-    openModal('New task — '+actName, b);
-    setTimeout(function(){var el=document.getElementById('lgtm-lbl');if(el)el.focus();},80);
+    window._lgtmDocs=[];openModal('New task — '+actName, b);
+    setTimeout(function(){var el=document.getElementById('lgtm-lbl');if(el)el.focus();var dl=document.getElementById('lgtm-doc-list');if(dl)dl.innerHTML='';},80);
   }
 
   function submitLogTask(proj,ri,item,fqRef){
@@ -7269,12 +7269,35 @@ charges:[
     var _nudgeChk=document.getElementById('lgtm-nudge');
     var _nudgeMsg=document.getElementById('lgtm-nudge-msg');
     var _nudgeTxt=_nudgeChk&&_nudgeChk.checked&&_nudgeMsg?_nudgeMsg.value.trim():'';
-    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item,nudge:!!_nudgeTxt});
+    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item,nudge:!!_nudgeTxt,docs:window._lgtmDocs?window._lgtmDocs.slice():[]});
     if(_nudgeTxt){window._ccNudges=window._ccNudges||[];window._ccNudges.unshift({id:'nudge-'+Date.now(),svc:item,project:pName,question:_nudgeTxt,from:'GC Ops',ts:'Just now',answered:false});}
     _myTasksBadge();
     closeModal();
     toast('Task added');
     renderCcDemand('logistics');
+  }
+
+  function lgtmAddDoc(){
+    var nm=(document.getElementById('lgtm-doc-name')||{}).value||'';
+    var tp=(document.getElementById('lgtm-doc-type')||{}).value||'Other';
+    if(!nm.trim())return;
+    window._lgtmDocs=window._lgtmDocs||[];
+    var idx=window._lgtmDocs.length;
+    window._lgtmDocs.push({name:nm.trim(),type:tp});
+    var dl=document.getElementById('lgtm-doc-list');
+    if(dl){
+      var span=document.createElement('span');
+      span.style.cssText='display:inline-flex;align-items:center;gap:4px;font-size:10.5px;padding:3px 9px;border-radius:20px;background:#f1f5f9;border:1px solid var(--g200);color:var(--g700)';
+      span.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'+nm.trim()+' <button onclick="lgtmRemoveDoc('+idx+',this)" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:12px;padding:0;line-height:1;margin-left:2px">×</button>';
+      dl.appendChild(span);
+    }
+    var ni=document.getElementById('lgtm-doc-name');
+    if(ni)ni.value='';
+  }
+
+  function lgtmRemoveDoc(idx,btn){
+    if(window._lgtmDocs&&window._lgtmDocs[idx])window._lgtmDocs[idx]=null;
+    if(btn&&btn.parentElement)btn.parentElement.remove();
   }
   function ccOpenLogQuote(proj,ri){
     var ccRow=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows&&CC_PROJ_DP.logistics[proj].rows[ri];
@@ -8370,6 +8393,7 @@ charges:[
       if(t.project)h+='<span style="font-size:10.5px;color:var(--g500)">'+t.project+'</span>';
       h+='</div>';
       if(t.done&&t.closeNote)h+='<div style="margin-top:4px;font-size:11px;color:var(--g500);background:var(--g50);border-radius:4px;padding:3px 7px;border-left:2px solid var(--g200)">✓ '+t.closeNote+(t.closedAt?' <span style="color:var(--g400)">· '+t.closedAt+'</span>':'')+'</div>';
+      if(t.docs&&t.docs.length){h+='<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">';t.docs.forEach(function(d){h+='<span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:5px;background:#f1f5f9;border:1px solid var(--g200);color:var(--g600)">';h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:10px;height:10px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';h+=d.name+'</span>';});h+='</div>';}
       h+='</div>';
       if(isEd){
         h+='<input type="text" value="'+(t.due||'')+'" oninput="myTaskSetDue(\''+t.id+'\',this.value)" placeholder="e.g. Aug 5" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:4px 7px;width:100%;box-sizing:border-box;color:var(--g700)">';
