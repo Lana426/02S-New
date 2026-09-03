@@ -2676,6 +2676,7 @@
     }
     body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
     body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>';
+    body+='<button class="btn btn-ghost btn-sm" onclick="cpPsAskQuestion('+idx+')">Ask a question</button>';
     body+='<button class="btn btn-ghost btn-sm" onclick="psSendBack('+idx+')">Send back with comments</button>';
     body+='<button class="btn btn-dark btn-sm" onclick="approvePsProposal('+idx+')">Approve \u0026 activate \u2192</button>';
     body+='</div></div>';
@@ -2706,6 +2707,56 @@
       +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
       +'<button class="btn btn-dark btn-sm" onclick="(function(){closeModal();toast(\'Feedback sent to 02S team\');})()">Send to 02S \u2192</button>'
       +'</div></div>');
+  }
+
+  function cpPsAskQuestion(idx){
+    var props=DP.profservices&&DP.profservices.proposals;
+    var prop=props&&props[idx];if(!prop)return;
+    closeModal();
+    openModal('Ask a question \u2014 '+prop.service,
+      '<div style="padding:2px 0">'
+      +'<p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your question will be sent to 02S and will appear in their notification feed.</p>'
+      +'<textarea id="cp-ps-ask-txt" rows="3" placeholder="e.g. Does the scope include grid interconnect testing?" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
+      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
+      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark btn-sm" onclick="cpPsAskQuestionSubmit('+idx+')">Send to 02S \u2192</button>'
+      +'</div></div>');
+  }
+  function cpPsAskQuestionSubmit(idx){
+    var el=document.getElementById('cp-ps-ask-txt');
+    var txt=el?el.value.trim():'';
+    if(!txt)return;
+    var props=DP.profservices&&DP.profservices.proposals;
+    var prop=props&&props[idx];
+    var pnames={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
+    window._ccNudges=window._ccNudges||[];
+    window._ccNudges.unshift({id:'nudge-ps-'+Date.now(),svc:prop?prop.service:'Proposal question',project:prop?(pnames[prop.proj]||prop.proj):'',question:txt,from:'GC Ops',ts:'Just now',answered:false});
+    closeModal();
+    toast('Question sent to 02S team');
+  }
+
+  function ccPsAskCp(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];if(!row)return;
+    openModal('Ask a question \u2014 '+row.item,
+      '<div style="padding:2px 0">'
+      +'<p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your question will be sent to the project team and will appear in their notification feed.</p>'
+      +'<textarea id="cc-ps-ask-txt" rows="3" placeholder="e.g. Can you confirm the headcount and mobilization window?" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
+      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
+      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark btn-sm" onclick="ccPsAskCpSubmit(\''+proj+'\','+ri+')">Send to project team \u2192</button>'
+      +'</div></div>');
+  }
+  function ccPsAskCpSubmit(proj,ri){
+    var el=document.getElementById('cc-ps-ask-txt');
+    var txt=el?el.value.trim():'';
+    if(!txt)return;
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[ri];
+    window._cpNudges=window._cpNudges||[];
+    window._cpNudges.unshift({msg:'02S question re: '+(row?row.item:'professional service')+'\u2014 '+txt,ts:'Just now'});
+    closeModal();
+    toast('Question sent to project team');
   }
 
 
