@@ -7162,7 +7162,7 @@ charges:[
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
-  var _dpCcProjMap={equipment:'hercules',logistics:'hercules',prefab:'hercules'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
+  var _dpCcProjMap={equipment:'hercules',logistics:'all',prefab:'all'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _dpEquipView='table'; var _dpItemAttrs={};
   function _mkA(pfx,n,st){var a=[];for(var i=1;i<=n;i++){a.push({id:pfx+'-A'+('00'+i).slice(-3),status:st||'onrent'});}return a;}
   var _dpRowAssets={
@@ -9404,9 +9404,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {id:'REQ-F-056',asset:'Empty MV Rack \u00b7 qty 6',project:'VDC14',tax:'Assembly \u203a Electrical \u203a MV rack',taxOk:true,leaf:'MV rack',dec:'In fab',decTone:'info',status:'In fabrication'}
       ],
       rollCols:['Assembly type','Active items'],
-      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 Sep shop conflict',v:'Combiner Box (HRC) + Multi-Trade Racking (BRW)',vt:'warn'},{a:'Electrical',b:'3 active',c:'\u26a0 Aug\u2013Oct',v:'MV Stuffed Rack + Deck Panels + Empty DV Rack',vt:'warn'},{a:'Structural',b:'1 in fab',c:'On plan',v:'Server room panels (CIM)',vt:'ok'},{a:'Delivered',b:'2 complete',c:'Delivered',v:'Headwall assemblies (HRC + RIV)',vt:'ok'}],
-      varSummary:'E-house submittal (Hercules) and cable tray brackets (VDC14, awaiting pricing) are the open items. Pipe rack + MEP rack both in fab \u2014 Sep shop capacity tight.',
-      consol:{save:'~$35K',cta:'Batch fab run',detail:'E-house and structural assemblies can share one fab-shop slot at ModSpace. Batch the run to cut setup cost and protect the November energization date.'} }
+      roll:[{a:'Mechanical',b:'2 active',c:'\u26a0 Sep shop conflict',v:'Combiner Box (HRC) + Multi-Trade Racking (BRW)',vt:'warn'},{a:'Electrical',b:'3 active',c:'\u26a0 Aug\u2013Oct',v:'MV Stuffed Rack + Deck Panels + Empty DV Rack',vt:'warn'},{a:'Electrical',b:'1 in fab',c:'On plan',v:'Empty MV Rack (VDC14)',vt:'ok'},{a:'Delivered',b:'2 complete',c:'Delivered',v:'Adjustable Pipe Supports (HRC) + Stainless Steel Piping (BRW)',vt:'ok'}],
+      varSummary:'MV Stuffed Rack submittal (Hercules) and Empty DV Rack (VDC14, awaiting pricing) are the open items. Combiner Box + Multi-Trade Racking both in fab \u2014 Sep shop capacity tight.',
+      consol:{save:'~$35K',cta:'Batch fab run',detail:'MV Stuffed Rack and electrical assemblies can share one fab-shop slot at ModSpace. Batch the run to cut setup cost and protect the November energization date.'} }
   };
   var _PROJ_NAMES={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
   var CC_PROJ_DP={
@@ -9614,7 +9614,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]}
     },
     prefab:{
-      hercules:{budget:900000,dpSpent:720000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Mechanical',b:'2 active',c:'',v:'Modular e-houses + cable tray',vt:'warn'},{a:'Electrical',b:'1 active',c:'Submittal pending',v:'E-houses',vt:'warn'},{a:'Structural',b:'1 delivered',c:'Delivered Jun',v:'On plan',vt:'ok'}],varSummary:'Electrical at risk Aug–Oct (combiner boxes + MV rack concurrent) · MV stuffed rack submittal under 02S review',rows:[
+      hercules:{budget:900000,dpSpent:720000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'2 active',c:'Submittal pending',v:'Combiner Box + MV Stuffed Rack',vt:'warn'},{a:'Mechanical',b:'2 active',c:'',v:'Adjustable Pipe Supports + Bathroom batteries',vt:'warn'},{a:'Concrete',b:'2 active',c:'Fab in progress',v:'Deck Panels + Column Forms',vt:'warn'}],varSummary:'Electrical at risk Aug–Oct (combiner boxes + MV rack concurrent) · MV stuffed rack submittal under 02S review',rows:[
         {item:'Combiner Box',category:'Electrical',qty:'12 units',window:'Sep 28',state:'In fulfillment',subState:'Manufacturing',p6Act:'Combiner Box installation — Sector 1',onTrack:true,ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — combiner box assembly rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — combiner box components',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {item:'MV Stuffed Rack',category:'Electrical',qty:'2 units',window:'Oct 15',state:'Submittal',p6Act:'MV Stuffed Rack installation — BESS',onTrack:false,dateShifted:true,origWindow:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated BESS commissioning sequence. Downstream impact: crane access, site readiness, and MEP rough-in window must be confirmed by Sep 20.',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'$380K',firm:'ModSpace',attachments:[{type:'Submittals',name:'Submittal package — BESS e-houses rev 1',ref:'SUB-3107-R1',status:'Under review'},{type:'Engineering',name:'Engineer review notes — structural',ref:'ERN-3107-001',status:'In progress'},{type:'Engineering',name:'Shop drawings — e-house layout rev B',ref:'SD-3107-RB',status:'Pending approval'}]},
         {item:'Adjustable Pipe Supports',category:'Mechanical',qty:'8 units',window:'Jun 20',state:'Completed',p6Act:'Adjustable Pipe Supports installation',onTrack:true,ordId:'ORD-3106',cost:'$147K',firm:'Ironclad Mfg'},
@@ -9622,12 +9622,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'Deck Panels',category:'Concrete',qty:'3,600 SF',window:'Aug 15',state:'Requested',p6Act:'Deck Panels installation — civil',onTrack:true,ordId:'ORD-5003',cost:'Pending',firm:'TBD',fqRef:'REQ-4476'},
         {item:'Column Forms',category:'Concrete',qty:'2,200 SF',window:'Sep 5',state:'Draft',p6Act:'Column Forms installation — civil',onTrack:true,ordId:null,cost:'$88K',firm:'TBD'}
       ]},
-      barryrose:{budget:400000,dpSpent:320000,adHoc:120000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Structural Steel',b:'1 complete',c:'Delivered',v:'On plan',vt:'ok'},{a:'Electrical',b:'1 active',c:'In fabrication',v:'On plan',vt:'ok'}],varSummary:'L2 headwall assemblies delivered. MEP rack modules in fabrication \u2014 on track.',rows:[
+      barryrose:{budget:400000,dpSpent:320000,adHoc:120000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Mechanical',b:'2 active',c:'In fabrication',v:'Multi-Trade Racking + Stainless Steel Piping',vt:'ok'},{a:'Concrete',b:'1 active',c:'Fab in progress',v:'Beam Forms',vt:'warn'}],varSummary:'Stainless Steel Piping delivered. Multi-Trade Racking in fabrication \u2014 on track.',rows:[
         {item:'Multi-Trade Racking',category:'Mechanical',qty:'6 units',window:'Sep 10',state:'In fulfillment',p6Act:'Multi-Trade Racking installation',subState:'Manufacturing',ordId:'ORD-3133',cost:'$92K'},
         {item:'Stainless Steel Piping',category:'Mechanical',qty:'320 LF',window:'Jul 5',state:'Completed',p6Act:'Stainless Steel Piping installation',ordId:'ORD-3134',fqRef:'REQ-F-041',cost:'$135K',firm:'Ironclad Mfg'},
         {item:'Beam Forms',category:'Concrete',qty:'2,400 SF',window:'Oct 20',state:'Planned',p6Act:'Beam Forms installation — civil',ordId:null,cost:'$48K',firm:'TBD'}
       ]},
-      vdc14:{budget:300000,dpSpent:60000,adHoc:40000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Structural',b:'1 active',c:'In fabrication',v:'On plan',vt:'ok'},{a:'Electrical',b:'1 active',c:'\u26a0 Awaiting pricing',v:'Cable tray brackets',vt:'warn'}],varSummary:'Empty MV Rack in fabrication. Empty DV Rack unpriced — required for fit-out.',rows:[
+      vdc14:{budget:300000,dpSpent:60000,adHoc:40000,rollCols:['Assembly type','Active items','Capacity status','Peak conflict'],roll:[{a:'Electrical',b:'2 active',c:'In fabrication + pricing',v:'Empty MV Rack + Empty DV Rack',vt:'warn'},{a:'Mechanical',b:'2 active',c:'',v:'Skids + Welded pipe',vt:'warn'}],varSummary:'Empty MV Rack in fabrication. Empty DV Rack unpriced — required for fit-out.',rows:[
         {item:'Empty DV Rack',category:'Electrical',qty:'4 units',window:'Oct 10',state:'Awaiting pricing',p6Act:'Empty DV Rack installation — electrical',ordId:null,cost:'Pending',firm:'TBD',fqRef:'REQ-F-051'},
         {item:'Empty MV Rack',category:'Electrical',qty:'6 units',window:'Oct 25',state:'In fulfillment',p6Act:'Empty MV Rack installation — electrical',subState:'Manufacturing',ordId:'ORD-3135',cost:'$72K',firm:'ModSpace'},
         {item:'Skids',category:'Mechanical',qty:'4 units',window:'Dec 15',state:'Draft',p6Act:'Skids commissioning',ordId:null,cost:'$48K',firm:'TBD'},
