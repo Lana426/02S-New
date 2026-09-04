@@ -6641,11 +6641,11 @@ charges:[
   var _ceProj='Hercules Solar + BESS';
   var CC_LOOKAHEAD={
     'Hercules Solar + BESS':[
-      {label:'E-house submittal review', pillar:'Procurement',   ref:'ORD-5002',   start:'2026-08-12',end:'2026-08-14',tone:'warn',note:'Modular BESS e-houses · submittal package under 02S review'},
+      {label:'MV Stuffed Rack submittal review', pillar:'Procurement',   ref:'ORD-5002',   start:'2026-08-12',end:'2026-08-14',tone:'warn',note:'MV Stuffed Rack · submittal package under 02S review'},
       {label:'Crawler crane mobilization',pillar:'Equipment',    ref:'REQ-4471',   start:'2026-08-12',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1 · in progress'},
-      {label:'Pipe rack QC sign-off',    pillar:'Prefab',        ref:'ORD-3108',   start:'2026-08-13',end:'2026-08-13',tone:'ok',  note:'Piperite Fab · shop drawings approved · final QC before ship'},
-      {label:'Cable tray fabrication',   pillar:'Prefab',        ref:'ORD-5003',   start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Prefab cable tray runs · pricing confirmed · fab start pending'},
-      {label:'Pipe rack on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
+      {label:'Combiner Box QC sign-off',    pillar:'Prefab',        ref:'ORD-3108',   start:'2026-08-13',end:'2026-08-13',tone:'ok',  note:'Combiner Box assembly · shop drawings approved · final QC before ship'},
+      {label:'Deck Panels fabrication',   pillar:'Prefab',        ref:'ORD-5003',   start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Deck Panels · pricing confirmed · fab start pending'},
+      {label:'Combiner Box on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
       {label:'Geotech field report due', pillar:'Prof. services',ref:'ORD-3096',   start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'},
       {label:'BESS commissioning planning',pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'}
     ],
@@ -6657,10 +6657,10 @@ charges:[
       {label:"Owner's rep site review",  pillar:'Prof. services',ref:'ORD-3143',   start:'2026-08-20',end:'2026-08-21',tone:'ok',  note:'Monthly progress review · HDR'}
     ],
     'VDC14':[
-      {label:'Raised floor PO tracking', pillar:'Procurement',   ref:'ORD-3141',   start:'2026-08-01',end:'2026-08-07',tone:'ok',  note:'PO issued · Tate Access · Oct delivery confirmed'},
+      {label:'Welded pipe PO tracking', pillar:'Procurement',   ref:'ORD-3141',   start:'2026-08-01',end:'2026-08-07',tone:'ok',  note:'PO issued · Tate Access · Oct delivery confirmed'},
       {label:'PDU site delivery',        pillar:'Logistics',     ref:'ORD-3132',   start:'2026-08-08',end:'2026-08-10',tone:'warn',note:'3 loads · dock schedule confirmation still pending'},
-      {label:'Cable tray pricing due',   pillar:'Prefab',        ref:'REQ-F-041',  start:'2026-08-12',end:'2026-08-12',tone:'warn',note:'Awaiting pricing · critical path · Oct delivery at risk'},
-      {label:'Server room partition fab',pillar:'Prefab',        ref:'ORD-3135',   start:'2026-08-15',end:'2026-08-21',tone:'info',note:'In fabrication · ModSpace · Nov delivery on track'},
+      {label:'Empty DV Rack pricing due',   pillar:'Prefab',        ref:'REQ-F-041',  start:'2026-08-12',end:'2026-08-12',tone:'warn',note:'Awaiting pricing · critical path · Oct delivery at risk'},
+      {label:'Empty MV Rack fabrication',pillar:'Prefab',        ref:'ORD-3135',   start:'2026-08-15',end:'2026-08-21',tone:'info',note:'In fabrication · ModSpace · Nov delivery on track'},
       {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
     ]
   };
