@@ -1587,12 +1587,12 @@
     title:'Moves & Events',chip:'Site logistics services',icon:IC.truck,singular:'logistics',
     addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
-      {label:'Active services',value:'13',sub:'7 in fulfillment · 3 requested · 1 quoted',tone:'info',icon:IC.layers},
-      {label:'Quotes to review',value:'1',sub:'Temp Toilets & Handwash Stations quote ready',tone:'warn',icon:IC.dollar},
-      {label:'Vendors',value:'5',sub:'WillScot · Xerox · UFY Cameras · GFL · R&R',tone:'ok',icon:IC.crane},
-      {label:'Committed to date',value:'$111K',sub:'In fulfillment · 11 items active',tone:'ok',icon:IC.dollar}
+      {label:'Active services',value:'12',sub:'7 in fulfillment · 2 quoted · 3 requested',tone:'info',icon:IC.layers},
+      {label:'Quotes to review',value:'2',sub:'Temp Toilets & Temp Power Distribution quotes ready',tone:'warn',icon:IC.dollar},
+      {label:'Vendors',value:'7',sub:'WillScot · United Site Services · UFY Cameras + 4 more',tone:'ok',icon:IC.crane},
+      {label:'Committed to date',value:'$111K',sub:'Ordered services · 9 items',tone:'ok',icon:IC.dollar}
     ],
-    v1:'13 active logistics services · 3 pending vendor selections · WillScot, Xerox, UFY Cameras, GFL engaged.',
+    v1:'12 active logistics services · 2 quotes pending approval · 7 vendors engaged including WillScot, UFY Cameras, Xerox.',
     ns:'02S tracking site logistics across temp facilities, site services, and utilities — drinking water and bagged ice vendor selection in progress for Sep start.',
     intake:{
       core:[
