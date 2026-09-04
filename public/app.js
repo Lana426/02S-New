@@ -1587,13 +1587,13 @@
     title:'Moves & Events',chip:'Site logistics services',icon:IC.truck,singular:'logistics',
     addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
-      {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
+      {label:'Active services',value:'13',sub:'7 in fulfillment · 3 requested · 1 quoted',tone:'info',icon:IC.layers},
       {label:'Quotes to review',value:'1',sub:'Temp Toilets & Handwash Stations quote ready',tone:'warn',icon:IC.dollar},
-      {label:'Vendors',value:'3',sub:'WillScot · GFL · Bragg Crane',tone:'ok',icon:IC.crane},
-      {label:'Committed to date',value:'$56K',sub:'Quoted services · 4 items',tone:'ok',icon:IC.dollar}
+      {label:'Vendors',value:'5',sub:'WillScot · Xerox · UFY Cameras · GFL · R&R',tone:'ok',icon:IC.crane},
+      {label:'Committed to date',value:'$111K',sub:'In fulfillment · 11 items active',tone:'ok',icon:IC.dollar}
     ],
-    v1:'7 active logistics services · 2 pending 02S quotes · WillScot, GFL, Bragg Crane engaged.',
-    ns:'02S tracking site logistics across temp facilities, site services, and utilities — Temp Power Distribution and Sanitation are pending 02S quotes for Sep–Oct window.',
+    v1:'13 active logistics services · 3 pending vendor selections · WillScot, Xerox, UFY Cameras, GFL engaged.',
+    ns:'02S tracking site logistics across temp facilities, site services, and utilities — drinking water and bagged ice vendor selection in progress for Sep start.',
     intake:{
       core:[
         {service:'Office Trailers',productLine:'Temp Facilities',leadTime:90},
@@ -1673,7 +1673,13 @@
       {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',qty:'2 dumpsters',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:5,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
       {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',qty:'2 zones',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:9,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
       {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:13200,quoted:true,quoteRef:'QT-L-0047',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-9102',quoteDate:'Aug 24 2026',expDate:'Nov 24 2026',service:'Temp Power Distribution Equip.',lines:[{desc:'400A temp power distribution panel — monthly rental',qty:3,uom:'MO',vendorPrice:3130,markup:0.15,unitRate:3600,ext:10800},{desc:'Cable management, grounding and setup',qty:1,uom:'LS',vendorPrice:783,markup:0.15,unitRate:900,ext:900},{desc:'Monthly maintenance & electrical inspection',qty:3,uom:'MO',vendorPrice:435,markup:0.15,unitRate:500,ext:1500}]},status:'Quoted',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:9,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
-      {id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]}
+            {id:'REQ-L-3200',item:'Office Containers',service:'Office Containers',productLine:'Temp Facilities',qty:'6 units',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:7200,quoted:true,quoteRef:'QT-L-3200',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4420',quoteDate:'Aug 1 2026',expDate:'Nov 1 2026',service:'Office Containers',lines:[{desc:'20ft office container — delivery and setup',qty:6,uom:'EA',vendorPrice:1043,markup:0.15,unitRate:1200,ext:7200}]},status:'In fulfillment',ordId:'ORD-3200',sa:4,ea:8,attachments:[{type:'Shipping',name:'Container placement map — Hercules laydown',ref:'PM-3200-001',status:'Approved'}]},
+      {id:'REQ-L-3201',item:'Office Furniture Package',service:'Office Furniture Package',productLine:'Temp Facilities',qty:'1 lot',vendor:'Mike Furniture',needBy:'Sep 1, 2026',costCode:'0100-0200-0000-0001',cost:24000,quoted:true,quoteRef:'QT-L-3201',quoteData:{vendor:'Mike Furniture',quoteNum:'MF-2026-3201',quoteDate:'Aug 5 2026',expDate:'Nov 5 2026',service:'Office Furniture Package',lines:[{desc:'Office furniture — desks, chairs, tables for site office',qty:1,uom:'LOT',vendorPrice:20870,markup:0.15,unitRate:24000,ext:24000}]},status:'In fulfillment',ordId:'ORD-3201',sa:5,ea:9},
+      {id:'REQ-L-3202',item:'Office Printer/Copiers',service:'Office Printer/Copiers',productLine:'Temp Facilities',qty:'3 units',vendor:'Xerox',needBy:'Sep 1, 2026',costCode:'0100-0200-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-3202',quoteData:{vendor:'Xerox',quoteNum:'XRX-2026-3202',quoteDate:'Aug 5 2026',expDate:'Nov 5 2026',service:'Office Printer/Copiers',lines:[{desc:'Multifunction printer/copier — delivery and setup',qty:3,uom:'EA',vendorPrice:1391,markup:0.15,unitRate:1600,ext:4800}]},status:'In fulfillment',ordId:'ORD-3202',sa:5,ea:8},
+      {id:'REQ-L-3203',item:'Security Cameras',service:'Security Cameras',productLine:'Temp Facilities',qty:'24 cameras',vendor:'UFY Cameras',needBy:'Aug 20, 2026',costCode:'0100-0200-0000-0001',cost:18600,quoted:true,quoteRef:'QT-L-3203',quoteData:{vendor:'UFY Cameras',quoteNum:'UFY-2026-3203',quoteDate:'Aug 1 2026',expDate:'Nov 1 2026',service:'Security Cameras',lines:[{desc:'Security camera — supply, install, and configure',qty:24,uom:'EA',vendorPrice:677,markup:0.15,unitRate:779,ext:18696}]},status:'In fulfillment',ordId:'ORD-3203',sa:4,ea:8,attachments:[{type:'Safety',name:'Camera placement plan — Hercules perimeter',ref:'CAM-3203-001',status:'Approved'}]},
+      {id:'REQ-L-3204',item:'Drinking Water',service:'Drinking Water',productLine:'Site Services',qty:'Weekly delivery',vendor:null,needBy:'Sep 5, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',sa:5,ea:12,notes:[{author:'Manning Steven',date:'Aug 20 2026',text:'02S to source drinking water delivery for ~200 crew. Weekly delivery cadence preferred.'}]},
+      {id:'REQ-L-3205',item:'Bagged Ice',service:'Bagged Ice',productLine:'Site Services',qty:'Weekly delivery',vendor:null,needBy:'Sep 10, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',sa:6,ea:12},
+{id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]}
     ]
   }
   };
@@ -6647,7 +6653,10 @@ charges:[
       {label:'Deck Panels fabrication',   pillar:'Prefab',        ref:'ORD-5003',   start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Deck Panels · pricing confirmed · fab start pending'},
       {label:'Combiner Box on-site delivery',pillar:'Prefab',       ref:'ORD-3108',   start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
       {label:'Geotech field report due', pillar:'Prof. services',ref:'ORD-3096',   start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'},
-      {label:'BESS commissioning planning',pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'}
+      {label:'BESS commissioning planning',pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'},
+      {label:'Security Cameras install',    pillar:'Logistics',     ref:'ORD-3203',   start:'2026-08-20',end:'2026-08-20',tone:'info',note:'24 cameras · UFY Cameras · Hercules perimeter installation'},
+      {label:'Drinking Water vendor select',pillar:'Logistics',     ref:'REQ-L-3204', start:'2026-08-20',end:'2026-08-20',tone:'warn',note:'02S to source weekly delivery for ~200 crew · vendor needed'},
+      {label:'Bagged Ice vendor select',    pillar:'Logistics',     ref:'REQ-L-3205', start:'2026-08-20',end:'2026-08-20',tone:'warn',note:'02S to source weekly delivery · coordinate with drinking water vendor'}
     ],
     'Barry Rose WRF':[
       {label:'Tower crane mobilization', pillar:'Logistics',     ref:'ORD-3128',   start:'2026-08-05',end:'2026-08-06',tone:'warn',note:'Scheduled · site access confirmation needed before Aug 4'},
@@ -7158,7 +7167,14 @@ charges:[
     {src:'dp',id:'fqHF2',yard:'Chandler',ref:'REQ-F-053',pillar:'prefab',item:'Bathroom batteries',qty:6,project:'Hercules Solar + BESS',needby:'Sep 1',code:'0200-0320-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Shop drawings approved Jul 5 · delivery on track Sep 1',docs:['Shop drawings (PDF)','Fabrication schedule (PDF)']},
     {src:'dp',id:'fqHF3',yard:'Chandler',ref:'REQ-F-054',pillar:'prefab',item:'Multi-Trade Racking',qty:6,project:'Hercules Solar + BESS',needby:'Sep 2026',code:'0200-0320-0000-0001',kind:'flow',status:'In fabrication',doneNote:'Piperite Fab · 2 of 6 complete · delivery Sep 2026',docs:['Shop drawings (PDF)','QA checklist (PDF)']},
     {src:'dp',id:'fqHF4',yard:'Chandler',ref:'REQ-F-055',pillar:'prefab',item:'Stainless Steel Piping — Barry Rose WRF',qty:'320 LF',project:'Hercules Solar + BESS',needby:'Jul 2026',code:'0200-0320-0000-0001',kind:'flow',status:'Delivered',doneNote:'Delivered Jul 20, 2026 · signed off by site lead',docs:['Delivery receipt (PDF)','Receiving inspection (PDF)']},
-    {src:'dp',id:'fqHF5',yard:'Chandler',ref:'REQ-F-056',pillar:'prefab',item:'Server room partition panels',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'ModSpace · drawings approved · delivery Nov 2026',docs:['Shop drawings (PDF)','Fabrication schedule (PDF)']}
+    {src:'dp',id:'fqHF5',yard:'Chandler',ref:'REQ-F-056',pillar:'prefab',item:'Server room partition panels',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'ModSpace · drawings approved · delivery Nov 2026',docs:['Shop drawings (PDF)','Fabrication schedule (PDF)']},
+    {src:'dp',id:'fqHL8',yard:'Chandler',ref:'REQ-L-3204',pillar:'logistics',project:'Hercules Solar + BESS',item:'Drinking Water',qty:'Weekly delivery',needby:'Sep 5, 2026',status:'Requested',priority:'medium',due:'Sep 5',code:'0100-5100-0000-0001',kind:'flow',firm:'TBD',assignee:'Manning Steven',note:'Sourcing drinking water delivery for ~200 crew. Weekly cadence preferred.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqHL9',yard:'Chandler',ref:'REQ-L-3205',pillar:'logistics',project:'Hercules Solar + BESS',item:'Bagged Ice',qty:'Weekly delivery',needby:'Sep 10, 2026',status:'Requested',priority:'medium',due:'Sep 10',code:'0100-5100-0000-0001',kind:'flow',firm:'TBD',assignee:'Manning Steven',note:'Sourcing bagged ice weekly delivery for site crew. Coordinate with drinking water vendor.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqBRL1',yard:'Corona',ref:'REQ-L-3214',pillar:'logistics',project:'Barry Rose WRF',item:'Office Printer/Copiers',qty:'2 units',needby:'Oct 2026',status:'Planned',priority:'low',due:'Oct',code:'0100-0200-0000-0001',kind:'flow',firm:'TBD',assignee:'TBD',note:'Sourcing office printer/copiers for Barry Rose WRF site office.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqVL1',yard:'Houston',ref:'REQ-L-3220',pillar:'logistics',project:'VDC14',item:'Office Containers',qty:'2 units',needby:'Oct 2026',status:'Planned',priority:'low',due:'Oct',code:'0100-0200-0000-0001',kind:'flow',firm:'TBD',assignee:'TBD',note:'Office containers for VDC14 site — vendor selection needed.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqVL2',yard:'Houston',ref:'REQ-L-3221',pillar:'logistics',project:'VDC14',item:'Office Printer/Copiers',qty:'2 units',needby:'Oct 2026',status:'Planned',priority:'low',due:'Oct',code:'0100-0200-0000-0001',kind:'flow',firm:'TBD',assignee:'TBD',note:'Office printer/copiers for VDC14 site office.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqVL3',yard:'Houston',ref:'REQ-L-3222',pillar:'logistics',project:'VDC14',item:'Drinking Water',qty:'Weekly delivery',needby:'Nov 2026',status:'Planned',priority:'low',due:'Nov',code:'0100-5100-0000-0001',kind:'flow',firm:'TBD',assignee:'TBD',note:'Drinking water delivery for VDC14 crew — vendor selection needed.',actLabel:'Select vendor',nextStatus:'Quoted'},
+    {src:'dp',id:'fqVL4',yard:'Houston',ref:'REQ-L-3223',pillar:'logistics',project:'VDC14',item:'Bagged Ice',qty:'Weekly delivery',needby:'Nov 2026',status:'Planned',priority:'low',due:'Nov',code:'0100-5100-0000-0001',kind:'flow',firm:'TBD',assignee:'TBD',note:'Bagged ice delivery for VDC14 crew — coordinate with drinking water vendor.',actLabel:'Select vendor',nextStatus:'Quoted'}
   ];
   var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
@@ -9452,13 +9468,19 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {a:'Office Trailers',b:'Aug 1, 2026',c:'100%',v:'Complete',vt:'ok'},
         {a:'Restroom Facility',b:'Sep 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
         {a:'Storage Containers',b:'Aug 15, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Office Containers',b:'Aug 15, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Office Furniture',b:'Sep 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Office Printer/Copiers',b:'Sep 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Security Cameras',b:'Aug 20, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
         {a:'Temp Toilets & Handwash',b:'Sep 15, 2026',c:'50%',v:'Quoted',vt:'info'},
         {a:'Waste Hauling',b:'Jun 1, 2026',c:'100%',v:'Complete',vt:'ok'},
         {a:'Site Construction Signage',b:'Aug 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
+        {a:'Drinking Water',b:'Sep 5, 2026',c:'25%',v:'Requested',vt:'warn'},
+        {a:'Bagged Ice',b:'Sep 10, 2026',c:'25%',v:'Requested',vt:'warn'},
         {a:'Temp Power Distribution',b:'Oct 1, 2026',c:'25%',v:'Requested',vt:'warn'},
         {a:'Temp Fencing',b:'Oct 15, 2026',c:'0%',v:'Planned',vt:'neu'}
       ],
-      varSummary:'3 services in fulfillment · 1 quote ready for approval (USS) · 2 requiring vendor selection by Oct.',
+      varSummary:'7 services in fulfillment · 3 requested (drinking water, bagged ice, temp power) · 1 quote ready for approval (USS).',
       rows:[
         {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Complete',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',leadTime:21,firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
@@ -9475,7 +9497,22 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
         {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',leadTime:42,firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
+                {item:'Office Containers',qty:'6 units',window:'Aug 15, 2026',state:'In fulfillment',ordId:'ORD-3200',fqRef:'REQ-L-3200',cost:'$7,200',leadTime:14,firm:'WillScot',poc:'Lou Rosswick',phone:'(314) 288-7895',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}],
+         attachments:[{type:'Shipping',name:'Container placement map — Hercules laydown',ref:'PM-3200-001',status:'Approved'}]},
+        {item:'Office Furniture Package',qty:'1 lot',window:'Sep 1, 2026',state:'In fulfillment',ordId:'ORD-3201',fqRef:'REQ-L-3201',cost:'$24,000',leadTime:21,firm:'Mike Furniture',poc:'Mike Larson',phone:'(314) 713-6329',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:5}]},
+        {item:'Office Printer/Copiers',qty:'3 units',window:'Sep 1, 2026',state:'In fulfillment',ordId:'ORD-3202',fqRef:'REQ-L-3202',cost:'$4,800',leadTime:14,firm:'Xerox',poc:'Xerox Ops',phone:'(800) 275-9376',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
+        {item:'Security Cameras',qty:'24 cameras',window:'Aug 20, 2026',state:'In fulfillment',ordId:'ORD-3203',fqRef:'REQ-L-3203',cost:'$18,600',leadTime:21,firm:'UFY Cameras',poc:'UFY Support',phone:'(888) 839-2866',
+         acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}],
+         attachments:[{type:'Safety',name:'Camera placement plan — Hercules perimeter',ref:'CAM-3203-001',status:'Approved'}]},
+        {item:'Drinking Water',qty:'Weekly delivery',window:'Sep 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3204',cost:'$1,200/mo est.',leadTime:7,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}],
+         notes:[{author:'Manning Steven',date:'Aug 20 2026',text:'02S to source drinking water delivery for ~200 crew. Weekly delivery cadence preferred.'}]},
+        {item:'Bagged Ice',qty:'Weekly delivery',window:'Sep 10, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3205',cost:'$600/mo est.',leadTime:3,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+{item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Not started',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
       ]},
       barryrose:{budget:600000,dpSpent:310000,adHoc:180000,
@@ -9488,9 +9525,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {a:'Site Internet',b:'Sep 2026',c:'50%',v:'Scheduled',vt:'ok'},
         {a:'Fuel Station Setup',b:'Oct 2026',c:'50%',v:'Scheduled',vt:'ok'},
         {a:'Drinking Water \u0026 Ice',b:'Ongoing',c:'25%',v:'Requested',vt:'warn'},
-        {a:'Temp Power',b:'Sep 2026',c:'100%',v:'Complete',vt:'ok'}
+        {a:'Temp Power',b:'Sep 2026',c:'100%',v:'Complete',vt:'ok'},
+        {a:'Office Containers',b:'Sep 2026',c:'25%',v:'Scheduled',vt:'ok'},
+        {a:'Office Furniture',b:'Oct 2026',c:'50%',v:'Scheduled',vt:'ok'},
+        {a:'Office Printer/Copiers',b:'Oct 2026',c:'0%',v:'Planned',vt:'neu'}
       ],
-      varSummary:'7 of 8 services active or in fulfillment · Drinking water vendor selection pending.',
+      varSummary:'9 of 11 services active or in fulfillment · Office Containers and Furniture scheduled · Printer/Copiers vendor selection pending.',
       rows:[
         {item:'Office Trailers',qty:'3 units',window:'Aug 2026',state:'Complete',ordId:'ORD-3139',fqRef:'REQ-L-3054',cost:'$18,500',firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
@@ -9515,7 +9555,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}]},
         {item:'Site Construction Signage',qty:'1 zone',window:'Aug 2026',state:'In fulfillment',ordId:'ORD-3162',cost:'$7,200',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
-        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3163',cost:'$11,000',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
+                {item:'Office Containers',qty:'3 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3211',fqRef:'REQ-L-3211',cost:'$3,600',leadTime:14,firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
+        {item:'Office Furniture Package',qty:'1 lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3213',fqRef:'REQ-L-3213',cost:'$14,000',leadTime:21,firm:'Mike Furniture',poc:'Mike Larson',phone:'(314) 713-6329',
+         acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'In progress',s:3,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Office Printer/Copiers',qty:'2 units',window:'Oct 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3214',cost:'$3,200 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+{item:'Temp Fencing',qty:'Bulk lot',window:'Oct 2026',state:'Scheduled',ordId:'ORD-3163',cost:'$11,000',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Done',s:3,e:4},{n:'Contracting',st:'In progress',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]}
       ]},
       vdc14:{budget:400000,dpSpent:185000,adHoc:100000,
@@ -9527,9 +9573,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {a:'Site Security',b:'Sep 2026',c:'75%',v:'Scheduled',vt:'ok'},
         {a:'Office Furniture',b:'Oct 2026',c:'50%',v:'Scheduled',vt:'ok'},
         {a:'Sanitation Units',b:'Nov 2026',c:'25%',v:'Requested',vt:'warn'},
-        {a:'Temp Structures',b:'Nov 2026',c:'0%',v:'Planned',vt:'neu'}
+        {a:'Temp Structures',b:'Nov 2026',c:'0%',v:'Planned',vt:'neu'},
+        {a:'Office Containers',b:'Oct 2026',c:'0%',v:'Planned',vt:'neu'},
+        {a:'Office Printer/Copiers',b:'Oct 2026',c:'0%',v:'Planned',vt:'neu'},
+        {a:'Drinking Water',b:'Nov 2026',c:'0%',v:'Planned',vt:'neu'},
+        {a:'Bagged Ice',b:'Nov 2026',c:'0%',v:'Planned',vt:'neu'}
       ],
-      varSummary:'Data center logistics on track · Sanitation units vendor selection needed by Sep · Temp structures planning not started.',
+      varSummary:'Data center logistics on track · Sanitation units vendor selection needed by Sep · Office Containers, Printer/Copiers, Drinking Water, and Bagged Ice planning not started.',
       rows:[
         {item:'Office Trailers',qty:'2 units',window:'Sep 2026',state:'Scheduled',ordId:'ORD-3131',fqRef:'REQ-L-3042',cost:'$6,400',firm:'Self-perform',poc:'Site PM',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'Done',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
@@ -9553,7 +9603,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
          acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
         {item:'Site Construction Signage',qty:'TBD',window:'Oct 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Temp Fencing',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
+                {item:'Office Containers',qty:'2 units',window:'Oct 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3220',cost:'$2,400 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Office Printer/Copiers',qty:'2 units',window:'Oct 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3221',cost:'$1,800 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'Not started',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
+        {item:'Drinking Water',qty:'Weekly delivery',window:'Nov 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3222',cost:'$600/mo est.',leadTime:7,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+        {item:'Bagged Ice',qty:'Weekly delivery',window:'Nov 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3223',cost:'$300/mo est.',leadTime:3,firm:'TBD',poc:'TBD',phone:'',
+         acts:[{n:'Project Plan',st:'Done',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]},
+{item:'Temp Fencing',qty:'TBD',window:'Nov 2026',state:'Planned',ordId:null,cost:'TBD',firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Not started',s:4,e:5},{n:'RFP',st:'Not started',s:5,e:6},{n:'Contracting',st:'Not started',s:6,e:7},{n:'Install',st:'Not started',s:7,e:8}]}
       ]}
     },
@@ -12418,7 +12476,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       {id:'REQ-L-3127',item:'Waste Hauling',service:'Waste Hauling',productLine:'Site Services',qty:'2 dumpsters',vendor:'GFL Environmental',needBy:'Jun 1, 2026',costCode:'0100-5100-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-0038',quoteData:{vendor:'GFL Environmental',quoteNum:'GFL-2026-3301',quoteDate:'May 20 2026',expDate:'Aug 20 2026',service:'Waste Hauling',lines:[{desc:'20-yard C&D dumpster — delivery, service and pickup',qty:2,uom:'EA',vendorPrice:2087,markup:0.15,unitRate:2400,ext:4800}]},status:'Closed',ordId:'ORD-3127',sa:2,ea:5,attachments:[{type:'Submittals',name:'Removal checklist — dumpster service',ref:'DMB-3127-001',status:'Complete'},{type:'Engineering',name:'Final site inspection report',ref:'FINSP-3127-001',status:'Approved'}]},
       {id:'REQ-L-3119',item:'Site Construction Signage',service:'Site Construction Signage',productLine:'Site Consumables',qty:'2 zones',vendor:'Bragg Crane',needBy:'Aug 1, 2026',costCode:'0100-5200-0000-0001',cost:14000,quoted:true,quoteRef:'QT-L-0039',quoteData:{vendor:'Bragg Crane & Rigging',quoteNum:'BC-2026-7701',quoteDate:'Jul 12 2026',expDate:'Oct 12 2026',service:'Site Construction Signage',lines:[{desc:'Construction zone signage — Zone A north perimeter',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Construction zone signage — Zone B east gate',qty:1,uom:'LS',vendorPrice:5000,markup:0.15,unitRate:5750,ext:5750},{desc:'Traffic control devices (cones, barricades)',qty:1,uom:'LS',vendorPrice:2174,markup:0.15,unitRate:2500,ext:2500}]},status:'In fulfillment',ordId:'ORD-3119',sa:4,ea:9,attachments:[{type:'Shipping',name:'Installation map — signage Aug 2026',ref:'HR-3119-001',status:'Approved'},{type:'Safety',name:'Site permit — signage & traffic control',ref:'OLP-3119-001',status:'Approved'}]},
       {id:'REQ-L-3070',item:'Temp Power Distribution Equip.',service:'Temp Power Distribution Equip.',productLine:'Temp Utilities',vendor:null,needBy:'Oct 1, 2026',costCode:'0100-3200-0000-0001',cost:13200,quoted:true,quoteRef:'QT-L-0047',quoteData:{vendor:'United Site Services',quoteNum:'USS-2026-9102',quoteDate:'Aug 24 2026',expDate:'Nov 24 2026',service:'Temp Power Distribution Equip.',lines:[{desc:'400A temp power distribution panel — monthly rental',qty:3,uom:'MO',vendorPrice:3130,markup:0.15,unitRate:3600,ext:10800},{desc:'Cable management, grounding and setup',qty:1,uom:'LS',vendorPrice:783,markup:0.15,unitRate:900,ext:900},{desc:'Monthly maintenance & electrical inspection',qty:3,uom:'MO',vendorPrice:435,markup:0.15,unitRate:500,ext:1500}]},status:'Quoted',project:'Hercules Solar + BESS',qty:'1 system',fqRef:'REQ-P-0508',sa:6,ea:9,notes:[{author:'Burns David',date:'Aug 8 2026',text:'02S sourcing 3 options for temp power distribution — need generator load schedule from electrical lead.'}],attachments:[{type:'Safety',name:'JHA — temporary power setup Hercules',ref:'JHA-BESS-HRC-001',status:'Draft'},{type:'Shipping',name:'Utility connection permit application',ref:'DOT-BESS-001',status:'Pending'}]},
-      {id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]}
+            {id:'REQ-L-3200',item:'Office Containers',service:'Office Containers',productLine:'Temp Facilities',qty:'6 units',vendor:'WillScot',needBy:'Aug 15, 2026',costCode:'0100-0200-0000-0001',cost:7200,quoted:true,quoteRef:'QT-L-3200',quoteData:{vendor:'WillScot',quoteNum:'WS-2026-4420',quoteDate:'Aug 1 2026',expDate:'Nov 1 2026',service:'Office Containers',lines:[{desc:'20ft office container — delivery and setup',qty:6,uom:'EA',vendorPrice:1043,markup:0.15,unitRate:1200,ext:7200}]},status:'In fulfillment',ordId:'ORD-3200',sa:4,ea:8,attachments:[{type:'Shipping',name:'Container placement map — Hercules laydown',ref:'PM-3200-001',status:'Approved'}]},
+      {id:'REQ-L-3201',item:'Office Furniture Package',service:'Office Furniture Package',productLine:'Temp Facilities',qty:'1 lot',vendor:'Mike Furniture',needBy:'Sep 1, 2026',costCode:'0100-0200-0000-0001',cost:24000,quoted:true,quoteRef:'QT-L-3201',quoteData:{vendor:'Mike Furniture',quoteNum:'MF-2026-3201',quoteDate:'Aug 5 2026',expDate:'Nov 5 2026',service:'Office Furniture Package',lines:[{desc:'Office furniture — desks, chairs, tables for site office',qty:1,uom:'LOT',vendorPrice:20870,markup:0.15,unitRate:24000,ext:24000}]},status:'In fulfillment',ordId:'ORD-3201',sa:5,ea:9},
+      {id:'REQ-L-3202',item:'Office Printer/Copiers',service:'Office Printer/Copiers',productLine:'Temp Facilities',qty:'3 units',vendor:'Xerox',needBy:'Sep 1, 2026',costCode:'0100-0200-0000-0001',cost:4800,quoted:true,quoteRef:'QT-L-3202',quoteData:{vendor:'Xerox',quoteNum:'XRX-2026-3202',quoteDate:'Aug 5 2026',expDate:'Nov 5 2026',service:'Office Printer/Copiers',lines:[{desc:'Multifunction printer/copier — delivery and setup',qty:3,uom:'EA',vendorPrice:1391,markup:0.15,unitRate:1600,ext:4800}]},status:'In fulfillment',ordId:'ORD-3202',sa:5,ea:8},
+      {id:'REQ-L-3203',item:'Security Cameras',service:'Security Cameras',productLine:'Temp Facilities',qty:'24 cameras',vendor:'UFY Cameras',needBy:'Aug 20, 2026',costCode:'0100-0200-0000-0001',cost:18600,quoted:true,quoteRef:'QT-L-3203',quoteData:{vendor:'UFY Cameras',quoteNum:'UFY-2026-3203',quoteDate:'Aug 1 2026',expDate:'Nov 1 2026',service:'Security Cameras',lines:[{desc:'Security camera — supply, install, and configure',qty:24,uom:'EA',vendorPrice:677,markup:0.15,unitRate:779,ext:18696}]},status:'In fulfillment',ordId:'ORD-3203',sa:4,ea:8,attachments:[{type:'Safety',name:'Camera placement plan — Hercules perimeter',ref:'CAM-3203-001',status:'Approved'}]},
+      {id:'REQ-L-3204',item:'Drinking Water',service:'Drinking Water',productLine:'Site Services',qty:'Weekly delivery',vendor:null,needBy:'Sep 5, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',sa:5,ea:12,notes:[{author:'Manning Steven',date:'Aug 20 2026',text:'02S to source drinking water delivery for ~200 crew. Weekly delivery cadence preferred.'}]},
+      {id:'REQ-L-3205',item:'Bagged Ice',service:'Bagged Ice',productLine:'Site Services',qty:'Weekly delivery',vendor:null,needBy:'Sep 10, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',sa:6,ea:12},
+{id:'REQ-L-3117',item:'Temp Fencing',service:'Temp Fencing',productLine:'Temp Facilities',vendor:null,needBy:'Oct 15, 2026',costCode:'0100-5100-0000-0001',cost:null,quoted:false,status:'Requested',project:'Hercules Solar + BESS',qty:'Lot',sa:6,ea:7,notes:[{author:'Manning Steven',date:'Aug 14 2026',text:'Site perimeter fencing required before earthwork mobilizes Sep. 02S to source and quote — need at least 3 vendor options.'}]}
     ]
   }
   };
