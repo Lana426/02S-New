@@ -4518,16 +4518,16 @@ charges:[
     }
     function pct(d){return Math.max(0,Math.min(100,Math.round(d/WIN_DAYS*100)))+'%';}
     var ITEMS=[
-      {label:'E-house submittal review',    pillar:'Procurement',   ref:'ORD-5002', start:'2026-08-12',end:'2026-08-14',tone:'warn',note:'Modular BESS e-houses · submittal package under 02S review'},
+      {label:'MV Stuffed Rack submittal review',    pillar:'Procurement',   ref:'ORD-5002', start:'2026-08-12',end:'2026-08-14',tone:'warn',note:'MV Stuffed Rack · submittal package under 02S review'},
       {label:'Crawler crane mobilization',  pillar:'Equipment',     ref:'REQ-4471', start:'2026-08-12',end:'2026-08-14',tone:'ok',  note:'230T · solar transformer set · sector 1 · in progress'},
-      {label:'Pipe rack QC sign-off',       pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-13',end:'2026-08-13',tone:'ok',  note:'Piperite Fab · shop drawings approved · final QC before ship'},
-      {label:'Cable tray fabrication',      pillar:'Prefab',        ref:'ORD-5003', start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Prefab cable tray runs · pricing confirmed · fab start pending'},
-      {label:'Pipe rack on-site delivery',  pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
+      {label:'Combiner Box QC sign-off',       pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-13',end:'2026-08-13',tone:'ok',  note:'Combiner Box assembly · shop drawings approved · final QC before ship'},
+      {label:'Deck Panels fabrication',      pillar:'Prefab',        ref:'ORD-5003', start:'2026-08-14',end:'2026-08-14',tone:'info',note:'Deck Panels · pricing confirmed · fab start pending'},
+      {label:'Combiner Box on-site delivery',  pillar:'Prefab',        ref:'ORD-3108', start:'2026-08-15',end:'2026-08-16',tone:'info',note:'Aug 15 need-by · on-track for site delivery'},
       {label:'Geotech field report due',    pillar:'Prof. services',ref:'ORD-3096', start:'2026-08-18',end:'2026-08-18',tone:'ok',  note:'Monthly report · Terracon · phase 2 close-out'},
       {label:'BESS commissioning planning', pillar:'Prof. services',ref:'ORD-5001', start:'2026-08-19',end:'2026-08-19',tone:'ok',  note:'BESS commissioning agent · scope and mobilization planning call'}
     ];
     if(CURRENT==='ns'){
-      ITEMS.push({label:'BESS submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-08-20',end:'2026-08-20',tone:'warn',note:'Critical path · 2 days float remaining'});
+      ITEMS.push({label:'MV Stuffed Rack submittal critical',pillar:'Prefab',ref:'PF-022',start:'2026-08-20',end:'2026-08-20',tone:'warn',note:'Critical path · 2 days float remaining'});
       ITEMS.sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
     }
     if(EXTRA_LOOKAHEAD.length){EXTRA_LOOKAHEAD.forEach(function(x){ITEMS.push(x);});}
