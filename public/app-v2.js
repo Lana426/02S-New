@@ -2059,7 +2059,7 @@
     if(open.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+open.length+' active</span>';
     h+='</div>';
     if(!rows.length){h+='<div class="fq-empty">No transport requests for this project.</div></div>';return h;}
-    var cols='1.4fr 80px 1fr 100px 120px 120px 130px';
+    var cols='1.4fr 80px 1fr 100px 120px 120px 160px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'"><span>Request</span><span>Type</span><span>Route</span><span>Sched. delivery</span><span>Coordinator</span><span>Status</span><span>Actions</span></div>';
     rows.forEach(function(r){
       var desc=r.transferType==='Material/Tools'?(r.materialDesc||'').split('\n')[0].replace('[A]: ',''):r.transferType==='Vehicle'?(r.model||'').split('\n')[0].replace('[A]: ',''):(r.model||'').split('\n')[0].replace('[A]: ','');
@@ -2076,7 +2076,7 @@
       h+='<div><select onchange="trUpdateStatus(\''+r.id+'\',this.value)" style="font-size:11px;padding:3px 6px;border:1px solid var(--g200);border-radius:4px;color:var(--g700);width:100%">';
       _TR_STATUS_ORDER.forEach(function(s){h+='<option value="'+s+'"'+(r.status===s?' selected':'')+'>'+s+'</option>';});
       h+='</select></div>';
-      h+='<div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="showTransportRequest(\''+r.id+'\')">Show request</button>';
+      h+='<div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center"><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:2px 8px" onclick="showTransportRequest(\''+r.id+'\')">Show request</button>';
       if(r.status==='Requested')h+='<button class="btn btn-dark btn-sm" style="font-size:10px;padding:2px 8px" onclick="trScheduleModal(\''+r.id+'\')">Schedule</button>';
       h+='</div></div>';
     });
