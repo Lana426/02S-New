@@ -12390,12 +12390,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     title:'Moves & Events',chip:'Site logistics services',icon:IC.truck,singular:'logistics',
     addName:{label:'Service',ph:'e.g. Crane operator',opts:['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management']},addQty:{label:'Quantity / units',ph:'e.g. 3 units'},addWhen:{label:'Need-by date',ph:'e.g. Oct 2026'},
     vitals:[
-      {label:'Active services',value:'7',sub:'3 in fulfillment · 2 requested',tone:'info',icon:IC.layers},
-      {label:'Quotes to review',value:'1',sub:'Temp Toilets & Handwash Stations quote ready',tone:'warn',icon:IC.dollar},
-      {label:'Vendors',value:'3',sub:'WillScot · GFL · Bragg Crane',tone:'ok',icon:IC.crane},
-      {label:'Committed to date',value:'$56K',sub:'Quoted services · 4 items',tone:'ok',icon:IC.dollar}
+      {label:'Active services',value:'12',sub:'7 in fulfillment · 2 quoted · 3 requested',tone:'info',icon:IC.layers},
+      {label:'Quotes to review',value:'2',sub:'Temp Toilets & Temp Power Distribution quotes ready',tone:'warn',icon:IC.dollar},
+      {label:'Vendors',value:'7',sub:'WillScot · United Site Services · UFY Cameras + 4 more',tone:'ok',icon:IC.crane},
+      {label:'Committed to date',value:'$111K',sub:'Ordered services · 9 items',tone:'ok',icon:IC.dollar}
     ],
-    v1:'7 active logistics services · 2 pending 02S quotes · WillScot, GFL, Bragg Crane engaged.',
+    v1:'12 active logistics services · 2 quotes pending approval · 7 vendors engaged including WillScot, UFY Cameras, Xerox.',
     ns:'02S tracking site logistics across temp facilities, site services, and utilities — Temp Power Distribution and Sanitation are pending 02S quotes for Sep–Oct window.',
     intake:{
       core:[
