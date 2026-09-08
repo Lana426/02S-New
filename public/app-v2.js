@@ -7631,13 +7631,14 @@ charges:[
       'wast':['Clean Harbors|(800) 282-0058','Republic Services|(480) 627-2700','TransWaste Solutions|(866) 872-9278'],
       'trail':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226']
     };
-    var _rcMap={
-      'toilet':[[130,0.15,'Standard portable restroom — monthly service','EA'],[200,0.15,'ADA-accessible restroom — monthly service','EA'],[100,0.15,'Handwash station — monthly service','EA'],[650,0.15,'Initial setup & site delivery','LS']],
-      'fenc':[[3.5,0.15,'Chain-link fencing panel (per LF)','LF'],[180,0.15,'Security gate — per unit/month','EA'],[1.2,0.15,'Barbed wire top rail (per LF)','LF'],[1200,0.15,'Installation & teardown','LS']],
-      'power':[[2800,0.12,'Generator rental — diesel 100kW/month','EA'],[5.5,0.12,'Fuel management (per gallon)','GAL'],[800,0.12,'Distribution panel & cabling','LS'],[600,0.12,'Delivery & setup','LS']],
-      'wast':[[480,0.15,'20-yd roll-off dumpster — 2-week haul','EA'],[95,0.15,'Debris haul-away (per ton)','TON'],[320,0.15,'Hazardous waste disposal (per drum)','DRUM'],[650,0.15,'Monthly service fee','MO']],
-      'trail':[[950,0.12,'10×44 office trailer — monthly lease','EA'],[800,0.12,'Delivery & setup','LS'],[400,0.12,'Steps, tie-downs & skirting','LS'],[180,0.12,'Monthly service (cleaning/maint)','MO']]
+    var _rcDne={
+      'toilet':[[150,'Standard portable restroom','EA'],[230,'ADA-accessible restroom','EA'],[115,'Handwash station','EA'],[748,'Site delivery & setup','LS']],
+      'fenc':[[4,'Chain-link fencing panel','LF'],[207,'Security gate','EA'],[1380,'Installation & teardown','LS']],
+      'power':[[3136,'Temp power distribution panel — monthly','EA'],[616,'Distribution cabling & management','LS'],[672,'Delivery & setup','LS']],
+      'wast':[[552,'20-yd roll-off dumpster — 2-week haul','EA'],[109,'Debris haul-away','TON'],[748,'Monthly service fee','MO']],
+      'trail':[[1064,'Office trailer — monthly lease','EA'],[896,'Delivery & setup','LS'],[460,'Steps, tie-downs & skirting','LS'],[207,'Monthly service (cleaning/maint)','MO']]
     };
+    var _rcMap=_rcDne;
     var _itemLow=(cpRow.item||'').toLowerCase();
     var _vKey=Object.keys(_vMap).find(function(k){return _itemLow.indexOf(k)>=0;})||'toilet';
     window._lqbVendors=_vMap[_vKey];
@@ -7674,10 +7675,10 @@ charges:[
     ob+='<div>';
     ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">02S rate card — click to add</div>';
     rcItems.forEach(function(item,ii){
-      var rate=Math.round(item[0]*(1+item[1]));
+      var rate=item[0],desc=item[1],uom=item[2];
       ob+='<div style="padding:7px 11px;background:#f8fafc;border:1px solid var(--g150);border-radius:7px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseenter="this.style.background=\'#eff6ff\'" onmouseleave="this.style.background=\'#f8fafc\'" onclick="lqbAddRcLine('+ii+')">';
-      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+item[2]+'</div>';
-      ob+='<span style="font-size:11px;font-weight:600;color:var(--charcoal);white-space:nowrap">$'+rate+'/'+item[3]+'</span>';
+      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+desc+'</div>';
+      ob+='<span style="font-size:11px;font-weight:600;color:var(--charcoal);white-space:nowrap"><span style="font-size:9px;font-weight:500;color:var(--g500);margin-right:3px">DNE</span>$'+rate+'/'+uom+'</span>';
       ob+='<span style="font-size:9px;background:var(--g200);border-radius:4px;padding:1px 6px;color:var(--g600);white-space:nowrap">+ add</span>';
       ob+='</div>';
     });
@@ -7697,12 +7698,12 @@ charges:[
     ob+='<button onclick="lqbAddLine()" style="font-size:10px;padding:3px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff;cursor:pointer;color:var(--g700)">+ Add blank line</button>';
     ob+='</div>';
     ob+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
-    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;background:var(--g50);border-bottom:1px solid var(--g200)">';
-    ['Description','Qty','UOM','Vendor $','Markup','Rate','Ext',''].forEach(function(c){ob+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">'+c+'</div>';});
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 84px 28px;background:var(--g50);border-bottom:1px solid var(--g200)">';
+    ['Description','Qty','UOM','Rate','Ext',''].forEach(function(c){ob+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">'+c+'</div>';});
     ob+='</div>';
     ob+='<div id="lqb-lines-tbl"></div>';
-    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g150);background:var(--g50)">';
-    ob+='<div style="padding:7px 8px;font-size:11.5px;font-weight:700;color:var(--g700);grid-column:span 6;text-align:right;padding-right:12px">Total</div>';
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 84px 28px;border-top:1px solid var(--g150);background:var(--g50)">';
+    ob+='<div style="padding:7px 8px;font-size:11.5px;font-weight:700;color:var(--g700);grid-column:span 4;text-align:right;padding-right:12px">Total</div>';
     ob+='<div id="lqb-total" style="padding:7px 8px;font-size:12px;font-weight:700;color:var(--g900)">$0</div>';
     ob+='<div></div></div>';
     ob+='</div></div>';
@@ -7720,14 +7721,13 @@ charges:[
   function lqbAddRcLine(ii){
     var rc=window._lqbRcItems;
     if(!rc||!rc[ii])return;
-    var vp=rc[ii][0],mk=rc[ii][1],desc=rc[ii][2],uom=rc[ii][3];
-    var rate=Math.round(vp*(1+mk)*100)/100;
-    window._lqbLines.push({desc:desc,qty:1,uom:uom,vp:vp,mk:Math.round(mk*100),rate:rate,ext:rate});
+    var rate=rc[ii][0],desc=rc[ii][1],uom=rc[ii][2];
+    window._lqbLines.push({desc:desc,qty:1,uom:uom,rate:rate,ext:rate});
     lqbRefreshLines();
   }
   function lqbAddLine(){
     window._lqbLines=window._lqbLines||[];
-    window._lqbLines.push({desc:'',qty:1,uom:'EA',vp:0,mk:15,rate:0,ext:0});
+    window._lqbLines.push({desc:'',qty:1,uom:'EA',rate:0,ext:0});
     lqbRefreshLines();
   }
   function lqbRemLine(i){
@@ -7738,7 +7738,6 @@ charges:[
     var lines=window._lqbLines;
     if(!lines||!lines[i])return;
     var l=lines[i];
-    l.rate=Math.round(l.vp*(1+l.mk/100)*100)/100;
     l.ext=Math.round(l.rate*l.qty*100)/100;
     lqbRefreshLines();
   }
@@ -7750,14 +7749,11 @@ charges:[
     var is='width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:5px;padding:4px 6px;font-size:11.5px;font-family:inherit;outline:none;background:#fff';
     var h='';
     lines.forEach(function(l,i){
-      h+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g100);align-items:center;padding:3px 0">';
+      h+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 84px 28px;border-top:1px solid var(--g100);align-items:center;padding:3px 0">';
       h+='<div style="padding:2px 6px"><input style="'+is+'" value="'+l.desc.replace(/"/g,'&quot;')+'" placeholder="Description" onchange="window._lqbLines['+i+'].desc=this.value"></div>';
       h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" value="'+l.qty+'" onchange="window._lqbLines['+i+'].qty=+this.value||1;lqbCalcLine('+i+')"></div>';
       h+='<div style="padding:2px 4px"><input style="'+is+'" value="'+l.uom+'" onchange="window._lqbLines['+i+'].uom=this.value"></div>';
-      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" step="0.01" value="'+l.vp+'" onchange="window._lqbLines['+i+'].vp=+this.value||0;lqbCalcLine('+i+')"></div>';
-      h+='<div style="padding:2px 4px;display:flex;align-items:center;gap:2px"><input style="'+is+';text-align:right;max-width:40px" type="number" min="0" max="99" value="'+l.mk+'" onchange="window._lqbLines['+i+'].mk=+this.value||0;lqbCalcLine('+i+')">';
-      h+='<span style="font-size:10px;color:var(--g500)">%</span></div>';
-      h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:500;color:var(--g800);text-align:right">$'+l.rate.toLocaleString()+'</div>';
+      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" step="0.01" value="'+l.rate+'" onchange="window._lqbLines['+i+'].rate=+this.value||0;lqbCalcLine('+i+')"></div>';
       h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:600;color:var(--g900);text-align:right">$'+l.ext.toLocaleString()+'</div>';
       h+='<div style="padding:2px 2px;text-align:center"><button onclick="lqbRemLine('+i+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;line-height:1;padding:2px 4px">×</button></div>';
       h+='</div>';
@@ -7791,7 +7787,7 @@ charges:[
       quoteNum:qnum||'DRAFT-'+Date.now(),
       quoteDate:_fmtDate(today),
       expDate:expDate?_fmtDate(new Date(expDate+' 12:00')):'TBD',
-      lines:lines.map(function(l){return{desc:l.desc,qty:l.qty,uom:l.uom,vendorPrice:l.vp,markup:l.mk/100,unitRate:l.rate,ext:l.ext};})
+      lines:lines.map(function(l){return{desc:l.desc,qty:l.qty,uom:l.uom,unitRate:l.rate,ext:l.ext};})
     };
     cpRow.quoteData=qd;
     if(!isDraft){cpRow.status='Quoted';cpRow.quoted=true;}
@@ -7854,9 +7850,9 @@ charges:[
     b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Valid until</div><div style="font-size:12px;font-weight:600">'+qd.expDate+'</div></div>';
     b+='</div>';
     b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
-    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Vendor $</span><span class="r">Rate</span><span class="r">Extension</span></div>';
-    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.vendorPrice.toLocaleString()+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
-    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 5;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
+    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Rate (DNE)</span><span class="r">Extension</span></div>';
+    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+(l.unitRate||l.rate||0).toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
+    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 4;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
     b+='</div>';
     b+='<div style="display:flex;gap:8px;justify-content:flex-end">';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
