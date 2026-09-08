@@ -2374,7 +2374,7 @@
       '<div style="padding:4px 0">'
       +'<div style="font-size:12px;color:#475569;margin-bottom:8px">Returning quote for: <strong>'+(row.service||row.item||'—')+'</strong></div>'
       +'<div style="font-size:12px;color:#475569;margin-bottom:8px">Provide feedback so 02S can revise or re-source:</div>'
-      +'<textarea id="retQuoteTxt" rows="4" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px" placeholder="e.g. Price exceeds budget — please source 2+ alternatives under $3,500/mo."></textarea>'
+      +'<textarea id="retQuoteTxt" rows="4" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px" placeholder="Please send back with feedback/reasoning for 02S"></textarea>'
       +'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'
       +'<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>'
       +'<button class="btn btn-dark" onclick="returnLogQuoteSubmit('+ri+')">Send to 02S →</button>'
