@@ -7624,67 +7624,19 @@ charges:[
     var dpRows=(DP&&DP.logistics&&DP.logistics.rows)||[];
     var cpRow=dpRows.find(function(r){return r.id===dpRowId;});
     if(!cpRow){toast('Request not found');return;}
-    var _svcKey=(function(s){
-      var n=s.toLowerCase();
-      if(n.indexOf('drinking water')>=0||n.indexOf('water')>=0&&n.indexOf('drain')<0)return 'water';
-      if(n.indexOf('bagged ice')>=0||n.indexOf('ice')>=0)return 'ice';
-      if(n.indexOf('toilet')>=0||n.indexOf('handwash')>=0||n.indexOf('restroom facility')>=0)return 'toilet';
-      if(n.indexOf('temp power')>=0||n.indexOf('power dist')>=0)return 'power';
-      if(n.indexOf('fenc')>=0)return 'fenc';
-      if(n.indexOf('waste')>=0||n.indexOf('hauling')>=0||n.indexOf('dumpster')>=0)return 'wast';
-      if(n.indexOf('office trailer')>=0)return 'trail';
-      if(n.indexOf('storage container')>=0)return 'storage';
-      if(n.indexOf('office container')>=0)return 'offcont';
-      if(n.indexOf('office furniture')>=0||n.indexOf('furniture')>=0)return 'furn';
-      if(n.indexOf('printer')>=0||n.indexOf('copier')>=0)return 'print';
-      if(n.indexOf('camera')>=0||n.indexOf('security cam')>=0)return 'cam';
-      if(n.indexOf('signage')>=0||n.indexOf('sign')>=0)return 'sign';
-      if(n.indexOf('street sweep')>=0||n.indexOf('sweep')>=0)return 'sweep';
-      if(n.indexOf('vmi')>=0||n.indexOf('ppe')>=0||n.indexOf('consumable')>=0)return 'vmi';
-      if(n.indexOf('warehouse')>=0||n.indexOf('3pl')>=0)return 'wh';
-      return 'generic';
-    })(cpRow.item||'');
-    var _vMap={
-      'toilet':['United Site Services|(800) 424-0385','ZTERS|(888) 993-7736','Landmark Infrastructure|(855) 552-6275'],
-      'water':['Culligan Water|(800) 285-5442','Absopure|(800) 968-2797','Primo Water|(800) 201-6218'],
-      'ice':['Reddy Ice|(800) 733-9484','Arctic Glacier|(800) 622-4423','Home City Ice|(800) 755-0423'],
-      'power':['Aggreko|(877) 333-3797','Atlas Copco Power|(877) 322-4348','TeraPower Solutions|(800) 952-8872'],
-      'fenc':['American Fence Company|(888) 873-3623','Bison Building Materials|(800) 247-6661','National Fence Systems|(800) 733-3621'],
-      'wast':['Clean Harbors|(800) 282-0058','Republic Services|(480) 627-2700','TransWaste Solutions|(866) 872-9278'],
-      'trail':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226'],
-      'storage':['WillScot|(800) 782-1500','Mobile Mini|(800) 456-7981','PODS|(877) 770-7637'],
-      'offcont':['WillScot|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226'],
-      'furn':['CORT|(888) 360-2678','Furniture Mart|(800) 456-1234','BizChair|(800) 924-2472'],
-      'print':['Xerox|(800) 275-9376','Ricoh|(800) 742-6448','Konica Minolta|(800) 456-5664'],
-      'cam':['UFY Cameras|(888) 838-4444','Arlo|(888) 510-2756','Verkada|(415) 949-5285'],
-      'sign':['Vista System|(800) 889-0029','Signarama|(800) 746-4726','National Sign Co.|(888) 776-4462'],
-      'sweep':['US LBM|(800) 888-0056','Enviro Star|(800) 881-2255','Clean Earth Capital|(888) 765-4321'],
-      'vmi':['Fastenal|(877) 326-7826','Grainger|(800) 472-4643','MSC Industrial|(800) 645-7270'],
-      'wh':['Iron Mountain|(800) 934-3453','XPO Logistics|(855) 976-5462','Ryder|(800) 793-3793'],
-      'generic':['TBD — vendor TBD|','TBD — vendor TBD|','TBD — vendor TBD|']
+    var _dneMap={
+      'Office Trailers':[1064,'EA/MO'],'Restroom Facility':[14200,'MO'],'Storage Containers':[345,'EA/MO'],
+      'Office Containers':[780,'EA/MO'],'Office Furniture':[185,'EA'],'Office Printer/Copiers':[295,'EA/MO'],
+      'Security Cameras':[180,'EA/MO'],'Temp Toilets & Handwash Stations':[150,'EA/MO'],
+      'Temp Toilets & Handwash':[150,'EA/MO'],'Waste Hauling':[552,'EA'],'Site Construction Signage':[480,'EA'],
+      'Drinking Water':[38,'EA (5-gal bottle)'],'Bagged Ice':[4.50,'EA (20-lb bag)'],
+      'Temp Power Distribution':[3136,'EA/MO'],'Temp Fencing':[4,'LF'],
+      'Street Sweeping':[920,'EA (per visit)'],'VMI - PPE & Consumables':[0,'LS (see VMI catalog)'],
+      'Warehouse & 3PL Management':[2800,'MO'],'3PL Management':[2800,'MO']
     };
-    var _rcDne={
-      'toilet':[[150,'Standard portable restroom — monthly','EA'],[230,'ADA-accessible restroom — monthly','EA'],[115,'Handwash station — monthly','EA'],[748,'Site delivery & setup','LS']],
-      'water':[[38,'5-gal bottled water delivery (per bottle)','EA'],[195,'Water cooler / dispenser rental — monthly','EA'],[85,'Weekly delivery service fee','WK'],[120,'Initial delivery & installation','LS']],
-      'ice':[[4.50,'Bagged ice — 20 lb bag','EA'],[310,'Weekly delivery (est. 70 bags/wk)','WK'],[95,'Initial delivery charge','LS']],
-      'power':[[3136,'Temp power distribution panel — monthly','EA'],[616,'Distribution cabling & cable management','LS'],[672,'Site delivery & setup','LS'],[480,'Monthly maintenance fee','MO']],
-      'fenc':[[4,'Chain-link fencing panel','LF'],[207,'Security gate — per unit/month','EA'],[1380,'Installation & teardown','LS']],
-      'wast':[[552,'20-yd roll-off dumpster — 2-week haul','EA'],[109,'Debris haul-away (per ton)','TON'],[748,'Monthly service fee','MO']],
-      'trail':[[1064,'Office trailer 10x44 — monthly lease','EA'],[896,'Delivery & setup','LS'],[460,'Steps, tie-downs & skirting','LS'],[207,'Monthly service (cleaning/maint)','MO']],
-      'storage':[[345,'20-ft storage container — monthly lease','EA'],[520,'40-ft storage container — monthly lease','EA'],[685,'Delivery & placement','LS']],
-      'offcont':[[780,'10x40 office container — monthly lease','EA'],[895,'Delivery & setup','LS'],[310,'Steps & skirting','LS']],
-      'furn':[[185,'Workstation package (desk + chair)','EA'],[620,'Conference table (seats 8)','EA'],[95,'Delivery & setup per unit','EA'],[210,'Monthly rental fee (per unit avg)','MO']],
-      'print':[[295,'Multifunction printer/copier — monthly lease','EA'],[180,'Setup & network config','LS'],[75,'Monthly supply replenishment','MO']],
-      'cam':[[180,'Fixed security camera — monthly','EA'],[420,'PTZ camera — monthly','EA'],[850,'NVR / recording system — monthly','EA'],[1200,'Installation (per 4-cam zone)','LS']],
-      'sign':[[480,'Custom site identification sign','EA'],[210,'Safety & OSHA board','EA'],[95,'Directional sign (per unit)','EA'],[620,'Installation & anchoring','LS']],
-      'sweep':[[920,'Street sweeper — per sweep visit','EA'],[3200,'Weekly sweeping contract','MO'],[580,'Dust suppression application','EA']],
-      'vmi':[[0,'See 02S VMI catalog — items priced at DNE per SKU','LS']],
-      'wh':[[2800,'Warehouse space — per pallet/month','MO'],[450,'Receiving & putaway (per shipment)','EA'],[380,'Outbound pick & ship (per order)','EA']],
-      'generic':[[0,'Custom line item — enter DNE rate','LS']]
-    };
-    var _rcMap=_rcDne;
-    window._lqbVendors=(_vMap[_svcKey]||_vMap['generic']);
-    window._lqbRcItems=(_rcMap[_svcKey]||_rcMap['generic']);
+    var _dne=_dneMap[cpRow.item]||_dneMap[(cpRow.service||'')]||[0,'LS'];
+    window._lqbVendors=[];
+    window._lqbRcItems=[[_dne[0],cpRow.item,_dne[1]]];
     window._lqbLines=[];
     window._lqbDpId=dpRowId;
     var vendors=window._lqbVendors;
