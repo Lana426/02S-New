@@ -11080,7 +11080,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#ccDpEquip .dp-tbl{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
       if(p==='logistics'&&isDpView){
         h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content">';
-        var _logOpenN=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&!t.done;}).length;
+        var _logOpenN=MY_CC_TASKS.filter(function(t){return t.pillar==='logistics'&&!t.done&&(selProj==='all'||t.project===(selProj==='hercules'?'Hercules Solar + BESS':selProj==='barryrose'?'Barry Rose WRF':'VDC14'));}).length;
         h+='<button onclick="logSetTasksView(\'items\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logTasksView==='items'?'#fff':'transparent')+';color:'+(_logTasksView==='items'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logTasksView==='items'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">Demand plan</button>';
         h+='<button onclick="logSetTasksView(\'tasks\')" style="padding:4px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;background:'+(_logTasksView==='tasks'?'#fff':'transparent')+';color:'+(_logTasksView==='tasks'?'var(--charcoal)':'var(--g500)')+';box-shadow:'+(_logTasksView==='tasks'?'0 1px 3px rgba(0,0,0,.1)':'none')+'">\u2713 Tasks '+(_logOpenN?'<span style="background:#ef4444;color:#fff;border-radius:8px;padding:0 5px;font-size:9.5px;font-weight:700;margin-left:3px">'+_logOpenN+'</span>':'')+' </button>';
         h+='</div>';
