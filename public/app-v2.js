@@ -7637,8 +7637,29 @@ charges:[
       'Street Sweeping':[920,'EA (per visit)'],'VMI - PPE & Consumables':[0,'LS (see VMI catalog)'],
       'Warehouse & 3PL Management':[2800,'MO'],'3PL Management':[2800,'MO']
     };
+    var _vendorMap={
+      'Office Trailers':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226'],
+      'Restroom Facility':['R&R Sanitation|(636) 373-4197','United Site Services|(800) 424-0385','ZTERS|(888) 993-7736'],
+      'Storage Containers':['WillScot|(800) 782-1500','Mobile Mini|(800) 456-7981','PODS Commercial|(877) 770-7637'],
+      'Office Containers':['WillScot|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226'],
+      'Office Furniture':['CORT|(888) 360-2678','AFR Furniture Rental|(800) 541-5705','BizChair|(800) 924-2472'],
+      'Office Printer/Copiers':['Xerox|(800) 275-9376','Ricoh|(800) 742-6448','Konica Minolta|(800) 456-5664'],
+      'Security Cameras':['UFY Cameras|(888) 838-4444','Verkada|(415) 949-5285','Arlo for Business|(888) 510-2756'],
+      'Temp Toilets & Handwash Stations':['United Site Services|(800) 424-0385','ZTERS|(888) 993-7736','Landmark Infrastructure|(855) 552-6275'],
+      'Temp Toilets & Handwash':['United Site Services|(800) 424-0385','ZTERS|(888) 993-7736','Landmark Infrastructure|(855) 552-6275'],
+      'Waste Hauling':['Republic Services|(480) 627-2700','Clean Harbors|(800) 282-0058','TransWaste Solutions|(866) 872-9278'],
+      'Site Construction Signage':['Signarama|(800) 746-4726','Vista System|(800) 889-0029','National Sign Co.|(888) 776-4462'],
+      'Drinking Water':['Culligan Water|(800) 285-5442','Absopure|(800) 968-2797','Primo Water|(800) 201-6218'],
+      'Bagged Ice':['Reddy Ice|(800) 733-9484','Arctic Glacier|(800) 622-4423','Home City Ice|(800) 755-0423'],
+      'Temp Power Distribution':['Aggreko|(877) 333-3797','Atlas Copco Power|(877) 322-4348','TeraPower Solutions|(800) 952-8872'],
+      'Temp Fencing':['American Fence Company|(888) 873-3623','Bison Building Materials|(800) 247-6661','National Fence Systems|(800) 733-3621'],
+      'Street Sweeping':['Enviro Star|(800) 881-2255','US LBM|(800) 888-0056','Clean Earth Capital|(888) 765-4321'],
+      'VMI - PPE & Consumables':['Fastenal|(877) 326-7826','Grainger|(800) 472-4643','MSC Industrial|(800) 645-7270'],
+      'Warehouse & 3PL Management':['XPO Logistics|(855) 976-5462','Ryder|(800) 793-3793','Iron Mountain|(800) 934-3453'],
+      '3PL Management':['XPO Logistics|(855) 976-5462','Ryder|(800) 793-3793','Iron Mountain|(800) 934-3453']
+    };
     var _dne=_dneMap[cpRow.item]||_dneMap[(cpRow.service||'')]||[0,'LS'];
-    window._lqbVendors=[];
+    window._lqbVendors=(_vendorMap[cpRow.item]||_vendorMap[(cpRow.service||'')]||[]);
     window._lqbRcItems=[[_dne[0],cpRow.item,_dne[1]]];
     window._lqbLines=[];
     window._lqbDpId=dpRowId;
