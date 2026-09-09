@@ -1739,19 +1739,30 @@
     projects.forEach(function(p){
       var pRows=(CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[p.key]&&CC_PROJ_DP.logistics[p.key].rows)||[];
       pRows.forEach(function(r){
-        if(r.state==='Complete'||r.state==='Closed')return;
+        if(r.state==='Complete'||r.state==='Closed')return;if(!_inWindow(r.window))return;
         rows.push({item:r.item,state:r.state,window:r.window,code:p.code,pColor:p.color,firm:r.firm||''});
       });
     });
+    function _inWindow(w){
+      if(!w)return false;
+      var wl=w.toLowerCase();
+      if(wl.indexOf('ongoing')===0)return true;
+      var m=wl.match(/([a-z]{3})/);
+      if(!m)return false;
+      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+      return mo[m[1]]===8;
+    }
     function _wkOf(w){
       if(!w)return 0;
-      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-      var m=w.toLowerCase().match(/([a-z]{3})\w*\s*(\d*)/);
+      var wl=w.toLowerCase();
+      if(wl.indexOf('ongoing')===0)return 0;
+      var m=wl.match(/([a-z]{3})\w*\s*(\d*)/);
       if(!m)return 0;
-      var mIdx=mo[m[1]];var day=+m[2]||15;
-      if(mIdx<8)return 0;
-      if(mIdx===8&&day<=7)return 1;
-      if(mIdx===8&&day<=14)return 2;
+      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+      var mIdx=mo[m[1]];var day=+m[2]||11;
+      if(mIdx!==8)return 0;
+      if(day<=14)return 0;
+      if(day<=21)return 1;
       return 2;
     }
     var _mo2={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -1763,13 +1774,13 @@
     var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">Aug 25–Sep 14, 2026</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">Sep 8–28, 2026</span>';
     h+='</div>';
     h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
     if(!rows.length){h+='<div style="font-size:12px;color:var(--g400);padding:12px 0">No active logistics items.</div></div>';return h;}
     h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
     h+='<div></div>';
-    ['Aug 25–31','Sep 1–7','Sep 8–14'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+    ['Sep 8–14','Sep 15–21','Sep 22–28'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
     h+='</div>';
     h+='<div style="max-height:300px;overflow-y:auto">';
     rows.forEach(function(r){
@@ -12556,19 +12567,30 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     projects.forEach(function(p){
       var pRows=(CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[p.key]&&CC_PROJ_DP.logistics[p.key].rows)||[];
       pRows.forEach(function(r){
-        if(r.state==='Complete'||r.state==='Closed')return;
+        if(r.state==='Complete'||r.state==='Closed')return;if(!_inWindow(r.window))return;
         rows.push({item:r.item,state:r.state,window:r.window,code:p.code,pColor:p.color,firm:r.firm||''});
       });
     });
+    function _inWindow(w){
+      if(!w)return false;
+      var wl=w.toLowerCase();
+      if(wl.indexOf('ongoing')===0)return true;
+      var m=wl.match(/([a-z]{3})/);
+      if(!m)return false;
+      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+      return mo[m[1]]===8;
+    }
     function _wkOf(w){
       if(!w)return 0;
-      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
-      var m=w.toLowerCase().match(/([a-z]{3})\w*\s*(\d*)/);
+      var wl=w.toLowerCase();
+      if(wl.indexOf('ongoing')===0)return 0;
+      var m=wl.match(/([a-z]{3})\w*\s*(\d*)/);
       if(!m)return 0;
-      var mIdx=mo[m[1]];var day=+m[2]||15;
-      if(mIdx<8)return 0;
-      if(mIdx===8&&day<=7)return 1;
-      if(mIdx===8&&day<=14)return 2;
+      var mo={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+      var mIdx=mo[m[1]];var day=+m[2]||11;
+      if(mIdx!==8)return 0;
+      if(day<=14)return 0;
+      if(day<=21)return 1;
       return 2;
     }
     var _mo2={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -12580,13 +12602,13 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">Aug 25–Sep 14, 2026</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">Sep 8–28, 2026</span>';
     h+='</div>';
     h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
     if(!rows.length){h+='<div style="font-size:12px;color:var(--g400);padding:12px 0">No active logistics items.</div></div>';return h;}
     h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
     h+='<div></div>';
-    ['Aug 25–31','Sep 1–7','Sep 8–14'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+    ['Sep 8–14','Sep 15–21','Sep 22–28'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
     h+='</div>';
     h+='<div style="max-height:300px;overflow-y:auto">';
     rows.forEach(function(r){
