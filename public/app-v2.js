@@ -11359,15 +11359,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
             _actCell='<div style="font-size:10.5px">';
             _actCell+='<div style="display:flex;align-items:center;justify-content:space-between;gap:4px">';
             _actCell+='<button style="background:none;border:none;padding:0;cursor:pointer;color:var(--charcoal);font-weight:600;font-size:10.5px;text-decoration:underline;text-underline-offset:2px" '+'onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\')">'+ row.ordId+'</button>';
-            if(row.fqRef){_actCell+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;white-space:nowrap;flex-shrink:0" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">→ FQ</button>';}
+            if(row.fqRef){_actCell+='<button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">→ FQ</button>';}
             _actCell+='</div>';
             _actCell+='<div style="font-size:10px;color:var(--g400)">'+_sl+'</div>';
             if(_dispR&&p!=='profservices'){_actCell+='<div onclick="event.stopPropagation();ccDpTracker(\''+row.ordId+'\'" style="font-size:10px;color:var(--red);font-weight:600;margin-top:2px;cursor:pointer;text-decoration:underline;text-underline-offset:2px">⚠ Bill issue — click to review</div>';}
             _actCell+='</div>';
           } else if(row.state==='Requested'||row.state==='Pending pricing'||row.state==='Awaiting pricing'||row.state==='At-risk'||row.state==='Needs attention'){
-            _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">→ Fulfillment queue</button>';
+            _actCell='<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();'+(row.fqRef?'ccGoFulfill(\''+row.fqRef+'\')':'ccGo(\'fulfill\')')+'">→ FQ</button>';
           } else if(row.state==='Projected'||row.state==='Draft'){
-            _actCell=row.fqRef?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">\u2192 Fulfillment queue</button>':'<span style="font-size:10.5px;color:var(--g300)">Not yet submitted</span>';
+            _actCell=row.fqRef?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();ccGoFulfill(\''+row.fqRef+'\')">→ FQ</button>':'<span style="font-size:10.5px;color:var(--g300)">Not yet submitted</span>';
           } else if(row.state==='Demobilized'||row.state==='Off-rent'){
             _actCell='<span style="font-size:10.5px;color:var(--g400)">Complete</span>';
           }
@@ -11481,7 +11481,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var r2=row._raw;
         var ahSrc='<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;white-space:nowrap">Ad hoc</span>';
         var ahExpId='ahx-'+p+'-'+_rowI;
-        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="ccGoFulfill(\''+r2.id+'\')"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(_DP_TONE[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px">\u2192 Fulfillment queue</button></div></div>';
+        h+='<div class="dp-row" style="grid-template-columns:'+gtA+';cursor:pointer" onclick="ccGoFulfill(\''+r2.id+'\')"><div>'+r2.id+'<div class="sub" style="white-space:normal;font-size:10.5px">'+r2.asset+'</div></div><div style="font-size:10px;color:var(--g400)">\u2014</div><div>'+ahSrc+'</div>'+(showProjCol?'<div style="font-size:11.5px">'+row._projLabel+'</div>':'')+'<div>'+dpTaxCell(r2)+'</div><div><span class="tag '+(_DP_TONE[r2.status]||'neu')+'">'+r2.status+'</span></div><div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 8px">→ FQ</button></div></div>';
       }
     });
     if(!isDpView&&!dpShowAll&&moreN>0){
@@ -11517,7 +11517,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
             +'<div style="font-size:11.5px;color:var(--g600)">'+r2.asset+'</div>'
             +'<div><span class="tag '+tone+'">'+r2.dec+'</span></div>'
             +'<div style="font-size:11.5px;color:var(--g500)">'+r2.status+'</div>'
-            +'<div><button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px" onclick="ccGoFulfill(\''+r2.id+'\')">→ FQ</button></div></div>';
+            +'<div><button class="btn btn-ghost btn-sm" style="font-size:10px;padding:1px 6px;white-space:nowrap" onclick="ccGoFulfill(\''+r2.id+'\')">→ FQ</button></div></div>';
         });
         h+='</div>';
       }
