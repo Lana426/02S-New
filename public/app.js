@@ -2079,7 +2079,7 @@ function renderProfServicesDP(){
     var vce=document.getElementById('verChipEquip'); if(vce) vce.innerHTML='';
     if(document.getElementById('eqBudget')){ eqRefresh(); }
     if(dpActive){if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);}}
-    renderTickets(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
+    renderTickets(); renderInteractions(); renderContactInsights(); if(!ns){ var ar=document.getElementById('askRoute'); if(ar) ar.classList.add('hide'); }
     var _ccv=document.getElementById('ccApp');
     if(_ccv&&_ccv.style.display!=='none'){
       renderCcScreen(ccActive||'ccdash'); ccSyncToggle();
@@ -4856,6 +4856,81 @@ charges:[
   function setAccess(i,val){var t=TEAM[i]; if(!t) return; t.access=val; if(t.permRec===val) delete t.permRec; renderTeam(); renderProfileInsights(); toast('Access for '+t.name+' set to '+val+' — logged');}
 
   /* ═══════════ CONTACT & SUPPORT ═══════════ */
+  var INTERACTIONS=[
+    {id:'INT-006',ref:'ORD-3042',topic:'Excavator — rocky soil operating guidance',date:'Aug 22, 2026',preview:'02S: Attached the operating guide. Key point: reduce dig force to 70% in rocky terrain and use the tooth bucket.',msgs:[
+      {side:'you',text:'Can you send the operating guidelines for rocky / hard soil conditions on the excavator?',ts:'Aug 22, 10:14 AM'},
+      {side:'02s',who:'Marcus Webb',text:'Attached the operating guide for ORD-3042. Key point: reduce dig force to 70% in rocky terrain and switch to the tooth bucket. Let me know if you need the tooth bucket swapped out — we can have it on site within 48 hrs.',ts:'Aug 22, 11:02 AM'},
+      {side:'you',text:'Got it, we have the tooth bucket already. Will flag if we need anything else.',ts:'Aug 22, 11:18 AM'}
+    ]},
+    {id:'INT-005',ref:'ORD-3031',topic:'Scissor lift — extend rental through Oct 31',date:'Aug 18, 2026',preview:'02S: Extended through Oct 31. Updated PO reflects the new end date — cost code unchanged.',msgs:[
+      {side:'you',text:'We need to extend the two scissor lifts (ORD-3031) through Oct 31. Can you update?',ts:'Aug 18, 9:03 AM'},
+      {side:'02s',who:'Marcus Webb',text:'Extended both units through Oct 31. Updated PO reflects the new end date — cost code unchanged. You\'ll see the revised invoice line next billing cycle.',ts:'Aug 18, 9:47 AM'}
+    ]},
+    {id:'INT-004',ref:'BILL-9012',topic:'Billing — $38K charge clarification for July',date:'Aug 5, 2026',preview:'02S: The $38K covers the excavator standby rate (22 idle days × $1,200/day) plus the Aug 1 mobilization fee.',msgs:[
+      {side:'you',text:'Why was I charged $38K for the excavator in July? That seems high.',ts:'Aug 5, 2:15 PM'},
+      {side:'02s',who:'02S Billing',text:'The $38K covers: excavator standby rate (22 idle days × $1,200/day = $26,400) + Aug 1 mobilization fee ($4,800) + July fuel surcharge ($6,800). Standby rate applies when the unit is on site but not in active use.',ts:'Aug 5, 3:30 PM'},
+      {side:'you',text:'Understood. Is there a way to reduce standby costs — can we reduce frequency of on-site days?',ts:'Aug 5, 3:45 PM'},
+      {side:'02s',who:'02S Billing',text:'Yes — we can shift to an on-call model where the unit is at our yard and mobilized within 4 hrs on request. Rate drops to $480/day vs $1,200/day. Want us to quote the change?',ts:'Aug 5, 4:10 PM'},
+      {side:'you',text:'Yes please, send a revised quote.',ts:'Aug 5, 4:12 PM'},
+      {side:'02s',who:'02S Billing',text:'Quote sent to your email — ref QT-EQ-9012. Valid 30 days.',ts:'Aug 5, 4:38 PM'}
+    ]},
+    {id:'INT-003',ref:'ORD-3038',topic:'Crane — lift plan submittal for BESS transformer set',date:'Jul 29, 2026',preview:'02S: Lift plan attached (LP-MAX-001). Approved by structural EOR — cleared for Aug 12 pick.',msgs:[
+      {side:'you',text:'Do you have the lift plan ready for the BESS transformer set on Aug 12?',ts:'Jul 29, 8:50 AM'},
+      {side:'02s',who:'Marcus Webb',text:'Lift plan attached (LP-MAX-001). Approved by structural EOR — cleared for Aug 12 pick. Ground bearing pressure confirmed OK at Pad B. Pre-lift walk is scheduled for Aug 11 at 7 AM.',ts:'Jul 29, 10:15 AM'}
+    ]},
+    {id:'INT-002',ref:'ORD-3014',topic:'Prefab headwall — submittal approval status',date:'Jul 14, 2026',preview:'02S: Submittal approved by EOR on Jul 12. Fab is underway — on track for Sep 5 delivery.',msgs:[
+      {side:'you',text:'What\'s the status on the headwall submittal? Need to know if fab has started.',ts:'Jul 14, 11:00 AM'},
+      {side:'02s',who:'02S Prefab',text:'Submittal approved by EOR on Jul 12. Fabrication is underway at our Mesa shop — on track for Sep 5 delivery to site. Will send shipping confirmation 48 hrs before.',ts:'Jul 14, 11:42 AM'}
+    ]},
+    {id:'INT-001',ref:'ORD-3021',topic:'Light towers — placement and power hookup',date:'Jun 30, 2026',preview:'02S: Towers are diesel-powered, no external hookup needed. Recommend placement at Laydown A corners and near the trailer city.',msgs:[
+      {side:'you',text:'Do the light towers need external power hookup? And where do you recommend placing them?',ts:'Jun 30, 3:20 PM'},
+      {side:'02s',who:'Marcus Webb',text:'Towers are diesel-powered — no external hookup needed. We top off fuel on delivery and weekly service. For placement: recommend 2 at the Laydown A perimeter corners and 2 near the trailer city for crew safety. I\'ll note this in the delivery brief.',ts:'Jun 30, 3:55 PM'}
+    ]}
+  ];
+  var _intxOpen=false;
+  var _intxExpanded={};
+  function toggleInteractions(){
+    _intxOpen=!_intxOpen;
+    renderInteractions();
+  }
+  function toggleIntxThread(id){
+    _intxExpanded[id]=!_intxExpanded[id];
+    renderInteractions();
+  }
+  function renderInteractions(){
+    var el=document.getElementById('intxList'); if(!el)return;
+    var chevron=document.getElementById('intxChevron'); if(chevron)chevron.textContent=_intxOpen?'▲':'▼';
+    if(!_intxOpen){el.innerHTML='';return;}
+    el.innerHTML=INTERACTIONS.map(function(ix){
+      var expanded=_intxExpanded[ix.id];
+      var thread='';
+      if(expanded){
+        thread='<div style="margin-top:8px;border-top:1px solid var(--g100);padding-top:8px;display:flex;flex-direction:column;gap:6px">';
+        ix.msgs.forEach(function(m){
+          var isYou=m.side==='you';
+          thread+='<div style="display:flex;gap:8px;align-items:flex-start'+(isYou?';flex-direction:row-reverse':'')+'">';
+          thread+='<div style="width:22px;height:22px;border-radius:50%;flex-shrink:0;background:'+(isYou?'var(--charcoal)':'var(--info)')+';display:flex;align-items:center;justify-content:center"><span style="font-size:9px;font-weight:700;color:#fff">'+(isYou?'You':'02S')+'</span></div>';
+          thread+='<div style="max-width:80%;background:'+(isYou?'var(--charcoal)':'var(--g50)')+';color:'+(isYou?'#fff':'var(--g800)')+';border-radius:8px;padding:6px 10px;font-size:11.5px;line-height:1.45">';
+          if(!isYou&&m.who)thread+='<div style="font-size:10px;font-weight:700;color:var(--info);margin-bottom:2px">'+m.who+'</div>';
+          thread+=m.text;
+          thread+='<div style="font-size:9.5px;color:'+(isYou?'rgba(255,255,255,.6)':'var(--g400)')+';margin-top:3px">'+m.ts+'</div>';
+          thread+='</div></div>';
+        });
+        thread+='</div>';
+      }
+      return '<div style="border:1px solid var(--g150);border-radius:8px;padding:10px 13px;margin-bottom:6px;cursor:pointer;background:'+(expanded?'var(--g50)':'#fff')+'" onclick="toggleIntxThread(\''+ix.id+'\')">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+        (ix.ref?'<span class="tag neu" style="font-size:9.5px;padding:1px 6px;white-space:nowrap">'+ix.ref+'</span>':'')+
+        '<span style="font-size:12px;font-weight:600;color:var(--g800);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ix.topic+'</span>'+
+        '<span style="font-size:10.5px;color:var(--g400);flex-shrink:0">'+ix.date+'</span>'+
+        '<span style="font-size:11px;color:var(--g400);margin-left:4px">'+(expanded?'▲':'▼')+'</span>'+
+        '</div>'+
+        (!expanded?'<div style="font-size:11px;color:var(--g500);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ix.preview+'</div>':'')+
+        thread+
+      '</div>';
+    }).join('');
+  }
+
   var TICKETS=[
     {id:'TKT-0891',cat:'Equipment issue',catTag:'ok',title:'Excavator ORD-3042 — hydraulic warning light',line:'May 14 — Inspected on site, sensor fault cleared. Equipment cleared for operation.',opened:'May 13',status:'Resolved',statusCls:'ok',color:'var(--success)',sla:'Resolved within SLA (24hr)',slaCls:'ok'},
     {id:'TKT-0887',cat:'Schedule change',catTag:'warn',title:'Scissor lift ORD-3031 — requested early off-rent',line:'May 12 — Change request received. Equipment team reviewing impact.',opened:'May 11',status:'Pending 02S review',statusCls:'warn',color:'var(--warning)',sla:'Response due May 14',slaCls:'warn'},
