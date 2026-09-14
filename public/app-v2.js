@@ -2333,12 +2333,12 @@
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">• '+q+'</div>';});
     mh+='</div></div>';
     
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor Price</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
-      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.vendorPrice||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
+      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
     });
-    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="5" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
     mh+='</table><div style="margin-top:8px;font-size:10.5px;color:#94a3b8;text-align:right">02S Quote Ref: '+(row.quoteRef||'—')+'</div></div>';
     if(row.status==='Quoted'){
     mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0">';
@@ -7211,6 +7211,13 @@ charges:[
     b+='</label>';
     b+='<textarea id="lgtm-nudge-msg" placeholder="Please provide…" rows="2" style="display:none;width:100%;box-sizing:border-box;border:1.5px solid #bfdbfe;border-radius:7px;padding:7px 10px;font-size:11.5px;font-family:inherit;outline:none;resize:vertical;margin-top:6px;color:#1d4ed8;background:#f0f8ff"></textarea>';
     b+='</div></div>';
+    b+='<div><label style="'+lblStyle+'">Attach document <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label>';
+    b+='<div style="display:grid;grid-template-columns:140px 1fr;gap:8px">';
+    b+='<select id="lgtm-doc-type" style="'+inpStyle+';background:#fff"><option value="">Type…</option>';
+    ['Safety','Shipping','Submittals','Engineering','Contract','Other'].forEach(function(t){b+='<option value="'+t+'">'+t+'</option>';});
+    b+='</select>';
+    b+='<input id="lgtm-doc-name" type="text" placeholder="Document name or reference" style="'+inpStyle+'" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='var(--g200)'">';
+    b+='</div></div>';
     b+='<div class="modal-foot" style="margin-top:2px">';
     b+='<span class="spacer"></span>';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
@@ -7231,7 +7238,10 @@ charges:[
     var _nudgeChk=document.getElementById('lgtm-nudge');
     var _nudgeMsg=document.getElementById('lgtm-nudge-msg');
     var _nudgeTxt=_nudgeChk&&_nudgeChk.checked&&_nudgeMsg?_nudgeMsg.value.trim():'';
-    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item,nudge:!!_nudgeTxt});
+    var _docType=document.getElementById('lgtm-doc-type');
+    var _docName=document.getElementById('lgtm-doc-name');
+    var _attach=(_docName&&_docName.value.trim()&&_docType&&_docType.value)?[{type:_docType.value,name:_docName.value.trim(),ref:'ATT-'+Date.now(),status:'Draft'}]:[];
+    MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:lbl.value.trim(),ref:fqRef||'',project:pName,pillar:'logistics',due:due?due.value:'',priority:priEl?priEl.value:'medium',source:'manual',done:false,closeNote:'',activity:act?act.value:'',item:item,nudge:!!_nudgeTxt,attachments:_attach});
     if(_nudgeTxt){window._ccNudges=window._ccNudges||[];window._ccNudges.unshift({id:'nudge-'+Date.now(),svc:item,project:pName,question:_nudgeTxt,from:'GC Ops',ts:'Just now',answered:false});}
     _myTasksBadge();
     closeModal();
@@ -7256,12 +7266,12 @@ charges:[
     mh+='</div><div style="background:#f8fafc;border-radius:6px;padding:10px 12px;border:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Qualifications</div>';
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">\u2022 '+q+'</div>';});
     mh+='</div></div>';
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor Price</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
-      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.vendorPrice||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
+      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
     });
-    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="5" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
     mh+='</table><div style="margin-top:8px;font-size:10.5px;color:#94a3b8;text-align:right">02S Quote Ref: '+(cpRow&&cpRow.quoteRef||'\u2014')+'</div>';
     if(ccRow.state==='Quoted'){
       mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px">';
@@ -12612,12 +12622,12 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">• '+q+'</div>';});
     mh+='</div></div>';
     
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor Price</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
-      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.vendorPrice||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
+      mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
     });
-    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="5" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+total.toLocaleString()+'</td></tr>';
     mh+='</table><div style="margin-top:8px;font-size:10.5px;color:#94a3b8;text-align:right">02S Quote Ref: '+(row.quoteRef||'—')+'</div></div>';
     if(row.status==='Quoted'){
     mh+='<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e2e8f0">';
