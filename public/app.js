@@ -7570,16 +7570,8 @@ charges:[
     };
     var _itemLow=(cpRow.item||'').toLowerCase();
     var _vKey=Object.keys(_vMap).find(function(k){return _itemLow.indexOf(k)>=0;})||'toilet';
-    var _dneMap={
-      'toilet':{desc:'Portable restroom service',rate:150,uom:'EA/MO',note:'do not exceed rate per unit per month'},
-      'fenc':{desc:'Site fencing installation',rate:4.00,uom:'LF',note:'do not exceed rate per linear foot installed'},
-      'power':{desc:'Temporary power — generator & distribution',rate:3200,uom:'EA/MO',note:'do not exceed rate per system per month'},
-      'wast':{desc:'Waste hauling — 20-yd roll-off',rate:550,uom:'haul',note:'do not exceed rate per haul'},
-      'trail':{desc:'Office trailer rental',rate:1100,uom:'EA/MO',note:'do not exceed rate per unit per month'}
-    };
     window._lqbVendors=_vMap[_vKey];
     window._lqbRcItems=_rcMap[_vKey];
-    window._lqbDneItem=_dneMap[_vKey]||{desc:cpRow.item,rate:0,uom:'EA',note:'confirm rate with 02S ops'};
     window._lqbLines=[];
     window._lqbDpId=dpRowId;
     var vendors=window._lqbVendors;
@@ -7610,18 +7602,15 @@ charges:[
     });
     ob+='</div>';
     ob+='<div>';
-    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Standard 02S DNE rates</div>';
-    var dne=window._lqbDneItem;
-    ob+='<div style="padding:10px 12px;background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:8px;cursor:pointer;transition:background .12s" onmouseenter="this.style.background=\'#e0f2fe\'" onmouseleave="this.style.background=\'#f0f9ff\'" onclick="lqbAddDneLine()">';
-    ob+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px">';
-    ob+='<div style="font-size:11.5px;font-weight:600;color:var(--g900)">'+dne.desc+'</div>';
-    ob+='<span style="font-size:9px;background:#0ea5e9;border-radius:4px;padding:2px 8px;color:#fff;white-space:nowrap;flex-shrink:0;margin-left:8px">+ add line</span>';
-    ob+='</div>';
-    ob+='<div style="display:flex;align-items:baseline;gap:6px">';
-    ob+='<span style="font-size:14px;font-weight:700;color:#0369a1">$'+dne.rate.toLocaleString()+'</span>';
-    ob+='<span style="font-size:10.5px;color:#0ea5e9;font-weight:500">/ '+dne.uom+'</span>';
-    ob+='<span style="font-size:9.5px;color:var(--g400);margin-left:4px">'+dne.note+'</span>';
-    ob+='</div>';
+    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">02S rate card — click to add</div>';
+    rcItems.forEach(function(item,ii){
+      var rate=Math.round(item[0]*(1+item[1]));
+      ob+='<div style="padding:7px 11px;background:#f8fafc;border:1px solid var(--g150);border-radius:7px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseenter="this.style.background=\'#eff6ff\'" onmouseleave="this.style.background=\'#f8fafc\'" onclick="lqbAddRcLine('+ii+')">';
+      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+item[2]+'</div>';
+      ob+='<span style="font-size:11px;font-weight:600;color:var(--charcoal);white-space:nowrap">$'+rate+'/'+item[3]+'</span>';
+      ob+='<span style="font-size:9px;background:var(--g200);border-radius:4px;padding:1px 6px;color:var(--g600);white-space:nowrap">+ add</span>';
+      ob+='</div>';
+    });
     ob+='</div>';
     ob+='</div>';
     ob+='<div style="display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px;margin-bottom:18px">';
@@ -7664,13 +7653,6 @@ charges:[
     var vp=rc[ii][0],mk=rc[ii][1],desc=rc[ii][2],uom=rc[ii][3];
     var rate=Math.round(vp*(1+mk)*100)/100;
     window._lqbLines.push({desc:desc,qty:1,uom:uom,vp:vp,mk:Math.round(mk*100),rate:rate,ext:rate});
-    lqbRefreshLines();
-  }
-  function lqbAddDneLine(){
-    var dne=window._lqbDneItem;
-    if(!dne)return;
-    window._lqbLines=window._lqbLines||[];
-    window._lqbLines.push({desc:dne.desc+' (DNE)',qty:1,uom:dne.uom,vp:0,mk:0,rate:dne.rate,ext:dne.rate});
     lqbRefreshLines();
   }
   function lqbAddLine(){
