@@ -7216,7 +7216,7 @@ charges:[
     b+='<select id="lgtm-doc-type" style="'+inpStyle+';background:#fff"><option value="">Type…</option>';
     ['Safety','Shipping','Submittals','Engineering','Contract','Other'].forEach(function(t){b+='<option value="'+t+'">'+t+'</option>';});
     b+='</select>';
-    b+='<input id="lgtm-doc-name" type="text" placeholder="Document name or reference" style="'+inpStyle+'" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='var(--g200)'">';
+    b+='<input id="lgtm-doc-name" type="text" placeholder="Document name or reference" style="'+inpStyle+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
     b+='</div></div>';
     b+='<div class="modal-foot" style="margin-top:2px">';
     b+='<span class="spacer"></span>';
@@ -7621,12 +7621,12 @@ charges:[
     ob+='<button onclick="lqbAddLine()" style="font-size:10px;padding:3px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff;cursor:pointer;color:var(--g700)">+ Add blank line</button>';
     ob+='</div>';
     ob+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
-    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;background:var(--g50);border-bottom:1px solid var(--g200)">';
-    ['Description','Qty','UOM','Vendor $','Markup','Rate','Ext',''].forEach(function(c){ob+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">'+c+'</div>';});
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 90px 90px 28px;background:var(--g50);border-bottom:1px solid var(--g200)">';
+    ['Description','Qty','UOM','Rate','Ext',''].forEach(function(c){ob+='<div style="padding:5px 8px;font-size:9px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">'+c+'</div>';});
     ob+='</div>';
     ob+='<div id="lqb-lines-tbl"></div>';
-    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g150);background:var(--g50)">';
-    ob+='<div style="padding:7px 8px;font-size:11.5px;font-weight:700;color:var(--g700);grid-column:span 6;text-align:right;padding-right:12px">Total</div>';
+    ob+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 90px 90px 28px;border-top:1px solid var(--g150);background:var(--g50)">';
+    ob+='<div style="padding:7px 8px;font-size:11.5px;font-weight:700;color:var(--g700);grid-column:span 4;text-align:right;padding-right:12px">Total</div>';
     ob+='<div id="lqb-total" style="padding:7px 8px;font-size:12px;font-weight:700;color:var(--g900)">$0</div>';
     ob+='<div></div></div>';
     ob+='</div></div>';
@@ -7662,7 +7662,6 @@ charges:[
     var lines=window._lqbLines;
     if(!lines||!lines[i])return;
     var l=lines[i];
-    l.rate=Math.round(l.vp*(1+l.mk/100)*100)/100;
     l.ext=Math.round(l.rate*l.qty*100)/100;
     lqbRefreshLines();
   }
@@ -7674,14 +7673,11 @@ charges:[
     var is='width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:5px;padding:4px 6px;font-size:11.5px;font-family:inherit;outline:none;background:#fff';
     var h='';
     lines.forEach(function(l,i){
-      h+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 96px 72px 84px 84px 28px;border-top:1px solid var(--g100);align-items:center;padding:3px 0">';
+      h+='<div style="display:grid;grid-template-columns:2.2fr 56px 64px 90px 90px 28px;border-top:1px solid var(--g100);align-items:center;padding:3px 0">';
       h+='<div style="padding:2px 6px"><input style="'+is+'" value="'+l.desc.replace(/"/g,'&quot;')+'" placeholder="Description" onchange="window._lqbLines['+i+'].desc=this.value"></div>';
       h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" value="'+l.qty+'" onchange="window._lqbLines['+i+'].qty=+this.value||1;lqbCalcLine('+i+')"></div>';
       h+='<div style="padding:2px 4px"><input style="'+is+'" value="'+l.uom+'" onchange="window._lqbLines['+i+'].uom=this.value"></div>';
-      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" step="0.01" value="'+l.vp+'" onchange="window._lqbLines['+i+'].vp=+this.value||0;lqbCalcLine('+i+')"></div>';
-      h+='<div style="padding:2px 4px;display:flex;align-items:center;gap:2px"><input style="'+is+';text-align:right;max-width:40px" type="number" min="0" max="99" value="'+l.mk+'" onchange="window._lqbLines['+i+'].mk=+this.value||0;lqbCalcLine('+i+')">';
-      h+='<span style="font-size:10px;color:var(--g500)">%</span></div>';
-      h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:500;color:var(--g800);text-align:right">$'+l.rate.toLocaleString()+'</div>';
+      h+='<div style="padding:2px 4px"><input style="'+is+';text-align:right" type="number" min="0" step="0.01" value="'+l.rate+'" onchange="window._lqbLines['+i+'].rate=+this.value||0;lqbCalcLine('+i+')"></div>';
       h+='<div style="padding:2px 8px;font-size:11.5px;font-weight:600;color:var(--g900);text-align:right">$'+l.ext.toLocaleString()+'</div>';
       h+='<div style="padding:2px 2px;text-align:center"><button onclick="lqbRemLine('+i+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;line-height:1;padding:2px 4px">×</button></div>';
       h+='</div>';
@@ -7778,9 +7774,9 @@ charges:[
     b+='<div><div style="font-size:10px;color:var(--g400);margin-bottom:2px">Valid until</div><div style="font-size:12px;font-weight:600">'+qd.expDate+'</div></div>';
     b+='</div>';
     b+='<div style="border:1px solid var(--g150);border-radius:8px;overflow:hidden;margin-bottom:16px">';
-    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Vendor $</span><span class="r">Rate</span><span class="r">Extension</span></div>';
-    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.vendorPrice.toLocaleString()+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
-    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 5;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
+    b+='<div class="dp-head" style="grid-template-columns:2fr 60px 80px 90px 100px"><span>Description</span><span class="c">Qty</span><span class="c">UOM</span><span class="r">Rate</span><span class="r">Extension</span></div>';
+    qd.lines.forEach(function(l){b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 100px"><div style="font-size:11.5px">'+l.desc+'</div><div class="c" style="font-size:11.5px">'+l.qty+'</div><div class="c" style="font-size:11.5px">'+l.uom+'</div><div class="r" style="font-size:11.5px">$'+l.unitRate.toLocaleString()+'</div><div class="r" style="font-size:11.5px;font-weight:600">$'+l.ext.toLocaleString()+'</div></div>';});
+    b+='<div class="dp-row" style="grid-template-columns:2fr 60px 80px 90px 100px;background:var(--g50)"><div style="font-size:12px;font-weight:700;grid-column:span 4;text-align:right;padding-right:12px">Total</div><div class="r" style="font-size:12px;font-weight:700">$'+tot.toLocaleString()+'</div></div>';
     b+='</div>';
     b+='<div style="display:flex;gap:8px;justify-content:flex-end">';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
