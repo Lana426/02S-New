@@ -2283,7 +2283,7 @@
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Planned</span><span class="lg"><span class="gl-sw submitted"></span>Quoted</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 90px 160px 110px 160px';
+      var meCols='1fr 140px 100px 130px 160px 110px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
       h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
       _logRowsVis.forEach(function(row,ri){
@@ -2335,6 +2335,7 @@
     mh+='</div></div>';
     
     if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+    if(qd.vendorRates){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#075985;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor rates</div><div style="font-size:12px;color:#0c4a6e;line-height:1.5">'+qd.vendorRates+'</div></div>';}
         mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
@@ -7300,6 +7301,7 @@ charges:[
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">\u2022 '+q+'</div>';});
     mh+='</div></div>';
     if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+    if(qd.vendorRates){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#075985;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor rates</div><div style="font-size:12px;color:#0c4a6e;line-height:1.5">'+qd.vendorRates+'</div></div>';}
         mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
@@ -7590,11 +7592,11 @@ charges:[
       'trail':['Williams Scotsman|(800) 782-1500','Mobile Mini|(800) 456-7981','ATCO Structures|(800) 438-3226']
     };
     var _rcMap={
-      'toilet':[[130,0.15,'Standard portable restroom — monthly service','EA'],[200,0.15,'ADA-accessible restroom — monthly service','EA'],[100,0.15,'Handwash station — monthly service','EA'],[650,0.15,'Initial setup & site delivery','LS']],
-      'fenc':[[3.5,0.15,'Chain-link fencing panel (per LF)','LF'],[180,0.15,'Security gate — per unit/month','EA'],[1.2,0.15,'Barbed wire top rail (per LF)','LF'],[1200,0.15,'Installation & teardown','LS']],
-      'power':[[2800,0.12,'Generator rental — diesel 100kW/month','EA'],[5.5,0.12,'Fuel management (per gallon)','GAL'],[800,0.12,'Distribution panel & cabling','LS'],[600,0.12,'Delivery & setup','LS']],
-      'wast':[[480,0.15,'20-yd roll-off dumpster — 2-week haul','EA'],[95,0.15,'Debris haul-away (per ton)','TON'],[320,0.15,'Hazardous waste disposal (per drum)','DRUM'],[650,0.15,'Monthly service fee','MO']],
-      'trail':[[950,0.12,'10×44 office trailer — monthly lease','EA'],[800,0.12,'Delivery & setup','LS'],[400,0.12,'Steps, tie-downs & skirting','LS'],[180,0.12,'Monthly service (cleaning/maint)','MO']]
+      'toilet':[[130,'Standard portable restroom — monthly service','EA'],[200,'ADA-accessible restroom — monthly service','EA'],[100,'Handwash station — monthly service','EA'],[650,'Initial setup & site delivery','LS']],
+      'fenc':[[3.50,'Chain-link fencing panel (per LF)','LF'],[175,'Security gate — per unit/month','EA'],[1.20,'Barbed wire top rail (per LF)','LF'],[1200,'Installation & teardown','LS']],
+      'power':[[2800,'Generator rental — diesel 100kW/month','EA'],[5.50,'Fuel management (per gallon)','GAL'],[800,'Distribution panel & cabling','LS'],[600,'Delivery & setup','LS']],
+      'wast':[[480,'20-yd roll-off dumpster — 2-week haul','EA'],[95,'Debris haul-away (per ton)','TON'],[320,'Hazardous waste disposal (per drum)','DRUM'],[650,'Monthly service fee','MO']],
+      'trail':[[950,'10×44 office trailer — monthly lease','EA'],[800,'Delivery & setup','LS'],[400,'Steps, tie-downs & skirting','LS'],[180,'Monthly service (cleaning/maint)','MO']]
     };
     var _itemLow=(cpRow.item||'').toLowerCase();
     var _vKey=Object.keys(_vMap).find(function(k){return _itemLow.indexOf(k)>=0;})||'toilet';
@@ -7630,12 +7632,11 @@ charges:[
     });
     ob+='</div>';
     ob+='<div>';
-    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">02S rate card — click to add</div>';
+    ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">DNE rate reference — click to add</div>';
     rcItems.forEach(function(item,ii){
-      var rate=Math.round(item[0]*(1+item[1]));
       ob+='<div style="padding:7px 11px;background:#f8fafc;border:1px solid var(--g150);border-radius:7px;margin-bottom:5px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseenter="this.style.background=\'#eff6ff\'" onmouseleave="this.style.background=\'#f8fafc\'" onclick="lqbAddRcLine('+ii+')">';
-      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+item[2]+'</div>';
-      ob+='<span style="font-size:11px;font-weight:600;color:var(--charcoal);white-space:nowrap">$'+rate+'/'+item[3]+'</span>';
+      ob+='<div style="flex:1;font-size:11.5px;color:var(--g800)">'+item[1]+'</div>';
+      ob+='<span style="font-size:11px;font-weight:700;color:#b45309;white-space:nowrap">DNE $'+item[0]+'/'+item[2]+'</span>';
       ob+='<span style="font-size:9px;background:var(--g200);border-radius:4px;padding:1px 6px;color:var(--g600);white-space:nowrap">+ add</span>';
       ob+='</div>';
     });
@@ -7649,6 +7650,7 @@ charges:[
     });
     ob+='</div>';
     ob+='<div style="margin-bottom:18px"><label style="font-size:10px;font-weight:600;color:var(--g600);display:block;margin-bottom:5px">Vendor selection rationale</label><textarea id="lqb-rationale" rows="2" placeholder="Why was this vendor selected? (e.g. best price, fastest lead time, preferred vendor)" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 11px;font-size:12px;font-family:inherit;resize:none;outline:none"></textarea></div>';
+    ob+='<div style="margin-bottom:18px"><label style="font-size:10px;font-weight:600;color:var(--g600);display:block;margin-bottom:5px">Vendor rates</label><textarea id="lqb-vendor-rates" rows="2" placeholder="Enter vendor rates or pricing notes (e.g. $2,500/mo generator, $150 delivery)" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 11px;font-size:12px;font-family:inherit;resize:none;outline:none"></textarea></div>';
     ob+='<div>';
     ob+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
     ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Line items</div>';
@@ -7679,9 +7681,8 @@ charges:[
   function lqbAddRcLine(ii){
     var rc=window._lqbRcItems;
     if(!rc||!rc[ii])return;
-    var vp=rc[ii][0],mk=rc[ii][1],desc=rc[ii][2],uom=rc[ii][3];
-    var rate=Math.round(vp*(1+mk)*100)/100;
-    window._lqbLines.push({desc:desc,qty:1,uom:uom,vp:vp,mk:Math.round(mk*100),rate:rate,ext:rate});
+    var dne=rc[ii][0],desc=rc[ii][1],uom=rc[ii][2];
+    window._lqbLines.push({desc:desc,qty:1,uom:uom,vp:dne,mk:0,rate:dne,ext:dne});
     lqbRefreshLines();
   }
   function lqbAddLine(){
@@ -7732,7 +7733,7 @@ charges:[
     var qnum=qnumEl?qnumEl.value.trim():'';
     var expDate=expEl?expEl.value:'';
     var lines=window._lqbLines||[];
-    var rationaleEl=document.getElementById('lqb-rationale');var rationale=rationaleEl?rationaleEl.value.trim():'';
+    var rationaleEl=document.getElementById('lqb-rationale');var rationale=rationaleEl?rationaleEl.value.trim():'';var vendorRatesEl=document.getElementById('lqb-vendor-rates');var vendorRates=vendorRatesEl?vendorRatesEl.value.trim():'';
     if(!isDraft&&!vendor){if(vendorEl)vendorEl.style.borderColor='#dc2626';toast('Enter a vendor name');return;}
     if(!isDraft&&!lines.length){toast('Add at least one line item');return;}
     var dpId=window._lqbDpId;
@@ -7747,7 +7748,7 @@ charges:[
       quoteNum:qnum||'DRAFT-'+Date.now(),
       quoteDate:_fmtDate(today),
       expDate:expDate?_fmtDate(new Date(expDate+' 12:00')):'TBD',
-      rationale:rationale,
+      rationale:rationale,vendorRates:vendorRates,
       lines:lines.map(function(l){return{desc:l.desc,qty:l.qty,uom:l.uom,vendorPrice:l.vp,markup:l.mk/100,unitRate:l.rate,ext:l.ext};})
     };
     cpRow.quoteData=qd;
@@ -10874,7 +10875,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,subState:r.subState||null,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:r.leadTime||null,dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[]});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],item:r.item,qty:r.qty,window:r.window,state:r.state,subState:r.subState||null,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:(function(){var _i=(DP&&DP.logistics&&DP.logistics.intake)||{};var _s=[].concat(_i.core||[]).concat(_i.archetype||[]).concat(_i.optional||[]);var _m=_s.find(function(x){return x.service===r.item;})||{};return _m.leadTime||null;})(),dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[]});
         });
       }
     });
@@ -12605,7 +12606,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>In fulfillment</span><span class="lg"><span class="gl-sw projected"></span>Planned</span><span class="lg"><span class="gl-sw submitted"></span>Quoted</span><span class="lg"><span class="gl-sw submitted"></span>Requested</span><span class="lg"><span class="gl-sw offrent"></span>Complete / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 90px 160px 110px 160px';
+      var meCols='1fr 140px 100px 130px 160px 110px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
       h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
       _logRowsVis.forEach(function(row,ri){
@@ -12657,6 +12658,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     mh+='</div></div>';
     
     if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+    if(qd.vendorRates){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#075985;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor rates</div><div style="font-size:12px;color:#0c4a6e;line-height:1.5">'+qd.vendorRates+'</div></div>';}
         mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
