@@ -2293,7 +2293,7 @@
         h+='<div class="dp-row" style="grid-template-columns:'+meCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+ri+')">';
         h+='<div><div style="font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'</div><div style="font-size:10.5px;color:var(--g400)">'+row.productLine+'</div></div>';
         h+='<div style="font-size:11.5px;color:'+(row.vendor?'var(--g700)':'var(--g400)')+'">'+(row.vendor||'TBD — 02S to source')+'</div>';
-        h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.needBy||'—')+'</div>';
+        var _svcs2=(DP&&DP.logistics&&DP.logistics.services)||[];var _sm2=_svcs2.find(function(s){return s.service===row.service;})||{};var _lt2=_sm2.leadTime||0;var _ltBadge='';if(row.needBy&&_lt2>0){var _nb2=new Date(row.needBy);var _tod2=new Date();var _ob2=new Date(_nb2.getTime()-_lt2*86400000);var _dl2=Math.round((_ob2.getTime()-_tod2.getTime())/86400000);if(_dl2<0){_ltBadge='<span style="font-size:9.5px;color:#dc2626;font-weight:600;display:block;margin-top:2px">&#9888; Inside '+_lt2+'d lead</span>';}else if(_dl2<14){_ltBadge='<span style="font-size:9.5px;color:#d97706;font-weight:600;display:block;margin-top:2px">&#9889; '+_lt2+'d lead · '+_dl2+'d left</span>';}else{_ltBadge='<span style="font-size:9.5px;color:var(--g400);display:block;margin-top:2px">'+_lt2+'d lead</span>';}}h+='<div><div style="font-size:11.5px;color:var(--g700)">'+(row.needBy||'—')+'</div>'+_ltBadge+'</div>';
         h+='<div style="font-size:10.5px;color:var(--g500);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(row.costCode||'—')+'</div>';
         if(isQuoted){
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
@@ -2333,7 +2333,8 @@
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">• '+q+'</div>';});
     mh+='</div></div>';
     
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+        mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
       mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
@@ -7272,7 +7273,8 @@ charges:[
     mh+='</div><div style="background:#f8fafc;border-radius:6px;padding:10px 12px;border:1px solid #e2e8f0"><div style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Qualifications</div>';
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">\u2022 '+q+'</div>';});
     mh+='</div></div>';
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+        mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
       mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
@@ -7620,6 +7622,7 @@ charges:[
       ob+='</div>';
     });
     ob+='</div>';
+    ob+='<div style="margin-bottom:18px"><label style="font-size:10px;font-weight:600;color:var(--g600);display:block;margin-bottom:5px">Vendor selection rationale</label><textarea id="lqb-rationale" rows="2" placeholder="Why was this vendor selected? (e.g. best price, fastest lead time, preferred vendor)" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 11px;font-size:12px;font-family:inherit;resize:none;outline:none"></textarea></div>';
     ob+='<div>';
     ob+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
     ob+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Line items</div>';
@@ -7703,6 +7706,7 @@ charges:[
     var qnum=qnumEl?qnumEl.value.trim():'';
     var expDate=expEl?expEl.value:'';
     var lines=window._lqbLines||[];
+    var rationaleEl=document.getElementById('lqb-rationale');var rationale=rationaleEl?rationaleEl.value.trim():'';
     if(!isDraft&&!vendor){if(vendorEl)vendorEl.style.borderColor='#dc2626';toast('Enter a vendor name');return;}
     if(!isDraft&&!lines.length){toast('Add at least one line item');return;}
     var dpId=window._lqbDpId;
@@ -7717,6 +7721,7 @@ charges:[
       quoteNum:qnum||'DRAFT-'+Date.now(),
       quoteDate:_fmtDate(today),
       expDate:expDate?_fmtDate(new Date(expDate+' 12:00')):'TBD',
+      rationale:rationale,
       lines:lines.map(function(l){return{desc:l.desc,qty:l.qty,uom:l.uom,vendorPrice:l.vp,markup:l.mk/100,unitRate:l.rate,ext:l.ext};})
     };
     cpRow.quoteData=qd;
@@ -12584,7 +12589,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='<div class="dp-row" style="grid-template-columns:'+meCols+';cursor:pointer" onclick="toggleDPDrill(\'logistics\','+ri+')">';
         h+='<div><div style="font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'</div><div style="font-size:10.5px;color:var(--g400)">'+row.productLine+'</div></div>';
         h+='<div style="font-size:11.5px;color:'+(row.vendor?'var(--g700)':'var(--g400)')+'">'+(row.vendor||'TBD — 02S to source')+'</div>';
-        h+='<div style="font-size:11.5px;color:var(--g700)">'+(row.needBy||'—')+'</div>';
+        var _svcs2=(DP&&DP.logistics&&DP.logistics.services)||[];var _sm2=_svcs2.find(function(s){return s.service===row.service;})||{};var _lt2=_sm2.leadTime||0;var _ltBadge='';if(row.needBy&&_lt2>0){var _nb2=new Date(row.needBy);var _tod2=new Date();var _ob2=new Date(_nb2.getTime()-_lt2*86400000);var _dl2=Math.round((_ob2.getTime()-_tod2.getTime())/86400000);if(_dl2<0){_ltBadge='<span style="font-size:9.5px;color:#dc2626;font-weight:600;display:block;margin-top:2px">&#9888; Inside '+_lt2+'d lead</span>';}else if(_dl2<14){_ltBadge='<span style="font-size:9.5px;color:#d97706;font-weight:600;display:block;margin-top:2px">&#9889; '+_lt2+'d lead · '+_dl2+'d left</span>';}else{_ltBadge='<span style="font-size:9.5px;color:var(--g400);display:block;margin-top:2px">'+_lt2+'d lead</span>';}}h+='<div><div style="font-size:11.5px;color:var(--g700)">'+(row.needBy||'—')+'</div>'+_ltBadge+'</div>';
         h+='<div style="font-size:10.5px;color:var(--g500);font-family:monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(row.costCode||'—')+'</div>';
         if(isQuoted){
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
@@ -12624,7 +12629,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     QUALS.forEach(function(q){mh+='<div style="font-size:10.5px;color:#475569;margin-bottom:3px;line-height:1.4">• '+q+'</div>';});
     mh+='</div></div>';
     
-    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+    if(qd.rationale){mh+='<div style="margin:0 0 12px;padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor selection rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+qd.rationale+'</div></div>';}
+        mh+='<table style="width:100%;border-collapse:collapse;font-size:11px"><tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:center">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S Rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
     (qd.lines||[]).forEach(function(l,li){
       mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
       mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td><td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td><td style="padding:5px 8px;text-align:center;color:#64748b">'+(l.uom||'')+'</td><td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td><td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td></tr>';
