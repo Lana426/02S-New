@@ -2452,7 +2452,7 @@
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0};
+      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
       if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
@@ -2477,7 +2477,7 @@
           var _spls=r.splits||[];
           var _renderRows=_spls.length?_spls:[null];
           _renderRows.forEach(function(sp,_si){
-            var _spState=sp?sp.state:r.state;
+            var _spState=(sp&&sp.subState)?sp.subState:(sp?sp.state:r.state);
             var _spDoneN=_stgDone3[_spState]||0;
             var _spNeed=sp?sp.need:r.need;
             var _key=origIdx+'-'+_si;
@@ -12196,7 +12196,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0};
+      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=_pfbCcRows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
       if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
@@ -12221,7 +12221,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           var _spls=r.splits||[];
           var _renderRows=_spls.length?_spls:[null];
           _renderRows.forEach(function(sp,_si){
-            var _spState=sp?sp.state:r.state;
+            var _spState=(sp&&sp.subState)?sp.subState:(sp?sp.state:r.state);
             var _spDoneN=_stgDone3[_spState]||0;
             var _spNeed=sp?sp.need:r.need;
             var _key=origIdx+'-'+_si;
@@ -13680,7 +13680,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0};
+      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
       if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
@@ -13705,7 +13705,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           var _spls=r.splits||[];
           var _renderRows=_spls.length?_spls:[null];
           _renderRows.forEach(function(sp,_si){
-            var _spState=sp?sp.state:r.state;
+            var _spState=(sp&&sp.subState)?sp.subState:(sp?sp.state:r.state);
             var _spDoneN=_stgDone3[_spState]||0;
             var _spNeed=sp?sp.need:r.need;
             var _key=origIdx+'-'+_si;
