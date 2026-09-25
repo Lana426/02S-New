@@ -28,7 +28,8 @@
     {key:'prefab',label:'Prefab',depth:'full',dtext:'Full'},
     {key:'procurement',label:'Procurement',depth:ns?'full':'part',dtext:ns?'Full':'~100 SKUs'},
     {key:'profservices',label:'Prof. services',depth:ns?'full':'thin',dtext:ns?'Full':'By request'},
-    {key:'logistics',label:'Logistics',depth:ns?'full':'thin',dtext:ns?'Full':'By request'}
+    {key:'logistics',label:'Site services',depth:ns?'full':'thin',dtext:ns?'Full':'By request'},
+    {key:'stc',label:'Small tools & consumables',depth:'full',dtext:'Full'}
   ]; }
   var PILLARS=getPillars();
   // mode: 'rental' (per-day) or 'onetime'. rate=daily $/day. price string for display.
@@ -2407,6 +2408,1079 @@
   }
   function logIntakeSvcToggle(cb,svcName){toast((cb.checked?'Added: ':'Removed: ')+svcName+' — submit intake to request from 02S');}
   function logSubmitIntake(){logIntakeToggle();toast('Service intake submitted to 02S — they\'ll confirm lead times and send quotes');}
+
+  /* ═══════════ STC MODULE ═══════════ */
+
+  var _stcAllReqs=[
+    {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',desc:'Welding consumables — monthly site restock',status:'accepted',needBy:'2026-10-25',costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,
+     notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring monthly VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'}],
+     attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}],
+     q:{cost:1240,vendor:'Airgas',ref:'QT-STC-001'}},
+    {id:'STC-002',proj:'hercules',type:'sp',cat:'Small Tools',desc:'Cordless drill sets (Makita DHP483)',status:'quote_sent',needBy:'2026-09-28',costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,
+     notes:[],attachments:[],
+     q:{cost:892,qty:6,vendor:'Home Depot Pro',ref:'QT-STC-002'}},
+    {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',desc:'Abrasive wheels & grinding discs — monthly restock',status:'pending',needBy:'2026-11-10',costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,
+     notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
+     attachments:[]},
+    {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',desc:'Fall protection harnesses & lanyards (Petzl Avao)',status:'accepted',needBy:'2026-10-12',costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,
+     notes:[{who:'Lana Butorovic',when:'Sep 14 2026',text:'Required for steel erection crew — 12 units needed before Oct 1.'},
+            {who:'02S Procurement',when:'Sep 16 2026',text:'Quote confirmed, delivery scheduled Sep 30 via Grainger.'}],
+     attachments:[{name:'Safety harness spec sheet',ref:'STC-004-SPEC',status:'Approved'}],
+     q:{cost:2340,qty:12,vendor:'Grainger',ref:'QT-STC-004'}},
+    {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'pending',needBy:'2026-11-05',costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,qty:3,
+     notes:[],attachments:[]},
+    {id:'STC-B01',proj:'barryrose',type:'vmi',cat:'Fasteners',desc:'Structural fasteners — VMI restock',status:'pending',needBy:'2026-09-25',costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,
+     notes:[],attachments:[]},
+    {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'quote_sent',needBy:'2026-10-08',costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,
+     notes:[],attachments:[],
+     q:{cost:540,qty:30,vendor:'Grainger',ref:'QT-STC-B02'}},
+    {id:'STC-B03',proj:'barryrose',type:'vmi',cat:'Sealants',desc:'Thread sealants & adhesives — VMI restock',status:'accepted',needBy:'2026-11-20',costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,
+     notes:[],attachments:[],
+     q:{cost:780,vendor:'Loctite Direct',ref:'QT-STC-B03'}},
+    {id:'STC-V01',proj:'vdc14',type:'sp',cat:'Power Tools',desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'quote_sent',needBy:'2026-10-02',costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,
+     notes:[],attachments:[],
+     q:{cost:1070,qty:12,vendor:'Home Depot Pro',ref:'QT-STC-V01'}},
+    {id:'STC-V02',proj:'vdc14',type:'sp',cat:'Safety & Specialty',desc:'Hard hats Type II (3M H-812)',status:'accepted',needBy:'2026-09-30',costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,
+     notes:[],attachments:[],
+     q:{cost:420,qty:12,vendor:'3M Direct',ref:'QT-STC-V02'}},
+  ];
+
+  var _stcFilter='vmi';
+  var _stcDrillOpen=null;
+  var _stcModal={open:false,type:null,selectedItem:null};
+  var _stcCatalogSearch='';
+  var _stcSearchMatches=[];
+  var _stcQuoteId=null;
+  var _stcVMISelections={};
+  var _stcCCQuoteModal=null;
+  var _stcCCViewQuoteId=null;
+  var _stcYardModal=null;
+
+  var _stcCCProjFilter='all';
+  var _stcCCTypeFilter='all';
+  var _stcCCView='orders';
+  var _stcCCDrillOpen=null;
+
+  var _stcSchOpenOrder=null;
+
+  var _stcOrderTimelines={
+    'STC-001':[
+      {act:'Scope & Contract',status:'done',start:'2026-08-01',end:'2026-08-12',owner:'James R.'},
+      {act:'Initial Delivery',status:'done',start:'2026-09-01',end:'2026-09-15',owner:'James R.'},
+      {act:'Reorder Point Setup',status:'active',start:'2026-09-16',end:'2026-10-25',owner:'James R.'},
+      {act:'Monthly Replenishment',status:'pending',start:'2026-10-25',end:'2027-01-31',owner:'James R.'},
+    ],
+    'STC-002':[
+      {act:'Issue PO',status:'done',start:'2026-09-16',end:'2026-09-19',owner:'Sarah M.'},
+      {act:'Vendor Confirmation',status:'done',start:'2026-09-19',end:'2026-09-23',owner:'Sarah M.'},
+      {act:'Delivery to Site',status:'active',start:'2026-09-23',end:'2026-09-28',owner:'Sarah M.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-09-28',end:'2026-10-05',owner:'Sarah M.'},
+    ],
+    'STC-003':[
+      {act:'Scope & Contract',status:'active',start:'2026-09-10',end:'2026-09-28',owner:'James R.'},
+      {act:'Initial Delivery',status:'pending',start:'2026-10-01',end:'2026-10-25',owner:'James R.'},
+      {act:'Reorder Point Setup',status:'pending',start:'2026-10-25',end:'2026-11-10',owner:'James R.'},
+      {act:'Monthly Replenishment',status:'pending',start:'2026-11-10',end:'2027-01-31',owner:'James R.'},
+    ],
+    'STC-004':[
+      {act:'Issue PO',status:'done',start:'2026-09-14',end:'2026-09-17',owner:'Sarah M.'},
+      {act:'Vendor Confirmation',status:'done',start:'2026-09-17',end:'2026-09-22',owner:'Sarah M.'},
+      {act:'Delivery to Site',status:'active',start:'2026-09-22',end:'2026-09-30',owner:'Sarah M.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-09-30',end:'2026-10-07',owner:'Sarah M.'},
+    ],
+    'STC-005':[
+      {act:'Issue PO',status:'pending',start:'2026-10-01',end:'2026-10-07',owner:'Sarah M.'},
+      {act:'Vendor Confirmation',status:'pending',start:'2026-10-07',end:'2026-10-14',owner:'Sarah M.'},
+      {act:'Delivery to Site',status:'pending',start:'2026-10-14',end:'2026-11-05',owner:'Sarah M.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-11-05',end:'2026-11-10',owner:'Sarah M.'},
+    ],
+    'STC-B01':[
+      {act:'Scope & Contract',status:'active',start:'2026-09-01',end:'2026-09-25',owner:'Tom K.'},
+      {act:'Initial Delivery',status:'pending',start:'2026-09-25',end:'2026-10-15',owner:'Tom K.'},
+      {act:'Reorder Point Setup',status:'pending',start:'2026-10-15',end:'2026-11-01',owner:'Tom K.'},
+      {act:'Monthly Replenishment',status:'pending',start:'2026-11-01',end:'2027-01-31',owner:'Tom K.'},
+    ],
+    'STC-B02':[
+      {act:'Issue PO',status:'done',start:'2026-09-14',end:'2026-09-18',owner:'Tom K.'},
+      {act:'Vendor Confirmation',status:'active',start:'2026-09-18',end:'2026-09-26',owner:'Tom K.'},
+      {act:'Delivery to Site',status:'pending',start:'2026-09-26',end:'2026-10-08',owner:'Tom K.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-10-08',end:'2026-10-15',owner:'Tom K.'},
+    ],
+    'STC-B03':[
+      {act:'Scope & Contract',status:'done',start:'2026-08-15',end:'2026-09-08',owner:'Tom K.'},
+      {act:'Initial Delivery',status:'done',start:'2026-09-08',end:'2026-10-01',owner:'Tom K.'},
+      {act:'Reorder Point Setup',status:'active',start:'2026-10-01',end:'2026-10-20',owner:'Tom K.'},
+      {act:'Monthly Replenishment',status:'pending',start:'2026-10-20',end:'2027-01-31',owner:'Tom K.'},
+    ],
+    'STC-V01':[
+      {act:'Issue PO',status:'done',start:'2026-09-13',end:'2026-09-17',owner:'Alex P.'},
+      {act:'Vendor Confirmation',status:'active',start:'2026-09-17',end:'2026-09-24',owner:'Alex P.'},
+      {act:'Delivery to Site',status:'pending',start:'2026-09-24',end:'2026-10-02',owner:'Alex P.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-10-02',end:'2026-10-10',owner:'Alex P.'},
+    ],
+    'STC-V02':[
+      {act:'Issue PO',status:'done',start:'2026-09-10',end:'2026-09-14',owner:'Alex P.'},
+      {act:'Vendor Confirmation',status:'done',start:'2026-09-14',end:'2026-09-19',owner:'Alex P.'},
+      {act:'Delivery to Site',status:'active',start:'2026-09-19',end:'2026-09-30',owner:'Alex P.'},
+      {act:'Receipt & Inspection',status:'pending',start:'2026-09-30',end:'2026-10-07',owner:'Alex P.'},
+    ],
+  };
+
+  var _stcCostCodes=[
+    {v:'0600-0100-0000-0001',l:'0600-0100 — Small tools — power & cordless'},
+    {v:'0600-0200-0000-0001',l:'0600-0200 — Small tools — safety & specialty'},
+    {v:'0100-5100-0000-0001',l:'0100-5100 — Heavy haul & crane mobilization'},
+    {v:'0100-5200-0000-0001',l:'0100-5200 — Freight & site staging'}
+  ];
+
+  var _stcCatalog=[
+    {sku:'ST-001',name:'Cordless drill set (Makita DHP483)',cat:'Power Tools',price:149},
+    {sku:'ST-002',name:'SDS Max rotary hammer (Bosch GBH18V-26)',cat:'Power Tools',price:389},
+    {sku:'ST-003',name:'Angle grinder 4.5" (DeWalt DWE402)',cat:'Power Tools',price:89},
+    {sku:'ST-004',name:'Impact wrench 3/4" (Milwaukee 2767-20)',cat:'Power Tools',price:279},
+    {sku:'ST-005',name:'Circular saw 7.25" (Makita 5007MGA)',cat:'Power Tools',price:189},
+    {sku:'ST-010',name:'Fall protection harness (Petzl Avao)',cat:'Safety',price:195},
+    {sku:'ST-011',name:'Safety glasses ANSI Z87.1 (12-pack)',cat:'Safety',price:18},
+    {sku:'ST-012',name:'Hard hat Type II (3M H-812)',cat:'Safety',price:35},
+    {sku:'ST-013',name:'Arc flash gloves Class 00',cat:'Safety',price:42},
+    {sku:'ST-014',name:'Hi-vis vest ANSI Class 2',cat:'Safety',price:22},
+    {sku:'ST-020',name:'Welding wire ER70S-6 25 lb spool',cat:'Consumables',price:89},
+    {sku:'ST-021',name:'Grinding disc 4.5" box of 25',cat:'Consumables',price:38},
+    {sku:'ST-022',name:'Concrete anchor bolts 1/2" box 50',cat:'Consumables',price:45},
+    {sku:'ST-023',name:'Thread sealant Loctite 577 250ml',cat:'Consumables',price:28},
+    {sku:'ST-024',name:'Wire tie downs 100-pack',cat:'Consumables',price:15},
+    {sku:'ST-025',name:'Cable ties UV-resistant 14" 100pk',cat:'Consumables',price:12},
+  ];
+
+  var _stcVMIStock=[
+    {cat:'Welding',   current:68, min:30, max:80, threshold:40},
+    {cat:'Abrasives', current:28, min:25, max:70, threshold:35},
+    {cat:'Fasteners', current:82, min:35, max:90, threshold:40},
+    {cat:'Sealants',  current:45, min:30, max:60, threshold:40},
+  ];
+
+  var _stcChain={
+    labels:['Plan line','Requested','Quoted','Accepted','Fulfilled'],
+    icons:[
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',
+      '<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',
+      '<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 12h6M9 16h4"/>',
+      '<path d="M20 6L9 17l-5-5"/>',
+      '<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>'
+    ],
+    stageOf:function(r){var m={pending:1,quote_sent:2,accepted:3,fulfilled:4};return m[r.status]!=null?m[r.status]:1;}
+  };
+
+  var _stcTone={pending:'warn',quote_sent:'warn',accepted:'ok',fulfilled:'ok'};
+  var _stcLbl={pending:'Requested',quote_sent:'Quoted',accepted:'Accepted',fulfilled:'Fulfilled'};
+  var _stcTC={ok:'#15803d',warn:'#b45309',bad:'#b91c1c',neu:'var(--g500)'};
+  var _stcTB={ok:'#f0fdf4',warn:'#fefce8',bad:'#fef2f2',neu:'var(--g100)'};
+
+  var _stcProjColors={hercules:'#6366f1',barryrose:'#0891b2',vdc14:'#059669'};
+  var _stcProjCodes={hercules:'HRC',barryrose:'BR',vdc14:'VDC'};
+  var _stcProjNames={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
+
+  var _stcSchedule=[
+    {proj:'hercules',type:'vmi',stage:'Scope & Contract',status:'complete',detail:'Airgas VMI framework signed',date:'Aug 12'},
+    {proj:'hercules',type:'vmi',stage:'Initial Delivery',status:'complete',detail:'First batch delivered Sep 15',date:'Sep 15'},
+    {proj:'hercules',type:'vmi',stage:'Reorder Setup',status:'active',detail:'Auto-reorder at 40% threshold active',date:'Sep 16'},
+    {proj:'hercules',type:'vmi',stage:'Active Supply',status:'active',detail:'Monthly cadence — next restock Oct 25',date:'Oct 25'},
+    {proj:'hercules',type:'sp',stage:'Scope & Contract',status:'complete',detail:'02S catalog reviewed & vendors approved',date:'Sep 10'},
+    {proj:'hercules',type:'sp',stage:'Initial Delivery',status:'active',detail:'Harnesses Sep 30 · Drills Oct 5',date:'Sep 30'},
+    {proj:'barryrose',type:'vmi',stage:'Scope & Contract',status:'pending',detail:'VMI agreement pending 02S review',date:'Sep 25'},
+    {proj:'barryrose',type:'vmi',stage:'Initial Delivery',status:'pending',detail:'Awaiting contract finalization',date:'TBD'},
+    {proj:'barryrose',type:'sp',stage:'Scope & Contract',status:'complete',detail:'Grainger procurement agreement active',date:'Sep 1'},
+    {proj:'barryrose',type:'sp',stage:'Initial Delivery',status:'active',detail:'Safety gloves delivery Oct 8',date:'Oct 8'},
+    {proj:'vdc14',type:'sp',stage:'Scope & Contract',status:'complete',detail:'Home Depot Pro — standard catalog',date:'Sep 5'},
+    {proj:'vdc14',type:'sp',stage:'Initial Delivery',status:'active',detail:'Angle grinders Oct 2 · Hard hats Sep 30',date:'Oct 2'},
+  ];
+
+  function _stcFmt(n){if(!n&&n!==0)return '—';return '$'+(n>=1000?Math.round(n/100)/10+'K':n);}
+  function _stcIsUrgent(nb){if(!nb)return false;var d=new Date(nb),now=new Date(),diff=(d-now)/86400000;return diff>=0&&diff<30;}
+  function _stcMkSVG(p){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">'+p+'</svg>';}
+  function _stcCCOpts(){
+    var h='<select style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none">';
+    h+='<option value="">Select cost code…</option>';
+    _stcCostCodes.forEach(function(cc){h+='<option value="'+cc.v+'">'+cc.l+'</option>';});
+    h+='</select>';
+    return h;
+  }
+
+  function _stcOpenDoc(ri,di){
+    var r=_stcAllReqs[ri],d=r&&r.attachments&&r.attachments[di];
+    if(d){openDocChip((d.name||d)+(d.ref?' · '+d.ref:''));}
+  }
+  function _stcOpenQuote(id){_stcQuoteId=id;renderSTC();}
+  function _stcCloseQuote(){_stcQuoteId=null;renderSTC();}
+
+  function _stcDrillToggle(idx){
+    var el=document.getElementById('stc-drill-'+idx);
+    if(!el)return;
+    var isOpen=el.style.display==='block';
+    if(_stcDrillOpen!==null&&_stcDrillOpen!==idx){
+      var prev=document.getElementById('stc-drill-'+_stcDrillOpen);
+      if(prev)prev.style.display='none';
+    }
+    el.style.display=isOpen?'none':'block';
+    _stcDrillOpen=isOpen?null:idx;
+  }
+
+  function _stcSendNote(idx){
+    var inp=document.getElementById('stc-note-'+idx);
+    if(!inp||!inp.value.trim())return;
+    _stcAllReqs[idx].notes=_stcAllReqs[idx].notes||[];
+    _stcAllReqs[idx].notes.push({who:'Lana Butorovic',when:'Just now',text:inp.value.trim()});
+    inp.value='';
+    toast('Note sent to 02S');
+  }
+  function _stcPickType(t){_stcModal.type=t;renderSTC();}
+  function _stcBackType(){_stcModal.type=null;_stcModal.selectedItem=null;renderSTC();}
+  function _stcOpenModal(){_stcModal={open:true,type:null,selectedItem:null};renderSTC();}
+  function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
+  function _stcSetFilter(f){_stcFilter=f;_stcDrillOpen=null;renderSTC();}
+  function _stcClearItem(){_stcModal.selectedItem=null;renderSTC();}
+  function _stcSelectItem(mi){
+    var item=_stcSearchMatches[mi];
+    if(!item)return;
+    _stcModal.selectedItem=item;
+    _stcCatalogSearch='';
+    renderSTC();
+  }
+  function _stcSearchCatalog(q){
+    _stcCatalogSearch=q;
+    var box=document.getElementById('stc-sp-results');
+    if(!box)return;
+    if(!q||!q.trim()){box.style.display='none';return;}
+    var lq=q.toLowerCase();
+    _stcSearchMatches=_stcCatalog.filter(function(i){return i.name.toLowerCase().indexOf(lq)>=0||i.cat.toLowerCase().indexOf(lq)>=0;});
+    if(!_stcSearchMatches.length){box.innerHTML='<div style="padding:10px 12px;font-size:12px;color:var(--g400)">No items found</div>';box.style.display='block';return;}
+    var rh='';
+    _stcSearchMatches.forEach(function(item,mi){
+      rh+='<div onclick="_stcSelectItem('+mi+')" style="padding:9px 12px;cursor:pointer;border-bottom:1px solid var(--g100);display:flex;justify-content:space-between;align-items:center" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'\'">';
+      rh+='<div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+item.name+'</div><div style="font-size:11px;color:var(--g500)">'+item.cat+'</div></div>';
+      rh+='<div style="font-size:12px;font-weight:600;color:var(--g700)">$'+item.price+'</div></div>';
+    });
+    box.innerHTML=rh;box.style.display='block';
+  }
+  function _stcCheckUrgency(val){
+    var box=document.getElementById('stc-urgency-box');
+    if(!box)return;
+    if(!val){box.style.display='none';return;}
+    var d=new Date(val),now=new Date(),diff=(d-now)/86400000;
+    box.style.display=(diff>=0&&diff<30)?'block':'none';
+  }
+  function _stcSubmitVMI(){
+    var cats=Object.keys(_stcVMISelections);
+    if(!cats.length){toast('Please select at least one VMI kit');return;}
+    var nb=document.getElementById('stc-vmi-needby');
+    var ccEl=document.getElementById('stc-vmi-cc');
+    var ccVal=ccEl?ccEl.value:'0600-0200-0000-0001';
+    cats.forEach(function(cat){
+      var sel=_stcVMISelections[cat];
+      _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'vmi',cat:cat,desc:cat+' consumables — VMI request',status:'pending',needBy:nb?nb.value:'',costCode:ccVal,date:'Now',sa:1,ea:4,budget:1000,vmiMin:sel.min,vmiMax:sel.max,notes:[],attachments:[]});
+    });
+    _stcVMISelections={};
+    _stcModal.open=false;_stcFilter='vmi';
+    renderSTC();toast('VMI request submitted — 02S will review and send a quote.');
+  }
+  function _stcSubmitSP(){
+    var si=_stcModal.selectedItem;
+    if(!si){toast('Please select an item from the catalog');return;}
+    var nb=document.getElementById('stc-sp-needby');
+    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:si.cat,desc:si.name,status:'pending',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,notes:[],attachments:[]});
+    _stcModal.open=false;_stcFilter='sp';
+    renderSTC();toast('Request submitted — 02S will respond with a quote.');
+  }
+  function _stcUpdateMinMax(idx,field,val){
+    var v=parseInt(val,10);
+    if(isNaN(v)||v<0||v>100)return;
+    _stcVMIStock[idx][field]=v;
+    var s=_stcVMIStock[idx];
+    var pct=Math.min(100,s.current);
+    var atRisk=s.current<s.min;
+    var barCol=atRisk?'#ef4444':'#16a34a';
+    var card=document.getElementById('stc-vmi-card-'+idx);
+    if(card){
+      var bar=card.querySelector('.stc-vmi-bar');
+      var thl=card.querySelector('.stc-vmi-thl');
+      var badge=card.querySelector('.stc-vmi-badge');
+      if(bar){bar.style.background=barCol;}
+      if(thl){thl.style.left=s.min+'%';}
+      if(badge){badge.textContent=atRisk?'⚠ Below min':'OK';badge.style.background=atRisk?'#fef2f2':'#f0fdf4';badge.style.color=atRisk?'#b91c1c':'#15803d';}
+      card.style.borderColor=atRisk?'#fca5a5':'var(--g150)';
+    }
+  }
+
+  function _stcVMIToggleKit(cat){
+    if(_stcVMISelections[cat]){delete _stcVMISelections[cat];}
+    else{_stcVMISelections[cat]={min:30,max:80};}
+    var grid=document.getElementById('stc-vmi-kit-grid');
+    if(grid){grid.innerHTML=_stcVMIKitGridHTML();}
+  }
+  function _stcVMISetKitMinMax(cat,field,val){
+    if(!_stcVMISelections[cat])return;
+    var v=parseInt(val,10);
+    if(!isNaN(v)&&v>=0&&v<=100)_stcVMISelections[cat][field]=v;
+  }
+  function _stcVMIKitGridHTML(){
+    var kits=[{cat:'Welding',color:'#7c3aed'},{cat:'Abrasives',color:'#0891b2'},{cat:'Fasteners',color:'#059669'},{cat:'Sealants',color:'#b45309'}];
+    var h='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
+    kits.forEach(function(k,ki){
+      var sel=!!_stcVMISelections[k.cat];
+      var selObj=_stcVMISelections[k.cat];
+      var last=ki===kits.length-1;
+      h+='<div style="'+(last?'':'border-bottom:1px solid var(--g100);')+'">';
+      h+='<div onclick="_stcVMIToggleKit(\''+k.cat+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;background:'+(sel?k.color+'09':'#fff')+';user-select:none">';
+      h+='<div style="width:18px;height:18px;border-radius:4px;border:2px solid '+(sel?k.color:'var(--g300)')+';background:'+(sel?k.color:'#fff')+';flex-shrink:0;display:flex;align-items:center;justify-content:center">';
+      if(sel)h+='<svg viewBox="0 0 12 12" fill="none" style="width:10px;height:10px"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      h+='</div>';
+      h+='<span style="font-size:13px;font-weight:'+(sel?'600':'500')+';color:'+(sel?'var(--g900)':'var(--g700)')+'">'+k.cat+'</span>';
+      h+='</div>';
+      if(sel){
+        h+='<div onclick="event.stopPropagation()" style="display:flex;gap:12px;padding:6px 14px 12px 42px;background:'+k.color+'05">';
+        h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400)">Min %</span>';
+        h+='<input type="number" value="'+(selObj?selObj.min:30)+'" min="0" max="100" oninput="_stcVMISetKitMinMax(\''+k.cat+'\',\'min\',this.value)" style="border:1px solid var(--g200);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:72px"></label>';
+        h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400)">Max %</span>';
+        h+='<input type="number" value="'+(selObj?selObj.max:80)+'" min="0" max="100" oninput="_stcVMISetKitMinMax(\''+k.cat+'\',\'max\',this.value)" style="border:1px solid var(--g200);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:72px"></label>';
+        h+='</div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+    return h;
+  }
+  function _stcCCOpenQuoteForm(ri){_stcCCQuoteModal=ri;renderSTC_CC();}
+  function _stcCCCloseQuoteForm(){_stcCCQuoteModal=null;var ov=document.getElementById('stccc-quote-form-ov');if(ov)ov.remove();renderSTC_CC();}
+  function _stcCCOpenViewQuote(ri){_stcCCViewQuoteId=ri;renderSTC_CC();}
+  function _stcCCCloseViewQuote(){_stcCCViewQuoteId=null;var ov=document.getElementById('stccc-view-quote-ov');if(ov)ov.remove();renderSTC_CC();}
+  function _stcCCViewQuoteHTML(){
+    if(_stcCCViewQuoteId===null)return '';
+    var r=_stcAllReqs[_stcCCViewQuoteId];
+    if(!r||!r.q)return '';
+    var h='<div id="stccc-view-quote-ov" onclick="if(event.target===this){_stcCCCloseViewQuote();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(r.q.ref||'Quote')+'</div>';
+    h+='<button onclick="_stcCCCloseViewQuote()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button></div>';
+    var isVMIq=r.type==='vmi';
+    h+='<div style="padding:16px 20px"><div style="font-size:12px;color:var(--g500);margin-bottom:12px">'+r.desc+'</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">';
+    var tiles=[];
+    if(isVMIq)tiles.push({k:'Vendor',v:r.q.vendor||'—'});
+    tiles.push({k:'Quote ref',v:r.q.ref||'—'},{k:'Value',v:_stcFmt(r.q.cost)},{k:'Quantity',v:r.q.qty?''+r.q.qty:'—'});
+    tiles.forEach(function(p){
+      h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px">';
+      h+='<div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:4px">'+p.k+'</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+p.v+'</div></div>';
+    });
+    h+='</div></div>';
+    h+='<div style="padding:10px 20px 16px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcCCCloseViewQuote()" class="btn btn-ghost">Close</button>';
+    h+='</div></div></div>';
+    return h;
+  }
+  function _stcCCSubmitQuote(ri){
+    var r=_stcAllReqs[ri];
+    if(!r)return;
+    var vendor=document.getElementById('stccc-qf-vendor');
+    var ref=document.getElementById('stccc-qf-ref');
+    var cost=document.getElementById('stccc-qf-cost');
+    var qty=document.getElementById('stccc-qf-qty');
+    var notes=document.getElementById('stccc-qf-notes');
+    var costVal=cost?parseFloat(cost.value):0;
+    if(!costVal){toast('Please enter a total value');return;}
+    r.q={ref:ref&&ref.value.trim()?ref.value.trim():'QT-CC-'+r.id,cost:costVal};
+    if(r.type==='vmi'&&vendor&&vendor.value.trim())r.q.vendor=vendor.value.trim();
+    if(qty&&qty.value)r.q.qty=parseInt(qty.value,10);
+    if(notes&&notes.value.trim())r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Just now',text:notes.value.trim()}]);
+    r.status='quote_sent';
+    _stcCCQuoteModal=null;
+    toast('Quote sent to project team for '+r.id);
+    renderSTC_CC();
+  }
+  function _stcCCQuoteFormHTML(){
+    if(_stcCCQuoteModal===null)return '';
+    var r=_stcAllReqs[_stcCCQuoteModal];
+    if(!r)return '';
+    var ri=_stcCCQuoteModal;
+    var h='<div id="stccc-quote-form-ov" onclick="if(event.target===this){_stcCCCloseQuoteForm();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:500px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Send Quote to Project Team</div>';
+    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">'+r.desc+'</div></div>';
+    h+='<button onclick="_stcCCCloseQuoteForm()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    var isVMI=r.type==='vmi';
+    h+='<div style="padding:20px;display:flex;flex-direction:column;gap:12px">';
+    h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--g600)"><b>'+r.id+'</b> · '+r.cat+' · Need by '+(r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD')+'</div>';
+    if(isVMI){
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Vendor</span>';
+      h+='<input type="text" id="stccc-qf-vendor" placeholder="e.g. Airgas, Grainger…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+    }
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quote Reference</span>';
+    h+='<input type="text" id="stccc-qf-ref" placeholder="e.g. QT-STC-006" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Total Value ($)</span>';
+    h+='<input type="number" id="stccc-qf-cost" min="0" placeholder="0" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quantity</span>';
+    h+='<input type="number" id="stccc-qf-qty" min="1" placeholder="—" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+    h+='</div>';
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Notes / Terms</span>';
+    h+='<textarea id="stccc-qf-notes" rows="3" placeholder="Lead time, '+(isVMI?'replenishment schedule, ':'')+'special conditions…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;background:#fff;color:var(--g900);outline:none"></textarea></label>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcCCCloseQuoteForm()" class="btn btn-ghost">Cancel</button>';
+    h+='<button onclick="_stcCCSubmitQuote('+ri+')" class="btn btn-primary" style="margin-left:auto">Send to Project Team</button>';
+    h+='</div></div></div>';
+    return h;
+  }
+  function _stcOpenYardModal(ri){_stcYardModal=ri;renderSTC_CC();}
+  function _stcCloseYardModal(){_stcYardModal=null;var ov=document.getElementById('stc-yard-ov');if(ov)ov.remove();renderSTC_CC();}
+  function _stcSubmitYardNotify(ri){
+    var r=_stcAllReqs[ri];
+    if(!r)return;
+    var qtyEl=document.getElementById('stc-yard-qty');
+    var noteEl=document.getElementById('stc-yard-note');
+    var qty=qtyEl?parseInt(qtyEl.value,10)||0:0;
+    var noteText=noteEl?noteEl.value.trim():'';
+    var msg='Yard availability: '+qty+' unit'+(qty!==1?'s':'');
+    if(noteText)msg+=' — '+noteText;
+    r.notes=(r.notes||[]).concat([{who:'Yard Team',when:'Just now',text:msg}]);
+    _stcYardModal=null;
+    toast('Yard availability notified to requesting team');
+    renderSTC_CC();
+  }
+  function _stcYardModalHTML(){
+    if(_stcYardModal===null)return '';
+    var r=_stcAllReqs[_stcYardModal];
+    if(!r)return '';
+    var ri=_stcYardModal;
+    var h='<div id="stc-yard-ov" onclick="if(event.target===this){_stcCloseYardModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Yard Availability</div>';
+    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">Submit available stock for this incoming request</div></div>';
+    h+='<button onclick="_stcCloseYardModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    h+='<div style="padding:20px">';
+    h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e">';
+    h+='<div style="font-weight:700;margin-bottom:3px">'+r.desc+'</div>';
+    h+='<div>'+(_stcProjNames[r.proj]||r.proj)+' · Need by: '+(r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD')+'</div>';
+    h+='</div>';
+    h+='<label style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Qty on hand at your yard</span>';
+    h+='<input type="number" id="stc-yard-qty" min="0" value="0" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:120px"></label>';
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Note (optional)</span>';
+    h+='<textarea id="stc-yard-note" rows="2" placeholder="e.g. Available after Oct 1 — currently at Bay Area site" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;background:#fff;color:var(--g900);outline:none"></textarea></label>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcCloseYardModal()" class="btn btn-ghost">Cancel</button>';
+    h+='<button onclick="_stcSubmitYardNotify('+ri+')" class="btn btn-primary" style="margin-left:auto">Notify</button>';
+    h+='</div></div></div>';
+    return h;
+  }
+
+  function _stcBuildTrack(r,idx){
+    var chainStage=_stcChain.stageOf(r);
+    var DONE='<path d="M20 6L9 17l-5-5"/>';
+    var steps=_stcChain.labels.map(function(lbl,i){
+      var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
+      var ic=i<chainStage?DONE:_stcChain.icons[i];
+      return '<div class="step '+cls+'"><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+'</span></div>';
+    }).join('');
+    var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    var notes=r.notes||[];
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    if(notes.length){
+      notes.forEach(function(n){
+        h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
+        h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
+      });
+    }else{
+      h+='<div style="font-size:12px;color:var(--g400);margin-bottom:8px">No notes yet</div>';
+    }
+    h+='<div style="display:flex;gap:6px;margin-top:4px">';
+    h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900);background:#fff" placeholder="Add a note to 02S…" id="stc-note-'+idx+'">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcSendNote('+idx+')">Send</button>';
+    h+='</div></div>';
+    var docs=r.attachments||[];
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
+    if(docs.length){
+      docs.forEach(function(d,di){
+        var label=(d.name||d)+(d.ref?' · '+d.ref:'');
+        h+='<span class="doc-chip" onclick="event.stopPropagation();_stcOpenDoc('+idx+','+di+')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+label+'</span>';
+      });
+    }else{
+      h+='<span style="font-size:12px;color:var(--g400)">No documents attached</span>';
+    }
+    h+='</div></div>';
+    h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
+    if(r.q&&r.q.ref)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcOpenQuote('+idx+')">'+r.q.ref+' ↗</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Full details coming soon\')">Full details</button>';
+    h+='</div>';
+    return h;
+  }
+
+  function _stcModalHTML(){
+    var m=_stcModal;
+    var title=m.type==='vmi'?'New VMI Request':m.type==='sp'?'New Self-Perform Request':'New Request';
+    var h='<div id="stc-modal-ov" onclick="if(event.target===this){_stcCloseModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+title+'</div>';
+    h+='<button onclick="_stcCloseModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div><div style="padding:20px">';
+    if(!m.type){
+      h+='<div style="font-size:13px;font-weight:600;color:var(--g700);margin-bottom:12px">Select request type</div>';
+      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+      [{k:'vmi',t:'VMI',d:'Vendor-managed inventory — 02S manages stock levels for consumables (welding, abrasives, fasteners, sealants). Standard lead time 1–3 months.'},{k:'sp',t:'Self-Perform',d:'Catalog order or specialty item — select from catalog, 02S fulfills. Small tools and consumables.'}].forEach(function(opt){
+        h+='<div onclick="_stcPickType(\''+opt.k+'\')" style="border:2px solid var(--g200);border-radius:8px;padding:14px;cursor:pointer" onmouseover="this.style.borderColor=\'var(--primary)\'" onmouseout="this.style.borderColor=\'var(--g200)\'">';
+        h+='<div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:6px">'+opt.t+'</div>';
+        h+='<div style="font-size:11.5px;color:var(--g500);line-height:1.45">'+opt.d+'</div></div>';
+      });
+      h+='</div>';
+    }else if(m.type==='vmi'){
+      h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#92400e"><b>VMI coverage:</b> Consumables only. Select one or more kits, set min/max thresholds, then submit. Standard lead time 1–3 months.</div>';
+      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Select VMI kits</div>';
+      h+='<div id="stc-vmi-kit-grid" style="margin-bottom:14px">'+_stcVMIKitGridHTML()+'</div>';
+      h+='<div id="stc-urgency-box" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#b91c1c"><b>Urgent request</b> — standard lead time is 1–3 months for VMI planning.</div>';
+      h+='<div style="display:flex;flex-direction:column;gap:12px">';
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Cost Code</span>';
+      h+='<select id="stc-vmi-cc" style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"><option value="">Select cost code…</option>';
+      _stcCostCodes.forEach(function(cc){h+='<option value="'+cc.v+'">'+cc.l+'</option>';});
+      h+='</select></label>';
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Need By</span>';
+      h+='<input type="date" id="stc-vmi-needby" oninput="_stcCheckUrgency(this.value)" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+      h+='</div>';
+    }else{
+      h+='<div style="display:flex;flex-direction:column;gap:12px">';
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Search Catalog</span>';
+      h+='<input type="text" id="stc-sp-search" oninput="_stcSearchCatalog(this.value)" autocomplete="off" placeholder="Type to search items…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+      h+='<div id="stc-sp-results" style="max-height:170px;overflow-y:auto;border:1px solid var(--g200);border-radius:6px;display:none"></div>';
+      if(m.selectedItem){
+        var si=m.selectedItem;
+        h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between">';
+        h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+si.name+'</div><div style="font-size:11px;color:var(--g500)">'+si.cat+' · $'+si.price+' / unit</div></div>';
+        h+='<button onclick="_stcClearItem()" style="background:none;border:none;color:var(--g400);cursor:pointer;font-size:20px;line-height:1">&times;</button></div>';
+      }
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Cost Code</span>'+_stcCCOpts()+'</label>';
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Need By</span>';
+      h+='<input type="date" id="stc-sp-needby" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
+      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quantity</span>';
+      h+='<input type="number" id="stc-sp-qty" min="1" value="1" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:100px"></label></div>';
+    }
+    h+='</div>';
+    if(m.type){
+      h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+      h+='<button onclick="_stcBackType()" class="btn btn-ghost">← Back</button>';
+      if(m.type==='vmi'){h+='<button onclick="_stcSubmitVMI()" class="btn btn-primary" style="margin-left:auto">Submit VMI Request</button>';}
+      else{h+='<button onclick="_stcSubmitSP()" class="btn btn-primary" style="margin-left:auto">Submit Request</button>';}
+      h+='</div>';
+    }
+    h+='</div></div>';
+    return h;
+  }
+
+  function renderSTC(){
+    var root=document.getElementById('stc-root');
+    if(!root)return;
+    var allRows=_stcAllReqs.filter(function(r){return r.proj==='hercules';});
+    var rows=allRows.filter(function(r){return _stcFilter==='vmi'?r.type==='vmi':r.type!=='vmi';});
+    var total=rows.length;
+    var pending=rows.filter(function(r){return r.status==='pending';}).length;
+    var active=rows.filter(function(r){return r.status==='accepted'||r.status==='fulfilled';}).length;
+    var quotedVal=rows.reduce(function(s,r){return r.q&&r.q.cost?s+r.q.cost:s;},0);
+    var ICO_CLIP='<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2"/>';
+    var ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
+    var ICO_OK='<path d="M20 6L9 17l-5-5"/>';
+    var ICO_DLR='<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>';
+    var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
+    h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">'+(_stcFilter==='vmi'?'VMI — consumables':'Self-perform — small tools & consumables')+'</span></div></div></div>';
+    h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
+    h+='<div style="display:flex">';
+    [{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
+      var a=_stcFilter===f.k;
+      h+='<button onclick="_stcSetFilter(\''+f.k+'\')" style="padding:7px 16px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f.l+'</button>';
+    });
+    h+='</div></div>';
+    h+='<div class="vitals">';
+    h+='<div class="vital '+(total>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+(_stcFilter==='vmi'?'VMI Orders':'SP Orders')+'</div><div class="vv">'+total+'</div><div class="vsub">'+(_stcFilter==='vmi'?'consumable restocks tracked':'catalog orders tracked')+'</div></div>';
+    h+='<div class="vital '+(pending>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Pending</div><div class="vv">'+pending+'</div><div class="vsub">awaiting 02S quote</div></div>';
+    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted & in fulfillment</div></div>';
+    h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Quoted Value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">total quoted this period</div></div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
+    h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
+    h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
+    h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ Request</button>';
+    h+='</div>';
+    if(!rows.length){
+      h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No '+(_stcFilter==='vmi'?'VMI':'Self-Perform')+' requests yet — click <b>+ Request</b> to get started.</div>';
+    }else{
+      var cols='2fr 1fr 90px 85px 165px 105px 165px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
+      h+='<span>Item</span><span>Category</span><span>'+(_stcFilter==='vmi'?'Spend':'Quantity')+'</span><span>Need By</span><span>Cost Code</span><span>Status</span><span>Quote</span></div>';
+      rows.forEach(function(r){
+        var oi=_stcAllReqs.indexOf(r);
+        var tone=_stcTone[r.status]||'neu';
+        var lbl=_stcLbl[r.status]||r.status;
+        var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+        var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
+        var spendPct=r.budget&&r.q&&r.q.cost?Math.round(r.q.cost/r.budget*100):0;
+        h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
+        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
+        h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
+        h+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
+        h+='<div>';
+        if(_stcFilter==='vmi'){
+          var bColor=spendPct>=100?'#dc2626':spendPct>=80?'#f59e0b':'#16a34a';
+          h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);margin-bottom:3px;font-variant-numeric:tabular-nums">'+spendPct+'%</div>';
+          h+='<div style="background:var(--g150);border-radius:3px;height:4px;width:58px"><div style="background:'+(spendPct===0?'var(--g300)':bColor)+';height:4px;border-radius:3px;width:'+Math.max(2,Math.min(100,spendPct))+'%"></div></div>';
+          if(r.budget){h+='<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(r.q&&r.q.cost?_stcFmt(r.q.cost):'$0')+' / '+_stcFmt(r.budget)+'</div>';}
+        }else{
+          var dispQty=(r.q&&r.q.qty)||r.qty;
+          h+='<span style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+' units':'—')+'</span>';
+        }
+        h+='</div>';
+        h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
+        h+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
+        h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
+        h+='<div>';
+        if(r.q&&r.q.cost){
+          h+='<button onclick="event.stopPropagation();_stcOpenQuote('+oi+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+_stcFmt(r.q.cost)+' <span style="font-size:10px">· View quote →</span></button>';
+        }else{
+          h+='<span style="font-size:12px;color:var(--g400)">—</span>';
+        }
+        h+='</div></div>';
+        h+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
+      });
+      h+='</div>';
+    }
+    if(_stcQuoteId!==null){
+      var qr=_stcAllReqs[_stcQuoteId];
+      if(qr){
+        h+='<div onclick="if(event.target===this){_stcCloseQuote();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px">';
+        h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+        h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(qr.q&&qr.q.ref||'Quote')+'</div>';
+        h+='<button onclick="_stcCloseQuote()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button></div>';
+        if(qr.q){
+          h+='<div style="padding:16px 20px"><div style="font-size:12px;color:var(--g500);margin-bottom:12px">'+qr.desc+'</div>';
+          h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
+          var cpTiles=[];
+          if(qr.type==='vmi')cpTiles.push({k:'Vendor',v:qr.q.vendor||'—'});
+          cpTiles.push({k:'Quote ref',v:qr.q.ref||'—'},{k:'Value',v:_stcFmt(qr.q.cost)},{k:'Quantity',v:qr.q.qty?''+qr.q.qty:'—'});
+          cpTiles.forEach(function(p){
+            h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px">';
+            h+='<div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:4px">'+p.k+'</div>';
+            h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+p.v+'</div></div>';
+          });
+          h+='</div></div>';
+        }
+        h+='<div id="stc-return-box" style="display:none;padding:0 20px 16px">';
+        h+='<textarea id="stc-return-txt" placeholder="Add your comments for the 02S team…" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px 10px;font-size:12px;font-family:inherit;outline:none;resize:vertical;min-height:80px;color:var(--g900);background:#fff"></textarea>';
+        h+='<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">';
+        h+='<button onclick="document.getElementById(\'stc-return-box\').style.display=\'none\'" class="btn btn-ghost btn-sm">Cancel</button>';
+        h+='<button onclick="_stcCloseQuote();toast(\'Quote returned with comments — 02S team notified\')" class="btn btn-primary btn-sm" style="background:#f59e0b;border-color:#f59e0b">Send return</button>';
+        h+='</div></div>';
+        h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+        h+='<button onclick="_stcCloseQuote()" class="btn btn-ghost">Close</button>';
+        h+='<button onclick="var b=document.getElementById(\'stc-return-box\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'" class="btn btn-ghost">Return with comments</button>';
+        h+='<button onclick="_stcCloseQuote();toast(\'Quote accepted — 02S will proceed to order\')" class="btn btn-primary" style="margin-left:auto">Accept quote</button>';
+        h+='</div></div></div>';
+      }
+    }
+    root.innerHTML=h;
+    var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
+    if(_stcModal.open){document.body.insertAdjacentHTML('beforeend',_stcModalHTML());}
+  }
+
+  function _stcBuildLookahead(rows){
+    function _wkOf(nb){
+      if(!nb)return -1;
+      var d=new Date(nb),base=new Date('2026-09-21'),diff=Math.floor((d-base)/86400000);
+      if(diff<0)return -1;
+      if(diff<=6)return 0;
+      if(diff<=13)return 1;
+      return 2;
+    }
+    var sorted=rows.slice().sort(function(a,b){
+      var da=a.needBy?new Date(a.needBy).getTime():9e12;
+      var db=b.needBy?new Date(b.needBy).getTime():9e12;
+      return da-db;
+    });
+    var visible=sorted.filter(function(r){return r.needBy&&(new Date(r.needBy))>=(new Date('2026-09-21'));});
+    var gt='200px 1fr 1fr 1fr';
+    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">';
+    h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">Sep 21–Oct 11, 2026</span></div>';
+    h+='<div style="display:flex;gap:14px;margin-bottom:14px">';
+    h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7c3aed"></span>VMI</span>';
+    h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0891b2"></span>Self-Perform</span>';
+    h+='<span style="font-size:11.5px;color:var(--g400)">Hover any bar to see details</span>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
+    h+='<div></div>';
+    ['Sep 21–27','Sep 28–Oct 4','Oct 5–11'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+    h+='</div><div style="max-height:300px;overflow-y:auto">';
+    if(!visible.length){h+='<div style="font-size:12px;color:var(--g400);padding:12px 0">No upcoming delivery windows this period.</div>';}
+    visible.forEach(function(r){
+      var wk=_wkOf(r.needBy);
+      var barCol=r.type==='vmi'?'#7c3aed':'#0891b2';
+      var pColor=_stcProjColors[r.proj]||'#94a3b8';
+      var pCode=_stcProjCodes[r.proj]||'?';
+      var tipTxt=(r.desc+' · '+(r.type==='vmi'?'VMI':'SP')+' · Need by '+r.needBy).replace(/'/g,'’');
+      h+='<div style="display:grid;grid-template-columns:'+gt+';align-items:center;min-height:38px;border-top:1px solid var(--g100)">';
+      h+='<div style="padding:5px 10px 5px 0;display:flex;align-items:center;gap:6px;min-width:0">';
+      h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
+      h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.desc+'</span></div>';
+      [0,1,2].forEach(function(wi){
+        h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
+        if(wi===wk){
+          h+='<div data-tip="'+tipTxt+'" '+
+             'onmouseenter="var _t=document.getElementById(\'_stcTip\');if(_t){_t.textContent=this.dataset.tip;_t.style.display=\'block\';var _r=this.getBoundingClientRect();_t.style.left=(_r.left+_r.width/2)+\'px\';_t.style.top=(_r.top-6)+\'px\';}" '+
+             'onmouseleave="var _t=document.getElementById(\'_stcTip\');if(_t)_t.style.display=\'none\';" '+
+             'style="background:'+barCol+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+(r.type==='vmi'?'VMI':'SP')+' · '+r.id+'</div>';
+        }
+        h+='</div>';
+      });
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<div id="_stcTip" style="display:none;position:fixed;z-index:9999;background:rgba(24,24,27,.92);color:#fff;font-size:11.5px;padding:5px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-6px"></div>';
+    h+='</div>';
+    return h;
+  }
+
+  function _stcSchToggle(oid){
+    _stcSchOpenOrder=(_stcSchOpenOrder===oid)?null:oid;
+    renderSTC_CC();
+  }
+  function _stcActStatus(oid,ai,v){
+    var tl=_stcOrderTimelines[oid];if(!tl||!tl[ai])return;
+    tl[ai].status=v;renderSTC_CC();
+  }
+  function _stcActOwner(oid,ai,v){
+    var tl=_stcOrderTimelines[oid];if(!tl||!tl[ai])return;
+    tl[ai].owner=v;renderSTC_CC();
+  }
+
+  function _stcBuildScheduleView(projFilter){
+    projFilter=projFilter||'all';
+    var projs=projFilter!=='all'?[projFilter]:['hercules','barryrose','vdc14'];
+    var rows=_stcAllReqs.filter(function(r){return projs.indexOf(r.proj)>=0;});
+    var BASE=new Date('2026-09-01');
+    var ENDDT=new Date('2027-01-31');
+    var TOTAL=(ENDDT-BASE)/86400000;
+    var MONTHS=[{l:'Sep',d:'2026-09-01'},{l:'Oct',d:'2026-10-01'},{l:'Nov',d:'2026-11-01'},{l:'Dec',d:'2026-12-01'},{l:'Jan',d:'2027-01-01'}];
+    var TODAY_PCT=Math.round((new Date('2026-09-22')-BASE)/86400000/TOTAL*100);
+    var stC={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'};
+    var stL={done:'Done',active:'In progress',pending:'Not started'};
+    var stTC={done:'#15803d',active:'#1d4ed8',pending:'#6b7280'};
+    var OWNERS=['—','James R.','Sarah M.','Tom K.','Alex P.','Jordan M.'];
+    function barPct(d){var diff=(new Date(d)-BASE)/86400000;return Math.max(0,Math.min(100,Math.round(diff/TOTAL*100)));}
+    var h='<div>';
+    if(!rows.length){h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No orders match current filter.</div>';}
+    rows.forEach(function(r){
+      var oid=r.id;
+      var isOpen=_stcSchOpenOrder===oid;
+      var pColor=_stcProjColors[r.proj];
+      var pCode=_stcProjCodes[r.proj];
+      var tone=_stcTone[r.status]||'neu';
+      var lbl=_stcLbl[r.status]||r.status;
+      var tBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';
+      var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';
+      var tLbl=r.type==='vmi'?'VMI':'SP';
+      var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+      var val=r.q&&r.q.cost?_stcFmt(r.q.cost):'—';
+      h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:10px;overflow:hidden">';
+      h+='<div onclick="_stcSchToggle(\''+oid+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'#fff\'">';
+      h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.desc+'</div>';
+      h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+r.id+'</div></div>';
+      h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+tBg+';color:'+tCol+';flex-shrink:0">'+tLbl+'</span>';
+      h+='<span style="background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;flex-shrink:0">'+lbl+'</span>';
+      h+='<span style="font-size:12px;color:var(--g600);flex-shrink:0;min-width:58px;text-align:right">'+nbFmt+'</span>';
+      h+='<span style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0;min-width:52px;text-align:right">'+val+'</span>';
+      h+='<svg style="width:14px;height:14px;color:var(--g400);flex-shrink:0;transition:transform .2s;'+(isOpen?'transform:rotate(180deg);':'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+      h+='</div>';
+      if(isOpen){
+        var acts=_stcOrderTimelines[oid]||[];
+        h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
+        h+='<span style="font-size:11px;color:var(--g400)">Sep–Jan · Est. active delivery: '+nbFmt+'</span>';
+        h+='<button onclick="event.stopPropagation();toast(\'Edit mode — coming soon\')" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer">Edit</button>';
+        h+='</div>';
+        h+='<div style="display:grid;grid-template-columns:200px 1fr 80px;margin-bottom:3px">';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400)">Stage</div>';
+        h+='<div style="display:flex">';
+        MONTHS.forEach(function(m){h+='<div style="flex:1;font-size:10px;font-weight:600;color:var(--g400);padding-left:5px;border-left:1px solid var(--g150)">'+m.l+'</div>';});
+        h+='</div>';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);padding-left:8px">Tasks</div></div>';
+        h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden;background:#fff">';
+        acts.forEach(function(act,ai){
+          var bc=stC[act.status]||'#9ca3af';
+          var sl=barPct(act.start),er=barPct(act.end);
+          var isLast=ai===acts.length-1;
+          h+='<div style="display:grid;grid-template-columns:200px 1fr 80px;border-bottom:'+(isLast?'none':'1px solid var(--g100)')+'">';
+          h+='<div style="padding:10px 12px;border-right:1px solid var(--g100)">';
+          h+='<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:5px">'+act.act+'</div>';
+          h+='<select onchange="_stcActStatus(\''+oid+'\','+ai+',this.value)" onclick="event.stopPropagation()" style="font-size:11px;color:'+stTC[act.status]+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none;font-weight:500;margin-bottom:4px">';
+          ['done','active','pending'].forEach(function(s){h+='<option value="'+s+'"'+(act.status===s?' selected':'')+'>'+stL[s]+'</option>';});
+          h+='</select>';
+          h+='<div><select onchange="_stcActOwner(\''+oid+'\','+ai+',this.value)" onclick="event.stopPropagation()" style="font-size:10px;color:var(--g600);border:1px solid var(--g200);border-radius:4px;padding:2px 4px;background:#fff;cursor:pointer;outline:none;max-width:100%">';
+          OWNERS.forEach(function(ow){h+='<option value="'+ow+'"'+(act.owner===ow?' selected':'')+'>'+ow+'</option>';});
+          h+='</select></div></div>';
+          h+='<div style="position:relative;height:72px">';
+          MONTHS.forEach(function(m,mi){if(mi===0)return;var lp=barPct(m.d);h+='<div style="position:absolute;left:'+lp+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';});
+          if(TODAY_PCT>=0&&TODAY_PCT<=100){h+='<div style="position:absolute;left:'+TODAY_PCT+'%;top:0;bottom:0;width:2px;background:#ef4444;opacity:.3;z-index:1"></div>';}
+          if(er>sl){
+            h+='<div style="position:absolute;left:'+sl+'%;width:'+(er-sl)+'%;top:24px;height:22px;border-radius:11px;background:'+bc+';display:flex;align-items:center;padding:0 10px;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,.12)">';
+            h+='<span style="font-size:9.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+act.act+'</span></div>';
+          }
+          h+='</div>';
+          h+='<div style="display:flex;align-items:center;justify-content:center;border-left:1px solid var(--g100)">';
+          h+='<button onclick="event.stopPropagation();toast(\'+Task added\')" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:3px 8px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap">+ Task</button>';
+          h+='</div></div>';
+        });
+        h+='</div>';
+        h+='<div style="margin-top:8px;display:flex;gap:12px">';
+        [['#16a34a','Done'],['#2563eb','In progress'],['#9ca3af','Not started'],['#ef4444','Today']].forEach(function(e,ei){
+          if(ei===3){h+='<span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500)"><span style="display:inline-block;width:2px;height:12px;background:'+e[0]+'"></span>'+e[1]+'</span>';return;}
+          h+='<span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+e[0]+'"></span>'+e[1]+'</span>';
+        });
+        h+='</div></div>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+    return h;
+  }
+
+    function _stcBuildIncoming(){
+    var incoming=_stcAllReqs.filter(function(r){return r.status==='pending';});
+    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px;margin-top:20px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
+    h+='<span style="font-size:15px;font-weight:700;color:var(--charcoal)">Incoming Requests</span>';
+    h+='<span style="font-size:12px;color:var(--g400)">'+incoming.length+' pending quote'+(incoming.length===1?'':'s')+'</span></div>';
+    if(!incoming.length){
+      h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No pending requests — all requests have been quoted or fulfilled.</div>';
+    }else{
+      var icols='2fr 80px 80px 90px 130px';
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+icols+'">';
+      h+='<span>Request</span><span>Type</span><span>Project</span><span>Need By</span><span>Action</span></div>';
+      incoming.forEach(function(r){
+        var gi=_stcAllReqs.indexOf(r);
+        var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
+        var pCode=_stcProjCodes[r.proj]||'?';
+        var pColor=_stcProjColors[r.proj]||'#94a3b8';
+        var isUrgent=_stcIsUrgent(r.needBy);
+        h+='<div class="dp-row" style="grid-template-columns:'+icols+'">';
+        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+        h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div></div>';
+        h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
+        h+='<div><span style="background:'+pColor+'20;color:'+pColor+';font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span></div>';
+        h+='<div style="font-size:12px;color:'+(isUrgent?'#dc2626':'var(--g700)')+';font-weight:'+(isUrgent?600:400)+'">'+nbFmt+'</div>';
+        h+='<div><button onclick="_stcCCSendQuote('+gi+')" style="display:inline-flex;align-items:center;background:var(--primary);border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:11.5px;color:#fff;font-weight:600">Send quote</button></div>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }
+    h+='</div>';
+    return h;
+  }
+
+  function _stcBuildCCTrack(r,idx){
+    var chainStage=_stcChain.stageOf(r);
+    var DONE='<path d="M20 6L9 17l-5-5"/>';
+    var steps=_stcChain.labels.map(function(lbl,i){
+      var cls=i<chainStage?'done':(i===chainStage?'cur':'future');
+      var ic=i<chainStage?DONE:_stcChain.icons[i];
+      return '<div class="step '+cls+'"><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+'</span></div>';
+    }).join('');
+    var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div style="padding:10px 18px 10px;border-top:1px solid var(--g150)">';
+    h+='<div style="display:flex;gap:16px;margin-bottom:8px;flex-wrap:wrap">';
+    [{k:'Project',v:_stcProjNames[r.proj]||r.proj},{k:'Category',v:r.cat},{k:'Cost Code',v:r.costCode||'—'},{k:'Requested',v:r.date}].forEach(function(p){
+      h+='<div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">'+p.k+'</div>';
+      h+='<div style="font-size:12px;font-weight:600;color:var(--g800)">'+p.v+'</div></div>';
+    });
+    h+='</div>';
+    var notes=r.notes||[];
+    if(notes.length){
+      notes.forEach(function(n){
+        h+='<div style="margin-bottom:6px"><span style="font-size:11px;font-weight:600;color:var(--g700)">'+n.who+'</span> <span style="font-size:11px;color:var(--g400)">'+n.when+'</span>';
+        h+='<div style="font-size:12px;color:var(--g600);margin-top:2px">'+n.text+'</div></div>';
+      });
+    }
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
+    if(r.status==='pending'){h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+idx+')" class="btn btn-primary btn-sm">Send Quote</button>';}
+    h+='</div>';
+    return h;
+  }
+
+  function _stcSchDrillToggle(id){
+    var el=document.getElementById(id);
+    if(!el)return;
+    var chev=document.getElementById(id+'-chev');
+    var isOpen=el.style.display==='block';
+    el.style.display=isOpen?'none':'block';
+    if(chev)chev.style.transform=isOpen?'':'rotate(180deg)';
+  }
+  function _stcCCDrillToggle(idx){
+    var el=document.getElementById('stccc-drill-'+idx);
+    if(!el)return;
+    var isOpen=el.style.display==='block';
+    if(_stcCCDrillOpen!==null&&_stcCCDrillOpen!==idx){
+      var prev=document.getElementById('stccc-drill-'+_stcCCDrillOpen);
+      if(prev)prev.style.display='none';
+    }
+    el.style.display=isOpen?'none':'block';
+    _stcCCDrillOpen=isOpen?null:idx;
+  }
+  function _stcCCSetProjFilter(f){_stcCCProjFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
+  function _stcCCSetTypeFilter(f){_stcCCTypeFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
+  function _stcCCSetView(v){_stcCCView=v;_stcCCDrillOpen=null;renderSTC_CC();}
+  function _stcCCSendQuote(ri){_stcCCOpenQuoteForm(ri);}
+
+  function renderSTC_CC(){
+    var root=document.getElementById('ccStcRoot');
+    if(!root)return;
+    var totAll=_stcAllReqs.length;
+    var pendAll=_stcAllReqs.filter(function(r){return r.status==='pending';}).length;
+    var quotedAll=_stcAllReqs.filter(function(r){return r.status==='quote_sent';}).length;
+    var activeAll=_stcAllReqs.filter(function(r){return r.status==='accepted'||r.status==='fulfilled';}).length;
+    var _stcStatusOrder={pending:0,quote_sent:1,accepted:2,fulfilled:3};
+    var rows=_stcAllReqs.slice();
+    if(_stcCCProjFilter!=='all')rows=rows.filter(function(r){return r.proj===_stcCCProjFilter;});
+    if(_stcCCTypeFilter!=='all')rows=rows.filter(function(r){return r.type===_stcCCTypeFilter;});
+    rows.sort(function(a,b){return (_stcStatusOrder[a.status]||99)-(_stcStatusOrder[b.status]||99);});
+    var ICO_CLIP='<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2"/>';
+    var ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
+    var ICO_OK='<path d="M20 6L9 17l-5-5"/>';
+    var ICO_DOC='<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 12h6"/>';
+    var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
+    h+='<div class="meta"><span class="chip">02S Platform · Fulfillment</span><span class="chip">All projects · portfolio</span></div></div></div>';
+    h+='<div class="vitals">';
+    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_CLIP)+'Total Requests</div><div class="vv">'+totAll+'</div><div class="vsub">'+totAll+' across 3 active projects</div></div>';
+    h+='<div class="vital '+(pendAll>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Awaiting Quote</div><div class="vv">'+pendAll+'</div><div class="vsub">pending 02S quote response</div></div>';
+    h+='<div class="vital '+(quotedAll>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_DOC)+'Quote Sent</div><div class="vv">'+quotedAll+'</div><div class="vsub">awaiting project acceptance</div></div>';
+    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+activeAll+'</div><div class="vsub">accepted & in fulfillment</div></div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--g100);margin-bottom:10px">';
+    [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
+      var act=_stcCCProjFilter===pr[0];
+      h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="_stcCCSetProjFilter(\''+pr[0]+'\')">'+pr[1]+'</button>';
+    });
+    h+='</div>';
+    h+='<div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--g150)">';
+    [['all','All'],['vmi','VMI'],['sp','Self-Perform']].forEach(function(f){
+      var a=_stcCCTypeFilter===f[0];
+      h+='<button onclick="_stcCCSetTypeFilter(\''+f[0]+'\')" style="padding:6px 14px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f[1]+'</button>';
+    });
+    h+='</div>';
+    h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:3px;margin-bottom:18px;width:fit-content">';
+    [['orders','Tracked Orders'],['schedule','Gantt']].forEach(function(v){
+      var a=_stcCCView===v[0];
+      h+='<button onclick="_stcCCSetView(\''+v[0]+'\')" style="padding:5px 14px;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:'+(a?600:400)+';background:'+(a?'#fff':'transparent')+';color:'+(a?'var(--g900)':'var(--g500)')+';box-shadow:'+(a?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+v[1]+'</button>';
+    });
+    h+='</div>';
+    if(_stcCCView==='orders'){
+      if(_stcCCProjFilter==='all'){
+        h+=_stcBuildLookahead(rows);
+        var allPending=_stcAllReqs.filter(function(r){return r.status==='pending';});
+        if(_stcCCTypeFilter!=='all')allPending=allPending.filter(function(r){return r.type===_stcCCTypeFilter;});
+        if(allPending.length){
+          h+='<div style="margin-top:18px"><div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:10px">Incoming Requests — Needs Quote</div>';
+          allPending.forEach(function(r){
+            var gi=_stcAllReqs.indexOf(r);
+            var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
+            var pCode=_stcProjCodes[r.proj]||'?';
+            var pColor=_stcProjColors[r.proj]||'#94a3b8';
+            var isUrgent=_stcIsUrgent(r.needBy);
+            var typeBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';
+            var typeClr=r.type==='vmi'?'#7c3aed':'#0891b2';
+            h+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fff;border:1px solid var(--g200);border-radius:8px;margin-bottom:6px">';
+            h+='<span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;background:'+typeBg+';color:'+typeClr+';flex-shrink:0">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
+            h+='<span style="background:'+pColor+'20;color:'+pColor+';font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
+            h+='<div style="flex:1;min-width:0">';
+            h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+            h+='<div style="font-size:11px;color:var(--g500);margin-top:1px">'+r.id+' · Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
+            h+='</div>';
+            if(r.type==='sp'){
+              h+='<button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="background:#fff;border:1px solid var(--g200);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--g700);white-space:nowrap">Yard check</button>';
+            }
+            h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" class="btn btn-ghost btn-sm">Send quote</button>';
+            h+='</div>';
+          });
+          h+='</div>';
+        }else{
+          h+='<div style="padding:24px;text-align:center;color:var(--g400);font-size:13px">No pending requests across all projects.</div>';
+        }
+      }else{
+        var pendingSP=rows.filter(function(r){return r.status==='pending'&&r.type==='sp';});
+        if(pendingSP.length&&_stcCCTypeFilter!=='vmi'){
+          h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px">';
+          h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+          h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
+          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming SP Requests — Yard Availability</span>';
+          h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+pendingSP.length+' pending</span></div>';
+          pendingSP.forEach(function(r){
+            var gi=_stcAllReqs.indexOf(r);
+            var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
+            var pCode=_stcProjCodes[r.proj]||'?';
+            var pColor=_stcProjColors[r.proj]||'#94a3b8';
+            var isUrgent=_stcIsUrgent(r.needBy);
+            h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border:1px solid #fde68a;border-radius:7px;margin-bottom:6px">';
+            h+='<div style="flex:1;min-width:0">';
+            h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+            h+='<div style="font-size:11px;color:var(--g500);margin-top:2px"><span style="background:'+pColor+'20;color:'+pColor+';font-weight:700;padding:1px 6px;border-radius:3px;margin-right:5px">'+pCode+'</span>Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
+            h+='</div>';
+            h+='<button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;color:#92400e;white-space:nowrap">Yard availability</button>';
+            h+='</div>';
+          });
+          h+='</div>';
+        }
+        var cols='2fr 80px 90px 105px 150px 90px';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
+        h+='<span>Item</span><span>Type</span><span>Need By</span><span>Status</span><span>Action</span><span>Value</span></div>';
+        rows.forEach(function(r){
+          var gi=_stcAllReqs.indexOf(r);
+          var tone=_stcTone[r.status]||'neu';
+          var lbl=_stcLbl[r.status]||r.status;
+          var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+          h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
+          h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div></div>';
+          h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
+          h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
+          h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
+          h+='<div>';
+          if(r.status==='pending'){h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" class="btn btn-ghost btn-sm">Send quote</button>';}
+          else if(r.status==='quote_sent'){h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcCCOpenViewQuote('+gi+')">View quote</button>';}
+          else{h+='<span style="font-size:11px;color:var(--g400)">—</span>';}
+          h+='</div>';
+          h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.q&&r.q.cost?_stcFmt(r.q.cost):'—')+'</div>';
+          h+='</div>';
+          h+='<div id="stccc-drill-'+gi+'" class="otrack" style="display:none">'+_stcBuildCCTrack(r,gi)+'</div>';
+        });
+        h+='</div>';
+      }
+    }else{
+      h+=_stcBuildScheduleView(_stcCCProjFilter);
+    }
+    root.innerHTML=h;
+    var _qov=document.getElementById('stccc-quote-form-ov');if(_qov)_qov.remove();
+    var _vqov=document.getElementById('stccc-view-quote-ov');if(_vqov)_vqov.remove();
+    var _yov=document.getElementById('stc-yard-ov');if(_yov)_yov.remove();
+    if(_stcCCQuoteModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCQuoteFormHTML());}
+    if(_stcCCViewQuoteId!==null){document.body.insertAdjacentHTML('beforeend',_stcCCViewQuoteHTML());}
+    if(_stcYardModal!==null){document.body.insertAdjacentHTML('beforeend',_stcYardModalHTML());}
+  }
   
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
@@ -4007,7 +5081,9 @@ function renderProfServicesDP(){
     var npf=document.getElementById('nav-profile'); if(npf) npf.classList.toggle('active',screen==='profile');
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
-    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
+    var nstc=document.getElementById('nav-stc'); if(nstc) nstc.classList.toggle('active',screen==='stc');
+    if(screen==='stc'){ renderSTC(); }
+    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else if(screen!=='stc'){ dpActive=null; }
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ _ordersShowAll=false; renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
@@ -4081,6 +5157,7 @@ function renderProfServicesDP(){
   var STATUS_TAG={'Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Requested':'neu','Acknowledged':'neu','In fulfillment':'info','In fabrication':'info','Submittal':'info','QC approved':'ok','Plan line':'neu','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Demobilized':'neu','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
 
   var ORDERS=[
+    {id:'ORD-4471',proj:'barryrose',od:'2026-08-10',item:'Tower Crane — self-erect',sub:'5 units · structure phase · Barry Rose WRF',pillar:'equipment',dates:'Aug 20 – Dec 31',cost:'0140-0000-0000-0001',stage:1,plan:null,qty:5,mrate:35000,fqRef:'fq1',needsConfirmation:true,confirmMsg:'02S has reviewed your request and confirmed the taxonomy: Asset › Lifting › Tower crane › Self-erect (remote pendant). Rate: $35,000/unit/mo. Please confirm you accept this pricing to proceed.',latest:'Pending your confirmation — 02S has confirmed spec and pricing',latestTone:'warn',fresh:true},
     {id:'ORD-3051',proj:'hercules',od:'2026-05-20',item:'\u00be-Ton Crew Truck',sub:'2 units \u00b7 civil support',pillar:'equipment',dates:'May 20 \u2013 ongoing',cost:'01-540 \u00b7 General conditions',stage:4,plan:'EQ-002',qty:2,onRentSince:'May 20',mrate:2400,recert:'pending',recertDue:'Jul 21\u201325',note:'Civil support \u2014 active daily use by site crew',nsReco:{rec:'keep',why:'Daily fuel logs show active use'},latest:'On rent \u2014 active use by site crew',latestTone:'ok',rental:{offRent:'Oct 31, 2026',daysLeft:101,idle:false,save:0}},
     {id:'ORD-3054',proj:'hercules',od:'2026-08-03',item:'Tower Crane \u2014 self-erect',sub:'1 unit \u00b7 structure phase',pillar:'equipment',dates:'Aug 3 \u2013 Sep 30',cost:'26-330 \u00b7 BESS & Substation',stage:4,plan:'EQ-106',qty:1,onRentSince:'Aug 3',mrate:24000,recert:'pending',anticipatedOff:'2026-09-30',note:'Structure phase \u2014 critical path through Sep',nsReco:{rec:'keep',why:'On the critical path; required through Sep per schedule'},latest:'On rent \u2014 structure phase, critical path',latestTone:'ok',rental:{offRent:'Sep 30, 2026',daysLeft:72,idle:false,save:0}},
     {id:'ORD-3042',proj:'barryrose',od:'2026-05-12',item:'Excavator — 20T',sub:'1 unit · operator',pillar:'equipment',dates:'May 12 – Jun 6',cost:'03 · Concrete',stage:6,plan:'EQ-085',rental:{offRent:'Jun 6, 2026',daysLeft:0,idle:false,save:0},
@@ -4657,6 +5734,13 @@ function renderProfServicesDP(){
     ]}
   };
   var ORDER_NOTES={
+    'ORD-4471':[
+      {who:'You · Barry Rose WRF',when:'Aug 10 · 9:14 AM',text:'Need a tower crane for the hospital core lift. We said "luffing tower crane" on the FPO but our structural engineer actually wants self-erect — easier mob in the tight footprint. 5 units, structure phase through Dec.'},
+      {who:'02S · Ops',when:'Aug 10 · 11:02 AM',text:'Got it — confirming self-erect config. Our system auto-mapped this to "Luffing-jib" based on your FPO language. For self-erect at 250 ft reach, are you expecting pendant-operated or remote? That affects our rental agreement class.'},
+      {who:'You · Barry Rose WRF',when:'Aug 10 · 1:48 PM',text:'Remote pendant. Also the site has a 12-ton ground bearing limit at Laydown B — can you confirm the crane\'s outrigger loads are within that?'},
+      {who:'02S · Ops',when:'Aug 10 · 3:30 PM',text:'Confirmed — TC-0012 and TC-0018 (San Diego and Kansas City) both have outrigger loads under 10.8T per pad with standard mats. We\'ll include mat sizing in the lift plan. Mapping this to: Asset › Lifting › Tower crane ‣ Self-erect ‣ Remote pendant. Sound right?'},
+      {who:'You · Barry Rose WRF',when:'Aug 11 · 8:22 AM',text:'Yes — that\'s exactly right. Ready to confirm on our end.'}
+    ],
     'ORD-3042':[
       {who:'Marcus Webb · 02S',when:'May 18',text:'Yard cleared for departure. ETA May 20, 6 AM. Heavy haul permit confirmed.'},
       {who:'Dana Reyes · You',when:'May 17',text:'Site crew briefed on delivery window. North gate access road secured.'},
@@ -5210,7 +6294,7 @@ charges:[
     var mo=eqMonths(l.from,l.to), lt=l.rate?eqLineTotal(l):0;
     var dn=l.desc.replace(/—.*/,'').trim().toLowerCase().slice(0,8);
     var ord=ORDERS.filter(function(o){return o.pillar==='equipment'&&o.item&&o.item.toLowerCase().indexOf(dn)>=0;})[0];
-    var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
+    var stageLabels=['Requested','Assigned','Acknowledged','In fulfillment','On-rent','Off-rent'];
     var data={
       title:l.desc,pillar:'Equipment',statusText:stTxt,statusCls:stt,
       category:l.cat,scope:l.scope,task:l.task,
@@ -5241,7 +6325,7 @@ charges:[
     var _oid=r.linkOrd||r.ordId||(src&&src.indexOf('ORD-')===0?src:null);
     if(_oid) ord=ORDERS.filter(function(o){return o.id===_oid;})[0];
     if(!ord){var dn2=name.replace(/[— ].*/,'').trim().toLowerCase().slice(0,8); ord=ORDERS.filter(function(o){return o.pillar===pk&&o.item&&o.item.toLowerCase().indexOf(dn2)>=0;})[0];}
-    var stageLabels=['Requested','Allocated','Acknowledged','In fulfillment','On-rent','Off-rent'];
+    var stageLabels=['Requested','Assigned','Acknowledged','In fulfillment','On-rent','Off-rent'];
     var pillarNames={profservices:'Prof. services',procurement:'Procurement',prefab:'Prefab',logistics:'Logistics'};
     var docsByPillar={profservices:['Service agreement (PDF)','SOW & deliverables (PDF)'],procurement:['Purchase order (PDF)','Product specification (PDF)'],prefab:['Submittal drawings (PDF)','Shop drawings (PDF)','Fabrication schedule (PDF)'],logistics:['Delivery route map (PDF)','Permit documentation (PDF)']};
     var dpBill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
@@ -5795,7 +6879,7 @@ charges:[
     var ns=CURRENT==='ns';
     var list=ORDERS.filter(function(o){
       var st=stageStatus(o);
-      if(!ns && o.proj!=='hercules') return false;
+      if(!ns && o.proj!=='hercules' && !o.needsConfirmation) return false;
       if(fp && o.pillar!==fp) return false;
       if(fs && st!==fs) return false;
       if(fc && o.cost!==fc) return false;
@@ -5806,7 +6890,11 @@ charges:[
       if(q && (o.id.toLowerCase().indexOf(q)<0 && o.item.toLowerCase().indexOf(q)<0 && o.cost.toLowerCase().indexOf(q)<0)) return false;
       return true;
     });
-    list.sort(function(a,b){var aOver=a.recert==='pending'&&a.anticipatedOff&&a.anticipatedOff<'2026-07-22';var bOver=b.recert==='pending'&&b.anticipatedOff&&b.anticipatedOff<'2026-07-22';if(aOver&&!bOver)return -1;if(!aOver&&bOver)return 1;return 0;});
+    list.sort(function(a,b){
+      if(a.needsConfirmation&&!a.confirmed&&!(b.needsConfirmation&&!b.confirmed))return -1;
+      if(!(a.needsConfirmation&&!a.confirmed)&&b.needsConfirmation&&!b.confirmed)return 1;
+      var aOver=a.recert==='pending'&&a.anticipatedOff&&a.anticipatedOff<'2026-07-22';var bOver=b.recert==='pending'&&b.anticipatedOff&&b.anticipatedOff<'2026-07-22';if(aOver&&!bOver)return -1;if(!aOver&&bOver)return 1;return 0;
+    });
     document.getElementById('ordCountLbl').textContent='· '+list.length+' order'+(list.length===1?'':'s');
     var head='<div class="ot-head"><span>Order</span><span>Items</span><span>Pillar</span><span>Origin</span><span class="hide-sm">Dates</span><span class="hide-sm">Cost code</span><span>Status</span><span></span></div>';
     var ORD_LIMIT=6;
@@ -5816,6 +6904,7 @@ charges:[
     _ordList.forEach(function(o){
       var st=stageStatus(o);
       var badge='';
+      if(o.needsConfirmation&&!o.confirmed){badge='<span class="tag warn" style="margin-left:7px">Action required</span>';}
       var freshBadge=o.fresh?'<span class="tag ok" style="margin-left:7px">New</span>':'';
       if(o.recert==='pending'&&o.anticipatedOff&&o.anticipatedOff<'2026-07-22'){
         badge=ns
@@ -5929,6 +7018,7 @@ charges:[
     parts.push('<div class="trk">'+steps+'</div>');                  // tracker (both versions)
     if(o.stage===5&&o.anticipatedOff&&(!o.rental||!o.rental.offRent)) parts.push('<div style="border-top:1px solid var(--g200);padding:8px 0 4px;font-size:11.5px;color:var(--g500)">Projected off-rent: '+new Date(o.anticipatedOff).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>');
     if(o.latest) parts.push('<div class="latest-line'+(o.latestTone?' '+o.latestTone:'')+'"><span class="ll-k">Latest</span>'+o.latest+'</div>'); // both
+    if(o.needsConfirmation&&!o.confirmed) parts.push(orderConfirmBanner(o)); // portal confirmation CTA
     if(ns && o.risk) parts.push('<div class="track-insight '+(o.risk.type==='risk'?'risk':'opp')+'">'+svg(o.risk.type==='risk'?'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>':'<path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1-6.3-4.6L5.7 21l2.3-7.1-6-4.5h7.6z"/>',2)+'<div>'+o.risk.text+'</div></div>'); // NS insight
     if(ns && o.recv) parts.push(recvHTML(o));                        // NS: rich receiving details
     var _nts=ORDER_NOTES[o.id]; if(_nts&&_nts.length) parts.push(notesHTML(o,_nts));
@@ -5957,6 +7047,75 @@ charges:[
     if(!inp||!inp.value.trim()) return;
     toast('Note sent to 02S ops — you will be notified when they reply');
     inp.value='';
+  }
+  function orderConfirmBanner(o){
+    var h='<div style="margin-top:8px;background:#fffbeb;border:1.5px solid #fbbf24;border-radius:8px;padding:12px 14px">';
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" style="width:18px;height:18px;flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
+    h+='<div style="flex:1"><div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:4px">Action required — confirm your order</div>';
+    h+='<div style="font-size:11.5px;color:#78350f;line-height:1.5">'+(o.confirmMsg||'02S has confirmed spec and pricing. Please confirm to proceed.')+'</div>';
+    h+='</div></div>';
+    h+='<textarea id="ordNote-'+o.id+'" onclick="event.stopPropagation()" placeholder="Add a note to 02S (optional)..." rows="2" style="width:100%;box-sizing:border-box;font-size:11.5px;border:1px solid #fde68a;border-radius:5px;padding:6px 8px;color:#78350f;background:#fefce8;font-family:inherit;resize:vertical;margin-bottom:8px;outline:none"></textarea>';
+    h+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();orderDecline(\''+o.id+'\')" style="font-size:11px">Need changes</button>';
+    h+='<button class="btn btn-sm" onclick="event.stopPropagation();confirmOrder(\''+o.id+'\')" style="background:#059669;color:#fff;border-color:#059669;font-size:11px">Yes, confirm order →</button>';
+    h+='</div></div>';
+    return h;
+  }
+  function confirmOrder(id){
+    var o=ORDERS.filter(function(x){return x.id===id;})[0]; if(!o)return;
+    var noteEl=gel('ordNote-'+id);
+    var noteText=noteEl&&noteEl.value.trim()?noteEl.value.trim():'';
+    o.confirmed=true; o.needsConfirmation=false;
+    o.latest='Order confirmed by project team — 02S proceeding with sourcing and assignment';
+    o.latestTone='ok'; o.fresh=false;
+    if(!ORDER_NOTES[id])ORDER_NOTES[id]=[];
+    ORDER_NOTES[id].push({who:'Barry Rose WRF',role:'project',when:'Just now',text:'Order confirmed.'+(noteText?' Note: '+noteText:'')});
+    if(o.fqRef){
+      var fqr=fqById(o.fqRef);
+      if(fqr){
+        fqr.portalConfirmed=true;
+        if(noteText){if(!fqr.taxNotes)fqr.taxNotes=[];fqr.taxNotes.push({who:'Barry Rose WRF',role:'project',when:'Just now',text:'[Portal confirmation] '+noteText});}
+      }
+    }
+    renderOrders();
+    toast('Order confirmed — 02S will proceed with sourcing. You\'ll be notified once assets are assigned.');
+  }
+  function orderDecline(id){
+    var o=ORDERS.filter(function(x){return x.id===id;})[0]; if(!o)return;
+    var noteEl=gel('ordNote-'+id);
+    var prefillNote=noteEl&&noteEl.value.trim()?noteEl.value.trim():'';
+    var m='<div style="margin-bottom:14px">';
+    m+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">What needs to change?</div>';
+    m+='<div style="display:flex;gap:8px;margin-bottom:12px">';
+    m+='<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--g700);background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:7px 12px;flex:1"><input type="radio" name="declineType" value="pricing" style="accent-color:#059669"> Pricing</label>';
+    m+='<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--g700);background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:7px 12px;flex:1"><input type="radio" name="declineType" value="taxonomy" style="accent-color:#059669"> Taxonomy</label>';
+    m+='<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:var(--g700);background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:7px 12px;flex:1"><input type="radio" name="declineType" value="other" checked style="accent-color:#059669"> Other</label>';
+    m+='</div>';
+    m+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:6px">Note to 02S</div>';
+    m+='<textarea id="declineNote-'+id+'" rows="3" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid var(--g200);border-radius:6px;padding:7px 10px;color:var(--g800);font-family:inherit;resize:vertical;outline:none" placeholder="Describe what needs to change...">'+prefillNote+'</textarea>';
+    m+='</div>';
+    var foot='<div class="modal-foot" style="display:flex;gap:8px">';
+    foot+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    foot+='<button class="btn" style="margin-left:auto;background:#dc2626;color:#fff;border-color:#dc2626" onclick="_orderDeclineSubmit(\''+id+'\')">Send changes to 02S →</button>';
+    foot+='</div>';
+    openModal('Need changes — '+id, m+foot);
+  }
+  function _orderDeclineSubmit(id){
+    var o=ORDERS.filter(function(x){return x.id===id;})[0]; if(!o)return;
+    var typeEls=document.querySelectorAll('input[name="declineType"]');
+    var feedbackType='other';
+    typeEls.forEach(function(el){if(el.checked)feedbackType=el.value;});
+    var noteEl=gel('declineNote-'+id);
+    var noteText=noteEl&&noteEl.value.trim()?noteEl.value.trim():'Changes requested.';
+    var typeLabel=feedbackType==='pricing'?'Pricing issue':feedbackType==='taxonomy'?'Taxonomy issue':'Other change';
+    if(!ORDER_NOTES[id])ORDER_NOTES[id]=[];
+    ORDER_NOTES[id].push({who:'Barry Rose WRF',role:'project',when:'Just now',text:'['+typeLabel+'] '+noteText});
+    o.needsConfirmation=false; o.changesRequested=true;
+    o.latest='Changes requested by project team — 02S following up'; o.latestTone='warn';
+    if(o.fqRef){var fqr=fqById(o.fqRef);if(fqr){if(!fqr.taxNotes)fqr.taxNotes=[];fqr.taxNotes.push({who:'Barry Rose WRF',role:'project',when:'Just now',text:'['+typeLabel+'] '+noteText});}}
+    closeModal(); renderOrders();
+    toast('Sent to 02S — feedback on '+typeLabel.toLowerCase()+'. They\'ll follow up before proceeding.');
   }
   function eorHTML(o,ns){
     var r=o.rental;
@@ -7241,11 +8400,11 @@ charges:[
       {label:'Site survey crew',         pillar:'Prof. services',ref:'ORD-3144',   start:'2026-08-18',end:'2026-08-20',tone:'info',note:'Requested · confirm resource availability'}
     ]
   };
-  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'];
+  var CC_KEYS=['ccdash','fulfill','mytasks','gap','anomaly','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab','stc-cc'];
   var CC_PERSONA_ACCESS={
-    fsm:   ['ccdash','fulfill','mytasks','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab'],
+    fsm:   ['ccdash','fulfill','mytasks','gap','margin','fleet','dpequip','dplog','dpsvc','dpproc','dpprefab','stc-cc'],
     equip: ['fulfill','mytasks','gap','fleet','dpequip','margin'],
-    logistics: ['fulfill','mytasks','dplog','margin'],
+    logistics: ['fulfill','mytasks','dplog','stc-cc','margin'],
     prefab: ['fulfill','mytasks','dpprefab','margin'],
     procurement: ['fulfill','mytasks','dpproc','margin'],
     services: ['fulfill','mytasks','dpsvc','margin']
@@ -7361,7 +8520,7 @@ charges:[
     }
     mount.innerHTML=h;
   }
-  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
+  function renderCcScreen(s){ if(s==='ccdash'){ renderCcDash(); } else if(s==='fulfill'||s==='fulfill-quotes'){ if(s==='fulfill-quotes')fqView='quotes'; renderFulfill(); } else if(s==='mytasks'){ renderMyTasks(); } else if(s==='gap'){ renderGap(); } else if(s==='anomaly'){ renderAnomaly(); } else if(s==='margin'){ renderMargin(); } else if(s==='dpequip'){ renderCcDemand('equipment'); } else if(s==='dplog'){ renderCcDemand('logistics'); } else if(s==='dpsvc'){ renderCcDemand('profservices'); } else if(s==='dpproc'){ renderCcDemand('procurement'); } else if(s==='dpprefab'){ renderCcDemand('prefab'); } else if(s==='stc-cc'){ renderSTC_CC(); } else if(s==='fleet'){ renderFleet(); } else { ccStub(s); } }
   var CC_STUBS={
     fulfill:{t:'Fulfillment queue',d:'Every incoming request across all projects \u2014 acknowledge, price, and allocate \u2014 with the owned-vs-re-rent optimizer. Portal orders and pending-pricing lines land here. Coming next in this build.'},
     fleet:{t:'Fleet & asset lifecycle',d:'The owned-asset pool: status, utilization, and the replacement engine (age, hours, condition, depreciation \u2192 replace/retire). Recert returns surface here as idle-to-redeploy. Coming next in this build.'},
@@ -7629,7 +8788,7 @@ charges:[
     var opts='<option value="">Assign yard…</option>'+SC_LIST.map(function(s){return'<option value="'+s+'"'+(r.yard===s?' selected':'')+'>'+s+'</option>';}).join('');
     return '<select onchange="fqSetYard(\''+r.id+'\'\',this.value)" style="font-size:10.5px;border:1px solid var(--g200);border-radius:4px;padding:2px 6px;color:'+(r.yard?'var(--g700)':'var(--g400)')+';cursor:pointer;background:#fff;margin-top:2px">'+opts+'</select>';
   }
-  var FQ_TONE={'New':'neu','Requested':'neu','Planned':'neu','Awaiting pricing':'warn','Needs attention':'warn','Acknowledged':'info','Allocated':'ok','Fulfilled':'ok','In fulfillment':'ok','Scheduled':'info','At-risk':'bad','PO issued':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok'};
+  var FQ_TONE={'New':'neu','Requested':'neu','Planned':'neu','Awaiting pricing':'warn','Needs attention':'warn','Acknowledged':'info','Allocated':'ok','Assigned':'ok','Fulfilled':'ok','In fulfillment':'ok','Scheduled':'info','At-risk':'bad','PO issued':'ok','Submittal':'info','In fabrication':'info','Delivered':'ok'};
   var FQ_DONE=['Allocated','Acknowledged','PO issued','Delivered','In fabrication','In fulfillment','Scheduled','Fulfilled'];
   var CC_QUOTES=[
     {id:'fqQ1',ref:'RFQ-4801',pillar:'equipment',item:'Mobile elevated work platform · 40 ft',qty:3,project:'Hercules Solar + BESS',needby:'Sep 15',code:'0100-0100-0000-0001',status:'Needs pricing',requestDate:'Jul 25',submittedBy:'J. Nakamura',note:'Panel installation · 8-week window · not on current demand plan'},
@@ -7660,7 +8819,7 @@ charges:[
   }
   function scissorUnits(){ var y=['San Diego','Chandler','Sacramento','Kansas City']; var a=[]; for(var i=1;i<=8;i++){ a.push({id:'SL-33'+(i<10?'0':'')+i,yard:y[i%4]}); } return a; }
   var FQ=[
-    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Barry Rose WRF',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'San Diego'},{id:'TC-0018',yard:'Kansas City'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)']},
+    {src:'adhoc',id:'fq1',yard:'Corona',ref:'REQ-4471',pillar:'equipment',item:'Tower crane (self-erect)',qty:5,project:'Barry Rose WRF',needby:'Aug 20',code:'0140-0000-0000-0001',kind:'equip',status:'New',o2sRate:35000,ownedCost:22500,avail:[{id:'TC-0012',yard:'San Diego'},{id:'TC-0018',yard:'Kansas City'}],reRentRate:32000,vendor:'ALL Crane',reco:2,taxMapped:false,docs:['Lift plan (PDF)','Crane rental agreement (PDF)','Site access plan (PDF)'],taxNotes:[{who:'Barry Rose WRF',role:'project',when:'Aug 10 · 9:14 AM',text:'Need a tower crane for the hospital core lift. We said "luffing tower crane" on the FPO but our structural engineer actually wants self-erect — easier mob in the tight footprint. 5 units, structure phase through Dec.'},{who:'02S · Ops',role:'ops',when:'Aug 10 · 11:02 AM',text:'Got it — confirming self-erect config. Our system auto-mapped this to "Luffing-jib" based on your FPO language. For self-erect at 250 ft reach, are you expecting pendant-operated or remote? That affects our rental agreement class.'},{who:'Barry Rose WRF',role:'project',when:'Aug 10 · 1:48 PM',text:'Remote pendant. Also the site has a 12-ton ground bearing limit at Laydown B — can you confirm the crane’s outrigger loads are within that?'},{who:'02S · Ops',role:'ops',when:'Aug 10 · 3:30 PM',text:'Confirmed — TC-0012 and TC-0018 (our San Diego and Kansas City units) both have outrigger loads under 10.8T per pad with standard mats. We’ll include mat sizing in the lift plan. Mapping this to: Asset › Lifting › Tower crane ‣ Self-erect ‣ Remote pendant. Sound right?'},{who:'Barry Rose WRF',role:'project',when:'Aug 11 · 8:22 AM',text:'Yes — that’s exactly right. Ready to confirm on our end.'}]},
     {src:'adhoc',id:'fq2',yard:'Houston',ref:'REQ-4472',pillar:'equipment',item:'Excavator, 45K class',qty:4,project:'VDC14',needby:'Sep 5',code:'0200-0320-0000-0001',kind:'equip',status:'New',o2sRate:12000,ownedCost:7000,avail:[{id:'EX-2201',yard:'Sacramento'}],reRentRate:9500,vendor:'Sunbelt',reco:1,docs:['Equipment spec sheet (PDF)','Ground bearing report (PDF)']},
     {src:'dp',id:'fq3',yard:'Chandler',ref:'REQ-4473',pillar:'equipment',item:'Crawler crane, 230T',qty:1,project:'Hercules Solar + BESS',needby:'Oct 1',code:'2600-3300-0000-0001',kind:'equip',status:'Requested',o2sRate:68000,ownedCost:0,avail:[],reRentRate:58000,vendor:'Maxim Crane',reco:0,docs:['Vendor quote (PDF)','Scope of work (PDF)']},
     {src:'adhoc',id:'fq4',yard:'Corona',ref:'REQ-4474',pillar:'equipment',item:'Scissor lift, 32 ft',qty:12,project:'Barry Rose WRF',needby:'Aug 12',code:'0100-0100-0000-0001',kind:'equip',status:'New',o2sRate:950,ownedCost:400,avail:scissorUnits(),reRentRate:700,vendor:'United Rentals',reco:8,docs:['Safety inspection checklist (PDF)']},
@@ -7737,7 +8896,7 @@ charges:[
     {src:'dp',id:'fqHF4',yard:'Chandler',ref:'REQ-F-055',pillar:'prefab',item:'L2 headwall assemblies — Barry Rose WRF',qty:8,project:'Hercules Solar + BESS',needby:'Jul 2026',code:'0200-0320-0000-0001',kind:'flow',status:'Delivered',doneNote:'Delivered Jul 20, 2026 · signed off by site lead',docs:['Delivery receipt (PDF)','Receiving inspection (PDF)']},
     {src:'dp',id:'fqHF5',yard:'Chandler',ref:'REQ-F-056',pillar:'prefab',item:'Empty MV Rack',qty:6,project:'Hercules Solar + BESS',needby:'Nov 2026',code:'2600-0540-0000-0001',kind:'flow',status:'In fabrication',doneNote:'ModSpace · drawings approved · delivery Nov 2026',docs:['Shop drawings (PDF)','Fabrication schedule (PDF)']}
   ];
-  var fqCurId=null, fqPickOwned=0; var ccHighlight=null;
+  var fqCurId=null, fqPickOwned=0; var ccHighlight=null; var _fqPerAsset=[];
   var fqFP='all', fqFPr='all', fqFS='all', fqFSrc='all';
   var _dpCcProjMap={equipment:'hercules',logistics:'hercules',prefab:'hercules'}, _dpCcCap={}, _dpCcSrcF={}, _dpCcLimit={}, _capRiskLimit={};
   var _dpEquipView='table'; var _dpItemAttrs={};
@@ -8680,7 +9839,7 @@ charges:[
     }
     var _dpOverview=[
       {p:'equipment',label:'Equipment',icon:'box',cc:'dpequip'},
-      {p:'logistics',label:'Logistics',icon:'truck',cc:'dplog'},
+      {p:'logistics',label:'Site services',icon:'truck',cc:'dplog'},
       {p:'profservices',label:'Prof. Services',icon:'user',cc:'dpsvc'},
       {p:'procurement',label:'Procurement',icon:'pkg',cc:'dpproc'},
       {p:'prefab',label:'Pre-fab',icon:'home',cc:'dpprefab'}
@@ -8706,7 +9865,7 @@ charges:[
     });
     h+='</div></div>';
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+openN+' open requests in the queue across all five pillars. Pricing is set from the 02S catalog / rate card; equipment is allocated owned-first, then re-rent. Filter by pillar, project, or status below.</span></div>';
-    var PILLARS=[['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Pre-fab']];
+    var PILLARS=[['equipment','Equipment'],['logistics','Logistics'],['services','Prof services'],['procurement','Procurement'],['prefab','Prefab']];
     var ALL_PROJ_OPTS=[['Hercules Solar + BESS','Hercules'],['Barry Rose WRF','Barry Rose WRF'],['VDC14','VDC14']];
     var FSM_PROJ_OPTS=CC_FSM_PROJECTS.map(function(pr){return [pr,pr.indexOf('Hercules')>=0?'Hercules':pr.indexOf('VDC14')>=0?'VDC14 DC':'Barry Rose WRF'];});
     var PROJECTS=[['all','All']].concat(fsmFQScope?FSM_PROJ_OPTS:ALL_PROJ_OPTS);
@@ -8725,7 +9884,7 @@ charges:[
     if(!rows.length){ h+='<div class="dp-tbl"><div class="fq-empty">No requests match these filters. <span onclick="fqClearFilters()" style="color:var(--red);cursor:pointer;font-weight:600">Clear filters</span></div></div>'; mount.innerHTML=h; return; }
     var gt='1fr 168px 92px 128px 72px 300px';
     h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gt+'"><span>Request</span><span>Project</span><span>Need-by</span><span>Status</span><span>Docs</span><span>Fulfillment</span></div>';
-    var _fq_pri={'At-risk':0,'Needs attention':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6};
+    var _fq_pri={'At-risk':0,'Needs attention':0,'Pending pricing':1,'Requested':2,'Returned':2,'PO issued':3,'Approved':3,'In transit':4,'Acknowledged':5,'Allocated':6,'Assigned':6};
     rows=rows.slice().sort(function(a,b){var _pp=_PERSONA_PILLAR[ccPersona];if(_pp&&fqFP==='all'){var ao=a.pillar===_pp?0:1,bo=b.pillar===_pp?0:1;if(ao!==bo)return ao-bo;}var ap=(_fq_pri[a.status]!=null?_fq_pri[a.status]:3),bp=(_fq_pri[b.status]!=null?_fq_pri[b.status]:3);return ap-bp;});
     var FQ_LIMIT=7;
     var fqMoreN=rows.length-FQ_LIMIT;
@@ -8735,7 +9894,30 @@ charges:[
       var _notOwn=!!(_pPillar&&r.pillar!==_pPillar);
       var qty=(typeof r.qty==='number')?(r.qty+' units'):r.qty;
       var srcTag=r.src==='dp'?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(59,130,246,.1);color:var(--blue,#3b82f6);font-weight:600;margin-left:5px;vertical-align:middle">Demand plan</span>':'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(217,119,6,.1);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">Ad hoc</span>';
-      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span><button style="background:none;border:none;cursor:pointer;padding:1px 3px;color:var(--g400);font-size:11px;line-height:1;border-radius:3px" onclick="fqEditModal(\''+r.id+'\')">&#9998;</button></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
+      var linkedOrds=ORDERS.filter(function(o){return o.fqRef===r.id;});
+      var linkedOrdHTML='';
+      if(linkedOrds.length){
+        var loRelN=linkedOrds.filter(function(lo){return !lo.needsConfirmation&&lo.latestTone==='ok';}).length;
+        var loDetailId='lodet-'+r.id;
+        linkedOrdHTML='<details style="margin-top:5px" onclick="event.stopPropagation()">';
+        linkedOrdHTML+='<summary style="font-size:10.5px;color:var(--g500);cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px;user-select:none">';
+        linkedOrdHTML+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg>';
+        linkedOrdHTML+=loRelN+'/'+linkedOrds.length+' orders released to T3 — expand';
+        linkedOrdHTML+='</summary>';
+        linkedOrdHTML+='<div style="display:flex;flex-direction:column;gap:3px;margin-top:5px;padding-left:2px">';
+        linkedOrds.forEach(function(lo){
+          var loTone=lo.needsConfirmation?'warn':(lo.latestTone==='ok'?'ok':'neu');
+          var loStat=lo.needsConfirmation?'Awaiting confirmation':(lo.latest||'In progress');
+          linkedOrdHTML+='<div style="display:flex;align-items:center;gap:5px;font-size:10.5px">';
+          linkedOrdHTML+='<span style="font-family:monospace;font-weight:600;color:var(--g700)">'+lo.id+'</span>';
+          var loLabel=(lo.unitLabel||lo.item||'');
+          linkedOrdHTML+='<span class="tag '+loTone+'" style="font-size:9.5px;padding:0 5px">'+loLabel+'</span>';
+          linkedOrdHTML+='<span style="color:var(--g500);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px">'+loStat+'</span>';
+          linkedOrdHTML+='</div>';
+        });
+        linkedOrdHTML+='</div></details>';
+      }
+      h+='<div class="dp-row'+(_notOwn?' fq-dim':r.ref===hlRef?' fq-hl':'')+'" id="fqrow-'+r.ref+'" style="grid-template-columns:'+gt+(_notOwn?';opacity:.32;pointer-events:none;user-select:none':'')+'"><div>'+r.item+srcTag+(r.taxMapped===false?'<span style="display:inline-block;font-size:9.5px;padding:0 5px;border-radius:3px;background:rgba(245,158,11,.14);color:#b45309;font-weight:600;margin-left:5px;vertical-align:middle">\u26a1 Needs confirm</span>':'')+'<div class="sub">'+qty+' \u00b7 '+r.ref+' \u00b7 '+r.code+'</div>'+fqYardSelect(r)+(_fqNotes[r.id]?'<div class="sub" style="color:#b45309;margin-top:2px">⚠ '+_fqNotes[r.id]+'</div>':'')+linkedOrdHTML+'</div><div>'+r.project+'</div><div>'+r.needby+'</div><div style="display:flex;align-items:center;gap:5px"><span class="tag '+(FQ_TONE[r.status]||'neu')+'">'+r.status+'</span><button style="background:none;border:none;cursor:pointer;padding:1px 3px;color:var(--g400);font-size:11px;line-height:1;border-radius:3px" onclick="fqEditModal(\''+r.id+'\')">&#9998;</button></div><div>'+fqDocCell(r)+'</div><div>'+(_notOwn?'<span style="font-size:11px;color:var(--g300)">View only</span>':fqCell(r,ns))+'</div></div>';
     });
     h+='<div class="show-more-wrap">'+((!_fqShowAll&&fqMoreN>0)?'<button class="show-more-btn" onclick="_fqShowAll=true;renderFulfill()">Show '+fqMoreN+' more ↓</button>':'')+'</div>';
     h+='</div>';
@@ -8839,26 +10021,116 @@ charges:[
 
   function fqDefaultAction(r){if(r.status==='Delivered'||r.status==='Complete')return 'Confirm receipt';if(r.pillar==='logistics')return 'Schedule move';if(r.pillar==='procurement')return (r.status==='Needs attention'?'Release PO':'Place order');if(r.pillar==='prefab')return 'Approve submittal';if(r.pillar==='services'||r.pillar==='profservices')return 'Get quote';return 'Advance';}
   function fqCell(r,ns){
-    if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned \u00b7 '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo \u00b7 '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
+    if(r.status==='Allocated'&&r.alloc){ return '<div class="fq-done">'+r.alloc.owned+' owned · '+r.alloc.rerent+' re-rent<div class="sub">'+fmt(r.alloc.margin)+'/mo · '+r.alloc.pct.toFixed(0)+'% margin</div></div>'; }
     if(r.status==='Acknowledged'){ return '<div class="fq-done">'+(r.priced?('Priced '+r.priced):'Acknowledged')+'</div>'; }
     if(r.kind==='flow'){ if(fqIsDone(r)) return '<div class="fq-done">'+r.status+(r.doneNote?('<div class="sub">'+r.doneNote+'</div>'):'')+'</div>'; if(!ns){ if(r.tasked) return '<div class="fq-done"><span style="color:var(--success)">✓</span> On task list<div class="sub">'+(r.actLabel||fqDefaultAction(r))+' · action in source system</div></div>'; return '<div class="fq-reco-badge" style="margin-bottom:4px">Recommended: '+(r.actLabel||fqDefaultAction(r))+'</div><button class="btn btn-ghost btn-sm" onclick="fqTask(\''+r.id+'\')">Add to list</button>'; } return (r.hint?'<div class="fq-hint">'+CC_SPARK+r.hint+'</div>':'')+'<button class="btn btn-red btn-sm" onclick="fqAdvance(\''+r.id+'\')">'+(r.actLabel||fqDefaultAction(r))+'</button>'; }
     if(r.kind==='pending'){ return (ns&&r.suggest?'<div class="fq-hint">'+CC_SPARK+r.suggest+'</div>':'')+'<button class="btn '+(ns?'btn-red':'btn-dark')+' btn-sm" onclick="fqPriceModal(\''+r.id+'\')">'+(ns?'Price':'Set price')+'</button>'; }
     if(r.kind==='service'){ return '<button class="btn btn-dark btn-sm" onclick="fqAck(\''+r.id+'\')">Acknowledge</button>'; }
-    if(r.taxMapped===false){ return '<div class="fq-hint"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Confirm taxonomy to release for allocation</div><button class="btn btn-dark btn-sm" onclick="fqTaxModal(\''+r.id+'\')">⚡ Confirm taxonomy</button>'; }
-    if(ns){ return '<div class="fq-hint">'+CC_SPARK+r.reco+' owned + '+(r.qty-r.reco)+' re-rent \u00b7 ~'+fqMarginPct(r)+'% margin</div><button class="btn btn-red btn-sm" onclick="fqOptModal(\''+r.id+'\')">Review &amp; accept</button>'; }
-    return '<button class="btn btn-dark btn-sm" onclick="fqOptModal(\''+r.id+'\')">Allocate</button>';
+    if(r.taxMapped===false){ return '<div class="fq-hint"><svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="vertical-align:middle;margin-right:3px"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Confirm taxonomy to release for allocation</div><button class="btn btn-dark btn-sm" onclick="fqTaxModal(\''+r.id+'\')">&#9889; Confirm taxonomy</button>'; }
+    // progress indicators for partial assignment
+    var _pa=r.perAsset;
+    var _relN=_pa?_pa.filter(function(x){return x&&x.released;}).length:0;
+    var _asgN=_pa?_pa.filter(function(x){return x&&x.mode&&x.mode!=='manual-editing';}).length:0;
+    var _prog='';
+    if(_pa&&r.qty>0&&(_asgN>0||_relN>0)){
+      var _pPct=Math.round(_relN/r.qty*100);
+      _prog='<div style="margin-top:5px">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">'
+        +'<span style="font-size:10px;color:var(--g500)">'+_relN+'/'+r.qty+' released to T3'+(_asgN>_relN?' · '+_asgN+'/'+r.qty+' assigned':'')+'</span>'
+        +'</div>'
+        +'<div style="height:3px;border-radius:2px;background:var(--g200);overflow:hidden">'
+        +'<div style="width:'+_pPct+'%;height:100%;background:#059669;border-radius:2px"></div>'
+        +'</div></div>';
+    }
+    if(r.status==='Assigned'&&r.perAsset){
+      return '<div class="fq-done">'+_relN+'/'+r.qty+' released to T3</div>'
+        +'<button class="btn btn-ghost btn-sm" style="margin-top:4px;font-size:10.5px" onclick="fqOptModal(\''+r.id+'\')">View details</button>'
+        +_prog;
+    }
+    if(ns){ return '<div class="fq-hint">'+CC_SPARK+r.reco+' owned + '+(r.qty-r.reco)+' re-rent · ~'+fqMarginPct(r)+'% margin</div><button class="btn btn-red btn-sm" onclick="fqOptModal(\''+r.id+'\')">Review &amp; accept</button>'+_prog; }
+    return '<button class="btn btn-dark btn-sm" onclick="fqOptModal(\''+r.id+'\')">Assign</button>'+_prog;
   }
 
-  function fqTaxModal(id){ var r=fqById(id); if(!r)return; dpReview('equipment',r.ref); }
+  var _fqTaxDraft='';
+  function fqTaxModal(id){
+    var r=fqById(id); if(!r)return; fqCurId=id;
+    var ns=CURRENT==='ns';
+    // Request header
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · '+r.ref+' · need by '+r.needby+'</div></div>';
+    // Spec breakdown
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">';
+    b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:7px;padding:9px 11px"><div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Qty</div><div style="font-size:13px;font-weight:700;color:var(--charcoal)">'+r.qty+' units</div></div>';
+    b+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:7px;padding:9px 11px"><div style="font-size:9.5px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Need by</div><div style="font-size:13px;font-weight:700;color:var(--charcoal)">'+r.needby+'</div></div>';
+    b+='<div style="background:#fef9c3;border:1px solid #fde047;border-radius:7px;padding:9px 11px"><div style="font-size:9.5px;font-weight:700;color:#78350f;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Taxonomy</div><div style="font-size:11.5px;font-weight:600;color:#92400e">Needs confirmation</div></div>';
+    b+='</div>';
+    // Message thread
+    var notes=r.taxNotes||[];
+    b+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:10px">Clarification thread</div>';
+    b+='<div style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:14px;padding-right:4px">';
+    notes.forEach(function(n){
+      var isOps=n.role==='ops';
+      b+='<div style="display:flex;'+(isOps?'justify-content:flex-end':'justify-content:flex-start')+'">';
+      b+='<div style="max-width:82%;background:'+(isOps?'#eff6ff':'var(--g50)')+';border:1px solid '+(isOps?'#bfdbfe':'var(--g200)')+';border-radius:'+(isOps?'12px 12px 3px 12px':'12px 12px 12px 3px')+';padding:9px 12px">';
+      b+='<div style="display:flex;gap:8px;align-items:baseline;margin-bottom:4px">';
+      b+='<span style="font-size:11px;font-weight:700;color:'+(isOps?'#1d4ed8':'var(--g800)')+'">'+n.who+'</span>';
+      b+='<span style="font-size:10px;color:var(--g400)">'+n.when+'</span>';
+      b+='</div>';
+      b+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div>';
+      b+='</div></div>';
+    });
+    b+='</div>';
+    // Reply + taxonomy confirm
+    if(true){
+      b+='<div style="border-top:1px solid var(--g150);padding-top:12px;margin-bottom:12px">';
+      b+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Add reply</div>';
+      b+='<textarea id="fqTaxReplyTxt" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid var(--g200);border-radius:6px;padding:7px 10px;color:var(--g800);font-family:inherit;resize:vertical;outline:none" placeholder="Reply to the project team…"></textarea>';
+      b+='<div style="display:flex;justify-content:flex-end;margin-top:6px">';
+      b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="_fqTaxSendReply(\''+r.id+'\')">Send reply</button></div>';
+      b+='</div>';
+      b+='<div style="border-top:1px solid var(--g150);padding-top:12px">';
+      b+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Confirm taxonomy</div>';
+      b+='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">';
+      var leafOpts=['Self-erect','Flat-top','Luffing-jib','Hammerhead','Derrick'];
+      b+='<select id="fqTaxLeaf" style="font-size:12px;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;color:var(--g700);background:#fff;cursor:pointer">';
+      leafOpts.forEach(function(o){b+='<option value="'+o+'"'+(o==='Self-erect'?' selected':'')+'>Tower crane › '+o+'</option>';});
+      b+='</select>';
+      b+='<span style="font-size:11px;color:var(--g500)">Asset › Lifting › Tower crane</span>';
+      b+='</div>';
+      b+='</div>';
+    }
+    var foot='<div class="modal-foot" style="display:flex">';
+    foot+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    foot+='<button class="btn" style="margin-left:auto;background:#059669;color:#fff;border-color:#059669" onclick="_fqTaxConfirm(\''+r.id+'\')">Confirm taxonomy</button>';
+    foot+='</div>';
+    b+=foot;
+    openModal('Taxonomy clarification — '+r.ref, b);
+  }
+  function _fqTaxSendReply(id){
+    var r=fqById(id); if(!r)return;
+    var txt=gel('fqTaxReplyTxt'); if(!txt||!txt.value.trim())return;
+    if(!r.taxNotes)r.taxNotes=[];
+    r.taxNotes.push({who:'02S · Ops',role:'ops',when:'Just now',text:txt.value.trim()});
+    closeModal(); fqTaxModal(id);
+  }
+  function _fqTaxConfirm(id){
+    var r=fqById(id); if(!r)return;
+    var leaf=gel('fqTaxLeaf'); var cls=leaf?leaf.value:'Self-erect';
+    r.taxMapped=true; r.taxClass='Asset › Lifting › Tower crane › '+cls;
+    var ord=ORDERS.filter(function(o){return o.fqRef===id;})[0];
+    if(ord){ord.taxConfirmed=true;ord.taxClass=r.taxClass;}
+    renderFulfill();
+    toast('Taxonomy confirmed — '+r.taxClass+'. Proceeding to assignment.');
+    fqOptModal(id);
+  }
     function fqApproveReco(){
     var r=fqById(fqCurId); if(!r)return;
     var _nOwned=fqAssetOwn.length?fqAssetOwn.filter(function(v){return v;}).length:r.reco;
     fqPickOwned=_nOwned;
     var c=fqCompute(r,fqPickOwned);
     var _yr=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
-    r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; r.yard=_yr;
+    r.status='Assigned'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; r.yard=_yr;
     closeModal(); renderFulfill();
-    toast('Allocation confirmed');
+    toast('Assignment confirmed — released to T3');
 }
   function fqShowOverride(){
     var el=gel('fqOverrideSec'); if(el)el.style.display='block';
@@ -8878,6 +10150,7 @@ charges:[
       fqAssetOwn=[];for(var _fhi=0;_fhi<_hr.qty;_fhi++)fqAssetOwn.push(_fhi<fqPickOwned);
     }
   }
+
   function fqOptModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id;
     if(!r.avail)r.avail=[];
@@ -8886,73 +10159,232 @@ charges:[
     if(!r.ownedCost)r.ownedCost=0;
     if(!r.reRentRate)r.reRentRate=0;
     if(!r.vendor)r.vendor='—';
-    fqPickOwned=Math.min(r.reco,Math.min(r.avail.length,r.qty));
-    fqAssetOwn=[];for(var _fai=0;_fai<r.qty;_fai++)fqAssetOwn.push(_fai<fqPickOwned);
-    var maxOwned=Math.min(r.avail.length,r.qty);
-    var cReco=fqCompute(r,r.reco), cAll=fqCompute(r,maxOwned), cNone=fqCompute(r,0);
-    var ownCheaper=r.ownedCost<r.reRentRate;
-    var savPct=r.reRentRate>0?Math.round(Math.abs(r.reRentRate-r.ownedCost)/r.reRentRate*100):0;
-    var whyTxt;
-    if(maxOwned===0){
-      whyTxt='No owned units — re-renting from '+r.vendor+' at '+fmt(r.reRentRate)+'/mo.';
-    } else if(maxOwned>=r.qty){
-      whyTxt=r.qty+' owned available · '+fmt(r.ownedCost)+'/mo owned vs '+fmt(r.reRentRate)+'/mo re-rent'+(ownCheaper?' · '+savPct+'% cheaper to own':' · re-rent '+savPct+'% cheaper')+'. Using full fleet.';
-    } else {
-      whyTxt=maxOwned+' owned available · '+fmt(r.ownedCost)+'/mo owned vs '+fmt(r.reRentRate)+'/mo re-rent ('+r.vendor+')'+(ownCheaper?' · own '+savPct+'% cheaper, maximize fleet use':' · re-rent '+savPct+'% cheaper, but avoids AP outlay')+'.';
+    // restore partial assignment state from r.perAsset if available and length matches
+    if(r.perAsset&&r.perAsset.length===r.qty){
+      _fqPerAsset=r.perAsset.slice();
+    } else if(!_fqPerAsset||_fqPerAsset.length!==r.qty){
+      _fqPerAsset=[];
+      for(var _pi=0;_pi<r.qty;_pi++) _fqPerAsset.push(null);
     }
-    // Request header
-    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · billed at '+fmt(r.o2sRate)+'/unit/mo</div></div>';
-    // GREEN recommendation box
-    b+='<div style="background:#fafafa;border:1px solid var(--g200);border-left:3px solid #6ee7b7;border-radius:8px;padding:14px 16px;margin-bottom:14px">';
-    b+='<div style="font-size:10.5px;font-weight:700;letter-spacing:.07em;color:var(--g500);text-transform:uppercase;margin-bottom:6px">Recommendation</div>';
-    b+='<div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+r.reco+' owned · '+(r.qty-r.reco)+' re-rent</div>';
-    b+='<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">';
-    for(var _ai=0;_ai<r.qty;_ai++){
-      var _isO=_ai<r.reco;var _aD=r.avail[_ai];
-      b+='<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:#fff;border:1px solid var(--g150);border-radius:6px">';
-      b+='<span class="tag '+(_isO?'ok':'neu')+'" style="font-size:10px;padding:1px 7px">'+(_isO?'Own':'Re-rent')+'</span>';
-      if(_isO){b+='<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace">'+(_aD?_aD.id:('Unit '+(_ai+1)))+'</span>';if(_aD)b+='<span style="font-size:11.5px;color:var(--g500)"> · '+_aD.yard+'</span>';}
-      else{b+='<span style="font-size:12px;font-weight:600;color:var(--g900)">Unit '+(_ai+1)+'</span><span style="font-size:11.5px;color:var(--g500)"> · '+r.vendor+'</span>';}
+    openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqBuildPerAssetBody(r){
+    var doneCount=_fqPerAsset.filter(function(x){return x&&x.mode!=='manual-editing';}).length;
+    var releasedCount=_fqPerAsset.filter(function(x){return x&&x.released;}).length;
+    var maxOwned=Math.min(r.avail.length,r.qty);
+    var cAll=fqCompute(r,maxOwned), cNone=fqCompute(r,0), cReco=fqCompute(r,r.reco);
+    var b='<div class="fq-req"><div class="fq-req-t">'+r.qty+'× '+r.item+'</div><div class="sub">'+r.project+' · need by '+r.needby+' · '+fmt(r.o2sRate)+'/unit/mo · '+r.avail.length+' owned available</div></div>';
+    b+='<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-left:3px solid #4ade80;border-radius:7px;padding:10px 13px;margin-bottom:14px">';
+    b+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#15803d;margin-bottom:4px">Optimizer recommendation</div>';
+    b+='<div style="font-size:12px;font-weight:700;color:var(--charcoal);margin-bottom:8px">'+(r.reco>0?r.reco+' owned':'0 owned')+' · '+(r.qty-r.reco)+' re-rent · '+cReco.pct.toFixed(1)+'% margin ('+fmt(cReco.margin)+'/mo)</div>';
+    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px">';
+    [{label:'All owned',c:cAll},{label:'Recommended',c:cReco,hi:true},{label:'All re-rent',c:cNone}].forEach(function(s){
+      b+='<div style="background:'+(s.hi?'#f0fdf4':'#fff')+';border:1px solid '+(s.hi?'#4ade80':'var(--g200)')+';border-radius:4px;padding:4px 7px;text-align:center">';
+      b+='<div style="font-size:9px;color:var(--g500);font-weight:600;margin-bottom:1px">'+s.label+'</div>';
+      b+='<div style="font-size:13px;font-weight:800;color:var(--charcoal)">'+s.c.pct.toFixed(1)+'%</div>';
+      b+='<div style="font-size:9.5px;color:var(--g400)">'+fmt(s.c.margin)+'/mo</div></div>';
+    });
+    b+='</div>';
+    b+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="_fqOptRunAll()">Run optimizer for all units</button>';
+    b+='</div>';
+    b+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">Per-unit assignment — '+doneCount+' of '+r.qty+' assigned · '+releasedCount+'/'+r.qty+' released to T3</div>';
+    b+='<div style="display:flex;flex-direction:column;gap:8px;max-height:380px;overflow-y:auto;padding-right:4px;margin-bottom:14px">';
+    for(var _ui=0;_ui<r.qty;_ui++){
+      var pa=_fqPerAsset[_ui];
+      var isDone=pa&&pa.mode!=='manual-editing';
+      var isReleased=pa&&pa.released;
+      var isOverriding=pa&&pa.overriding;
+      b+='<div style="border:1px solid '+(isReleased?'#86efac':isDone?'rgba(16,185,129,.4)':'var(--g200)')+';border-radius:8px;padding:10px 12px;background:'+(isReleased?'rgba(16,185,129,.06)':isDone?'rgba(16,185,129,.03)':'#fff')+'">';
+      // header row
+      b+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:'+(isDone?'7':'0')+'px">';
+      b+='<span style="font-size:11px;font-weight:700;color:var(--g500);min-width:54px">Unit '+(_ui+1)+'/'+r.qty+'</span>';
+      if(isReleased){
+        var rpt=pa.result.type==='own'?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';
+        b+=rpt+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace;flex:1">'+pa.result.assetId+'</span>';
+        if(pa.result.yard)b+='<span style="font-size:11px;color:var(--g400)">'+pa.result.yard+'</span>';
+        b+='<span style="font-size:10.5px;font-weight:600;color:#15803d;background:#dcfce7;border:1px solid #86efac;border-radius:4px;padding:2px 8px">✓ Released to T3</span>';
+      } else if(isOverriding){
+        var ptag2=pa.result.type==='own'?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>';
+        b+=ptag2+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace;flex:1">'+pa.result.assetId+'</span>';
+        b+='<span style="font-size:11px;color:#1d4ed8;font-weight:600">Choose override ↓</span>';
+        b+='<button onclick="_fqFlipUnit('+_ui+',\'cancel\')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--g500)">Cancel</button>';
+      } else if(isDone){
+        var ptag=pa.mode==='optimizer'?(pa.result.type==='own'?'<span class="tag ok" style="font-size:10px;padding:1px 7px">Own</span>':'<span class="tag neu" style="font-size:10px;padding:1px 7px">Re-rent</span>'):'<span class="tag info" style="font-size:10px;padding:1px 7px">Manual</span>';
+        b+=ptag+'<span style="font-size:12px;font-weight:600;color:var(--g900);font-family:monospace;flex:1">'+pa.result.assetId+'</span>';
+        if(pa.result.yard)b+='<span style="font-size:11px;color:var(--g400)">'+pa.result.yard+'</span>';
+        b+='<button onclick="_fqFlipUnit('+_ui+',\'start\')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid #93c5fd;background:#eff6ff;cursor:pointer;color:#1d4ed8">Override</button>';
+        b+='<button onclick="_fqPushUnitT3('+_ui+')" style="font-size:10px;padding:2px 8px;border-radius:4px;border:1px solid #059669;background:#059669;cursor:pointer;color:#fff;font-weight:600">Push to T3 →</button>';
+        b+='<button onclick="_fqClearUnit('+_ui+')" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--g200);background:#fff;cursor:pointer;color:var(--g500)">Clear</button>';
+      } else if(pa&&pa.mode==='manual-editing'){
+        b+='<span style="font-size:11px;color:#1d4ed8;flex:1">Enter asset details</span>';
+      } else {
+        b+='<span style="font-size:11px;color:var(--g400);flex:1">Not yet assigned</span>';
+        b+='<div style="display:flex;gap:5px">';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="_fqOptUnit('+_ui+')">Run optimizer</button>';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="_fqManualUnit('+_ui+')">Assign manually</button>';
+        b+='</div>';
+      }
+      b+='</div>';
+      // override flip panel
+      if(isOverriding){
+        var canOwn2=r.avail&&r.avail.length>0;
+        var ownedUsed=_fqPerAsset.filter(function(x){return x&&!x.overriding&&x.result&&x.result.type==='own';}).length;
+        var nextO=r.avail[ownedUsed]||r.avail[0];
+        b+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px">';
+        if(canOwn2&&nextO){
+          b+='<button class="btn btn-sm" style="background:#059669;color:#fff;border-color:#059669;font-size:10.5px" onclick="_fqFlipUnit('+_ui+',\'own\')">Own — '+(nextO.id)+'</button>';
+        }
+        b+='<button class="btn btn-sm" style="background:#6366f1;color:#fff;border-color:#6366f1;font-size:10.5px" onclick="_fqFlipUnit('+_ui+',\'rerent\')">Re-rent</button>';
+        b+='<button class="btn btn-ghost btn-sm" style="font-size:10.5px" onclick="_fqManualUnit('+_ui+')">Manual entry</button>';
+        b+='</div>';
+      }
+      // expanded math for assigned (not released)
+      if(isDone&&!isReleased&&!isOverriding){
+        var unitAR=r.o2sRate;
+        var unitCost=pa.result.type==='own'?r.ownedCost:(pa.result.type==='rerent'?r.reRentRate:null);
+        var unitMargin=(unitCost!=null)?(unitAR-unitCost):null;
+        var unitPct=(unitMargin!=null&&unitAR)?(unitMargin/unitAR*100):null;
+        var pctCol=(unitPct!=null)?(unitPct>=20?'#15803d':(unitPct>=10?'#b45309':'#b91c1c')):'var(--g500)';
+        b+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;background:var(--g50);border-radius:5px;padding:7px 9px">';
+        b+='<div><div style="font-size:9px;color:var(--g400);font-weight:600;margin-bottom:1px">AR (this unit)</div><div style="font-size:12px;font-weight:700;color:var(--g900)">'+fmt(unitAR)+'/mo</div></div>';
+        b+='<div><div style="font-size:9px;color:var(--g400);font-weight:600;margin-bottom:1px">Cost</div><div style="font-size:12px;font-weight:700;color:var(--g600)">'+(unitCost!=null?fmt(unitCost)+'/mo':'—')+'</div></div>';
+        b+='<div><div style="font-size:9px;color:var(--g400);font-weight:600;margin-bottom:1px">Margin $</div><div style="font-size:12px;font-weight:700;color:'+pctCol+'">'+(unitMargin!=null?fmt(unitMargin)+'/mo':'—')+'</div></div>';
+        b+='<div><div style="font-size:9px;color:var(--g400);font-weight:600;margin-bottom:1px">Margin %</div><div style="font-size:12px;font-weight:700;color:'+pctCol+'">'+(unitPct!=null?unitPct.toFixed(1)+'%':'—')+'</div></div>';
+        b+='</div>';
+      }
+      // manual editing inputs
+      if(pa&&pa.mode==='manual-editing'){
+        b+='<div style="display:flex;gap:7px;align-items:center;margin-top:6px">';
+        b+='<input id="fqManId-'+_ui+'" placeholder="Asset ID (e.g. TC-0042)" style="flex:1;font-size:12px;font-family:monospace;border:1px solid var(--g300);border-radius:5px;padding:5px 8px;color:var(--g900)">';
+        b+='<input id="fqManYard-'+_ui+'" placeholder="Yard" style="width:90px;font-size:12px;border:1px solid var(--g300);border-radius:5px;padding:5px 8px;color:var(--g900)">';
+        b+='<button class="btn btn-sm" style="background:#1d4ed8;color:#fff;border-color:#1d4ed8;font-size:11px" onclick="_fqSaveManual('+_ui+')">Save</button>';
+        b+='</div>';
+      }
       b+='</div>';
     }
     b+='</div>';
-    b+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">'+whyTxt+'</div>';
-    // 3-scenario comparison (compact)
-    b+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">';
-    [{label:'All owned ('+maxOwned+')',c:cAll,hi:false},{label:'Recommended mix',c:cReco,hi:true},{label:'All sourced',c:cNone,hi:false}].forEach(function(s){
-      b+='<div style="background:'+(s.hi?'#f3f4f6':'#fff')+';border:1px solid '+(s.hi?'var(--g400)':'var(--g200)')+';border-radius:5px;padding:6px 8px;text-align:center">';
-      b+='<div style="font-size:9.5px;color:'+(s.hi?'var(--charcoal)':'var(--g400)')+';font-weight:600;margin-bottom:2px"'+(s.hi?' id="fqCurLbl"':'')+'>'+s.label+'</div>';
-      b+='<div style="font-size:15px;font-weight:800;color:'+(s.hi?'var(--charcoal)':s.c.pct<8?'#dc2626':'#374151')+'"'+(s.hi?' id="fqCurPct"':'')+'>'+s.c.pct.toFixed(1)+'%</div>';
-      b+='<div style="font-size:10px;color:#6b7280"'+(s.hi?' id="fqCurMgn"':'')+'>'+fmt(s.c.margin)+'/mo</div></div>';
-    });
-    b+='</div></div>';
-    // Override section (hidden — shown when Override recommendation clicked)
-    b+='<div id="fqOverrideSec" style="display:none">';
-    b+='<div style="font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;margin-bottom:12px">Overriding the recommendation \u2014 click a row to toggle Own / Re-rent, or edit the asset ID.</div>';
-    b+='<div id="fqAssetAlloc" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px"></div>';
-    b+='<div class="fq-calc"><div class="fq-crow"><span>Revenue to project (AR)</span><span id="fqAR"></span></div><div class="fq-crow neg"><span>Owned fleet cost</span><span id="fqOC"></span></div><div class="fq-crow neg"><span>Re-rent cost (AP)</span><span id="fqRC"></span></div><div class="fq-margin"><span>02S margin</span><span id="fqMargin"></span></div></div>';
-    b+='<div style="display:flex;align-items:center;gap:10px;padding:10px 0 4px;margin-top:4px;border-top:1px solid var(--g100)">';
-    b+='<div style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0">Source yard</div>';
-    var _yreco=r.avail&&r.avail.length>0?r.avail[0].yard:(r.yard||'Chandler');
-    b+='<select id="fqYardSel" style="font-size:12px;border:1px solid var(--g200);border-radius:5px;padding:4px 8px;color:var(--g700);cursor:pointer">'+SC_LIST.map(function(s){return'<option value="'+s+'"'+((r.yard||_yreco)===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
+    var allDone=doneCount===r.qty;
+    var allReleased=releasedCount===r.qty;
+    b+='<div class="modal-foot" style="display:flex;align-items:center;gap:10px">';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Close</button>';
+    b+='<span style="font-size:11px;color:var(--g500)">'+doneCount+'/'+r.qty+' assigned · '+releasedCount+'/'+r.qty+' released</span>';
+    if(allDone&&!allReleased){
+      b+='<button class="btn btn-sm" style="margin-left:auto;background:#059669;color:#fff;border-color:#059669;font-size:11px" onclick="_fqReleaseAll()">Release all to T3 →</button>';
+    }
     b+='</div>';
-    b+='<div style="margin-top:10px"><div style="font-size:11px;font-weight:700;color:var(--g700);margin-bottom:5px">Reason for override <span style="font-weight:400;color:var(--g400)">(required)</span></div>';
-    b+='<textarea id="fqOverrideReason" rows="2" style="width:100%;box-sizing:border-box;font-size:12px;border:1px solid #fde68a;border-radius:4px;padding:6px 8px;color:var(--g800);background:#fffbeb;resize:vertical" placeholder="Why are you changing the recommended allocation?"></textarea></div>';
-    b+='<div class="modal-foot" style="display:flex;margin-top:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqHideOverride()">Back</button>';
-    b+='<button class="btn btn-red" style="margin-left:auto" onclick="fqApproveReco()">Confirm allocation</button>';
-    b+='</div>';
-    b+='</div>';
-    // Main footer
-    b+='<div class="modal-foot" id="fqRecoBtns" style="display:flex">';
-    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
-    b+='<div style="margin-left:auto;display:flex;gap:8px">';
-    b+='<button class="btn btn-ghost" onclick="fqShowOverride()">Override recommendation</button>';
-    b+='<button class="btn" style="background:#059669;color:#fff;border-color:#059669" onclick="fqApproveReco()">Approve recommendation</button>';
-    b+='</div></div>';
-    openModal('Fulfill \u2014 '+r.item, b);
-    fqRefresh();
+    return b;
   }
+  function _fqOptUnit(i){
+    var r=fqById(fqCurId); if(!r)return;
+    var ownedN=_fqPerAsset.filter(function(x){return x&&x.result&&x.result.type==='own';}).length;
+    var ownedUnit=r.avail[ownedN]||r.avail[i]||null;
+    var useOwn=ownedUnit&&(i<r.reco);
+    if(useOwn){
+      var oc=fqCompute(r,ownedN+1);
+      _fqPerAsset[i]={mode:'optimizer',result:{type:'own',assetId:ownedUnit.id,yard:ownedUnit.yard,detail:'Optimizer: own · '+ownedUnit.id+' ('+ownedUnit.yard+') · '+fmt(r.ownedCost)+'/mo · '+oc.pct.toFixed(1)+'% blended margin'}};
+    } else {
+      _fqPerAsset[i]={mode:'optimizer',result:{type:'rerent',assetId:r.vendor+' (re-rent)',yard:'',detail:'Optimizer: re-rent · '+r.vendor+' @ '+fmt(r.reRentRate)+'/mo'}};
+    }
+    _fqSaveState(); openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqOptRunAll(){
+    var r=fqById(fqCurId); if(!r)return;
+    for(var i=0;i<r.qty;i++){
+      if(_fqPerAsset[i]&&_fqPerAsset[i].released)continue;
+      var ownedUnit=r.avail[i]||null;
+      var useOwn=ownedUnit&&(i<r.reco);
+      if(useOwn){
+        var oc=fqCompute(r,i+1);
+        _fqPerAsset[i]={mode:'optimizer',result:{type:'own',assetId:ownedUnit.id,yard:ownedUnit.yard,detail:'Optimizer: own · '+ownedUnit.id+' ('+ownedUnit.yard+') · '+fmt(r.ownedCost)+'/mo · '+oc.pct.toFixed(1)+'% blended margin'}};
+      } else {
+        _fqPerAsset[i]={mode:'optimizer',result:{type:'rerent',assetId:r.vendor+' (re-rent)',yard:'',detail:'Optimizer: re-rent · '+r.vendor+' @ '+fmt(r.reRentRate)+'/mo'}};
+      }
+    }
+    _fqSaveState(); openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqManualUnit(i){
+    var r=fqById(fqCurId); if(!r)return;
+    _fqPerAsset[i]={mode:'manual-editing',result:{type:'manual',assetId:'',yard:''}};
+    openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqSaveManual(i){
+    var idEl=gel('fqManId-'+i); var yardEl=gel('fqManYard-'+i);
+    var assetId=(idEl&&idEl.value.trim())||('UNIT-'+(i+1));
+    var yard=(yardEl&&yardEl.value.trim())||'On site';
+    var r=fqById(fqCurId); if(!r)return;
+    _fqPerAsset[i]={mode:'manual',result:{type:'manual',assetId:assetId,yard:yard,detail:'Manual assignment · '+assetId+(yard?' · '+yard:'')}};
+    _fqSaveState(); openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqClearUnit(i){
+    _fqPerAsset[i]=null;
+    var r=fqById(fqCurId); if(!r)return;
+    _fqSaveState(); openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqFlipUnit(i,type){
+    var r=fqById(fqCurId); if(!r)return;
+    var pa=_fqPerAsset[i]; if(!pa)return;
+    if(type==='start'){
+      _fqPerAsset[i]=Object.assign({},pa,{overriding:true});
+    } else if(type==='cancel'){
+      _fqPerAsset[i]=Object.assign({},pa,{overriding:false});
+    } else if(type==='own'){
+      var ownedN=_fqPerAsset.filter(function(x){return x&&!x.overriding&&x.result&&x.result.type==='own';}).length;
+      var ownedUnit=r.avail[ownedN]||r.avail[0];
+      if(ownedUnit){
+        var oc=fqCompute(r,ownedN+1);
+        _fqPerAsset[i]={mode:'optimizer',result:{type:'own',assetId:ownedUnit.id,yard:ownedUnit.yard,detail:'Override: own · '+ownedUnit.id+' ('+ownedUnit.yard+') · '+fmt(r.ownedCost)+'/mo · '+oc.pct.toFixed(1)+'% blended margin'}};
+      }
+    } else if(type==='rerent'){
+      _fqPerAsset[i]={mode:'optimizer',result:{type:'rerent',assetId:r.vendor+' (re-rent)',yard:'',detail:'Override: re-rent · '+r.vendor+' @ '+fmt(r.reRentRate)+'/mo'}};
+    }
+    _fqSaveState(); openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+  }
+  function _fqSaveState(){
+    var r=fqById(fqCurId); if(!r)return;
+    r.perAsset=_fqPerAsset.slice();
+  }
+  function _fqPushUnitT3(i){
+    var r=fqById(fqCurId); if(!r)return;
+    var pa=_fqPerAsset[i]; if(!pa||pa.released)return;
+    pa.released=true; pa.overriding=false;
+    var unitNum=i+1;
+    var typeLabel=pa.result.type==='own'?'Owned':pa.result.type==='rerent'?'Re-rent':'Manual';
+    var ordId='ORD-'+r.id.toUpperCase()+'-U'+unitNum;
+    var exists=ORDERS.filter(function(o){return o.id===ordId;}).length>0;
+    if(!exists){
+      ORDERS.push({
+        id:ordId,
+        proj:(r.project||'').toLowerCase().replace(/\s/g,'')||'barryrose',
+        od:'2026-09-24',
+        item:r.item,
+        unitLabel:'Unit '+unitNum+' · '+typeLabel,
+        sub:'1 unit · '+pa.result.assetId+(pa.result.yard?' · '+pa.result.yard:''),
+        pillar:r.pillar||'equipment',
+        dates:'T3 release',
+        stage:2,qty:1,
+        mrate:r.o2sRate,
+        fqRef:r.id,
+        assetType:pa.result.type,
+        assetId:pa.result.assetId,
+        latest:'Released to T3 — '+typeLabel+' · '+pa.result.assetId+(pa.result.yard?' ('+pa.result.yard+')':''),
+        latestTone:'ok'
+      });
+    }
+    var relN=_fqPerAsset.filter(function(x){return x&&x.released;}).length;
+    if(relN===r.qty){r.status='Assigned';r.alloc={owned:_fqPerAsset.filter(function(x){return x&&x.result&&x.result.type==='own';}).length};}
+    _fqSaveState(); renderFulfill();
+    openModal('Assign — '+r.item, _fqBuildPerAssetBody(r));
+    toast('Unit '+unitNum+' released to T3 — '+typeLabel+' · '+pa.result.assetId+'. '+relN+'/'+r.qty+' orders created.');
+  }
+  function _fqReleaseAll(){
+    var r=fqById(fqCurId); if(!r)return;
+    for(var i=0;i<r.qty;i++){
+      if(_fqPerAsset[i]&&!_fqPerAsset[i].released&&_fqPerAsset[i].mode&&_fqPerAsset[i].mode!=='manual-editing'){
+        _fqPushUnitT3(i);
+      }
+    }
+  }
+  function _fqReleaseT3(){ _fqReleaseAll(); }
   function fqRefresh(){
     var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); fqPickOwned=c.owned;
     if(gel('fqOwnedN'))gel('fqOwnedN').textContent=c.owned;
@@ -8976,7 +10408,7 @@ charges:[
   var fqAssetOwn=[];
   function fqToggleAsset(i){if(!fqAssetOwn.length)return;fqAssetOwn[i]=!fqAssetOwn[i];fqPickOwned=fqAssetOwn.filter(function(v){return v;}).length;fqRefresh();}
   function fqStep(d){ var _fsr=fqById(fqCurId); if(!_fsr)return; var _fsmax=Math.min(_fsr.avail.length,_fsr.qty); fqPickOwned=Math.max(0,Math.min(fqPickOwned+d,_fsmax)); fqAssetOwn=[];for(var _fsi=0;_fsi<_fsr.qty;_fsi++)fqAssetOwn.push(_fsi<fqPickOwned); fqRefresh(); }
-  function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Allocated'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
+  function fqAccept(){ var r=fqById(fqCurId); if(!r)return; var c=fqCompute(r,fqPickOwned); r.status='Assigned'; r.alloc={owned:c.owned,rerent:c.rerent,margin:c.margin,pct:c.pct}; if(fqPickOwned!==r.reco){r.allocOverride=true;var _or=gel('fqOverrideReason');r.allocOverrideReason=_or?_or.value:'';} var _ys=gel('fqYardSel'); if(_ys)r.yard=_ys.value; closeModal(); renderFulfill(); toast(r.qty+'\u00d7 '+r.item+' allocated \u2014 '+c.owned+' owned, '+c.rerent+' re-rent'+(r.allocOverride?' (override)':'')+' \u00b7 '+fmt(c.margin)+'/mo margin'); }
   function fqPriceModal(id){
     var r=fqById(id); if(!r)return; fqCurId=id; var ns=CURRENT==='ns';
     var b='<div class="fq-req"><div class="fq-req-t">'+r.item+'</div><div class="sub">'+r.project+' \u00b7 '+r.qty+' \u00b7 need by '+r.needby+'</div></div>';
@@ -13976,7 +15408,9 @@ function renderProfServicesDP(){
     var npf=document.getElementById('nav-profile'); if(npf) npf.classList.toggle('active',screen==='profile');
     var nct=document.getElementById('nav-contact'); if(nct) nct.classList.toggle('active',screen==='contact');
     ['profservices','procurement','prefab','logistics'].forEach(function(pk){ var n=document.getElementById('nav-dp-'+pk); if(n)n.classList.toggle('active',screen==='dp-'+pk); });
-    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else dpActive=null;
+    var nstc=document.getElementById('nav-stc'); if(nstc) nstc.classList.toggle('active',screen==='stc');
+    if(screen==='stc'){ renderSTC(); }
+    if(screen.indexOf('dp-')===0){ dpActive=screen.slice(3); if(dpActive==='logistics'){renderLogPlan();}else{renderDP(dpActive);} } else if(screen!=='stc'){ dpActive=null; }
     if(screen==='order'){ backToCatalog(); renderPills(); renderCatalog(); renderCart(); }
     if(screen==='orders'){ _ordersShowAll=false; renderOrders(); renderOrdInsights(); }
     if(screen==='billing'){ _billsShowAll=false; renderBudget(); renderBills(); renderPending(); renderBillInsights(); renderCostCodes(); }
