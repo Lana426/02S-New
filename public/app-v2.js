@@ -9167,7 +9167,7 @@ charges:[
   }
 
   /* ── CHANGE ORDERS ── */
-  window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 28, 2026 · 10:42 AM',status:'quote_revised',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:{vendor:'United Site Services',quoteNum:'USS-2026-8802',quoteDate:'2026-09-25',expDate:'2026-12-25',rationale:'Extended quote at same vendor rate; second unit added for south laydown crew per project schedule extension through Q1 2027. Pricing aligned with existing USS service contract.',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800},{desc:'Additional portable restroom trailer (2-stall ADA) — extended period rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}],total:25600,note:'Extended through Q1 2027 — added second unit at same rate for south laydown crew.',sentAt:'Sep 25, 2026'}},{id:'CO-002',proj:'hercules',service:'Storage Containers',ref:'REQ-L-3113',rowIdx:2,submittedBy:'R. Chen',submittedByFull:'R. Chen · Hercules Project Team',ts:'Sep 28, 2026 · 2:11 PM',status:'pending_cc',changes:{dates:{from:'Aug 15, 2026 – Jan 31, 2027',to:'Aug 15, 2026 – Mar 31, 2027'},service:{from:'Storage Containers',to:'Storage Containers'},qty:{from:'12 units',to:'16 units'}},note:'Additional laydown area needed for BESS equipment staging — extended through Q1 2027 with 4 extra units.',revisedQuote:null}];
+  window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 28, 2026 · 10:42 AM',status:'quote_revised',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:{vendor:'United Site Services',quoteNum:'USS-2026-8802',quoteDate:'2026-09-25',expDate:'2026-12-25',rationale:'Extended quote at same vendor rate; second unit added for south laydown crew per project schedule extension through Q1 2027. Pricing aligned with existing USS service contract.',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800},{desc:'Additional portable restroom trailer (2-stall ADA) — extended period rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}],total:25600,attachments:[{name:'USS-2026-8802 Restroom Facility Revised Quote.pdf',type:'pdf'},{name:'Revised scope summary.docx',type:'docx'}],note:'Extended through Q1 2027 — added second unit at same rate for south laydown crew.',sentAt:'Sep 25, 2026'}},{id:'CO-002',proj:'hercules',service:'Storage Containers',ref:'REQ-L-3113',rowIdx:2,submittedBy:'R. Chen',submittedByFull:'R. Chen · Hercules Project Team',ts:'Sep 28, 2026 · 2:11 PM',status:'pending_cc',changes:{dates:{from:'Aug 15, 2026 – Jan 31, 2027',to:'Aug 15, 2026 – Mar 31, 2027'},service:{from:'Storage Containers',to:'Storage Containers'},qty:{from:'12 units',to:'16 units'}},note:'Additional laydown area needed for BESS equipment staging — extended through Q1 2027 with 4 extra units.',revisedQuote:null}];
 
   function openChangeOrderModal(pk,rowIdx){
     var rows=(DP&&DP[pk]&&DP[pk].rows)||[];var row=rows[rowIdx];if(!row)return;
@@ -9246,6 +9246,13 @@ charges:[
     mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+ccoTotal.toLocaleString()+'</td><td></td></tr>';
     mh+='</table></div>';
     mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Notes to project team</label><textarea id="cco-note" rows="2" placeholder="Explain revisions, cost delta, or any caveats…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;color:var(--g900)"></textarea></div>';
+    mh+='<div style="padding-top:12px;border-top:1px solid var(--g100)">';
+    mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g600);margin-bottom:8px">Supporting documents</div>';
+    var _catts=(window._ccoAttachments&&window._ccoAttachments[coId])||[];
+    if(_catts.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';_catts.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button onclick="_ccoRemoveAtt(\''+coId+'\','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">×</button></div>';});mh+='</div>';}
+    else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No documents attached yet</div>';}
+    mh+='<div style="display:flex;gap:8px;align-items:center"><input type="file" id="ccoAtt-'+coId+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png"><button class="btn btn-ghost btn-sm" onclick="_ccoAddAtt(\''+coId+'\')">Attach</button></div>';
+    mh+='</div>';
     mh+='</div>';
     openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(\''+coId+'\')">Send revised quote →</button></div>');
   }
@@ -9256,6 +9263,19 @@ charges:[
   }
   function _ccoRemoveLine(coId,li){
     if(window._ccoLines&&window._ccoLines.length>1)window._ccoLines.splice(li,1);
+    openCcChangeOrderModal(coId);
+  }
+  function _ccoAddAtt(coId){
+    var inp=document.getElementById('ccoAtt-'+coId);
+    if(!inp||!inp.files||!inp.files[0])return;
+    var f=inp.files[0];
+    if(!window._ccoAttachments)window._ccoAttachments={};
+    if(!window._ccoAttachments[coId])window._ccoAttachments[coId]=[];
+    window._ccoAttachments[coId].push({name:f.name,type:f.type.split('/')[1]||'file',size:f.size});
+    openCcChangeOrderModal(coId);
+  }
+  function _ccoRemoveAtt(coId,ai){
+    if(window._ccoAttachments&&window._ccoAttachments[coId])window._ccoAttachments[coId].splice(ai,1);
     openCcChangeOrderModal(coId);
   }
   function _ccSubmitRevisedQuote(coId){
@@ -9277,9 +9297,10 @@ charges:[
       return {desc:(desc&&desc.value)||l.desc,qty:qt,uom:(uom&&uom.value)||l.uom,vendorPrice:+(vp&&vp.value||l.vendorPrice),unitRate:ur_,ext:qt*ur_};
     });
     var total=submittedLines.reduce(function(s,l){return s+(l.ext||0);},0);
-    co.revisedQuote={vendor:vendor,quoteNum:quoteNum,quoteDate:qdate,expDate:expdate,rationale:rationale,lines:submittedLines,total:total,note:note,sentAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+    co.revisedQuote={vendor:vendor,quoteNum:quoteNum,quoteDate:qdate,expDate:expdate,rationale:rationale,lines:submittedLines,total:total,note:note,attachments:(window._ccoAttachments&&window._ccoAttachments[coId])||[],sentAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
     co.status='quote_revised';
     window._ccoLines=null;window._ccoLinesCoId=null;
+    if(window._ccoAttachments)delete window._ccoAttachments[coId];
     closeModal();
     if(typeof renderCcDemand==='function')renderCcDemand('logistics');
     toast('Revised quote sent to project team — '+co.service);
@@ -9317,6 +9338,7 @@ charges:[
       mh+='</table></div>';
     }
     if(rq.note)mh+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;font-size:12px;color:#78350f;line-height:1.5"><b>02S note:</b> '+rq.note+'</div>';
+    if(rq.attachments&&rq.attachments.length){mh+='<div style="padding-top:12px;border-top:1px solid #e2e8f0"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px">Supporting documents</div><div style="display:flex;flex-direction:column;gap:5px">';rq.attachments.forEach(function(a){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;color:#334155">↓ Download</button></div>';});mh+='</div></div>';}
     mh+='</div>';
     openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="returnCpRevisedQuote(\''+coId+'\')">Return with feedback ←</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
   }
