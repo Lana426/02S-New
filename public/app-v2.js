@@ -9166,7 +9166,7 @@ charges:[
   }
 
   /* ── CHANGE ORDERS ── */
-  window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 28, 2026 · 10:42 AM',status:'pending_cc',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:null}];
+  window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 28, 2026 · 10:42 AM',status:'quote_revised',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:{vendor:'United Site Services',quoteNum:'USS-2026-8802',quoteDate:'2026-09-25',expDate:'2026-12-25',rationale:'Extended quote at same vendor rate; second unit added for south laydown crew per project schedule extension through Q1 2027. Pricing aligned with existing USS service contract.',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800},{desc:'Additional portable restroom trailer (2-stall ADA) — extended period rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}],total:25600,note:'Extended through Q1 2027 — added second unit at same rate for south laydown crew.',sentAt:'Sep 25, 2026'}}];
 
   function openChangeOrderModal(pk,rowIdx){
     var rows=(DP&&DP[pk]&&DP[pk].rows)||[];var row=rows[rowIdx];if(!row)return;
@@ -9174,17 +9174,18 @@ charges:[
     var mh='<div style="display:flex;flex-direction:column;gap:14px">';
     mh+='<div style="background:var(--g50);border-radius:7px;padding:10px 14px;font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+row.id+'</span></div>';
     mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Need-by / window</label><input id="co-dates" type="text" placeholder="e.g. Sep 1 – Feb 28, 2027" value="'+(row.window||row.needBy||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Start date</label><input id="co-date-start" type="date" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" value="2026-09-01"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">End date</label><input id="co-date-end" type="date" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" value="2027-02-28"></div>';
     mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Quantity needed</label><input id="co-qty" type="text" placeholder="e.g. 2 units" value="'+(row.qty||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Service</label><select id="co-svc" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900);background:#fff"><option value="">-- select --</option>'+['Mob/Demob Flat Fee','Temp Power Distribution Equip.','Internet Service & Network Install','Temp Structures','Prefabricated Decking','Office Conference Room IT Equip','Temp Fencing','Security Guards','Security Gates & Badging','Site Plumbing','Fuel Station Setup','Dedicated Recycling','Professional Cleaning','Pest Control','Street Sweeping','VMI - PPE & Consumables','Warehouse & 3PL Management','3PL Management','Restroom Facility','Office Trailers','Storage Containers','Temp Toilets & Handwash Stations'].map(function(o){return '<option value="'+o+'"'+(o===row.service?' selected':'')+'>'+o+'</option>';}).join('')+'</select></div>';
     mh+='</div>';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Service description</label><input id="co-svc" type="text" value="'+(row.service||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
     mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Reason for change</label><textarea id="co-note" rows="3" placeholder="Explain what changed and why…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;color:var(--g900)"></textarea></div>';
     mh+='</div>';
     openModal('Submit change order — '+row.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_submitChangeOrder(\''+pk+'\','+rowIdx+')">Submit change order →</button></div>');
   }
   function _submitChangeOrder(pk,rowIdx){
     var rows=(DP&&DP[pk]&&DP[pk].rows)||[];var row=rows[rowIdx];if(!row)return;
-    var dates=(document.getElementById('co-dates')||{}).value||'';
+    var ds=(document.getElementById('co-date-start')||{}).value||'';var de=(document.getElementById('co-date-end')||{}).value||'';var dates=ds&&de?(ds+' – '+de):ds||de||'';
     var qty=(document.getElementById('co-qty')||{}).value||'';
     var svc=(document.getElementById('co-svc')||{}).value||row.service||'';
     var note=(document.getElementById('co-note')||{}).value||'';
@@ -9195,36 +9196,89 @@ charges:[
   }
   function openCcChangeOrderModal(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    if(!window._ccoLines||window._ccoLinesCoId!==coId){
+      window._ccoLinesCoId=coId;
+      var origRow=(DP&&DP.logistics&&DP.logistics.rows||[]).filter(function(r){return r.id===co.ref;})[0];
+      var origLines=(origRow&&origRow.quoteData&&origRow.quoteData.lines)||[];
+      window._ccoLines=origLines.map(function(l){return {desc:l.desc||'',qty:l.qty||1,uom:l.uom||'EA',vendorPrice:l.vendorPrice||0,unitRate:l.unitRate||0,ext:l.ext||0};});
+      if(!window._ccoLines.length)window._ccoLines=[{desc:'',qty:1,uom:'EA',vendorPrice:0,unitRate:0,ext:0}];
+      window._ccoInitVendor=(origRow&&origRow.quoteData&&origRow.quoteData.vendor)||'';
+    }
+    var clines=window._ccoLines;
     var mh='<div style="display:flex;flex-direction:column;gap:14px">';
     mh+='<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:7px;padding:10px 14px">';
     mh+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#c2410c;margin-bottom:6px">Change order from project team</div>';
-    mh+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">'+co.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+co.ref+'</span></div>';
+    mh+='<div style="font-size:12px;font-weight:600;color:var(--g900)">'+co.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+co.ref+'</span></div>';
     mh+='<div style="font-size:11px;color:var(--g500);margin-bottom:8px">'+co.submittedByFull+' · '+co.ts+'</div>';
     mh+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
     ['dates','service','qty'].forEach(function(k){var label={dates:'Dates',service:'Service',qty:'Quantity'}[k];var c=co.changes[k];if(!c)return;mh+='<div style="background:#fff;border:1px solid #fde8d0;border-radius:5px;padding:7px 9px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#c2410c;margin-bottom:4px">'+label+'</div><div style="font-size:10.5px;color:var(--g500);text-decoration:line-through">'+c.from+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g900);margin-top:2px">'+c.to+'</div></div>';});
     mh+='</div>';
-    if(co.note)mh+='<div style="margin-top:8px;font-size:12px;color:var(--g700);font-style:italic">“'+co.note+'”</div>';
+    if(co.note)mh+='<div style="margin-top:8px;font-size:12px;color:var(--g700);font-style:italic">&#8220;'+co.note+'&#8221;</div>';
     mh+='</div>';
-    mh+='<div style="font-size:12px;font-weight:600;color:var(--g700);padding-top:2px">Fill revised quote</div>';
+    mh+='<div style="font-size:12px;font-weight:700;color:var(--g800);padding-top:10px;border-top:1px solid var(--g100)">Revised quote</div>';
     mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised quantity</label><input id="cco-qty" type="text" value="'+co.changes.qty.to+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised window</label><input id="cco-dates" type="text" value="'+co.changes.dates.to+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Vendor</label><input id="cco-vendor" type="text" placeholder="Vendor name" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised total ($)</label><input id="cco-total" type="number" placeholder="0" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Vendor</label><input id="cco-vendor" type="text" value="'+(window._ccoInitVendor||'')+'" placeholder="Vendor name" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Quote #</label><input id="cco-quotenum" type="text" placeholder="Vendor quote number" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Quote date</label><input id="cco-qdate" type="date" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Expiry date</label><input id="cco-expdate" type="date" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
     mh+='</div>';
-    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">02S notes to project team</label><textarea id="cco-note" rows="2" placeholder="Explain revisions, cost delta, or any caveats…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none"></textarea></div>';
+    mh+='<div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Vendor selection rationale</div><textarea id="cco-rationale" rows="2" placeholder="Why this vendor and pricing for the revised scope?" style="width:100%;box-sizing:border-box;border:1px solid #fde68a;border-radius:5px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;background:#fffbeb;color:#78350f"></textarea></div>';
+    mh+='<div>';
+    mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Line items</div>';
+    mh+='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+    mh+='<tr style="background:#f1f5f9"><th style="text-align:left;padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right;white-space:nowrap">Qty</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569">UOM</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right;white-space:nowrap">Vendor rate</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right;white-space:nowrap">02S rate</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th><th style="padding:4px 6px;border-bottom:2px solid #cbd5e1;width:24px"></th></tr>';
+    var ccoTotal=0;
+    clines.forEach(function(l,li){
+      ccoTotal+=(l.ext||0);
+      mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
+      mh+='<td style="padding:4px 6px;color:#94a3b8;vertical-align:middle">'+(li+1)+'</td>';
+      mh+='<td style="padding:2px 3px"><input type="text" id="cco-l'+li+'-desc" value="'+l.desc.replace(/"/g,"&quot;")+'" style="width:100%;border:1px solid #e2e8f0;border-radius:4px;padding:4px 6px;font-size:11px;font-family:inherit;min-width:160px;color:#1e293b;outline:none"></td>';
+      mh+='<td style="padding:2px 3px"><input type="number" id="cco-l'+li+'-qty" value="'+l.qty+'" min="0" style="width:52px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;color:#1e293b;outline:none;text-align:right"></td>';
+      mh+='<td style="padding:2px 3px"><input type="text" id="cco-l'+li+'-uom" value="'+l.uom+'" style="width:46px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;color:#1e293b;outline:none"></td>';
+      mh+='<td style="padding:2px 3px"><input type="number" id="cco-l'+li+'-vp" value="'+l.vendorPrice+'" min="0" style="width:74px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;color:#1e293b;outline:none;text-align:right"></td>';
+      mh+='<td style="padding:2px 3px"><input type="number" id="cco-l'+li+'-ur" value="'+l.unitRate+'" min="0" style="width:74px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;font-weight:600;color:#1e293b;outline:none;text-align:right"></td>';
+      mh+='<td style="padding:4px 6px;text-align:right;font-weight:600;color:#0f766e;white-space:nowrap">$'+l.ext.toLocaleString()+'</td>';
+      mh+='<td style="padding:2px 3px;text-align:center"><button onclick="_ccoRemoveLine(''+coId+'','+li+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:14px;line-height:1;padding:2px 4px">×</button></td>';
+      mh+='</tr>';
+    });
+    mh+='<tr><td colspan="8" style="padding:5px 6px"><button onclick="_ccoAddLine(''+coId+'')" style="font-size:11px;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:3px 10px;cursor:pointer">+ Add line</button></td></tr>';
+    mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+ccoTotal.toLocaleString()+'</td><td></td></tr>';
+    mh+='</table></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Notes to project team</label><textarea id="cco-note" rows="2" placeholder="Explain revisions, cost delta, or any caveats…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;color:var(--g900)"></textarea></div>';
     mh+='</div>';
-    openModal('Change order — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(\''+coId+'\')">Send revised quote →</button></div>');
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(''+coId+'')">Send revised quote →</button></div>');
+  }
+  function _ccoAddLine(coId){
+    if(!window._ccoLines)window._ccoLines=[];
+    window._ccoLines.push({desc:'',qty:1,uom:'EA',vendorPrice:0,unitRate:0,ext:0});
+    openCcChangeOrderModal(coId);
+  }
+  function _ccoRemoveLine(coId,li){
+    if(window._ccoLines&&window._ccoLines.length>1)window._ccoLines.splice(li,1);
+    openCcChangeOrderModal(coId);
   }
   function _ccSubmitRevisedQuote(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
-    var qty=(document.getElementById('cco-qty')||{}).value||co.changes.qty.to;
-    var dates=(document.getElementById('cco-dates')||{}).value||co.changes.dates.to;
     var vendor=(document.getElementById('cco-vendor')||{}).value||'—';
-    var total=+(document.getElementById('cco-total')||{}).value||0;
+    var quoteNum=(document.getElementById('cco-quotenum')||{}).value||'—';
+    var qdate=(document.getElementById('cco-qdate')||{}).value||'';
+    var expdate=(document.getElementById('cco-expdate')||{}).value||'';
+    var rationale=(document.getElementById('cco-rationale')||{}).value||'';
     var note=(document.getElementById('cco-note')||{}).value||'';
-    co.revisedQuote={qty:qty,dates:dates,vendor:vendor,total:total,note:note,sentAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+    var clines=window._ccoLines||[];
+    var submittedLines=clines.map(function(l,li){
+      var desc=document.getElementById('cco-l'+li+'-desc');
+      var qty=document.getElementById('cco-l'+li+'-qty');
+      var uom=document.getElementById('cco-l'+li+'-uom');
+      var vp=document.getElementById('cco-l'+li+'-vp');
+      var ur=document.getElementById('cco-l'+li+'-ur');
+      var qt=+(qty&&qty.value||l.qty);var ur_=+(ur&&ur.value||l.unitRate);
+      return {desc:(desc&&desc.value)||l.desc,qty:qt,uom:(uom&&uom.value)||l.uom,vendorPrice:+(vp&&vp.value||l.vendorPrice),unitRate:ur_,ext:qt*ur_};
+    });
+    var total=submittedLines.reduce(function(s,l){return s+(l.ext||0);},0);
+    co.revisedQuote={vendor:vendor,quoteNum:quoteNum,quoteDate:qdate,expDate:expdate,rationale:rationale,lines:submittedLines,total:total,note:note,sentAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
     co.status='quote_revised';
+    window._ccoLines=null;window._ccoLinesCoId=null;
     closeModal();
     if(typeof renderCcDemand==='function')renderCcDemand('logistics');
     toast('Revised quote sent to project team — '+co.service);
@@ -9239,11 +9293,31 @@ charges:[
     mh+='<div style="font-size:11px;color:var(--g500);margin-top:2px">Sent '+rq.sentAt+'</div>';
     mh+='</div>';
     mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-    [{l:'Vendor',v:rq.vendor},{l:'Quantity',v:rq.qty},{l:'Service window',v:rq.dates},{l:'Revised total',v:rq.total?'$'+rq.total.toLocaleString():'TBD'}].forEach(function(f){mh+='<div style="background:var(--g50);border-radius:6px;padding:8px 11px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:4px">'+f.l+'</div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+f.v+'</div></div>';});
+    [{l:'Vendor',v:rq.vendor||'—'},{l:'Quote #',v:rq.quoteNum||'—'},{l:'Quote date',v:rq.quoteDate||'—'},{l:'Expiry',v:rq.expDate||'—'}].forEach(function(f){mh+='<div style="background:var(--g50);border-radius:6px;padding:8px 11px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:4px">'+f.l+'</div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+f.v+'</div></div>';});
     mh+='</div>';
+    if(rq.rationale)mh+='<div style="padding:10px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px"><div style="font-size:9.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Vendor rationale</div><div style="font-size:12px;color:#78350f;line-height:1.5">'+rq.rationale+'</div></div>';
+    if(rq.lines&&rq.lines.length){
+      mh+='<div>';
+      mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:7px">Line items</div>';
+      mh+='<table style="width:100%;border-collapse:collapse;font-size:11px">';
+      mh+='<tr style="background:#f1f5f9"><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">#</th><th style="text-align:left;padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">Description</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Qty</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569">UOM</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Vendor rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">02S rate</th><th style="padding:5px 8px;border-bottom:2px solid #cbd5e1;color:#475569;text-align:right">Extended</th></tr>';
+      rq.lines.forEach(function(l,li){
+        mh+='<tr style="border-bottom:1px solid #f1f5f9'+(li%2===1?';background:#f8fafc':'')+'">';
+        mh+='<td style="padding:5px 8px;color:#94a3b8">'+(li+1)+'</td>';
+        mh+='<td style="padding:5px 8px;color:#1e293b">'+l.desc+'</td>';
+        mh+='<td style="padding:5px 8px;text-align:right;color:#1e293b">'+(l.qty||'')+'</td>';
+        mh+='<td style="padding:5px 8px;color:#64748b">'+(l.uom||'')+'</td>';
+        mh+='<td style="padding:5px 8px;text-align:right;color:#64748b">'+(l.vendorPrice?'$'+l.vendorPrice.toLocaleString():'—')+'</td>';
+        mh+='<td style="padding:5px 8px;text-align:right;color:#1e293b">$'+(l.unitRate||0).toLocaleString()+'</td>';
+        mh+='<td style="padding:5px 8px;text-align:right;font-weight:600;color:#1e293b">$'+(l.ext||0).toLocaleString()+'</td>';
+        mh+='</tr>';
+      });
+      mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+rq.total.toLocaleString()+'</td></tr>';
+      mh+='</table></div>';
+    }
     if(rq.note)mh+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;font-size:12px;color:#78350f;line-height:1.5"><b>02S note:</b> '+rq.note+'</div>';
     mh+='</div>';
-    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(''+coId+'')">Approve revised quote →</button></div>');
   }
   function _cpApproveRevisedQuote(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
@@ -15190,6 +15264,15 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     mh+='<button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="returnLogQuote('+ri+')">Return with feedback ←</button>';
     mh+='</div></div>';
   }
+  if(!row.quoteAttachments)row.quoteAttachments=[];
+  mh+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0">';
+  mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px">Attachments for project team review</div>';
+  if(row.quoteAttachments.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';row.quoteAttachments.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button onclick="_logQuoteRemoveAtt('+ri+','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">×</button></div>';});mh+='</div>';}
+  else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments yet</div>';}
+  mh+='<div style="display:flex;gap:8px;align-items:center">';
+  mh+='<input type="file" id="logQAtt-'+ri+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png">';
+  mh+='<button class="btn btn-ghost btn-sm" onclick="_logQuoteAddAtt('+ri+')">Attach</button>';
+  mh+='</div></div>';
   openModal('02S Quote — '+row.service,mh);
 }
   function confirmLogQuote(ri){
