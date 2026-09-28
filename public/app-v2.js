@@ -9238,15 +9238,15 @@ charges:[
       mh+='<td style="padding:2px 3px"><input type="number" id="cco-l'+li+'-vp" value="'+l.vendorPrice+'" min="0" style="width:74px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;color:#1e293b;outline:none;text-align:right"></td>';
       mh+='<td style="padding:2px 3px"><input type="number" id="cco-l'+li+'-ur" value="'+l.unitRate+'" min="0" style="width:74px;border:1px solid #e2e8f0;border-radius:4px;padding:4px 5px;font-size:11px;font-family:inherit;font-weight:600;color:#1e293b;outline:none;text-align:right"></td>';
       mh+='<td style="padding:4px 6px;text-align:right;font-weight:600;color:#0f766e;white-space:nowrap">$'+l.ext.toLocaleString()+'</td>';
-      mh+='<td style="padding:2px 3px;text-align:center"><button onclick="_ccoRemoveLine(''+coId+'','+li+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:14px;line-height:1;padding:2px 4px">×</button></td>';
+      mh+='<td style="padding:2px 3px;text-align:center"><button onclick="_ccoRemoveLine(\''+coId+'\','+li+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:14px;line-height:1;padding:2px 4px">×</button></td>';
       mh+='</tr>';
     });
-    mh+='<tr><td colspan="8" style="padding:5px 6px"><button onclick="_ccoAddLine(''+coId+'')" style="font-size:11px;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:3px 10px;cursor:pointer">+ Add line</button></td></tr>';
+    mh+='<tr><td colspan="8" style="padding:5px 6px"><button onclick="_ccoAddLine(\''+coId+'\')" style="font-size:11px;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:4px;padding:3px 10px;cursor:pointer">+ Add line</button></td></tr>';
     mh+='<tr style="background:#f1f5f9;border-top:2px solid #cbd5e1"><td colspan="6" style="padding:6px 8px;text-align:right;color:#1e293b;font-weight:600">Total</td><td style="padding:6px 8px;text-align:right;color:#0f766e;font-size:13px;font-weight:700">$'+ccoTotal.toLocaleString()+'</td><td></td></tr>';
     mh+='</table></div>';
     mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Notes to project team</label><textarea id="cco-note" rows="2" placeholder="Explain revisions, cost delta, or any caveats…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;color:var(--g900)"></textarea></div>';
     mh+='</div>';
-    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(''+coId+'')">Send revised quote →</button></div>');
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(\''+coId+'\')">Send revised quote →</button></div>');
   }
   function _ccoAddLine(coId){
     if(!window._ccoLines)window._ccoLines=[];
@@ -9317,7 +9317,7 @@ charges:[
     }
     if(rq.note)mh+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;font-size:12px;color:#78350f;line-height:1.5"><b>02S note:</b> '+rq.note+'</div>';
     mh+='</div>';
-    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(''+coId+'')">Approve revised quote →</button></div>');
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
   }
   function _cpApproveRevisedQuote(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
