@@ -15125,6 +15125,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
+    if(!ns)h+=renderCpRevisedQuotesBanner();
     if(ns&&window._ccNudges&&window._ccNudges.filter(function(n){return !n.answered;}).length>0){
       var _unans=window._ccNudges.filter(function(n){return !n.answered;});
       h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
@@ -15291,11 +15292,11 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
   mh+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0">';
   mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px">Attachments for project team review</div>';
   if(row.quoteAttachments.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';row.quoteAttachments.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button onclick="_logQuoteRemoveAtt('+ri+','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">×</button></div>';});mh+='</div>';}
-  else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments yet</div>';}
-  mh+='<div style="display:flex;gap:8px;align-items:center">';
-  mh+='<input type="file" id="logQAtt-'+ri+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png">';
-  mh+='<button class="btn btn-ghost btn-sm" onclick="_logQuoteAddAtt('+ri+')">Attach</button>';
-  mh+='</div></div>';
+  else if(ns){mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments yet</div>';}else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments from 02S yet</div>';}
+  if(ns){mh+='<div style="display:flex;gap:8px;align-items:center">';}
+  if(ns)mh+='<input type="file" id="logQAtt-'+ri+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png">';
+  if(ns)mh+='<button class="btn btn-ghost btn-sm" onclick="_logQuoteAddAtt('+ri+')">Attach</button>';
+  mh+=(ns?'</div></div>':'</div>');
   openModal('02S Quote — '+row.service,mh);
 }
   function confirmLogQuote(ri){
