@@ -9318,13 +9318,35 @@ charges:[
     }
     if(rq.note)mh+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;font-size:12px;color:#78350f;line-height:1.5"><b>02S note:</b> '+rq.note+'</div>';
     mh+='</div>';
-    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="returnCpRevisedQuote(\''+coId+'\')">Return with feedback ←</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
   }
   function _cpApproveRevisedQuote(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
     co.status='approved';
     closeModal();renderLogPlan();
     toast('Revised quote approved — '+co.service);
+  }
+
+  function returnCpRevisedQuote(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    openModal('Return revised quote to 02S',
+      '<div style="padding:4px 0">'
+      +'<div style="font-size:12px;color:#475569;margin-bottom:6px">Returning revised quote for: <strong>'+co.service+'</strong></div>'
+      +'<div style="font-size:12px;color:#475569;margin-bottom:8px">Let 02S know what needs to change so they can revise the quote:</div>'
+      +'<textarea id="retRevQuoteTxt" rows="4" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px;font-family:inherit" placeholder="e.g. Please revise pricing — unit cost should not exceed $2,800/mo."></textarea></div>',
+      '<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="returnCpRevisedQuoteSubmit(\''+coId+'\')">Send feedback to 02S</button></div>'
+    );
+  }
+  function returnCpRevisedQuoteSubmit(coId){
+    var txt=(document.getElementById('retRevQuoteTxt')||{}).value||'';
+    if(!txt.trim()){toast('Please enter feedback before sending');return;}
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    co.status='pending_cc';
+    co.revisedQuote=null;
+    window._ccoLines=null;window._ccoLinesCoId=null;
+    closeModal();
+    renderLogPlan();
+    toast('Feedback sent to 02S — revised quote returned for revision');
   }
 
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
@@ -15260,6 +15282,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
   function openQuoteModal(ri){
     var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row||!row.quoteData)return;
     var qd=row.quoteData;
+    var ns=CURRENT==='ns';
     var total=(qd.lines||[]).reduce(function(s,l){return s+(l.ext||0);},0);
     var QUALS=['Sales tax, environmental fee, and fuel surcharges will be applied at time of invoice.','Does not include overtime rates and expedited requests; rates specified at time of request.','Rates include normal wear & tear; all other damages identified at service completion.','Any new scope requests/changes will require a re-quote.','Delivery & pickup fees subject to change based on service request date.','Recurring services will be billed on a 28-day billing cycle.'];
     var mh='<div>';
@@ -15291,7 +15314,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
   if(!row.quoteAttachments)row.quoteAttachments=[];
   mh+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0">';
   mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px">Attachments for project team review</div>';
-  if(row.quoteAttachments.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';row.quoteAttachments.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button onclick="_logQuoteRemoveAtt('+ri+','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">×</button></div>';});mh+='</div>';}
+  if(row.quoteAttachments.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';row.quoteAttachments.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span>'+( ns?'<button onclick="_logQuoteRemoveAtt('+ri+','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">×</button>':'')+'</div>';});mh+='</div>';}
   else if(ns){mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments yet</div>';}else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments from 02S yet</div>';}
   if(ns){mh+='<div style="display:flex;gap:8px;align-items:center">';}
   if(ns)mh+='<input type="file" id="logQAtt-'+ri+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png">';
