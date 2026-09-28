@@ -2313,7 +2313,7 @@
     }
     var dlvCols='1fr 120px 140px 110px 100px';
     var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
-        h+=renderCpTransport();
+        
         mount.innerHTML=h;
   }
   function logIntakeToggle(){
@@ -2352,8 +2352,34 @@
     mh+='<button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="returnLogQuote('+ri+')">Return with feedback ←</button>';
     mh+='</div></div>';
   }
+  if(!row.quoteAttachments)row.quoteAttachments=[];
+  mh+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0">';
+  mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;margin-bottom:8px">Attachments for project team review</div>';
+  if(row.quoteAttachments.length){mh+='<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:10px">';row.quoteAttachments.forEach(function(a,ai){mh+='<div style="display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:6px 10px"><span style="font-size:12px;font-weight:500;color:#1e293b;flex:1">'+a.name+'</span><span style="font-size:10.5px;color:#94a3b8">'+a.type+'</span><button onclick="_logQuoteRemoveAtt('+ri+','+ai+')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;padding:0">✕</button></div>';});mh+='</div>';}
+  else{mh+='<div style="font-size:12px;color:#94a3b8;font-style:italic;margin-bottom:10px">No attachments yet</div>';}
+  mh+='<div style="display:flex;gap:8px;align-items:center">';
+  mh+='<input type="file" id="logQAtt-'+ri+'" style="font-size:12px;flex:1;border:1px solid #e2e8f0;border-radius:6px;padding:5px 8px;color:#334155" accept=".pdf,.docx,.xlsx,.jpg,.png">';
+  mh+='<button class="btn btn-ghost btn-sm" onclick="_logQuoteAddAtt('+ri+')">Attach</button>';
+  mh+='</div></div>';
   openModal('02S Quote — '+row.service,mh);
 }
+  function _logQuoteAddAtt(ri){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row)return;
+    var inp=document.getElementById('logQAtt-'+ri);
+    if(!inp||!inp.files||!inp.files.length){toast('Select a file first');return;}
+    var f=inp.files[0];
+    if(!row.quoteAttachments)row.quoteAttachments=[];
+    row.quoteAttachments.push({name:f.name,type:f.type.split('/')[1]||'file',size:f.size});
+    var pq=PORTAL_QUOTES.filter(function(q){return q.ref===row.quoteRef;})[0];
+    if(pq){if(!pq.attachments)pq.attachments=[];pq.attachments.push({name:f.name,type:f.type.split('/')[1]||'file'});}
+    openQuoteModal(ri);
+    toast('Attachment added — visible to project team');
+  }
+  function _logQuoteRemoveAtt(ri,ai){
+    var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row||!row.quoteAttachments)return;
+    row.quoteAttachments.splice(ai,1);
+    openQuoteModal(ri);
+  }
   function confirmLogQuote(ri){
     var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];
     if(!rows[ri])return;
@@ -6670,7 +6696,7 @@ charges:[
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
-    if(pk==='logistics'&&(r.status||r.state)!=='Complete'&&(r.status||r.state)!=='Closed')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openLogGanttEdit('+rowIdx+')">Edit dates</button>';
+    if(pk==='logistics'&&(r.status||r.state)!=='Complete'&&(r.status||r.state)!=='Closed'){var _co=(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id&&c.status==='quote_revised';});if(_co)h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();openCpRevisedQuoteModal(\''+_co.id+'\')">Revised quote ready →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Submit change order</button>';}
     h+='</div>';
     if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
     if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPO Releases</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs=sp.state==='Released'&&sp.subState?'<span style="font-size:10px;color:var(--g400);margin-left:4px">· '+sp.subState+'</span>':'';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
@@ -8259,6 +8285,17 @@ charges:[
       });
       if(q.totalPriced)b+='<div class="fq-crow" style="border-top:1px solid var(--g200);margin-top:6px;padding-top:6px"><span style="font-weight:600">Total</span><span style="font-weight:700;font-size:13px">'+q.totalPriced+'</span></div>';
     }
+    if(q.attachments&&q.attachments.length){
+      b+='<div style="margin-top:10px;border-top:1px solid var(--g100);padding-top:10px">';
+      b+='<div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Attachments from 02S</div>';
+      q.attachments.forEach(function(a){
+        b+='<div style="display:flex;align-items:center;gap:8px;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:7px 10px;margin-bottom:4px">';
+        b+='<span style="font-size:11.5px;font-weight:500;color:var(--g900);flex:1">'+a.name+'</span>';
+        b+='<button onclick="toast(\'Downloading '+a.name.replace(/'/g,"\\'")+'\u2026\')" style="font-size:11px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;padding:3px 10px;cursor:pointer">Download \u2193</button>';
+        b+='</div>';
+      });
+      b+='</div>';
+    }
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
     b+='<button class="btn btn-ghost" onclick="closeModal();setTimeout(function(){gotoQuote(\'' +ref+ '\');},30)">View in Quotes \u2192</button></div>';
     openModal('Quote preview', b);
@@ -9127,6 +9164,94 @@ charges:[
     if(sa)row.sa=+sa.value;if(ea)row.ea=+ea.value;
     closeModal();renderLogPlan();
   }
+
+  /* ── CHANGE ORDERS ── */
+  window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 28, 2026 · 10:42 AM',status:'pending_cc',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:null}];
+
+  function openChangeOrderModal(pk,rowIdx){
+    var rows=(DP&&DP[pk]&&DP[pk].rows)||[];var row=rows[rowIdx];if(!row)return;
+    var cur=row;
+    var mh='<div style="display:flex;flex-direction:column;gap:14px">';
+    mh+='<div style="background:var(--g50);border-radius:7px;padding:10px 14px;font-size:12px;font-weight:600;color:var(--g800)">'+row.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+row.id+'</span></div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Need-by / window</label><input id="co-dates" type="text" placeholder="e.g. Sep 1 – Feb 28, 2027" value="'+(row.window||row.needBy||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Quantity needed</label><input id="co-qty" type="text" placeholder="e.g. 2 units" value="'+(row.qty||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='</div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Service description</label><input id="co-svc" type="text" value="'+(row.service||'')+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Reason for change</label><textarea id="co-note" rows="3" placeholder="Explain what changed and why…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none;color:var(--g900)"></textarea></div>';
+    mh+='</div>';
+    openModal('Submit change order — '+row.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_submitChangeOrder(\''+pk+'\','+rowIdx+')">Submit change order →</button></div>');
+  }
+  function _submitChangeOrder(pk,rowIdx){
+    var rows=(DP&&DP[pk]&&DP[pk].rows)||[];var row=rows[rowIdx];if(!row)return;
+    var dates=(document.getElementById('co-dates')||{}).value||'';
+    var qty=(document.getElementById('co-qty')||{}).value||'';
+    var svc=(document.getElementById('co-svc')||{}).value||row.service||'';
+    var note=(document.getElementById('co-note')||{}).value||'';
+    var co={id:'CO-'+Date.now(),proj:'hercules',service:row.service,ref:row.id,rowIdx:rowIdx,submittedBy:'Project team',submittedByFull:'Project team · '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),ts:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' · '+new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}),status:'pending_cc',changes:{dates:{from:row.window||row.needBy||'',to:dates},service:{from:row.service,to:svc},qty:{from:row.qty||'',to:qty}},note:note,revisedQuote:null};
+    window._CHANGE_ORDERS.unshift(co);
+    closeModal();renderLogPlan();
+    toast('Change order submitted to 02S — '+row.service);
+  }
+  function openCcChangeOrderModal(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    var mh='<div style="display:flex;flex-direction:column;gap:14px">';
+    mh+='<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:7px;padding:10px 14px">';
+    mh+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#c2410c;margin-bottom:6px">Change order from project team</div>';
+    mh+='<div style="font-size:12px;font-weight:600;color:var(--g900);margin-bottom:2px">'+co.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+co.ref+'</span></div>';
+    mh+='<div style="font-size:11px;color:var(--g500);margin-bottom:8px">'+co.submittedByFull+' · '+co.ts+'</div>';
+    mh+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">';
+    ['dates','service','qty'].forEach(function(k){var label={dates:'Dates',service:'Service',qty:'Quantity'}[k];var c=co.changes[k];if(!c)return;mh+='<div style="background:#fff;border:1px solid #fde8d0;border-radius:5px;padding:7px 9px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#c2410c;margin-bottom:4px">'+label+'</div><div style="font-size:10.5px;color:var(--g500);text-decoration:line-through">'+c.from+'</div><div style="font-size:11.5px;font-weight:600;color:var(--g900);margin-top:2px">'+c.to+'</div></div>';});
+    mh+='</div>';
+    if(co.note)mh+='<div style="margin-top:8px;font-size:12px;color:var(--g700);font-style:italic">“'+co.note+'”</div>';
+    mh+='</div>';
+    mh+='<div style="font-size:12px;font-weight:600;color:var(--g700);padding-top:2px">Fill revised quote</div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised quantity</label><input id="cco-qty" type="text" value="'+co.changes.qty.to+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised window</label><input id="cco-dates" type="text" value="'+co.changes.dates.to+'" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Vendor</label><input id="cco-vendor" type="text" placeholder="Vendor name" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">Revised total ($)</label><input id="cco-total" type="number" placeholder="0" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none"></div>';
+    mh+='</div>';
+    mh+='<div><label style="font-size:10.5px;font-weight:700;color:var(--g600);display:block;margin-bottom:5px">02S notes to project team</label><textarea id="cco-note" rows="2" placeholder="Explain revisions, cost delta, or any caveats…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:vertical;outline:none"></textarea></div>';
+    mh+='</div>';
+    openModal('Change order — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="_ccSubmitRevisedQuote(\''+coId+'\')">Send revised quote →</button></div>');
+  }
+  function _ccSubmitRevisedQuote(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    var qty=(document.getElementById('cco-qty')||{}).value||co.changes.qty.to;
+    var dates=(document.getElementById('cco-dates')||{}).value||co.changes.dates.to;
+    var vendor=(document.getElementById('cco-vendor')||{}).value||'—';
+    var total=+(document.getElementById('cco-total')||{}).value||0;
+    var note=(document.getElementById('cco-note')||{}).value||'';
+    co.revisedQuote={qty:qty,dates:dates,vendor:vendor,total:total,note:note,sentAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})};
+    co.status='quote_revised';
+    closeModal();
+    if(typeof renderCcDemand==='function')renderCcDemand('logistics');
+    toast('Revised quote sent to project team — '+co.service);
+  }
+  function openCpRevisedQuoteModal(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co||!co.revisedQuote)return;
+    var rq=co.revisedQuote;
+    var mh='<div style="display:flex;flex-direction:column;gap:14px">';
+    mh+='<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:7px;padding:10px 14px">';
+    mh+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#166534;margin-bottom:6px">Revised quote from 02S</div>';
+    mh+='<div style="font-size:12px;font-weight:600;color:var(--g900)">'+co.service+'</div>';
+    mh+='<div style="font-size:11px;color:var(--g500);margin-top:2px">Sent '+rq.sentAt+'</div>';
+    mh+='</div>';
+    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    [{l:'Vendor',v:rq.vendor},{l:'Quantity',v:rq.qty},{l:'Service window',v:rq.dates},{l:'Revised total',v:rq.total?'$'+rq.total.toLocaleString():'TBD'}].forEach(function(f){mh+='<div style="background:var(--g50);border-radius:6px;padding:8px 11px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:4px">'+f.l+'</div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+f.v+'</div></div>';});
+    mh+='</div>';
+    if(rq.note)mh+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;font-size:12px;color:#78350f;line-height:1.5"><b>02S note:</b> '+rq.note+'</div>';
+    mh+='</div>';
+    openModal('Revised quote — '+co.service, mh+'<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Decline</button><button class="btn btn-dark" onclick="_cpApproveRevisedQuote(\''+coId+'\')">Approve revised quote →</button></div>');
+  }
+  function _cpApproveRevisedQuote(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    co.status='approved';
+    closeModal();renderLogPlan();
+    toast('Revised quote approved — '+co.service);
+  }
+
   window._ccNudges=window._ccNudges||[{id:'nudge-demo',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'Please provide the generator load schedule from the electrical lead — 02S needs this to source temp power distribution options.',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   if(!window._cpNudgesV||window._cpNudgesV<4){
   window._cpNudges=[{msg:'Temp Toilets & Handwash Stations — United Site Services quote received, $4,600 total. 20 portable units + 6 handwash stations for Sep–Oct. Awaiting approval to schedule.',ts:'Aug 29, 2026 · 9:14 AM',rowIdx:3}];
@@ -9297,6 +9422,29 @@ charges:[
       h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin:12px 0 6px">Done ('+done.length+')</div>';
       done.forEach(function(t){h+=_renderLogTaskCard(t,proj,true);});
     }
+    h+='</div>';
+    return h;
+  }
+
+  function renderChangeOrdersBanner(proj){
+    var cos=(window._CHANGE_ORDERS||[]).filter(function(co){return co.status==='pending_cc'&&(proj==='all'||co.proj===proj);});
+    if(!cos.length)return '';
+    var h='<div style="margin-top:18px;margin-bottom:4px">';
+    h+='<div class="eq-toolbar"><span class="dp-sec-t" style="color:#c2410c">'+svg('<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',2,{stroke:'#c2410c'})+'Change orders</span><span class="spacer"></span><span style="font-size:11px;color:#c2410c;background:#fff7ed;border:1px solid #fed7aa;border-radius:5px;padding:2px 9px;font-weight:600">'+cos.length+' pending</span></div>';
+    cos.forEach(function(co){
+      h+='<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:11px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px">';
+      h+='<div style="flex:1">';
+      h+='<div style="font-size:12px;font-weight:600;color:var(--g900)">'+co.service+'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+co.ref+'</span></div>';
+      h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">Change order submitted by '+co.submittedByFull+' · '+co.ts+'</div>';
+      var deltas=[];
+      if(co.changes.dates&&co.changes.dates.to!==co.changes.dates.from)deltas.push('Dates: '+co.changes.dates.from+' → '+co.changes.dates.to);
+      if(co.changes.qty&&co.changes.qty.to!==co.changes.qty.from)deltas.push('Qty: '+co.changes.qty.from+' → '+co.changes.qty.to);
+      if(co.changes.service&&co.changes.service.to!==co.changes.service.from)deltas.push('Service: '+co.changes.service.to);
+      if(deltas.length)h+='<div style="font-size:11px;color:#c2410c;margin-top:4px">'+deltas.join(' · ')+'</div>';
+      h+='</div>';
+      h+='<button class="btn btn-dark btn-sm" style="background:#c2410c;border-color:#c2410c;white-space:nowrap" onclick="openCcChangeOrderModal(\''+co.id+'\')">Fill revised quote →</button>';
+      h+='</div>';
+    });
     h+='</div>';
     return h;
   }
@@ -10459,14 +10607,21 @@ charges:[
     b+='<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">What was done in the source system?</div>';
     b+='<textarea id="mtCloseNote" placeholder="e.g. PO released in S2P — confirmation #PO-20260803. Vendor acknowledged 14-week lead time." style="width:100%;box-sizing:border-box;min-height:90px;border:1px solid var(--g200);border-radius:6px;padding:8px 10px;font-size:12px;color:var(--g800);resize:vertical;line-height:1.5" autofocus></textarea>';
     b+='<div style="font-size:11px;color:var(--g400);margin-top:4px">Optional — leave blank to mark complete without a note.</div>';
+    b+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--g100)">';
+    b+='<div style="font-size:12px;font-weight:600;color:var(--g700);margin-bottom:6px">Attach evidence of completion</div>';
+    b+='<input type="file" id="mtCloseAtt" style="font-size:12px;width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:5px 8px;color:var(--g700)" accept=".pdf,.docx,.xlsx,.jpg,.png">';
+    b+='<div style="font-size:11px;color:var(--g400);margin-top:4px">Optional — attach a confirmation, screenshot, or document.</div>';
+    b+='</div>';
     b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="myTaskCloseConfirm(\''+id+'\')">Mark complete</button></div>';
     openModal('Complete task', b);
   }
   function myTaskCloseConfirm(id){
     var t=MY_CC_TASKS.find(function(x){return x.id===id;}); if(!t)return;
     var note=document.getElementById('mtCloseNote')?document.getElementById('mtCloseNote').value.trim():'';
+    var attInp=document.getElementById('mtCloseAtt');
+    if(attInp&&attInp.files&&attInp.files.length){t.completionAttachment={name:attInp.files[0].name,type:attInp.files[0].type};}
     t.done=true; t.closeNote=note; t.closedAt=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    closeModal(); renderMyTasks(); _myTasksBadge(); toast(t.label+' marked complete');
+    closeModal(); renderMyTasks(); _myTasksBadge(); toast(t.label+' marked complete'+(t.completionAttachment?' · attachment saved':''));
   }
   function myTaskAdd(label,ref,project,pillar,due){MY_CC_TASKS.unshift({id:'mct-'+Date.now(),label:label,ref:ref||'',project:project||'',pillar:pillar||'',due:due||'',priority:'',source:'fq',done:false,closeNote:''});_myTasksBadge();}
   function myTaskSetDue(id,val){var t=MY_CC_TASKS.find(function(x){return x.id===id;});if(t)t.due=val;}
@@ -13814,7 +13969,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     }
     if(selProj==='all'){ h+=renderCapAtRiskSummary(p); }
     }
-    if(p==='logistics'){h+=renderLogisticsQuoteQueue(selProj,isDpView);h+=renderCcTransport(selProj);}
+    if(p==='logistics'){h+=renderChangeOrdersBanner(selProj);h+=renderLogisticsQuoteQueue(selProj,isDpView);}
     if(p==='profservices'&&isDpView){h+=renderProfServicesCapPlan(selProj);}
     if(p==='procurement'&&isDpView){h+=renderProcurementCapPlan(selProj);}
     mount.innerHTML=h;
@@ -14996,7 +15151,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     }
     var dlvCols='1fr 120px 140px 110px 100px';
     var dlvFilters=[['All','active'],['Scheduled','scheduled'],['Requested','requested'],['In fabrication','in-fabrication'],['Delivered','delivered']];
-        h+=renderCpTransport();
+        
         mount.innerHTML=h;
   }
   function logIntakeToggle(){
