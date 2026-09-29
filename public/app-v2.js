@@ -2305,7 +2305,10 @@
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
-        h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
+        var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
+        h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
+        if(_rowCo.length&&ns){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
+        h+='</div>';
         
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
@@ -5174,7 +5177,7 @@ function renderProfServicesDP(){
   /* ═══════════ ORDERS SCREEN ═══════════ */
   var STAGES_EQ=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
   var STAGES_OTHER=['Requested','Acknowledged','Fulfilled'];
-  var STAGES_LOG=['Requested','Scheduled','In fulfillment','Complete'];
+  var STAGES_LOG=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Completed / Closed'];
   var STAGES_PROC=['In fulfillment','Ordered','Delivered'];
   var STAGES_FAB=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
   var STAGES_PREFAB_OPS=['Planned / FPO','Requested','In Fulfillment','Invoiced / Closed'];
@@ -5758,6 +5761,58 @@ function renderProfServicesDP(){
       {id:'g2',side:'gc',label:'Week 12 report reviewed + signed',done:false,due:'Jul 22',dueIso:'2026-07-22',blocking:true,overdue:true},
       {id:'g3',side:'gc',label:'Phase closeout authorization',done:false,due:'Aug 18',dueIso:'2026-08-18',blocking:true},
       {id:'g4',side:'gc',label:'Regulatory submission',done:false,due:'Aug 25',dueIso:'2026-08-25'}
+    ]},
+    // ── SITE SERVICES (Hercules) ──────────────────────────────────────────────
+    'REQ-L-3116':{node:'ss-restroom',tasks:[
+      {id:'c1',side:'02s',label:'Site survey & ADA placement plan prepared',done:true,date:'Aug 1'},
+      {id:'c2',side:'02s',label:'2-stall ADA restroom trailer mobilized & setup',done:true,date:'Sep 5'},
+      {id:'c3',side:'02s',label:'Weekly servicing schedule confirmed',done:true,date:'Sep 5'},
+      {id:'c4',side:'02s',label:'Monthly rental invoice issued · Sep',done:true,date:'Sep 28'},
+      {id:'g1',side:'gc',label:'Placement location designated on site plan',done:true,date:'Aug 5'},
+      {id:'g2',side:'gc',label:'ADA access route marked & confirmed',done:true,date:'Sep 5'},
+      {id:'g3',side:'gc',label:'Acceptance sign-off at delivery',done:true,date:'Sep 5'},
+      {id:'g4',side:'gc',label:'Servicing access maintained (weekly)',done:true,date:'Sep 21'}
+    ]},
+    'REQ-L-3113':{node:'ss-storage',tasks:[
+      {id:'c1',side:'02s',label:'Container placement plan coordinated with GC',done:true,date:'Aug 16'},
+      {id:'c2',side:'02s',label:'12 containers delivered & positioned',done:true,date:'Aug 20'},
+      {id:'c3',side:'02s',label:'Monthly inventory check scheduled',done:true,date:'Sep 1'},
+      {id:'c4',side:'02s',label:'Change order — 4 additional units (CO-002 pending)',done:false,due:'Oct 10'},
+      {id:'g1',side:'gc',label:'Laydown area designated for 12 units',done:true,date:'Aug 14'},
+      {id:'g2',side:'gc',label:'Container placement accepted on delivery',done:true,date:'Aug 20'},
+      {id:'g3',side:'gc',label:'Contents log & lock protocol established',done:true,date:'Aug 21'},
+      {id:'g4',side:'gc',label:'CO approval — 4 additional units',done:false,due:'Oct 8',blocking:true}
+    ]},
+    'REQ-L-3061':{node:'ss-sanitation',tasks:[
+      {id:'c1',side:'02s',label:'Headcount-based unit layout proposed (20 units + 6 wash)',done:true,date:'Aug 12'},
+      {id:'c2',side:'02s',label:'Quote submitted — USS-2026-8847',done:true,date:'Aug 12'},
+      {id:'c3',side:'02s',label:'Sep 15 service schedule template prepared',done:true,date:'Aug 12'},
+      {id:'c4',side:'02s',label:'Mobilization slot reserved (pending GC approval)',done:false,due:'Sep 10'},
+      {id:'g1',side:'gc',label:'Headcount estimate submitted (~180 crew peak)',done:true,date:'Aug 10'},
+      {id:'g2',side:'gc',label:'Placement zones designated on site plan',done:true,date:'Aug 11'},
+      {id:'g3',side:'gc',label:'Quote review & approval',done:false,due:'Sep 5',blocking:true},
+      {id:'g4',side:'gc',label:'Sep 15 mobilization authorized',done:false,due:'Sep 7'}
+    ]},
+    'REQ-L-3070':{node:'ss-temppower',tasks:[
+      {id:'c1',side:'02s',label:'Generator load estimate reviewed with GC',done:true,date:'Aug 20'},
+      {id:'c2',side:'02s',label:'400A distribution plan prepared (3 panels)',done:true,date:'Aug 22'},
+      {id:'c3',side:'02s',label:'Utility connection permit application submitted',done:true,date:'Aug 24'},
+      {id:'c4',side:'02s',label:'Quote submitted — USS-2026-9102',done:true,date:'Aug 24'},
+      {id:'c5',side:'02s',label:'Mobilization crew allocated (pending approval)',done:false,due:'Oct 1'},
+      {id:'g1',side:'gc',label:'Electrical load schedule submitted to 02S',done:true,date:'Aug 8'},
+      {id:'g2',side:'gc',label:'Panel connection points identified on plan',done:true,date:'Aug 10'},
+      {id:'g3',side:'gc',label:'Safety JHA review completed',done:false,due:'Sep 15',blocking:true},
+      {id:'g4',side:'gc',label:'Approval to proceed issued',done:false,due:'Sep 22',blocking:true}
+    ]},
+    'REQ-L-3117':{node:'ss-fencing',tasks:[
+      {id:'c1',side:'02s',label:'Site assessment scheduled',done:false,due:'Oct 1',blocking:true},
+      {id:'c2',side:'02s',label:'Vendor outreach — 3 options requested',done:false,due:'Oct 5'},
+      {id:'c3',side:'02s',label:'Perimeter layout plan in preparation',done:false,due:'Oct 8'},
+      {id:'c4',side:'02s',label:'Quote submitted for GC review',done:false,due:'Oct 10'},
+      {id:'g1',side:'gc',label:'Perimeter & scope requirements documented',done:true,date:'Aug 14'},
+      {id:'g2',side:'gc',label:'Environmental buffer zones confirmed',done:true,date:'Aug 14'},
+      {id:'g3',side:'gc',label:'Tie-in locations marked on site plan',done:false,due:'Sep 28'},
+      {id:'g4',side:'gc',label:'Quote review & approval',done:false,due:'Oct 14'}
     ]}
   };
   var ORDER_NOTES={
@@ -6502,9 +6557,9 @@ charges:[
       stageOf:function(r){var m={'Planned / FPO':0,Draft:0,'Planned':0,'Pending pricing':0,Requested:1,Submittal:1,'In fabrication':2,'In fulfillment':2,'In Fulfillment':2,'Work Order Created':2,'In Procurement':2,'Released to Shop':2,'In Production':2,'QC Review':2,'Production Complete':2,'In Transit':2,Delivered:3,'Invoiced / Closed':3,Completed:3};return m[r.state]!=null?m[r.state]:0;}
     },
     logistics:{
-      labels:['Plan line','Requested','Quoted','Scheduled','In fulfillment','Complete'],
-      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 12h6M9 16h4"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>','<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>'],
-      stageOf:function(r){var s=r.status||r.state;var m={'Draft':0,'In Scoping / Pricing':1,'Pending Approval':2,'Approved':3,'Released to Order':3,'Fulfilled / Delivered':4,Active:4,'Completed / Closed':5,'Returned':5,'At-risk':1,'Needs attention':1};return m[s]!=null?m[s]:0;}
+      labels:['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Completed / Closed'],
+      icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>','<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>','<path d="M20 6L9 17l-5-5"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>','<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>'],
+      stageOf:function(r){var s=r.status||r.state;var m={'Draft':0,'In Scoping / Pricing':1,'Pending Approval':2,'Approved':3,'Released to Order':4,'Fulfilled / Delivered':5,Active:5,'Completed / Closed':6,'Returned':6,'At-risk':1,'Needs attention':1};return m[s]!=null?m[s]:0;}
     }
   };
   var EQ_LINE_DOCS={
@@ -6699,7 +6754,9 @@ charges:[
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     if(pk==='logistics'&&(r.status||r.state)!=='Completed / Closed'&&(r.status||r.state)!=='Returned'){var _co=(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id&&c.status==='quote_revised';});if(_co)h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();openCpRevisedQuoteModal(\''+_co.id+'\')">Revised quote ready →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Submit change order</button>';}
     h+='</div>';
-    if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
+    var _ssTaskKey=pk==='logistics'&&ORDER_TASKS[r.id]?r.id:null;
+    if(_ssTaskKey)h+='<div class="ns-only" style="margin:0 16px 8px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin:8px 0 4px">Site services workflow</div>'+renderOrderTasksPanel(_ssTaskKey,false)+'</div>';
+    else if(_ordId&&ORDER_TASKS[_ordId])h+='<div class="ns-only">'+renderOrderTasksPanel(_ordId,true)+'</div>';
     if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPO Releases</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs=sp.state==='Released'&&sp.subState?'<span style="font-size:10px;color:var(--g400);margin-left:4px">· '+sp.subState+'</span>':'';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
     return h;
   }
@@ -15284,7 +15341,10 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic">Pending quote</span></div>';
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
-        h+='<div><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span></div>';
+        var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
+        h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
+        if(_rowCo.length&&ns){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
+        h+='</div>';
         
         h+='</div>';
         h+='<div id="dp-drill-logistics-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('logistics',row,ri)+'</div>';
