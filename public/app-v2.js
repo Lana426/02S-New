@@ -2307,7 +2307,7 @@
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
-        if(_rowCo.length&&ns){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
+        if(_rowCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
         
         h+='</div>';
@@ -9252,6 +9252,12 @@ charges:[
     closeModal();renderLogPlan();
     toast('Change order submitted to 02S — '+row.service);
   }
+  function _logViewCo(coId){
+    var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
+    if(CURRENT==='ns')openCcChangeOrderModal(coId);
+    else if(co.status==='quote_revised')openCpRevisedQuoteModal(coId);
+    else toast('Change order '+coId+' submitted — 02S is preparing a revised quote.');
+  }
   function openCcChangeOrderModal(coId){
     var co=(window._CHANGE_ORDERS||[]).filter(function(c){return c.id===coId;})[0];if(!co)return;
     if(!window._ccoLines||window._ccoLinesCoId!==coId){
@@ -11962,33 +11968,33 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       hercules:{budget:1200000,dpSpent:820000,adHoc:3800,
       rollCols:['GC/GR service','Delivery date','Progress','Status'],
       roll:[
-        {a:'Office Trailers',b:'Aug 1, 2026',c:'100%',v:'Complete',vt:'ok'},
-        {a:'Restroom Facility',b:'Sep 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
-        {a:'Storage Containers',b:'Aug 15, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
-        {a:'Temp Toilets & Handwash',b:'Sep 15, 2026',c:'50%',v:'Quoted',vt:'info'},
-        {a:'Waste Hauling',b:'Jun 1, 2026',c:'100%',v:'Complete',vt:'ok'},
-        {a:'Site Construction Signage',b:'Aug 1, 2026',c:'75%',v:'In fulfillment',vt:'ok'},
-        {a:'Temp Power Distribution',b:'Oct 1, 2026',c:'25%',v:'Requested',vt:'warn'},
-        {a:'Temp Fencing',b:'Oct 15, 2026',c:'0%',v:'Planned',vt:'neu'}
+        {a:'Office Trailers',b:'Aug 1, 2026',c:'100%',v:'Completed / Closed',vt:'ok'},
+        {a:'Restroom Facility',b:'Sep 1, 2026',c:'75%',v:'Fulfilled / Delivered',vt:'info'},
+        {a:'Storage Containers',b:'Aug 15, 2026',c:'75%',v:'Fulfilled / Delivered',vt:'info'},
+        {a:'Temp Toilets & Handwash',b:'Sep 15, 2026',c:'50%',v:'Pending Approval',vt:'warn'},
+        {a:'Waste Hauling',b:'Jun 1, 2026',c:'100%',v:'Completed / Closed',vt:'ok'},
+        {a:'Site Construction Signage',b:'Aug 1, 2026',c:'75%',v:'Fulfilled / Delivered',vt:'info'},
+        {a:'Temp Power Distribution',b:'Oct 1, 2026',c:'25%',v:'In Scoping / Pricing',vt:'warn'},
+        {a:'Temp Fencing',b:'Oct 15, 2026',c:'0%',v:'Draft',vt:'neu'}
       ],
       varSummary:'3 services in fulfillment · 1 quote ready for approval (USS) · 2 requiring vendor selection by Oct.',
       rows:[
-        {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Complete',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',leadTime:21,firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
+        {item:'Office Trailers',qty:'18 units',window:'Aug 1, 2026',state:'Completed / Closed',ordId:'ORD-3071',fqRef:'REQ-L-3071',cost:'$56,000',leadTime:21,firm:'WillScot',poc:'Michael Wernie',phone:'(636) 209-3057',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'Done',s:3,e:4}],
          attachments:[{type:'Safety',name:'Delivery plan — office trailers Aug 2026',ref:'LP-3071-001',status:'Approved'},{type:'Shipping',name:'Haul route map — trailer delivery Aug 2026',ref:'HR-3071-001',status:'Approved'},{type:'Safety',name:'Traffic control plan',ref:'TCP-3071-001',status:'Approved'}]},
-        {item:'Restroom Facility',qty:'1 unit',window:'Sep 1, 2026',state:'In fulfillment',ordId:'ORD-3116',fqRef:'REQ-L-3116',cost:'$14,200/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
+        {item:'Restroom Facility',qty:'1 unit',window:'Sep 1, 2026',state:'Fulfilled / Delivered',ordId:'ORD-3116',fqRef:'REQ-L-3116',cost:'$14,200/mo',firm:'R\u0026R Sanitation',poc:'Jared Sitze',phone:'(636) 373-4197',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:4},{n:'Install',st:'In progress',s:4,e:5}]},
-        {item:'Storage Containers',qty:'12 units',window:'Aug 15, 2026',state:'In fulfillment',ordId:'ORD-3113',fqRef:'REQ-L-3113',cost:'$21,600',firm:'WillScot',poc:'Lou Rosswick',phone:'(314) 288-7895',
+        {item:'Storage Containers',qty:'12 units',window:'Aug 15, 2026',state:'Fulfilled / Delivered',ordId:'ORD-3113',fqRef:'REQ-L-3113',cost:'$21,600',firm:'WillScot',poc:'Lou Rosswick',phone:'(314) 288-7895',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
-        {item:'Temp Toilets \u0026 Handwash Stations',qty:'26 units',window:'Sep 15, 2026',state:'Quoted',ordId:null,fqRef:'REQ-L-3061',cost:'$4,600',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
+        {item:'Temp Toilets \u0026 Handwash Stations',qty:'26 units',window:'Sep 15, 2026',state:'Pending Approval',ordId:null,fqRef:'REQ-L-3061',cost:'$4,600',firm:'United Site Services',poc:'USS Ops',phone:'(800) 424-0385',
          acts:[{n:'Project Plan',st:'Done',s:1,e:2},{n:'RFP',st:'Done',s:2,e:3},{n:'Contracting',st:'In progress',s:3,e:4},{n:'Install',st:'Not started',s:4,e:5}]},
-        {item:'Waste Hauling',qty:'2 dumpsters',window:'Jun 1, 2026',state:'Complete',ordId:'ORD-3127',fqRef:'REQ-L-3127',cost:'$4,800',firm:'GFL Environmental',poc:'Dan Smith',phone:'(314) 713-6329',
+        {item:'Waste Hauling',qty:'2 dumpsters',window:'Jun 1, 2026',state:'Completed / Closed',ordId:'ORD-3127',fqRef:'REQ-L-3127',cost:'$4,800',firm:'GFL Environmental',poc:'Dan Smith',phone:'(314) 713-6329',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:0,e:1},{n:'Contracting',st:'Done',s:0,e:1},{n:'Install',st:'Done',s:1,e:2}]},
-        {item:'Site Construction Signage',qty:'2 zones',window:'Aug 1, 2026',state:'In fulfillment',ordId:'ORD-3119',fqRef:'REQ-L-3119',cost:'$14,000',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
+        {item:'Site Construction Signage',qty:'2 zones',window:'Aug 1, 2026',state:'Fulfilled / Delivered',ordId:'ORD-3119',fqRef:'REQ-L-3119',cost:'$14,000',firm:'ARC',poc:'Terry Velasquez',phone:'(480) 921-0900',
          acts:[{n:'Project Plan',st:'Done',s:0,e:1},{n:'RFP',st:'Done',s:1,e:2},{n:'Contracting',st:'Done',s:2,e:3},{n:'Install',st:'In progress',s:3,e:4}]},
-        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'Requested',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',leadTime:42,firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
+        {item:'Temp Power Distribution Equip.',qty:'1 system',window:'Aug 5, 2026',state:'In Scoping / Pricing',ordId:null,fqRef:'REQ-L-3070',cost:'$38K est.',leadTime:42,firm:'Paynecrest Electric',poc:'Kevin Brueggeman',phone:'(314) 788-0772',
          acts:[{n:'Project Plan',st:'Done',s:2,e:3},{n:'RFP',st:'In progress',s:3,e:4},{n:'Contracting',st:'Not started',s:4,e:5},{n:'Install',st:'Not started',s:5,e:6}]},
-        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Planned',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
+        {item:'Temp Fencing',qty:'Bulk lot',window:'Oct 15, 2026',state:'Draft',ordId:null,fqRef:'REQ-L-3117',cost:'$22,000 est.',leadTime:14,firm:'TBD',poc:'TBD',phone:'',
          acts:[{n:'Project Plan',st:'Not started',s:3,e:4},{n:'RFP',st:'Not started',s:4,e:5},{n:'Contracting',st:'Not started',s:5,e:6},{n:'Install',st:'Not started',s:6,e:7}]}
       ]},
       barryrose:{budget:600000,dpSpent:310000,adHoc:180000,
@@ -13466,7 +13472,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       h+='</div></div>';
     }
     if(cfg.cap){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
-    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Completed / Closed':'ok','Fulfilled / Delivered':'info','Pending Approval':'warn','In Scoping / Pricing':'warn','Approved':'info','Released to Order':'info','Planned':'neu'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
     var showProjCol=(selProj==='all');
     var allReqRows=[];
@@ -13870,7 +13876,10 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           h+='<div class="c" style="font-size:11.5px">'+(row.qty||'\u2014')+'</div>';
           h+='<div style="font-size:11.5px;color:'+(p==='prefab'&&row.dateShifted?'#b45309':'var(--g700)')+'">'+(row.window||'\u2014')+'</div>'+(p==='prefab'?'<div style="font-size:11px;color:var(--g600)">'+(row.p6Act||'\u2014')+'</div>':'');
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
-          h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span></div>';
+          var _ccRwCo=(window._CHANGE_ORDERS||[]).filter(function(c){return row.fqRef&&c.ref===row.fqRef&&(c.status==='pending_cc'||c.status==='quote_revised');});
+          h+='<div style="display:flex;flex-direction:column;gap:3px"><span class="tag '+dpTone+'">'+_dpDisp+'</span>';
+          if(_ccRwCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_ccRwCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_ccRwCo[0].id+'</span></span>';}
+          h+='</div>';
           h+='<div>'+dpDocCell(p,row)+'</div>';
           if(p==='prefab'){var _pfSps=row.splits||[];var _pfRel=_pfSps.filter(function(s){return s.state==='Released';}).length;var _pfStr=_pfSps.length?_pfSps.length+' split'+(_pfSps.length>1?'s':'')+' · '+_pfRel+' released':'No releases yet';var _pfFpoBtn='<button onclick="event.stopPropagation();openCcFpoSplitModal(\''+p+'\',\''+row._proj+'\','+row._idx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">→ Manage FPO</button>';if(_actCell){_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">'+_actCell+'<div style="border-top:1px solid rgba(37,99,235,.15);padding-top:4px;margin-top:1px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500);display:block;margin-top:2px">'+_pfStr+'</span></div></div>';}else{_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500)">'+_pfStr+'</span></div>';}}
           h+='<div>'+_actCell+'</div>';
@@ -13931,6 +13940,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
                 h+='</div>';
               });
               h+='</div>';
+              if(ORDER_TASKS[row.fqRef]){h+='<div style="margin-top:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:6px">Site services workflow</div>'+renderOrderTasksPanel(row.fqRef,false)+'</div>';}
               h+='</div>';
             }
           }
@@ -15343,7 +15353,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
-        if(_rowCo.length&&ns){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
+        if(_rowCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
         
         h+='</div>';
