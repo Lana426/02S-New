@@ -2198,7 +2198,6 @@
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
-    if(!ns)h+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:11px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px"><div style="width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;box-shadow:0 0 0 3px rgba(239,68,68,.2)"></div><div style="flex:1"><span style="font-size:12px;font-weight:700;color:#b91c1c">1 new message from 02S</span><span style="font-size:12px;color:#7f1d1d;margin-left:6px">— respond to pending quote?</span></div><button class="btn btn-sm" style="background:#ef4444;border-color:#ef4444;color:#fff;white-space:nowrap;font-weight:600" onclick="event.stopPropagation();openQuoteModal(0)">View quote →</button></div>';
     h+=renderCpRevisedQuotesBanner();
     if(!ns&&window._ptNudges&&window._ptNudges.filter(function(n){return !n.answered;}).length){
       var _ptN=window._ptNudges.filter(function(n){return !n.answered;});
@@ -15260,7 +15259,6 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     var _prereqs=(DP['logistics']&&DP['logistics'].prereqs)||{};
     var _logBaseV1=PLAN_BASELINES&&PLAN_BASELINES['logistics'];
     var h='';
-    if(!ns)h+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:11px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px"><div style="width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0;box-shadow:0 0 0 3px rgba(239,68,68,.2)"></div><div style="flex:1"><span style="font-size:12px;font-weight:700;color:#b91c1c">1 new message from 02S</span><span style="font-size:12px;color:#7f1d1d;margin-left:6px">— respond to pending quote?</span></div><button class="btn btn-sm" style="background:#ef4444;border-color:#ef4444;color:#fff;white-space:nowrap;font-weight:600" onclick="event.stopPropagation();openQuoteModal(0)">View quote →</button></div>';
     if(!ns)h+=renderCpRevisedQuotesBanner();
     if(ns&&window._ccNudges&&window._ccNudges.filter(function(n){return !n.answered;}).length>0){
       var _unans=window._ccNudges.filter(function(n){return !n.answered;});
