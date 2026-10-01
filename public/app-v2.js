@@ -12938,6 +12938,21 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   var _ccAddFpoProj=null;
   function openCcAddFpo(proj){
     _ccAddFpoProj=(proj==='all'?'hercules':proj);
+    var body='<div style="display:flex;flex-direction:column;gap:10px">'
+      +'<button onclick="closeModal();_openFpoUpload()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#3b82f6\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'
+      +'<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'
+      +'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Upload FPO</div>'
+      +'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attach a project team FPO document</div></div></button>'
+      +'<button onclick="closeModal();_openCcFpoForm()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#16a34a\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'
+      +'<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'
+      +'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Manual entry</div>'
+      +'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Enter assembly details directly</div></div></button>'
+      +'</div>';
+    openModal('Add FPO',body);
+  }
+  function _openCcFpoForm(){
     var _p6=['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'];
     var f='<div class="mform">';
     f+='<div class="mf"><label>Assembly name</label><input id="ccFpoName" class="rin" placeholder="e.g. Combiner box prefab array"></div>';
