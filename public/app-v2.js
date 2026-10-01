@@ -12935,6 +12935,36 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     renderCcDemand('prefab');renderDP('prefab');
   }
 
+  var _ccAddFpoProj=null;
+  function openCcAddFpo(proj){
+    _ccAddFpoProj=(proj==='all'?'hercules':proj);
+    var _p6=['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'];
+    var f='<div class="mform">';
+    f+='<div class="mf"><label>Assembly name</label><input id="ccFpoName" class="rin" placeholder="e.g. Combiner box prefab array"></div>';
+    f+='<div class="mf2"><div class="mf"><label>Qty</label><input id="ccFpoQty" class="rin" placeholder="e.g. 24 units"></div><div class="mf"><label>Need-by date</label><input id="ccFpoWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)"></div></div>';
+    f+='<div class="mf"><label>P6 schedule activity</label><select id="ccFpoP6" class="acc-sel wfull"><option value="">— select P6 activity —</option>'+_p6.map(function(a){return'<option>'+a+'</option>';}).join('')+'</select></div>';
+    f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="ccFpoScope" class="rin" placeholder="Scope clarifications or notes"></div>';
+    f+='</div>';
+    openModal('Add FPO',f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="ccAddFpoSubmit()">Add FPO to plan</button></div></div>');
+  }
+  function ccAddFpoSubmit(){
+    var name=(document.getElementById('ccFpoName')||{}).value||'';
+    name=name.trim();if(!name){toast('Enter an assembly name first');return;}
+    var qty=(document.getElementById('ccFpoQty')||{}).value||'—';
+    var rawWhen=(document.getElementById('ccFpoWhen')||{}).value||'';
+    var p6=(document.getElementById('ccFpoP6')||{}).value||'';
+    var scope=(document.getElementById('ccFpoScope')||{}).value||'';
+    var _mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var when='—';if(rawWhen&&/^\d{4}-\d{2}-\d{2}$/.test(rawWhen)){var d=new Date(rawWhen+'T00:00:00');when=_mn[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();}
+    var proj=_ccAddFpoProj||'hercules';
+    if(!CC_PROJ_DP.prefab[proj])CC_PROJ_DP.prefab[proj]={rows:[]};
+    if(!CC_PROJ_DP.prefab[proj].rows)CC_PROJ_DP.prefab[proj].rows=[];
+    var row={item:name,qty:qty,window:when,state:'Requested',cost:'TBD',firm:'TBD',poc:'TBD',phone:'',p6Act:p6||null,splits:[]};
+    if(scope)row.note=scope;
+    CC_PROJ_DP.prefab[proj].rows.push(row);
+    closeModal();renderCcDemand('prefab');
+    toast('FPO added to plan — state: Requested');
+  }
   function dpPfbCcDetail(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var ord=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;var ns=CURRENT==='ns';var h='';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--g50);border-bottom:1px solid var(--g150)">';h+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:3px">Current status</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.state+(row.subState?' · '+row.subState:'')+'</div></div>';h+='<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>'
     
     +'</div>';h+='</div>';
@@ -13580,6 +13610,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       if(p!=='prefab'){h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';
       if(p==='equipment'){h+='<div style="display:flex;gap:2px;margin-right:10px"><button class="ff-b'+(_dpEquipView==='table'?' on':'')+'" onclick="dpSetEquipView(\'table\')">List</button><button class="ff-b'+(_dpEquipView==='gantt'?' on':'')+'" onclick="dpSetEquipView(\'gantt\')">Gantt</button></div>';}
       h+='<span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' items · '+pLabel+'</span></div>';}
+      if(p==='prefab'){h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add FPO</button></div>';}
       if(p==='equipment'&&_dpEquipView==='gantt'){h+='<style>#ccDpEquip .dp-tbl{display:none!important}</style>'+renderEquipGantt(selProj,ns);}
       if(p==='logistics'&&isDpView){
         h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:8px;padding:3px;margin-bottom:12px;width:fit-content">';
