@@ -2967,6 +2967,16 @@
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcSendNote('+idx+')">Send</button>';
     h+='</div></div>';
     var docs=r.attachments||[];
+    if(r.type==='vmi'&&r.minMax&&(r.status==='released'||r.status==='fulfilled')){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#7c3aed;margin-bottom:6px">VMI Thresholds (set by 02S)</div>';
+      h+='<div style="display:flex;gap:20px">';
+      h+='<div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">Min Qty</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+r.minMax.min+'</div></div>';
+      h+='<div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">Max Qty</div>';
+      h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+r.minMax.max+'</div></div>';
+      h+='</div></div>';
+    }
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
