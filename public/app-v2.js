@@ -2442,35 +2442,72 @@
   /* ═══════════ STC MODULE ═══════════ */
 
   var _stcAllReqs=[
-    {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',desc:'Welding consumables — monthly site restock',status:'released',needBy:'2026-10-25',costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,
-     notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring monthly VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'}],
+    // ── Hercules VMI ──
+    {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',
+     bundleId:'BND-VMI-HRC1',bundleName:'Welding Consumables VMI',
+     desc:'Welding consumables — site restock',status:'released',needBy:'2026-10-25',
+     costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,
+     minMax:{min:30,max:80},
+     notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'},
+            {who:'02S Logistics',when:'Sep 20 2026',text:'VMI thresholds configured: min 30%, max 80%. Airgas auto-reorder active.'}],
      attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}],
      q:{cost:1240,vendor:'Airgas',ref:'QT-STC-001'}},
-    {id:'STC-002',proj:'hercules',type:'sp',cat:'Small Tools',desc:'Cordless drill sets (Makita DHP483)',status:'approved',needBy:'2026-09-28',costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,
-     notes:[],attachments:[],
-     q:{cost:892,qty:6,vendor:'Home Depot Pro',ref:'QT-STC-002'}},
-    {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',desc:'Abrasive wheels & grinding discs — monthly restock',status:'draft',needBy:'2026-11-10',costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,
+    {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',
+     bundleId:'BND-VMI-HRC2',bundleName:'Abrasives & Grinding VMI',
+     desc:'Abrasive wheels & grinding discs',status:'draft',needBy:'2026-11-10',
+     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,
      notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
      attachments:[]},
-    {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',desc:'Fall protection harnesses & lanyards (Petzl Avao)',status:'released',needBy:'2026-10-12',costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,
+    // ── Hercules SP ──
+    {id:'STC-002',proj:'hercules',type:'sp',cat:'Small Tools',
+     bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
+     desc:'Cordless drill sets (Makita DHP483)',status:'approved',needBy:'2026-09-28',
+     costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,
+     notes:[],attachments:[],
+     q:{cost:892,qty:6,vendor:'Home Depot Pro',ref:'QT-STC-002'}},
+    {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',
+     bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
+     desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'draft',needBy:'2026-11-05',
+     costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,qty:3,
+     notes:[],attachments:[]},
+    {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
+     bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
+     desc:'Fall protection harnesses & lanyards (Petzl Avao)',status:'released',needBy:'2026-10-12',
+     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,
      notes:[{who:'Lana Butorovic',when:'Sep 14 2026',text:'Required for steel erection crew — 12 units needed before Oct 1.'},
             {who:'02S Procurement',when:'Sep 16 2026',text:'Quote confirmed, delivery scheduled Sep 30 via Grainger.'}],
      attachments:[{name:'Safety harness spec sheet',ref:'STC-004-SPEC',status:'Approved'}],
      q:{cost:2340,qty:12,vendor:'Grainger',ref:'QT-STC-004'}},
-    {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'draft',needBy:'2026-11-05',costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,qty:3,
+    // ── Barry Rose VMI ──
+    {id:'STC-B01',proj:'barryrose',type:'vmi',cat:'Fasteners',
+     bundleId:'BND-VMI-BR1',bundleName:'Fasteners & Anchors VMI',
+     desc:'Structural fasteners — VMI restock',status:'draft',needBy:'2026-09-25',
+     costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,
      notes:[],attachments:[]},
-    {id:'STC-B01',proj:'barryrose',type:'vmi',cat:'Fasteners',desc:'Structural fasteners — VMI restock',status:'draft',needBy:'2026-09-25',costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,
-     notes:[],attachments:[]},
-    {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'approved',needBy:'2026-10-08',costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,
-     notes:[],attachments:[],
-     q:{cost:540,qty:30,vendor:'Grainger',ref:'QT-STC-B02'}},
-    {id:'STC-B03',proj:'barryrose',type:'vmi',cat:'Sealants',desc:'Thread sealants & adhesives — VMI restock',status:'released',needBy:'2026-11-20',costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,
+    {id:'STC-B03',proj:'barryrose',type:'vmi',cat:'Sealants',
+     bundleId:'BND-VMI-BR2',bundleName:'Sealants & Adhesives VMI',
+     desc:'Thread sealants & adhesives — VMI restock',status:'released',needBy:'2026-11-20',
+     costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,
      notes:[],attachments:[],
      q:{cost:780,vendor:'Loctite Direct',ref:'QT-STC-B03'}},
-    {id:'STC-V01',proj:'vdc14',type:'sp',cat:'Power Tools',desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'approved',needBy:'2026-10-02',costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,
+    // ── Barry Rose SP ──
+    {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',
+     bundleId:'BND-SP-BR1',bundleName:'Safety PPE Kit',
+     desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'approved',needBy:'2026-10-08',
+     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,
+     notes:[],attachments:[],
+     q:{cost:540,qty:30,vendor:'Grainger',ref:'QT-STC-B02'}},
+    // ── VDC14 SP ──
+    {id:'STC-V01',proj:'vdc14',type:'sp',cat:'Power Tools',
+     bundleId:'BND-SP-V1',bundleName:'Power Tools Pack',
+     desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'approved',needBy:'2026-10-02',
+     costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,
      notes:[],attachments:[],
      q:{cost:1070,qty:12,vendor:'Home Depot Pro',ref:'QT-STC-V01'}},
-    {id:'STC-V02',proj:'vdc14',type:'sp',cat:'Safety & Specialty',desc:'Hard hats Type II (3M H-812)',status:'released',needBy:'2026-09-30',costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,
+    {id:'STC-V02',proj:'vdc14',type:'sp',cat:'Safety & Specialty',
+     bundleId:'BND-SP-V2',bundleName:'Safety PPE Kit',
+     desc:'Hard hats Type II (3M H-812)',status:'released',needBy:'2026-09-30',
+     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,
      notes:[],attachments:[],
      q:{cost:420,qty:12,vendor:'3M Direct',ref:'QT-STC-V02'}},
   ];
@@ -2719,7 +2756,7 @@
         proj:'hercules',type:'sp',desc:item.name,cat:item.cat,qty:item.qty,
         date:'Now',status:'draft',needBy:needBy,costCode:costCode,notes:[],attachments:[]});
     });
-    _stcModal.open=false;_stcModal.bundleConfig=null;
+    _stcModal.open=false;_stcModal.bundleConfig=null;_stcFilter='sp';
     renderSTC();toast('Bundle "'+cfg.name+'" added — '+selected.length+' item'+(selected.length===1?'':'s'));
   }
   function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
@@ -3021,7 +3058,7 @@
 
   function _stcModalHTML(){
     var m=_stcModal;
-    var h='<div id="stc-modal-ov" onclick="if(event.target===this){_stcCloseModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    var h='<div id="stc-modal-ov" onclick="if(event.target===this){_stcCloseModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px">';
     h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
     h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(m.bundleMode?'Select Bundle':'New Request')+'</div>';
