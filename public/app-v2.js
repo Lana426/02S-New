@@ -2462,7 +2462,7 @@
      bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
      desc:'Cordless drill sets (Makita DHP483)',status:'approved',needBy:'2026-09-28',
      costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,price:149,qty:6,
-     notes:[],attachments:[]},
+     notes:[{who:'Marcus D. (Yard — Phoenix)',when:'Oct 3, 2026',text:'Yard update: 8 units of cordless drill sets confirmed in stock at Phoenix yard. Available for immediate pull — tagged to STC-002.',isYardUpdate:true}],attachments:[]},
     {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',
      bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
      desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'draft',needBy:'2026-11-05',
@@ -2725,6 +2725,19 @@
     _stcUpdateModalOnly();
   }
   function _stcBundleBack(){_stcModal.bundleConfig=null;_stcUpdateModalOnly();}
+  function _stcBndUpdateTotal(){
+    if(!_stcModal.bundleConfig)return;
+    var cfg=_stcModal.bundleConfig;
+    var tot=0;
+    cfg.items.forEach(function(it,i){
+      if(!it.selected)return;
+      var el=document.getElementById('stc-bnd-qty-'+i);
+      var q=el?parseInt(el.value,10)||1:it.qty;
+      tot+=(it.price||0)*q;
+    });
+    var el=document.getElementById('stc-bnd-total');
+    if(el)el.textContent='$'+tot.toLocaleString();
+  }
   function _stcBundleToggleItem(i){
     if(!_stcModal.bundleConfig)return;
     _stcModal.bundleConfig.items[i].selected=!_stcModal.bundleConfig.items[i].selected;
@@ -2744,7 +2757,7 @@
     var needBy=nb?nb.value:'';var costCode=cc?cc.value:'0600-0100-0000-0001';
     selected.forEach(function(item,si){
       _stcAllReqs.push({id:cfg.bundleId+'-'+(si+1),bundleId:cfg.bundleId,bundleName:cfg.name,
-        proj:'hercules',type:'sp',desc:item.name,cat:item.cat,qty:item.qty,
+        proj:'hercules',type:'sp',desc:item.name,cat:item.cat,qty:item.qty,price:item.price,
         date:'Now',status:'draft',needBy:needBy,costCode:costCode,notes:[],attachments:[]});
     });
     _stcModal.open=false;_stcModal.bundleConfig=null;_stcFilter='sp';
@@ -2801,7 +2814,8 @@
     var si=_stcModal.selectedItem;
     if(!si){toast('Please select an item from the catalog');return;}
     var nb=document.getElementById('stc-sp-needby');
-    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:si.cat,desc:si.name,status:'pending',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,notes:[],attachments:[]});
+    var _spQty=parseInt((document.getElementById('stc-sp-qty')||{value:'1'}).value,10)||1;
+    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:si.cat,desc:si.name,status:'draft',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:si.price,qty:_spQty,notes:[],attachments:[]});
     _stcModal.open=false;_stcFilter='sp';
     renderSTC();toast('Request submitted — 02S will respond with a quote.');
   }
@@ -2997,10 +3011,16 @@
         h+='</div>';
         h+='<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">';
         h+='<span style="font-size:11px;color:var(--g500)">Qty</span>';
-        h+='<input type="number" id="stc-bnd-qty-'+ii+'" min="1" value="'+item.qty+'" '+(item.selected?'':'disabled')+' style="width:60px;border:1px solid var(--g200);border-radius:5px;padding:3px 7px;font-size:12px;font-family:inherit;color:var(--g900);background:'+(item.selected?'#fff':'var(--g100)')+';outline:none;text-align:center">';
+        h+='<input type="number" id="stc-bnd-qty-'+ii+'" min="1" value="'+item.qty+'" oninput="_stcBndUpdateTotal()" '+(item.selected?'':'disabled')+' style="width:60px;border:1px solid var(--g200);border-radius:5px;padding:3px 7px;font-size:12px;font-family:inherit;color:var(--g900);background:'+(item.selected?'#fff':'var(--g100)')+';outline:none;text-align:center">';
         h+='<span style="font-size:11px;color:var(--g400)">'+item.unit+'</span>';
-        h+='</div></div>';
+        h+='</div>';
+        h+='<div style="font-size:12px;font-weight:700;color:'+(item.selected?'#1e40af':'var(--g300)')+';min-width:56px;text-align:right">$'+((item.price||0)*item.qty).toLocaleString()+'</div>';
+        h+='</div>';
       });
+      var _bndTot=bcfg.items.reduce(function(s,it){return it.selected?s+(it.price||0)*it.qty:s;},0);
+      h+='<div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:8px 12px;margin-top:6px;background:var(--g50);border:1px solid var(--g200);border-radius:6px">';
+      h+='<span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Estimated total</span>';
+      h+='<span id="stc-bnd-total" style="font-size:16px;font-weight:700;color:var(--g900)">$'+_bndTot.toLocaleString()+'</span>';
       h+='</div>';
     }else if(m.bundleMode){
       _stcBundles.forEach(function(bnd){
@@ -3487,28 +3507,28 @@
   }
   var _stcCCActivities={
     'STC-001':[
-      {id:'a1',label:'Scope & Contract',status:'done',owner:'James R.',due:'Aug 12',
+      {id:'a1',label:'Scope & Contract',status:'done',owner:'James R.',start:'2026-08-01',end:'2026-08-12',
        tasks:[{id:'t1',label:'Draft MSA with Airgas',done:true},{id:'t2',label:'Legal review sign-off',done:true}]},
-      {id:'a2',label:'Initial Delivery Setup',status:'done',owner:'James R.',due:'Sep 15',
+      {id:'a2',label:'Initial Delivery Setup',status:'done',owner:'James R.',start:'2026-09-01',end:'2026-09-15',
        tasks:[{id:'t3',label:'Configure VMI triggers in system',done:true}]},
-      {id:'a3',label:'Reorder Point Configuration',status:'active',owner:'James R.',due:'Oct 25',
+      {id:'a3',label:'Reorder Point Configuration',status:'active',owner:'James R.',start:'2026-09-16',end:'2026-10-25',
        tasks:[{id:'t4',label:'Set min/max thresholds',done:true},{id:'t5',label:'Test auto-reorder flow',done:false},{id:'t6',label:'Notify yard team of thresholds',done:false}]},
-      {id:'a4',label:'Monthly Replenishment Cycle',status:'pending',owner:'James R.',due:'Jan 31',
+      {id:'a4',label:'Monthly Replenishment Cycle',status:'pending',owner:'James R.',start:'2026-10-25',end:'2027-01-31',
        tasks:[]}
     ],
     'STC-004':[
-      {id:'a5',label:'Purchase Order Issuance',status:'done',owner:'Sarah M.',due:'Sep 17',
+      {id:'a5',label:'Purchase Order Issuance',status:'done',owner:'Sarah M.',start:'2026-09-14',end:'2026-09-17',
        tasks:[{id:'t7',label:'Confirm Petzl Avao spec with safety lead',done:true},{id:'t8',label:'Issue PO #PO-2026-0914',done:true}]},
-      {id:'a6',label:'Vendor Confirmation',status:'done',owner:'Sarah M.',due:'Sep 22',
+      {id:'a6',label:'Vendor Confirmation',status:'done',owner:'Sarah M.',start:'2026-09-17',end:'2026-09-22',
        tasks:[{id:'t9',label:'Confirm lead time with Grainger',done:true}]},
-      {id:'a7',label:'Delivery to Site',status:'active',owner:'Sarah M.',due:'Sep 30',
+      {id:'a7',label:'Delivery to Site',status:'active',owner:'Sarah M.',start:'2026-09-22',end:'2026-09-30',
        tasks:[{id:'t10',label:'Coordinate delivery slot with site super',done:false},{id:'t11',label:'Arrange forklift for offload',done:false}]},
-      {id:'a8',label:'Receipt & Inspection',status:'pending',owner:'Sarah M.',due:'Oct 7',
+      {id:'a8',label:'Receipt & Inspection',status:'pending',owner:'Sarah M.',start:'2026-09-30',end:'2026-10-07',
        tasks:[]}
     ]
   };
   var _stcCCActOpenId=null;
-  var _stcCCActOpenTask={};
+  var _stcYardNotifOpen=false;
 
   function _stcCCActToggle(oid){_stcCCActOpenId=(_stcCCActOpenId===oid)?null:oid;renderSTC_CC();}
   function _stcCCActSetStatus(oid,ai,v){var acts=_stcCCActivities[oid];if(acts&&acts[ai])acts[ai].status=v;renderSTC_CC();}
@@ -3517,7 +3537,8 @@
   function _stcCCActAddActivity(oid){
     var lbl=window.prompt('Activity name:','');if(!lbl||!lbl.trim())return;
     if(!_stcCCActivities[oid])_stcCCActivities[oid]=[];
-    _stcCCActivities[oid].push({id:'a'+Date.now(),label:lbl.trim(),status:'pending',owner:'—',due:'',tasks:[]});
+    var today='2026-10-05';var endDef='2026-10-19';
+    _stcCCActivities[oid].push({id:'a'+Date.now(),label:lbl.trim(),status:'pending',owner:'--',start:today,end:endDef,tasks:[]});
     _stcCCActOpenId=oid;renderSTC_CC();
   }
   function _stcCCActAddTask(oid,ai){
@@ -3530,33 +3551,38 @@
     var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
     acts[ai].tasks.splice(ti,1);_stcCCActOpenId=oid;renderSTC_CC();
   }
+  function _stcSendYardReply(){
+    var inp=document.getElementById('stc-yard-reply-inp');
+    if(!inp||!inp.value.trim()){toast('Enter a reply first');return;}
+    var r02=_stcAllReqs.find(function(r){return r.id==='STC-002';});
+    if(r02){if(!r02.notes)r02.notes=[];r02.notes.push({who:'02S Logistics',when:'Oct 5, 2026',text:inp.value.trim()});}
+    _stcYardNotifOpen=false;
+    toast('Reply sent to Marcus D. at Phoenix yard');
+    renderSTC_CC();
+  }
   function _stcBuildActivitiesView(projFilter){
     var projs=projFilter&&projFilter!=='all'?[projFilter]:['hercules','barryrose','vdc14'];
     var rows=_stcAllReqs.filter(function(r){return projs.indexOf(r.proj)>=0;});
     if(_stcCCTypeFilter!=='all')rows=rows.filter(function(r){return r.type===_stcCCTypeFilter;});
+    var BASE=new Date('2026-08-01');
+    var ENDDT=new Date('2027-01-31');
+    var TOTAL_DAYS=(ENDDT-BASE)/86400000;
+    var MONTHS=[{l:'Aug',d:'2026-08-01'},{l:'Sep',d:'2026-09-01'},{l:'Oct',d:'2026-10-01'},{l:'Nov',d:'2026-11-01'},{l:'Dec',d:'2026-12-01'},{l:'Jan',d:'2027-01-01'}];
+    var TODAY_PCT=Math.max(0,Math.min(100,Math.round((new Date('2026-10-05')-BASE)/86400000/TOTAL_DAYS*100)));
     var stC={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'};
     var stL={done:'Done',active:'In progress',pending:'Not started'};
     var stTC={done:'#15803d',active:'#1d4ed8',pending:'#6b7280'};
-    var OWNERS=['—','James R.','Sarah M.','Tom K.','Alex P.','Jordan M.'];
+    function barPct(d){return Math.max(0,Math.min(100,Math.round((new Date(d)-BASE)/86400000/TOTAL_DAYS*100)));}
     var h='<div>';
-    if(!rows.length){
-      h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No orders match current filter.</div>';
-      h+='</div>';return h;
-    }
+    if(!rows.length){h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No orders match current filter.</div>';h+='</div>';return h;}
     rows.forEach(function(r){
-      var oid=r.id;
-      var isOpen=_stcCCActOpenId===oid;
-      var acts=_stcCCActivities[oid]||[];
-      var pColor=_stcProjColors[r.proj]||'#94a3b8';
-      var pCode=_stcProjCodes[r.proj]||'?';
-      var tone=_stcTone[r.status]||'neu';
-      var lbl=_stcLbl[r.status]||r.status;
-      var tBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';
-      var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';
-      var tLbl=r.type==='vmi'?'VMI':'SP';
+      var oid=r.id;var isOpen=_stcCCActOpenId===oid;var acts=_stcCCActivities[oid]||[];
+      var pColor=_stcProjColors[r.proj]||'#94a3b8';var pCode=_stcProjCodes[r.proj]||'?';
+      var tone=_stcTone[r.status]||'neu';var lbl=_stcLbl[r.status]||r.status;
+      var tBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';var tLbl=r.type==='vmi'?'VMI':'SP';
       var doneCount=acts.filter(function(a){return a.status==='done';}).length;
       h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:10px;overflow:hidden">';
-      h+='<div onclick="_stcCCActToggle(\''+oid+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'#fff\'">';
+      h+='<div onclick="_stcCCActToggle(''+oid+'')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'">';
       h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
       h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.desc+'</div>';
       h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+r.id+(acts.length?' · '+doneCount+'/'+acts.length+' activities done':'')+'</div></div>';
@@ -3566,41 +3592,63 @@
       h+='</div>';
       if(isOpen){
         h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
+        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(''+oid+'')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
+        h+='</div>';
         if(!acts.length){
           h+='<div style="font-size:12.5px;color:var(--g400);text-align:center;padding:20px 0;font-style:italic">No activities yet — click &quot;+ Add activity&quot; to get started.</div>';
         }else{
+          h+='<div style="display:grid;grid-template-columns:180px 1fr 76px;margin-bottom:3px;padding:0 4px">';
+          h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400)">Stage</div>';
+          h+='<div style="display:flex">';
+          MONTHS.forEach(function(m){h+='<div style="flex:1;font-size:10px;font-weight:600;color:var(--g400);padding-left:5px;border-left:1px solid var(--g150)">'+m.l+'</div>';});
+          h+='</div>';
+          h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);padding-left:8px">Tasks</div></div>';
+          h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden;background:#fff">';
           acts.forEach(function(act,ai){
             var bc=stC[act.status]||'#9ca3af';
-            var btc=stTC[act.status]||'#6b7280';
+            var sl=barPct(act.start),er=barPct(act.end);
+            var isLast=ai===acts.length-1;
             var doneTasks=act.tasks.filter(function(t){return t.done;}).length;
-            h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;margin-bottom:8px;overflow:hidden">';
-            h+='<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:'+(act.tasks.length?'1px solid var(--g100)':'none')+'">';
-            h+='<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
-            h+='<span style="font-size:13px;font-weight:600;color:var(--g900);flex:1">'+act.label+'</span>';
-            if(act.tasks.length){h+='<span style="font-size:10.5px;color:var(--g400)">'+doneTasks+'/'+act.tasks.length+' tasks</span>';}
-            h+='<select onclick="event.stopPropagation()" onchange="event.stopPropagation();_stcCCActSetStatus(\''+oid+'\','+ai+',this.value)" style="font-size:11px;color:'+btc+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none">';
+            var rowH=Math.max(72,(act.tasks.length?46+act.tasks.length*22:72));
+            h+='<div style="display:grid;grid-template-columns:180px 1fr 76px;border-bottom:'+(isLast?'none':'1px solid var(--g100)')+'">';
+            h+='<div style="padding:10px 12px;border-right:1px solid var(--g100)">';
+            h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900);margin-bottom:4px;line-height:1.3">'+act.label+'</div>';
+            h+='<select onchange="_stcCCActSetStatus(''+oid+'','+ai+',this.value)" onclick="event.stopPropagation()" style="font-size:10.5px;color:'+stTC[act.status]+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none;font-weight:600">';
             ['done','active','pending'].forEach(function(s){h+='<option value="'+s+'"'+(act.status===s?' selected':'')+'>'+stL[s]+'</option>';});
             h+='</select>';
-            if(act.owner&&act.owner!=='—'){h+='<span style="font-size:11px;color:var(--g500)">'+act.owner+'</span>';}
-            if(act.due){h+='<span style="font-size:11px;color:var(--g400)">'+act.due+'</span>';}
-            h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+oid+'\','+ai+')" style="font-size:10.5px;border:1px solid var(--g200);border-radius:5px;padding:2px 8px;background:#fff;color:var(--g600);cursor:pointer">+ Task</button>';
-            h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(\''+oid+'\','+ai+')" style="background:none;border:none;font-size:16px;color:var(--g300);cursor:pointer;line-height:1;padding:0 2px">&times;</button>';
+            if(act.owner&&act.owner!=='--'){h+='<div style="font-size:10px;color:var(--g400);margin-top:3px">'+act.owner+'</div>';}
             h+='</div>';
-            if(act.tasks.length){
-              h+='<div style="padding:6px 14px 8px 34px;display:flex;flex-direction:column;gap:4px">';
-              act.tasks.forEach(function(task,ti){
-                h+='<div style="display:flex;align-items:center;gap:8px">';
-                h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+oid+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0">';
-                h+='<span style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g700)')+(task.done?';text-decoration:line-through':'')+'"">'+task.label+'</span>';
-                h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+oid+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;line-height:1;margin-left:auto;padding:0 2px">&times;</button>';
-                h+='</div>';
-              });
+            h+='<div style="position:relative;height:'+rowH+'px">';
+            MONTHS.forEach(function(m,mi){if(mi===0)return;var lp=barPct(m.d);h+='<div style="position:absolute;left:'+lp+'%;top:0;bottom:0;width:1px;background:var(--g100)"></div>';});
+            h+='<div style="position:absolute;left:'+TODAY_PCT+'%;top:0;bottom:0;width:2px;background:#ef4444;opacity:.25;z-index:1"></div>';
+            if(er>sl){
+              h+='<div style="position:absolute;left:'+sl+'%;width:'+(er-sl)+'%;top:10px;height:20px;border-radius:10px;background:'+bc+';display:flex;align-items:center;padding:0 8px;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.1)">';
+              if((er-sl)>12){h+='<span style="font-size:9px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+act.label+'</span>';}
               h+='</div>';
             }
+            act.tasks.forEach(function(task,ti){
+              var tp=36+ti*22;
+              h+='<div style="position:absolute;left:8px;right:8px;top:'+tp+'px;display:flex;align-items:center;gap:5px">';
+              h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(''+oid+'','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:11px;height:11px">';
+              h+='<span style="font-size:10.5px;color:'+(task.done?'var(--g400)':'var(--g700)')+(task.done?';text-decoration:line-through':'')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+task.label+'</span>';
+              h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(''+oid+'','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g300);cursor:pointer;margin-left:auto;padding:0 1px;flex-shrink:0">&times;</button>';
+              h+='</div>';
+            });
             h+='</div>';
+            h+='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-left:1px solid var(--g100);padding:6px">';
+            if(act.tasks.length){h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:1px 6px;font-size:9px;font-weight:700;min-width:18px;text-align:center">'+doneTasks+'/'+act.tasks.length+'</span>';}
+            h+='<button onclick="event.stopPropagation();_stcCCActAddTask(''+oid+'','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap">+ Task</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(''+oid+'','+ai+')" style="font-size:9px;border:none;background:none;color:var(--g300);cursor:pointer;padding:0">Remove</button>';
+            h+='</div></div>';
           });
+          h+='</div>';
+          h+='<div style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap">';
+          [{c:'#16a34a',l:'Done'},{c:'#2563eb',l:'In progress'},{c:'#9ca3af',l:'Not started'}].forEach(function(e){h+='<span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+e.c+'"></span>'+e.l+'</span>';});
+          h+='<span style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--g500)"><span style="display:inline-block;width:2px;height:12px;background:#ef4444;opacity:.5"></span>Today</span>';
+          h+='</div>';
         }
-        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="display:inline-flex;align-items:center;gap:5px;margin-top:4px;background:#fff;border:1px solid var(--g200);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:600;color:var(--g700)">+ Add activity</button>';
         h+='</div>';
       }
       h+='</div>';
@@ -3631,6 +3679,21 @@
     h+='<div class="vital '+(pendAll>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Draft Requests</div><div class="vv">'+pendAll+'</div><div class="vsub">not yet submitted</div></div>';
     h+='<div class="vital '+(quotedAll>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_DOC)+'Approved</div><div class="vv">'+quotedAll+'</div><div class="vsub">approved, awaiting release</div></div>';
     h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+activeAll+'</div><div class="vsub">accepted & in fulfillment</div></div>';
+    h+='</div>';
+    h+='<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><path d="M20 6L9 17l-5-5"/></svg>';
+    h+='<div style="flex:1;min-width:0">';
+    h+='<span style="font-size:12.5px;font-weight:700;color:#15803d">HRC \u00b7 STC-002</span>';
+    h+='<span style="font-size:12.5px;color:#166534"> \u2014 Marcus D. (Phoenix yard) confirmed <b>8 units</b> of cordless drill sets in stock. Oct 3.</span>';
+    if(_stcYardNotifOpen){
+      h+='<div style="margin-top:8px;display:flex;gap:6px;align-items:center">';
+      h+='<input id="stc-yard-reply-inp" type="text" placeholder="Reply to yard..." onclick="event.stopPropagation()" style="flex:1;border:1px solid #86efac;border-radius:6px;padding:5px 9px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none">';
+      h+='<button onclick="_stcSendYardReply()" style="background:#16a34a;border:none;border-radius:5px;padding:5px 12px;font-size:12px;font-weight:600;color:#fff;cursor:pointer">Send</button>';
+      h+='<button onclick="_stcYardNotifOpen=false;renderSTC_CC()" style="background:none;border:none;font-size:13px;color:#6b7280;cursor:pointer;padding:2px">Cancel</button>';
+      h+='</div>';
+    }
+    h+='</div>';
+    if(!_stcYardNotifOpen){h+='<button onclick="_stcYardNotifOpen=true;renderSTC_CC()" style="font-size:11.5px;border:1px solid #86efac;border-radius:5px;padding:4px 10px;background:#fff;color:#15803d;cursor:pointer;font-weight:600;white-space:nowrap">Reply</button>';}
     h+='</div>';
     h+='<div style="display:flex;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--g100);margin-bottom:10px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
@@ -3670,6 +3733,7 @@
           h+='<div style="font-size:11px;color:var(--g500);margin-top:1px">'+r.id+' · Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
           h+='</div>';
           h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize</button>';
+          if(r.type==='sp'){h+='<button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;color:#92400e;white-space:nowrap">Yard availability</button>';}
           h+='</div>';
         });
         h+='</div>';
@@ -3708,9 +3772,9 @@
           });
           h+='</div>';
         }
-        var cols='2fr 80px 90px 105px 150px 90px';
+        var cols='2fr 80px 90px 105px 90px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
-        h+='<span>Item</span><span>Type</span><span>Need By</span><span>Status</span><span>Action</span><span>Value</span></div>';
+        h+='<span>Item</span><span>Type</span><span>Need By</span><span>Status</span><span>Value</span></div>';
         var _ccBndRendered={};
         rows.forEach(function(r){
           var gi=_stcAllReqs.indexOf(r);
@@ -3730,7 +3794,6 @@
           h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
-          h+='<div><span style="font-size:11px;color:var(--g400)">—</span></div>';
           h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—')+'</div>';
           h+='</div>';
           h+='<div id="stccc-drill-'+gi+'" class="otrack" style="display:'+(_stcCCDrillOpen===gi?'block':'none')+'">'+_stcBuildCCTrack(r,gi)+'</div>';
