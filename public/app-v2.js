@@ -15889,7 +15889,10 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
+        var _ari=_logRows.indexOf(row);
+        var _canEdit=['Pending Approval','Approved','In Scoping / Pricing','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].indexOf(row.status)>=0;
         h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
+        if(!ns&&_canEdit&&!_rowCo.length){h+='<button onclick="event.stopPropagation();openChangeOrderModal(\'logistics\','+_ari+')" style="font-size:10px;padding:2px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap;text-align:left">Edit order →</button>';}
         if(_rowCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
         
