@@ -2306,7 +2306,10 @@
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
+        var _ari=_logRows.indexOf(row);
+        var _canEdit=['Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].indexOf(row.status)>=0;
         h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap">'+row.status+'</span>';
+        if(_canEdit&&!_rowCo.length){h+='<button onclick="event.stopPropagation();openChangeOrderModal(\'logistics\','+_ari+')" style="font-size:10px;padding:2px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap;text-align:left">Edit order →</button>';}
         if(_rowCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
         
@@ -9665,17 +9668,11 @@ charges:[
   }
   function openLogScopeModal(){
     var std=['Office Trailers','Restroom Facility','Office Containers','Storage Containers','Office Furniture Package','Office Printer/Copiers','Security Cameras','Temp Toilets & Handwash Stations','Waste Hauling','Drinking Water','Bagged Ice','Site Construction Signage'];
-    var ren=['Temp Power Utility Coordination','Temp Power Installation','Construction Water Hauling & Storage','Remote Access Communication'];
     var mh='<div style="padding:2px 0 8px">';
-    mh+='<div style="font-size:11.5px;color:var(--g600);margin-bottom:14px;padding:9px 12px;background:var(--g50);border-radius:6px">Automatically generated from 02S standard scope for Renewables construction projects. 12 core services; 4 Renewables-specific services added.</div>';
-    mh+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Standard services (12)</div>';
-    mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin-bottom:16px">';
-    std.forEach(function(s){mh+='<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;color:var(--g800)"><span style="width:16px;height:16px;border-radius:50%;background:#d1fae5;color:#059669;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700">&#10003;</span>'+s+'</div>';});
-    mh+='</div><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Added for Renewables projects</div>';
     mh+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 20px">';
-    ren.forEach(function(s){mh+='<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;color:var(--g800)"><span style="width:16px;height:16px;border-radius:50%;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700">+</span>'+s+'</div>';});
+    std.forEach(function(s){mh+='<div style="display:flex;align-items:center;gap:7px;font-size:12px;padding:4px 0;color:var(--g800)"><span style="width:16px;height:16px;border-radius:50%;background:#d1fae5;color:#059669;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;font-weight:700">&#10003;</span>'+s+'</div>';});
     mh+='</div></div>';
-    openModal('Service scope — Renewables plan',mh);
+    openModal('12 standard services',mh);
   }
   function openLogGanttEdit(ri){
     var rows=(DP&&DP.logistics&&DP.logistics.rows)||[];var row=rows[ri];if(!row)return;
