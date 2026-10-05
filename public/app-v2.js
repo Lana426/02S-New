@@ -2721,23 +2721,24 @@
     inp.value='';
     toast('Note sent to 02S');
   }
-  function _stcPickType(t){_stcModal.type=t;renderSTC();}
-  function _stcBackType(){_stcModal.type=null;_stcModal.selectedItem=null;renderSTC();}
+  function _stcUpdateModalOnly(){var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();if(_stcModal.open){document.body.insertAdjacentHTML('beforeend',_stcModalHTML());}}
+  function _stcPickType(t){_stcModal.type=t;_stcUpdateModalOnly();}
+  function _stcBackType(){_stcModal.type=null;_stcModal.selectedItem=null;_stcUpdateModalOnly();}
   function _stcOpenModal(){_stcModal={open:true,type:'sp',selectedItem:null,bundleMode:false,bundleConfig:null};renderSTC();}
-  function _stcSetBundleMode(v){_stcModal.bundleMode=!!v;renderSTC();}
+  function _stcSetBundleMode(v){_stcModal.bundleMode=!!v;_stcUpdateModalOnly();}
   function _stcStartBundleConfig(bundleId){
     var bnd=_stcBundles.find(function(b){return b.id===bundleId;});
     if(!bnd)return;
     _stcModal.bundleConfig={bundleId:bundleId,name:bnd.name,items:bnd.items.map(function(it){
       return {name:it.name,cat:it.cat,unit:it.unit,price:it.price,qty:it.qty,selected:true};
     })};
-    renderSTC();
+    _stcUpdateModalOnly();
   }
-  function _stcBundleBack(){_stcModal.bundleConfig=null;renderSTC();}
+  function _stcBundleBack(){_stcModal.bundleConfig=null;_stcUpdateModalOnly();}
   function _stcBundleToggleItem(i){
     if(!_stcModal.bundleConfig)return;
     _stcModal.bundleConfig.items[i].selected=!_stcModal.bundleConfig.items[i].selected;
-    renderSTC();
+    _stcUpdateModalOnly();
   }
   function _stcConfirmBundle(){
     if(!_stcModal.bundleConfig)return;
@@ -2761,13 +2762,13 @@
   }
   function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
   function _stcSetFilter(f){_stcFilter=f;_stcDrillOpen=null;renderSTC();}
-  function _stcClearItem(){_stcModal.selectedItem=null;renderSTC();}
+  function _stcClearItem(){_stcModal.selectedItem=null;_stcUpdateModalOnly();}
   function _stcSelectItem(mi){
     var item=_stcSearchMatches[mi];
     if(!item)return;
     _stcModal.selectedItem=item;
     _stcCatalogSearch='';
-    renderSTC();
+    _stcUpdateModalOnly();
   }
   function _stcSearchCatalog(q){
     _stcCatalogSearch=q;
@@ -3050,7 +3051,7 @@
     }
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.q&&r.q.ref)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcOpenQuote('+idx+')">'+r.q.ref+' ↗</button>';
+    if(r.q&&r.q.ref){var _ql=(r.status!=='approved')?'Review quote →':r.q.ref+' ↗';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcOpenQuote('+idx+')">'+_ql+'</button>';}
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Full details coming soon\')">Full details</button>';
     h+='</div>';
     return h;
@@ -3159,6 +3160,7 @@
     var ICO_DLR='<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>';
     var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
     h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">'+(_stcFilter==='vmi'?'VMI — consumables':'Self-perform — small tools & consumables')+'</span></div></div></div>';
+    h+=_stcBuildLookahead(allRows);
     h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
     h+='<div style="display:flex">';
     [{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
@@ -3218,7 +3220,7 @@
     if(_stcQuoteId!==null){
       var qr=_stcAllReqs[_stcQuoteId];
       if(qr){
-        h+='<div onclick="if(event.target===this){_stcCloseQuote();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px">';
+        h+='<div onclick="if(event.target===this){_stcCloseQuote();}" style="position:fixed;top:0;bottom:0;left:var(--sidebar-w);right:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px">';
         h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
         h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(qr.q&&qr.q.ref||'Quote')+'</div>';
@@ -3236,16 +3238,18 @@
           });
           h+='</div></div>';
         }
+        if(qr.status!=='approved'){
         h+='<div id="stc-return-box" style="display:none;padding:0 20px 16px">';
         h+='<textarea id="stc-return-txt" placeholder="Add your comments for the 02S team…" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px 10px;font-size:12px;font-family:inherit;outline:none;resize:vertical;min-height:80px;color:var(--g900);background:#fff"></textarea>';
         h+='<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">';
         h+='<button onclick="document.getElementById(\'stc-return-box\').style.display=\'none\'" class="btn btn-ghost btn-sm">Cancel</button>';
         h+='<button onclick="_stcCloseQuote();toast(\'Quote returned with comments — 02S team notified\')" class="btn btn-primary btn-sm" style="background:#f59e0b;border-color:#f59e0b">Send return</button>';
-        h+='</div></div>';
+        h+='</div></div>';}
         h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
         h+='<button onclick="_stcCloseQuote()" class="btn btn-ghost">Close</button>';
+        if(qr.status!=='approved'){
         h+='<button onclick="var b=document.getElementById(\'stc-return-box\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'" class="btn btn-ghost">Return with comments</button>';
-        h+='<button onclick="_stcCloseQuote();toast(\'Quote accepted — 02S will proceed to order\')" class="btn btn-primary" style="margin-left:auto">Accept quote</button>';
+        h+='<button onclick="_stcCloseQuote();toast(\'Quote accepted — 02S will proceed to order\')" class="btn btn-primary" style="margin-left:auto">Accept quote</button>';}
         h+='</div></div></div>';
       }
     }
@@ -3758,7 +3762,7 @@
         h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-top:20px">';
         h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
         h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-        h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming Requests — Pending Categorization</span>';
+        h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – categorize and add yard availability</span>';
         h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+allPending.length+' pending</span></div>';
         allPending.forEach(function(r){
           var gi=_stcAllReqs.indexOf(r);
@@ -3798,7 +3802,7 @@
           h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px">';
           h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming SP Requests — Yard Availability</span>';
+          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – categorize and add yard availability</span>';
           h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+pendingSP.length+' pending</span></div>';
           pendingSP.forEach(function(r){
             var gi=_stcAllReqs.indexOf(r);
