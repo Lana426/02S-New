@@ -3582,7 +3582,7 @@
       var tBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';var tLbl=r.type==='vmi'?'VMI':'SP';
       var doneCount=acts.filter(function(a){return a.status==='done';}).length;
       h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:10px;overflow:hidden">';
-      h+='<div onclick="_stcCCActToggle(''+oid+'')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='#fff'">';
+      h+='<div onclick="_stcCCActToggle(\''+oid+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'#fff\'">';
       h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
       h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.desc+'</div>';
       h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+r.id+(acts.length?' · '+doneCount+'/'+acts.length+' activities done':'')+'</div></div>';
@@ -3594,7 +3594,7 @@
         h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
         h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
-        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(''+oid+'')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
+        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
         h+='</div>';
         if(!acts.length){
           h+='<div style="font-size:12.5px;color:var(--g400);text-align:center;padding:20px 0;font-style:italic">No activities yet — click &quot;+ Add activity&quot; to get started.</div>';
@@ -3615,7 +3615,7 @@
             h+='<div style="display:grid;grid-template-columns:180px 1fr 76px;border-bottom:'+(isLast?'none':'1px solid var(--g100)')+'">';
             h+='<div style="padding:10px 12px;border-right:1px solid var(--g100)">';
             h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900);margin-bottom:4px;line-height:1.3">'+act.label+'</div>';
-            h+='<select onchange="_stcCCActSetStatus(''+oid+'','+ai+',this.value)" onclick="event.stopPropagation()" style="font-size:10.5px;color:'+stTC[act.status]+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none;font-weight:600">';
+            h+='<select onchange="_stcCCActSetStatus(\''+oid+'\','+ai+',this.value)" onclick="event.stopPropagation()" style="font-size:10.5px;color:'+stTC[act.status]+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none;font-weight:600">';
             ['done','active','pending'].forEach(function(s){h+='<option value="'+s+'"'+(act.status===s?' selected':'')+'>'+stL[s]+'</option>';});
             h+='</select>';
             if(act.owner&&act.owner!=='--'){h+='<div style="font-size:10px;color:var(--g400);margin-top:3px">'+act.owner+'</div>';}
@@ -3631,16 +3631,16 @@
             act.tasks.forEach(function(task,ti){
               var tp=36+ti*22;
               h+='<div style="position:absolute;left:8px;right:8px;top:'+tp+'px;display:flex;align-items:center;gap:5px">';
-              h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(''+oid+'','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:11px;height:11px">';
+              h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+oid+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:11px;height:11px">';
               h+='<span style="font-size:10.5px;color:'+(task.done?'var(--g400)':'var(--g700)')+(task.done?';text-decoration:line-through':'')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+task.label+'</span>';
-              h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(''+oid+'','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g300);cursor:pointer;margin-left:auto;padding:0 1px;flex-shrink:0">&times;</button>';
+              h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+oid+'\','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g300);cursor:pointer;margin-left:auto;padding:0 1px;flex-shrink:0">&times;</button>';
               h+='</div>';
             });
             h+='</div>';
             h+='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-left:1px solid var(--g100);padding:6px">';
             if(act.tasks.length){h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:1px 6px;font-size:9px;font-weight:700;min-width:18px;text-align:center">'+doneTasks+'/'+act.tasks.length+'</span>';}
-            h+='<button onclick="event.stopPropagation();_stcCCActAddTask(''+oid+'','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap">+ Task</button>';
-            h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(''+oid+'','+ai+')" style="font-size:9px;border:none;background:none;color:var(--g300);cursor:pointer;padding:0">Remove</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+oid+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap">+ Task</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(\''+oid+'\','+ai+')" style="font-size:9px;border:none;background:none;color:var(--g300);cursor:pointer;padding:0">Remove</button>';
             h+='</div></div>';
           });
           h+='</div>';
