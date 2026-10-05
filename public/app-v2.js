@@ -3147,6 +3147,10 @@
       }
       var bundledRows=rows.filter(function(r){return !!r.bundleId;});
       var standaloneRows=rows.filter(function(r){return !r.bundleId;});
+      // Sort so all items from the same bundle are adjacent (preserves bundle first-appearance order)
+      var _bundleOrder={},_boi=0;
+      rows.forEach(function(r){if(r.bundleId&&_bundleOrder[r.bundleId]===undefined)_bundleOrder[r.bundleId]=_boi++;});
+      bundledRows.sort(function(a,b){return (_bundleOrder[a.bundleId]||0)-(_bundleOrder[b.bundleId]||0);});
       var _renderedBundles={};
       bundledRows.forEach(function(r){
         if(!_renderedBundles[r.bundleId]){
