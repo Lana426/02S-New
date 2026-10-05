@@ -2986,11 +2986,11 @@
   function _stcModalHTML(){
     var m=_stcModal;
     var h='<div id="stc-modal-ov" onclick="if(event.target===this){_stcCloseModal();}" style="position:fixed;top:0;bottom:0;left:var(--sidebar-w);right:0;background:rgba(0,0,0,.55);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px">';
-    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:540px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:540px;width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150);flex-shrink:0">';
     h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(m.bundleMode?'Select Bundle':'New Request')+'</div>';
     h+='<button onclick="_stcCloseModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
-    h+='</div><div style="padding:20px">';
+    h+='</div><div style="padding:20px;overflow-y:auto;flex:1">';
     h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:3px;margin-bottom:16px">';
     [['false','Individual Item'],['true','From Bundle']].forEach(function(t){
       var a=String(!!m.bundleMode)===t[0];
@@ -3057,10 +3057,10 @@
     h+='<input type="date" id="stc-sp-needby" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
     h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quantity</span>';
     h+='<input type="number" id="stc-sp-qty" min="1" value="1" oninput="_stcUpdateSPTotal()" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:100px"></label></div>';
-    h+='</div></div>';
+    h+='</div>';
     }
     if(!m.bundleMode){
-    h+='<div style="display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--g150)">';
+    h+='<div style="display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--g150);flex-shrink:0">';
     h+='<button onclick="_stcCloseModal()" class="btn btn-ghost">Cancel</button>';
     if(m.selectedItem){h+='<span style="font-size:12px;color:var(--g500);margin-left:auto;margin-right:8px">Est. total: <b id="stc-sp-total" style="color:var(--g800)">$'+m.selectedItem.price.toLocaleString()+'</b></span>';}
     h+='<button onclick="_stcSubmitSP()" class="btn btn-primary" '+(m.selectedItem?'':'style="margin-left:auto"')+'>Add to plan</button>';
@@ -3550,10 +3550,50 @@
     _stcCCActOpenId=oid;renderSTC_CC();
   }
   function _stcCCActAddTask(oid,ai){
-    var lbl=window.prompt('Task label:','');if(!lbl||!lbl.trim())return;
     var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
-    acts[ai].tasks.push({id:'t'+Date.now(),label:lbl.trim(),done:false});
-    _stcCCActOpenId=oid;renderSTC_CC();
+    var act=acts[ai];
+    var r=null;for(var _i=0;_i<_stcAllReqs.length;_i++){if(_stcAllReqs[_i].id===oid){r=_stcAllReqs[_i];break;}}
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
+    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
+    var b='<div style="display:flex;flex-direction:column;gap:13px">';
+    b+='<div style="background:var(--g50);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Order</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+(r?r.desc:oid)+'</div></div>';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Activity</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+act.label+'</div></div>';
+    b+='</div>';
+    b+='<div><label style="'+lS+'">Task description</label>';
+    b+='<input id="stc-ta-lbl" type="text" placeholder="What needs to be done?" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lS+'">Assign to</label><select id="stc-ta-assignee" style="'+iS+';background:#fff">';
+    pOpts.forEach(function(p){b+='<option value="'+p+'">'+p+'</option>';});
+    b+='</select></div>';
+    b+='<div><label style="'+lS+'">Due date</label><input id="stc-ta-due" type="date" style="'+iS+'"></div>';
+    b+='</div>';
+    b+='<div><label style="'+lS+'">Priority</label><div style="display:flex;gap:6px;margin-top:2px">';
+    [['high','#dc2626','#fee2e2'],['medium','#f59e0b','#fffbeb'],['low','#16a34a','#dcfce7']].forEach(function(pri){
+      b+='<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:5px 11px;border-radius:20px;border:1.5px solid '+pri[1]+'30;background:'+pri[2]+';user-select:none">';
+      b+='<input type="radio" name="stc-ta-pri" value="'+pri[0]+'"'+(pri[0]==='medium'?' checked':'')+' style="accent-color:'+pri[1]+'">';
+      b+='<span style="font-size:11px;font-weight:600;color:'+pri[1]+'">'+pri[0].charAt(0).toUpperCase()+pri[0].slice(1)+'</span></label>';
+    });
+    b+='</div></div>';
+    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="_stcSubmitAddTask(\''+oid+'\','+ai+')">&#8594; Add task</button>';
+    b+='</div></div>';
+    openModal('New task — '+act.label,b);
+    setTimeout(function(){var el=document.getElementById('stc-ta-lbl');if(el)el.focus();},80);
+  }
+  function _stcSubmitAddTask(oid,ai){
+    var lbl=document.getElementById('stc-ta-lbl');
+    if(!lbl||!lbl.value.trim()){if(lbl)lbl.style.borderColor='#dc2626';return;}
+    var priEl=document.querySelector('input[name="stc-ta-pri"]:checked');
+    var assigneeEl=document.getElementById('stc-ta-assignee');
+    var dueEl=document.getElementById('stc-ta-due');
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    acts[ai].tasks.push({id:'t'+Date.now(),label:lbl.value.trim(),done:false,
+      priority:priEl?priEl.value:'medium',assignee:assigneeEl?assigneeEl.value:'You',due:dueEl?dueEl.value:''});
+    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Task added');
   }
   function _stcCCActDeleteTask(oid,ai,ti){
     var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
@@ -3662,7 +3702,11 @@
     if(_stcCCTypeFilter!=='all')rows=rows.filter(function(r){return r.type===_stcCCTypeFilter;});
     var h='';
     var openCount=0,doneCount=0;
-    rows.forEach(function(r){var acts=_stcCCActivities[r.id]||[];acts.forEach(function(act){act.tasks.forEach(function(t){if(t.done)doneCount++;else openCount++;});});});
+    rows.forEach(function(r){var acts=_stcCCActivities[r.id]||[];acts.forEach(function(act){
+      act.tasks.forEach(function(t){if(t.done)doneCount++;else openCount++;});});});
+    var priC={high:'#dc2626',medium:'#f59e0b',low:'#16a34a'};
+    var priBg={high:'#fee2e2',medium:'#fffbeb',low:'#dcfce7'};
+    var priL={high:'HIGH',medium:'MED',low:'LOW'};
     h+='<div style="display:flex;align-items:center;margin-bottom:16px">';
     h+='<span style="font-size:12.5px;font-weight:600;color:var(--g700)">'+openCount+' open · '+doneCount+' done</span>';
     h+='</div>';
@@ -3672,35 +3716,41 @@
     }
     rows.forEach(function(r){
       var acts=_stcCCActivities[r.id]||[];
-      var orderTasks=[];acts.forEach(function(a){orderTasks=orderTasks.concat(a.tasks);});
-      if(!orderTasks.length)return;
+      var hasTasks=false;
+      acts.forEach(function(a){if(a.tasks.length)hasTasks=true;});
+      if(!hasTasks)return;
       var pColor=_stcProjColors[r.proj]||'#94a3b8';var pCode=_stcProjCodes[r.proj]||'?';
-      h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:12px;overflow:hidden">';
-      h+='<div style="display:flex;align-items:center;gap:10px;padding:11px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
+      h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:14px;overflow:hidden">';
+      h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
       h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span>';
-      h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+      h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
       h+='<span style="font-size:11px;color:var(--g400);margin-left:4px">'+r.id+'</span>';
       h+='</div>';
-      h+='<div style="background:#fafafa;padding:10px 16px">';
+      h+='<div style="background:#fafafa">';
       acts.forEach(function(act,ai){
         if(!act.tasks.length)return;
-        var doneTasks=act.tasks.filter(function(t){return t.done;}).length;
         var bc={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'}[act.status]||'#9ca3af';
-        h+='<div style="margin-bottom:12px">';
-        h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">';
-        h+='<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
-        h+='<span style="font-size:11.5px;font-weight:700;color:var(--g700)">'+act.label+'</span>';
-        h+='<span style="font-size:10.5px;color:var(--g400)">'+doneTasks+'/'+act.tasks.length+' done</span>';
-        h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+r.id+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap;margin-left:auto">+ Task</button>';
-        h+='</div>';
+        h+='<div style="padding:8px 16px 4px;border-top:1px solid var(--g100)">';
+        h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
+        h+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
+        h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+act.label+'</span>';
+        h+='<span style="font-size:10.5px;color:var(--g400)">'+act.tasks.length+'</span>';
+        h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+r.id+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 7px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap;margin-left:auto">+ Task</button>';
+        h+='</div></div>';
         act.tasks.forEach(function(task,ti){
-          h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border:1px solid var(--g150);border-radius:6px;margin-bottom:4px">';
-          h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+r.id+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:13px;height:13px">';
-          h+='<span style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g700)')+(task.done?';text-decoration:line-through':'')+';flex:1">'+task.label+'</span>';
-          h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 2px;flex-shrink:0">&times;</button>';
+          var pri=task.priority||'medium';
+          var assignee=task.assignee||'You';
+          var due=task.due?new Date(task.due).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+          h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 16px;border-top:1px solid var(--g100);background:#fff">';
+          h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+r.id+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:14px;height:14px">';
+          h+='<div style="flex:1;min-width:0">';
+          h+='<div style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g900)')+(task.done?';text-decoration:line-through':'')+'">'+task.label+'</div>';
+          if(due||assignee!=='You'){h+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+assignee+(due?' · '+due:'')+'</div>';}
+          h+='</div>';
+          h+='<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;background:'+priBg[pri]+';color:'+priC[pri]+';flex-shrink:0">'+priL[pri]+'</span>';
+          h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 3px;flex-shrink:0" title="Remove">&times;</button>';
           h+='</div>';
         });
-        h+='</div>';
       });
       h+='</div></div>';
     });
