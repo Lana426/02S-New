@@ -2789,6 +2789,34 @@
     });
     box.innerHTML=rh;box.style.display='block';
   }
+  var _stcKitMap=[
+    {cat:'Power Tools',kw:['drill','grinder','circular saw','rotary hammer','impact wrench','impact driver','sander','router','nailer']},
+    {cat:'Safety',kw:['harness','safety glass','hard hat','hi-vis','vest','glove','lanyard','fall protection','respirator','arc flash','ppe']},
+    {cat:'Welding',kw:['weld','electrode','mig','tig','rod','flux','arc','helmet','wire spool','welding wire']},
+    {cat:'Abrasives',kw:['grinding disc','sandpaper','abrasive','grinding wheel','cut-off','angle grinder disc','flap disc']},
+    {cat:'Fasteners',kw:['bolt','nut ','screw','anchor','washer','rivet','concrete anchor','hex bolt']},
+    {cat:'Sealants',kw:['sealant','caulk','adhesive','silicone','epoxy','loctite','thread seal']},
+    {cat:'Consumables',kw:['wire tie','cable tie','zip tie','tape','marker','chalk','shim','consumable']},
+    {cat:'Hand Tools',kw:['hammer','tape measure','level','utility knife','chisel','pliers','clamp','spanner','wrench']},
+  ];
+  function _stcInferKitVal(q){
+    if(!q||!q.trim())return '';
+    var lq=q.toLowerCase();
+    for(var i=0;i<_stcKitMap.length;i++){
+      for(var j=0;j<_stcKitMap[i].kw.length;j++){
+        if(lq.indexOf(_stcKitMap[i].kw[j])>=0)return _stcKitMap[i].cat;
+      }
+    }
+    return '';
+  }
+  function _stcSPDescInput(q){
+    _stcSearchCatalog(q);
+    if(_stcModal.selectedItem)return;
+    var kitEl=document.getElementById('stc-sp-kit');
+    if(!kitEl)return;
+    var k=_stcInferKitVal(q);
+    kitEl.innerHTML=k?'<span style="font-size:11px;background:#dbeafe;color:#1d4ed8;padding:2px 9px;border-radius:10px;font-weight:600">Kit: '+k+'</span>':'';
+  }
   function _stcCheckUrgency(val){
     var box=document.getElementById('stc-urgency-box');
     if(!box)return;
@@ -2812,10 +2840,14 @@
   }
   function _stcSubmitSP(){
     var si=_stcModal.selectedItem;
-    if(!si){toast('Please select an item from the catalog');return;}
+    var descEl=document.getElementById('stc-sp-desc');
+    var desc=si?si.name:(descEl?descEl.value.trim():'');
+    if(!desc){toast('Please enter a description');if(descEl)descEl.style.borderColor='#dc2626';return;}
+    var cat=si?si.cat:(_stcInferKitVal(desc)||'General');
+    var price=si?si.price:0;
     var nb=document.getElementById('stc-sp-needby');
     var _spQty=parseInt((document.getElementById('stc-sp-qty')||{value:'1'}).value,10)||1;
-    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:si.cat,desc:si.name,status:'draft',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:si.price,qty:_spQty,notes:[],attachments:[]});
+    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:cat,desc:desc,status:'draft',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:price,qty:_spQty,notes:[],attachments:[]});
     _stcModal.open=false;_stcFilter='sp';
     renderSTC();toast('Added to plan — 02S team will be notified.');
   }
@@ -2985,95 +3017,46 @@
 
   function _stcModalHTML(){
     var m=_stcModal;
+    var si=m.selectedItem;
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff;transition:border-color .15s';
+    var lS='font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:5px';
     var h='<div id="stc-modal-ov" onclick="if(event.target===this){_stcCloseModal();}" style="position:fixed;top:0;bottom:0;left:var(--sidebar-w);right:0;background:rgba(0,0,0,.55);z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px">';
     h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:540px;width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150);flex-shrink:0">';
-    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(m.bundleMode?'Select Bundle':'New Request')+'</div>';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">New Request</div>';
     h+='<button onclick="_stcCloseModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
-    h+='</div><div style="padding:20px;overflow-y:auto;flex:1">';
-    h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:3px;margin-bottom:16px">';
-    [['false','Individual Item'],['true','From Bundle']].forEach(function(t){
-      var a=String(!!m.bundleMode)===t[0];
-      h+='<button onclick="_stcSetBundleMode('+t[0]+')" style="flex:1;padding:5px 10px;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:'+(a?600:400)+';background:'+(a?'#fff':'transparent')+';color:'+(a?'var(--g900)':'var(--g500)')+';box-shadow:'+(a?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+(a?'<span style="color:var(--primary);margin-right:3px">&#x2713;</span>':'')+t[1]+'</button>';
-    });
     h+='</div>';
-    if(m.bundleMode&&m.bundleConfig){
-      var bcfg=m.bundleConfig;
-      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">';
-      h+='<button onclick="_stcBundleBack()" style="background:none;border:1px solid var(--g200);border-radius:5px;padding:3px 9px;cursor:pointer;font-size:12px;color:var(--g600)">← Back</button>';
-      h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">'+bcfg.name+'</span></div>';
-      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
-      h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Need By</span>';
-      h+='<input type="date" id="stc-bnd-needby" style="border:1px solid var(--g200);border-radius:6px;padding:6px 9px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-      h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Cost Code</span>'+_stcCCOpts()+'</label>';
-      h+='</div>';
-      h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:4px">';
-      bcfg.items.forEach(function(item,ii){
-        var isLast=ii===bcfg.items.length-1;
-        h+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:'+(isLast?'none':'1px solid var(--g100)')+';background:'+(item.selected?'#fff':'var(--g50)')+'">';
-        h+='<input type="checkbox" '+(item.selected?'checked':'')+' onchange="_stcBundleToggleItem('+ii+')" style="width:14px;height:14px;cursor:pointer;accent-color:var(--primary);flex-shrink:0">';
-        h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:12.5px;font-weight:600;color:'+(item.selected?'var(--g900)':'var(--g400)')+'">'+item.name+'</div>';
-        h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+item.cat+' · $'+item.price+' / '+item.unit+'</div>';
-        h+='</div>';
-        h+='<div style="display:flex;align-items:center;gap:5px;flex-shrink:0">';
-        h+='<span style="font-size:11px;color:var(--g500)">Qty</span>';
-        h+='<input type="number" id="stc-bnd-qty-'+ii+'" min="1" value="'+item.qty+'" oninput="_stcBndUpdateTotal()" '+(item.selected?'':'disabled')+' style="width:60px;border:1px solid var(--g200);border-radius:5px;padding:3px 7px;font-size:12px;font-family:inherit;color:var(--g900);background:'+(item.selected?'#fff':'var(--g100)')+';outline:none;text-align:center">';
-        h+='<span style="font-size:11px;color:var(--g400)">'+item.unit+'</span>';
-        h+='</div>';
-        h+='<div style="font-size:12px;font-weight:700;color:'+(item.selected?'#1e40af':'var(--g300)')+';min-width:56px;text-align:right">$'+((item.price||0)*item.qty).toLocaleString()+'</div>';
-        h+='</div>';
-      });
-      var _bndTot=bcfg.items.reduce(function(s,it){return it.selected?s+(it.price||0)*it.qty:s;},0);
-      h+='<div style="display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:8px 12px;margin-top:6px;background:var(--g50);border:1px solid var(--g200);border-radius:6px">';
-      h+='<span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Estimated total</span>';
-      h+='<span id="stc-bnd-total" style="font-size:16px;font-weight:700;color:var(--g900)">$'+_bndTot.toLocaleString()+'</span>';
-      h+='</div>';
-    }else if(m.bundleMode){
-      _stcBundles.forEach(function(bnd){
-        h+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-bottom:10px">';
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-        h+='<div><div style="font-size:13px;font-weight:700;color:var(--g900)">'+bnd.name+'</div>';
-        h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+bnd.items.length+' items \u00b7 '+bnd.cat+'</div></div>';
-        h+='<button onclick="_stcStartBundleConfig(\''+bnd.id+'\')" class="btn btn-primary btn-sm">Select</button>';
-        h+='</div>';
-        h+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
-        bnd.items.forEach(function(item){h+='<span style="font-size:10px;background:var(--g100);color:var(--g600);padding:2px 7px;border-radius:10px">'+item.name+'</span>';});
-        h+='</div></div>';
-      });
-    }else{
-    h+='<div style="display:flex;flex-direction:column;gap:12px">';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Search Catalog</span>';
-    h+='<input type="text" id="stc-sp-search" oninput="_stcSearchCatalog(this.value)" autocomplete="off" placeholder="Type to search items…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    h+='<div id="stc-sp-results" style="max-height:170px;overflow-y:auto;border:1px solid var(--g200);border-radius:6px;display:none"></div>';
-    if(m.selectedItem){
-      var si=m.selectedItem;
-      h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between">';
-      h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+si.name+'</div><div style="font-size:11px;color:var(--g500)">'+si.cat+' · $'+si.price+' / unit</div></div>';
-      h+='<button onclick="_stcClearItem()" style="background:none;border:none;color:var(--g400);cursor:pointer;font-size:20px;line-height:1">&times;</button></div>';
+    h+='<div style="padding:20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px">';
+    h+='<div>';
+    h+='<label style="'+lS+'">Description</label>';
+    h+='<input id="stc-sp-desc" type="text" value="'+(si?si.name.replace(/"/g,'&quot;'):'')+'" oninput="_stcSPDescInput(this.value)" autocomplete="off" placeholder="e.g. welding gloves, hard hats, drill set\u2026" style="'+iS+'">';
+    h+='<div id="stc-sp-results" style="max-height:160px;overflow-y:auto;border:1px solid var(--g200);border-radius:0 0 6px 6px;border-top:none;display:none"></div>';
+    h+='<div id="stc-sp-kit" style="margin-top:7px;min-height:18px">';
+    if(si){
+      h+='<span style="font-size:11px;background:#dbeafe;color:#1d4ed8;padding:2px 9px;border-radius:10px;font-weight:600">Kit: '+si.cat+'</span>';
+      h+='<span style="font-size:11px;color:var(--g400);margin-left:6px">$'+si.price+' / unit</span>';
+      h+='<button onclick="_stcClearItem()" style="background:none;border:none;font-size:11px;color:var(--g400);cursor:pointer;margin-left:8px;text-decoration:underline">clear</button>';
     }
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Cost Code</span>'+_stcCCOpts()+'</label>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Need By</span>';
-    h+='<input type="date" id="stc-sp-needby" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quantity</span>';
-    h+='<input type="number" id="stc-sp-qty" min="1" value="1" oninput="_stcUpdateSPTotal()" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:100px"></label></div>';
+    h+='</div></div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    h+='<div><label style="'+lS+'">Cost Code</label>'+_stcCCOpts()+'</div>';
+    h+='<div><label style="'+lS+'">Need By</label><input id="stc-sp-needby" type="date" style="'+iS+'"></div>';
     h+='</div>';
+    h+='<div style="display:flex;align-items:flex-end;gap:12px">';
+    h+='<div><label style="'+lS+'">Quantity</label>';
+    h+='<input type="number" id="stc-sp-qty" min="1" value="1" oninput="_stcUpdateSPTotal()" style="'+iS+';width:100px"></div>';
+    if(si&&si.price){
+      h+='<div style="flex:1;background:var(--g50);border:1px solid var(--g150);border-radius:8px;padding:9px 14px;display:flex;justify-content:space-between;align-items:center">';
+      h+='<span style="font-size:11px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.04em">Est. total</span>';
+      h+='<span id="stc-sp-total" style="font-size:16px;font-weight:700;color:var(--g900)">$'+si.price.toLocaleString()+'</span>';
+      h+='</div>';
     }
-    if(!m.bundleMode){
+    h+='</div>';
+    h+='</div>';
     h+='<div style="display:flex;gap:8px;align-items:center;padding:14px 20px;border-top:1px solid var(--g150);flex-shrink:0">';
     h+='<button onclick="_stcCloseModal()" class="btn btn-ghost">Cancel</button>';
-    if(m.selectedItem){h+='<span style="font-size:12px;color:var(--g500);margin-left:auto;margin-right:8px">Est. total: <b id="stc-sp-total" style="color:var(--g800)">$'+m.selectedItem.price.toLocaleString()+'</b></span>';}
-    h+='<button onclick="_stcSubmitSP()" class="btn btn-primary" '+(m.selectedItem?'':'style="margin-left:auto"')+'>Add to plan</button>';
-    h+='</div>'; }
-    if(m.bundleMode&&m.bundleConfig){
-    var _selCnt=(m.bundleConfig.items||[]).filter(function(it){return it.selected;}).length;
-    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
-    h+='<button onclick="_stcCloseModal()" class="btn btn-ghost">Cancel</button>';
-    h+='<button onclick="_stcConfirmBundle()" class="btn btn-primary" style="margin-left:auto">Add '+_selCnt+' item'+(_selCnt===1?'':'s')+' to Plan →</button>';
-    h+='</div>'; }else if(m.bundleMode){
-    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
-    h+='<button onclick="_stcCloseModal()" class="btn btn-ghost">Cancel</button>';
-    h+='</div>'; }
+    h+='<button onclick="_stcSubmitSP()" class="btn btn-primary" style="margin-left:auto">Add to plan</button>';
+    h+='</div>';
     h+='</div></div>';
     return h;
   }
@@ -3599,6 +3582,56 @@
     var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
     acts[ai].tasks.splice(ti,1);_stcCCActOpenId=oid;renderSTC_CC();
   }
+  function _stcCCActEditTask(oid,ai,ti){
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai]||!acts[ai].tasks[ti])return;
+    var act=acts[ai];var task=act.tasks[ti];
+    var r=null;for(var _i=0;_i<_stcAllReqs.length;_i++){if(_stcAllReqs[_i].id===oid){r=_stcAllReqs[_i];break;}}
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
+    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
+    var b='<div style="display:flex;flex-direction:column;gap:13px">';
+    b+='<div style="background:var(--g50);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Order</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+(r?r.desc:oid)+'</div></div>';
+    b+='<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">Activity</div><div style="font-size:12px;font-weight:500;color:var(--g800)">'+act.label+'</div></div>';
+    b+='</div>';
+    b+='<div><label style="'+lS+'">Task description</label>';
+    b+='<input id="stc-te-lbl" type="text" value="'+task.label.replace(/"/g,'&quot;')+'" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lS+'">Assign to</label><select id="stc-te-assignee" style="'+iS+';background:#fff">';
+    pOpts.forEach(function(p){b+='<option value="'+p+'"'+(p===(task.assignee||'You')?' selected':'')+'>'+p+'</option>';});
+    b+='</select></div>';
+    b+='<div><label style="'+lS+'">Due date</label><input id="stc-te-due" type="date" value="'+(task.due||'')+'" style="'+iS+'"></div>';
+    b+='</div>';
+    b+='<div><label style="'+lS+'">Priority</label><div style="display:flex;gap:6px;margin-top:2px">';
+    var curPri=task.priority||'medium';
+    [['high','#dc2626','#fee2e2'],['medium','#f59e0b','#fffbeb'],['low','#16a34a','#dcfce7']].forEach(function(pri){
+      b+='<label style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:5px 11px;border-radius:20px;border:1.5px solid '+pri[1]+'30;background:'+pri[2]+';user-select:none">';
+      b+='<input type="radio" name="stc-te-pri" value="'+pri[0]+'"'+(pri[0]===curPri?' checked':'')+' style="accent-color:'+pri[1]+'">';
+      b+='<span style="font-size:11px;font-weight:600;color:'+pri[1]+'">'+pri[0].charAt(0).toUpperCase()+pri[0].slice(1)+'</span></label>';
+    });
+    b+='</div></div>';
+    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="_stcSubmitEditTask(\''+oid+'\','+ai+','+ti+')">Save changes</button>';
+    b+='</div></div>';
+    openModal('Edit task',b);
+    setTimeout(function(){var el=document.getElementById('stc-te-lbl');if(el)el.focus();},80);
+  }
+  function _stcSubmitEditTask(oid,ai,ti){
+    var lbl=document.getElementById('stc-te-lbl');
+    if(!lbl||!lbl.value.trim()){if(lbl)lbl.style.borderColor='#dc2626';return;}
+    var priEl=document.querySelector('input[name="stc-te-pri"]:checked');
+    var assigneeEl=document.getElementById('stc-te-assignee');
+    var dueEl=document.getElementById('stc-te-due');
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai]||!acts[ai].tasks[ti])return;
+    var task=acts[ai].tasks[ti];
+    task.label=lbl.value.trim();
+    task.priority=priEl?priEl.value:'medium';
+    task.assignee=assigneeEl?assigneeEl.value:'You';
+    task.due=dueEl?dueEl.value:'';
+    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Task updated');
+  }
   function _stcSendYardReply(){
     var inp=document.getElementById('stc-yard-reply-inp');
     if(!inp||!inp.value.trim()){toast('Enter a reply first');return;}
@@ -3748,6 +3781,7 @@
           if(due||assignee!=='You'){h+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+assignee+(due?' · '+due:'')+'</div>';}
           h+='</div>';
           h+='<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;background:'+priBg[pri]+';color:'+priC[pri]+';flex-shrink:0">'+priL[pri]+'</span>';
+          h+='<button onclick="event.stopPropagation();_stcCCActEditTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g400);cursor:pointer;padding:0 3px;flex-shrink:0" title="Edit">&#9998;</button>';
           h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 3px;flex-shrink:0" title="Remove">&times;</button>';
           h+='</div>';
         });
