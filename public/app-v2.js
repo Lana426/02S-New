@@ -2817,6 +2817,24 @@
     var k=_stcInferKitVal(q);
     kitEl.innerHTML=k?'<span style="font-size:11px;background:#dbeafe;color:#1d4ed8;padding:2px 9px;border-radius:10px;font-weight:600">Kit: '+k+'</span>':'';
   }
+  function _stcFindMatchingBundle(cat,proj,type){
+    var bundleMap={};
+    _stcAllReqs.forEach(function(r){
+      if(r.proj===proj&&r.type===type&&r.bundleId){
+        if(!bundleMap[r.bundleId])bundleMap[r.bundleId]={id:r.bundleId,name:r.bundleName,text:r.bundleName.toLowerCase()};
+        if(r.cat)bundleMap[r.bundleId].text+=' '+r.cat.toLowerCase();
+      }
+    });
+    var words=cat.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/).filter(function(w){return w.length>2;});
+    if(!words.length)return null;
+    var best=null,bestScore=0;
+    for(var bid in bundleMap){
+      var b=bundleMap[bid],score=0;
+      words.forEach(function(w){if(b.text.indexOf(w)>=0)score++;});
+      if(score>bestScore){bestScore=score;best=b;}
+    }
+    return bestScore>0?best:null;
+  }
   function _stcCheckUrgency(val){
     var box=document.getElementById('stc-urgency-box');
     if(!box)return;
@@ -2847,7 +2865,12 @@
     var price=si?si.price:0;
     var nb=document.getElementById('stc-sp-needby');
     var _spQty=parseInt((document.getElementById('stc-sp-qty')||{value:'1'}).value,10)||1;
-    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:cat,desc:desc,status:'draft',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:price,qty:_spQty,notes:[],attachments:[]});
+    var bndMatch=_stcFindMatchingBundle(cat,'hercules','sp');
+    var bundleId,bundleName;
+    if(bndMatch){bundleId=bndMatch.id;bundleName=bndMatch.name;}
+    else if(cat&&cat!=='General'){bundleId='BND-SP-'+cat.replace(/[\s&]+/g,'-').toUpperCase();bundleName=cat;}
+    else{bundleId='BND-SP-MISC';bundleName='Other Items';}
+    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:cat||'General',desc:desc,status:'draft',bundleId:bundleId,bundleName:bundleName,needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:price,qty:_spQty,notes:[],attachments:[]});
     _stcModal.open=false;_stcFilter='sp';
     renderSTC();toast('Added to plan — 02S team will be notified.');
   }
