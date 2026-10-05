@@ -2446,70 +2446,63 @@
     {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',
      bundleId:'BND-VMI-HRC1',bundleName:'Welding Consumables VMI',
      desc:'Welding consumables — site restock',status:'released',needBy:'2026-10-25',
-     costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,
+     costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,price:1240,qty:1,
      minMax:{min:30,max:80},
      notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'},
             {who:'02S Logistics',when:'Sep 20 2026',text:'VMI thresholds configured: min 30%, max 80%. Airgas auto-reorder active.'}],
-     attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}],
-     q:{cost:1240,vendor:'Airgas',ref:'QT-STC-001'}},
+     attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}]},
     {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',
      bundleId:'BND-VMI-HRC2',bundleName:'Abrasives & Grinding VMI',
      desc:'Abrasive wheels & grinding discs',status:'draft',needBy:'2026-11-10',
-     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,
+     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,price:38,qty:20,
      notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
      attachments:[]},
     // ── Hercules SP ──
     {id:'STC-002',proj:'hercules',type:'sp',cat:'Small Tools',
      bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
      desc:'Cordless drill sets (Makita DHP483)',status:'approved',needBy:'2026-09-28',
-     costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,
-     notes:[],attachments:[],
-     q:{cost:892,qty:6,vendor:'Home Depot Pro',ref:'QT-STC-002'}},
+     costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,price:149,qty:6,
+     notes:[],attachments:[]},
     {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',
      bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
      desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'draft',needBy:'2026-11-05',
-     costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,qty:3,
+     costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,price:389,qty:3,
      notes:[],attachments:[]},
     {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
      desc:'Fall protection harnesses & lanyards (Petzl Avao)',status:'released',needBy:'2026-10-12',
-     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,
+     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,price:195,qty:12,
      notes:[{who:'Lana Butorovic',when:'Sep 14 2026',text:'Required for steel erection crew — 12 units needed before Oct 1.'},
-            {who:'02S Procurement',when:'Sep 16 2026',text:'Quote confirmed, delivery scheduled Sep 30 via Grainger.'}],
-     attachments:[{name:'Safety harness spec sheet',ref:'STC-004-SPEC',status:'Approved'}],
-     q:{cost:2340,qty:12,vendor:'Grainger',ref:'QT-STC-004'}},
+            {who:'02S Procurement',when:'Sep 16 2026',text:'Delivery confirmed, scheduled Sep 30 via Grainger.'}],
+     attachments:[{name:'Safety harness spec sheet',ref:'STC-004-SPEC',status:'Approved'}]},
     // ── Barry Rose VMI ──
     {id:'STC-B01',proj:'barryrose',type:'vmi',cat:'Fasteners',
      bundleId:'BND-VMI-BR1',bundleName:'Fasteners & Anchors VMI',
      desc:'Structural fasteners — VMI restock',status:'draft',needBy:'2026-09-25',
-     costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,
+     costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,price:600,qty:1,
      notes:[],attachments:[]},
     {id:'STC-B03',proj:'barryrose',type:'vmi',cat:'Sealants',
      bundleId:'BND-VMI-BR2',bundleName:'Sealants & Adhesives VMI',
      desc:'Thread sealants & adhesives — VMI restock',status:'released',needBy:'2026-11-20',
-     costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,
-     notes:[],attachments:[],
-     q:{cost:780,vendor:'Loctite Direct',ref:'QT-STC-B03'}},
+     costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,price:780,qty:1,
+     notes:[],attachments:[]},
     // ── Barry Rose SP ──
     {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-BR1',bundleName:'Safety PPE Kit',
      desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'approved',needBy:'2026-10-08',
-     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,
-     notes:[],attachments:[],
-     q:{cost:540,qty:30,vendor:'Grainger',ref:'QT-STC-B02'}},
+     costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,price:18,qty:30,
+     notes:[],attachments:[]},
     // ── VDC14 SP ──
     {id:'STC-V01',proj:'vdc14',type:'sp',cat:'Power Tools',
      bundleId:'BND-SP-V1',bundleName:'Power Tools Pack',
      desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'approved',needBy:'2026-10-02',
-     costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,
-     notes:[],attachments:[],
-     q:{cost:1070,qty:12,vendor:'Home Depot Pro',ref:'QT-STC-V01'}},
+     costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,price:89,qty:12,
+     notes:[],attachments:[]},
     {id:'STC-V02',proj:'vdc14',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-V2',bundleName:'Safety PPE Kit',
      desc:'Hard hats Type II (3M H-812)',status:'released',needBy:'2026-09-30',
-     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,
-     notes:[],attachments:[],
-     q:{cost:420,qty:12,vendor:'3M Direct',ref:'QT-STC-V02'}},
+     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,price:35,qty:12,
+     notes:[],attachments:[]},
   ];
 
   var _stcFilter='vmi';
@@ -2517,15 +2510,13 @@
   var _stcModal={open:false,type:null,selectedItem:null};
   var _stcCatalogSearch='';
   var _stcSearchMatches=[];
-  var _stcQuoteId=null;
   var _stcVMISelections={};
-  var _stcCCQuoteModal=null;
-  var _stcCCViewQuoteId=null;
+
   var _stcYardModal=null;
 
   var _stcCCProjFilter='all';
   var _stcCCTypeFilter='all';
-  var _stcCCView='schedule';
+  var _stcCCView='orders';
   var _stcCCDrillOpen=null;
   var _stcBundles=[
     {id:'BND-001',name:'Solar Install Kit — Tier 1',cat:'PPE & Safety',items:[
@@ -2698,8 +2689,7 @@
     var r=_stcAllReqs[ri],d=r&&r.attachments&&r.attachments[di];
     if(d){openDocChip((d.name||d)+(d.ref?' · '+d.ref:''));}
   }
-  function _stcOpenQuote(id){_stcQuoteId=id;renderSTC();}
-  function _stcCloseQuote(){_stcQuoteId=null;renderSTC();}
+
 
   function _stcDrillToggle(idx){
     var el=document.getElementById('stc-drill-'+idx);
@@ -2873,91 +2863,6 @@
     h+='</div>';
     return h;
   }
-  function _stcCCOpenQuoteForm(ri){_stcCCQuoteModal=ri;renderSTC_CC();}
-  function _stcCCCloseQuoteForm(){_stcCCQuoteModal=null;var ov=document.getElementById('stccc-quote-form-ov');if(ov)ov.remove();renderSTC_CC();}
-  function _stcCCOpenViewQuote(ri){_stcCCViewQuoteId=ri;renderSTC_CC();}
-  function _stcCCCloseViewQuote(){_stcCCViewQuoteId=null;var ov=document.getElementById('stccc-view-quote-ov');if(ov)ov.remove();renderSTC_CC();}
-  function _stcCCViewQuoteHTML(){
-    if(_stcCCViewQuoteId===null)return '';
-    var r=_stcAllReqs[_stcCCViewQuoteId];
-    if(!r||!r.q)return '';
-    var h='<div id="stccc-view-quote-ov" onclick="if(event.target===this){_stcCCCloseViewQuote();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
-    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
-    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(r.q.ref||'Quote')+'</div>';
-    h+='<button onclick="_stcCCCloseViewQuote()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button></div>';
-    var isVMIq=r.type==='vmi';
-    h+='<div style="padding:16px 20px"><div style="font-size:12px;color:var(--g500);margin-bottom:12px">'+r.desc+'</div>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">';
-    var tiles=[];
-    if(isVMIq)tiles.push({k:'Vendor',v:r.q.vendor||'—'});
-    tiles.push({k:'Quote ref',v:r.q.ref||'—'},{k:'Value',v:_stcFmt(r.q.cost)},{k:'Quantity',v:r.q.qty?''+r.q.qty:'—'});
-    tiles.forEach(function(p){
-      h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px">';
-      h+='<div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:4px">'+p.k+'</div>';
-      h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+p.v+'</div></div>';
-    });
-    h+='</div></div>';
-    h+='<div style="padding:10px 20px 16px;border-top:1px solid var(--g150)">';
-    h+='<button onclick="_stcCCCloseViewQuote()" class="btn btn-ghost">Close</button>';
-    h+='</div></div></div>';
-    return h;
-  }
-  function _stcCCSubmitQuote(ri){
-    var r=_stcAllReqs[ri];
-    if(!r)return;
-    var vendor=document.getElementById('stccc-qf-vendor');
-    var ref=document.getElementById('stccc-qf-ref');
-    var cost=document.getElementById('stccc-qf-cost');
-    var qty=document.getElementById('stccc-qf-qty');
-    var notes=document.getElementById('stccc-qf-notes');
-    var costVal=cost?parseFloat(cost.value):0;
-    if(!costVal){toast('Please enter a total value');return;}
-    r.q={ref:ref&&ref.value.trim()?ref.value.trim():'QT-CC-'+r.id,cost:costVal};
-    if(r.type==='vmi'&&vendor&&vendor.value.trim())r.q.vendor=vendor.value.trim();
-    if(qty&&qty.value)r.q.qty=parseInt(qty.value,10);
-    if(notes&&notes.value.trim())r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Just now',text:notes.value.trim()}]);
-    r.status='quote_sent';
-    _stcCCQuoteModal=null;
-    toast('Quote sent to project team for '+r.id);
-    renderSTC_CC();
-  }
-  function _stcCCQuoteFormHTML(){
-    if(_stcCCQuoteModal===null)return '';
-    var r=_stcAllReqs[_stcCCQuoteModal];
-    if(!r)return '';
-    var ri=_stcCCQuoteModal;
-    var h='<div id="stccc-quote-form-ov" onclick="if(event.target===this){_stcCCCloseQuoteForm();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
-    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:500px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
-    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Send Quote to Project Team</div>';
-    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">'+r.desc+'</div></div>';
-    h+='<button onclick="_stcCCCloseQuoteForm()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
-    h+='</div>';
-    var isVMI=r.type==='vmi';
-    h+='<div style="padding:20px;display:flex;flex-direction:column;gap:12px">';
-    h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--g600)"><b>'+r.id+'</b> · '+r.cat+' · Need by '+(r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD')+'</div>';
-    if(isVMI){
-      h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Vendor</span>';
-      h+='<input type="text" id="stccc-qf-vendor" placeholder="e.g. Airgas, Grainger…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    }
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quote Reference</span>';
-    h+='<input type="text" id="stccc-qf-ref" placeholder="e.g. QT-STC-006" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Total Value ($)</span>';
-    h+='<input type="number" id="stccc-qf-cost" min="0" placeholder="0" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Quantity</span>';
-    h+='<input type="number" id="stccc-qf-qty" min="1" placeholder="—" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;background:#fff;color:var(--g900);outline:none"></label>';
-    h+='</div>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Notes / Terms</span>';
-    h+='<textarea id="stccc-qf-notes" rows="3" placeholder="Lead time, '+(isVMI?'replenishment schedule, ':'')+'special conditions…" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;background:#fff;color:var(--g900);outline:none"></textarea></label>';
-    h+='</div>';
-    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
-    h+='<button onclick="_stcCCCloseQuoteForm()" class="btn btn-ghost">Cancel</button>';
-    h+='<button onclick="_stcCCSubmitQuote('+ri+')" class="btn btn-primary" style="margin-left:auto">Send to Project Team</button>';
-    h+='</div></div></div>';
-    return h;
-  }
   function _stcOpenYardModal(ri){_stcYardModal=ri;renderSTC_CC();}
   function _stcCloseYardModal(){_stcYardModal=null;var ov=document.getElementById('stc-yard-ov');if(ov)ov.remove();renderSTC_CC();}
   function _stcSubmitYardNotify(ri){
@@ -3051,7 +2956,7 @@
     }
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.q&&r.q.ref){var _ql=(r.status!=='approved')?'Review quote →':r.q.ref+' ↗';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcOpenQuote('+idx+')">'+_ql+'</button>';}
+
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Full details coming soon\')">Full details</button>';
     h+='</div>';
     return h;
@@ -3153,14 +3058,13 @@
     var total=rows.length;
     var pending=rows.filter(function(r){return r.status==='draft';}).length;
     var active=rows.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
-    var quotedVal=rows.reduce(function(s,r){return r.q&&r.q.cost?s+r.q.cost:s;},0);
+    var quotedVal=rows.reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
     var ICO_CLIP='<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2"/>';
     var ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
     var ICO_OK='<path d="M20 6L9 17l-5-5"/>';
     var ICO_DLR='<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>';
     var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
     h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">'+(_stcFilter==='vmi'?'VMI — consumables':'Self-perform — small tools & consumables')+'</span></div></div></div>';
-    h+=_stcBuildLookahead(allRows);
     h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
     h+='<div style="display:flex">';
     [{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
@@ -3172,7 +3076,7 @@
     h+='<div class="vital '+(total>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+(_stcFilter==='vmi'?'VMI Orders':'SP Orders')+'</div><div class="vv">'+total+'</div><div class="vsub">'+(_stcFilter==='vmi'?'consumable restocks tracked':'catalog orders tracked')+'</div></div>';
     h+='<div class="vital '+(pending>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Draft</div><div class="vv">'+pending+'</div><div class="vsub">not yet submitted</div></div>';
     h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted & in fulfillment</div></div>';
-    h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Quoted Value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">total quoted this period</div></div>';
+    h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total Value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">total committed this period</div></div>';
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
     h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
@@ -3199,9 +3103,9 @@
         var tone=_stcTone[r.status]||'neu';
         var lbl=_stcLbl[r.status]||r.status;
         var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
-        var dispQty=(r.q&&r.q.qty)||r.qty;
-        var unitPrice=r.type==='sp'&&r.q&&r.q.cost&&r.q.qty?_stcFmt(Math.round(r.q.cost/r.q.qty)):'—';
-        var totalCost=r.q&&r.q.cost?_stcFmt(r.q.cost):'—';
+        var dispQty=r.qty;
+        var unitPrice=r.price?_stcFmt(r.price):'—';
+        var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
         h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
         h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
         h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
@@ -3217,42 +3121,7 @@
       });
       h+='</div>';
     }
-    if(_stcQuoteId!==null){
-      var qr=_stcAllReqs[_stcQuoteId];
-      if(qr){
-        h+='<div onclick="if(event.target===this){_stcCloseQuote();}" style="position:fixed;top:0;bottom:0;left:var(--sidebar-w);right:0;background:rgba(0,0,0,.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px">';
-        h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
-        h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">'+(qr.q&&qr.q.ref||'Quote')+'</div>';
-        h+='<button onclick="_stcCloseQuote()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button></div>';
-        if(qr.q){
-          h+='<div style="padding:16px 20px"><div style="font-size:12px;color:var(--g500);margin-bottom:12px">'+qr.desc+'</div>';
-          h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
-          var cpTiles=[];
-          if(qr.type==='vmi')cpTiles.push({k:'Vendor',v:qr.q.vendor||'—'});
-          cpTiles.push({k:'Quote ref',v:qr.q.ref||'—'},{k:'Value',v:_stcFmt(qr.q.cost)},{k:'Quantity',v:qr.q.qty?''+qr.q.qty:'—'});
-          cpTiles.forEach(function(p){
-            h+='<div style="background:var(--g50);border-radius:6px;padding:10px 12px">';
-            h+='<div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g400);margin-bottom:4px">'+p.k+'</div>';
-            h+='<div style="font-size:14px;font-weight:700;color:var(--g900)">'+p.v+'</div></div>';
-          });
-          h+='</div></div>';
-        }
-        if(qr.status!=='approved'){
-        h+='<div id="stc-return-box" style="display:none;padding:0 20px 16px">';
-        h+='<textarea id="stc-return-txt" placeholder="Add your comments for the 02S team…" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px 10px;font-size:12px;font-family:inherit;outline:none;resize:vertical;min-height:80px;color:var(--g900);background:#fff"></textarea>';
-        h+='<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">';
-        h+='<button onclick="document.getElementById(\'stc-return-box\').style.display=\'none\'" class="btn btn-ghost btn-sm">Cancel</button>';
-        h+='<button onclick="_stcCloseQuote();toast(\'Quote returned with comments — 02S team notified\')" class="btn btn-primary btn-sm" style="background:#f59e0b;border-color:#f59e0b">Send return</button>';
-        h+='</div></div>';}
-        h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
-        h+='<button onclick="_stcCloseQuote()" class="btn btn-ghost">Close</button>';
-        if(qr.status!=='approved'){
-        h+='<button onclick="var b=document.getElementById(\'stc-return-box\');b.style.display=b.style.display===\'none\'?\'block\':\'none\'" class="btn btn-ghost">Return with comments</button>';
-        h+='<button onclick="_stcCloseQuote();toast(\'Quote accepted — 02S will proceed to order\')" class="btn btn-primary" style="margin-left:auto">Accept quote</button>';}
-        h+='</div></div></div>';
-      }
-    }
+
     root.innerHTML=h;
     var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
     if(_stcModal.open){document.body.insertAdjacentHTML('beforeend',_stcModalHTML());}
@@ -3356,7 +3225,7 @@
       var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';
       var tLbl=r.type==='vmi'?'VMI':'SP';
       var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
-      var val=r.q&&r.q.cost?_stcFmt(r.q.cost):'—';
+      var val=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
       h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:10px;overflow:hidden">';
       h+='<div onclick="_stcSchToggle(\''+oid+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'#fff\'">';
       h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
@@ -3427,7 +3296,7 @@
     var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px;margin-top:20px">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
     h+='<span style="font-size:15px;font-weight:700;color:var(--charcoal)">Incoming Requests</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">'+incoming.length+' pending quote'+(incoming.length===1?'':'s')+'</span></div>';
+    h+='<span style="font-size:12px;color:var(--g400)">'+incoming.length+' pending</span></div>';
     if(!incoming.length){
       h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No pending requests — all requests have been quoted or fulfilled.</div>';
     }else{
@@ -3446,7 +3315,7 @@
         h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
         h+='<div><span style="background:'+pColor+'20;color:'+pColor+';font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span></div>';
         h+='<div style="font-size:12px;color:'+(isUrgent?'#dc2626':'var(--g700)')+';font-weight:'+(isUrgent?600:400)+'">'+nbFmt+'</div>';
-        h+='<div><button onclick="_stcCCSendQuote('+gi+')" style="display:inline-flex;align-items:center;background:var(--primary);border:none;border-radius:4px;padding:3px 10px;cursor:pointer;font-size:11.5px;color:#fff;font-weight:600">Send quote</button></div>';
+        h+='<div><span style="font-size:11px;color:var(--g400)">—</span></div>';
         h+='</div>';
       });
       h+='</div>';
@@ -3498,7 +3367,7 @@
       h+='</div>';
     }
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-    if(r.status==='draft'){h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+idx+')" class="btn btn-primary btn-sm">Send Quote</button>';}
+
     h+='</div>';
     return h;
   }
@@ -3525,7 +3394,7 @@
   function _stcCCSetProjFilter(f){_stcCCProjFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
   function _stcCCSetTypeFilter(f){_stcCCTypeFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
   function _stcCCSetView(v){_stcCCView=v;_stcCCDrillOpen=null;renderSTC_CC();}
-  function _stcCCSendQuote(ri){_stcCCOpenQuoteForm(ri);}
+
 
   function _stcCCSaveMinMax(idx){
     var r=_stcAllReqs[idx];if(!r)return;
@@ -3616,105 +3485,126 @@
     h+='</div></div></div>';
     return h;
   }
-  var _stcCCGanttActs={
-    hercules:[
-      {n:'Vendor RFQ',st:'Done',s:0,e:2},
-      {n:'PO Issuance',st:'Done',s:2,e:3},
-      {n:'Dropship to Site',st:'In progress',s:3,e:7},
-      {n:'Receipt & Inspection',st:'Not started',s:7,e:8}
+  var _stcCCActivities={
+    'STC-001':[
+      {id:'a1',label:'Scope & Contract',status:'done',owner:'James R.',due:'Aug 12',
+       tasks:[{id:'t1',label:'Draft MSA with Airgas',done:true},{id:'t2',label:'Legal review sign-off',done:true}]},
+      {id:'a2',label:'Initial Delivery Setup',status:'done',owner:'James R.',due:'Sep 15',
+       tasks:[{id:'t3',label:'Configure VMI triggers in system',done:true}]},
+      {id:'a3',label:'Reorder Point Configuration',status:'active',owner:'James R.',due:'Oct 25',
+       tasks:[{id:'t4',label:'Set min/max thresholds',done:true},{id:'t5',label:'Test auto-reorder flow',done:false},{id:'t6',label:'Notify yard team of thresholds',done:false}]},
+      {id:'a4',label:'Monthly Replenishment Cycle',status:'pending',owner:'James R.',due:'Jan 31',
+       tasks:[]}
     ],
-    barryrose:[
-      {n:'Vendor RFQ',st:'Done',s:0,e:2},
-      {n:'PO Issuance',st:'In progress',s:2,e:4},
-      {n:'Dropship to Site',st:'Not started',s:4,e:8},
-      {n:'Receipt & Inspection',st:'Not started',s:8,e:9}
-    ],
-    vdc14:[
-      {n:'Vendor RFQ',st:'In progress',s:1,e:3},
-      {n:'PO Issuance',st:'Not started',s:3,e:4},
-      {n:'Dropship to Site',st:'Not started',s:4,e:8},
-      {n:'Receipt & Inspection',st:'Not started',s:8,e:9}
+    'STC-004':[
+      {id:'a5',label:'Purchase Order Issuance',status:'done',owner:'Sarah M.',due:'Sep 17',
+       tasks:[{id:'t7',label:'Confirm Petzl Avao spec with safety lead',done:true},{id:'t8',label:'Issue PO #PO-2026-0914',done:true}]},
+      {id:'a6',label:'Vendor Confirmation',status:'done',owner:'Sarah M.',due:'Sep 22',
+       tasks:[{id:'t9',label:'Confirm lead time with Grainger',done:true}]},
+      {id:'a7',label:'Delivery to Site',status:'active',owner:'Sarah M.',due:'Sep 30',
+       tasks:[{id:'t10',label:'Coordinate delivery slot with site super',done:false},{id:'t11',label:'Arrange forklift for offload',done:false}]},
+      {id:'a8',label:'Receipt & Inspection',status:'pending',owner:'Sarah M.',due:'Oct 7',
+       tasks:[]}
     ]
   };
-  var _stcCCVMIGanttActs={
-    hercules:[
-      {n:'Vendor Contract',st:'Done',s:0,e:1},
-      {n:'Min/Max Setup',st:'Done',s:1,e:2},
-      {n:'Initial Stock Delivery',st:'In progress',s:2,e:4},
-      {n:'Replenishment Cycle',st:'Not started',s:4,e:10}
-    ],
-    barryrose:[
-      {n:'Vendor Contract',st:'In progress',s:1,e:3},
-      {n:'Min/Max Setup',st:'Not started',s:3,e:4},
-      {n:'Initial Stock Delivery',st:'Not started',s:4,e:6},
-      {n:'Replenishment Cycle',st:'Not started',s:6,e:10}
-    ],
-    vdc14:[
-      {n:'Vendor Contract',st:'Not started',s:2,e:4},
-      {n:'Min/Max Setup',st:'Not started',s:4,e:5},
-      {n:'Initial Stock Delivery',st:'Not started',s:5,e:7},
-      {n:'Replenishment Cycle',st:'Not started',s:7,e:10}
-    ]
-  };
-  function _stcCCGanttSetStatus(proj,type,ai,val){
-    var src=type==='vmi'?_stcCCVMIGanttActs:_stcCCGanttActs;
-    if(src[proj]&&src[proj][ai])src[proj][ai].st=val;
-    renderSTC_CC();
+  var _stcCCActOpenId=null;
+  var _stcCCActOpenTask={};
+
+  function _stcCCActToggle(oid){_stcCCActOpenId=(_stcCCActOpenId===oid)?null:oid;renderSTC_CC();}
+  function _stcCCActSetStatus(oid,ai,v){var acts=_stcCCActivities[oid];if(acts&&acts[ai])acts[ai].status=v;renderSTC_CC();}
+  function _stcCCActToggleTask(oid,ai,ti){var acts=_stcCCActivities[oid];if(acts&&acts[ai]&&acts[ai].tasks[ti])acts[ai].tasks[ti].done=!acts[ai].tasks[ti].done;renderSTC_CC();}
+  function _stcCCActDeleteAct(oid,ai){var acts=_stcCCActivities[oid];if(acts)acts.splice(ai,1);renderSTC_CC();}
+  function _stcCCActAddActivity(oid){
+    var lbl=window.prompt('Activity name:','');if(!lbl||!lbl.trim())return;
+    if(!_stcCCActivities[oid])_stcCCActivities[oid]=[];
+    _stcCCActivities[oid].push({id:'a'+Date.now(),label:lbl.trim(),status:'pending',owner:'—',due:'',tasks:[]});
+    _stcCCActOpenId=oid;renderSTC_CC();
   }
-  function _stcBuildCCGantt(projFilter){
-    if(!projFilter||projFilter==='all')return _stcBuildLookahead(_stcAllReqs);
-    var _EQ_MO=['Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan'];
-    var _lActBg={Done:'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};
-    var _lActTc={Done:'#fff','In progress':'#fff','Not started':'#94a3b8'};
-    var _lActOpts=['Done','In progress','Not started'];
-    var pName=_stcProjNames[projFilter]||projFilter;
-    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px;margin-bottom:16px">';
-    h+='<div style="font-size:15px;font-weight:700;color:var(--charcoal);margin-bottom:16px">'+pName+'</div>';
-    function buildTrack(label,acts,type){
-      var t='';
-      t+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-      t+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+label+'</span></div>';
-      t+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden;margin-bottom:16px">';
-      t+='<div style="display:grid;grid-template-columns:110px 1fr 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';
-      t+='<div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';
-      t+='<div style="padding:6px 4px;font-size:9px;font-weight:700;color:var(--g500);display:flex;justify-content:space-between">';
-      _EQ_MO.forEach(function(m){t+='<span style="font-size:8px;font-weight:600;color:var(--g400)">'+m+'</span>';});
-      t+='</div>';
-      t+='<div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:right">Tasks</div>';
-      t+='</div>';
-      acts.forEach(function(act,ai){
-        var _ls=Math.max(0,Math.min(9,act.s||0));
-        var _le=Math.max(_ls+1,Math.min(10,act.e||_ls+1));
-        var _lbg=_lActBg[act.st]||'#e5e7eb';
-        var _ltc=_lActTc[act.st]||'#94a3b8';
-        var isLast=ai===acts.length-1;
-        t+='<div style="display:grid;grid-template-columns:110px 1fr 80px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';
-        t+='<div style="padding:4px 10px">';
-        t+='<div style="font-size:11px;font-weight:500;color:var(--g800)">'+act.n+'</div>';
-        t+='<select style="font-size:9px;border:none;background:none;color:var(--g500);cursor:pointer;font-family:inherit;padding:0;margin-top:1px" onchange="event.stopPropagation();_stcCCGanttSetStatus(\''+projFilter+'\',\''+type+'\','+ai+',this.value)">';
-        t+=_lActOpts.map(function(o){return'<option value="'+o+'"'+(o===act.st?' selected':'')+'>'+o+'</option>';}).join('');
-        t+='</select></div>';
-        t+='<div style="padding:3px 6px;position:relative;height:100%">';
-        t+='<div style="position:absolute;inset:4px 2px;display:grid;grid-template-columns:repeat(10,1fr)">';
-        for(var _mi=0;_mi<10;_mi++){
-          if(_mi===_ls){var _sp=Math.max(1,_le-_ls);t+='<div style="grid-column:span '+_sp+';padding:1px 2px"><div style="background:'+_lbg+';border-radius:4px;height:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:'+_ltc+';white-space:nowrap">'+act.n+'</span></div></div>';_mi+=_sp-1;}
-          else{t+='<div style="border-right:1px solid var(--g100)"></div>';}
-        }
-        t+='</div></div>';
-        t+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px">';
-        var _tCt=(window.MY_CC_TASKS||[]).filter(function(t){return !t.done&&t.ref&&t.ref.indexOf('STC-')===0&&t.activity===act.n;}).length;
-        if(_tCt>0)t+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:0 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">'+_tCt+'</span>';
-        t+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+projFilter+'\',-1,\'ST&amp;C\',\''+act.n+'\',\'STC-\')">+ Task</button>';
-        t+='</div>';
-        t+='</div>';
-      });
-      t+='</div>';
-      return t;
+  function _stcCCActAddTask(oid,ai){
+    var lbl=window.prompt('Task label:','');if(!lbl||!lbl.trim())return;
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    acts[ai].tasks.push({id:'t'+Date.now(),label:lbl.trim(),done:false});
+    _stcCCActOpenId=oid;renderSTC_CC();
+  }
+  function _stcCCActDeleteTask(oid,ai,ti){
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    acts[ai].tasks.splice(ti,1);_stcCCActOpenId=oid;renderSTC_CC();
+  }
+  function _stcBuildActivitiesView(projFilter){
+    var projs=projFilter&&projFilter!=='all'?[projFilter]:['hercules','barryrose','vdc14'];
+    var rows=_stcAllReqs.filter(function(r){return projs.indexOf(r.proj)>=0;});
+    if(_stcCCTypeFilter!=='all')rows=rows.filter(function(r){return r.type===_stcCCTypeFilter;});
+    var stC={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'};
+    var stL={done:'Done',active:'In progress',pending:'Not started'};
+    var stTC={done:'#15803d',active:'#1d4ed8',pending:'#6b7280'};
+    var OWNERS=['—','James R.','Sarah M.','Tom K.','Alex P.','Jordan M.'];
+    var h='<div>';
+    if(!rows.length){
+      h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No orders match current filter.</div>';
+      h+='</div>';return h;
     }
-    var spActs=_stcCCGanttActs[projFilter]||_stcCCGanttActs.hercules;
-    var vmiActs=_stcCCVMIGanttActs[projFilter]||_stcCCVMIGanttActs.hercules;
-    h+=buildTrack('Self-Perform — Activity Timeline',spActs,'sp');
-    h+=buildTrack('VMI — Activity Timeline',vmiActs,'vmi');
+    rows.forEach(function(r){
+      var oid=r.id;
+      var isOpen=_stcCCActOpenId===oid;
+      var acts=_stcCCActivities[oid]||[];
+      var pColor=_stcProjColors[r.proj]||'#94a3b8';
+      var pCode=_stcProjCodes[r.proj]||'?';
+      var tone=_stcTone[r.status]||'neu';
+      var lbl=_stcLbl[r.status]||r.status;
+      var tBg=r.type==='vmi'?'#f3e8ff':'#e0f2fe';
+      var tCol=r.type==='vmi'?'#7c3aed':'#0891b2';
+      var tLbl=r.type==='vmi'?'VMI':'SP';
+      var doneCount=acts.filter(function(a){return a.status==='done';}).length;
+      h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:10px;overflow:hidden">';
+      h+='<div onclick="_stcCCActToggle(\''+oid+'\')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'#f9fafb\'" onmouseout="this.style.background=\'#fff\'">';
+      h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0">'+pCode+'</span>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.desc+'</div>';
+      h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+r.id+(acts.length?' · '+doneCount+'/'+acts.length+' activities done':'')+'</div></div>';
+      h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+tBg+';color:'+tCol+';flex-shrink:0">'+tLbl+'</span>';
+      h+='<span style="background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;flex-shrink:0">'+lbl+'</span>';
+      h+='<svg style="width:14px;height:14px;color:var(--g400);flex-shrink:0;transition:transform .2s;'+(isOpen?'transform:rotate(180deg);':'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+      h+='</div>';
+      if(isOpen){
+        h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
+        if(!acts.length){
+          h+='<div style="font-size:12.5px;color:var(--g400);text-align:center;padding:20px 0;font-style:italic">No activities yet — click &quot;+ Add activity&quot; to get started.</div>';
+        }else{
+          acts.forEach(function(act,ai){
+            var bc=stC[act.status]||'#9ca3af';
+            var btc=stTC[act.status]||'#6b7280';
+            var doneTasks=act.tasks.filter(function(t){return t.done;}).length;
+            h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;margin-bottom:8px;overflow:hidden">';
+            h+='<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:'+(act.tasks.length?'1px solid var(--g100)':'none')+'">';
+            h+='<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
+            h+='<span style="font-size:13px;font-weight:600;color:var(--g900);flex:1">'+act.label+'</span>';
+            if(act.tasks.length){h+='<span style="font-size:10.5px;color:var(--g400)">'+doneTasks+'/'+act.tasks.length+' tasks</span>';}
+            h+='<select onclick="event.stopPropagation()" onchange="event.stopPropagation();_stcCCActSetStatus(\''+oid+'\','+ai+',this.value)" style="font-size:11px;color:'+btc+';border:1px solid var(--g200);border-radius:4px;padding:2px 5px;background:#fff;cursor:pointer;outline:none">';
+            ['done','active','pending'].forEach(function(s){h+='<option value="'+s+'"'+(act.status===s?' selected':'')+'>'+stL[s]+'</option>';});
+            h+='</select>';
+            if(act.owner&&act.owner!=='—'){h+='<span style="font-size:11px;color:var(--g500)">'+act.owner+'</span>';}
+            if(act.due){h+='<span style="font-size:11px;color:var(--g400)">'+act.due+'</span>';}
+            h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+oid+'\','+ai+')" style="font-size:10.5px;border:1px solid var(--g200);border-radius:5px;padding:2px 8px;background:#fff;color:var(--g600);cursor:pointer">+ Task</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(\''+oid+'\','+ai+')" style="background:none;border:none;font-size:16px;color:var(--g300);cursor:pointer;line-height:1;padding:0 2px">&times;</button>';
+            h+='</div>';
+            if(act.tasks.length){
+              h+='<div style="padding:6px 14px 8px 34px;display:flex;flex-direction:column;gap:4px">';
+              act.tasks.forEach(function(task,ti){
+                h+='<div style="display:flex;align-items:center;gap:8px">';
+                h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+oid+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0">';
+                h+='<span style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g700)')+(task.done?';text-decoration:line-through':'')+'"">'+task.label+'</span>';
+                h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+oid+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;line-height:1;margin-left:auto;padding:0 2px">&times;</button>';
+                h+='</div>';
+              });
+              h+='</div>';
+            }
+            h+='</div>';
+          });
+        }
+        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="display:inline-flex;align-items:center;gap:5px;margin-top:4px;background:#fff;border:1px solid var(--g200);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-weight:600;color:var(--g700)">+ Add activity</button>';
+        h+='</div>';
+      }
+      h+='</div>';
+    });
     h+='</div>';
     return h;
   }
@@ -3780,22 +3670,19 @@
           h+='<div style="font-size:11px;color:var(--g500);margin-top:1px">'+r.id+' · Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
           h+='</div>';
           h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize</button>';
-          h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" class="btn btn-ghost btn-sm">Send quote</button>';
           h+='</div>';
         });
         h+='</div>';
       }
     }else{
       h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:3px;margin-bottom:18px;width:fit-content">';
-      [['schedule','Gantt'],['orders','Tracked Orders'],['tasks','Tasks']].forEach(function(v){
+      [['orders','Tracked Orders'],['schedule','Activities']].forEach(function(v){
         var a=_stcCCView===v[0];
         h+='<button onclick="_stcCCSetView(\''+v[0]+'\')" style="padding:5px 14px;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:'+(a?600:400)+';background:'+(a?'#fff':'transparent')+';color:'+(a?'var(--g900)':'var(--g500)')+';box-shadow:'+(a?'0 1px 3px rgba(0,0,0,.1)':'none')+'">'+v[1]+'</button>';
       });
       h+='</div>';
       if(_stcCCView==='schedule'){
-        h+=_stcBuildCCGantt(_stcCCProjFilter);
-      }else if(_stcCCView==='tasks'){
-        h+=_stcCCBuildTasksView();
+        h+=_stcBuildActivitiesView(_stcCCProjFilter);
       }else{
         var pendingSP=rows.filter(function(r){return r.status==='draft'&&r.type==='sp';});
         if(pendingSP.length&&_stcCCTypeFilter!=='vmi'){
@@ -3843,12 +3730,8 @@
           h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
-          h+='<div>';
-          if(r.status==='draft'){h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" class="btn btn-ghost btn-sm">Send quote</button>';}
-          if(r.q){h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcCCOpenViewQuote('+gi+')">View quote</button>';}
-          else if(r.status!=='draft'){h+='<span style="font-size:11px;color:var(--g400)">—</span>';}
-          h+='</div>';
-          h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.q&&r.q.cost?_stcFmt(r.q.cost):'—')+'</div>';
+          h+='<div><span style="font-size:11px;color:var(--g400)">—</span></div>';
+          h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—')+'</div>';
           h+='</div>';
           h+='<div id="stccc-drill-'+gi+'" class="otrack" style="display:'+(_stcCCDrillOpen===gi?'block':'none')+'">'+_stcBuildCCTrack(r,gi)+'</div>';
         });
@@ -3856,12 +3739,8 @@
       }
     }
     root.innerHTML=h;
-    var _qov=document.getElementById('stccc-quote-form-ov');if(_qov)_qov.remove();
-    var _vqov=document.getElementById('stccc-view-quote-ov');if(_vqov)_vqov.remove();
     var _yov=document.getElementById('stc-yard-ov');if(_yov)_yov.remove();
     var _catov=document.getElementById('stc-cat-ov');if(_catov)_catov.remove();
-    if(_stcCCQuoteModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCQuoteFormHTML());}
-    if(_stcCCViewQuoteId!==null){document.body.insertAdjacentHTML('beforeend',_stcCCViewQuoteHTML());}
     if(_stcYardModal!==null){document.body.insertAdjacentHTML('beforeend',_stcYardModalHTML());}
     if(_stcCatModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCCatHTML());}
   }
