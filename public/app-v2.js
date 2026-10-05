@@ -3100,10 +3100,33 @@
       var cols='2fr 1fr 65px 80px 80px 150px 90px 90px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
       h+='<span>Item</span><span>Category</span><span>Qty</span><span>Price</span><span>Total</span><span>Cost Code</span><span>Cost Type</span><span>Status</span></div>';
-      var _renderedBundles={};
-      rows.forEach(function(r){
+      function _stcRenderRow(r){
         var oi=_stcAllReqs.indexOf(r);
-        if(r.bundleId&&!_renderedBundles[r.bundleId]){
+        var tone=_stcTone[r.status]||'neu';
+        var lbl=_stcLbl[r.status]||r.status;
+        var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
+        var dispQty=r.qty;
+        var unitPrice=r.price?_stcFmt(r.price):'—';
+        var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
+        var rh='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
+        rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
+        rh+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
+        rh+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
+        rh+='<div style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+' units':'—')+'</div>';
+        rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+unitPrice+'</div>';
+        rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
+        rh+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
+        rh+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
+        rh+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
+        rh+='</div>';
+        rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
+        return rh;
+      }
+      var bundledRows=rows.filter(function(r){return !!r.bundleId;});
+      var standaloneRows=rows.filter(function(r){return !r.bundleId;});
+      var _renderedBundles={};
+      bundledRows.forEach(function(r){
+        if(!_renderedBundles[r.bundleId]){
           _renderedBundles[r.bundleId]=true;
           h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
@@ -3111,25 +3134,16 @@
           h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
           h+='</div>';
         }
-        var tone=_stcTone[r.status]||'neu';
-        var lbl=_stcLbl[r.status]||r.status;
-        var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
-        var dispQty=r.qty;
-        var unitPrice=r.price?_stcFmt(r.price):'—';
-        var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
-        h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
-        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
-        h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
-        h+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
-        h+='<div style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+' units':'—')+'</div>';
-        h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+unitPrice+'</div>';
-        h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
-        h+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
-        h+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
-        h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
-        h+='</div>';
-        h+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
+        h+=_stcRenderRow(r);
       });
+      if(standaloneRows.length){
+        h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
+        h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Individual Items</span>';
+        h+='<span style="font-size:11px;color:var(--g400)">'+standaloneRows.length+' item'+(standaloneRows.length===1?'':'s')+'</span>';
+        h+='</div>';
+        standaloneRows.forEach(function(r){h+=_stcRenderRow(r);});
+      }
       h+='</div>';
     }
 
