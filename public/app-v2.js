@@ -2257,7 +2257,7 @@
     h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
     h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
     h+='<span style="flex:1"></span>';
-    h+='<span style="font-size:11px;color:var(--g400)">16 services &nbsp;↗</span>';
+    h+='<span style="font-size:11px;color:var(--g400)">12 services &nbsp;↗</span>';
     h+='</div>';
     if(gcgrView==='gantt'){
       var GCGR_MO=EQ_MONTHS.slice(1,11);
@@ -9693,6 +9693,22 @@ charges:[
     closeModal();renderLogPlan();
   }
 
+  /* ── CAPABILITY TOOLTIPS ── */
+  var _capTipEl=null;
+  function _showCapTip(e,name,desc){
+    if(!_capTipEl){
+      _capTipEl=document.createElement('div');
+      _capTipEl.style.cssText='position:fixed;z-index:9999;background:rgba(15,23,42,.95);color:#fff;border-radius:9px;padding:11px 15px;pointer-events:none;max-width:270px;box-shadow:0 6px 24px rgba(0,0,0,.28);font-family:inherit;display:none';
+      document.body.appendChild(_capTipEl);
+      document.addEventListener('mousemove',function(ev){if(_capTipEl&&_capTipEl.style.display!=='none'){var x=ev.clientX+16,y=ev.clientY+14;var rw=_capTipEl.offsetWidth,rh=_capTipEl.offsetHeight;if(x+rw>window.innerWidth-8)x=ev.clientX-rw-12;if(y+rh>window.innerHeight-8)y=ev.clientY-rh-12;_capTipEl.style.left=x+'px';_capTipEl.style.top=y+'px';}});
+    }
+    _capTipEl.innerHTML='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#475569;margin-bottom:4px">Capability</div><div style="font-size:12.5px;font-weight:600;color:#f1f5f9;line-height:1.3;margin-bottom:5px">'+name+'</div><div style="font-size:11px;color:#94a3b8;line-height:1.5">'+desc+'</div>';
+    var x=e.clientX+16,y=e.clientY+14;
+    _capTipEl.style.left=x+'px';_capTipEl.style.top=y+'px';
+    _capTipEl.style.display='block';
+  }
+  function _hideCapTip(){if(_capTipEl)_capTipEl.style.display='none';}
+
   /* ── CHANGE ORDERS ── */
   window._CHANGE_ORDERS=window._CHANGE_ORDERS||[{id:'CO-001',proj:'hercules',service:'Restroom Facility',ref:'REQ-L-3116',rowIdx:1,submittedBy:'T. Martinez',submittedByFull:'T. Martinez · Hercules Project Team',ts:'Sep 23, 2026 · 10:23 AM',status:'quote_revised',changes:{dates:{from:'Sep 1 – Nov 30, 2026',to:'Sep 1, 2026 – Feb 28, 2027'},service:{from:'Restroom Facility',to:'Restroom Facility'},qty:{from:'1 unit',to:'2 units'}},note:'Project schedule extended through Q1 2027 — additional unit needed for south laydown crew added to extended phase.',revisedQuote:{vendor:'United Site Services',quoteNum:'USS-2026-8802',quoteDate:'2026-09-25',expDate:'2026-12-25',rationale:'Extended quote at same vendor rate; second unit added for south laydown crew per project schedule extension through Q1 2027. Pricing aligned with existing USS service contract.',lines:[{desc:'Portable restroom trailer (2-stall ADA) — monthly rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800},{desc:'Additional portable restroom trailer (2-stall ADA) — extended period rental',qty:4,uom:'MO',vendorPrice:2783,markup:0.15,unitRate:3200,ext:12800}],total:25600,attachments:[{name:'USS-2026-8802 Restroom Facility Revised Quote.pdf',type:'pdf'},{name:'Revised scope summary.docx',type:'docx'}],note:'Extended through Q1 2027 — added second unit at same rate for south laydown crew.',sentAt:'Sep 25, 2026'},acts:[{n:'Change request reviewed',st:'Done',s:0,e:1,sd:'Sep 23',ed:'Sep 23'},{n:'Vendor requotes procured',st:'Done',s:0,e:1,sd:'Sep 24',ed:'Sep 24'},{n:'Revised quote drafted',st:'Done',s:0,e:1,sd:'Sep 25',ed:'Sep 25'},{n:'Revised quote sent to project teams',st:'Done',s:0,e:1,sd:'Sep 25',ed:'Sep 26'},{n:'Project teams review \u0026 approval',st:'Not started',s:2,e:3,sd:'Due Oct 8',ed:null}],history:[{who:'T. Martinez',when:'Sep 23 \u00b7 10:23am',text:'Change request submitted \u2014 extend rental through Q1 2027 and add second unit for south laydown crew.'},{who:'02S Logistics',when:'Sep 25 \u00b7 3:48pm',text:'Vendor requotes obtained from USS. Revised quote CO-001 prepared and sent to project team for review.'}]},{id:'CO-002',proj:'hercules',service:'Storage Containers',ref:'REQ-L-3113',rowIdx:2,submittedBy:'R. Chen',submittedByFull:'R. Chen · Hercules Project Team',ts:'Sep 28, 2026 · 2:11 PM',status:'pending_cc',changes:{dates:{from:'Aug 15, 2026 – Jan 31, 2027',to:'Aug 15, 2026 – Mar 31, 2027'},service:{from:'Storage Containers',to:'Storage Containers'},qty:{from:'12 units',to:'16 units'}},note:'Additional laydown area needed for BESS equipment staging — extended through Q1 2027 with 4 extra units.',revisedQuote:null,acts:[{n:'Change request reviewed',st:'Not started',s:1,e:2,sd:'Sep 28',ed:'Sep 28'},{n:'Vendor requotes procured',st:'Not started',s:1,e:3,sd:'Sep 30',ed:'Oct 10'},{n:'Revised quote drafted',st:'Not started',s:3,e:4,sd:null,ed:null},{n:'Revised quote sent to project teams',st:'Not started',s:4,e:5,sd:null,ed:null}],history:[{who:'R. Chen',when:'Sep 28 · 2:11pm',text:'Change request submitted — 4 additional units for BESS equipment staging, extended through Q1 2027.'},{who:'02S Logistics',when:'Sep 30 · 11:05am',text:'Change request received and under review. Sourcing vendor requotes from WillScot — pricing expected by Oct 10.'}]}];
 
@@ -15840,7 +15856,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="color:var(--g500);flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>';
     h+='<span style="font-size:12px;font-weight:600;color:var(--g700)">Plan pre-generated · standard 02S scope for Renewables projects</span>';
     h+='<span style="flex:1"></span>';
-    h+='<span style="font-size:11px;color:var(--g400)">16 services &nbsp;↗</span>';
+    h+='<span style="font-size:11px;color:var(--g400)">12 services &nbsp;↗</span>';
     h+='</div>';
     if(gcgrView==='gantt'){
       var GCGR_MO=EQ_MONTHS.slice(1,11);
