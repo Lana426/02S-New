@@ -2998,7 +2998,7 @@
     var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-    h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     if(notes.length){
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
@@ -7151,7 +7151,7 @@ charges:[
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
         h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -7234,7 +7234,7 @@ charges:[
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     if(_dpCoSub){var _coSubRQ=_dpCoSub.status==='quote_revised';var _coSubClr=_coSubRQ?'#166534':'#92400e';var _coSubBg=_coSubRQ?'#f0fdf4':'#fff7ed';var _coSubBdr=_coSubRQ?'#86efac':'#fed7aa';var _coSubLbl=_coSubRQ?'Revised quote ready for your review':'Change order pending 02S review';h+='<div style="background:'+_coSubBg+';border:1px solid '+_coSubBdr+';border-radius:6px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><span style="font-size:10px;font-weight:700;color:'+_coSubClr+';text-transform:uppercase;letter-spacing:.04em">'+_dpCoSub.id+'</span><span style="font-size:11.5px;color:'+_coSubClr+';margin-left:8px">'+_coSubLbl+'</span></div>'+((_dpCoSub.ts)?'<span style="font-size:10.5px;color:var(--g400)">'+(_dpCoSub.ts||'').split('·')[0].trim()+'</span>':'')+'</div>';}
-    h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     notes.forEach(function(n){
       h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
       h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -9512,43 +9512,36 @@ charges:[
   function logExpandToggle(k){_logExpanded[k]=!_logExpanded[k];renderCcDemand('logistics');}
   var CC_LOG_ROW_NOTES={
     'hercules-0':[
-      {who:'02S Logistics',when:'Aug 1',text:'WillScot 18-unit office trailer package fully installed. All units power-connected and operational. Punch list cleared.'},
-      {who:'Dana Reyes · CP',when:'Aug 2',text:'Great — crew checked in this morning. Everything looks good. Thank you.'}
+      {who:'02S Logistics · You',when:'May 18',text:'Heavy haul permit confirmed for May 20 delivery. Lowboy dispatched from depot. ETA site 6:00 AM.'},
+      {who:'Dana Reyes · CP',when:'May 17',text:'North gate cleared and access road inspected. Superintendent will sign delivery receipt on arrival.'}
     ],
     'hercules-1':[
-      {who:'Dana Reyes · CP',when:'Aug 19',text:'Facility location confirmed with site super. Access road cleared. Please confirm monthly service schedule.'},
-      {who:'02S Logistics',when:'Aug 19',text:'Service confirmed — weekly vacuum and restock every Monday. Will notify PM of any access issues.'},
-      {who:'02S Logistics',when:'Aug 20',text:'Install in progress — R&R Sanitation crew on site. Water hookup complete. Final commissioning Aug 22.'}
+      {who:'02S Logistics · You',when:'Aug 20',text:'Restroom facility installation scheduled for Aug 28 — R&R Sanitation confirmed 2-person crew. Water hookup permit approved this AM.'},
+      {who:'Dana Reyes · CP',when:'Aug 21',text:'Utility trench access cleared. Confirm final placement with site super before install day — trailers are adjacent.'}
     ],
     'hercules-2':[
-      {who:'Dana Reyes · CP',when:'Aug 13',text:'Laydown B cleared. Forklift staging in place. Confirm delivery window — site access 7AM–3PM.'},
-      {who:'02S Logistics',when:'Aug 13',text:'Confirmed 7AM delivery Aug 15. WillScot driver briefed on gate access. ETA text morning of.'},
-      {who:'02S Logistics',when:'Aug 14',text:'All 12 containers delivered and placed per laydown plan. WillScot crew finished in 4 hours — no incidents.'}
+      {who:'Dana Reyes · CP',when:'Jun 30',text:'12 containers confirmed for Aug 15 delivery. Laydown B marked for placement — forklift staging area reserved.'},
+      {who:'02S Logistics · You',when:'Jul 1',text:'Container order locked with WillScot. Delivery route via Highway 4 cleared — no permit required for this load.'}
     ],
     'hercules-3':[
-      {who:'02S Logistics',when:'Aug 2',text:'USS quote received — $4,600 for 26 units. Pending CP approval. Lead time 7 days from PO.'},
-      {who:'Dana Reyes · CP',when:'Aug 3',text:'Sector 2 headcount confirmed at 26. Approving today — please issue PO once you receive the sign-off.'},
-      {who:'02S Logistics',when:'Aug 3',text:'PO issued. USS slot locked. Installation Aug 22.'}
+      {who:'02S Logistics · You',when:'Aug 2',text:'USS quote received — $4,600 for 26 units. Pending CP approval before PO can be issued. Lead time 7 days post-approval.'},
+      {who:'Dana Reyes · CP',when:'Aug 3',text:'Reviewing with PM today. Will approve by EOD if headcount aligns with Sector 2 schedule. Please hold the slot.'}
     ],
     'hercules-4':[
-      {who:'02S Logistics',when:'May 30',text:'GFL 2-dumpster recurring haul confirmed — weekly pickup Mondays starting Jun 1.'},
-      {who:'Dana Reyes · CP',when:'Jun 10',text:'Demo in Sector 1 is generating more debris. Can we add a 3rd dumpster temporarily through Aug?'},
-      {who:'02S Logistics',when:'Jun 11',text:'3rd dumpster added Jun 15–Aug 30. Rate $2,400/mo additional unit. Will show on Aug invoice.'}
+      {who:'Dana Reyes · CP',when:'May 10',text:'2 dumpsters in place since June 1 — GFL recurring haul confirmed weekly. No issues so far.'},
+      {who:'02S Logistics · You',when:'May 11',text:'Service confirmed ongoing. Next invoice cycle Aug 1. Flag us if haul frequency needs adjustment as Sector 2 demo ramps.'}
     ],
     'hercules-5':[
-      {who:'Dana Reyes · CP',when:'Jul 15',text:'Please confirm signage at both entry points meets OSHA requirements before final install.'},
-      {who:'02S Logistics',when:'Jul 15',text:'OSHA 29 CFR 1926.200 compliance confirmed — poster, hazard ID, and no-access signage all in spec. ARC on site Jul 20.'},
-      {who:'02S Logistics',when:'Jul 20',text:'Both zones installed and signed off. Safety walk complete — no punch items.'}
+      {who:'02S Logistics · You',when:'Jul 20',text:'ARC signage package delivered and installed — both zones complete. Final inspection sign-off pending safety walk.'},
+      {who:'Dana Reyes · CP',when:'Jul 21',text:'Safety walk done. All signage visible and compliant — no punch items.'}
     ],
     'hercules-6':[
-      {who:'Dana Reyes · CP',when:'Jun 18',text:'Sector 2 temp power at-risk — Paynecrest needs final scope confirmation this week.'},
-      {who:'02S Logistics',when:'Jun 19',text:'RFP issued. Transformer count included. Quote expected Jun 25.'},
-      {who:'Dana Reyes · CP',when:'Jun 19',text:'Transformer count confirmed at 4 units. Include Sector 2 substation pre-energization load in scope.'},
-      {who:'02S Logistics',when:'Jun 20',text:'Paynecrest updated — substation pre-energization load in scope. Quote tracking Jun 25.'}
+      {who:'Dana Reyes · CP',when:'Jun 18',text:'Temp power for Sector 2 is at-risk — Paynecrest needs final scope confirmation before they can finalize the quote.'},
+      {who:'02S Logistics · You',when:'Jun 19',text:'Paynecrest aligned — RFP issued today. Targeting quote back Jun 25. Will flag if estimate moves beyond $38K.'}
     ],
     'hercules-7':[
-      {who:'Dana Reyes · CP',when:'Aug 4',text:'Temp fencing for Sector 2 needed by Oct 15 — site boundary confirmed. Can we start scoping?'},
-      {who:'02S Logistics',when:'Aug 5',text:'Scoping call scheduled Aug 18. Will need fence line coordinates and access point count. RFP targeting Aug 22.'}
+      {who:'02S Logistics · You',when:'Aug 5',text:'Temp fencing scope not yet defined. Will need site boundary survey and access point count before RFP can go out.'},
+      {who:'Dana Reyes · CP',when:'Aug 6',text:'Will coordinate with site super on fence line by Aug 15. Please schedule scoping call for Aug 18.'}
     ],
     'barryrose-0':[
       {who:'Barry Rose PM · CP',when:'Jul 25',text:'Please confirm trailer placement in north laydown — security desk must be adjacent to main gate.'},
@@ -10225,7 +10218,7 @@ charges:[
     h+='<span style="font-size:11.5px;color:var(--g500)">'+open.length+' open · '+done.length+' done</span>';
     h+='<span class="spacer"></span>';
     h+='</div>';
-    if(!open.length&&!done.length){h+='<div class="fq-empty">No logistics tasks yet — add tasks from the service rows below.</div></div>';return h;}
+    if(!open.length&&!done.length){h+='<div class="fq-empty" data-cap="Task &amp; execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type">No logistics tasks yet — add tasks from the service rows below.</div></div>';return h;}
     if(tab==='activity'){
       var actOrder=['Project Plan','RFP','Contracting','Install'];
       var actMap={};actOrder.forEach(function(a){actMap[a]=[];});actMap['Other']=[];
@@ -10345,7 +10338,7 @@ charges:[
       return r.status==='Requested'&&(!projMatch[proj]||r.project===projMatch[proj]);
     });
     var h='<div style="margin-top:22px">';
-    h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(IC.truck)+'Incoming portal quotes</span><span class="spacer"></span>';
+    h+='<div class="eq-toolbar"><span class="dp-sec-t" data-cap="Vendor sourcing &amp; quote development|||02S fills out a standard quote in CC — capturing vendor, line-item and pricing detail — before returning it to CP">'+svg(IC.truck)+'Incoming portal quotes</span><span class="spacer"></span>';
     if(requested.length)h+='<span style="font-size:11px;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:2px 9px;font-weight:600">'+requested.length+' open</span>';
     h+='</div>';
     if(!requested.length){h+='<div class="fq-empty">No open quote requests at this time.</div></div>';return h;}
@@ -14364,7 +14357,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         h+=buildLogLookahead();
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:4px">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px">';
-        h+='<span style="font-size:13px;font-weight:700;color:var(--charcoal)">Services at a glance</span>';
+        h+='<span data-cap="Service-level aggregation of in-flight orders|||02S has a portfolio-level view of service-level statuses across projects" style="font-size:13px;font-weight:700;color:var(--charcoal);cursor:default">Services at a glance</span>';
         if(_lSvcs.length>6){h+='<button onclick="window._lSvcsExpanded='+(_svcsExpanded?'false':'true')+';renderCcDemand(\'logistics\')" style="font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--g200);background:var(--g50);color:var(--g700);cursor:pointer;font-weight:500">'+(_svcsExpanded?'Collapse':'Show all '+_lSvcs.length+' services')+'</button>';}
         h+='</div>';
         h+='<div style="display:grid;grid-template-columns:1.6fr repeat(3,1fr) 100px;border-top:1px solid var(--g100);background:var(--g50)">';
@@ -14608,7 +14601,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
           var _ccRwCo=(window._CHANGE_ORDERS||[]).filter(function(c){return row.fqRef&&c.ref===row.fqRef&&(c.status==='pending_cc'||c.status==='quote_revised');});
           h+='<div style="display:flex;flex-direction:column;gap:3px">';
-          if(p==='logistics'){h+='<select onclick="event.stopPropagation()" onchange="event.stopPropagation();setCcLogState(\''+row._proj+'\','+row._idx+',this.value)" style="font-size:11px;border:1px solid var(--g200);border-radius:6px;padding:3px 6px;background:#fff;color:var(--g700);cursor:pointer;max-width:200px">';['Draft','In Scoping / Pricing','Pending Approval','Approved','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered','Completed / Closed'].forEach(function(s){h+='<option'+(row.state===s?' selected':'')+'>'+s+'</option>';});h+='</select>';}else{h+='<span class="tag '+dpTone+'">'+_dpDisp+'</span>';}
+          if(p==='logistics'){h+='<select class="chip '+dpTone+'" onclick="event.stopPropagation()" onchange="event.stopPropagation();setCcLogState(\''+row._proj+'\','+row._idx+',this.value)" style="font-size:11px;cursor:pointer;font-family:inherit;border:none;outline:none;max-width:200px">';['Draft','In Scoping / Pricing','Pending Approval','Approved','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered','Completed / Closed'].forEach(function(s){h+='<option'+(row.state===s?' selected':'')+'>'+s+'</option>';});h+='</select>';}else{h+='<span class="tag '+dpTone+'">'+_dpDisp+'</span>';}
           if(_ccRwCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_ccRwCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_ccRwCo[0].id+'</span></span>';}
           h+='</div>';
           h+='<div>'+dpDocCell(p,row)+'</div>';
@@ -14633,7 +14626,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
                 h+='<div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap">';
                 if(row.fqRef)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();ccOpenLogQuote(\''+row._proj+'\','+row._idx+')">View quote →</button>';
                 var _ccSt=row.state;
-                if(_ccSt==='In Scoping / Pricing'){h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();toast(\'Submitted for review — 02S will move to Pending Approval.\')">Submit for Review →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Released to order.\')">Release to Order</button>';h+='<button class="btn btn-ghost btn-sm" style="color:var(--g500)" onclick="event.stopPropagation();toast(\'Returned to draft.\')">Return to Draft</button>';}
+                if(_ccSt==='In Scoping / Pricing'){h+='<button data-cap="Vendor sourcing &amp; quote development|||02S fills out a standard quote in CC — capturing vendor, line-item and pricing detail — before returning it to CP" class="btn btn-dark btn-sm" onclick="event.stopPropagation();toast(\'Submitted for review — 02S will move to Pending Approval.\')">Submit for Review →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Released to order.\')">Release to Order</button>';h+='<button class="btn btn-ghost btn-sm" style="color:var(--g500)" onclick="event.stopPropagation();toast(\'Returned to draft.\')">Return to Draft</button>';}
                 else if(_ccSt==='Approved')h+='<button class="btn btn-dark btn-sm" style="background:#1d4ed8;border-color:#1d4ed8" onclick="event.stopPropagation();toast(\'Released to order — vendor notified.\')">Release to Order →</button>';
                 else if(_ccSt==='Released to Order')h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();toast(\'Order executed — tracking active.\')">Execute →</button>';
                 h+='</div></div>';
@@ -14680,12 +14673,16 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
               var _ccLRN=CC_LOG_ROW_NOTES[row._proj+'-'+row._idx]||[];
               h+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--g200)">';
               h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px" data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record">Notes &amp; history</div>';
-              if(_ccLRN.length){_ccLRN.forEach(function(n){var _isCp=n.who.indexOf('CP')>=0||n.who.indexOf('You')>=0&&n.who.indexOf('02S')<0;h+='<div style="margin-bottom:10px;display:flex;gap:9px"><div style="width:26px;height:26px;border-radius:50%;background:'+(_isCp?'#dbeafe':'var(--g150)')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:'+(_isCp?'#1d4ed8':'var(--g600)')+'">'+(_isCp?'CP':'02S')+'</div><div style="flex:1"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:11.5px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:10.5px;color:var(--g400)">'+n.when+'</span></div><div style="font-size:11.5px;color:var(--g700);line-height:1.5;background:'+(_isCp?'#f0f7ff':'#f8fafc')+';border:1px solid '+(_isCp?'#bfdbfe':'var(--g150)')+';border-radius:8px;padding:7px 11px">'+n.text+'</div></div></div>';});}else{h+='<div style="font-size:11.5px;color:var(--g400);padding:4px 0;font-style:italic">No notes yet — add context for the project team below.</div>';}
+              if(_ccLRN.length){_ccLRN.forEach(function(n){h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div><div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';});}else{h+='<div style="font-size:11.5px;color:var(--g400);padding:4px 0;font-style:italic">No notes yet — add context for the project team below.</div>';}
               var _nId='ccnote-'+row._proj+'-'+row._idx;
-              h+='<div style="display:flex;gap:6px;margin-top:10px">';
+              h+='<div style="display:flex;gap:6px;margin-top:4px">';
               h+='<input id="'+_nId+'" style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Reply to project team…" onclick="event.stopPropagation()" onkeydown="if(event.key===\'Enter\'){event.stopPropagation();addCcLogNote(\''+row._proj+'\','+row._idx+',\''+_nId+'\');}">';
               h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();addCcLogNote(\''+row._proj+'\','+row._idx+',\''+_nId+'\')" style="white-space:nowrap">Send to CP</button>';
               h+='</div></div>';
+              var _ccOrd=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;
+              var _ccBill=_ccOrd?BILLS.filter(function(b){return b.order===_ccOrd.id;})[0]:null;
+              var _ccQRef=row.fqRef?(PORTAL_QUOTES||[]).filter(function(q){return q.ref===row.fqRef;})[0]:null;
+              if(_ccOrd||_ccBill||_ccQRef){h+='<div style="display:flex;gap:8px;padding:10px 0 2px;border-top:1px solid var(--g150);margin-top:4px">';if(_ccOrd)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+_ccOrd.id+'\')">'+_ccOrd.id+' ↗</button>';if(_ccBill)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+_ccBill.id+'\')">'+_ccBill.id+' ↗</button>';if(_ccQRef)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_ccQRef.ref+'\')">'+_ccQRef.ref+' ↗</button>';h+='</div>';}
               h+='</div>';
             }
           }
