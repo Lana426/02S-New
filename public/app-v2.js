@@ -1755,7 +1755,7 @@
     var barColor={'Fulfilled / Delivered':'#3d6b4f','Scheduled':'#2e6e8e','Pending Approval':'#7a6130','In Scoping / Pricing':'#7a6130','Draft':'#94a3b8','At-risk':'#b91c1c','Released to Order':'#2e6e8e','Approved':'#1d6b8c'};
     var action=rows.filter(function(r){return r.state==='Quoted'||r.state==='Requested'||r.state==='At-risk';}).length;
     var gt='220px 1fr 1fr 1fr';
-    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming site-service across projects to have a consolidated view of upcoming demand, and has a portfolio-level view of service-level statuses across projects" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
     h+='<span style="font-size:12px;color:var(--g400)">Aug 25–Sep 14, 2026</span>';
@@ -2998,7 +2998,7 @@
     var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     if(notes.length){
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
@@ -3198,7 +3198,7 @@
     });
     var visible=sorted.filter(function(r){return r.needBy&&(new Date(r.needBy))>=(new Date('2026-09-21'));});
     var gt='200px 1fr 1fr 1fr';
-    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming site-service across projects to have a consolidated view of upcoming demand, and has a portfolio-level view of service-level statuses across projects" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
     h+='<span style="font-size:12px;color:var(--g400)">Sep 21–Oct 11, 2026</span></div>';
@@ -7100,10 +7100,10 @@ charges:[
       var sub='';
       if(i===2&&ord) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>';
       if(i===4&&bill) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+bill.id+'</div>';
-      return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var h='';
-    h+='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7123,7 +7123,7 @@ charges:[
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
         h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -7188,11 +7188,11 @@ charges:[
       if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')" title="View '+bill.id+'"';
       else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
-      return '<div class="step '+cls+'"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var stageLabels=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
     var h='';
-    h+='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7206,7 +7206,7 @@ charges:[
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     if(_dpCoSub){var _coSubRQ=_dpCoSub.status==='quote_revised';var _coSubClr=_coSubRQ?'#166534':'#92400e';var _coSubBg=_coSubRQ?'#f0fdf4':'#fff7ed';var _coSubBdr=_coSubRQ?'#86efac':'#fed7aa';var _coSubLbl=_coSubRQ?'Revised quote ready for your review':'Change order pending 02S review';h+='<div style="background:'+_coSubBg+';border:1px solid '+_coSubBdr+';border-radius:6px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><span style="font-size:10px;font-weight:700;color:'+_coSubClr+';text-transform:uppercase;letter-spacing:.04em">'+_dpCoSub.id+'</span><span style="font-size:11.5px;color:'+_coSubClr+';margin-left:8px">'+_coSubLbl+'</span></div>'+((_dpCoSub.ts)?'<span style="font-size:10.5px;color:var(--g400)">'+(_dpCoSub.ts||'').split('·')[0].trim()+'</span>':'')+'</div>';}
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     notes.forEach(function(n){
       h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
       h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -15743,7 +15743,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     var barColor={'In fulfillment':'#3d6b4f','Scheduled':'#2e6e8e','Quoted':'#7a6130','Requested':'#7a6130','Planned':'#94a3b8','At-risk':'#b91c1c'};
     var action=rows.filter(function(r){return r.state==='Quoted'||r.state==='Requested'||r.state==='At-risk';}).length;
     var gt='220px 1fr 1fr 1fr';
-    var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming site-service across projects to have a consolidated view of upcoming demand, and has a portfolio-level view of service-level statuses across projects" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
     h+='<span style="font-size:12px;color:var(--g400)">Aug 25–Sep 14, 2026</span>';
