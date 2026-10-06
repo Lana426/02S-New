@@ -2998,7 +2998,7 @@
     var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-    h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     if(notes.length){
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
@@ -6360,6 +6360,34 @@ function renderProfServicesDP(){
     'logistics-0':[
       {who:'02S Logistics',when:'May 18',text:'Heavy haul permit confirmed for May 20 delivery. Lowboy dispatched from depot. ETA site 6:00 AM.'},
       {who:'Dana Reyes · You',when:'May 17',text:'North gate cleared and access road inspected. Superintendent will sign delivery receipt on arrival.'}
+    ],
+    'logistics-1':[
+      {who:'02S Logistics',when:'Aug 20',text:'Restroom facility installation scheduled for Aug 28 — R&R Sanitation confirmed 2-person crew. Water hookup permit approved this AM.'},
+      {who:'Dana Reyes · You',when:'Aug 21',text:'Utility trench access cleared. Confirm final placement with site super before install day — trailers are adjacent.'}
+    ],
+    'logistics-2':[
+      {who:'Dana Reyes · You',when:'Jun 30',text:'12 containers confirmed for Aug 15 delivery. Laydown B marked for placement — forklift staging area reserved.'},
+      {who:'02S Logistics',when:'Jul 1',text:'Container order locked with WillScot. Delivery route via Highway 4 cleared — no permit required for this load.'}
+    ],
+    'logistics-3':[
+      {who:'02S Logistics',when:'Aug 2',text:'USS quote received — $4,600 for 26 units. Pending CP approval before PO can be issued. Lead time 7 days post-approval.'},
+      {who:'Dana Reyes · You',when:'Aug 3',text:'Reviewing with PM today. Will approve by EOD if headcount aligns with Sector 2 schedule. Please hold the slot.'}
+    ],
+    'logistics-4':[
+      {who:'Dana Reyes · You',when:'May 10',text:'2 dumpsters in place since June 1 — GFL recurring haul confirmed weekly. No issues so far.'},
+      {who:'02S Logistics',when:'May 11',text:'Service confirmed ongoing. Next invoice cycle Aug 1. Flag us if haul frequency needs adjustment as Sector 2 demo ramps.'}
+    ],
+    'logistics-5':[
+      {who:'02S Logistics',when:'Jul 20',text:'ARC signage package delivered and installed — both zones complete. Final inspection sign-off pending safety walk.'},
+      {who:'Dana Reyes · You',when:'Jul 21',text:'Safety walk done. All signage visible and compliant — no punch items.'}
+    ],
+    'logistics-6':[
+      {who:'Dana Reyes · You',when:'Jun 18',text:'Temp power for Sector 2 is at-risk — Paynecrest needs final scope confirmation before they can finalize the quote.'},
+      {who:'02S Logistics',when:'Jun 19',text:'Paynecrest aligned — RFP issued today. Targeting quote back Jun 25. Will flag if estimate moves beyond $38K.'}
+    ],
+    'logistics-7':[
+      {who:'02S Logistics',when:'Aug 5',text:'Temp fencing scope not yet defined. Will need site boundary survey and access point count before RFP can go out.'},
+      {who:'Dana Reyes · You',when:'Aug 6',text:'Will coordinate with site super on fence line by Aug 15. Please schedule scoping call for Aug 18.'}
     ]
   };
 
@@ -7100,10 +7128,10 @@ charges:[
       var sub='';
       if(i===2&&ord) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>';
       if(i===4&&bill) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+bill.id+'</div>';
-      return '<div class="step '+cls+'" '+(window.CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" '+(CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var h='';
-    h+='<div class="trk" '+(window.CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" '+(CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7123,13 +7151,13 @@ charges:[
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
         h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
       });
       h+='<div style="display:flex;gap:6px;margin-top:4px">';
-      h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+l.id+'">';
+      h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="'+(CURRENT==='ns'?'Reply to project team…':'Add a note to 02S…')+'" id="plan-note-'+l.id+'">';
       h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+l.id+'\')">Send</button>';
       h+='</div></div>';
     }
@@ -7188,11 +7216,11 @@ charges:[
       if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')" title="View '+bill.id+'"';
       else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
-      return '<div class="step '+cls+'" '+(window.CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" '+(CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var stageLabels=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
     var h='';
-    h+='<div class="trk" '+(window.CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" '+(CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7206,14 +7234,14 @@ charges:[
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     if(_dpCoSub){var _coSubRQ=_dpCoSub.status==='quote_revised';var _coSubClr=_coSubRQ?'#166534':'#92400e';var _coSubBg=_coSubRQ?'#f0fdf4':'#fff7ed';var _coSubBdr=_coSubRQ?'#86efac':'#fed7aa';var _coSubLbl=_coSubRQ?'Revised quote ready for your review':'Change order pending 02S review';h+='<div style="background:'+_coSubBg+';border:1px solid '+_coSubBdr+';border-radius:6px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><span style="font-size:10px;font-weight:700;color:'+_coSubClr+';text-transform:uppercase;letter-spacing:.04em">'+_dpCoSub.id+'</span><span style="font-size:11.5px;color:'+_coSubClr+';margin-left:8px">'+_coSubLbl+'</span></div>'+((_dpCoSub.ts)?'<span style="font-size:10.5px;color:var(--g400)">'+(_dpCoSub.ts||'').split('·')[0].trim()+'</span>':'')+'</div>';}
-    h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div '+(CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     notes.forEach(function(n){
       h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
       h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
     });
     if(_dpCoSub&&_dpCoSub.history&&_dpCoSub.history.length){_dpCoSub.history.forEach(function(n){h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div><div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';});}
     h+='<div style="display:flex;gap:6px;margin-top:4px">';
-    h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Add a note to 02S…" id="plan-note-'+pk+'-'+rowIdx+'">';
+    h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="'+(CURRENT==='ns'?'Reply to project team…':'Add a note to 02S…')+'" id="plan-note-'+pk+'-'+rowIdx+'">';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')" >Send</button>';
     h+='</div></div>';
     
@@ -9482,6 +9510,154 @@ charges:[
   var _pfbDpTab='items';var _pfbInstFilter='all';var _logExpanded={};var _logTasksView='items';
   function logSetTasksView(v){_logTasksView=v;renderCcDemand('logistics');}
   function logExpandToggle(k){_logExpanded[k]=!_logExpanded[k];renderCcDemand('logistics');}
+  var CC_LOG_ROW_NOTES={
+    'hercules-0':[
+      {who:'02S Logistics',when:'Aug 1',text:'WillScot 18-unit office trailer package fully installed. All units power-connected and operational. Punch list cleared.'},
+      {who:'Dana Reyes · CP',when:'Aug 2',text:'Great — crew checked in this morning. Everything looks good. Thank you.'}
+    ],
+    'hercules-1':[
+      {who:'Dana Reyes · CP',when:'Aug 19',text:'Facility location confirmed with site super. Access road cleared. Please confirm monthly service schedule.'},
+      {who:'02S Logistics',when:'Aug 19',text:'Service confirmed — weekly vacuum and restock every Monday. Will notify PM of any access issues.'},
+      {who:'02S Logistics',when:'Aug 20',text:'Install in progress — R&R Sanitation crew on site. Water hookup complete. Final commissioning Aug 22.'}
+    ],
+    'hercules-2':[
+      {who:'Dana Reyes · CP',when:'Aug 13',text:'Laydown B cleared. Forklift staging in place. Confirm delivery window — site access 7AM–3PM.'},
+      {who:'02S Logistics',when:'Aug 13',text:'Confirmed 7AM delivery Aug 15. WillScot driver briefed on gate access. ETA text morning of.'},
+      {who:'02S Logistics',when:'Aug 14',text:'All 12 containers delivered and placed per laydown plan. WillScot crew finished in 4 hours — no incidents.'}
+    ],
+    'hercules-3':[
+      {who:'02S Logistics',when:'Aug 2',text:'USS quote received — $4,600 for 26 units. Pending CP approval. Lead time 7 days from PO.'},
+      {who:'Dana Reyes · CP',when:'Aug 3',text:'Sector 2 headcount confirmed at 26. Approving today — please issue PO once you receive the sign-off.'},
+      {who:'02S Logistics',when:'Aug 3',text:'PO issued. USS slot locked. Installation Aug 22.'}
+    ],
+    'hercules-4':[
+      {who:'02S Logistics',when:'May 30',text:'GFL 2-dumpster recurring haul confirmed — weekly pickup Mondays starting Jun 1.'},
+      {who:'Dana Reyes · CP',when:'Jun 10',text:'Demo in Sector 1 is generating more debris. Can we add a 3rd dumpster temporarily through Aug?'},
+      {who:'02S Logistics',when:'Jun 11',text:'3rd dumpster added Jun 15–Aug 30. Rate $2,400/mo additional unit. Will show on Aug invoice.'}
+    ],
+    'hercules-5':[
+      {who:'Dana Reyes · CP',when:'Jul 15',text:'Please confirm signage at both entry points meets OSHA requirements before final install.'},
+      {who:'02S Logistics',when:'Jul 15',text:'OSHA 29 CFR 1926.200 compliance confirmed — poster, hazard ID, and no-access signage all in spec. ARC on site Jul 20.'},
+      {who:'02S Logistics',when:'Jul 20',text:'Both zones installed and signed off. Safety walk complete — no punch items.'}
+    ],
+    'hercules-6':[
+      {who:'Dana Reyes · CP',when:'Jun 18',text:'Sector 2 temp power at-risk — Paynecrest needs final scope confirmation this week.'},
+      {who:'02S Logistics',when:'Jun 19',text:'RFP issued. Transformer count included. Quote expected Jun 25.'},
+      {who:'Dana Reyes · CP',when:'Jun 19',text:'Transformer count confirmed at 4 units. Include Sector 2 substation pre-energization load in scope.'},
+      {who:'02S Logistics',when:'Jun 20',text:'Paynecrest updated — substation pre-energization load in scope. Quote tracking Jun 25.'}
+    ],
+    'hercules-7':[
+      {who:'Dana Reyes · CP',when:'Aug 4',text:'Temp fencing for Sector 2 needed by Oct 15 — site boundary confirmed. Can we start scoping?'},
+      {who:'02S Logistics',when:'Aug 5',text:'Scoping call scheduled Aug 18. Will need fence line coordinates and access point count. RFP targeting Aug 22.'}
+    ],
+    'barryrose-0':[
+      {who:'Barry Rose PM · CP',when:'Jul 25',text:'Please confirm trailer placement in north laydown — security desk must be adjacent to main gate.'},
+      {who:'02S Logistics',when:'Jul 25',text:'Confirmed north placement. WillScot crew briefed on gate proximity. Delivery Jul 28.'},
+      {who:'02S Logistics',when:'Jul 28',text:'3-unit delivery complete — all powered and operational at Barry Rose WRF.'}
+    ],
+    'barryrose-1':[
+      {who:'Barry Rose PM · CP',when:'Aug 4',text:'Site plan revision confirmed — new panel location approved by electrical engineer. Proceed with move.'},
+      {who:'02S Logistics',when:'Aug 5',text:'Temp power move complete — self-perform crew finished in 6 hours. Panel relocation per revised site plan.'}
+    ],
+    'barryrose-2':[
+      {who:'Barry Rose PM · CP',when:'Aug 15',text:'Place units near crew staging area — peak crew count ~40 during this phase.'},
+      {who:'02S Logistics',when:'Aug 15',text:'Placement adjusted. R&R confirmed Mon/Thu service cadence.'},
+      {who:'02S Logistics',when:'Aug 18',text:'3 units installed, water hookup complete. Monthly service schedule confirmed.'}
+    ],
+    'barryrose-3':[
+      {who:'Barry Rose PM · CP',when:'Aug 8',text:'Priority coverage on vehicle entrance and north fence line — those are the security hot spots.'},
+      {who:'02S Logistics',when:'Aug 8',text:'Camera zones updated — 4 on vehicle entrance, 3 on north fence, 5 perimeter. Install Aug 10.'},
+      {who:'02S Logistics',when:'Aug 10',text:'UFY 12-camera system installed. NVRs configured. Remote access credentials sent to site PM.'}
+    ],
+    'barryrose-4':[
+      {who:'Barry Rose PM · CP',when:'Aug 20',text:'Confirm coverage includes east prefab yard — crew works there daily.'},
+      {who:'02S Logistics',when:'Aug 20',text:'East yard covered with 2 additional APs on extended run. Nick Herrera confirmed layout.'},
+      {who:'02S Logistics',when:'Aug 25',text:'IT McCarthy network live — fiber backbone and WiFi active across site. 500Mbps confirmed.'}
+    ],
+    'barryrose-5':[
+      {who:'Barry Rose PM · CP',when:'Sep 2',text:'Fuel station location confirmed — south access road, 50ft from grade. Tony Mancini has site contact.'},
+      {who:'02S Logistics',when:'Sep 2',text:'Energy Petroleum crew mobilizing Sep 5. Pad poured, tank delivered.'},
+      {who:'02S Logistics',when:'Sep 5',text:'Setup underway — commissioning expected Sep 12.'}
+    ],
+    'barryrose-6':[
+      {who:'Barry Rose PM · CP',when:'Jul 8',text:'Confirm recycling separation protocol — WRF site has >60% landfill diversion requirement.'},
+      {who:'02S Logistics',when:'Jul 8',text:'GFL briefed. Separate recycling stream confirmed with monthly diversion manifest.'},
+      {who:'02S Logistics',when:'Jul 10',text:'Service live — bi-weekly haul confirmed from Aug 1. Recycling tracking in place.'}
+    ],
+    'barryrose-7':[
+      {who:'Barry Rose PM · CP',when:'Aug 10',text:'Crew peaks at 55 in October — make sure delivery volume covers that. 5-gallon jugs preferred.'},
+      {who:'02S Logistics',when:'Aug 10',text:'Quotes updated for 55-person peak, 5-gallon jugs. Expecting responses by Aug 15.'},
+      {who:'02S Logistics',when:'Aug 12',text:'RFP out to 3 vendors — quotes due Aug 15. Will share options immediately on receipt.'}
+    ],
+    'barryrose-8':[
+      {who:'Barry Rose PM · CP',when:'Aug 15',text:'Placement near crew staging confirmed. Service cadence Mon/Thu aligned with toilet units.'},
+      {who:'02S Logistics',when:'Aug 18',text:'R&R restroom facility install complete. Monthly service active.'}
+    ],
+    'barryrose-9':[
+      {who:'Barry Rose PM · CP',when:'Jul 30',text:'Forklift access must be maintained adjacent to prefab area.'},
+      {who:'02S Logistics',when:'Jul 30',text:'Forklift lane maintained — containers offset 10ft from prefab boundary.'},
+      {who:'02S Logistics',when:'Aug 1',text:'WillScot 6-container delivery complete and placed per site plan.'}
+    ],
+    'barryrose-10':[
+      {who:'Barry Rose PM · CP',when:'Jul 31',text:'WRF sites have stricter signage — water treatment operations require additional compliance.'},
+      {who:'02S Logistics',when:'Jul 31',text:'ARC confirmed OSHA 29 CFR 1926.200 + EPA facility signage compliance for WRF site type.'},
+      {who:'02S Logistics',when:'Aug 2',text:'ARC signage installed — 1 zone complete. Safety walk sign-off confirmed.'}
+    ],
+    'barryrose-11':[
+      {who:'Barry Rose PM · CP',when:'Sep 5',text:'East perimeter is priority — active construction zone adjacent to plant operations. Must be up before Oct 1.'},
+      {who:'02S Logistics',when:'Sep 5',text:'East perimeter staged first — USS crew completes that section by Sep 28.'},
+      {who:'02S Logistics',when:'Sep 8',text:'Temp fencing contracted — installation scheduled Oct 1. Bulk lot covering east and north perimeter.'}
+    ],
+    'vdc14-0':[
+      {who:'VDC14 PM · CP',when:'Aug 18',text:'Trailers must be northwest corner — clear of generator exhaust zones per data center ops.'},
+      {who:'02S Logistics',when:'Aug 18',text:'Northwest placement confirmed. Exhaust clearances maintained per generator spec.'},
+      {who:'02S Logistics',when:'Aug 20',text:'Self-perform team moved 2 trailers to VDC14 — positioned per layout plan. Electrical hookup Aug 25.'}
+    ],
+    'vdc14-1':[
+      {who:'VDC14 PM · CP',when:'Aug 30',text:'Confirm load balancing across PDUs — UPS sensitivity requirements on this site.'},
+      {who:'02S Logistics',when:'Aug 30',text:'3PL confirmed balanced load distribution — UPS manufacturer specs reviewed and complied with.'},
+      {who:'02S Logistics',when:'Sep 2',text:'All 3 loads moved — data center phase 1 temp power network complete.'}
+    ],
+    'vdc14-2':[
+      {who:'VDC14 PM · CP',when:'Sep 8',text:'Confirm rack positions match floor plan — IT gear in rows A-D only for phase 1.'},
+      {who:'02S Logistics',when:'Sep 8',text:'IT McCarthy confirmed rows A-D only. Floor plan provided to crew.'},
+      {who:'02S Logistics',when:'Sep 10',text:'Lenovo delivery complete. Installation 80% done. Network activation expected Sep 15.'}
+    ],
+    'vdc14-3':[
+      {who:'VDC14 PM · CP',when:'Aug 22',text:'Data center requires camera coverage of all server room access points — minimum 4 on secure zones.'},
+      {who:'02S Logistics',when:'Aug 22',text:'UFY confirmed 4 cameras on secure access + 4 perimeter. All angles per data center security standard.'},
+      {who:'02S Logistics',when:'Aug 25',text:'8-camera system installed, NVR configured. Go-live Aug 28.'}
+    ],
+    'vdc14-4':[
+      {who:'VDC14 PM · CP',when:'Sep 12',text:'Operations office in building B, room 102 — freight elevator only. Confirm truck fits loading dock.'},
+      {who:'02S Logistics',when:'Sep 12',text:'Mike Larson confirmed truck spec fits loading dock. Freight elevator reserved for Oct 5.'},
+      {who:'02S Logistics',when:'Sep 15',text:'Delivery scheduled Oct 5 — 1 lot confirmed for VDC14 ops office. Install same day.'}
+    ],
+    'vdc14-5':[
+      {who:'VDC14 PM · CP',when:'Jul 30',text:'Sanitation placement must not obstruct data center access roads — coordinate with facilities ops.'},
+      {who:'02S Logistics',when:'Jul 30',text:'Facilities ops added to scoping call. Will confirm placement before award.'},
+      {who:'02S Logistics',when:'Aug 1',text:'RFP out to vendors — 16 units, quotes due Aug 15.'}
+    ],
+    'vdc14-6':[
+      {who:'VDC14 PM · CP',when:'Sep 3',text:'Phase 2 layout not finalized until Oct — temp structures can wait, but flag if lead time becomes a risk.'},
+      {who:'02S Logistics',when:'Sep 3',text:'Lead time tracked — standard temp structures 3-4 weeks from order. Will flag if Nov window gets tight.'},
+      {who:'02S Logistics',when:'Sep 5',text:'Scope planning on hold pending site survey and phase 2 layout confirmation.'}
+    ]
+  };
+  function setCcLogState(proj,idx,val){
+    if(CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows[idx]){
+      CC_PROJ_DP.logistics[proj].rows[idx].state=val;
+    }
+    renderCcDemand('logistics');
+  }
+  function addCcLogNote(proj,idx,elId){
+    var el=document.getElementById(elId);
+    if(!el||!el.value.trim())return;
+    if(!CC_LOG_ROW_NOTES[proj+'-'+idx])CC_LOG_ROW_NOTES[proj+'-'+idx]=[];
+    CC_LOG_ROW_NOTES[proj+'-'+idx].push({who:'02S Team · You',when:'Now',text:el.value.trim()});
+    el.value='';
+    renderCcDemand('logistics');
+  }
   function _setCcoActSt(coId,ai,val){var co=(window._CHANGE_ORDERS||[]).find(function(c){return c.id===coId;});if(co&&co.acts&&co.acts[ai]){co.acts[ai].st=val;renderCcDemand('logistics');}}
   function logSetActStatus(proj,ri,ai,val){
     var rows=CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[proj]&&CC_PROJ_DP.logistics[proj].rows;
@@ -14431,7 +14607,8 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           h+='<div style="font-size:11.5px;color:'+(p==='prefab'&&row.dateShifted?'#b45309':'var(--g700)')+'">'+(row.window||'\u2014')+'</div>'+(p==='prefab'?'<div style="font-size:11px;color:var(--g600)">'+(row.p6Act||'\u2014')+'</div>':'');
           h+='<div class="r" style="font-size:11.5px">'+(row.cost||'\u2014')+'</div>';
           var _ccRwCo=(window._CHANGE_ORDERS||[]).filter(function(c){return row.fqRef&&c.ref===row.fqRef&&(c.status==='pending_cc'||c.status==='quote_revised');});
-          h+='<div style="display:flex;flex-direction:column;gap:3px"><span class="tag '+dpTone+'">'+_dpDisp+'</span>';
+          h+='<div style="display:flex;flex-direction:column;gap:3px">';
+          if(p==='logistics'){h+='<select onclick="event.stopPropagation()" onchange="event.stopPropagation();setCcLogState(\''+row._proj+'\','+row._idx+',this.value)" style="font-size:11px;border:1px solid var(--g200);border-radius:6px;padding:3px 6px;background:#fff;color:var(--g700);cursor:pointer;max-width:200px">';['Draft','In Scoping / Pricing','Pending Approval','Approved','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered','Completed / Closed'].forEach(function(s){h+='<option'+(row.state===s?' selected':'')+'>'+s+'</option>';});h+='</select>';}else{h+='<span class="tag '+dpTone+'">'+_dpDisp+'</span>';}
           if(_ccRwCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_ccRwCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_ccRwCo[0].id+'</span></span>';}
           h+='</div>';
           h+='<div>'+dpDocCell(p,row)+'</div>';
@@ -14461,7 +14638,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
                 else if(_ccSt==='Released to Order')h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();toast(\'Order executed — tracking active.\')">Execute →</button>';
                 h+='</div></div>';
               }
-              h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Activity timeline</span><button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 8px" onclick="event.stopPropagation();openLogActsEdit(\''+row._proj+'\','+row._idx+')">Edit</button></div>';
+              h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span data-cap="Service scheduling &amp; activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);cursor:default">Activity timeline</span><button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 8px" onclick="event.stopPropagation();openLogActsEdit(\''+row._proj+'\','+row._idx+')">Edit</button></div>';
               h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';
               h+='<div style="display:grid;grid-template-columns:110px 1fr 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';
               h+='<div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';
@@ -14493,13 +14670,22 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
                 h+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:5px">';
                 var _tCt=MY_CC_TASKS.filter(function(t){return !t.done&&t.pillar==='logistics'&&t.activity===act.n&&t.item===row.item;}).length;
                 if(_tCt>0)h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:0 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">'+_tCt+'</span>';
-                h+='<button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
+                h+='<button data-cap="Task &amp; execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button>';
                 h+='</div>';
                 h+='</div>';
               });
               h+='</div>';
               var _ccRowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return row.fqRef&&c.ref===row.fqRef&&c.acts&&c.acts.length;});
               if(_ccRowCo.length){var _cco=_ccRowCo[0];var _ccoMo=['Sep 22','Sep 29','Oct 6','Oct 13','Oct 20','Oct 27'];var _ccoBg={Done:'#10b981','In progress':'#3b82f6','Not started':'#e5e7eb'};var _ccoTc={Done:'#fff','In progress':'#fff','Not started':'#94a3b8'};var _ccoOpts=['Done','In progress','Not started'];h+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Change order · '+_cco.id+'</span><span style="font-size:10px;color:var(--g400)">Submitted '+(_cco.ts||'').split('·')[0].trim()+'</span></div>';h+='<div style="border:1px solid var(--g200);border-radius:8px;overflow:hidden">';h+='<div style="display:grid;grid-template-columns:110px 1fr 80px;background:var(--g100);border-bottom:1px solid var(--g200)">';h+='<div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--g500)">Stage</div>';h+='<div style="padding:6px 4px;font-size:9px;font-weight:700;color:var(--g500);display:flex;justify-content:space-between">';_ccoMo.forEach(function(m){h+='<span style="font-size:8px;font-weight:600;color:var(--g400)">'+m+'</span>';});h+='</div><div style="padding:6px 8px;font-size:9px;font-weight:700;color:var(--g500);text-align:right">Tasks</div></div>';(_cco.acts||[]).forEach(function(act,ai){var _lbg=_ccoBg[act.st]||'#e5e7eb';var _ltc=_ccoTc[act.st]||'#94a3b8';h+='<div style="display:grid;grid-template-columns:110px 1fr 80px;border-top:1px solid var(--g100);align-items:center;min-height:34px">';h+='<div style="padding:4px 10px"><div style="font-size:11px;font-weight:500;color:var(--g800)">'+act.n+'</div>';h+='<select style="font-size:9px;border:none;background:none;color:var(--g500);cursor:pointer;font-family:inherit;padding:0;margin-top:1px" onchange="event.stopPropagation();_setCcoActSt(\''+_cco.id+'\','+ai+',this.value)">';h+=_ccoOpts.map(function(o){return'<option value="'+o+'"'+(o===act.st?' selected':'')+'>'+o+'</option>';}).join('');h+='</select>';h+=(act.sd?'<div style="font-size:9px;color:var(--g400)">'+act.sd+(act.ed&&act.ed!==act.sd?' – '+act.ed:'')+'</div>':'')+'</div>';h+='<div style="padding:3px 6px;position:relative;height:100%"><div style="position:absolute;inset:4px 2px;display:grid;grid-template-columns:repeat(6,1fr)">';for(var _ci=0;_ci<6;_ci++){if(_ci===act.s){var _sp=Math.max(1,Math.min(6-_ci,act.e-act.s));h+='<div style="grid-column:span '+_sp+';padding:1px 2px"><div style="background:'+_lbg+';border-radius:4px;height:24px;display:flex;align-items:center;justify-content:center"><span style="font-size:8px;font-weight:700;color:'+_ltc+';white-space:nowrap;overflow:hidden;max-width:100%;padding:0 3px">'+act.n+'</span></div></div>';_ci+=_sp-1;}else{h+='<div style="border-right:1px solid var(--g100)"></div>';}}h+='</div></div>';h+='<div style="padding:4px 8px;text-align:right;display:flex;align-items:center;justify-content:flex-end"><button class="btn btn-ghost btn-sm" style="font-size:9.5px;padding:1px 6px;white-space:nowrap" onclick="event.stopPropagation();openLogTaskModal(\''+row._proj+'\','+row._idx+',\''+row.item.replace(/'/g,'')+'\',\''+act.n+'\',\''+(row.fqRef||'')+'\')">+ Task</button></div>';h+='</div>';});h+='</div>';if(_cco.history&&_cco.history.length){h+='<div style="margin-top:10px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Change order history</div>';_cco.history.forEach(function(n){h+='<div style="margin-bottom:6px;padding:7px 10px;background:var(--g50);border-radius:6px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:11.5px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:10.5px;color:var(--g400)">'+n.when+'</span></div><div style="font-size:11.5px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';});h+='</div>';}h+='</div>';}
+              var _ccLRN=CC_LOG_ROW_NOTES[row._proj+'-'+row._idx]||[];
+              h+='<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--g200)">';
+              h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px" data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record">Notes &amp; history</div>';
+              if(_ccLRN.length){_ccLRN.forEach(function(n){var _isCp=n.who.indexOf('CP')>=0||n.who.indexOf('You')>=0&&n.who.indexOf('02S')<0;h+='<div style="margin-bottom:10px;display:flex;gap:9px"><div style="width:26px;height:26px;border-radius:50%;background:'+(_isCp?'#dbeafe':'var(--g150)')+';flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:'+(_isCp?'#1d4ed8':'var(--g600)')+'">'+(_isCp?'CP':'02S')+'</div><div style="flex:1"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:11.5px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:10.5px;color:var(--g400)">'+n.when+'</span></div><div style="font-size:11.5px;color:var(--g700);line-height:1.5;background:'+(_isCp?'#f0f7ff':'#f8fafc')+';border:1px solid '+(_isCp?'#bfdbfe':'var(--g150)')+';border-radius:8px;padding:7px 11px">'+n.text+'</div></div></div>';});}else{h+='<div style="font-size:11.5px;color:var(--g400);padding:4px 0;font-style:italic">No notes yet — add context for the project team below.</div>';}
+              var _nId='ccnote-'+row._proj+'-'+row._idx;
+              h+='<div style="display:flex;gap:6px;margin-top:10px">';
+              h+='<input id="'+_nId+'" style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="Reply to project team…" onclick="event.stopPropagation()" onkeydown="if(event.key===\'Enter\'){event.stopPropagation();addCcLogNote(\''+row._proj+'\','+row._idx+',\''+_nId+'\');}">';
+              h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();addCcLogNote(\''+row._proj+'\','+row._idx+',\''+_nId+'\')" style="white-space:nowrap">Send to CP</button>';
+              h+='</div></div>';
               h+='</div>';
             }
           }
