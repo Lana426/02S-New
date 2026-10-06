@@ -2250,7 +2250,7 @@
     h+='<button class="btn btn-dark btn-sm" data-cap="Supplemental service request submission|||Project Team adds an ad-hoc need outside the standard plan — entering the 02S fulfillment queue for review" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" data-cap="Project service plan review & maintenance|||Project Team reviews the pre-generated service plan in CP — 12 standard 02S services with expected lead times already populated" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Moves &amp; Events\')">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
-    h+='<button class="btn btn-ghost btn-sm" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
     h+='<button class="ff-b'+(_logStatusFilter==='active'?' on':'')+' btn-sm" style="margin-left:4px" onclick="window._logStatusFilter=window._logStatusFilter===\'active\'?\'all\':\'active\';renderLogPlan()">'+(_logStatusFilter==='active'?'&#10003; Active only':'Active only')+'</button>';
     h+='</div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" data-cap="Project service plan review & maintenance|||Project Team reviews the pre-generated service plan in CP — 12 standard 02S services with expected lead times already populated" onclick="openLogScopeModal()">';
@@ -2302,13 +2302,13 @@
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
           h+='<div><button data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments" onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:500;color:#15803d;letter-spacing:.01em">· View quote →</span></button></div>';
         } else {
-          h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Vendor sourcing & quote development|||02S fills out a standard quote in CC — capturing vendor, line-item and pricing detail — before returning it to CP">Pending quote</span></div>';
+          h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments">Pending quote</span></div>';
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         var _ari=_logRows.indexOf(row);
         var _canEdit=['Pending Approval','Approved','In Scoping / Pricing','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].indexOf(row.status)>=0;
-        h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap" data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP">'+row.status+'</span>';
+        h+='<div style="display:flex;flex-direction:column;gap:4px">';if(ns){h+='<select data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP" onclick="event.stopPropagation()" onchange="event.stopPropagation();setLogRowStatus('+_ari+',this.value)" style="font-size:11px;border:1px solid var(--g200);border-radius:6px;padding:3px 6px;background:#fff;color:var(--g700);cursor:pointer;max-width:160px">'+['Draft','In Scoping / Pricing','Pending Approval','Approved','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].map(function(s){return '<option'+(row.status===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';}else{h+='<span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap" data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP">'+row.status+'</span>';}
         if(_canEdit&&!_rowCo.length){h+='<button onclick="event.stopPropagation();openChangeOrderModal(\'logistics\','+_ari+')" data-cap="Change order management|||A change in scope — service type, quantity, or need-by date — re-triggers the quoting and approval workflow, reflecting existing CO management workflows" style="font-size:10px;padding:2px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap;text-align:left">Edit order →</button>';}
         if(_rowCo.length){h+='<span data-cap="Change order management|||A change in scope — service type, quantity, or need-by date — re-triggers the quoting and approval workflow, reflecting existing CO management workflows" style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
@@ -2998,7 +2998,7 @@
     var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-    h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     if(notes.length){
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
@@ -7100,10 +7100,10 @@ charges:[
       var sub='';
       if(i===2&&ord) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>';
       if(i===4&&bill) sub='<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+bill.id+'</div>';
-      return '<div class="step '+cls+'" data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" '+(window.CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var h='';
-    h+='<div class="trk" data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" '+(window.CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7123,7 +7123,7 @@ charges:[
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
         h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -7188,11 +7188,11 @@ charges:[
       if(i===chain.labels.length-1&&bill) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')" title="View '+bill.id+'"';
       else if(ord&&i>=2) clickAttr=' style="cursor:pointer" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')" title="View '+ord.id+'"';
       var sub=(ord&&i===Math.min(2,chain.labels.length-2)&&cls!=='future')?'<div style="font-size:10px;color:inherit;opacity:.75;margin-top:1px">'+ord.id+'</div>':'';
-      return '<div class="step '+cls+'" data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type"'+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
+      return '<div class="step '+cls+'" '+(window.CURRENT==='ns'?'data-cap="Task & execution management|||02S owns detailed operational execution in CC through tasks, assigning, updating and completing tasks required to complete activities, and is able to track them by order, individual, and service-type" ':'')+clickAttr+'><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+sub+'</span></div>';
     }).join('');
     var stageLabels=['Requested','Acknowledged','In fulfillment','Delivered','On-Rent','Off-Rent'];
     var h='';
-    h+='<div class="trk" data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" style="padding:12px 18px 10px">'+steps+'</div>';
+    h+='<div class="trk" '+(window.CURRENT==='ns'?'data-cap="Service scheduling & activity planning|||02S schedules the approved order line in CC and can view an auto-generated list of activities required to fulfill it, including editable due dates (anchored on lead-times) and owners" ':'')+'style="padding:12px 18px 10px">'+steps+'</div>';
     if(ord&&ord.latest){
       h+='<div class="latest-line '+(ord.latestTone||'ok')+'" style="margin:0 18px 10px"><span class="ll-k">Latest</span>'+ord.latest+'</div>';
     }
@@ -7206,7 +7206,7 @@ charges:[
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     if(_dpCoSub){var _coSubRQ=_dpCoSub.status==='quote_revised';var _coSubClr=_coSubRQ?'#166534':'#92400e';var _coSubBg=_coSubRQ?'#f0fdf4':'#fff7ed';var _coSubBdr=_coSubRQ?'#86efac':'#fed7aa';var _coSubLbl=_coSubRQ?'Revised quote ready for your review':'Change order pending 02S review';h+='<div style="background:'+_coSubBg+';border:1px solid '+_coSubBdr+';border-radius:6px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><span style="font-size:10px;font-weight:700;color:'+_coSubClr+';text-transform:uppercase;letter-spacing:.04em">'+_dpCoSub.id+'</span><span style="font-size:11.5px;color:'+_coSubClr+';margin-left:8px">'+_coSubLbl+'</span></div>'+((_dpCoSub.ts)?'<span style="font-size:10.5px;color:var(--g400)">'+(_dpCoSub.ts||'').split('·')[0].trim()+'</span>':'')+'</div>';}
-    h+='<div data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div '+(window.CURRENT==='ns'?'data-cap="Shared documents, messages & decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" ':'')+'style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     notes.forEach(function(n){
       h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
       h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -13957,7 +13957,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       if(lin){
         var mp=lin.margin; var bl=lin.baseline; var dl=lin.delta; var dr=lin.draft;
         h+='<div style="display:flex;gap:10px;margin:14px 0 10px;align-items:stretch">';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'margin\')">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'margin\')">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Margin plan</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+mp.rom+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+mp.id+' \u00b7 '+mp.date+'</div>'
@@ -13966,7 +13966,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
            +'</div>';
         if(bl){
         h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Baseline demand plan</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+bl.total+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+bl.id+' · '+bl.date+' · '+bl.items+' items</div>'
@@ -13975,7 +13975,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
            +'</div>';
         h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
         var dlTone=dl.added>0?'warn':'ok';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Current vs. baseline</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
@@ -14008,7 +14008,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
       var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
       var driftPct=Math.round(100*pd.adHoc/((pd.dpSpent+pd.adHoc)||1));
-      h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px;margin:14px 0">';
+      h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px;margin:14px 0" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics">';
       h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
       h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Plan vs. actual spend — '+pLabel+'</div>';
       h+='<div style="display:flex;gap:16px">';
@@ -15855,7 +15855,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     h+='<button class="btn btn-dark btn-sm" data-cap="Supplemental service request submission|||Project Team adds an ad-hoc need outside the standard plan — entering the 02S fulfillment queue for review" onclick="openDPAdd(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add service</button>';
     h+='<button class="btn btn-red btn-sm" data-cap="Project service plan review & maintenance|||Project Team reviews the pre-generated service plan in CP — 12 standard 02S services with expected lead times already populated" onclick="dpSubmit(\'logistics\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit to 02S</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\'logistics\',\'Moves &amp; Events\')">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_logBaseV1?'Baselined':'Approve baseline')+'</button>';
-    h+='<button class="btn btn-ghost btn-sm" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
+    h+='<button class="btn btn-ghost btn-sm" onclick="go(\'billing\')">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>';
     h+='<button class="ff-b'+(_logStatusFilter==='active'?' on':'')+' btn-sm" style="margin-left:4px" onclick="window._logStatusFilter=window._logStatusFilter===\'active\'?\'all\':\'active\';renderLogPlan()">'+(_logStatusFilter==='active'?'&#10003; Active only':'Active only')+'</button>';
     h+='</div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer" data-cap="Project service plan review & maintenance|||Project Team reviews the pre-generated service plan in CP — 12 standard 02S services with expected lead times already populated" onclick="openLogScopeModal()">';
@@ -15907,13 +15907,13 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
           var costStr='$'+(row.cost>=1000?(row.cost/1000).toFixed(0)+'K':row.cost.toLocaleString());
           h+='<div><button data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments" onclick="event.stopPropagation();openQuoteModal('+ri+')" style="display:inline-flex;align-items:center;gap:4px;background:#f0fdf4;border:1px solid #86efac;border-radius:4px;padding:3px 9px;cursor:pointer;font-size:11.5px;color:#15803d;font-weight:600">'+costStr+' <span style="font-size:10px;font-weight:500;color:#15803d;letter-spacing:.01em">· View quote →</span></button></div>';
         } else {
-          h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Vendor sourcing & quote development|||02S fills out a standard quote in CC — capturing vendor, line-item and pricing detail — before returning it to CP">Pending quote</span></div>';
+          h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments">Pending quote</span></div>';
         }
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         var _ari=_logRows.indexOf(row);
         var _canEdit=['Pending Approval','Approved','In Scoping / Pricing','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].indexOf(row.status)>=0;
-        h+='<div style="display:flex;flex-direction:column;gap:4px"><span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap" data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP">'+row.status+'</span>';
+        h+='<div style="display:flex;flex-direction:column;gap:4px">';if(ns){h+='<select data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP" onclick="event.stopPropagation()" onchange="event.stopPropagation();setLogRowStatus('+_ari+',this.value)" style="font-size:11px;border:1px solid var(--g200);border-radius:6px;padding:3px 6px;background:#fff;color:var(--g700);cursor:pointer;max-width:160px">'+['Draft','In Scoping / Pricing','Pending Approval','Approved','Requested','Released to Order','In Fulfillment','Fulfilled / Delivered'].map(function(s){return '<option'+(row.status===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';}else{h+='<span class="chip '+_logStT+'" style="font-size:11px;white-space:nowrap" data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; the rolled-up status and milestones surface to the Project Team in CP">'+row.status+'</span>';}
         if(!ns&&_canEdit&&!_rowCo.length){h+='<button onclick="event.stopPropagation();openChangeOrderModal(\'logistics\','+_ari+')" data-cap="Change order management|||A change in scope — service type, quantity, or need-by date — re-triggers the quoting and approval workflow, reflecting existing CO management workflows" style="font-size:10px;padding:2px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;color:var(--g600);cursor:pointer;white-space:nowrap;text-align:left">Edit order →</button>';}
         if(_rowCo.length){h+='<span data-cap="Change order management|||A change in scope — service type, quantity, or need-by date — re-triggers the quoting and approval workflow, reflecting existing CO management workflows" style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();_logViewCo(\''+_rowCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_rowCo[0].id+'</span></span>';}
         h+='</div>';
