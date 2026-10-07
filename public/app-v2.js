@@ -2457,8 +2457,8 @@
     {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',
      bundleId:'BND-VMI-HRC2',bundleName:'Abrasives & Grinding VMI',
      desc:'Abrasive wheels & grinding discs',status:'draft',needBy:'2026-11-10',
-     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,price:38,qty:20,
-     reqType:'New',
+     costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,price:800,qty:1,
+     reqType:'New',ccPath:'vmi',
      notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
      attachments:[]},
     {id:'STC-006',proj:'hercules',type:'vmi',cat:'PPE & Safety',
@@ -2477,7 +2477,7 @@
      costCode:'0600-0100-0000-0001',date:'Sep 16',sa:2,ea:4,budget:1200,price:149,qty:6,
      notes:[{who:'Marcus D. (Yard — Phoenix)',when:'Oct 3, 2026',text:'Yard update: 8 units of cordless drill sets confirmed in stock at Phoenix yard. Available for immediate pull — tagged to STC-002.',isYardUpdate:true}],attachments:[]},
     {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',
-     bundleId:'BND-SP-HRC1',bundleName:'Power Tools Pack',
+     bundleId:'BND-SP-HRC3',bundleName:'Impact Drill Kit',
      desc:'SDS Max rotary hammers (Bosch GBH18V-26)',status:'draft',needBy:'2026-11-05',
      costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:700,price:389,qty:3,
      reqType:'New',itemComment:'HEPA-ready attachment required — concrete dust exposure near occupied building',
@@ -3177,91 +3177,125 @@
     var root=document.getElementById('stc-root');
     if(!root)return;
     var allRows=_stcAllReqs.filter(function(r){return r.proj==='hercules';});
-    var rows=allRows.filter(function(r){return _stcFilter==='vmi'?r.type==='vmi':r.type!=='vmi';});
-    var total=rows.length;
-    var pending=rows.filter(function(r){return r.status==='draft';}).length;
-    var active=rows.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
-    var quotedVal=rows.reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
+    var vmiRows=allRows.filter(function(r){return r.type==='vmi';});
+    var spRows=allRows.filter(function(r){return r.type==='sp';});
+    var quotedCt=allRows.filter(function(r){return r.status==='quoted';}).length;
+    var draftCt=allRows.filter(function(r){return r.status==='draft';}).length;
+    var activeCt=allRows.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
+    var totalVal=allRows.reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
     var ICO_CLIP='<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2"/>';
     var ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
     var ICO_OK='<path d="M20 6L9 17l-5-5"/>';
     var ICO_DLR='<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>';
     var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
-    h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">'+(_stcFilter==='vmi'?'VMI — consumables':'Self-perform — small tools & consumables')+'</span></div></div></div>';
-    h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
-    h+='<div style="display:flex">';
-    [{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
-      var a=_stcFilter===f.k;
-      h+='<button onclick="_stcSetFilter(\''+f.k+'\')" style="padding:7px 16px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f.l+'</button>';
-    });
-    h+='</div></div>';
+    h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">VMI &amp; Self-Perform</span></div></div></div>';
     h+='<div class="vitals">';
-    h+='<div class="vital '+(total>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+(_stcFilter==='vmi'?'VMI Orders':'SP Orders')+'</div><div class="vv">'+total+'</div><div class="vsub">'+(_stcFilter==='vmi'?'consumable restocks tracked':'catalog orders tracked')+'</div></div>';
-    h+='<div class="vital '+(pending>0?'warn':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Draft</div><div class="vv">'+pending+'</div><div class="vsub">not yet submitted</div></div>';
-    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted & in fulfillment</div></div>';
-    h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total Value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">total committed this period</div></div>';
+    h+='<div class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quotes pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
+    h+='<div class="vital '+(draftCt>0?'neu':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+'In review</div><div class="vv">'+draftCt+'</div><div class="vsub">submitted, 02S reviewing</div></div>';
+    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+activeCt+'</div><div class="vsub">approved &amp; in fulfillment</div></div>';
+    h+='<div class="vital '+(totalVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(totalVal>0?_stcFmt(totalVal):'—')+'</div><div class="vsub">committed this period</div></div>';
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
-    h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
-    h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
     h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ Request</button>';
     h+='</div>';
-    if(!rows.length){
-      h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No '+(_stcFilter==='vmi'?'VMI':'Self-Perform')+' requests yet — click <b>+ Request</b> to get started.</div>';
-    }else{
-      var cols='2fr 1fr 65px 80px 80px 150px 90px 90px';
-      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
-      h+='<span>Item</span><span>Category</span><span>Qty</span><span>Price</span><span>Total</span><span>Cost Code</span><span>Cost Type</span><span>Status</span></div>';
-      function _stcRenderRow(r){
-        var oi=_stcAllReqs.indexOf(r);
-        var tone=_stcTone[r.status]||'neu';
-        var lbl=_stcLbl[r.status]||r.status;
-        var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
-        var dispQty=r.qty;
-        var unitPrice=r.price?_stcFmt(r.price):'—';
-        var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
-        var rh='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
-        rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
-        rh+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
-        rh+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
-        rh+='<div style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+' units':'—')+'</div>';
-        rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+unitPrice+'</div>';
-        rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
-        rh+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
-        rh+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
-        rh+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
-        rh+='</div>';
-        rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
-        return rh;
-      }
-      var bundledRows=rows.filter(function(r){return !!r.bundleId;});
-      var standaloneRows=rows.filter(function(r){return !r.bundleId;});
-      // Sort so all items from the same bundle are adjacent (preserves bundle first-appearance order)
-      var _bundleOrder={},_boi=0;
-      rows.forEach(function(r){if(r.bundleId&&_bundleOrder[r.bundleId]===undefined)_bundleOrder[r.bundleId]=_boi++;});
-      bundledRows.sort(function(a,b){return (_bundleOrder[a.bundleId]||0)-(_bundleOrder[b.bundleId]||0);});
-      var _renderedBundles={};
-      bundledRows.forEach(function(r){
-        if(!_renderedBundles[r.bundleId]){
-          _renderedBundles[r.bundleId]=true;
-          h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
-          h+='<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
-          h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed">Bundle</span>';
-          h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
-          h+='</div>';
-        }
-        h+=_stcRenderRow(r);
+
+    // Helper: render a single kit/bundle row (VMI or SP)
+    function _stcRenderKitRow(r){
+      var oi=_stcAllReqs.indexOf(r);
+      var tone=_stcTone[r.status]||'neu';
+      var lbl=_stcLbl[r.status]||r.status;
+      var stage=_stcChain.stageOf(r);
+      var totalN=_stcChain.labels.length-1;
+      var isVMI=r.type==='vmi';
+      var isQuoted=r.status==='quoted';
+      var accentColor=isVMI?'#7c3aed':'#0891b2';
+      var kitTotal=r.price&&r.qty?r.price*r.qty:r.price?r.price:0;
+      var rh='<div class="dp-row" style="grid-template-columns:2fr 90px 100px 130px 120px;cursor:pointer;'+(isQuoted?'background:#fffbeb;':'')+(r.status==='draft'?'background:var(--g50);':'')+'" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
+      // Col 1: name + id + step progress
+      rh+='<div style="display:flex;flex-direction:column;gap:3px">';
+      rh+='<div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.bundleName+'</div>';
+      rh+='<div style="font-size:11px;color:var(--g400)">'+r.id+' · '+r.date+(r.needBy?' · Need by '+new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'')+'</div>';
+      // mini step dots
+      rh+='<div style="display:flex;gap:3px;margin-top:2px">';
+      _stcChain.labels.forEach(function(_,i){
+        var done=i<stage;var cur=i===stage;
+        rh+='<div style="width:16px;height:4px;border-radius:2px;background:'+(done?accentColor:cur?accentColor+'aa':'var(--g200)')+';opacity:'+(done||cur?1:.5)+'"></div>';
       });
-      if(standaloneRows.length){
-        h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
-        h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
-        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Individual Items</span>';
-        h+='<span style="font-size:11px;color:var(--g400)">'+standaloneRows.length+' item'+(standaloneRows.length===1?'':'s')+'</span>';
-        h+='</div>';
-        standaloneRows.forEach(function(r){h+=_stcRenderRow(r);});
+      rh+='<span style="font-size:10px;color:var(--g400);margin-left:4px">'+_stcChain.labels[stage]+'</span>';
+      rh+='</div></div>';
+      // Col 2: category tag
+      rh+='<div style="display:flex;align-items:center"><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+accentColor+'15;color:'+accentColor+'">'+(isVMI?r.cat:'Self-Perform')+'</span></div>';
+      // Col 3: cost
+      rh+='<div style="display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--g800);font-variant-numeric:tabular-nums">'+(kitTotal?_stcFmt(kitTotal):'—')+'</div>';
+      // Col 4: status + quote CTA
+      rh+='<div style="display:flex;flex-direction:column;gap:4px;justify-content:center">';
+      rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;width:fit-content">'+lbl+'</span>';
+      if(isQuoted){
+        rh+='<span style="font-size:10.5px;font-weight:700;color:#b45309">'+_stcFmt(r.quote.total)+' quoted</span>';
       }
+      rh+='</div>';
+      // Col 5: action CTA
+      rh+='<div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">';
+      if(isQuoted){
+        rh+='<button onclick="event.stopPropagation();_stcDrillToggle('+oi+')" style="font-size:11px;font-weight:700;padding:5px 10px;border:none;border-radius:5px;background:#f59e0b;color:#fff;cursor:pointer">Review quote →</button>';
+      }
+      rh+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g300)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg>';
+      rh+='</div>';
+      rh+='</div>';
+      rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
+      return rh;
+    }
+
+    var cols='2fr 90px 100px 130px 120px';
+    var hdr='<div class="dp-head" style="grid-template-columns:'+cols+'"><span>Kit / Order</span><span>Type</span><span>Value</span><span>Status</span><span></span></div>';
+
+    // ── VMI Kits section ──
+    h+='<div style="margin-bottom:20px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    h+='<div style="display:flex;align-items:center;gap:8px">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:14px;height:14px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">VMI Kits</span>';
+    h+='<span style="font-size:11px;color:var(--g500)">'+vmiRows.length+' kit'+(vmiRows.length===1?'':'s')+'</span>';
+    h+='</div>';
+    h+='</div>';
+    if(!vmiRows.length){
+      h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12px;background:var(--g50);border-radius:8px;border:1px dashed var(--g200)">No VMI kits requested yet</div>';
+    }else{
+      h+='<div class="dp-tbl">'+hdr;
+      vmiRows.forEach(function(r){h+=_stcRenderKitRow(r);});
       h+='</div>';
     }
+    h+='</div>';
+
+    // ── Self-Perform section ──
+    // Group SP rows by bundle
+    var _spBundleOrder={},_spboi=0;
+    spRows.forEach(function(r){if(r.bundleId&&_spBundleOrder[r.bundleId]===undefined)_spBundleOrder[r.bundleId]=_spboi++;});
+    spRows.sort(function(a,b){return (_spBundleOrder[a.bundleId]||0)-(_spBundleOrder[b.bundleId]||0);});
+    // Build bundle groups: use first item in each bundle as representative row for rendering
+    var _spRendered={};
+    var spBundleReps=[];
+    spRows.forEach(function(r){
+      if(!r.bundleId){spBundleReps.push({rep:r,items:[r]});return;}
+      if(!_spRendered[r.bundleId]){_spRendered[r.bundleId]=[];spBundleReps.push({rep:r,items:_spRendered[r.bundleId]});}
+      _spRendered[r.bundleId].push(r);
+    });
+    h+='<div style="margin-bottom:20px">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+    h+='<div style="display:flex;align-items:center;gap:8px">';
+    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:14px;height:14px"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
+    h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">Self-Perform Orders</span>';
+    h+='<span style="font-size:11px;color:var(--g500)">'+spBundleReps.length+' order'+(spBundleReps.length===1?'':'s')+'</span>';
+    h+='</div>';
+    h+='</div>';
+    if(!spBundleReps.length){
+      h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12px;background:var(--g50);border-radius:8px;border:1px dashed var(--g200)">No self-perform orders yet — click <b>+ Request</b> to add items.</div>';
+    }else{
+      h+='<div class="dp-tbl">'+hdr;
+      spBundleReps.forEach(function(grp){h+=_stcRenderKitRow(grp.rep);});
+      h+='</div>';
+    }
+    h+='</div>';
 
     root.innerHTML=h;
     var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
@@ -3433,17 +3467,23 @@
   }
 
     function _stcBuildIncoming(){
-    var incoming=_stcAllReqs.filter(function(r){return r.status==='draft';});
+    // Show draft + quoted items — drafts need action, quoted need monitoring
+    var incoming=_stcAllReqs.filter(function(r){return r.status==='draft'||r.status==='quoted';});
+    var draftCt=incoming.filter(function(r){return r.status==='draft';}).length;
+    var quotedCt=incoming.filter(function(r){return r.status==='quoted';}).length;
     var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px;margin-top:20px">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
-    h+='<span style="font-size:15px;font-weight:700;color:var(--charcoal)">Incoming Requests</span>';
-    h+='<span style="font-size:12px;color:var(--g400)">'+incoming.length+' pending</span></div>';
+    h+='<div style="display:flex;align-items:center;gap:10px">';
+    h+='<span style="font-size:15px;font-weight:700;color:var(--charcoal)">Requests</span>';
+    if(draftCt>0)h+='<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:#fef3c7;color:#b45309">'+draftCt+' need action</span>';
+    if(quotedCt>0)h+='<span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;background:#fffbeb;color:#d97706">'+quotedCt+' quote sent</span>';
+    h+='</div></div>';
     if(!incoming.length){
-      h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No pending requests — all requests have been quoted or fulfilled.</div>';
+      h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No pending requests.</div>';
     }else{
-      var icols='2fr 90px 70px 80px 180px';
+      var icols='2fr 80px 70px 75px 1fr';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+icols+'">';
-      h+='<span>Request</span><span>Req. Type</span><span>Project</span><span>Need By</span><span>Classify &amp; Action</span></div>';
+      h+='<span>Request</span><span>Type</span><span>Project</span><span>Need By</span><span>Action</span></div>';
       incoming.forEach(function(r){
         var gi=_stcAllReqs.indexOf(r);
         var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
@@ -3456,16 +3496,31 @@
         var rtCol=reqTypeColors[reqTypeLabel]||'#0891b2';
         var rtBg=reqTypeBg[reqTypeLabel]||'#e0f2fe';
         var isAutoApproveEligible=r.ccPath==='sp'&&r.price&&r.price<=500;
-        h+='<div class="dp-row" style="grid-template-columns:'+icols+';'+(isAutoApproveEligible?'background:#f0fdf4;':'')+(reqTypeLabel==='Return'?'background:#fff5f5;':'')+'">';
-        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
-        h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
-        if(r.itemComment){h+='<div style="font-size:11px;color:#0891b2;margin-top:3px;font-style:italic">📝 "'+r.itemComment.substring(0,60)+(r.itemComment.length>60?'…':'')+'"</div>';}
+        var isQuoted=r.status==='quoted';
+        var rowBg=isQuoted?'background:#fffbeb;':isAutoApproveEligible?'background:#f0fdf4;':reqTypeLabel==='Return'?'background:#fff5f5;':'';
+        h+='<div class="dp-row" style="grid-template-columns:'+icols+';align-items:start;'+rowBg+'">';
+        // Col 1: request description
+        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(r.bundleName||r.desc)+'</div>';
+        h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+' · '+(r.type==='vmi'?'VMI Kit':'Self-Perform')+'</div>';
+        if(r.itemComment&&!isQuoted){h+='<div style="font-size:11px;color:#0891b2;margin-top:3px;font-style:italic">"'+r.itemComment.substring(0,60)+(r.itemComment.length>60?'…':'')+'"</div>';}
+        if(isQuoted&&r.quote){h+='<div style="font-size:11px;color:#b45309;margin-top:3px;font-weight:600">Quote sent: '+_stcFmt(r.quote.total)+' · '+r.quote.sentAt+'</div>';}
         h+='</div>';
-        h+='<div><span style="font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+rtBg+';color:'+rtCol+'">'+reqTypeLabel+'</span></div>';
-        h+='<div><span style="background:'+pColor+'20;color:'+pColor+';font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span></div>';
-        h+='<div style="font-size:12px;color:'+(isUrgent?'#dc2626':'var(--g700)')+';font-weight:'+(isUrgent?600:400)+'">'+nbFmt+'</div>';
+        // Col 2: req type
+        h+='<div style="padding-top:2px"><span style="font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+rtBg+';color:'+rtCol+'">'+reqTypeLabel+'</span></div>';
+        // Col 3: project
+        h+='<div style="padding-top:2px"><span style="background:'+pColor+'20;color:'+pColor+';font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span></div>';
+        // Col 4: need by
+        h+='<div style="font-size:12px;color:'+(isUrgent?'#dc2626':'var(--g700)')+';font-weight:'+(isUrgent?600:400)+';padding-top:2px">'+nbFmt+'</div>';
+        // Col 5: action area
         h+='<div style="display:flex;flex-direction:column;gap:5px">';
-        if(!r.ccPath){
+        if(isQuoted){
+          // Quote already sent — show status
+          h+='<div style="display:flex;align-items:center;gap:5px;background:#fffbeb;border:1px solid #fcd34d;border-radius:5px;padding:4px 8px">';
+          h+='<svg viewBox="0 0 16 16" fill="none" stroke="#d97706" stroke-width="2" style="width:10px;height:10px;flex-shrink:0"><path d="M13 4L6 11l-3-3"/></svg>';
+          h+='<span style="font-size:10.5px;font-weight:700;color:#b45309">Quote sent — pending acceptance</span></div>';
+        }else if(!r.ccPath){
+          // Needs classification first
+          h+='<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:2px">Classify as</div>';
           h+='<div style="display:flex;gap:4px">';
           h+='<button onclick="event.stopPropagation();_stcCCClassify('+gi+',\'sp\')" style="flex:1;font-size:10.5px;font-weight:600;padding:3px 6px;border:1.5px solid #0891b2;border-radius:4px;background:#fff;color:#0891b2;cursor:pointer">Self-Perform</button>';
           h+='<button onclick="event.stopPropagation();_stcCCClassify('+gi+',\'vmi\')" style="flex:1;font-size:10.5px;font-weight:600;padding:3px 6px;border:1.5px solid #7c3aed;border-radius:4px;background:#fff;color:#7c3aed;cursor:pointer">VMI</button>';
@@ -3482,8 +3537,22 @@
           h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#e0f2fe;color:#0891b2">Self-Perform</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
           h+='<button onclick="event.stopPropagation();_stcCCSetStatus('+gi+',\'approved\');toast(\'Approved — fulfillment begins\')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:none;border-radius:4px;background:#0891b2;color:#fff;cursor:pointer">Approve &amp; fulfill</button>';
         }else{
-          h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#f3e8ff;color:#7c3aed">VMI</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
-          h+='<button onclick="event.stopPropagation();toast(\'Quote builder coming soon\')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:none;border-radius:4px;background:#7c3aed;color:#fff;cursor:pointer">Prepare quote →</button>';
+          // VMI — show inline quote builder toggle
+          h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#f3e8ff;color:#7c3aed">VMI Kit</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
+          h+='<button onclick="event.stopPropagation();_stcToggleInlineQuote('+gi+')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:1.5px solid #7c3aed;border-radius:4px;background:#fff;color:#7c3aed;cursor:pointer">Build &amp; send quote →</button>';
+          // Inline quote builder (hidden by default)
+          h+='<div id="stccc-iq-'+gi+'" style="display:none;margin-top:6px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:7px;padding:10px 12px">';
+          h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#7c3aed;margin-bottom:8px">VMI Kit Quote — '+(r.bundleName||r.desc)+'</div>';
+          h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
+          h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Total ($)</span><input id="stccc-qtotal-'+gi+'" type="number" min="0" placeholder="e.g. 1800" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
+          h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Scope</span><input id="stccc-qscope-'+gi+'" type="text" placeholder="e.g. abrasives, 4 SKUs" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
+          h+='</div>';
+          h+='<label style="display:flex;flex-direction:column;gap:3px;margin-bottom:8px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Notes to project team</span><textarea id="stccc-qnotes-'+gi+'" rows="2" placeholder="Pricing basis, inclusions, cadence…" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff;resize:none;width:100%;box-sizing:border-box"></textarea></label>';
+          h+='<div style="display:flex;gap:6px">';
+          h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" style="flex:1;font-size:11px;font-weight:700;padding:5px 10px;border:none;border-radius:5px;background:#7c3aed;color:#fff;cursor:pointer">Send quote to project team</button>';
+          h+='<button onclick="event.stopPropagation();_stcToggleInlineQuote('+gi+')" style="font-size:11px;padding:5px 10px;border:1px solid var(--g200);border-radius:5px;background:#fff;color:var(--g500);cursor:pointer">Cancel</button>';
+          h+='</div>';
+          h+='</div>';
         }
         h+='</div>';
         h+='</div>';
@@ -3592,6 +3661,10 @@
     r.notes.push({who:'02S Logistics',when:'Oct 2, 2026',text:inp.value.trim()});
     _stcCCDrillOpen=idx;
     renderSTC_CC();
+  }
+  function _stcToggleInlineQuote(idx){
+    var el=document.getElementById('stccc-iq-'+idx);
+    if(el)el.style.display=el.style.display==='none'?'block':'none';
   }
   function _stcCCClassify(idx,path){
     var r=_stcAllReqs[idx];if(!r)return;
