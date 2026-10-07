@@ -2449,10 +2449,26 @@
     {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',
      bundleId:'BND-VMI-HRC1',bundleName:'Welding Consumables VMI',
      desc:'Welding consumables — site restock',status:'released',needBy:'2026-10-25',
-     costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,price:1240,qty:1,
-     minMax:{min:30,max:80},
+     costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,price:1268,qty:1,
+     kitItems:[
+       {no:1,desc:'Welding wire ER70S-6 (33lb spool)',qty:12,uom:'EA',vendorRate:28,rate:36,ext:432},
+       {no:2,desc:'Stick electrodes E6013 (50lb box)',qty:8,uom:'BX',vendorRate:22,rate:32,ext:256},
+       {no:3,desc:'Flux core wire E71T-11 (25lb spool)',qty:6,uom:'EA',vendorRate:31,rate:42,ext:252},
+       {no:4,desc:'Anti-spatter spray 16oz',qty:20,uom:'EA',vendorRate:5,rate:8,ext:160},
+       {no:5,desc:'Tip cleaning brush set',qty:12,uom:'EA',vendorRate:4,rate:6,ext:72},
+       {no:6,desc:'Wire brush 8" stainless',qty:24,uom:'EA',vendorRate:3,rate:4,ext:96}
+     ],
+     quote:{vendor:'Airgas Inc.',ref:'QT-STC-001',total:1268,sentBy:'02S Logistics',sentAt:'Sep 16, 2026',acceptedAt:'Sep 17, 2026',
+       lineItems:[
+         {no:1,desc:'Welding wire ER70S-6 (33lb spool)',qty:12,uom:'EA',vendorRate:28,rate:36,ext:432},
+         {no:2,desc:'Stick electrodes E6013 (50lb box)',qty:8,uom:'BX',vendorRate:22,rate:32,ext:256},
+         {no:3,desc:'Flux core wire E71T-11 (25lb spool)',qty:6,uom:'EA',vendorRate:31,rate:42,ext:252},
+         {no:4,desc:'Anti-spatter spray 16oz',qty:20,uom:'EA',vendorRate:5,rate:8,ext:160},
+         {no:5,desc:'Tip cleaning brush set',qty:12,uom:'EA',vendorRate:4,rate:6,ext:72},
+         {no:6,desc:'Wire brush 8" stainless',qty:24,uom:'EA',vendorRate:3,rate:4,ext:96}
+       ]},
      notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'},
-            {who:'02S Logistics',when:'Sep 20 2026',text:'VMI thresholds configured: min 30%, max 80%. Airgas auto-reorder active.'}],
+            {who:'02S Logistics',when:'Sep 20 2026',text:'Quote accepted and released to Airgas. Auto-reorder cadence active.'}],
      attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}]},
     {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',
      bundleId:'BND-VMI-HRC2',bundleName:'Abrasives & Grinding VMI',
@@ -2464,9 +2480,23 @@
     {id:'STC-006',proj:'hercules',type:'vmi',cat:'PPE & Safety',
      bundleId:'BND-VMI-HRC3',bundleName:'PPE Safety Bundle — VMI',
      desc:'PPE Safety Bundle — site VMI restock',status:'quoted',needBy:'2026-10-20',
-     costCode:'0600-0200-0000-0001',date:'Sep 22',sa:2,ea:4,budget:2200,price:2100,qty:1,
+     costCode:'0600-0200-0000-0001',date:'Sep 22',sa:2,ea:4,budget:2800,price:2800,qty:1,
      reqType:'New',ccPath:'vmi',
-     quote:{total:2100,notes:'Bundle pricing based on current national VMI rates. Includes hard hats, safety glasses, gloves, and hi-vis vests. First conex setup and monthly replenishment covered at this rate.',sentBy:'02S Logistics',sentAt:'Sep 28, 2026'},
+     kitItems:[
+       {no:1,desc:'Hard hats ANSI Z89.1 Type I Class E',qty:40,uom:'EA',vendorRate:18,rate:24,ext:960},
+       {no:2,desc:'Safety glasses ANSI Z87.1 anti-fog',qty:80,uom:'EA',vendorRate:4,rate:5,ext:400},
+       {no:3,desc:'Cut-resistant gloves A4 (M/L pairs)',qty:120,uom:'PR',vendorRate:6,rate:8,ext:960},
+       {no:4,desc:'Hi-vis vests ANSI Class 2',qty:40,uom:'EA',vendorRate:10,rate:12,ext:480}
+     ],
+     quote:{vendor:'Grainger Industrial Supply',ref:'QT-STC-006',total:2800,
+       notes:'Bundle pricing based on Tier 1 national VMI rates. First conex setup and monthly replenishment included.',
+       sentBy:'02S Logistics',sentAt:'Sep 28, 2026',
+       lineItems:[
+         {no:1,desc:'Hard hats ANSI Z89.1 Type I Class E',qty:40,uom:'EA',vendorRate:18,rate:24,ext:960},
+         {no:2,desc:'Safety glasses ANSI Z87.1 anti-fog',qty:80,uom:'EA',vendorRate:4,rate:5,ext:400},
+         {no:3,desc:'Cut-resistant gloves A4 (M/L pairs)',qty:120,uom:'PR',vendorRate:6,rate:8,ext:960},
+         {no:4,desc:'Hi-vis vests ANSI Class 2',qty:40,uom:'EA',vendorRate:10,rate:12,ext:480}
+       ]},
      notes:[{who:'Lana Butorovic',when:'Sep 22 2026',text:'Need PPE package set up for full site crew — ~40 workers.'},
             {who:'02S Logistics',when:'Sep 28 2026',text:'Quote prepared based on Tier 1 national VMI rates. Bundle covers 4 PPE categories.'}],
      attachments:[{name:'VMI PPE Quote — Sep 28',ref:'Q-STC-006',status:'Pending review'}]},
@@ -2993,6 +3023,37 @@
     return h;
   }
 
+  function _stcQuoteTableHTML(lineItems,total,ref,accepted){
+    // Renders a site-services-style line-item quote table (read-only)
+    var th='<th style="font-size:11px;font-weight:700;color:var(--g600);padding:6px 8px;text-align:';
+    var h='<div style="overflow-x:auto;margin-bottom:8px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+    h+='<thead style="background:var(--g50)"><tr>';
+    h+=th+'center">#</th>';
+    h+=th+'left">Description</th>';
+    h+=th+'center">Qty</th>';
+    h+=th+'center">UOM</th>';
+    h+=th+'right">Vendor rate</th>';
+    h+=th+'right">02S Rate</th>';
+    h+=th+'right">Extended</th></tr></thead><tbody>';
+    (lineItems||[]).forEach(function(li,i){
+      var ext=li.ext||(li.rate*li.qty)||0;
+      var bg=i%2===0?'#fff':'var(--g50)';
+      h+='<tr style="background:'+bg+'"><td style="padding:7px 8px;text-align:center;color:var(--g400)">'+li.no+'</td>';
+      h+='<td style="padding:7px 8px;color:var(--g900)">'+li.desc+'</td>';
+      h+='<td style="padding:7px 8px;text-align:center;color:var(--g700)">'+li.qty+'</td>';
+      h+='<td style="padding:7px 8px;text-align:center;color:var(--g500)">'+li.uom+'</td>';
+      h+='<td style="padding:7px 8px;text-align:right;color:var(--g500);font-variant-numeric:tabular-nums">$'+li.vendorRate+'</td>';
+      h+='<td style="padding:7px 8px;text-align:right;color:var(--g700);font-weight:600;font-variant-numeric:tabular-nums">$'+li.rate+'</td>';
+      h+='<td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+ext.toLocaleString()+'</td></tr>';
+    });
+    h+='<tr style="border-top:2px solid var(--g200)"><td colspan="6" style="padding:8px;text-align:right;font-size:12px;font-weight:600;color:var(--g700)">Total</td>';
+    h+='<td style="padding:8px;text-align:right;font-size:16px;font-weight:700;color:#0d9488;font-variant-numeric:tabular-nums">$'+total.toLocaleString()+'</td></tr>';
+    h+='</tbody></table></div>';
+    if(ref)h+='<div style="text-align:right;font-size:11px;color:var(--g400);margin-bottom:8px">02S Quote Ref: '+ref+'</div>';
+    if(accepted)h+='<div style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#15803d;background:#f0fdf4;border:1px solid #86efac;border-radius:5px;padding:3px 8px;margin-bottom:6px"><svg viewBox="0 0 16 16" fill="none" stroke="#16a34a" stroke-width="2" style="width:10px;height:10px"><path d="M13 4L6 11l-3-3"/></svg>Accepted '+accepted+'</div>';
+    return h;
+  }
+
   function _stcBuildTrack(r,idx){
     var chainStage=_stcChain.stageOf(r);
     var DONE='<path d="M20 6L9 17l-5-5"/>';
@@ -3002,6 +3063,27 @@
       return '<div class="step '+cls+'"><span class="dot">'+svg(ic,cls==='done'?3:2)+'</span><span class="slbl">'+lbl+'</span></div>';
     }).join('');
     var h='<div class="trk" style="padding:12px 18px 10px">'+steps+'</div>';
+
+    // Kit contents table (for VMI kits with kitItems)
+    if(r.kitItems&&r.kitItems.length){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 8px">';
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Kit contents</div>';
+      var th='<th style="font-size:11px;font-weight:700;color:var(--g600);padding:5px 8px;text-align:';
+      h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+      h+='<thead style="background:var(--g50)"><tr>'+th+'center">#</th>'+th+'left">Description</th>'+th+'center">Qty</th>'+th+'center">UOM</th>'+th+'right">02S Rate</th>'+th+'right">Extended</th></tr></thead><tbody>';
+      r.kitItems.forEach(function(li,i){
+        var ext=li.ext||(li.rate*li.qty)||0;
+        h+='<tr style="background:'+(i%2===0?'#fff':'var(--g50)')+'"><td style="padding:6px 8px;text-align:center;color:var(--g400)">'+li.no+'</td>';
+        h+='<td style="padding:6px 8px;color:var(--g900)">'+li.desc+'</td>';
+        h+='<td style="padding:6px 8px;text-align:center;color:var(--g700)">'+li.qty+'</td>';
+        h+='<td style="padding:6px 8px;text-align:center;color:var(--g500)">'+li.uom+'</td>';
+        h+='<td style="padding:6px 8px;text-align:right;color:var(--g700);font-variant-numeric:tabular-nums">$'+li.rate+'</td>';
+        h+='<td style="padding:6px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+ext.toLocaleString()+'</td></tr>';
+      });
+      h+='</tbody></table></div></div>';
+    }
+
+    // Request note
     if(r.itemComment){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 8px">';
       h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Request note</div>';
@@ -3010,29 +3092,42 @@
       h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcUpdateItemComment('+idx+')">Update</button>';
       h+='</div></div>';
     }
+
+    // Quote panel — pending review (quoted status)
     if(r.status==='quoted'&&r.quote){
       var q=r.quote;
-      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:12px 0 10px">';
-      h+='<div style="background:#fffbeb;border:1.5px solid #fbbf24;border-radius:8px;padding:14px 16px">';
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:14px 0 10px">';
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
       h+='<div style="font-size:13px;font-weight:700;color:var(--g900)">Quote ready for review</div>';
-      h+='<div style="font-size:18px;font-weight:700;color:var(--g900)">$'+q.total.toLocaleString()+'</div>';
+      if(q.vendor)h+='<div style="font-size:12px;color:var(--g600);font-weight:600">'+q.vendor+'</div>';
       h+='</div>';
-      h+='<div style="font-size:12px;color:var(--g700);margin-bottom:10px;line-height:1.5">'+q.notes+'</div>';
-      h+='<div style="font-size:11px;color:var(--g400);margin-bottom:12px">Sent by '+q.sentBy+' · '+q.sentAt+'</div>';
-      h+='<div style="display:flex;gap:8px">';
-      h+='<button onclick="event.stopPropagation();_stcAllReqs['+idx+'].status=\'approved\';renderSTC();toast(\'Quote accepted — released to order\')" style="flex:1;font-size:12px;font-weight:600;padding:7px 12px;border:none;border-radius:6px;background:#16a34a;color:#fff;cursor:pointer">Accept quote</button>';
-      h+='<button onclick="event.stopPropagation();_stcOpenQuoteReturn('+idx+')" style="flex:1;font-size:12px;font-weight:600;padding:7px 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);cursor:pointer">Return with comments</button>';
+      h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,null);
+      h+='<div style="font-size:12px;color:var(--g600);margin-bottom:14px;line-height:1.5">02S has submitted this quote for your review. <b>Approve</b> to release to order, or <b>Return</b> with feedback if changes are needed.</div>';
+      h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
+      h+='<button onclick="event.stopPropagation();_stcAllReqs['+idx+'].status=\'approved\';renderSTC();toast(\'Quote accepted — released to order\')" style="flex:1;font-size:12.5px;font-weight:700;padding:9px 14px;border:none;border-radius:7px;background:#18181b;color:#fff;cursor:pointer">Approve → Release to Order</button>';
+      h+='<button onclick="event.stopPropagation();_stcOpenQuoteReturn('+idx+')" style="flex:1;font-size:12.5px;font-weight:700;padding:9px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer">Return with feedback ←</button>';
       h+='</div>';
-      h+='<div id="stc-qreturn-'+idx+'" style="display:none;margin-top:10px">';
+      h+='<div id="stc-qreturn-'+idx+'" style="display:none;margin-top:6px">';
       h+='<textarea id="stc-qreturn-txt-'+idx+'" rows="2" placeholder="What needs to change? 02S will receive your comments and revise the quote…" onclick="event.stopPropagation()" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;resize:none;outline:none;color:var(--g900)"></textarea>';
       h+='<button onclick="event.stopPropagation();_stcReturnQuote('+idx+')" style="margin-top:6px;font-size:12px;font-weight:600;padding:6px 14px;border:none;border-radius:6px;background:#dc2626;color:#fff;cursor:pointer">Send return</button>';
-      h+='</div>';
       h+='</div></div>';
     }
+
+    // Accepted quote view (approved / released / fulfilled)
+    if((r.status==='approved'||r.status==='released'||r.status==='fulfilled')&&r.quote&&r.quote.lineItems){
+      var aq=r.quote;
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:12px 0 10px">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Accepted quote</div>';
+      if(aq.vendor)h+='<span style="font-size:11.5px;color:var(--g600)">'+aq.vendor+'</span>';
+      h+='</div>';
+      h+=_stcQuoteTableHTML(aq.lineItems,aq.total,aq.ref,aq.acceptedAt);
+      h+='</div>';
+    }
+
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-    h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
     if(notes.length){
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
@@ -3058,10 +3153,6 @@
       h+='<span style="font-size:12px;color:var(--g400)">No documents attached</span>';
     }
     h+='</div></div>';
-    h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
-
-    h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Full details coming soon\')">Full details</button>';
-    h+='</div>';
     return h;
   }
 
@@ -3177,125 +3268,96 @@
     var root=document.getElementById('stc-root');
     if(!root)return;
     var allRows=_stcAllReqs.filter(function(r){return r.proj==='hercules';});
-    var vmiRows=allRows.filter(function(r){return r.type==='vmi';});
-    var spRows=allRows.filter(function(r){return r.type==='sp';});
-    var quotedCt=allRows.filter(function(r){return r.status==='quoted';}).length;
-    var draftCt=allRows.filter(function(r){return r.status==='draft';}).length;
-    var activeCt=allRows.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
-    var totalVal=allRows.reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
+    var rows=allRows.filter(function(r){return _stcFilter==='vmi'?r.type==='vmi':r.type!=='vmi';});
+    var total=rows.length;
+    var pending=rows.filter(function(r){return r.status==='draft';}).length;
+    var quotedCt=rows.filter(function(r){return r.status==='quoted';}).length;
+    var active=rows.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
+    var quotedVal=rows.reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
     var ICO_CLIP='<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 000 4h6a2 2 0 000-4M9 5a2 2 0 012-2h2a2 2 0 012 2"/>';
     var ICO_WARN='<circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>';
     var ICO_OK='<path d="M20 6L9 17l-5-5"/>';
     var ICO_DLR='<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>';
     var h='<div class="phead"><div><h1>Small Tools &amp; Consumables</h1>';
-    h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">VMI &amp; Self-Perform</span></div></div></div>';
+    h+='<div class="meta"><span class="chip">Hercules Solar + BESS</span><span class="chip">'+(_stcFilter==='vmi'?'VMI — consumables':'Self-perform — small tools & consumables')+'</span></div></div></div>';
+    h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
+    [{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
+      var a=_stcFilter===f.k;
+      h+='<button onclick="_stcSetFilter(\''+f.k+'\')" style="padding:7px 16px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f.l+'</button>';
+    });
+    h+='</div>';
     h+='<div class="vitals">';
-    h+='<div class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quotes pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
-    h+='<div class="vital '+(draftCt>0?'neu':'ok')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+'In review</div><div class="vv">'+draftCt+'</div><div class="vsub">submitted, 02S reviewing</div></div>';
-    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+activeCt+'</div><div class="vsub">approved &amp; in fulfillment</div></div>';
-    h+='<div class="vital '+(totalVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(totalVal>0?_stcFmt(totalVal):'—')+'</div><div class="vsub">committed this period</div></div>';
+    h+='<div class="vital '+(total>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+(_stcFilter==='vmi'?'VMI Kits':'SP Orders')+'</div><div class="vv">'+total+'</div><div class="vsub">'+(_stcFilter==='vmi'?'consumable kits tracked':'catalog orders tracked')+'</div></div>';
+    h+='<div class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quote pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
+    h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted &amp; in fulfillment</div></div>';
+    h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">committed this period</div></div>';
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
+    h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
+    h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
     h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ Request</button>';
     h+='</div>';
 
-    // Helper: render a single kit/bundle row (VMI or SP)
-    function _stcRenderKitRow(r){
+    var cols='2fr 1fr 65px 80px 80px 150px 90px 90px';
+    function _stcRenderRow(r){
       var oi=_stcAllReqs.indexOf(r);
       var tone=_stcTone[r.status]||'neu';
       var lbl=_stcLbl[r.status]||r.status;
-      var stage=_stcChain.stageOf(r);
-      var totalN=_stcChain.labels.length-1;
-      var isVMI=r.type==='vmi';
       var isQuoted=r.status==='quoted';
-      var accentColor=isVMI?'#7c3aed':'#0891b2';
-      var kitTotal=r.price&&r.qty?r.price*r.qty:r.price?r.price:0;
-      var rh='<div class="dp-row" style="grid-template-columns:2fr 90px 100px 130px 120px;cursor:pointer;'+(isQuoted?'background:#fffbeb;':'')+(r.status==='draft'?'background:var(--g50);':'')+'" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
-      // Col 1: name + id + step progress
-      rh+='<div style="display:flex;flex-direction:column;gap:3px">';
-      rh+='<div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.bundleName+'</div>';
-      rh+='<div style="font-size:11px;color:var(--g400)">'+r.id+' · '+r.date+(r.needBy?' · Need by '+new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'')+'</div>';
-      // mini step dots
-      rh+='<div style="display:flex;gap:3px;margin-top:2px">';
-      _stcChain.labels.forEach(function(_,i){
-        var done=i<stage;var cur=i===stage;
-        rh+='<div style="width:16px;height:4px;border-radius:2px;background:'+(done?accentColor:cur?accentColor+'aa':'var(--g200)')+';opacity:'+(done||cur?1:.5)+'"></div>';
-      });
-      rh+='<span style="font-size:10px;color:var(--g400);margin-left:4px">'+_stcChain.labels[stage]+'</span>';
-      rh+='</div></div>';
-      // Col 2: category tag
-      rh+='<div style="display:flex;align-items:center"><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+accentColor+'15;color:'+accentColor+'">'+(isVMI?r.cat:'Self-Perform')+'</span></div>';
-      // Col 3: cost
-      rh+='<div style="display:flex;align-items:center;font-size:12px;font-weight:600;color:var(--g800);font-variant-numeric:tabular-nums">'+(kitTotal?_stcFmt(kitTotal):'—')+'</div>';
-      // Col 4: status + quote CTA
-      rh+='<div style="display:flex;flex-direction:column;gap:4px;justify-content:center">';
-      rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;width:fit-content">'+lbl+'</span>';
-      if(isQuoted){
-        rh+='<span style="font-size:10.5px;font-weight:700;color:#b45309">'+_stcFmt(r.quote.total)+' quoted</span>';
-      }
+      var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
+      var dispQty=r.qty;
+      var unitPrice=r.price?_stcFmt(r.price):'—';
+      var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
+      var rh='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer;'+(isQuoted?'background:#fffbeb;':'')+'" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
+      rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+(r.bundleName||r.desc)+'</div>';
+      rh+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div>';
+      if(isQuoted){rh+='<div style="font-size:11px;font-weight:700;color:#b45309;margin-top:2px">Quote ready — click to review →</div>';}
       rh+='</div>';
-      // Col 5: action CTA
-      rh+='<div style="display:flex;align-items:center;justify-content:flex-end;gap:6px">';
-      if(isQuoted){
-        rh+='<button onclick="event.stopPropagation();_stcDrillToggle('+oi+')" style="font-size:11px;font-weight:700;padding:5px 10px;border:none;border-radius:5px;background:#f59e0b;color:#fff;cursor:pointer">Review quote →</button>';
-      }
-      rh+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g300)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M6 9l6 6 6-6"/></svg>';
-      rh+='</div>';
+      rh+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
+      rh+='<div style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+(_stcFilter==='vmi'?' kit':' units'):'—')+'</div>';
+      rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+unitPrice+'</div>';
+      rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
+      rh+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
+      rh+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
+      rh+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
       rh+='</div>';
       rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
       return rh;
     }
 
-    var cols='2fr 90px 100px 130px 120px';
-    var hdr='<div class="dp-head" style="grid-template-columns:'+cols+'"><span>Kit / Order</span><span>Type</span><span>Value</span><span>Status</span><span></span></div>';
-
-    // ── VMI Kits section ──
-    h+='<div style="margin-bottom:20px">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-    h+='<div style="display:flex;align-items:center;gap:8px">';
-    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:14px;height:14px"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>';
-    h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">VMI Kits</span>';
-    h+='<span style="font-size:11px;color:var(--g500)">'+vmiRows.length+' kit'+(vmiRows.length===1?'':'s')+'</span>';
-    h+='</div>';
-    h+='</div>';
-    if(!vmiRows.length){
-      h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12px;background:var(--g50);border-radius:8px;border:1px dashed var(--g200)">No VMI kits requested yet</div>';
+    if(!rows.length){
+      h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No '+(_stcFilter==='vmi'?'VMI':'Self-Perform')+' requests yet — click <b>+ Request</b> to get started.</div>';
     }else{
-      h+='<div class="dp-tbl">'+hdr;
-      vmiRows.forEach(function(r){h+=_stcRenderKitRow(r);});
+      h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
+      h+='<span>Item</span><span>Category</span><span>Qty</span><span>Price</span><span>Total</span><span>Cost Code</span><span>Cost Type</span><span>Status</span></div>';
+      var bundledRows=rows.filter(function(r){return !!r.bundleId;});
+      var standaloneRows=rows.filter(function(r){return !r.bundleId;});
+      var _bundleOrder={},_boi=0;
+      rows.forEach(function(r){if(r.bundleId&&_bundleOrder[r.bundleId]===undefined)_bundleOrder[r.bundleId]=_boi++;});
+      bundledRows.sort(function(a,b){return (_bundleOrder[a.bundleId]||0)-(_bundleOrder[b.bundleId]||0);});
+      var _renderedBundles={};
+      bundledRows.forEach(function(r){
+        if(!_renderedBundles[r.bundleId]){
+          _renderedBundles[r.bundleId]=true;
+          var bColor=r.type==='vmi'?'#7c3aed':'#0891b2';
+          h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
+          h+='<svg viewBox="0 0 24 24" fill="none" stroke="'+bColor+'" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
+          h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+bColor+'">'+(r.type==='vmi'?'VMI Kit':'Bundle')+'</span>';
+          h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
+          h+='</div>';
+        }
+        h+=_stcRenderRow(r);
+      });
+      if(standaloneRows.length){
+        h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
+        h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">Individual Items</span>';
+        h+='<span style="font-size:11px;color:var(--g400)">'+standaloneRows.length+' item'+(standaloneRows.length===1?'':'s')+'</span>';
+        h+='</div>';
+        standaloneRows.forEach(function(r){h+=_stcRenderRow(r);});
+      }
       h+='</div>';
     }
-    h+='</div>';
-
-    // ── Self-Perform section ──
-    // Group SP rows by bundle
-    var _spBundleOrder={},_spboi=0;
-    spRows.forEach(function(r){if(r.bundleId&&_spBundleOrder[r.bundleId]===undefined)_spBundleOrder[r.bundleId]=_spboi++;});
-    spRows.sort(function(a,b){return (_spBundleOrder[a.bundleId]||0)-(_spBundleOrder[b.bundleId]||0);});
-    // Build bundle groups: use first item in each bundle as representative row for rendering
-    var _spRendered={};
-    var spBundleReps=[];
-    spRows.forEach(function(r){
-      if(!r.bundleId){spBundleReps.push({rep:r,items:[r]});return;}
-      if(!_spRendered[r.bundleId]){_spRendered[r.bundleId]=[];spBundleReps.push({rep:r,items:_spRendered[r.bundleId]});}
-      _spRendered[r.bundleId].push(r);
-    });
-    h+='<div style="margin-bottom:20px">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
-    h+='<div style="display:flex;align-items:center;gap:8px">';
-    h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:14px;height:14px"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
-    h+='<span style="font-size:13px;font-weight:700;color:var(--g900)">Self-Perform Orders</span>';
-    h+='<span style="font-size:11px;color:var(--g500)">'+spBundleReps.length+' order'+(spBundleReps.length===1?'':'s')+'</span>';
-    h+='</div>';
-    h+='</div>';
-    if(!spBundleReps.length){
-      h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:12px;background:var(--g50);border-radius:8px;border:1px dashed var(--g200)">No self-perform orders yet — click <b>+ Request</b> to add items.</div>';
-    }else{
-      h+='<div class="dp-tbl">'+hdr;
-      spBundleReps.forEach(function(grp){h+=_stcRenderKitRow(grp.rep);});
-      h+='</div>';
-    }
-    h+='</div>';
 
     root.innerHTML=h;
     var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
@@ -3537,22 +3599,9 @@
           h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#e0f2fe;color:#0891b2">Self-Perform</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
           h+='<button onclick="event.stopPropagation();_stcCCSetStatus('+gi+',\'approved\');toast(\'Approved — fulfillment begins\')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:none;border-radius:4px;background:#0891b2;color:#fff;cursor:pointer">Approve &amp; fulfill</button>';
         }else{
-          // VMI — show inline quote builder toggle
+          // VMI — open quote modal
           h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#f3e8ff;color:#7c3aed">VMI Kit</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
-          h+='<button onclick="event.stopPropagation();_stcToggleInlineQuote('+gi+')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:1.5px solid #7c3aed;border-radius:4px;background:#fff;color:#7c3aed;cursor:pointer">Build &amp; send quote →</button>';
-          // Inline quote builder (hidden by default)
-          h+='<div id="stccc-iq-'+gi+'" style="display:none;margin-top:6px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:7px;padding:10px 12px">';
-          h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#7c3aed;margin-bottom:8px">VMI Kit Quote — '+(r.bundleName||r.desc)+'</div>';
-          h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';
-          h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Total ($)</span><input id="stccc-qtotal-'+gi+'" type="number" min="0" placeholder="e.g. 1800" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
-          h+='<label style="display:flex;flex-direction:column;gap:3px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Scope</span><input id="stccc-qscope-'+gi+'" type="text" placeholder="e.g. abrasives, 4 SKUs" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
-          h+='</div>';
-          h+='<label style="display:flex;flex-direction:column;gap:3px;margin-bottom:8px"><span style="font-size:10.5px;font-weight:600;color:var(--g600)">Notes to project team</span><textarea id="stccc-qnotes-'+gi+'" rows="2" placeholder="Pricing basis, inclusions, cadence…" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff;resize:none;width:100%;box-sizing:border-box"></textarea></label>';
-          h+='<div style="display:flex;gap:6px">';
-          h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+gi+')" style="flex:1;font-size:11px;font-weight:700;padding:5px 10px;border:none;border-radius:5px;background:#7c3aed;color:#fff;cursor:pointer">Send quote to project team</button>';
-          h+='<button onclick="event.stopPropagation();_stcToggleInlineQuote('+gi+')" style="font-size:11px;padding:5px 10px;border:1px solid var(--g200);border-radius:5px;background:#fff;color:var(--g500);cursor:pointer">Cancel</button>';
-          h+='</div>';
-          h+='</div>';
+          h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+gi+')" style="font-size:10.5px;font-weight:700;padding:4px 9px;border:none;border-radius:4px;background:#7c3aed;color:#fff;cursor:pointer">Build &amp; send quote →</button>';
         }
         h+='</div>';
         h+='</div>';
@@ -3602,12 +3651,18 @@
       h+='</div>';
     }else if(r.status==='quoted'&&r.quote){
       h+='<div style="padding:12px 18px 12px;border-top:1px solid var(--g150)">';
-      h+='<div style="background:#fef9ec;border:1px solid #fcd34d;border-radius:8px;padding:12px 14px">';
-      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b45309;margin-bottom:6px">Quote sent — awaiting project team review</div>';
-      h+='<div style="display:flex;justify-content:space-between;align-items:center">';
-      h+='<div style="font-size:12px;color:var(--g700)">Sent by '+r.quote.sentBy+' · '+r.quote.sentAt+'</div>';
-      h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">$'+r.quote.total.toLocaleString()+'</div>';
-      h+='</div></div></div>';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b45309;margin-bottom:8px">Quote sent — awaiting project team review</div>';
+      h+=_stcQuoteTableHTML(r.quote.lineItems,r.quote.total,r.quote.ref,null);
+      h+='<div style="font-size:11.5px;color:var(--g500)">Sent by '+r.quote.sentBy+' · '+r.quote.sentAt+'</div>';
+      h+='</div>';
+    }else if((r.status==='approved'||r.status==='released'||r.status==='fulfilled')&&r.quote&&r.quote.lineItems){
+      h+='<div style="padding:12px 18px 12px;border-top:1px solid var(--g150)">';
+      h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#15803d">Accepted quote</div>';
+      if(r.quote.vendor)h+='<span style="font-size:11px;color:var(--g600)">'+r.quote.vendor+'</span>';
+      h+='</div>';
+      h+=_stcQuoteTableHTML(r.quote.lineItems,r.quote.total,r.quote.ref,r.quote.acceptedAt);
+      h+='</div>';
     }
     h+='<div style="padding:10px 18px 12px;border-top:1px solid var(--g150)">';
     h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:6px">Add note</div>';
@@ -3665,6 +3720,127 @@
   function _stcToggleInlineQuote(idx){
     var el=document.getElementById('stccc-iq-'+idx);
     if(el)el.style.display=el.style.display==='none'?'block':'none';
+  }
+
+  var _stcCCQModal=null; // {idx, vendor, ref, items:[{desc,qty,uom,vendorRate,rate}]}
+  function _stcOpenCCQuoteModal(idx){
+    var r=_stcAllReqs[idx];if(!r)return;
+    var auto='QT-'+r.id+'-'+new Date().getFullYear();
+    _stcCCQModal={idx:idx,vendor:'',ref:auto,
+      items:[{desc:'',qty:1,uom:'EA',vendorRate:0,rate:0}]};
+    renderSTC_CC();
+  }
+  function _stcCloseCCQuoteModal(){_stcCCQModal=null;renderSTC_CC();}
+  function _stcCCQAddItem(){
+    if(!_stcCCQModal)return;
+    _stcCCQModal.items.push({desc:'',qty:1,uom:'EA',vendorRate:0,rate:0});
+    renderSTC_CC();
+  }
+  function _stcCCQRemoveItem(i){
+    if(!_stcCCQModal||_stcCCQModal.items.length<=1)return;
+    _stcCCQModal.items.splice(i,1);renderSTC_CC();
+  }
+  function _stcCCQSend(){
+    if(!_stcCCQModal)return;
+    var m=_stcCCQModal;
+    var r=_stcAllReqs[m.idx];if(!r)return;
+    // Read form values
+    var vEl=document.getElementById('stcccq-vendor');
+    var rEl=document.getElementById('stcccq-ref');
+    var nEl=document.getElementById('stcccq-notes');
+    var vendor=vEl?vEl.value.trim():'';
+    var ref=rEl?rEl.value.trim():m.ref;
+    var notes=nEl?nEl.value.trim():'';
+    var items=[];var total=0;
+    m.items.forEach(function(it,i){
+      var dEl=document.getElementById('stcccq-desc-'+i);
+      var qEl=document.getElementById('stcccq-qty-'+i);
+      var uEl=document.getElementById('stcccq-uom-'+i);
+      var vREl=document.getElementById('stcccq-vrate-'+i);
+      var oREl=document.getElementById('stcccq-rate-'+i);
+      var desc=dEl?dEl.value.trim():'';
+      var qty=qEl?parseInt(qEl.value)||1:1;
+      var uom=uEl?uEl.value.trim():'EA';
+      var vRate=vREl?parseFloat(vREl.value)||0:0;
+      var rate=oREl?parseFloat(oREl.value)||0:0;
+      var ext=Math.round(rate*qty*100)/100;
+      total+=ext;
+      items.push({no:i+1,desc:desc,qty:qty,uom:uom,vendorRate:vRate,rate:rate,ext:ext});
+    });
+    if(!vendor){toast('Enter vendor name');return;}
+    if(!items.some(function(it){return it.desc&&it.rate>0;})){toast('Add at least one line item with a rate');return;}
+    r.quote={vendor:vendor,ref:ref,total:total,notes:notes,sentBy:'02S Logistics',sentAt:'Oct 7, 2026',lineItems:items};
+    r.status='quoted';
+    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 7, 2026',text:'Quote sent to project team — $'+total.toLocaleString()+'. '+notes}]);
+    _stcCCQModal=null;
+    renderSTC_CC();toast('Quote sent to project team');
+  }
+  function _stcCCQuoteModalHTML(){
+    if(!_stcCCQModal)return '';
+    var m=_stcCCQModal;
+    var r=_stcAllReqs[m.idx];if(!r)return '';
+    var kitName=r.bundleName||r.desc;
+    var runTotal=m.items.reduce(function(s,it){return s+(it.rate*it.qty);},0);
+    var iS='border:1px solid var(--g200);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff;width:100%;box-sizing:border-box';
+    var h='<div id="stcccq-ov" onclick="if(event.target===this){_stcCloseCCQuoteModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;max-width:680px;width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.25)">';
+    // Header
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--g150);flex-shrink:0">';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Prepare VMI Quote</div>';
+    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">'+kitName+' · '+(_stcProjNames[r.proj]||r.proj)+'</div></div>';
+    h+='<button onclick="_stcCloseCCQuoteModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    // Body (scrollable)
+    h+='<div style="padding:20px 24px;overflow-y:auto;flex:1">';
+    // Vendor + ref row
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">';
+    h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Vendor *</span>';
+    h+='<input id="stcccq-vendor" type="text" placeholder="e.g. Grainger Industrial Supply" style="'+iS+'"></label>';
+    h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Quote Ref</span>';
+    h+='<input id="stcccq-ref" type="text" value="'+m.ref+'" style="'+iS+'"></label>';
+    h+='</div>';
+    // Line items table
+    h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">Line Items</div>';
+    h+='<div style="overflow-x:auto;margin-bottom:8px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+    h+='<thead style="background:var(--g50)"><tr>';
+    ['#','Description','Qty','UOM','Vendor Rate ($)','02S Rate ($)',''].forEach(function(col){
+      h+='<th style="font-size:10.5px;font-weight:700;color:var(--g600);padding:6px 6px;text-align:'+(col==='Description'?'left':'center')+'">'+col+'</th>';
+    });
+    h+='</tr></thead><tbody>';
+    m.items.forEach(function(it,i){
+      var bg=i%2===0?'#fff':'var(--g50)';
+      var cS='border:1px solid var(--g200);border-radius:4px;padding:4px 6px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff';
+      h+='<tr style="background:'+bg+'"><td style="padding:4px 6px;text-align:center;color:var(--g400);font-size:11px">'+(i+1)+'</td>';
+      h+='<td style="padding:4px 6px"><input id="stcccq-desc-'+i+'" value="'+it.desc+'" placeholder="Item description" onclick="event.stopPropagation()" style="'+cS+';width:100%;min-width:160px"></td>';
+      h+='<td style="padding:4px 6px;text-align:center"><input id="stcccq-qty-'+i+'" type="number" value="'+it.qty+'" min="1" onclick="event.stopPropagation()" style="'+cS+';width:52px;text-align:center"></td>';
+      h+='<td style="padding:4px 6px;text-align:center"><input id="stcccq-uom-'+i+'" value="'+it.uom+'" placeholder="EA" onclick="event.stopPropagation()" style="'+cS+';width:48px;text-align:center"></td>';
+      h+='<td style="padding:4px 6px;text-align:center"><input id="stcccq-vrate-'+i+'" type="number" value="'+it.vendorRate+'" min="0" step="0.01" onclick="event.stopPropagation()" style="'+cS+';width:72px;text-align:right"></td>';
+      h+='<td style="padding:4px 6px;text-align:center"><input id="stcccq-rate-'+i+'" type="number" value="'+it.rate+'" min="0" step="0.01" onclick="event.stopPropagation()" style="'+cS+';width:72px;text-align:right"></td>';
+      h+='<td style="padding:4px 6px;text-align:center"><button onclick="event.stopPropagation();_stcCCQRemoveItem('+i+')" style="background:none;border:none;color:var(--g400);cursor:pointer;font-size:14px;padding:0 4px">✕</button></td>';
+      h+='</tr>';
+    });
+    h+='<tr><td colspan="7" style="padding:6px"><button onclick="event.stopPropagation();_stcCCQAddItem()" style="font-size:11.5px;font-weight:600;color:#7c3aed;background:none;border:1px dashed #c4b5fd;border-radius:5px;padding:4px 12px;cursor:pointer;width:100%">+ Add line item</button></td></tr>';
+    h+='</tbody></table></div>';
+    // Notes
+    h+='<label style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Notes to project team</span>';
+    h+='<textarea id="stcccq-notes" rows="2" placeholder="Pricing basis, what\'s included, cadence, conditions…" onclick="event.stopPropagation()" style="'+iS+';resize:none;height:60px"></textarea></label>';
+    // Terms block
+    h+='<div style="background:#faf8f0;border:1px solid #e9e2c0;border-radius:7px;padding:12px 14px;margin-bottom:16px">';
+    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#92400e;margin-bottom:6px">Standard VMI Terms</div>';
+    h+='<div style="font-size:11.5px;color:#78716c;line-height:1.7">';
+    h+='• Rates include normal wear &amp; tear; damages identified at service completion are billed separately.<br>';
+    h+='• Any new scope requests will require a re-quote.<br>';
+    h+='• Billing on a 28-day cycle; first invoice issued upon delivery confirmation.<br>';
+    h+='• Pricing valid for 30 days from quote date.</div></div>';
+    h+='</div>';
+    // Footer
+    h+='<div style="padding:14px 24px;border-top:1px solid var(--g150);display:flex;gap:10px;align-items:center;flex-shrink:0">';
+    h+='<div style="flex:1;font-size:13px;font-weight:700;color:var(--g900)">Total: <span style="color:#0d9488">$'+runTotal.toLocaleString()+'</span></div>';
+    h+='<button onclick="event.stopPropagation();_stcCloseCCQuoteModal()" class="btn btn-ghost">Cancel</button>';
+    h+='<button onclick="event.stopPropagation();_stcCCQSend()" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Send quote to project team</button>';
+    h+='</div>';
+    h+='</div></div>';
+    return h;
   }
   function _stcCCClassify(idx,path){
     var r=_stcAllReqs[idx];if(!r)return;
@@ -4226,6 +4402,8 @@
     var _catov=document.getElementById('stc-cat-ov');if(_catov)_catov.remove();
     if(_stcYardModal!==null){document.body.insertAdjacentHTML('beforeend',_stcYardModalHTML());}
     if(_stcCatModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCCatHTML());}
+    var _qmov=document.getElementById('stcccq-ov');if(_qmov)_qmov.remove();
+    if(_stcCCQModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCQuoteModalHTML());}
   }
   
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
