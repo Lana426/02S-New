@@ -2830,11 +2830,15 @@
   }
   function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
   function _stcSetFilter(f){_stcFilter=f;_stcDrillOpen=null;renderSTC();}
-  function _stcApproveSP(idx){
+  function _stcRequestReturn(idx){
     var r=_stcAllReqs[idx];if(!r)return;
-    r.status='approved';
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 8, 2026',text:'Approved — released to 02S for order fulfillment.'}]);
-    renderSTC();toast('Approved — 02S will release to order.');
+    var qtyEl=document.getElementById('stc-ret-qty-'+idx);
+    var reasonEl=document.getElementById('stc-ret-reason-'+idx);
+    var qty=qtyEl?parseInt(qtyEl.value)||1:1;
+    var reason=reasonEl?reasonEl.value.trim():'';
+    var note='Return request submitted — Qty '+qty+(reason?': '+reason:'');
+    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 8, 2026',text:note}]);
+    renderSTC();toast('Return request submitted — 02S will coordinate pickup.');
   }
   function _stcClearItem(){_stcModal.selectedItem=null;_stcUpdateModalOnly();}
   function _stcSelectItem(mi){
@@ -3141,6 +3145,18 @@
       h+='</div>';
     }
 
+    // SP return / off-rent request (released or fulfilled)
+    if(r.type==='sp'&&(r.status==='released'||r.status==='fulfilled')){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:12px 0 10px">';
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:10px">Return / Off-rent</div>';
+      h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+      h+='<span style="font-size:12px;color:var(--g700)">'+(r.bundleName||r.desc||'Item')+(r.qty?' · Qty '+r.qty:'')+'</span>';
+      h+='<input type="number" id="stc-ret-qty-'+idx+'" min="1" max="'+(r.qty||1)+'" value="'+(r.qty||1)+'" onclick="event.stopPropagation()" style="width:62px;border:1px solid var(--g200);border-radius:5px;padding:4px 6px;font-size:12px;font-family:inherit;text-align:center;outline:none">';
+      h+='<input type="text" id="stc-ret-reason-'+idx+'" placeholder="Reason / notes (optional)" onclick="event.stopPropagation()" style="flex:1;min-width:140px;border:1px solid var(--g200);border-radius:5px;padding:5px 9px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)">';
+      h+='<button onclick="event.stopPropagation();_stcRequestReturn('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g800);cursor:pointer;white-space:nowrap;flex-shrink:0">Request return →</button>';
+      h+='</div></div>';
+    }
+
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
@@ -3299,7 +3315,7 @@
     h+='<div style="display:flex;border-bottom:1px solid var(--g150);margin-bottom:12px">';
     [{k:'all',l:'All'},{k:'vmi',l:'VMI'},{k:'sp',l:'Self-Perform'}].forEach(function(f){
       var a=_stcFilter===f.k;
-      h+='<button onclick="_stcSetFilter(\''+f.k+'\')" style="padding:7px 16px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f.l+'</button>';
+      h+='<button onclick="_stcSetFilter(\''+f.k+'\')" style="padding:7px 16px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'#18181b':'var(--g500)')+';border-bottom:2px solid '+(a?'#18181b':'transparent')+';margin-bottom:-1px">'+f.l+'</button>';
     });
     h+='</div>';
     h+='<div class="vitals">';
@@ -3319,13 +3335,11 @@
       var oi=_stcAllReqs.indexOf(r);
       var tone=_stcTone[r.status]||'neu';
       var lbl=_stcLbl[r.status]||r.status;
-      var isVMIQuoted=r.type==='vmi'&&r.status==='quoted';
-      var isSPPending=r.type==='sp'&&r.status==='pending';
       var codeShort=r.costCode?r.costCode.substring(0,9)+'…':'—';
       var dispQty=r.qty;
       var unitPrice=r.price?_stcFmt(r.price):'—';
       var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
-      var rowBg=isVMIQuoted?'background:#fffbeb;':isSPPending?'background:#fff7ed;':'';
+      var rowBg='';
       var rh='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer;'+rowBg+'" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
       rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+(r.bundleName||r.desc)+'</div>';
       rh+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
@@ -3335,18 +3349,9 @@
       rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
       rh+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
       rh+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
-      // Status column: quote chip for VMI quoted, approve button for SP pending, else status chip
+      // Status column: always show status chip
       rh+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
-      if(isVMIQuoted&&r.quote){
-        rh+='<button onclick="event.stopPropagation();_stcOpenQReviewModal('+oi+')" style="display:inline-flex;align-items:center;gap:5px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:7px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:700;color:#15803d;white-space:nowrap">';
-        rh+=(r.quote.total?_stcFmt(r.quote.total)+' · ':'')+' View quote →</button>';
-        rh+='<span style="font-size:10px;color:var(--g400)">Sent '+r.quote.sentAt+'</span>';
-      }else if(isSPPending){
-        rh+='<button onclick="event.stopPropagation();_stcApproveSP('+oi+')" style="font-size:11.5px;font-weight:700;padding:4px 10px;border:none;border-radius:7px;background:#0891b2;color:#fff;cursor:pointer;white-space:nowrap">Approve &amp; release →</button>';
-        rh+='<span style="font-size:10px;color:var(--g400)">Waiting for approval</span>';
-      }else{
-        rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
-      }
+      rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
       rh+='</div>';
       rh+='</div>';
       rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
