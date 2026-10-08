@@ -3093,24 +3093,16 @@
       h+='</div></div>';
     }
 
-    // Quote panel — pending review (quoted status)
+    // Quote pending — button opens review modal
     if(r.status==='quoted'&&r.quote){
       var q=r.quote;
-      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:14px 0 10px">';
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-      h+='<div style="font-size:13px;font-weight:700;color:var(--g900)">Quote ready for review</div>';
-      if(q.vendor)h+='<div style="font-size:12px;color:var(--g600);font-weight:600">'+q.vendor+'</div>';
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:12px">';
+      h+='<div>';
+      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Quote ready for review</div>';
+      if(q.vendor)h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+q.vendor+(q.ref?' · '+q.ref:'')+'</div>';
       h+='</div>';
-      h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,null);
-      h+='<div style="font-size:12px;color:var(--g600);margin-bottom:14px;line-height:1.5">02S has submitted this quote for your review. <b>Approve</b> to release to order, or <b>Return</b> with feedback if changes are needed.</div>';
-      h+='<div style="display:flex;gap:8px;margin-bottom:8px">';
-      h+='<button onclick="event.stopPropagation();_stcAllReqs['+idx+'].status=\'approved\';renderSTC();toast(\'Quote accepted — released to order\')" style="flex:1;font-size:12.5px;font-weight:700;padding:9px 14px;border:none;border-radius:7px;background:#18181b;color:#fff;cursor:pointer">Approve → Release to Order</button>';
-      h+='<button onclick="event.stopPropagation();_stcOpenQuoteReturn('+idx+')" style="flex:1;font-size:12.5px;font-weight:700;padding:9px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer">Return with feedback ←</button>';
+      h+='<button onclick="event.stopPropagation();_stcOpenQReviewModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#18181b;color:#fff;cursor:pointer;white-space:nowrap;flex-shrink:0">Review quote →</button>';
       h+='</div>';
-      h+='<div id="stc-qreturn-'+idx+'" style="display:none;margin-top:6px">';
-      h+='<textarea id="stc-qreturn-txt-'+idx+'" rows="2" placeholder="What needs to change? 02S will receive your comments and revise the quote…" onclick="event.stopPropagation()" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;resize:none;outline:none;color:var(--g900)"></textarea>';
-      h+='<button onclick="event.stopPropagation();_stcReturnQuote('+idx+')" style="margin-top:6px;font-size:12px;font-weight:600;padding:6px 14px;border:none;border-radius:6px;background:#dc2626;color:#fff;cursor:pointer">Send return</button>';
-      h+='</div></div>';
     }
 
     // Accepted quote view (approved / released / fulfilled)
@@ -3342,7 +3334,7 @@
           var bColor=r.type==='vmi'?'#7c3aed':'#0891b2';
           h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="'+bColor+'" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
-          h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+bColor+'">'+(r.type==='vmi'?'VMI Kit':'Bundle')+'</span>';
+          h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+bColor+'">'+(r.type==='vmi'?'VMI Kit':'Self-Perform')+'</span>';
           h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
           h+='</div>';
         }
@@ -3362,6 +3354,8 @@
     root.innerHTML=h;
     var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
     if(_stcModal.open){document.body.insertAdjacentHTML('beforeend',_stcModalHTML());}
+    var _qrov=document.getElementById('stcqrev-ov');if(_qrov)_qrov.remove();
+    if(_stcQReviewModal!==null){document.body.insertAdjacentHTML('beforeend',_stcQReviewModalHTML());}
   }
 
   function _stcBuildLookahead(rows){
@@ -3638,16 +3632,7 @@
     h+='</div>';
     if((r.type==='vmi'||r.ccPath==='vmi')&&r.status==='draft'){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
-      h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#7c3aed;margin-bottom:10px">Prepare VMI Quote</div>';
-      h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
-      h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;color:var(--g600)">Quote total ($)</span>';
-      h+='<input id="stccc-qtotal-'+idx+'" type="number" min="0" placeholder="e.g. 2100" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:6px 9px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
-      h+='<label style="display:flex;flex-direction:column;gap:4px"><span style="font-size:11px;font-weight:600;color:var(--g600)">Bundle scope</span>';
-      h+='<input id="stccc-qscope-'+idx+'" type="text" placeholder="e.g. 4 PPE categories, Tier 1 rates" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:6px 9px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff"></label>';
-      h+='</div>';
-      h+='<label style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"><span style="font-size:11px;font-weight:600;color:var(--g600)">Notes to project team</span>';
-      h+='<textarea id="stccc-qnotes-'+idx+'" rows="2" placeholder="Pricing basis, what\'s included, any conditions…" onclick="event.stopPropagation()" style="border:1px solid #e9d5ff;border-radius:5px;padding:6px 9px;font-size:12px;font-family:inherit;color:var(--g900);outline:none;background:#fff;resize:none;width:100%;box-sizing:border-box"></textarea></label>';
-      h+='<button onclick="event.stopPropagation();_stcCCSendQuote('+idx+')" style="font-size:12px;font-weight:600;padding:7px 14px;border:none;border-radius:6px;background:#7c3aed;color:#fff;cursor:pointer">Send quote to project team →</button>';
+      h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Prepare &amp; send quote →</button>';
       h+='</div>';
     }else if(r.status==='quoted'&&r.quote){
       h+='<div style="padding:12px 18px 12px;border-top:1px solid var(--g150)">';
@@ -3722,6 +3707,7 @@
     if(el)el.style.display=el.style.display==='none'?'block':'none';
   }
 
+  var _stcQReviewModal=null; // idx of item under CP quote review
   var _stcCCQModal=null; // {idx, vendor, ref, items:[{desc,qty,uom,vendorRate,rate}]}
   function _stcOpenCCQuoteModal(idx){
     var r=_stcAllReqs[idx];if(!r)return;
@@ -3879,6 +3865,64 @@
     delete r.quote;
     r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Now',text:'Quote returned: '+txt}]);
     renderSTC();toast('Quote returned to 02S with comments');
+  }
+  function _stcOpenQReviewModal(idx){_stcQReviewModal=idx;renderSTC();}
+  function _stcCloseQReviewModal(){_stcQReviewModal=null;renderSTC();}
+  function _stcApproveQModal(idx){
+    var r=_stcAllReqs[idx];if(!r)return;
+    if(r.quote)r.quote.acceptedAt='Oct 7, 2026';
+    r.status='approved';
+    _stcQReviewModal=null;renderSTC();toast('Quote approved — released to order');
+  }
+  function _stcSendReturnModal(idx){
+    var el=document.getElementById('stcqrev-txt');
+    var txt=el?el.value.trim():'';
+    if(!txt){toast('Add feedback before returning');return;}
+    var r=_stcAllReqs[idx];if(!r)return;
+    r.status='draft';delete r.quote;
+    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 7, 2026',text:'Quote returned: '+txt}]);
+    _stcQReviewModal=null;renderSTC();toast('Quote returned to 02S with your comments');
+  }
+  function _stcQReviewModalHTML(){
+    var idx=_stcQReviewModal;
+    var r=_stcAllReqs[idx];
+    if(!r||!r.quote)return '';
+    var q=r.quote;
+    var h='<div id="stcqrev-ov" onclick="if(event.target===this){_stcCloseQReviewModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:14px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.22);display:flex;flex-direction:column">';
+    // Header
+    h+='<div style="padding:18px 22px 14px;border-bottom:1px solid var(--g150);display:flex;align-items:flex-start;justify-content:space-between;gap:12px">';
+    h+='<div>';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Review quote</div>';
+    h+='<div style="font-size:12px;color:var(--g500);margin-top:3px">'+r.desc+(r.bundleName?' · '+r.bundleName:'')+'</div>';
+    h+='</div>';
+    h+='<button onclick="_stcCloseQReviewModal()" style="background:none;border:none;font-size:20px;color:var(--g400);cursor:pointer;padding:0 4px;line-height:1">×</button>';
+    h+='</div>';
+    // Vendor info bar
+    h+='<div style="padding:12px 22px;background:var(--g50);border-bottom:1px solid var(--g150);display:flex;align-items:center;gap:20px">';
+    if(q.vendor)h+='<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Vendor</div><div style="font-size:13px;font-weight:700;color:var(--g900)">'+q.vendor+'</div></div>';
+    if(q.ref)h+='<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Ref #</div><div style="font-size:13px;font-weight:600;color:var(--g800)">'+q.ref+'</div></div>';
+    if(q.sentBy)h+='<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Submitted by</div><div style="font-size:13px;color:var(--g700)">'+q.sentBy+(q.sentAt?' · '+q.sentAt:'')+'</div></div>';
+    h+='</div>';
+    // Line items table
+    h+='<div style="padding:16px 22px 8px">';
+    h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,null);
+    if(q.notes)h+='<div style="font-size:12px;color:var(--g600);background:var(--g50);border-radius:6px;padding:10px 12px;margin-top:8px;line-height:1.5"><span style="font-weight:600">Vendor notes:</span> '+q.notes+'</div>';
+    h+='<div style="font-size:12px;color:var(--g600);margin-top:12px;line-height:1.5">02S has submitted this quote for your review. <b>Approve</b> to release to order, or <b>Return with feedback</b> if changes are needed.</div>';
+    h+='</div>';
+    // Action buttons
+    h+='<div style="padding:0 22px 14px;display:flex;gap:10px">';
+    h+='<button onclick="_stcApproveQModal('+idx+')" style="flex:1;font-size:13px;font-weight:700;padding:10px 14px;border:none;border-radius:8px;background:#18181b;color:#fff;cursor:pointer">Approve → Release to Order</button>';
+    h+='<button onclick="_stcCloseQReviewModal()" style="padding:10px 14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';
+    h+='</div>';
+    // Return with feedback section
+    h+='<div style="padding:0 22px 20px;border-top:1px solid var(--g100);margin:0 22px">';
+    h+='<div style="font-size:11px;font-weight:700;color:var(--g600);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.05em">Return with feedback</div>';
+    h+='<textarea id="stcqrev-txt" rows="3" onclick="event.stopPropagation()" placeholder="What needs to change? 02S will receive your comments and revise the quote…" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:7px;padding:8px 10px;font-size:12px;font-family:inherit;resize:none;outline:none;color:var(--g900)"></textarea>';
+    h+='<button onclick="_stcSendReturnModal('+idx+')" style="margin-top:8px;font-size:12px;font-weight:600;padding:7px 16px;border:none;border-radius:7px;background:#dc2626;color:#fff;cursor:pointer">Send return →</button>';
+    h+='</div>';
+    h+='</div></div>';
+    return h;
   }
   function _stcUpdateItemComment(idx){
     var el=document.getElementById('stc-icomment-'+idx);
