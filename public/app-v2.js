@@ -4444,7 +4444,7 @@
     h+='<div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--g150)">';
     [['all','All'],['vmi','VMI'],['sp','Self-Perform']].forEach(function(f){
       var a=_stcCCTypeFilter===f[0];
-      h+='<button onclick="_stcCCSetTypeFilter(\''+f[0]+'\')" style="padding:6px 14px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'var(--primary)':'var(--g500)')+';border-bottom:2px solid '+(a?'var(--primary)':'transparent')+';margin-bottom:-1px">'+f[1]+'</button>';
+      h+='<button onclick="_stcCCSetTypeFilter(\''+f[0]+'\')" style="padding:6px 14px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:'+(a?700:500)+';color:'+(a?'#18181b':'var(--g500)')+';border-bottom:2px solid '+(a?'#18181b':'transparent')+';margin-bottom:-1px">'+f[1]+'</button>';
     });
     h+='</div>';
     if(_stcCCProjFilter==='all'){
@@ -4455,7 +4455,7 @@
         h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-top:20px">';
         h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
         h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-        h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – categorize and add yard availability</span>';
+        h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
         h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+allPending.length+' pending</span></div>';
         allPending.forEach(function(r){
           var gi=_stcAllReqs.indexOf(r);
@@ -4494,7 +4494,7 @@
           h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px">';
           h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – categorize and add yard availability</span>';
+          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
           h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+pendingSP.length+' pending</span></div>';
           pendingSP.forEach(function(r){
             var gi=_stcAllReqs.indexOf(r);
