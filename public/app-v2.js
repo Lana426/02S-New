@@ -2448,7 +2448,7 @@
     // ── Hercules VMI ──
     {id:'STC-001',proj:'hercules',type:'vmi',cat:'Welding',
      bundleId:'BND-VMI-HRC1',bundleName:'Welding Consumables VMI',
-     desc:'Welding consumables — site restock',status:'released',needBy:'2026-10-25',
+     desc:'Welding consumables',status:'released',needBy:'2026-10-25',
      costCode:'0600-0200-0000-0001',date:'Sep 15',sa:3,ea:4,budget:1500,price:1268,qty:1,
      kitItems:[
        {no:1,desc:'Welding wire ER70S-6 (33lb spool)',qty:12,uom:'EA',vendorRate:28,rate:36,ext:432},
@@ -2475,11 +2475,20 @@
      desc:'Abrasive wheels & grinding discs',status:'draft',needBy:'2026-11-10',
      costCode:'0600-0200-0000-0001',date:'Sep 10',sa:1,ea:4,budget:900,price:800,qty:1,
      reqType:'New',ccPath:'vmi',
+     kitItems:[
+       {no:1,desc:'Grinding disc 4.5" 60-grit (20-pk)',qty:4,uom:'PK',vendorRate:14,rate:19,ext:76},
+       {no:2,desc:'Grinding disc 4.5" 80-grit (20-pk)',qty:4,uom:'PK',vendorRate:14,rate:19,ext:76},
+       {no:3,desc:'Cut-off wheel 4.5" (25-pk)',qty:6,uom:'PK',vendorRate:22,rate:30,ext:180},
+       {no:4,desc:'Flap disc 4.5" T29 60-grit',qty:30,uom:'EA',vendorRate:4,rate:5.50,ext:165},
+       {no:5,desc:'Flap disc 4.5" T29 80-grit',qty:30,uom:'EA',vendorRate:4,rate:5.50,ext:165},
+       {no:6,desc:'Wire cup brush 4.5" carbon steel',qty:12,uom:'EA',vendorRate:7,rate:9,ext:108},
+       {no:7,desc:'Sanding pad 5" hook & loop 80-grit (50-pk)',qty:2,uom:'PK',vendorRate:16,rate:21,ext:42}
+     ],
      notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
      attachments:[]},
     {id:'STC-006',proj:'hercules',type:'vmi',cat:'PPE & Safety',
      bundleId:'BND-VMI-HRC3',bundleName:'PPE Safety Bundle — VMI',
-     desc:'PPE Safety Bundle — site VMI restock',status:'quoted',needBy:'2026-10-20',
+     desc:'PPE Safety Bundle',status:'quoted',needBy:'2026-10-20',
      costCode:'0600-0200-0000-0001',date:'Sep 22',sa:2,ea:4,budget:3200,price:3180,qty:1,
      reqType:'New',ccPath:'vmi',
      kitItems:[
@@ -2555,13 +2564,31 @@
     // ── Barry Rose VMI ──
     {id:'STC-B01',proj:'barryrose',type:'vmi',cat:'Fasteners',
      bundleId:'BND-VMI-BR1',bundleName:'Fasteners & Anchors VMI',
-     desc:'Structural fasteners — VMI restock',status:'draft',needBy:'2026-09-25',
+     desc:'Structural fasteners & anchors',status:'draft',needBy:'2026-09-25',
      costCode:'0600-0200-0000-0001',date:'Sep 12',sa:1,ea:4,budget:600,price:600,qty:1,
-     reqType:'New',notes:[],attachments:[]},
+     reqType:'New',
+     kitItems:[
+       {no:1,desc:'Hex bolt 3/4-10 × 2" Grade 5 (100-pk)',qty:4,uom:'PK',vendorRate:28,rate:38,ext:152},
+       {no:2,desc:'Hex nut 3/4-10 Grade 5 (100-pk)',qty:4,uom:'PK',vendorRate:10,rate:14,ext:56},
+       {no:3,desc:'Flat washer 3/4" SAE (100-pk)',qty:4,uom:'PK',vendorRate:8,rate:11,ext:44},
+       {no:4,desc:'Lock washer 3/4" split ring (100-pk)',qty:4,uom:'PK',vendorRate:7,rate:10,ext:40},
+       {no:5,desc:'Wedge anchor 1/2" × 3-3/4" (25-pk)',qty:6,uom:'PK',vendorRate:22,rate:30,ext:180},
+       {no:6,desc:'Tapcon concrete screw 3/16" × 1-3/4" (75-pk)',qty:3,uom:'PK',vendorRate:20,rate:27,ext:81},
+       {no:7,desc:'Tek screw #14 × 1" self-drill (100-pk)',qty:3,uom:'PK',vendorRate:12,rate:16,ext:48}
+     ],
+     notes:[],attachments:[]},
     {id:'STC-B03',proj:'barryrose',type:'vmi',cat:'Sealants',
      bundleId:'BND-VMI-BR2',bundleName:'Sealants & Adhesives VMI',
-     desc:'Thread sealants & adhesives — VMI restock',status:'released',needBy:'2026-11-20',
+     desc:'Thread sealants & adhesives',status:'released',needBy:'2026-11-20',
      costCode:'0600-0200-0000-0001',date:'Sep 8',sa:3,ea:4,budget:950,price:780,qty:1,
+     kitItems:[
+       {no:1,desc:'Pipe thread sealant Loctite 565 250mL',qty:12,uom:'EA',vendorRate:14,rate:19,ext:228},
+       {no:2,desc:'Threadlocker Loctite Blue 243 250mL',qty:10,uom:'EA',vendorRate:16,rate:21,ext:210},
+       {no:3,desc:'Threadlocker Loctite Red 271 250mL',qty:6,uom:'EA',vendorRate:18,rate:24,ext:144},
+       {no:4,desc:'PVC cement Oatey clear 16oz',qty:8,uom:'EA',vendorRate:9,rate:12,ext:96},
+       {no:5,desc:'Silicone RTV gray Permatex 3oz',qty:12,uom:'EA',vendorRate:7,rate:9,ext:108},
+       {no:6,desc:'Anti-seize compound Permatex 8oz',qty:6,uom:'EA',vendorRate:10,rate:14,ext:84}
+     ],
      notes:[],attachments:[]},
     // ── Barry Rose SP ──
     {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',
@@ -3765,7 +3792,7 @@
       h+='<span style="font-size:12px;color:var(--g500)">Total '+_stcFmt(spTot)+'</span>';
       h+='</div></div>';
     }
-    if(r.type==='sp'&&r.status!=='pending'){
+    if(r.type==='sp'&&r.status!=='released'&&r.status!=='fulfilled'){
       h+='<div style="padding:10px 18px 10px;border-top:1px solid var(--g150);display:flex;align-items:center;justify-content:space-between;gap:12px">';
       h+='<div style="font-size:12px;color:var(--g600)">Request yard inventory availability</div>';
       h+='<button onclick="event.stopPropagation();_stcOpenYardModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Check yard availability →</button>';
@@ -4600,6 +4627,8 @@
           h+='<div style="flex:1;min-width:0">';
           h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
           h+='<div style="font-size:11px;color:var(--g500);margin-top:1px">'+r.id+' · Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
+          var _rEst=r.price&&r.qty?(r.price*r.qty):(r.budget||0);
+          if(_rEst)h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);margin-top:2px">Est. '+_stcFmt(_rEst)+'</div>';
           h+='</div>';
           h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
           h+='</div>';
@@ -4635,6 +4664,8 @@
             h+='<div style="flex:1;min-width:0">';
             h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
             h+='<div style="font-size:11px;color:var(--g500);margin-top:2px"><span style="background:'+pColor+'20;color:'+pColor+';font-weight:700;padding:1px 6px;border-radius:3px;margin-right:5px">'+pCode+'</span>Need by '+nbFmt+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+'</div>';
+            var _rEst2=r.price&&r.qty?(r.price*r.qty):(r.budget||0);
+            if(_rEst2)h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);margin-top:2px">Est. '+_stcFmt(_rEst2)+'</div>';
             h+='</div>';
             h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
             h+='</div>';
@@ -4659,7 +4690,7 @@
           var lbl=_stcLbl[r.status]||r.status;
           var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
           h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
-          h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
+          h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
           h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
