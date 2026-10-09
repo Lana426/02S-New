@@ -3761,7 +3761,7 @@
         h+='</tbody></table></div>';
       }
       h+='<div style="display:flex;align-items:center;gap:10px">';
-      h+='<button onclick="event.stopPropagation();_stcCCSetStatus('+idx+','released');toast('Confirmed — order sent to T3')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#18181b;color:#fff;cursor:pointer;white-space:nowrap">Confirm &amp; send to T3 →</button>';
+      h+='<button onclick="event.stopPropagation();_stcCCSetStatus('+idx+',\'released\');toast(\'Confirmed — order sent to T3\')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#18181b;color:#fff;cursor:pointer;white-space:nowrap">Confirm &amp; send to T3 →</button>';
       h+='<span style="font-size:12px;color:var(--g500)">Total '+_stcFmt(spTot)+'</span>';
       h+='</div></div>';
     }
