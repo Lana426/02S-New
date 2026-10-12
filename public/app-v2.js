@@ -10033,6 +10033,23 @@ charges:[
     {id:'msg-009',type:'pillar',proj:'barryrose',pillar:'logistics',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Staging area — east gate overflow',body:'Sam, running low on staging space near the east gate. Any chance 02S can coordinate a temporary overflow area for the next two weeks?',ts:'Oct 9, 2:15 PM',handled:false},
     {id:'msg-010',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Sub-tier vendor insurance — cert deadline',body:'Chris, the sub-tier vendor insurance certs are due Oct 18. Three subs still have gaps — can you flag which are outstanding?',ts:'Oct 10, 3:00 PM',ref:'REQ-P-0502',refType:'plan',handled:false}
   ];
+  var _ccProjEscalation={
+    hercules:[
+      {role:'Primary PM',name:'Sarah Chen',phone:'(555) 482-3100',email:'s.chen@mccarthy.com'},
+      {role:'Site Lead',name:'Dan Reyes',phone:'(555) 482-3120',email:'d.reyes@mccarthy.com'},
+      {role:'Safety / After-Hours',name:'Tom Okafor',phone:'(555) 482-3145',email:'t.okafor@mccarthy.com'}
+    ],
+    barryrose:[
+      {role:'Primary PM',name:'Lisa Drummond',phone:'(555) 520-4200',email:'l.drummond@mccarthy.com'},
+      {role:'Site Lead',name:'Hector Villa',phone:'(555) 520-4215',email:'h.villa@mccarthy.com'},
+      {role:'Safety',name:'Priya Khatri',phone:'(555) 520-4230',email:'p.khatri@mccarthy.com'}
+    ],
+    vdc14:[
+      {role:'Primary PM',name:'Kevin Tremblay',phone:'(555) 601-7800',email:'k.tremblay@mccarthy.com'},
+      {role:'Site Lead',name:'Amber Yoo',phone:'(555) 601-7815',email:'a.yoo@mccarthy.com'},
+      {role:'Safety / After-Hours',name:'Marcus Diaz',phone:'(555) 601-7830',email:'m.diaz@mccarthy.com'}
+    ]
+  };
   var _ccContactsTab='inbox';
   var _ccContactsProjFilter='all';
   var _ccContactsConfigProj='hercules';
@@ -10235,23 +10252,23 @@ charges:[
           h+='<span style="font-size:10.5px;color:var(--g400);background:var(--g50);padding:2px 8px;border-radius:10px;border:1px solid var(--g150)">'+_kMeta.region+' region</span>';
           h+='</div>';
           h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
-          // FSM card
+          // Project FSM (02S side)
           if(_kMeta.fsm&&_kMeta.fsm.name){
             h+='<div style="padding:8px 12px;background:'+_kc+'08;border:1px solid '+_kc+'25;border-radius:7px;min-width:150px">';
-            h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:'+_kc+';margin-bottom:3px">Project FSM</div>';
+            h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:'+_kc+';margin-bottom:3px">02S FSM</div>';
             h+='<div style="font-size:12.5px;font-weight:600;color:var(--charcoal)">'+_kMeta.fsm.name+'</div>';
             if(_kMeta.fsm.email)h+='<div style="font-size:10.5px;color:#0891b2;margin-top:1px">'+_kMeta.fsm.email+'</div>';
             if(_kMeta.fsm.phone)h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+_kMeta.fsm.phone+'</div>';
             h+='</div>';
           }
-          // Pillar coordinator cards
-          _ALL_PILLARS.forEach(function(pillar){
-            var coord=null;for(var j=0;j<_ccContacts.length;j++){if(_ccContacts[j].proj===_ccContactsProjFilter&&_ccContacts[j].pillar===pillar){coord=_ccContacts[j].coord;break;}}
-            if(!coord||!coord.name)return;
-            h+='<div style="padding:8px 12px;background:var(--g50);border:1px solid var(--g150);border-radius:7px;min-width:130px">';
-            h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:3px">'+(_PIL_LBL[pillar]||pillar)+'</div>';
-            h+='<div style="font-size:12px;font-weight:600;color:var(--charcoal)">'+coord.name+'</div>';
-            if(coord.email)h+='<div style="font-size:10.5px;color:#0891b2;margin-top:1px">'+coord.email+'</div>';
+          // Customer escalation contacts
+          var _escList=_ccProjEscalation[_ccContactsProjFilter]||[];
+          _escList.forEach(function(e){
+            h+='<div style="padding:8px 12px;background:var(--g50);border:1px solid var(--g150);border-radius:7px;min-width:140px">';
+            h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:3px">'+e.role+'</div>';
+            h+='<div style="font-size:12px;font-weight:600;color:var(--charcoal)">'+e.name+'</div>';
+            h+='<div style="font-size:10.5px;color:#0891b2;margin-top:1px">'+e.email+'</div>';
+            h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+e.phone+'</div>';
             h+='</div>';
           });
           h+='</div></div>';
