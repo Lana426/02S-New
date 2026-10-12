@@ -10173,7 +10173,7 @@ charges:[
     tabs.forEach(function(t){
       var sel=_ccContactsTab===t[0];
       var badge=t[0]==='inbox'&&unhandled>0?(' <span style="background:#dc2626;color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700;vertical-align:middle;margin-left:3px">'+unhandled+'</span>'):'';
-      h+='<button onclick="_ccSetContactsTab(''+t[0]+'')" style="padding:10px 18px;font-size:13px;font-weight:'+(sel?'700':'500')+';color:'+(sel?'var(--charcoal)':'var(--g500)')+';background:none;border:none;border-bottom:2px solid '+(sel?'var(--charcoal)':'transparent')+';margin-bottom:-2px;cursor:pointer">'+t[1]+badge+'</button>';
+      h+='<button onclick="_ccSetContactsTab(\''+t[0]+'\')" style="padding:10px 18px;font-size:13px;font-weight:'+(sel?'700':'500')+';color:'+(sel?'var(--charcoal)':'var(--g500)')+';background:none;border:none;border-bottom:2px solid '+(sel?'var(--charcoal)':'transparent')+';margin-bottom:-2px;cursor:pointer">'+t[1]+badge+'</button>';
     });
     h+='</div>';
 
@@ -10192,7 +10192,7 @@ charges:[
       h+='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
       [['all','All projects'],['hercules','Hercules'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(f){
         var sel=_ccContactsProjFilter===f[0];
-        h+='<button onclick="_ccSetContactsProjFilter(''+f[0]+'')" style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+f[1]+'</button>';
+        h+='<button onclick="_ccSetContactsProjFilter(\''+f[0]+'\')" style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+f[1]+'</button>';
       });
       h+='</div>';
       // ── Key project contacts strip (when a project is selected) ───────────
@@ -10259,11 +10259,11 @@ charges:[
         c+='<div style="font-size:12.5px;color:var(--g600);line-height:1.55;margin-bottom:11px">'+msg.body+'</div>';
         if(!msg.handled){
           c+='<div style="display:flex;gap:8px">';
-          if(msg.type==='pillar')c+='<button onclick="_ccReplyOutlook(''+msg.id+'')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
-          c+='<button onclick="_ccMarkHandled(''+msg.id+'')" style="padding:7px 12px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g600);font-size:12px;font-weight:600;cursor:pointer">Mark handled</button>';
+          if(msg.type==='pillar')c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
+          c+='<button onclick="_ccMarkHandled(\''+msg.id+'\')" style="padding:7px 12px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g600);font-size:12px;font-weight:600;cursor:pointer">Mark handled</button>';
           c+='</div>';
         } else if(msg.type==='pillar'){
-          c+='<button onclick="_ccReplyOutlook(''+msg.id+'')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g500);font-size:11.5px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook</button>';
+          c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g500);font-size:11.5px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook</button>';
         }
         c+='</div>';
         return c;
@@ -10285,7 +10285,7 @@ charges:[
       h+='<div style="display:flex;gap:0;border-bottom:1.5px solid var(--g150);margin-bottom:18px">';
       _cfgSubs.forEach(function(t){
         var sel=_ccConfigSubTab===t[0];
-        h+='<button onclick="_ccSetConfigSubTab(''+t[0]+'')" style="padding:9px 16px;font-size:12.5px;font-weight:'+(sel?'700':'500')+';color:'+(sel?'var(--charcoal)':'var(--g500)')+';background:none;border:none;border-bottom:2px solid '+(sel?'var(--charcoal)':'transparent')+';margin-bottom:-1.5px;cursor:pointer;text-align:left"><div>'+t[1]+'</div><div style="font-size:10px;color:var(--g400);font-weight:400;margin-top:1px">'+t[2]+'</div></button>';
+        h+='<button onclick="_ccSetConfigSubTab(\''+t[0]+'\')" style="padding:9px 16px;font-size:12.5px;font-weight:'+(sel?'700':'500')+';color:'+(sel?'var(--charcoal)':'var(--g500)')+';background:none;border:none;border-bottom:2px solid '+(sel?'var(--charcoal)':'transparent')+';margin-bottom:-1.5px;cursor:pointer;text-align:left"><div>'+t[1]+'</div><div style="font-size:10px;color:var(--g400);font-weight:400;margin-top:1px">'+t[2]+'</div></button>';
       });
       h+='</div>';
 
@@ -10318,7 +10318,7 @@ charges:[
         h+='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
         _CC_REGIONS.forEach(function(r){
           var sel=_ccConfigRegion===r;
-          h+='<button onclick="_ccSetConfigRegion(''+r+'')" style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+r+'</button>';
+          h+='<button onclick="_ccSetConfigRegion(\''+r+'\')" style="padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+r+'</button>';
         });
         h+='</div>';
         h+='<div style="font-size:12px;color:var(--g500);margin-bottom:14px">Regional managers populate the Mgr column for every project in the <strong>'+_ccConfigRegion+'</strong> region.</div>';
@@ -10348,7 +10348,7 @@ charges:[
         h+='<div style="display:flex;gap:6px;margin-bottom:16px">';
         _PROJS.forEach(function(p){
           var sel=_ccContactsConfigProj===p.k;
-          h+='<button onclick="_ccSetContactsConfigProj(''+p.k+'')" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid '+p.c:'1px solid var(--g200)')+';background:'+(sel?p.c:'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
+          h+='<button onclick="_ccSetContactsConfigProj(\''+p.k+'\')" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid '+p.c:'1px solid var(--g200)')+';background:'+(sel?p.c:'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
         });
         h+='</div>';
         // Project FSM + region
