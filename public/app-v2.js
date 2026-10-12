@@ -9841,7 +9841,7 @@ charges:[
   };
   function ccPersonaCanAccess(s){ var a=CC_PERSONA_ACCESS[ccPersona]||CC_PERSONA_ACCESS.fsm; for(var i=0;i<a.length;i++){if(a[i]===s)return true;} return false; }
   var _PERSONA_PILLAR={equip:'equipment',logistics:'logistics',prefab:'prefab',procurement:'procurement',services:'services'};
-  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP='all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('fulfill');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive==='mytasks'){renderMyTasks();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} _myTasksBadge(); }
+  function ccSetPersona(p){ ccPersona=p; _ccFSMProj=''; fqFP='all'; ccUpdateNavForPersona(); FQ.forEach(function(r){r.tasked=false;}); if(!ccPersonaCanAccess(ccActive)){ccGo('fulfill');} else if(ccActive==='fulfill'){renderFulfill();} else if(ccActive==='mytasks'){renderMyTasks();} else if(ccActive&&ccActive.indexOf('dp')===0){renderCcScreen(ccActive);} else if(ccActive==='contacts'){renderCcContacts();} _myTasksBadge(); }
   function setCCFSMProj(proj){ _ccFSMProj=proj; renderCcDash(); }
   function ccUpdateNavForPersona(){
     CC_KEYS.forEach(function(k){
@@ -10028,12 +10028,15 @@ charges:[
     {id:'msg-002',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'MV switchgear PO — urgent sign-off needed',body:'Raj, the MV switchgear PO needs to go out this week or we miss the Nov 15 energization window. Can you expedite the vendor release?',ts:'Oct 9, 3:42 PM',ref:'REQ-P-0501',refType:'plan',handled:false},
     {id:'msg-003',type:'pillar',proj:'barryrose',pillar:'equipment',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Scissor lift count — can we add 2 more?',body:'Hi, we’re a bit short on lifts for the north face work. Any chance we can add 2 more scissor lifts for weeks 3–5?',ts:'Oct 8, 11:20 AM',ref:'ORD-3038',refType:'order',handled:true},
     {id:'msg-004',type:'pillar',proj:'hercules',pillar:'stc',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'VMI Airgas MSA — status check',body:'James, wanted to check in on the Airgas MSA. We’re tracking toward the Oct 14 deadline. Any blockers on your end?',ts:'Oct 7, 2:05 PM',ref:'STC-001',refType:'plan',handled:true},
-    {id:'msg-005',type:'pillar',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Derek, can you confirm the excavator handoff date for the Oct 12 excavation start? We need the pre-check done by EOD Monday.',ts:'Oct 6, 4:30 PM',ref:'ORD-3042',refType:'order',handled:false}
+    {id:'msg-005',type:'pillar',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Derek, can you confirm the excavator handoff date for the Oct 12 excavation start? We need the pre-check done by EOD Monday.',ts:'Oct 6, 4:30 PM',ref:'ORD-3042',refType:'order',handled:false},
+    {id:'msg-008',type:'pillar',proj:'hercules',pillar:'logistics',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Week 4 delivery window — crane ops coordination',body:'Sam, need to lock in delivery windows for the Oct 21 steel erection sequence. Loading dock access needs to align with tower crane ops — can we confirm by EOD Thursday?',ts:'Oct 11, 10:30 AM',ref:'ORD-3041',refType:'order',handled:false},
+    {id:'msg-009',type:'pillar',proj:'barryrose',pillar:'logistics',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Staging area — east gate overflow',body:'Running low on staging space near the east gate. Any chance 02S can help coordinate a temporary overflow area for next two weeks?',ts:'Oct 9, 2:15 PM',handled:false},
+    {id:'msg-010',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Sub-tier vendor insurance — cert deadline',body:'The sub-tier vendor insurance certs are due Oct 18. Three subs still have gaps. Can procurement flag which are outstanding?',ts:'Oct 10, 3:00 PM',ref:'REQ-P-0502',refType:'plan',handled:false}
   ];
   var _ccContactsTab='inbox';
   var _ccContactsProjFilter='all';
   var _ccContactsConfigProj='hercules';
-  var _ccConfigSubTab='global';
+  var _ccConfigSubTab='regional';
   var _ccConfigRegion='Northeast';
   function _ccSetContactsTab(t){_ccContactsTab=t;renderCcContacts();}
   function _ccSetContactsProjFilter(f){_ccContactsProjFilter=f;renderCcContacts();}
@@ -10052,18 +10055,7 @@ charges:[
   }
   function _ccSaveContactConfig(){
     var pillars=['equipment','logistics','procurement','prefab','stc','svc'];
-    if(_ccConfigSubTab==='global'){
-      pillars.forEach(function(pillar){
-        var row=null;for(var i=0;i<_ccGlobalLeads.length;i++){if(_ccGlobalLeads[i].pillar===pillar){row=_ccGlobalLeads[i];break;}}
-        if(!row){row={pillar:pillar,lead:{name:'',email:'',phone:''}};_ccGlobalLeads.push(row);}
-        var nEl=document.getElementById('cc-gl-'+pillar+'-name');
-        var eEl=document.getElementById('cc-gl-'+pillar+'-email');
-        var pEl=document.getElementById('cc-gl-'+pillar+'-phone');
-        if(nEl)row.lead.name=nEl.value.trim();
-        if(eEl)row.lead.email=eEl.value.trim();
-        if(pEl)row.lead.phone=pEl.value.trim();
-      });
-    } else if(_ccConfigSubTab==='regional'){
+    if(_ccConfigSubTab==='regional'){
       pillars.forEach(function(pillar){
         var row=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===_ccConfigRegion&&_ccRegionalMgrs[i].pillar===pillar){row=_ccRegionalMgrs[i];break;}}
         if(!row){row={region:_ccConfigRegion,pillar:pillar,mgr:{name:'',email:'',phone:''}};_ccRegionalMgrs.push(row);}
@@ -10118,23 +10110,20 @@ charges:[
       if(meta.fsm.phone)h+='<div style="font-size:11px;color:var(--g500)">'+meta.fsm.phone+'</div>';
       h+='</div></div>';
     }
-    var roles=[{k:'lead',l:'Lead (Global)'},{k:'mgr',l:'Mgr ('+projRegion+')'},{k:'coord',l:'Coordinator'}];
+    var roles=[{k:'mgr',l:'Mgr ('+projRegion+')'},{k:'coord',l:'Coordinator'}];
     h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
     h+='<thead><tr style="border-bottom:1.5px solid var(--g150)">';
     h+='<th style="text-align:left;padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);width:120px">Pillar</th>';
     roles.forEach(function(r){h+='<th style="text-align:left;padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">'+r.l+'</th>';});
     h+='</tr></thead><tbody>';
     _ALL_PILLARS.forEach(function(pillar,ci){
-      // Lead from global
-      var glRow=null;for(var i=0;i<_ccGlobalLeads.length;i++){if(_ccGlobalLeads[i].pillar===pillar){glRow=_ccGlobalLeads[i];break;}}
-      var leadP=glRow?glRow.lead:{name:'',email:'',phone:''};
       // Mgr from regional (project's region)
       var regRow=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===projRegion&&_ccRegionalMgrs[i].pillar===pillar){regRow=_ccRegionalMgrs[i];break;}}
       var mgrP=regRow?regRow.mgr:{name:'',email:'',phone:''};
       // Coordinator from project
       var coordRow=null;for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===proj&&_ccContacts[i].pillar===pillar){coordRow=_ccContacts[i];break;}}
       var coordP=coordRow?coordRow.coord:{name:'',email:'',phone:''};
-      var persons=[leadP,mgrP,coordP];
+      var persons=[mgrP,coordP];
       h+='<tr style="border-bottom:1px solid var(--g100);'+(ci%2===0?'':'background:var(--g50)')+'">';
       h+='<td style="padding:8px 10px;font-size:11px;font-weight:600;color:var(--g600);white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
       persons.forEach(function(person){
@@ -10281,7 +10270,7 @@ charges:[
 
     } else {
       // ── Configure tab — three sub-tabs ────────────────────────────────────
-      var _cfgSubs=[['global','Lead (Global)','Cross-project, once'],['regional','Manager (Regional)','Per region × pillar'],['project','Coordinator (Project)','Per project × pillar']];
+      var _cfgSubs=[['regional','Manager (Regional)','Per region × pillar'],['project','Coordinator (Project)','Per project × pillar']];
       h+='<div style="display:flex;gap:0;border-bottom:1.5px solid var(--g150);margin-bottom:18px">';
       _cfgSubs.forEach(function(t){
         var sel=_ccConfigSubTab===t[0];
@@ -10292,29 +10281,7 @@ charges:[
       var _inpStyle='width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;font-family:inherit;color:var(--charcoal);background:#fff;outline:none;display:block;margin-bottom:3px';
       var _roStyle='width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g150);border-radius:5px;font-size:12px;font-family:inherit;color:var(--g500);background:var(--g50);outline:none;display:block;margin-bottom:3px;cursor:default';
 
-      if(_ccConfigSubTab==='global'){
-        h+='<div style="font-size:12px;color:var(--g500);margin-bottom:14px">Global leads apply across all projects and regions. Set once here.</div>';
-        h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--g200)">';
-        h+='<thead><tr style="background:var(--g50)">';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:130px">Pillar</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Lead Name</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Email</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Phone</th>';
-        h+='</tr></thead><tbody>';
-        _ALL_PILLARS.forEach(function(pillar){
-          var glRow=null;for(var i=0;i<_ccGlobalLeads.length;i++){if(_ccGlobalLeads[i].pillar===pillar){glRow=_ccGlobalLeads[i];break;}}
-          var p=glRow&&glRow.lead||{name:'',email:'',phone:''};
-          h+='<tr style="border-bottom:1px solid var(--g100)">';
-          h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);vertical-align:top;white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-gl-'+pillar+'-name" type="text" value="'+(p.name||'')+'" placeholder="Name" style="'+_inpStyle+'"></td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-gl-'+pillar+'-email" type="email" value="'+(p.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2"></td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-gl-'+pillar+'-phone" type="text" value="'+(p.phone||'')+'" placeholder="(555) ..." style="'+_inpStyle+'"></td>';
-          h+='</tr>';
-        });
-        h+='</tbody></table></div>';
-        h+='<div style="display:flex;justify-content:flex-end;margin-top:12px"><button onclick="_ccSaveContactConfig()" style="padding:8px 20px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer">Save global leads</button></div>';
-
-      } else if(_ccConfigSubTab==='regional'){
+      if(_ccConfigSubTab==='regional'){
         h+='<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
         _CC_REGIONS.forEach(function(r){
           var sel=_ccConfigRegion===r;
@@ -10366,28 +10333,20 @@ charges:[
         }
         // Contact table: pillar × (Global lead readonly) + (Regional mgr readonly) + (Coordinator editable)
         var projRegion=_curMeta?_curMeta.region:'Northeast';
-        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Global lead and regional manager are inherited — edit them in the <em>Global</em> or <em>Regional</em> tabs. Set the project coordinator below.</div>';
+        h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Regional manager is inherited from the project\'s region — edit in the <em>Regional</em> tab. Set the project coordinator below.</div>';
         h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--g200)">';
         h+='<thead><tr style="background:var(--g50)">';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:120px">Pillar</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Lead (Global)</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g300);margin-top:1px">Inherited</div></th>';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Manager ('+projRegion+')</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g300);margin-top:1px">Inherited</div></th>';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Coordinator (Project)</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400);margin-top:1px">Editable here</div></th>';
         h+='</tr></thead><tbody>';
         _ALL_PILLARS.forEach(function(pillar){
-          var glRow=null;for(var i=0;i<_ccGlobalLeads.length;i++){if(_ccGlobalLeads[i].pillar===pillar){glRow=_ccGlobalLeads[i];break;}}
-          var leadP=glRow&&glRow.lead||{name:'',email:''};
           var regRow=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===projRegion&&_ccRegionalMgrs[i].pillar===pillar){regRow=_ccRegionalMgrs[i];break;}}
           var mgrP=regRow&&regRow.mgr||{name:'',email:''};
           var coordRow=null;for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===_ccContactsConfigProj&&_ccContacts[i].pillar===pillar){coordRow=_ccContacts[i];break;}}
           var coordP=coordRow&&coordRow.coord||{name:'',email:''};
           h+='<tr style="border-bottom:1px solid var(--g100)">';
           h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);vertical-align:top;white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
-          // Lead — readonly
-          h+='<td style="padding:8px 10px;vertical-align:top;opacity:.7">';
-          if(leadP.name){h+='<div style="font-size:12px;font-weight:500;color:var(--charcoal)">'+leadP.name+'</div><div style="font-size:10.5px;color:#0891b2">'+leadP.email+'</div>';}
-          else h+='<span style="color:var(--g300);font-size:11px">—</span>';
-          h+='</td>';
           // Mgr — readonly
           h+='<td style="padding:8px 10px;vertical-align:top;opacity:.7">';
           if(mgrP.name){h+='<div style="font-size:12px;font-weight:500;color:var(--charcoal)">'+mgrP.name+'</div><div style="font-size:10.5px;color:#0891b2">'+mgrP.email+'</div>';}
