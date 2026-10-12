@@ -4536,64 +4536,126 @@
     return h;
   }
   function _stcBuildTasksView(projFilter){
+    var _grp=window._stcTasksGroupBy||'activity';
     var projs=projFilter&&projFilter!=='all'?[projFilter]:['hercules','barryrose','vdc14'];
     var rows=_stcAllReqs.filter(function(r){return projs.indexOf(r.proj)>=0;});
     if(_stcCCTypeFilter!=='all')rows=rows.filter(function(r){return r.type===_stcCCTypeFilter;});
-    var h='';
-    var openCount=0,doneCount=0;
-    rows.forEach(function(r){var acts=_stcCCActivities[r.id]||[];acts.forEach(function(act){
-      act.tasks.forEach(function(t){if(t.done)doneCount++;else openCount++;});});});
+    // Flatten all tasks with context
+    var allTasks=[];
+    rows.forEach(function(r){
+      var acts=_stcCCActivities[r.id]||[];
+      acts.forEach(function(act,ai){
+        act.tasks.forEach(function(task,ti){
+          allTasks.push({task:task,act:act,ai:ai,r:r,ti:ti});
+        });
+      });
+    });
+    var openCount=allTasks.filter(function(x){return !x.task.done;}).length;
+    var doneCount=allTasks.filter(function(x){return x.task.done;}).length;
     var priC={high:'#dc2626',medium:'#f59e0b',low:'#16a34a'};
     var priBg={high:'#fee2e2',medium:'#fffbeb',low:'#dcfce7'};
     var priL={high:'HIGH',medium:'MED',low:'LOW'};
-    h+='<div style="display:flex;align-items:center;margin-bottom:16px">';
-    h+='<span style="font-size:12.5px;font-weight:600;color:var(--g700)">'+openCount+' open · '+doneCount+' done</span>';
+    var h='';
+    // Filter tabs
+    h+='<div style="display:flex;align-items:center;gap:0;margin-bottom:14px">';
+    [['activity','By activity'],['item','By item'],['person','By person']].forEach(function(f){
+      var sel=_grp===f[0];
+      h+='<button onclick="window._stcTasksGroupBy=\''+f[0]+'\';renderSTC_CC()" style="padding:5px 13px;font-size:12px;font-weight:600;border:1px solid var(--g200);background:'+(sel?'var(--g900)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer;border-right:none;'+('activity'===f[0]?'border-radius:6px 0 0 6px':'person'===f[0]?'border-radius:0 6px 6px 0;border-right:1px solid var(--g200)':'')+'">'+f[1]+'</button>';
+    });
+    h+='<span style="flex:1"></span>';
+    h+='<span style="font-size:12px;font-weight:600;color:var(--g600)">'+openCount+' open · '+doneCount+' done</span>';
     h+='</div>';
-    if(!openCount&&!doneCount){
+    if(!allTasks.length){
       h+='<div style="font-size:13px;color:var(--g400);text-align:center;padding:40px 0;font-style:italic">No tasks yet — open an activity in the Activities tab and click + Task to add one.</div>';
       return h;
     }
-    rows.forEach(function(r){
-      var acts=_stcCCActivities[r.id]||[];
-      var hasTasks=false;
-      acts.forEach(function(a){if(a.tasks.length)hasTasks=true;});
-      if(!hasTasks)return;
-      var pColor=_stcProjColors[r.proj]||'#94a3b8';var pCode=_stcProjCodes[r.proj]||'?';
-      h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:14px;overflow:hidden">';
-      h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
-      h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span>';
-      h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
-      h+='<span style="font-size:11px;color:var(--g400);margin-left:4px">'+r.id+'</span>';
-      h+='</div>';
-      h+='<div style="background:#fafafa">';
-      acts.forEach(function(act,ai){
-        if(!act.tasks.length)return;
-        var bc={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'}[act.status]||'#9ca3af';
-        h+='<div style="padding:8px 16px 4px;border-top:1px solid var(--g100)">';
-        h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
-        h+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
-        h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+act.label+'</span>';
-        h+='<span style="font-size:10.5px;color:var(--g400)">'+act.tasks.length+'</span>';
-        h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+r.id+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 7px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap;margin-left:auto">+ Task</button>';
-        h+='</div></div>';
-        act.tasks.forEach(function(task,ti){
-          var pri=task.priority||'medium';
-          var assignee=task.assignee||'You';
-          var due=task.due?new Date(task.due).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
-          h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 16px;border-top:1px solid var(--g100);background:#fff">';
-          h+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+r.id+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:14px;height:14px">';
-          h+='<div style="flex:1;min-width:0">';
-          h+='<div style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g900)')+(task.done?';text-decoration:line-through':'')+'">'+task.label+'</div>';
-          if(due||assignee!=='You'){h+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+assignee+(due?' · '+due:'')+'</div>';}
-          h+='</div>';
-          h+='<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;background:'+priBg[pri]+';color:'+priC[pri]+';flex-shrink:0">'+priL[pri]+'</span>';
-          h+='<button onclick="event.stopPropagation();_stcCCActEditTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g400);cursor:pointer;padding:0 3px;flex-shrink:0" title="Edit">&#9998;</button>';
-          h+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 3px;flex-shrink:0" title="Remove">&times;</button>';
-          h+='</div>';
+    function renderTaskRow(x){
+      var task=x.task,act=x.act,ai=x.ai,r=x.r,ti=x.ti;
+      var pri=task.priority||'medium';
+      var assignee=task.assignee||'You';
+      var due=task.due?new Date(task.due).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';
+      var tH='<div style="display:flex;align-items:center;gap:10px;padding:8px 16px;border-top:1px solid var(--g100);background:#fff">';
+      tH+='<input type="checkbox" '+(task.done?'checked':'')+' onclick="event.stopPropagation();_stcCCActToggleTask(\''+r.id+'\','+ai+','+ti+')" style="cursor:pointer;accent-color:#2563eb;flex-shrink:0;width:14px;height:14px">';
+      tH+='<div style="flex:1;min-width:0">';
+      tH+='<div style="font-size:12px;color:'+(task.done?'var(--g400)':'var(--g900)')+(task.done?';text-decoration:line-through':'')+'">'+task.label+'</div>';
+      tH+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+assignee+(due?' · '+due:'')+'</div>';
+      tH+='</div>';
+      tH+='<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;background:'+priBg[pri]+';color:'+priC[pri]+';flex-shrink:0">'+priL[pri]+'</span>';
+      tH+='<button onclick="event.stopPropagation();_stcCCActEditTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g400);cursor:pointer;padding:0 3px;flex-shrink:0" title="Edit">&#9998;</button>';
+      tH+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 3px;flex-shrink:0" title="Remove">&times;</button>';
+      tH+='</div>';
+      return tH;
+    }
+    if(_grp==='activity'){
+      // Group by order → activity
+      rows.forEach(function(r){
+        var acts=_stcCCActivities[r.id]||[];
+        var hasTasks=false;
+        acts.forEach(function(a){if(a.tasks.length)hasTasks=true;});
+        if(!hasTasks)return;
+        var pColor=_stcProjColors[r.proj]||'#94a3b8';var pCode=_stcProjCodes[r.proj]||'?';
+        h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:14px;overflow:hidden">';
+        h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
+        h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span>';
+        h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+        h+='<span style="font-size:11px;color:var(--g400);margin-left:4px">'+r.id+'</span>';
+        h+='</div><div style="background:#fafafa">';
+        acts.forEach(function(act,ai){
+          if(!act.tasks.length)return;
+          var bc={done:'#16a34a',active:'#2563eb',pending:'#9ca3af'}[act.status]||'#9ca3af';
+          h+='<div style="padding:8px 16px 4px;border-top:1px solid var(--g100)">';
+          h+='<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">';
+          h+='<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:'+bc+';flex-shrink:0"></span>';
+          h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+act.label+'</span>';
+          h+='<span style="font-size:10.5px;color:var(--g400)">'+act.tasks.length+'</span>';
+          h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+r.id+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 7px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap;margin-left:auto">+ Task</button>';
+          h+='</div></div>';
+          act.tasks.forEach(function(task,ti){h+=renderTaskRow({task:task,act:act,ai:ai,r:r,ti:ti});});
         });
+        h+='</div></div>';
       });
-      h+='</div></div>';
-    });
+    }else if(_grp==='item'){
+      // Group by order/item only (flatten activities)
+      rows.forEach(function(r){
+        var rTasks=allTasks.filter(function(x){return x.r.id===r.id;});
+        if(!rTasks.length)return;
+        var pColor=_stcProjColors[r.proj]||'#94a3b8';var pCode=_stcProjCodes[r.proj]||'?';
+        var rOpen=rTasks.filter(function(x){return !x.task.done;}).length;
+        h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:14px;overflow:hidden">';
+        h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
+        h+='<span style="background:'+pColor+';color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px">'+pCode+'</span>';
+        h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
+        h+='<span style="font-size:11px;color:var(--g400);margin-left:4px">'+r.id+'</span>';
+        h+='<span style="font-size:11px;color:var(--g500);margin-left:auto">'+rOpen+' open</span>';
+        h+='</div><div style="background:#fafafa">';
+        rTasks.forEach(function(x){h+=renderTaskRow(x);});
+        h+='</div></div>';
+      });
+    }else{
+      // Group by person/assignee
+      var byPerson={},personOrder=[];
+      allTasks.forEach(function(x){
+        var p=x.task.assignee||'You';
+        if(!byPerson[p]){byPerson[p]=[];personOrder.push(p);}
+        byPerson[p].push(x);
+      });
+      personOrder.forEach(function(person){
+        var pTasks=byPerson[person];
+        var pOpen=pTasks.filter(function(x){return !x.task.done;}).length;
+        h+='<div style="border:1px solid var(--g200);border-radius:10px;margin-bottom:14px;overflow:hidden">';
+        h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--g150)">';
+        h+='<div style="width:28px;height:28px;border-radius:50%;background:#e0e7ff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#4338ca;flex-shrink:0">'+person.charAt(0)+'</div>';
+        h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+person+'</div>';
+        h+='<span style="font-size:11px;color:var(--g500);margin-left:auto">'+pOpen+' open</span>';
+        h+='</div><div style="background:#fafafa">';
+        pTasks.forEach(function(x){
+          var tH=renderTaskRow(x);
+          // append item context to each row's sub-line
+          h+=tH;
+        });
+        h+='</div></div>';
+      });
+    }
     return h;
   }
   function renderSTC_CC(){
