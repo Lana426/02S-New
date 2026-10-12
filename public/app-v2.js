@@ -2593,18 +2593,18 @@
     // ── Barry Rose SP ──
     {id:'STC-B02',proj:'barryrose',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-BR1',bundleName:'Safety PPE Kit',
-     desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'approved',needBy:'2026-10-08',
+     desc:'Cut-resistant safety gloves (Ansell HyFlex)',status:'approved',needBy:'2026-10-08',ccCategorized:true,
      costCode:'0600-0200-0000-0001',date:'Sep 14',sa:2,ea:4,budget:700,price:18,qty:30,
      notes:[],attachments:[]},
     // ── VDC14 SP ──
     {id:'STC-V01',proj:'vdc14',type:'sp',cat:'Power Tools',
      bundleId:'BND-SP-V1',bundleName:'Power Tools Pack',
-     desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'approved',needBy:'2026-10-02',
+     desc:'Angle grinders 4.5" (DeWalt DWE402)',status:'approved',needBy:'2026-10-02',ccCategorized:true,
      costCode:'0600-0100-0000-0001',date:'Sep 13',sa:2,ea:4,budget:1400,price:89,qty:12,
      notes:[],attachments:[]},
     {id:'STC-V02',proj:'vdc14',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-V2',bundleName:'Safety PPE Kit',
-     desc:'Hard hats Type II (3M H-812)',status:'released',needBy:'2026-09-30',
+     desc:'Hard hats Type II (3M H-812)',status:'released',needBy:'2026-09-30',ccCategorized:true,
      costCode:'0600-0200-0000-0001',date:'Sep 10',sa:3,ea:4,budget:550,price:35,qty:12,
      notes:[],attachments:[]},
   ];
@@ -3061,15 +3061,14 @@
   function _stcSubmitYardNotify(ri){
     var r=_stcAllReqs[ri];
     if(!r)return;
-    var qtyEl=document.getElementById('stc-yard-qty');
     var noteEl=document.getElementById('stc-yard-note');
-    var qty=qtyEl?parseInt(qtyEl.value,10)||0:0;
     var noteText=noteEl?noteEl.value.trim():'';
-    var msg='Yard availability: '+qty+' unit'+(qty!==1?'s':'');
-    if(noteText)msg+=' — '+noteText;
-    r.notes=(r.notes||[]).concat([{who:'Yard Team',when:'Just now',text:msg}]);
+    var lineCount=r.spLineItems&&r.spLineItems.length?r.spLineItems.length:(r.kitItems&&r.kitItems.length?r.kitItems.length:1);
+    var msg='Yard availability inquiry sent — '+lineCount+' line item'+(lineCount!==1?'s':'');
+    if(noteText)msg+=' · '+noteText;
+    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Just now',text:msg}]);
     _stcYardModal=null;
-    toast('Yard availability notified to requesting team');
+    toast('Inquiry sent to other yards');
     renderSTC_CC();
   }
   function _stcYardModalHTML(){
@@ -3077,26 +3076,43 @@
     var r=_stcAllReqs[_stcYardModal];
     if(!r)return '';
     var ri=_stcYardModal;
+    var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD';
+    var lines=r.spLineItems||r.kitItems||[];
     var h='<div id="stc-yard-ov" onclick="if(event.target===this){_stcCloseYardModal();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
-    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:10px;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
-    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Yard Availability</div>';
-    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">Submit available stock for this incoming request</div></div>';
+    h+='<div><div style="font-size:15px;font-weight:700;color:var(--g900)">Check Yard Availability</div>';
+    h+='<div style="font-size:12px;color:var(--g500);margin-top:2px">Ask other yards if they have stock for this request</div></div>';
     h+='<button onclick="_stcCloseYardModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
     h+='</div>';
     h+='<div style="padding:20px">';
-    h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#92400e">';
-    h+='<div style="font-weight:700;margin-bottom:3px">'+r.desc+'</div>';
-    h+='<div>'+(_stcProjNames[r.proj]||r.proj)+' · Need by: '+(r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD')+'</div>';
+    // Request summary
+    h+='<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:12px 14px;margin-bottom:14px">';
+    h+='<div style="font-size:12.5px;font-weight:700;color:var(--g900);margin-bottom:4px">'+r.desc+'</div>';
+    h+='<div style="font-size:11.5px;color:var(--g600)">'+(_stcProjNames[r.proj]||r.proj)+' · Need by '+nbFmt+'</div>';
     h+='</div>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Qty on hand at your yard</span>';
-    h+='<input type="number" id="stc-yard-qty" min="0" value="0" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;background:#fff;color:var(--g900);outline:none;width:120px"></label>';
-    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Note (optional)</span>';
-    h+='<textarea id="stc-yard-note" rows="2" placeholder="e.g. Available after Oct 1 — currently at Bay Area site" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;background:#fff;color:var(--g900);outline:none"></textarea></label>';
+    // Line items being asked about
+    if(lines.length){
+      h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Items being requested</div>';
+      h+='<div style="border:1px solid var(--g200);border-radius:6px;overflow:hidden;margin-bottom:14px">';
+      lines.forEach(function(li,i){
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:'+(i%2===0?'#fff':'var(--g50)')+';font-size:11.5px">';
+        h+='<span style="color:var(--g700)">'+li.desc+'</span>';
+        h+='<span style="color:var(--g500);white-space:nowrap;margin-left:8px;font-variant-numeric:tabular-nums">×'+li.qty+' '+(li.uom||'EA')+'</span>';
+        h+='</div>';
+      });
+      h+='</div>';
+    }else{
+      h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:11.5px;color:var(--g600)">';
+      h+='<span style="font-weight:600">'+r.desc+'</span> · Qty '+r.qty+' '+(r.uom||'EA');
+      h+='</div>';
+    }
+    h+='<label style="display:flex;flex-direction:column;gap:5px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Special instructions (optional)</span>';
+    h+='<textarea id="stc-yard-note" rows="2" placeholder="e.g. Need by Oct 15 — Phoenix or Tucson yards preferred" style="border:1px solid var(--g200);border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;resize:vertical;background:#fff;color:var(--g900);outline:none"></textarea></label>';
     h+='</div>';
     h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
     h+='<button onclick="_stcCloseYardModal()" class="btn btn-ghost">Cancel</button>';
-    h+='<button onclick="_stcSubmitYardNotify('+ri+')" class="btn btn-primary" style="margin-left:auto">Notify</button>';
+    h+='<button onclick="_stcSubmitYardNotify('+ri+')" class="btn btn-primary" style="margin-left:auto">Send inquiry to yards →</button>';
     h+='</div></div></div>';
     return h;
   }
@@ -3417,7 +3433,7 @@
       rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+unitPrice+'</div>';
       rh+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+totalCost+'</div>';
       rh+='<div style="font-size:11.5px;color:var(--g600);font-variant-numeric:tabular-nums">'+codeShort+'</div>';
-      rh+=(r.status==='draft'?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
+      rh+=(r.status==='draft'||(r.type!=='vmi'&&!r.ccCategorized)?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
       // Status column: always show status chip
       rh+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
       rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
@@ -3862,8 +3878,10 @@
   function _stcOpenCCQuoteModal(idx){
     var r=_stcAllReqs[idx];if(!r)return;
     var auto='QT-'+r.id+'-'+new Date().getFullYear();
-    _stcCCQModal={idx:idx,vendor:'',ref:auto,
-      items:[{desc:'',qty:1,uom:'EA',vendorRate:0,rate:0}]};
+    var _initItems=r.kitItems&&r.kitItems.length?
+      r.kitItems.map(function(ki){return {desc:ki.desc,qty:ki.qty,uom:ki.uom,vendorRate:ki.vendorRate||0,rate:ki.rate||0};}):
+      [{desc:'',qty:1,uom:'EA',vendorRate:0,rate:0}];
+    _stcCCQModal={idx:idx,vendor:'',ref:auto,items:_initItems};
     renderSTC_CC();
   }
   function _stcCloseCCQuoteModal(){_stcCCQModal=null;renderSTC_CC();}
@@ -3960,14 +3978,6 @@
     // Notes
     h+='<label style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px"><span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500)">Notes to project team</span>';
     h+='<textarea id="stcccq-notes" rows="2" placeholder="Pricing basis, what\'s included, cadence, conditions…" onclick="event.stopPropagation()" style="'+iS+';resize:none;height:60px"></textarea></label>';
-    // Terms block
-    h+='<div style="background:#faf8f0;border:1px solid #e9e2c0;border-radius:7px;padding:12px 14px;margin-bottom:16px">';
-    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#92400e;margin-bottom:6px">Standard VMI Terms</div>';
-    h+='<div style="font-size:11.5px;color:#78716c;line-height:1.7">';
-    h+='• Rates include normal wear &amp; tear; damages identified at service completion are billed separately.<br>';
-    h+='• Any new scope requests will require a re-quote.<br>';
-    h+='• Billing on a 28-day cycle; first invoice issued upon delivery confirmation.<br>';
-    h+='• Pricing valid for 30 days from quote date.</div></div>';
     h+='</div>';
     // Footer
     h+='<div style="padding:14px 24px;border-top:1px solid var(--g150);display:flex;gap:10px;align-items:center;flex-shrink:0">';
@@ -4011,10 +4021,9 @@
     var el=document.getElementById('stc-qreturn-txt-'+idx);
     var txt=el?el.value.trim():'';
     if(!txt){toast('Add a comment before returning');return;}
-    r.status='draft';
-    delete r.quote;
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Now',text:'Quote returned: '+txt}]);
-    renderSTC();toast('Quote returned to 02S with comments');
+    r.status='scoping';
+    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Now',text:'Quote returned — awaiting revision: '+txt}]);
+    renderSTC();toast('Quote returned — awaiting revised quote from 02S');
   }
   function _stcOpenQReviewModal(idx){_stcQReviewModal=idx;renderSTC();}
   function _stcCloseQReviewModal(){_stcQReviewModal=null;renderSTC();}
@@ -4029,9 +4038,9 @@
     var txt=el?el.value.trim():'';
     if(!txt){toast('Add feedback before returning');return;}
     var r=_stcAllReqs[idx];if(!r)return;
-    r.status='draft';delete r.quote;
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 7, 2026',text:'Quote returned: '+txt}]);
-    _stcQReviewModal=null;renderSTC();toast('Quote returned to 02S with your comments');
+    r.status='scoping';
+    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 7, 2026',text:'Quote returned — awaiting revision: '+txt}]);
+    _stcQReviewModal=null;renderSTC();toast('Quote returned — awaiting revised quote from 02S');
   }
   function _stcQReviewModalHTML(){
     var idx=_stcQReviewModal;
@@ -4164,24 +4173,57 @@
     r.status='requested';r.ccCategorized=false;
     closeModal();_stcCCDrillOpen=null;renderSTC_CC();toast('Request returned to project team');
   }
+  var _stcTaskGroupBy=window._stcTaskGroupBy||'activity';
   function _stcCCBuildTasksView(){
-    var stcTasks=(window.MY_CC_TASKS||[]).filter(function(t){return t.ref&&t.ref.indexOf('STC-')===0;});
+    var stcTasks=(window.MY_CC_TASKS||[]).filter(function(t){return (t.ref&&t.ref.indexOf('STC-')===0)||t.pillar==='stc';});
+    var open=stcTasks.filter(function(t){return !t.done;}).length;
+    var done=stcTasks.filter(function(t){return t.done;}).length;
     var h='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px;margin-bottom:16px">';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">';
+    // Header row
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
     h+='<span style="font-size:15px;font-weight:700;color:var(--charcoal)">Tasks</span>';
     h+='<button onclick="openLogTaskModal(\'hercules\',-1,\'ST&amp;C Task\',\'\',\'STC-\')" class="btn btn-primary btn-sm">+ Add Task</button></div>';
+    // Filter bar
+    h+='<div style="display:flex;align-items:center;gap:0;margin-bottom:14px">';
+    [['activity','By activity'],['item','By item'],['person','By person']].forEach(function(f){
+      var sel=_stcTaskGroupBy===f[0];
+      h+='<button onclick="window._stcTaskGroupBy=\''+f[0]+'\';_stcTaskGroupBy=\''+f[0]+'\';renderSTC_CC()" style="padding:5px 13px;font-size:12px;font-weight:600;border:1px solid var(--g200);background:'+(sel?'var(--g900)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer;border-right:none;'+('activity'===f[0]?'border-radius:6px 0 0 6px':'person'===f[0]?'border-radius:0 6px 6px 0;border-right:1px solid var(--g200)':'')+'">'+f[1]+'</button>';
+    });
+    h+='<span style="flex:1"></span>';
+    h+='<span style="font-size:11.5px;color:var(--g500)">'+open+' open · '+done+' done</span>';
+    h+='</div>';
     if(!stcTasks.length){
-      h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No tasks yet. Click <b>+ Add Task</b> to create one linked to a ST&amp;C request.</div>';
+      h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No tasks yet. Click <b>+ Add Task</b> to create one.</div>';
     }else{
+      // Group tasks
+      var groupKey=_stcTaskGroupBy==='item'?'item':_stcTaskGroupBy==='person'?'assignee':'activity';
+      var groups={},groupOrder=[];
       stcTasks.forEach(function(t){
-        var done=t.done||false;
-        h+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;background:'+(done?'var(--g50)':'#fff')+'">';
-        h+='<div style="flex:1;min-width:0">';
-        h+='<div style="font-size:12.5px;font-weight:600;color:'+(done?'var(--g400)':'var(--g900)')+(done?';text-decoration:line-through':'')+'">'+(t.label||'Task')+'</div>';
-        if(t.ref){h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+t.ref+(t.project?' · '+t.project:'')+'</div>';}
+        var k=t[groupKey]||'General';
+        if(!groups[k]){groups[k]=[];groupOrder.push(k);}
+        groups[k].push(t);
+      });
+      var priColor={'high':'#dc2626','medium':'#f59e0b','low':'#16a34a'};
+      groupOrder.forEach(function(grp){
+        var gTasks=groups[grp];
+        var gOpen=gTasks.filter(function(t){return !t.done;}).length;
+        h+='<div style="margin-bottom:14px">';
+        h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+        h+='<span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">'+grp+'</span>';
+        h+='<span style="font-size:11px;color:var(--g400)">'+gOpen+'</span>';
         h+='</div>';
-        if(t.due){h+='<span style="font-size:11px;color:var(--g500)">Due '+t.due+'</span>';}
-        h+='<button onclick="event.stopPropagation();openLogTaskEditById(\''+t.id+'\')" style="font-size:10px;padding:1px 7px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0">Edit</button>';
+        gTasks.forEach(function(t){
+          var isDone=t.done||false;
+          var pC=priColor[t.priority]||'var(--g400)';
+          h+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--g200);border-radius:8px;margin-bottom:5px;background:'+(isDone?'var(--g50)':'#fff')+'">';
+          h+='<div style="flex:1;min-width:0">';
+          h+='<div style="font-size:12.5px;font-weight:600;color:'+(isDone?'var(--g400)':'var(--g900)')+(isDone?';text-decoration:line-through':'')+'">'+(t.label||'Task')+'</div>';
+          h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+t.ref+(t.due?' · '+t.due:'')+'</div>';
+          h+='</div>';
+          if(t.priority){h+='<span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:4px;background:'+pC+'20;color:'+pC+';white-space:nowrap">'+t.priority+'</span>';}
+          h+='<button onclick="event.stopPropagation();openLogTaskEditById(\''+t.id+'\')" style="font-size:10px;padding:2px 8px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;color:var(--g500);flex-shrink:0">Edit</button>';
+          h+='</div>';
+        });
         h+='</div>';
       });
     }
@@ -4222,7 +4264,8 @@
     var _nbFmt3=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
     h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900);margin-bottom:8px">'+r.desc+'</div>';
     h+='<div style="background:var(--g50);border-radius:8px;padding:10px 12px;margin-bottom:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-    [{k:'Project',v:_stcProjNames[r.proj]||r.proj},{k:'Need By',v:_nbFmt3},{k:'Cost Code',v:r.costCode||'—'},{k:'Qty',v:r.qty?(r.qty+' '+(r.uom||'EA')):'—'}].forEach(function(p){h+='<div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+p.k+'</div><div style="font-size:12px;font-weight:600;color:var(--g700)">'+p.v+'</div></div>';});
+    var _catEst=r.price&&r.qty?(r.price*r.qty):(r.budget||r.price||0);
+    [{k:'Project',v:_stcProjNames[r.proj]||r.proj},{k:'Need By',v:_nbFmt3},{k:'Cost Code',v:r.costCode||'—'},{k:'Qty',v:r.qty?(r.qty+' '+(r.uom||'EA')):'—'},{k:'Est. Cost',v:_catEst?_stcFmt(_catEst):'—'}].forEach(function(p){h+='<div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+p.k+'</div><div style="font-size:12px;font-weight:600;color:var(--g700)">'+p.v+'</div></div>';});
     h+='</div>';
     if(r.kitItems&&r.kitItems.length){
       h+='<div style="margin-bottom:12px">';
@@ -4265,9 +4308,9 @@
        tasks:[{id:'t1',label:'Draft MSA with Airgas',done:true},{id:'t2',label:'Legal review sign-off',done:true}]},
       {id:'a2',label:'Initial Delivery Setup',status:'done',owner:'James R.',start:'2026-09-01',end:'2026-09-15',
        tasks:[{id:'t3',label:'Configure VMI triggers in system',done:true}]},
-      {id:'a3',label:'Reorder Point Configuration',status:'active',owner:'James R.',start:'2026-09-16',end:'2026-10-25',
-       tasks:[{id:'t4',label:'Set min/max thresholds',done:true},{id:'t5',label:'Test auto-reorder flow',done:false},{id:'t6',label:'Notify yard team of thresholds',done:false}]},
-      {id:'a4',label:'Monthly Replenishment Cycle',status:'pending',owner:'James R.',start:'2026-10-25',end:'2027-01-31',
+      {id:'a3',label:'Vendor Coordination & Check-In',status:'active',owner:'James R.',start:'2026-09-16',end:'2026-10-25',
+       tasks:[{id:'t4',label:'Quarterly review with Airgas — confirm Oct volumes',done:true},{id:'t5',label:'Confirm upcoming replenishment schedule',done:false},{id:'t6',label:'Align with yard on delivery windows',done:false}]},
+      {id:'a4',label:'Invoice Reconciliation & Approval',status:'pending',owner:'James R.',start:'2026-10-25',end:'2027-01-31',
        tasks:[]}
     ],
     'STC-004':[
@@ -12189,7 +12232,11 @@ charges:[
     {id:'mct-013',label:'Issue PO — Temp Fencing (Oct 15 need-by, 6-wk lead)',ref:'REQ-L-3117',project:'Hercules Solar + BESS',pillar:'logistics',due:'Sep 3',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Contracting',item:'Temp Fencing'},
     {id:'mct-014',label:'Select vendor — Drinking Water & Bagged Ice (Barry Rose WRF)',ref:'REQ-L-3145',project:'Barry Rose WRF',pillar:'logistics',due:'Sep 5',priority:'medium',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Drinking Water & Bagged Ice'},
     {id:'mct-015',label:'Confirm IT equipment delivery window — VDC14 Oct 2026',ref:'REQ-L-3148',project:'VDC14',pillar:'logistics',due:'Sep 10',priority:'medium',source:'fq',done:false,closeNote:'',activity:'Install',item:'IT Network & Internet Install'},
-    {id:'mct-016',label:'Select vendor — Sanitation Units (VDC14, Nov 2026 need-by)',ref:'REQ-L-3133',project:'VDC14',pillar:'logistics',due:'Sep 12',priority:'low',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Temp Toilets & Handwash Stations'}
+    {id:'mct-016',label:'Select vendor — Sanitation Units (VDC14, Nov 2026 need-by)',ref:'REQ-L-3133',project:'VDC14',pillar:'logistics',due:'Sep 12',priority:'low',source:'fq',done:false,closeNote:'',activity:'RFP',item:'Temp Toilets & Handwash Stations'},
+    {id:'mct-stc1',label:'Confirm MSA with Airgas Inc. — Welding Consumables VMI',ref:'STC-001',project:'Hercules Solar + BESS',pillar:'stc',due:'Oct 14',priority:'high',source:'manual',done:false,closeNote:'',activity:'Vendor Contract',item:'Welding Consumables'},
+    {id:'mct-stc2',label:'Review and send quote — Abrasives & Grinding VMI (Grainger)',ref:'STC-003',project:'Hercules Solar + BESS',pillar:'stc',due:'Oct 20',priority:'high',source:'manual',done:false,closeNote:'',activity:'Quote Prep',item:'Abrasives & Grinding VMI'},
+    {id:'mct-stc3',label:'Confirm T3 release — Impact Drill Kit (HEPA attachment per spec)',ref:'STC-005',project:'Hercules Solar + BESS',pillar:'stc',due:'Oct 25',priority:'medium',source:'manual',done:false,closeNote:'',activity:'Order Release',item:'Impact Drill Kit'},
+    {id:'mct-stc4',label:'Follow up — PPE Safety Bundle delivery confirmation (Oct 5)',ref:'STC-006',project:'Hercules Solar + BESS',pillar:'stc',due:'Oct 15',priority:'low',source:'manual',done:true,closeNote:'Delivery confirmed, signed receipt on file.',activity:'Delivery',item:'PPE Safety Bundle'}
   ];
   var _MT_NS=[
     {id:'mct-001',rank:1,float:0,impact:'~$40K/wk',why:'BESS containers are on the critical path to November energization. Order-by date has passed — every additional week adds ~$40K in re-rent cost exposure.',sys:'S2P',sysLabel:'Release PO in S2P',sysIcon:'<path d="M9 12l2 2 4-4M7.8 3a9 9 0 100 18A9 9 0 007.8 3z"/>'},
