@@ -4173,8 +4173,8 @@
     r.status='requested';r.ccCategorized=false;
     closeModal();_stcCCDrillOpen=null;renderSTC_CC();toast('Request returned to project team');
   }
-  var _stcTaskGroupBy=window._stcTaskGroupBy||'activity';
   function _stcCCBuildTasksView(){
+    var _grpBy=window._stcTaskGroupBy||'activity';
     var stcTasks=(window.MY_CC_TASKS||[]).filter(function(t){return (t.ref&&t.ref.indexOf('STC-')===0)||t.pillar==='stc';});
     var open=stcTasks.filter(function(t){return !t.done;}).length;
     var done=stcTasks.filter(function(t){return t.done;}).length;
@@ -4186,7 +4186,7 @@
     // Filter bar
     h+='<div style="display:flex;align-items:center;gap:0;margin-bottom:14px">';
     [['activity','By activity'],['item','By item'],['person','By person']].forEach(function(f){
-      var sel=_stcTaskGroupBy===f[0];
+      var sel=_grpBy===f[0];
       h+='<button onclick="window._stcTaskGroupBy=\''+f[0]+'\';_stcTaskGroupBy=\''+f[0]+'\';renderSTC_CC()" style="padding:5px 13px;font-size:12px;font-weight:600;border:1px solid var(--g200);background:'+(sel?'var(--g900)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer;border-right:none;'+('activity'===f[0]?'border-radius:6px 0 0 6px':'person'===f[0]?'border-radius:0 6px 6px 0;border-right:1px solid var(--g200)':'')+'">'+f[1]+'</button>';
     });
     h+='<span style="flex:1"></span>';
@@ -4196,7 +4196,7 @@
       h+='<div style="font-size:12px;color:var(--g400);padding:8px 0">No tasks yet. Click <b>+ Add Task</b> to create one.</div>';
     }else{
       // Group tasks
-      var groupKey=_stcTaskGroupBy==='item'?'item':_stcTaskGroupBy==='person'?'assignee':'activity';
+      var groupKey=_grpBy==='item'?'item':_grpBy==='person'?'assignee':'activity';
       var groups={},groupOrder=[];
       stcTasks.forEach(function(t){
         var k=t[groupKey]||'General';
