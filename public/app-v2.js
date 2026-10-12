@@ -6426,6 +6426,7 @@ function renderProfServicesDP(){
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); renderGlance(); }
+    if(screen==='contact'){ renderCpContactMatrix(); }
     window.scrollTo(0,0);
   }
 
@@ -9962,11 +9963,13 @@ charges:[
     {proj:'vdc14',pillar:'stc',lead:{name:'Sarah Mitchell',email:'s.mitchell@02s.com',phone:'(555) 482-3000'},mgr:{name:'James R.',email:'j.r@02s.com',phone:'(555) 482-3240'},coord:{name:'',email:'',phone:''}}
   ];
   var _ccInboxMsgs=[
-    {id:'msg-001',proj:'hercules',pillar:'equipment',from:'Lana Butorovic',fromEmail:'butorovic.lana@bcg.com',subj:'Crane mobilization delay — pushing to Nov 5',body:'Hi Marcus, we need to push the tower crane mobilization from Oct 28 to Nov 5. The site pad isn’t ready yet. Let me know if that works.',ts:'Oct 10, 9:14 AM',handled:false},
-    {id:'msg-002',proj:'hercules',pillar:'procurement',from:'Lana Butorovic',fromEmail:'butorovic.lana@bcg.com',subj:'MV switchgear PO — urgent sign-off needed',body:'Raj, the MV switchgear PO needs to go out this week or we miss the Nov 15 energization window. Can you expedite the vendor release?',ts:'Oct 9, 3:42 PM',handled:false},
-    {id:'msg-003',proj:'barryrose',pillar:'equipment',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Scissor lift count — can we add 2 more?',body:'Hi, we’re a bit short on lifts for the north face work. Any chance we can add 2 more scissor lifts for weeks 3–5?',ts:'Oct 8, 11:20 AM',handled:true},
-    {id:'msg-004',proj:'hercules',pillar:'stc',from:'Lana Butorovic',fromEmail:'butorovic.lana@bcg.com',subj:'VMI Airgas MSA — status check',body:'James, wanted to check in on the Airgas MSA. We’re tracking toward the Oct 14 deadline. Any blockers on your end?',ts:'Oct 7, 2:05 PM',handled:true},
-    {id:'msg-005',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Derek, can you confirm the excavator handoff date for the Oct 12 excavation start? We need the pre-check done by EOD Monday.',ts:'Oct 6, 4:30 PM',handled:false}
+    {id:'msg-006',type:'general',proj:'hercules',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Portal navigation is a big improvement',body:'Quick note — the portal orders view is much cleaner than the old email chain process. Would love to see invoice history in the portal too.',ts:'Oct 11, 8:45 AM',handled:false},
+    {id:'msg-007',type:'general',proj:'barryrose',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Response times have been solid',body:'Overall happy with the service. Equipment questions get answered fast. Billing takes a bit longer but nothing blocking.',ts:'Oct 3, 2:15 PM',handled:true},
+    {id:'msg-001',type:'pillar',proj:'hercules',pillar:'equipment',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Crane mobilization delay — pushing to Nov 5',body:'Hi Marcus, we need to push the tower crane mobilization from Oct 28 to Nov 5. The site pad isn’t ready yet. Let me know if that works.',ts:'Oct 10, 9:14 AM',ref:'ORD-3042',refType:'order',handled:false},
+    {id:'msg-002',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'MV switchgear PO — urgent sign-off needed',body:'Raj, the MV switchgear PO needs to go out this week or we miss the Nov 15 energization window. Can you expedite the vendor release?',ts:'Oct 9, 3:42 PM',ref:'REQ-P-0501',refType:'plan',handled:false},
+    {id:'msg-003',type:'pillar',proj:'barryrose',pillar:'equipment',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Scissor lift count — can we add 2 more?',body:'Hi, we’re a bit short on lifts for the north face work. Any chance we can add 2 more scissor lifts for weeks 3–5?',ts:'Oct 8, 11:20 AM',ref:'ORD-3038',refType:'order',handled:true},
+    {id:'msg-004',type:'pillar',proj:'hercules',pillar:'stc',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'VMI Airgas MSA — status check',body:'James, wanted to check in on the Airgas MSA. We’re tracking toward the Oct 14 deadline. Any blockers on your end?',ts:'Oct 7, 2:05 PM',ref:'STC-001',refType:'plan',handled:true},
+    {id:'msg-005',type:'pillar',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Derek, can you confirm the excavator handoff date for the Oct 12 excavation start? We need the pre-check done by EOD Monday.',ts:'Oct 6, 4:30 PM',ref:'ORD-3042',refType:'order',handled:false}
   ];
   var _ccContactsTab='inbox';
   var _ccContactsProjFilter='all';
@@ -9984,21 +9987,81 @@ charges:[
     window.open('mailto:'+msg.fromEmail+'?subject='+subj+'&body='+body);
     renderCcContacts();
   }
+  function _ccSaveContactConfig(){
+    var pillars=['equipment','logistics','procurement','prefab','stc','svc'];
+    var roles=['lead','mgr','coord'];
+    var proj=_ccContactsConfigProj;
+    pillars.forEach(function(pillar){
+      var row=null;
+      for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===proj&&_ccContacts[i].pillar===pillar){row=_ccContacts[i];break;}}
+      if(!row){row={proj:proj,pillar:pillar,lead:{name:'',email:'',phone:''},mgr:{name:'',email:'',phone:''},coord:{name:'',email:'',phone:''}};_ccContacts.push(row);}
+      roles.forEach(function(r){
+        if(!row[r])row[r]={name:'',email:'',phone:''};
+        var nEl=document.getElementById('cc-ct-'+proj+'-'+pillar+'-'+r+'-name');
+        var eEl=document.getElementById('cc-ct-'+proj+'-'+pillar+'-'+r+'-email');
+        if(nEl)row[r].name=nEl.value.trim();
+        if(eEl)row[r].email=eEl.value.trim();
+      });
+    });
+    toast('Contact configuration saved');
+    renderCpContactMatrix();
+  }
+  function renderCpContactMatrix(){
+    var mount=document.getElementById('cpContactMatrix'); if(!mount)return;
+    var _PIL_LBL={equipment:'Equipment',logistics:'Logistics',procurement:'Procurement',prefab:'Prefab',stc:'Small Tools & Consumables',svc:'Prof. Services'};
+    var _ALL_PILLARS=['equipment','logistics','procurement','prefab','stc','svc'];
+    var proj='hercules';
+    var h='<div class="card" style="margin-top:16px">';
+    h+='<div class="card-h"><span class="hi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span><span class="ht">Your 02S team</span><span class="hcount">Hercules Solar + BESS</span></div>';
+    h+='<div style="padding:12px 18px 16px">';
+    var roles=[{k:'lead',l:'Lead'},{k:'mgr',l:'Manager'},{k:'coord',l:'Coordinator'}];
+    h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+    h+='<thead><tr style="border-bottom:1.5px solid var(--g150)">';
+    h+='<th style="text-align:left;padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);width:120px">Pillar</th>';
+    roles.forEach(function(r){h+='<th style="text-align:left;padding:6px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">'+r.l+'</th>';});
+    h+='</tr></thead><tbody>';
+    _ALL_PILLARS.forEach(function(pillar,ci){
+      var rowData=null;
+      for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===proj&&_ccContacts[i].pillar===pillar){rowData=_ccContacts[i];break;}}
+      h+='<tr style="border-bottom:1px solid var(--g100);'+(ci%2===0?'':'background:var(--g50)')+'">';
+      h+='<td style="padding:8px 10px;font-size:11px;font-weight:600;color:var(--g600);white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
+      roles.forEach(function(r){
+        var person=(rowData&&rowData[r.k])||null;
+        if(person&&person.name){
+          h+='<td style="padding:8px 10px"><div style="font-size:12px;font-weight:600;color:var(--charcoal)">'+person.name+'</div>';
+          if(person.email)h+='<div style="font-size:10.5px;color:#0891b2">'+person.email+'</div>';
+          if(person.phone)h+='<div style="font-size:10.5px;color:var(--g400)">'+person.phone+'</div>';
+          h+='</td>';
+        } else {
+          h+='<td style="padding:8px 10px;color:var(--g300);font-size:11px">—</td>';
+        }
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+    h+='<div style="margin-top:10px;padding:9px 12px;background:#fee2e2;border-radius:7px;display:flex;align-items:center;gap:12px">';
+    h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#991b1b;white-space:nowrap">Emergency</div>';
+    h+='<div style="font-size:14px;font-weight:700;color:#dc2626">(555) 911-02S</div>';
+    h+='<div style="font-size:11px;color:#991b1b">24 / 7 / 365 · 4-hour on-site response</div>';
+    h+='</div>';
+    h+='</div></div>';
+    mount.innerHTML=h;
+  }
   function renderCcContacts(){
     var mount=document.getElementById('ccContacts'); if(!mount)return;
     var _PIL_LBL={equipment:'Equipment',logistics:'Logistics',procurement:'Procurement',prefab:'Prefab',stc:'Small Tools & Consumables',svc:'Prof. Services'};
+    var _ALL_PILLARS=['equipment','logistics','procurement','prefab','stc','svc'];
     var _PROJ_NAMES={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
     var _PROJ_COLORS={hercules:'#0891b2',barryrose:'#7c3aed',vdc14:'#059669'};
     var unhandled=_ccInboxMsgs.filter(function(m){return !m.handled;}).length;
     var h='<div class="phead"><div><h1>Contact &amp; support</h1><div class="meta"><span class="chip">Project team inbox · configure contacts</span></div></div>';
     if(unhandled>0)h+='<span class="tag bad" style="font-size:12px;padding:4px 10px;align-self:center">'+unhandled+' unhandled</span>';
     h+='</div>';
-    // Tab bar
     var tabs=[['inbox','Inbox'],['configure','Configure contacts']];
     h+='<div style="display:flex;gap:0;border-bottom:2px solid var(--g100);margin-bottom:20px">';
     tabs.forEach(function(t){
       var sel=_ccContactsTab===t[0];
-      var badge=t[0]==='inbox'&&unhandled>0?(' <span style="background:#dc2626;color:#fff;border-radius:9px;padding:1px 7px;font-size:10px;font-weight:700;vertical-align:middle;margin-left:3px">'+unhandled+'</span>'):'';
+      var badge=t[0]==='inbox'&&unhandled>0?(' <span style="background:#dc2626;color:#fff;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700;vertical-align:middle;margin-left:3px">'+unhandled+'</span>'):'';
       h+='<button onclick="_ccSetContactsTab(\''+t[0]+'\')" style="padding:10px 18px;font-size:13px;font-weight:'+(sel?'700':'500')+';color:'+(sel?'var(--charcoal)':'var(--g500)')+';background:none;border:none;border-bottom:2px solid '+(sel?'var(--charcoal)':'transparent')+';margin-bottom:-2px;cursor:pointer">'+t[1]+badge+'</button>';
     });
     h+='</div>';
@@ -10006,7 +10069,7 @@ charges:[
       // Insights strip
       var pillarTally={};
       _ccInboxMsgs.filter(function(m){return !m.handled;}).forEach(function(m){
-        var k=_PIL_LBL[m.pillar]||m.pillar;
+        var k=m.type==='general'?'General':(_PIL_LBL[m.pillar]||m.pillar);
         pillarTally[k]=(pillarTally[k]||0)+1;
       });
       if(unhandled>0){
@@ -10020,83 +10083,86 @@ charges:[
         h+='<button onclick="_ccSetContactsProjFilter(\''+f[0]+'\')" style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+f[1]+'</button>';
       });
       h+='</div>';
-      // Message list
-      var msgs=_ccInboxMsgs.slice();
-      if(_ccContactsProjFilter!=='all')msgs=msgs.filter(function(m){return m.proj===_ccContactsProjFilter;});
-      msgs.sort(function(a,b){return (a.handled?1:0)-(b.handled?1:0);});
-      if(!msgs.length){
-        h+='<div style="text-align:center;padding:48px;color:var(--g400);font-size:13px">No messages for this filter.</div>';
-      } else {
-        msgs.forEach(function(msg){
-          var pColor=_PROJ_COLORS[msg.proj]||'#6b7280';
-          var initials=msg.from.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
-          h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:14px 16px;margin-bottom:10px'+(msg.handled?';opacity:.65':'') +'">';
-          h+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">';
-          h+='<div style="width:34px;height:34px;border-radius:50%;background:'+pColor+'20;color:'+pColor+';font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+initials+'</div>';
-          h+='<div style="flex:1;min-width:0">';
-          h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">';
-          h+='<span style="font-size:13px;font-weight:600;color:var(--charcoal)">'+msg.from+'</span>';
-          h+='<span style="font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:3px;background:'+pColor+'18;color:'+pColor+'">'+(_PIL_LBL[msg.pillar]||msg.pillar)+'</span>';
-          h+='<span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:3px;background:var(--g100);color:var(--g600)">'+(_PROJ_NAMES[msg.proj]||msg.proj)+'</span>';
-          h+='</div>';
-          h+='<div style="font-size:11px;color:var(--g400)">'+msg.ts+'</div>';
-          h+='</div>';
-          if(msg.handled)h+='<span class="tag ok" style="font-size:10px;padding:2px 8px;white-space:nowrap;flex-shrink:0;align-self:flex-start">Handled</span>';
-          h+='</div>';
-          h+='<div style="font-size:13.5px;font-weight:600;color:var(--charcoal);margin-bottom:5px">'+msg.subj+'</div>';
-          h+='<div style="font-size:12.5px;color:var(--g600);line-height:1.55;margin-bottom:11px">'+msg.body+'</div>';
-          if(!msg.handled){
-            h+='<div style="display:flex;gap:8px">';
-            h+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
-            h+='<button onclick="_ccMarkHandled(\''+msg.id+'\')" style="padding:7px 12px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g600);font-size:12px;font-weight:600;cursor:pointer">Mark handled</button>';
-            h+='</div>';
-          } else {
-            h+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g500);font-size:11.5px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook</button>';
-          }
-          h+='</div>';
-        });
+      var allMsgs=_ccInboxMsgs.slice();
+      if(_ccContactsProjFilter!=='all')allMsgs=allMsgs.filter(function(m){return m.proj===_ccContactsProjFilter;});
+      allMsgs.sort(function(a,b){return (a.handled?1:0)-(b.handled?1:0);});
+      var generalMsgs=allMsgs.filter(function(m){return m.type==='general';});
+      var pillarMsgs=allMsgs.filter(function(m){return m.type==='pillar';});
+      function renderMsgCard(msg){
+        var pColor=_PROJ_COLORS[msg.proj]||'#6b7280';
+        var initials=msg.from.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+        var c='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:14px 16px;margin-bottom:10px'+(msg.handled?';opacity:.65':'')+'">';
+        c+='<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px">';
+        c+='<div style="width:34px;height:34px;border-radius:50%;background:'+pColor+'20;color:'+pColor+';font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+initials+'</div>';
+        c+='<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:2px">';
+        c+='<span style="font-size:13px;font-weight:600;color:var(--charcoal)">'+msg.from+'</span>';
+        if(msg.type==='pillar'&&msg.pillar)c+='<span style="font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:3px;background:'+pColor+'18;color:'+pColor+'">'+(_PIL_LBL[msg.pillar]||msg.pillar)+'</span>';
+        c+='<span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:3px;background:var(--g100);color:var(--g600)">'+(_PROJ_NAMES[msg.proj]||msg.proj)+'</span>';
+        if(msg.ref){
+          var rColor=msg.refType==='order'?'#0891b2':(msg.refType==='billing'?'#dc2626':'#7c3aed');
+          var rLabel=msg.refType==='order'?'Order':(msg.refType==='billing'?'Billing':'Plan item');
+          c+='<span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:3px;background:'+rColor+'10;color:'+rColor+';border:1px solid '+rColor+'30">'+rLabel+': '+msg.ref+'</span>';
+        }
+        c+='</div><div style="font-size:11px;color:var(--g400)">'+msg.ts+'</div></div>';
+        if(msg.handled)c+='<span class="tag ok" style="font-size:10px;padding:2px 8px;white-space:nowrap;flex-shrink:0;align-self:flex-start">Handled</span>';
+        c+='</div>';
+        c+='<div style="font-size:13.5px;font-weight:600;color:var(--charcoal);margin-bottom:5px">'+msg.subj+'</div>';
+        c+='<div style="font-size:12.5px;color:var(--g600);line-height:1.55;margin-bottom:11px">'+msg.body+'</div>';
+        if(!msg.handled){
+          c+='<div style="display:flex;gap:8px">';
+          c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
+          c+='<button onclick="_ccMarkHandled(\''+msg.id+'\')" style="padding:7px 12px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g600);font-size:12px;font-weight:600;cursor:pointer">Mark handled</button>';
+          c+='</div>';
+        } else {
+          c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g500);font-size:11.5px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook</button>';
+        }
+        c+='</div>';
+        return c;
       }
+      // General feedback section
+      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px">General feedback</div>';
+      if(!generalMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center;margin-bottom:16px">No general feedback'+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
+      else generalMsgs.forEach(function(msg){h+=renderMsgCard(msg);});
+      // Pillar inquiries section
+      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px;margin-top:6px">Pillar inquiries</div>';
+      if(!pillarMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center">No pillar inquiries'+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
+      else pillarMsgs.forEach(function(msg){h+=renderMsgCard(msg);});
     } else {
-      // Configure tab
-      var _PROJS=[{k:'hercules',l:'Hercules Solar + BESS'},{k:'barryrose',l:'Barry Rose WRF'},{k:'vdc14',l:'VDC14'}];
+      // Configure tab — editable, all pillars, all 3 projects
+      var _PROJS=[{k:'hercules',l:'Hercules Solar + BESS',c:'#0891b2'},{k:'barryrose',l:'Barry Rose WRF',c:'#7c3aed'},{k:'vdc14',l:'VDC14',c:'#059669'}];
       h+='<div style="display:flex;gap:6px;margin-bottom:20px">';
       _PROJS.forEach(function(p){
         var sel=_ccContactsConfigProj===p.k;
-        h+='<button onclick="_ccSetContactsConfigProj(\''+p.k+'\')" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid var(--charcoal)':'1px solid var(--g200)')+';background:'+(sel?'var(--charcoal)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
+        h+='<button onclick="_ccSetContactsConfigProj(\''+p.k+'\')" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid '+p.c:'1px solid var(--g200)')+';background:'+(sel?p.c:'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
       });
       h+='</div>';
-      var rows=_ccContacts.filter(function(c){return c.proj===_ccContactsConfigProj;});
-      var roles=[{k:'lead',l:'Lead (Global)',sub:'Cross-project FSM contact'},{k:'mgr',l:'Manager (Regional)',sub:'Regional pillar manager'},{k:'coord',l:'Coordinator (Project)',sub:'Project-level contact'}];
+      var _roles=[{k:'lead',l:'Lead (Global)',sub:'Cross-project FSM'},{k:'mgr',l:'Manager (Regional)',sub:'Regional pillar mgr'},{k:'coord',l:'Coordinator (Project)',sub:'Project-level contact'}];
       h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--g200)">';
       h+='<thead><tr style="background:var(--g50)">';
-      h+='<th style="text-align:left;padding:11px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:140px">Pillar</th>';
-      roles.forEach(function(r){
-        h+='<th style="text-align:left;padding:11px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>'+r.l+'</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400);margin-top:2px;opacity:.8">'+r.sub+'</div></th>';
-      });
+      h+='<th style="text-align:left;padding:11px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:120px">Pillar</th>';
+      _roles.forEach(function(r){h+='<th style="text-align:left;padding:11px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>'+r.l+'</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400);margin-top:1px">'+r.sub+'</div></th>';});
       h+='</tr></thead><tbody>';
-      if(!rows.length){
-        h+='<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--g400);font-style:italic">No contacts configured for this project yet.</td></tr>';
-      } else {
-        rows.forEach(function(c,ci){
-          h+='<tr style="border-bottom:1px solid var(--g100)">';
-          h+='<td style="padding:12px 14px;font-size:12px;font-weight:600;color:var(--g700)">'+(_PIL_LBL[c.pillar]||c.pillar)+'</td>';
-          roles.forEach(function(r){
-            var person=c[r.k];
-            if(person&&person.name){
-              h+='<td style="padding:12px 14px">';
-              h+='<div style="font-size:12.5px;font-weight:600;color:var(--charcoal)">'+person.name+'</div>';
-              h+='<a href="mailto:'+person.email+'" style="font-size:11px;color:#0891b2;text-decoration:none;display:block;margin-top:1px">'+person.email+'</a>';
-              if(person.phone)h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+person.phone+'</div>';
-              h+='</td>';
-            } else {
-              h+='<td style="padding:12px 14px;color:var(--g300);font-size:12px;font-style:italic">Not assigned</td>';
-            }
-          });
-          h+='</tr>';
+      _ALL_PILLARS.forEach(function(pillar){
+        var rowData=null;
+        for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===_ccContactsConfigProj&&_ccContacts[i].pillar===pillar){rowData=_ccContacts[i];break;}}
+        h+='<tr style="border-bottom:1px solid var(--g100)">';
+        h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);vertical-align:top;white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
+        _roles.forEach(function(r){
+          var person=(rowData&&rowData[r.k])||{name:'',email:''};
+          var nId='cc-ct-'+_ccContactsConfigProj+'-'+pillar+'-'+r.k+'-name';
+          var eId='cc-ct-'+_ccContactsConfigProj+'-'+pillar+'-'+r.k+'-email';
+          h+='<td style="padding:6px 10px;vertical-align:top">';
+          h+='<input id="'+nId+'" type="text" value="'+(person.name||'')+'" placeholder="Name" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:12px;font-family:inherit;color:var(--charcoal);background:#fff;margin-bottom:4px;outline:none;display:block">';
+          h+='<input id="'+eId+'" type="email" value="'+(person.email||'')+'" placeholder="email@02s.com" style="width:100%;box-sizing:border-box;padding:5px 8px;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-family:inherit;color:#0891b2;background:#fff;outline:none;display:block">';
+          h+='</td>';
         });
-      }
+        h+='</tr>';
+      });
       h+='</tbody></table></div>';
-      h+='<div style="margin-top:12px;padding:10px 14px;background:var(--g50);border:1px solid var(--g100);border-radius:8px;font-size:11.5px;color:var(--g500);line-height:1.5">Contact assignments are reflected in the project team\'s directory on the Customer Portal. Changes take effect immediately. The <b>Lead</b> role is global across all projects.</div>';
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">';
+      h+='<div style="font-size:11.5px;color:var(--g500)">Changes reflect in the Customer Portal contact directory immediately.</div>';
+      h+='<button onclick="_ccSaveContactConfig()" style="padding:8px 20px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer">Save changes</button>';
+      h+='</div>';
     }
     mount.innerHTML=h;
   }
@@ -17525,6 +17591,7 @@ function renderProfServicesDP(){
     if(screen==='equip') eqRefresh();
     if(screen==='profile'){ renderTeam(); renderEscalation(); renderProfileInsights(); renderApprovers(); renderShipTo(); }
     if(screen==='dashboard'){ renderPlanRing(); syncRecert(); renderFleetDemand(); renderAllActivity(); renderGMDashKPI(); renderLookahead(); renderPortalQuotesWidget(); renderNSDashKPIs(); renderTasksDueWidget(); renderGlance(); }
+    if(screen==='contact'){ renderCpContactMatrix(); }
     window.scrollTo(0,0);
   }
 
