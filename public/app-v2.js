@@ -2756,7 +2756,7 @@
   };
 
   var _stcTone={requested:'neu',draft:'neu',scoping:'warn',quoted:'warn',pending:'warn',approved:'warn',released:'ok',fulfilled:'ok',returned:'neu',closed:'neu'};
-  var _stcLbl={requested:'Requested',draft:'Draft',scoping:'In Scoping / Pricing',quoted:'Quote pending',pending:'Pending Approval',approved:'Approved',released:'Released to Order',fulfilled:'Fulfilled / Delivered',returned:'Returned',closed:'Completed / Closed'};
+  var _stcLbl={requested:'Draft',draft:'Draft',scoping:'In Scoping / Pricing',quoted:'Pending Approval',pending:'Pending Approval',approved:'Approved',released:'Released to Order',fulfilled:'Fulfilled / Delivered',returned:'Returned (Rental only)',closed:'Completed / Closed'};
   var _stcTC={ok:'#15803d',warn:'#b45309',bad:'#b91c1c',neu:'var(--g500)'};
   var _stcTB={ok:'#f0fdf4',warn:'#fefce8',bad:'#fef2f2',neu:'var(--g100)'};
 
