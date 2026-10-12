@@ -10053,7 +10053,8 @@ charges:[
     var _ALL_PILLARS=['equipment','logistics','procurement','prefab','stc','svc'];
     var _PROJ_NAMES={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
     var _PROJ_COLORS={hercules:'#0891b2',barryrose:'#7c3aed',vdc14:'#059669'};
-    var unhandled=_ccInboxMsgs.filter(function(m){return !m.handled;}).length;
+    var _pPillar0=ccPersona!=='fsm'?(_PERSONA_PILLAR[ccPersona]||null):null;
+    var unhandled=_ccInboxMsgs.filter(function(m){return !m.handled&&(ccPersona==='fsm'||(m.type==='pillar'&&m.pillar===_pPillar0));}).length;
     var h='<div class="phead"><div><h1>Contact &amp; support</h1><div class="meta"><span class="chip">Project team inbox · configure contacts</span></div></div>';
     if(unhandled>0)h+='<span class="tag bad" style="font-size:12px;padding:4px 10px;align-self:center">'+unhandled+' unhandled</span>';
     h+='</div>';
@@ -10068,7 +10069,7 @@ charges:[
     if(_ccContactsTab==='inbox'){
       // Insights strip
       var pillarTally={};
-      _ccInboxMsgs.filter(function(m){return !m.handled;}).forEach(function(m){
+      _ccInboxMsgs.filter(function(m){return !m.handled&&(ccPersona==='fsm'||(m.type==='pillar'&&m.pillar===_pPillar0));}).forEach(function(m){
         var k=m.type==='general'?'General':(_PIL_LBL[m.pillar]||m.pillar);
         pillarTally[k]=(pillarTally[k]||0)+1;
       });
@@ -10088,6 +10089,10 @@ charges:[
       allMsgs.sort(function(a,b){return (a.handled?1:0)-(b.handled?1:0);});
       var generalMsgs=allMsgs.filter(function(m){return m.type==='general';});
       var pillarMsgs=allMsgs.filter(function(m){return m.type==='pillar';});
+      // Persona-based: non-FSM sees only their pillar, never general feedback
+      var _myPillar=ccPersona!=='fsm'?(_PERSONA_PILLAR[ccPersona]||null):null;
+      if(_myPillar)pillarMsgs=pillarMsgs.filter(function(m){return m.pillar===_myPillar;});
+      if(ccPersona!=='fsm')generalMsgs=[];
       function renderMsgCard(msg){
         var pColor=_PROJ_COLORS[msg.proj]||'#6b7280';
         var initials=msg.from.split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
@@ -10110,22 +10115,26 @@ charges:[
         c+='<div style="font-size:12.5px;color:var(--g600);line-height:1.55;margin-bottom:11px">'+msg.body+'</div>';
         if(!msg.handled){
           c+='<div style="display:flex;gap:8px">';
-          c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
+          if(msg.type==='pillar')c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook →</button>';
           c+='<button onclick="_ccMarkHandled(\''+msg.id+'\')" style="padding:7px 12px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g600);font-size:12px;font-weight:600;cursor:pointer">Mark handled</button>';
           c+='</div>';
-        } else {
+        } else if(msg.type==='pillar'){
           c+='<button onclick="_ccReplyOutlook(\''+msg.id+'\')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:#fff;border:1px solid var(--g200);border-radius:7px;color:var(--g500);font-size:11.5px;font-weight:600;cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Reply in Outlook</button>';
         }
         c+='</div>';
         return c;
       }
-      // General feedback section
-      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px">General feedback</div>';
-      if(!generalMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center;margin-bottom:16px">No general feedback'+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
-      else generalMsgs.forEach(function(msg){h+=renderMsgCard(msg);});
+      // General feedback section (FSM only)
+      if(ccPersona==='fsm'){
+        h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px">General feedback</div>';
+        if(!generalMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center;margin-bottom:16px">No general feedback'+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
+        else generalMsgs.forEach(function(msg){h+=renderMsgCard(msg);});
+      }
       // Pillar inquiries section
-      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px;margin-top:6px">Pillar inquiries</div>';
-      if(!pillarMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center">No pillar inquiries'+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
+      var _secLabel=_myPillar?((_PIL_LBL[_myPillar]||_myPillar)+' inquiries'):'Pillar inquiries';
+      var _secGap=ccPersona==='fsm'?'6':'0';
+      h+='<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:10px;margin-top:'+_secGap+'px">'+_secLabel+'</div>';
+      if(!pillarMsgs.length){h+='<div style="background:var(--g50);border-radius:8px;padding:14px;font-size:12.5px;color:var(--g400);text-align:center">No '+_secLabel.toLowerCase()+(_ccContactsProjFilter!=='all'?' for this project':'')+'.</div>';}
       else pillarMsgs.forEach(function(msg){h+=renderMsgCard(msg);});
     } else {
       // Configure tab — editable, all pillars, all 3 projects
