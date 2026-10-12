@@ -10055,8 +10055,10 @@ charges:[
       var rid=_ccConfigRegion.replace(/[^a-z]/gi,'');
       var nEl=document.getElementById('cc-rg-'+rid+'-'+pillar+'-name');
       var eEl=document.getElementById('cc-rg-'+rid+'-'+pillar+'-email');
+      var pEl=document.getElementById('cc-rg-'+rid+'-'+pillar+'-phone');
       if(nEl)rr.mgr.name=nEl.value.trim();
       if(eEl)rr.mgr.email=eEl.value.trim();
+      if(pEl)rr.mgr.phone=pEl.value.trim();
     } else {
       var cr=null;for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===_ccContactsConfigProj&&_ccContacts[i].pillar===pillar){cr=_ccContacts[i];break;}}
       if(!cr){cr={proj:_ccContactsConfigProj,pillar:pillar,coord:{name:'',email:'',phone:''}};_ccContacts.push(cr);}
@@ -10330,21 +10332,33 @@ charges:[
         h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--g200)">';
         h+='<thead><tr style="background:var(--g50)">';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:130px">Pillar</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Manager Name</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Email</th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Phone</th>';
-        h+='<th style="border-bottom:1px solid var(--g200);width:70px"></th>';
+        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Regional Manager</th>';
+        h+='<th style="border-bottom:1px solid var(--g200);width:80px"></th>';
         h+='</tr></thead><tbody>';
         _ALL_PILLARS.forEach(function(pillar){
           var rRow=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===_ccConfigRegion&&_ccRegionalMgrs[i].pillar===pillar){rRow=_ccRegionalMgrs[i];break;}}
           var p=rRow&&rRow.mgr||{name:'',email:'',phone:''};
           var rid=_ccConfigRegion.replace(/[^a-z]/gi,'');
+          var isEditing=_ccEditRow===pillar;
           h+='<tr style="border-bottom:1px solid var(--g100)">';
-          h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);vertical-align:top;white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-name" type="text" value="'+(p.name||'')+'" placeholder="Name" style="'+_inpStyle+'"></td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-email" type="email" value="'+(p.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2"></td>';
-          h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-phone" type="text" value="'+(p.phone||'')+'" placeholder="(555) ..." style="'+_inpStyle+'"></td>';
-          h+='<td style="padding:6px 10px;vertical-align:top;text-align:center"><button data-p="'+pillar+'" onclick="_ccSaveRow(this.dataset.p)" style="padding:5px 12px;background:#18181b;border:none;border-radius:6px;color:#fff;font-size:11.5px;font-weight:600;cursor:pointer">Save</button></td>';
+          h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
+          if(!isEditing){
+            h+='<td style="padding:8px 10px">';
+            if(p.name){h+='<div style="font-size:12px;font-weight:600;color:var(--charcoal)">'+p.name+'</div><div style="font-size:10.5px;color:#0891b2">'+p.email+'</div>';if(p.phone)h+='<div style="font-size:10.5px;color:var(--g500)">'+p.phone+'</div>';}
+            else h+='<span style="color:var(--g300);font-size:11px">Not assigned</span>';
+            h+='</td>';
+            h+='<td style="padding:8px 10px;text-align:right"><button data-p="'+pillar+'" onclick="_ccStartEditRow(this.dataset.p)" style="padding:4px 10px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g600);cursor:pointer">Edit</button></td>';
+          } else {
+            h+='<td style="padding:5px 8px">';
+            h+='<input id="cc-rg-'+rid+'-'+pillar+'-name" type="text" value="'+(p.name||'')+'" placeholder="Name" style="'+_inpStyle+'">';
+            h+='<input id="cc-rg-'+rid+'-'+pillar+'-email" type="email" value="'+(p.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2">';
+            h+='<input id="cc-rg-'+rid+'-'+pillar+'-phone" type="tel" value="'+(p.phone||'')+'" placeholder="(555) ..." style="'+_inpStyle+'">';
+            h+='</td>';
+            h+='<td style="padding:5px 8px;white-space:nowrap;text-align:right">';
+            h+='<button data-p="'+pillar+'" onclick="_ccSaveRow(this.dataset.p)" style="padding:4px 10px;background:#18181b;border:none;border-radius:5px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;margin-right:4px">Save</button>';
+            h+='<button onclick="_ccCancelEdit()" style="padding:4px 8px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g500);cursor:pointer">✕</button>';
+            h+='</td>';
+          }
           h+='</tr>';
         });
         h+='</tbody></table></div>';
