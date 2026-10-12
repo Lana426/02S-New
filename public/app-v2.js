@@ -10024,25 +10024,63 @@ charges:[
   var _ccInboxMsgs=[
     {id:'msg-006',type:'general',proj:'hercules',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Portal navigation is a big improvement',body:'Quick note — the portal orders view is much cleaner than the old email chain process. Would love to see invoice history in the portal too.',ts:'Oct 11, 8:45 AM',handled:false},
     {id:'msg-007',type:'general',proj:'barryrose',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Response times have been solid',body:'Overall happy with the service. Equipment questions get answered fast. Billing takes a bit longer but nothing blocking.',ts:'Oct 3, 2:15 PM',handled:true},
-    {id:'msg-001',type:'pillar',proj:'hercules',pillar:'equipment',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Crane mobilization delay — pushing to Nov 5',body:'Hi Marcus, we need to push the tower crane mobilization from Oct 28 to Nov 5. The site pad isn’t ready yet. Let me know if that works.',ts:'Oct 10, 9:14 AM',ref:'ORD-3042',refType:'order',handled:false},
-    {id:'msg-002',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'MV switchgear PO — urgent sign-off needed',body:'Raj, the MV switchgear PO needs to go out this week or we miss the Nov 15 energization window. Can you expedite the vendor release?',ts:'Oct 9, 3:42 PM',ref:'REQ-P-0501',refType:'plan',handled:false},
-    {id:'msg-003',type:'pillar',proj:'barryrose',pillar:'equipment',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Scissor lift count — can we add 2 more?',body:'Hi, we’re a bit short on lifts for the north face work. Any chance we can add 2 more scissor lifts for weeks 3–5?',ts:'Oct 8, 11:20 AM',ref:'ORD-3038',refType:'order',handled:true},
+    {id:'msg-001',type:'pillar',proj:'hercules',pillar:'equipment',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Crane mobilization delay — pushing to Nov 5',body:'Jordan, we need to push the tower crane mobilization from Oct 28 to Nov 5 — site pad isn’t ready. Does that work?',ts:'Oct 10, 9:14 AM',ref:'ORD-3042',refType:'order',handled:false},
+    {id:'msg-002',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'MV switchgear PO — urgent sign-off needed',body:'Chris, the MV switchgear PO needs to go out this week or we miss the Nov 15 energization window. Can you expedite the vendor release?',ts:'Oct 9, 3:42 PM',ref:'REQ-P-0501',refType:'plan',handled:false},
+    {id:'msg-003',type:'pillar',proj:'barryrose',pillar:'equipment',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Scissor lift count — can we add 2 more?',body:'Jordan, we’re a bit short on lifts for the north face work. Any chance we can add 2 more scissor lifts for weeks 3–5?',ts:'Oct 8, 11:20 AM',ref:'ORD-3038',refType:'order',handled:true},
     {id:'msg-004',type:'pillar',proj:'hercules',pillar:'stc',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'VMI Airgas MSA — status check',body:'James, wanted to check in on the Airgas MSA. We’re tracking toward the Oct 14 deadline. Any blockers on your end?',ts:'Oct 7, 2:05 PM',ref:'STC-001',refType:'plan',handled:true},
-    {id:'msg-005',type:'pillar',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Derek, can you confirm the excavator handoff date for the Oct 12 excavation start? We need the pre-check done by EOD Monday.',ts:'Oct 6, 4:30 PM',ref:'ORD-3042',refType:'order',handled:false},
+    {id:'msg-005',type:'pillar',proj:'vdc14',pillar:'equipment',from:'Chris Yuen',fromEmail:'c.yuen@mccarthy.com',subj:'Excavator handoff — confirm date',body:'Jordan, can you confirm the excavator handoff date for the Oct 12 excavation start? Pre-check needs to be done by EOD Monday.',ts:'Oct 6, 4:30 PM',ref:'ORD-3042',refType:'order',handled:false},
     {id:'msg-008',type:'pillar',proj:'hercules',pillar:'logistics',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Week 4 delivery window — crane ops coordination',body:'Sam, need to lock in delivery windows for the Oct 21 steel erection sequence. Loading dock access needs to align with tower crane ops — can we confirm by EOD Thursday?',ts:'Oct 11, 10:30 AM',ref:'ORD-3041',refType:'order',handled:false},
-    {id:'msg-009',type:'pillar',proj:'barryrose',pillar:'logistics',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Staging area — east gate overflow',body:'Running low on staging space near the east gate. Any chance 02S can help coordinate a temporary overflow area for next two weeks?',ts:'Oct 9, 2:15 PM',handled:false},
-    {id:'msg-010',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Sub-tier vendor insurance — cert deadline',body:'The sub-tier vendor insurance certs are due Oct 18. Three subs still have gaps. Can procurement flag which are outstanding?',ts:'Oct 10, 3:00 PM',ref:'REQ-P-0502',refType:'plan',handled:false}
+    {id:'msg-009',type:'pillar',proj:'barryrose',pillar:'logistics',from:'Jake Sorenson',fromEmail:'j.sorenson@mccarthy.com',subj:'Staging area — east gate overflow',body:'Sam, running low on staging space near the east gate. Any chance 02S can coordinate a temporary overflow area for the next two weeks?',ts:'Oct 9, 2:15 PM',handled:false},
+    {id:'msg-010',type:'pillar',proj:'hercules',pillar:'procurement',from:'Maya Chen',fromEmail:'m.chen@mccarthy.com',subj:'Sub-tier vendor insurance — cert deadline',body:'Chris, the sub-tier vendor insurance certs are due Oct 18. Three subs still have gaps — can you flag which are outstanding?',ts:'Oct 10, 3:00 PM',ref:'REQ-P-0502',refType:'plan',handled:false}
   ];
   var _ccContactsTab='inbox';
   var _ccContactsProjFilter='all';
   var _ccContactsConfigProj='hercules';
   var _ccConfigSubTab='regional';
   var _ccConfigRegion='Northeast';
+  var _ccEditRow=null;
+  var _ccEditFSM=false;
   function _ccSetContactsTab(t){_ccContactsTab=t;renderCcContacts();}
   function _ccSetContactsProjFilter(f){_ccContactsProjFilter=f;renderCcContacts();}
-  function _ccSetContactsConfigProj(p){_ccContactsConfigProj=p;renderCcContacts();}
-  function _ccSetConfigSubTab(t){_ccConfigSubTab=t;renderCcContacts();}
-  function _ccSetConfigRegion(r){_ccConfigRegion=r;renderCcContacts();}
+  function _ccSetContactsConfigProj(p){_ccContactsConfigProj=p;_ccEditRow=null;_ccEditFSM=false;renderCcContacts();}
+  function _ccSetConfigSubTab(t){_ccConfigSubTab=t;_ccEditRow=null;_ccEditFSM=false;renderCcContacts();}
+  function _ccSetConfigRegion(r){_ccConfigRegion=r;_ccEditRow=null;_ccEditFSM=false;renderCcContacts();}
+  function _ccStartEditRow(p){_ccEditRow=p;_ccEditFSM=false;renderCcContacts();}
+  function _ccCancelEdit(){_ccEditRow=null;_ccEditFSM=false;renderCcContacts();}
+  function _ccStartEditFSM(){_ccEditFSM=true;_ccEditRow=null;renderCcContacts();}
+  function _ccSaveRow(pillar){
+    if(_ccConfigSubTab==='regional'){
+      var rr=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===_ccConfigRegion&&_ccRegionalMgrs[i].pillar===pillar){rr=_ccRegionalMgrs[i];break;}}
+      if(!rr){rr={region:_ccConfigRegion,pillar:pillar,mgr:{name:'',email:'',phone:''}};_ccRegionalMgrs.push(rr);}
+      var rid=_ccConfigRegion.replace(/[^a-z]/gi,'');
+      var nEl=document.getElementById('cc-rg-'+rid+'-'+pillar+'-name');
+      var eEl=document.getElementById('cc-rg-'+rid+'-'+pillar+'-email');
+      if(nEl)rr.mgr.name=nEl.value.trim();
+      if(eEl)rr.mgr.email=eEl.value.trim();
+    } else {
+      var cr=null;for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===_ccContactsConfigProj&&_ccContacts[i].pillar===pillar){cr=_ccContacts[i];break;}}
+      if(!cr){cr={proj:_ccContactsConfigProj,pillar:pillar,coord:{name:'',email:'',phone:''}};_ccContacts.push(cr);}
+      if(!cr.coord)cr.coord={name:'',email:'',phone:''};
+      var nEl=document.getElementById('cc-row-'+_ccContactsConfigProj+'-'+pillar+'-n');
+      var eEl=document.getElementById('cc-row-'+_ccContactsConfigProj+'-'+pillar+'-e');
+      if(nEl)cr.coord.name=nEl.value.trim();
+      if(eEl)cr.coord.email=eEl.value.trim();
+    }
+    renderCpContactMatrix();_ccEditRow=null;renderCcContacts();
+  }
+  function _ccSaveFSM(){
+    var meta=null;for(var i=0;i<_ccProjectMeta.length;i++){if(_ccProjectMeta[i].id===_ccContactsConfigProj){meta=_ccProjectMeta[i];break;}}
+    if(meta){
+      if(!meta.fsm)meta.fsm={};
+      var nEl=document.getElementById('cc-fsm-n');
+      var eEl=document.getElementById('cc-fsm-e');
+      var pEl=document.getElementById('cc-fsm-p');
+      if(nEl)meta.fsm.name=nEl.value.trim();
+      if(eEl)meta.fsm.email=eEl.value.trim();
+      if(pEl)meta.fsm.phone=pEl.value.trim();
+    }
+    _ccEditFSM=false;renderCcContacts();
+  }
   function _ccMarkHandled(id){for(var i=0;i<_ccInboxMsgs.length;i++){if(_ccInboxMsgs[i].id===id){_ccInboxMsgs[i].handled=true;break;}}renderCcContacts();}
   function _ccReplyOutlook(id){
     var msg=null;for(var i=0;i<_ccInboxMsgs.length;i++){if(_ccInboxMsgs[i].id===id){msg=_ccInboxMsgs[i];break;}}
@@ -10295,6 +10333,7 @@ charges:[
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Manager Name</th>';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Email</th>';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)">Phone</th>';
+        h+='<th style="border-bottom:1px solid var(--g200);width:70px"></th>';
         h+='</tr></thead><tbody>';
         _ALL_PILLARS.forEach(function(pillar){
           var rRow=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===_ccConfigRegion&&_ccRegionalMgrs[i].pillar===pillar){rRow=_ccRegionalMgrs[i];break;}}
@@ -10305,65 +10344,84 @@ charges:[
           h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-name" type="text" value="'+(p.name||'')+'" placeholder="Name" style="'+_inpStyle+'"></td>';
           h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-email" type="email" value="'+(p.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2"></td>';
           h+='<td style="padding:6px 10px;vertical-align:top"><input id="cc-rg-'+rid+'-'+pillar+'-phone" type="text" value="'+(p.phone||'')+'" placeholder="(555) ..." style="'+_inpStyle+'"></td>';
+          h+='<td style="padding:6px 10px;vertical-align:top;text-align:center"><button data-p="'+pillar+'" onclick="_ccSaveRow(this.dataset.p)" style="padding:5px 12px;background:#18181b;border:none;border-radius:6px;color:#fff;font-size:11.5px;font-weight:600;cursor:pointer">Save</button></td>';
           h+='</tr>';
         });
         h+='</tbody></table></div>';
-        h+='<div style="display:flex;justify-content:flex-end;margin-top:12px"><button onclick="_ccSaveContactConfig()" style="padding:8px 20px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer">Save '+_ccConfigRegion+' managers</button></div>';
 
       } else {
         // Project sub-tab
         h+='<div style="display:flex;gap:6px;margin-bottom:16px">';
         _PROJS.forEach(function(p){
           var sel=_ccContactsConfigProj===p.k;
-          h+='<button onclick="_ccSetContactsConfigProj(\''+p.k+'\')" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid '+p.c:'1px solid var(--g200)')+';background:'+(sel?p.c:'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
+          h+='<button data-k="'+p.k+'" onclick="_ccSetContactsConfigProj(this.dataset.k)" style="padding:5px 14px;border-radius:20px;font-size:12.5px;font-weight:600;border:'+(sel?'1.5px solid '+p.c:'1px solid var(--g200)')+';background:'+(sel?p.c:'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer">'+p.l+'</button>';
         });
         h+='</div>';
-        // Project FSM + region
+        // FSM section: display / edit toggle
         var _curMeta=null;for(var i=0;i<_ccProjectMeta.length;i++){if(_ccProjectMeta[i].id===_ccContactsConfigProj){_curMeta=_ccProjectMeta[i];break;}}
-        if(_curMeta){
-          h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">';
-          h+='<div style="flex:1;min-width:150px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:5px">Project FSM</div>';
-          h+='<input id="cc-proj-fsm-name" type="text" value="'+(_curMeta.fsm&&_curMeta.fsm.name||'')+'" placeholder="FSM Name" style="'+_inpStyle.replace('margin-bottom:3px','margin-bottom:4px')+'"></div>';
-          h+='<div style="flex:1;min-width:150px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:5px">FSM Email</div>';
-          h+='<input id="cc-proj-fsm-email" type="email" value="'+(_curMeta.fsm&&_curMeta.fsm.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle.replace('margin-bottom:3px','margin-bottom:4px')+'color:#0891b2"></div>';
-          h+='<div style="flex:1;min-width:130px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400);margin-bottom:5px">FSM Phone</div>';
-          h+='<input id="cc-proj-fsm-phone" type="tel" value="'+(_curMeta.fsm&&_curMeta.fsm.phone||'')+'" placeholder="(555) ..." style="'+_inpStyle.replace('margin-bottom:3px','margin-bottom:4px')+'"></div>';
-          h+='<div style="flex:0 0 auto;padding:6px 12px;background:var(--g50);border-radius:6px;border:1px solid var(--g150);font-size:11px;color:var(--g500);white-space:nowrap;align-self:center">📍 '+_curMeta.region+' region</div>';
-          h+='</div>';
+        h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:12px 16px;margin-bottom:16px">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">';
+        h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g400)">Project FSM</div>';
+        if(!_ccEditFSM){
+          h+='<button onclick="_ccStartEditFSM()" style="padding:4px 10px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g600);cursor:pointer">Edit</button>';
+        } else {
+          h+='<div style="display:flex;gap:6px"><button onclick="_ccSaveFSM()" style="padding:4px 12px;background:#18181b;border:none;border-radius:5px;font-size:11px;font-weight:600;color:#fff;cursor:pointer">Save</button><button onclick="_ccCancelEdit()" style="padding:4px 10px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g600);cursor:pointer">Cancel</button></div>';
         }
-        // Contact table: pillar × (Global lead readonly) + (Regional mgr readonly) + (Coordinator editable)
+        h+='</div>';
+        if(_ccEditFSM){
+          h+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+          h+='<div style="flex:1;min-width:140px"><div style="font-size:10px;font-weight:600;color:var(--g400);margin-bottom:4px">Name</div><input id="cc-fsm-n" type="text" value="'+(_curMeta&&_curMeta.fsm?_curMeta.fsm.name||'':'')+'" placeholder="FSM Name" style="'+_inpStyle+'"></div>';
+          h+='<div style="flex:1;min-width:140px"><div style="font-size:10px;font-weight:600;color:var(--g400);margin-bottom:4px">Email</div><input id="cc-fsm-e" type="email" value="'+(_curMeta&&_curMeta.fsm?_curMeta.fsm.email||'':'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2"></div>';
+          h+='<div style="flex:1;min-width:120px"><div style="font-size:10px;font-weight:600;color:var(--g400);margin-bottom:4px">Phone</div><input id="cc-fsm-p" type="tel" value="'+(_curMeta&&_curMeta.fsm?_curMeta.fsm.phone||'':'')+'" placeholder="(555) ..." style="'+_inpStyle+'"></div>';
+          h+='</div>';
+        } else {
+          h+='<div style="font-size:13px;font-weight:600;color:var(--charcoal)">'+(_curMeta&&_curMeta.fsm&&_curMeta.fsm.name||'Not assigned')+'</div>';
+          if(_curMeta&&_curMeta.fsm&&_curMeta.fsm.email)h+='<div style="font-size:11.5px;color:#0891b2;margin-top:2px">'+_curMeta.fsm.email+'</div>';
+          if(_curMeta&&_curMeta.fsm&&_curMeta.fsm.phone)h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+_curMeta.fsm.phone+'</div>';
+        }
+        if(_curMeta)h+='<div style="margin-top:6px"><span style="font-size:10.5px;color:var(--g400);background:var(--g50);padding:2px 8px;border-radius:10px;border:1px solid var(--g150)">'+_curMeta.region+' region</span></div>';
+        h+='</div>';
+        // Coordinator table: display / edit per row
         var projRegion=_curMeta?_curMeta.region:'Northeast';
         h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Regional manager is inherited from the project\'s region — edit in the <em>Regional</em> tab. Set the project coordinator below.</div>';
         h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--g200)">';
         h+='<thead><tr style="background:var(--g50)">';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200);width:120px">Pillar</th>';
         h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Manager ('+projRegion+')</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g300);margin-top:1px">Inherited</div></th>';
-        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Coordinator (Project)</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400);margin-top:1px">Editable here</div></th>';
+        h+='<th style="text-align:left;padding:10px 14px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);border-bottom:1px solid var(--g200)"><div>Coordinator</div><div style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400);margin-top:1px">Project-level</div></th>';
+        h+='<th style="width:80px;border-bottom:1px solid var(--g200)"></th>';
         h+='</tr></thead><tbody>';
         _ALL_PILLARS.forEach(function(pillar){
           var regRow=null;for(var i=0;i<_ccRegionalMgrs.length;i++){if(_ccRegionalMgrs[i].region===projRegion&&_ccRegionalMgrs[i].pillar===pillar){regRow=_ccRegionalMgrs[i];break;}}
           var mgrP=regRow&&regRow.mgr||{name:'',email:''};
           var coordRow=null;for(var i=0;i<_ccContacts.length;i++){if(_ccContacts[i].proj===_ccContactsConfigProj&&_ccContacts[i].pillar===pillar){coordRow=_ccContacts[i];break;}}
           var coordP=coordRow&&coordRow.coord||{name:'',email:''};
+          var isEditing=_ccEditRow===pillar;
           h+='<tr style="border-bottom:1px solid var(--g100)">';
-          h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);vertical-align:top;white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
-          // Mgr — readonly
-          h+='<td style="padding:8px 10px;vertical-align:top;opacity:.7">';
+          h+='<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+(_PIL_LBL[pillar]||pillar)+'</td>';
+          h+='<td style="padding:8px 10px;opacity:.7">';
           if(mgrP.name){h+='<div style="font-size:12px;font-weight:500;color:var(--charcoal)">'+mgrP.name+'</div><div style="font-size:10.5px;color:#0891b2">'+mgrP.email+'</div>';}
           else h+='<span style="color:var(--g300);font-size:11px">—</span>';
           h+='</td>';
-          // Coordinator — editable
-          h+='<td style="padding:6px 10px;vertical-align:top">';
-          h+='<input id="cc-proj-coord-'+_ccContactsConfigProj+'-'+pillar+'-name" type="text" value="'+(coordP.name||'')+'" placeholder="Name" style="'+_inpStyle+'">';
-          h+='<input id="cc-proj-coord-'+_ccContactsConfigProj+'-'+pillar+'-email" type="email" value="'+(coordP.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2">';
-          h+='</td>';
+          if(!isEditing){
+            h+='<td style="padding:8px 10px">';
+            if(coordP.name){h+='<div style="font-size:12px;font-weight:600;color:var(--charcoal)">'+coordP.name+'</div><div style="font-size:10.5px;color:#0891b2">'+coordP.email+'</div>';}
+            else h+='<span style="color:var(--g300);font-size:11px">Not assigned</span>';
+            h+='</td>';
+            h+='<td style="padding:8px 10px;text-align:right"><button data-p="'+pillar+'" onclick="_ccStartEditRow(this.dataset.p)" style="padding:4px 10px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g600);cursor:pointer">Edit</button></td>';
+          } else {
+            h+='<td style="padding:5px 8px">';
+            h+='<input id="cc-row-'+_ccContactsConfigProj+'-'+pillar+'-n" type="text" value="'+(coordP.name||'')+'" placeholder="Name" style="'+_inpStyle+'">';
+            h+='<input id="cc-row-'+_ccContactsConfigProj+'-'+pillar+'-e" type="email" value="'+(coordP.email||'')+'" placeholder="email@02s.com" style="'+_inpStyle+'color:#0891b2">';
+            h+='</td>';
+            h+='<td style="padding:5px 8px;white-space:nowrap;text-align:right">';
+            h+='<button data-p="'+pillar+'" onclick="_ccSaveRow(this.dataset.p)" style="padding:4px 10px;background:#18181b;border:none;border-radius:5px;font-size:11px;font-weight:600;color:#fff;cursor:pointer;margin-right:4px">Save</button>';
+            h+='<button onclick="_ccCancelEdit()" style="padding:4px 8px;background:#fff;border:1px solid var(--g200);border-radius:5px;font-size:11px;font-weight:600;color:var(--g500);cursor:pointer">✕</button>';
+            h+='</td>';
+          }
           h+='</tr>';
         });
         h+='</tbody></table></div>';
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">';
-        h+='<div style="font-size:11.5px;color:var(--g500)">Changes reflect in the Customer Portal contact matrix immediately.</div>';
-        h+='<button onclick="_ccSaveContactConfig()" style="padding:8px 20px;background:#18181b;border:none;border-radius:7px;color:#fff;font-size:12.5px;font-weight:600;cursor:pointer">Save project contacts</button>';
-        h+='</div>';
       }
     }
     mount.innerHTML=h;
