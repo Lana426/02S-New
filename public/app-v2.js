@@ -3847,6 +3847,7 @@
   function _stcCCSetProjFilter(f){_stcCCProjFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
   function _stcCCSetTypeFilter(f){_stcCCTypeFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
   function _stcCCSetView(v){_stcCCView=v;_stcCCDrillOpen=null;renderSTC_CC();}
+  function _stcCCSetTaskGroup(g){window._stcTasksGroupBy=g;renderSTC_CC();}
 
 
   function _stcCCSaveMinMax(idx){
@@ -4560,7 +4561,7 @@
     h+='<div style="display:flex;align-items:center;gap:0;margin-bottom:14px">';
     [['activity','By activity'],['item','By item'],['person','By person']].forEach(function(f){
       var sel=_grp===f[0];
-      h+='<button onclick="window._stcTasksGroupBy=\''+f[0]+'\';renderSTC_CC()" style="padding:5px 13px;font-size:12px;font-weight:600;border:1px solid var(--g200);background:'+(sel?'var(--g900)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer;border-right:none;'+('activity'===f[0]?'border-radius:6px 0 0 6px':'person'===f[0]?'border-radius:0 6px 6px 0;border-right:1px solid var(--g200)':'')+'">'+f[1]+'</button>';
+      h+='<button onclick="_stcCCSetTaskGroup(\''+f[0]+'\')" style="padding:5px 13px;font-size:12px;font-weight:600;border:1px solid var(--g200);background:'+(sel?'var(--g900)':'#fff')+';color:'+(sel?'#fff':'var(--g600)')+';cursor:pointer;border-right:none;'+('activity'===f[0]?'border-radius:6px 0 0 6px':'person'===f[0]?'border-radius:0 6px 6px 0;border-right:1px solid var(--g200)':'')+'">'+f[1]+'</button>';
     });
     h+='<span style="flex:1"></span>';
     h+='<span style="font-size:12px;font-weight:600;color:var(--g600)">'+openCount+' open · '+doneCount+' done</span>';
