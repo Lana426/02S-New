@@ -12100,7 +12100,10 @@ charges:[
     var qtyApr=sp.pendingRelease||0;
     sp.state='Released';sp.ordId='ORD-501'+(2+spIdx);sp.subState='Work Order Created';
     sp.qty=qtyApr;delete sp.pendingRelease;
+    var _exp=Array.from(document.querySelectorAll('[id^="dpx-"]')).filter(function(el){return el.style.display!=='none';}).map(function(el){return el.id;});
     renderCcDemand(p);
+    _exp.forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='block';});
+    toast('Approved — release queued for production');
   }
   function ccAddSplit(p,proj,rowIdx){
     var pkg=CC_PROJ_DP[p];if(!pkg)return;var cfg=pkg[proj];if(!cfg)return;
@@ -13930,7 +13933,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       varSummary:'MV switchgear and BESS containers are past order-by — PO release critical for Nov substation date. Tools & consumables $103K across the portfolio.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'MV switchgear and BESS containers share the same OEM (Eaton/Tesla). Combine POs to hit the next volume tier and shorten lead time by 2 weeks.'} },
     prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
-      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies planned',v:'13',sub:'3 assembly types',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On-track to need date',v:'11 of 13',sub:'2 off track · date-shifted',tone:'warn',icon:'chart'}],
+      kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies in plan',v:'13',sub:'across all projects',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On schedule',v:'12 of 13',sub:'1 off track · Bathroom batteries',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'',
       rows:[
@@ -17042,7 +17045,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add FPO',addTitle:'Add FPO',addBtnLabel:'Add FPO to plan',
-      vitals:[{label:'Assemblies planned',value:'13',sub:'3 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'3',sub:'active order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$476K',sub:'+ 2 pending pricing',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'11 of 13',sub:'2 off track · needs attention',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'4 of 6',sub:'2 off track — needs attention',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
