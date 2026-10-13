@@ -2884,17 +2884,62 @@
     r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 8, 2026',text:note}]);
     renderSTC();toast('Return request submitted — 02S will coordinate pickup.');
   }
-  function _stcRequestLineReturn(idx,li){
+  function _stcOpenReturnModal(idx,li){
     var r=_stcAllReqs[idx];if(!r||!r.spLineItems||!r.spLineItems[li])return;
     var item=r.spLineItems[li];
+    _stcReturnModal={reqIdx:idx,lineIdx:li,maxQty:item.qty,item:item,bundleName:r.bundleName||r.desc,proj:r.proj};
+    renderSTC();
+  }
+  function _stcCloseReturnModal(){_stcReturnModal=null;var ov=document.getElementById('stc-ret-modal-ov');if(ov)ov.remove();}
+  function _stcSubmitReturn(){
+    var m=_stcReturnModal;if(!m)return;
+    var r=_stcAllReqs[m.reqIdx];if(!r)return;
+    var qtyEl=document.getElementById('stc-ret-qty');
+    var dateEl=document.getElementById('stc-ret-date');
+    var qty=qtyEl?Math.max(1,Math.min(parseInt(qtyEl.value)||1,m.maxQty)):m.maxQty;
+    var dateVal=dateEl&&dateEl.value?new Date(dateEl.value+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):null;
     var projCode=(_stcProjCodes&&_stcProjCodes[r.proj])||r.proj.toUpperCase().slice(0,3);
     var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    var note='Return requested for line '+item.no+': '+item.desc+' (Qty '+item.qty+')';
+    var note='Return requested — '+m.item.desc+' · Qty '+qty+(dateVal?' · Pickup by '+dateVal:'');
     r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:note}]);
-    _stcReturnRequests.push({proj:r.proj,projCode:projCode,bundleName:r.bundleName||r.desc,itemDesc:item.desc,qty:item.qty,uom:item.uom||'EA',reqIdx:idx,lineIdx:li,date:now,dismissed:false});
+    _stcReturnRequests.push({proj:r.proj,projCode:projCode,bundleName:m.bundleName,itemDesc:m.item.desc,qty:qty,uom:m.item.uom||'EA',pickupDate:dateVal,reqIdx:m.reqIdx,lineIdx:m.lineIdx,date:now,dismissed:false,response:null});
+    _stcReturnModal=null;
     renderSTC();
     renderSTC_CC();
     toast('Return request submitted — 02S will coordinate pickup.');
+  }
+  function _stcReturnModalHTML(){
+    var m=_stcReturnModal;if(!m)return '';
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--g900);outline:none;background:#fff';
+    var h='<div id="stc-ret-modal-ov" onclick="if(event.target===this)_stcCloseReturnModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Request return</div>';
+    h+='<button onclick="_stcCloseReturnModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    h+='<div style="padding:20px;display:flex;flex-direction:column;gap:16px">';
+    h+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:8px;padding:10px 14px">';
+    h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">'+m.item.desc+'</div>';
+    h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+m.bundleName+' · On-hand: '+m.maxQty+' '+(m.item.uom||'EA')+'</div>';
+    h+='</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    h+='<div>';
+    h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:6px">Return qty</label>';
+    h+='<input id="stc-ret-qty" type="number" min="1" max="'+m.maxQty+'" value="'+m.maxQty+'" style="'+iS+'">';
+    h+='<div style="font-size:10.5px;color:var(--g400);margin-top:4px">Max: '+m.maxQty+' '+( m.item.uom||'EA')+'</div>';
+    h+='</div>';
+    h+='<div>';
+    h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:6px">Pickup by</label>';
+    h+='<input id="stc-ret-date" type="date" style="'+iS+'">';
+    h+='</div>';
+    h+='</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcCloseReturnModal()" style="flex:1;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';
+    h+='<button onclick="_stcSubmitReturn()" style="flex:1;padding:9px;border:none;border-radius:8px;background:#18181b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Submit return</button>';
+    h+='</div>';
+    h+='</div></div>';
+    return h;
   }
   function _stcClearItem(){_stcModal.selectedItem=null;_stcUpdateModalOnly();}
   function _stcSelectItem(mi){
@@ -3240,7 +3285,7 @@
         h+='<td style="padding:6px 8px;text-align:right;color:var(--g700);font-variant-numeric:tabular-nums">$'+li.price+'</td>';
         h+='<td style="padding:6px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+(li.ext||li.price*li.qty||0).toLocaleString()+'</td>';
         if(spActive){
-          h+='<td style="padding:6px 8px;text-align:center"><button onclick="event.stopPropagation();_stcRequestLineReturn('+idx+','+i+')" style="font-size:11px;font-weight:600;padding:3px 9px;border:1.5px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Return</button></td>';
+          h+='<td style="padding:6px 8px;text-align:center"><button onclick="event.stopPropagation();_stcOpenReturnModal('+idx+','+i+')" style="font-size:11px;font-weight:600;padding:3px 9px;border:1.5px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Return</button></td>';
         }
         h+='</tr>';
       });
@@ -3487,6 +3532,8 @@
     if(_stcModal.open){document.body.insertAdjacentHTML('beforeend',_stcModalHTML());}
     var _qrov=document.getElementById('stcqrev-ov');if(_qrov)_qrov.remove();
     if(_stcQReviewModal!==null){document.body.insertAdjacentHTML('beforeend',_stcQReviewModalHTML());}
+    var _retov=document.getElementById('stc-ret-modal-ov');if(_retov)_retov.remove();
+    if(_stcReturnModal!==null){document.body.insertAdjacentHTML('beforeend',_stcReturnModalHTML());}
   }
 
   function _stcBuildLookahead(rows){
@@ -3848,6 +3895,50 @@
     }
     el.style.display=isOpen?'none':'block';
     _stcCCDrillOpen=isOpen?null:idx;
+  }
+  function _stcOpenReturnAck(rrIdx){_stcCCReturnAckModal=rrIdx;renderSTC_CC();}
+  function _stcCloseReturnAck(){_stcCCReturnAckModal=null;var ov=document.getElementById('stc-cc-retack-ov');if(ov)ov.remove();}
+  function _stcSendReturnAck(){
+    var rrIdx=_stcCCReturnAckModal;if(rrIdx===null||rrIdx===undefined)return;
+    var rr=_stcReturnRequests[rrIdx];if(!rr)return;
+    var msgEl=document.getElementById('stc-cc-retack-msg');
+    var msg=msgEl?msgEl.value.trim():'';
+    var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    rr.dismissed=true;
+    rr.response={msg:msg||'02S has acknowledged your return request and will be in touch to coordinate pickup.',when:now};
+    var r=_stcAllReqs[rr.reqIdx];
+    if(r){r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:now,text:'Return acknowledged — '+(msg||'02S will coordinate pickup.')}]);}
+    _stcCCReturnAckModal=null;
+    renderSTC_CC();
+    renderSTC();
+    toast('Message sent to project team.');
+  }
+  function _stcCCReturnAckModalHTML(){
+    var rrIdx=_stcCCReturnAckModal;if(rrIdx===null||rrIdx===undefined)return '';
+    var rr=_stcReturnRequests[rrIdx];if(!rr)return '';
+    var h='<div id="stc-cc-retack-ov" onclick="if(event.target===this)_stcCloseReturnAck()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100002;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Acknowledge return</div>';
+    h+='<button onclick="_stcCloseReturnAck()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    h+='<div style="padding:20px;display:flex;flex-direction:column;gap:14px">';
+    h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px">';
+    h+='<div style="font-size:12px;font-weight:700;color:#92400e">'+rr.projCode+' · '+rr.itemDesc+'</div>';
+    h+='<div style="font-size:11px;color:#78350f;margin-top:2px">Qty '+rr.qty+' '+rr.uom+' from '+rr.bundleName+(rr.pickupDate?' · Requested pickup by '+rr.pickupDate:'')+'</div>';
+    h+='<div style="font-size:10.5px;color:#b45309;margin-top:3px">Requested '+rr.date+'</div>';
+    h+='</div>';
+    h+='<div>';
+    h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:6px">Message to project team</label>';
+    h+='<textarea id="stc-cc-retack-msg" rows="3" placeholder="e.g. Confirmed — 02S will schedule pickup Oct 20. Please leave items at staging area near east gate." onclick="event.stopPropagation()" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;color:var(--g900);resize:vertical;outline:none;background:#fff"></textarea>';
+    h+='</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcCloseReturnAck()" style="flex:1;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';
+    h+='<button onclick="_stcSendReturnAck()" style="flex:1;padding:9px;border:none;border-radius:8px;background:#18181b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Send message →</button>';
+    h+='</div>';
+    h+='</div></div>';
+    return h;
   }
   function _stcCCSetProjFilter(f){_stcCCProjFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
   function _stcCCSetTypeFilter(f){_stcCCTypeFilter=f;_stcCCDrillOpen=null;renderSTC_CC();}
@@ -4333,6 +4424,8 @@
   var _stcCCActOpenId=null;
   var _stcYardNotifOpen=false;
   var _stcReturnRequests=[];
+  var _stcReturnModal=null;  // {reqIdx,lineIdx,maxQty,item,bundleName,proj}
+  var _stcCCReturnAckModal=null; // index into _stcReturnRequests
 
   function _stcCCActToggle(oid){_stcCCActOpenId=(_stcCCActOpenId===oid)?null:oid;renderSTC_CC();}
   function _stcCCActSetStatus(oid,ai,v){var acts=_stcCCActivities[oid];if(acts&&acts[ai])acts[ai].status=v;renderSTC_CC();}
@@ -4716,7 +4809,7 @@
         h+='<span style="font-size:12.5px;color:#78350f"> — project team has requested a return of <b>'+rr.itemDesc+'</b> (Qty '+rr.qty+' '+rr.uom+') from '+rr.bundleName+'.</span>';
         h+='<div style="font-size:11px;color:#b45309;margin-top:3px">'+rr.date+'</div>';
         h+='</div>';
-        h+='<button onclick="_stcReturnRequests['+rrIdx+'].dismissed=true;renderSTC_CC()" style="font-size:11px;border:1px solid #fcd34d;border-radius:5px;padding:4px 10px;background:#fff;color:#92400e;cursor:pointer;font-weight:600;white-space:nowrap;flex-shrink:0">Acknowledge</button>';
+        h+='<button onclick="_stcOpenReturnAck('+rrIdx+')" style="font-size:11px;border:1px solid #fcd34d;border-radius:5px;padding:4px 10px;background:#fff;color:#92400e;cursor:pointer;font-weight:600;white-space:nowrap;flex-shrink:0">Acknowledge</button>';
         h+='</div>';
       });
     }
@@ -4838,6 +4931,8 @@
     if(_stcCCQModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCQuoteModalHTML());}
     var _vcov=document.getElementById('stcccv-ov');if(_vcov)_vcov.remove();
     if(_stcCCViewModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCViewModalHTML());}
+    var _rackov=document.getElementById('stc-cc-retack-ov');if(_rackov)_rackov.remove();
+    if(_stcCCReturnAckModal!==null){document.body.insertAdjacentHTML('beforeend',_stcCCReturnAckModalHTML());}
   }
   
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
