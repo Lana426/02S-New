@@ -3838,6 +3838,23 @@
       h+='<button onclick="event.stopPropagation();_stcOpenCCViewModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;flex-shrink:0">View quote →</button>';
       h+='</div>';
     }
+    // SP: order lines table (released / fulfilled — pending has its own inline table)
+    if(r.type==='sp'&&r.status!=='pending'&&r.spLineItems&&r.spLineItems.length){
+      h+='<div style="border-top:1px solid var(--g150);padding:10px 18px 10px">';
+      h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:8px">Order lines</div>';
+      h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+      var _ccth='<th style="font-size:11px;font-weight:700;color:var(--g600);padding:5px 8px;text-align:';
+      h+='<thead style="background:var(--g50)"><tr>'+_ccth+'center">#</th>'+_ccth+'left">Description</th>'+_ccth+'center">Qty</th>'+_ccth+'center">UOM</th>'+_ccth+'right">Unit Price</th>'+_ccth+'right">Extended</th></tr></thead><tbody>';
+      r.spLineItems.forEach(function(li,i){
+        h+='<tr style="background:'+(i%2===0?'#fff':'var(--g50)')+'"><td style="padding:6px 8px;text-align:center;color:var(--g400)">'+li.no+'</td>';
+        h+='<td style="padding:6px 8px;color:var(--g900)">'+li.desc+'</td>';
+        h+='<td style="padding:6px 8px;text-align:center;color:var(--g700)">'+li.qty+'</td>';
+        h+='<td style="padding:6px 8px;text-align:center;color:var(--g500)">'+(li.uom||'EA')+'</td>';
+        h+='<td style="padding:6px 8px;text-align:right;color:var(--g700);font-variant-numeric:tabular-nums">$'+li.price+'</td>';
+        h+='<td style="padding:6px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+(li.ext||li.price*li.qty||0).toLocaleString()+'</td></tr>';
+      });
+      h+='</tbody></table></div></div>';
+    }
     // SP: confirm order (pending) + yard availability request
     if(r.type==='sp'&&r.status==='pending'){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
