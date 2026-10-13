@@ -10035,19 +10035,16 @@ charges:[
   ];
   var _ccProjEscalation={
     hercules:[
-      {role:'Primary PM',name:'Sarah Chen',phone:'(555) 482-3100',email:'s.chen@mccarthy.com'},
-      {role:'Site Lead',name:'Dan Reyes',phone:'(555) 482-3120',email:'d.reyes@mccarthy.com'},
-      {role:'Safety / After-Hours',name:'Tom Okafor',phone:'(555) 482-3145',email:'t.okafor@mccarthy.com'}
+      {role:'Project Manager',name:'Sarah Chen',phone:'(555) 482-3100',email:'s.chen@mccarthy.com'},
+      {role:'Director',name:'Dan Reyes',phone:'(555) 482-3120',email:'d.reyes@mccarthy.com'}
     ],
     barryrose:[
-      {role:'Primary PM',name:'Lisa Drummond',phone:'(555) 520-4200',email:'l.drummond@mccarthy.com'},
-      {role:'Site Lead',name:'Hector Villa',phone:'(555) 520-4215',email:'h.villa@mccarthy.com'},
-      {role:'Safety',name:'Priya Khatri',phone:'(555) 520-4230',email:'p.khatri@mccarthy.com'}
+      {role:'Project Manager',name:'Lisa Drummond',phone:'(555) 520-4200',email:'l.drummond@mccarthy.com'},
+      {role:'Director',name:'Hector Villa',phone:'(555) 520-4215',email:'h.villa@mccarthy.com'}
     ],
     vdc14:[
-      {role:'Primary PM',name:'Kevin Tremblay',phone:'(555) 601-7800',email:'k.tremblay@mccarthy.com'},
-      {role:'Site Lead',name:'Amber Yoo',phone:'(555) 601-7815',email:'a.yoo@mccarthy.com'},
-      {role:'Safety / After-Hours',name:'Marcus Diaz',phone:'(555) 601-7830',email:'m.diaz@mccarthy.com'}
+      {role:'Project Manager',name:'Kevin Tremblay',phone:'(555) 601-7800',email:'k.tremblay@mccarthy.com'},
+      {role:'Director',name:'Amber Yoo',phone:'(555) 601-7815',email:'a.yoo@mccarthy.com'}
     ]
   };
   var _ccContactsTab='inbox';
