@@ -2551,7 +2551,7 @@
      notes:[{who:'02S Logistics',when:'Sep 25 2026',text:'Auto-approved — total $340, within $500 threshold. Released to T3, delivery by Oct 5.'}],attachments:[]},
     {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
-     desc:'Fall Protection Kit',status:'in_fulfillment',needBy:'2026-10-12',ccCategorized:true,
+     desc:'Fall Protection Kit',status:'fulfilled',needBy:'2026-10-12',ccCategorized:true,
      costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,price:2580,qty:1,
      spLineItems:[
        {no:1,desc:'Fall protection harness (Petzl Avao Bod)',qty:12,uom:'EA',price:195,ext:2340},
