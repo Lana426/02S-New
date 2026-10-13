@@ -16176,28 +16176,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         h+='</div>';
       }
     }
-    if(isDpView&&p==='prefab'){
-      var _pfbAhRows=cfg.rows.filter(function(r){return r.project===_PROJ_MATCH[selProj];});
-      if(_pfbAhRows.length){
-        h+='<div class="eq-toolbar" style="margin-top:18px"><span class="dp-sec-t" style="font-size:12px">'
-          +svg(dpIcon('layers'))+'Ad hoc orders</span><span class="spacer"></span>'
-          +'<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="ccGo(\'fulfill\')">View fulfillment queue →</button>'
-          +'<span style="font-size:11px;color:var(--g500);margin-left:8px">'+_pfbAhRows.length+' order'+(_pfbAhRows.length!==1?'s':'')+'</span></div>';
-        var _pfbAhGt='1fr 1.3fr 110px 90px 150px';
-        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+_pfbAhGt+'">'
-          +'<span>Order</span><span>Asset</span><span>Stage</span><span>Status</span><span></span></div>';
-        _pfbAhRows.forEach(function(r2){
-          var tone=r2.decTone||'neu';
-          h+='<div class="dp-row" style="grid-template-columns:'+_pfbAhGt+'">'
-            +'<div style="font-weight:600">'+r2.id+'</div>'
-            +'<div style="font-size:11.5px;color:var(--g600)">'+r2.asset+'</div>'
-            +'<div><span class="tag '+tone+'">'+r2.dec+'</span></div>'
-            +'<div style="font-size:11.5px;color:var(--g500)">'+r2.status+'</div>'
-            +'<div><button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 8px;white-space:nowrap" onclick="ccGoFulfill(\''+r2.id+'\')">→ Fulfillment queue</button></div></div>';
-        });
-        h+='</div>';
-      }
-    }
+
     if(ns&&cfg.consol){ var cs=cfg.consol; h+='<div class="dp-consol">'+CC_SPARK+'<div class="dcx"><div class="dct">Cross-project consolidation <span class="dcsave">saves '+cs.save+'</span></div><div class="dcd">'+cs.detail+'</div></div><button class="btn btn-red btn-sm" onclick="dpConsolidate(\''+p+'\')">'+cs.cta+'</button></div>'; }
         var pillarQ=CC_QUOTES.filter(function(q){return q.pillar===p;});
     if(pillarQ.length&&p!=='prefab'){
