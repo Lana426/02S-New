@@ -2551,7 +2551,7 @@
      notes:[{who:'02S Logistics',when:'Sep 25 2026',text:'Auto-approved — total $340, within $500 threshold. Released to T3, delivery by Oct 5.'}],attachments:[]},
     {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
-     desc:'Fall Protection Kit',status:'released',needBy:'2026-10-12',ccCategorized:true,
+     desc:'Fall Protection Kit',status:'in_fulfillment',needBy:'2026-10-12',ccCategorized:true,
      costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,price:2580,qty:1,
      spLineItems:[
        {no:1,desc:'Fall protection harness (Petzl Avao Bod)',qty:12,uom:'EA',price:195,ext:2340},
@@ -2752,11 +2752,11 @@
       '<path d="M20 6L9 17l-5-5"/>',
       '<circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>'
     ],
-    stageOf:function(r){var m={requested:0,draft:0,scoping:1,quoted:1,pending:2,approved:3,released:4,fulfilled:5,returned:5,closed:5};return m[r.status]!=null?m[r.status]:0;}
+    stageOf:function(r){var m={requested:0,draft:0,scoping:1,quoted:1,pending:2,approved:3,released:4,in_fulfillment:4,fulfilled:5,returned:5,closed:5};return m[r.status]!=null?m[r.status]:0;}
   };
 
   var _stcTone={requested:'neu',draft:'neu',scoping:'warn',quoted:'warn',pending:'warn',approved:'warn',released:'ok',fulfilled:'ok',returned:'neu',closed:'neu'};
-  var _stcLbl={requested:'Draft',draft:'Draft',scoping:'In Scoping / Pricing',quoted:'Pending Approval',pending:'Pending Approval',approved:'Approved',released:'Released to Order',fulfilled:'Fulfilled / Delivered',returned:'Returned (Rental only)',closed:'Completed / Closed'};
+  var _stcLbl={requested:'Draft',draft:'Draft',scoping:'In Scoping / Pricing',quoted:'Pending Approval',pending:'Pending Approval',approved:'Approved',released:'Released to Order',in_fulfillment:'In Fulfillment',fulfilled:'Fulfilled / Delivered',returned:'Returned (Rental only)',closed:'Completed / Closed'};
   var _stcTC={ok:'#15803d',warn:'#b45309',bad:'#b91c1c',neu:'var(--g500)'};
   var _stcTB={ok:'#f0fdf4',warn:'#fefce8',bad:'#fef2f2',neu:'var(--g100)'};
 
@@ -2887,9 +2887,14 @@
   function _stcRequestLineReturn(idx,li){
     var r=_stcAllReqs[idx];if(!r||!r.spLineItems||!r.spLineItems[li])return;
     var item=r.spLineItems[li];
-    var note='Off-rent request for line '+item.no+': '+item.desc+' (Qty '+item.qty+')';
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 9, 2026',text:note}]);
-    renderSTC();toast('Off-rent request submitted for '+item.desc+' — 02S will coordinate.');
+    var projCode=(_stcProjCodes&&_stcProjCodes[r.proj])||r.proj.toUpperCase().slice(0,3);
+    var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    var note='Return requested for line '+item.no+': '+item.desc+' (Qty '+item.qty+')';
+    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:note}]);
+    _stcReturnRequests.push({proj:r.proj,projCode:projCode,bundleName:r.bundleName||r.desc,itemDesc:item.desc,qty:item.qty,uom:item.uom||'EA',reqIdx:idx,lineIdx:li,date:now,dismissed:false});
+    renderSTC();
+    renderSTC_CC();
+    toast('Return request submitted — 02S will coordinate pickup.');
   }
   function _stcClearItem(){_stcModal.selectedItem=null;_stcUpdateModalOnly();}
   function _stcSelectItem(mi){
@@ -3223,10 +3228,10 @@
     if(r.type==='sp'&&r.spLineItems&&r.spLineItems.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 8px">';
       h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Order lines</div>';
-      var spActive=r.status==='fulfilled';
+      var spActive=r.status==='fulfilled'||r.status==='in_fulfillment';
       h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
       var th2='<th style="font-size:11px;font-weight:700;color:var(--g600);padding:5px 8px;text-align:';
-      h+='<thead style="background:var(--g50)"><tr>'+th2+'center">#</th>'+th2+'left">Description</th>'+th2+'center">Qty</th>'+th2+'center">UOM</th>'+th2+'right">Unit Price</th>'+th2+'right">Extended</th>'+(spActive?th2+'center">Off-rent</th>':'')+'</tr></thead><tbody>';
+      h+='<thead style="background:var(--g50)"><tr>'+th2+'center">#</th>'+th2+'left">Description</th>'+th2+'center">Qty</th>'+th2+'center">UOM</th>'+th2+'right">Unit Price</th>'+th2+'right">Extended</th>'+(spActive?th2+'center">Return</th>':'')+'</tr></thead><tbody>';
       r.spLineItems.forEach(function(li,i){
         h+='<tr style="background:'+(i%2===0?'#fff':'var(--g50)')+'"><td style="padding:6px 8px;text-align:center;color:var(--g400)">'+li.no+'</td>';
         h+='<td style="padding:6px 8px;color:var(--g900)">'+li.desc+'</td>';
@@ -3235,7 +3240,7 @@
         h+='<td style="padding:6px 8px;text-align:right;color:var(--g700);font-variant-numeric:tabular-nums">$'+li.price+'</td>';
         h+='<td style="padding:6px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+(li.ext||li.price*li.qty||0).toLocaleString()+'</td>';
         if(spActive){
-          h+='<td style="padding:6px 8px;text-align:center"><button onclick="event.stopPropagation();_stcRequestLineReturn('+idx+','+i+')" style="font-size:11px;font-weight:600;padding:3px 9px;border:1.5px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Off-rent →</button></td>';
+          h+='<td style="padding:6px 8px;text-align:center"><button onclick="event.stopPropagation();_stcRequestLineReturn('+idx+','+i+')" style="font-size:11px;font-weight:600;padding:3px 9px;border:1.5px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Return</button></td>';
         }
         h+='</tr>';
       });
@@ -4327,6 +4332,7 @@
   };
   var _stcCCActOpenId=null;
   var _stcYardNotifOpen=false;
+  var _stcReturnRequests=[];
 
   function _stcCCActToggle(oid){_stcCCActOpenId=(_stcCCActOpenId===oid)?null:oid;renderSTC_CC();}
   function _stcCCActSetStatus(oid,ai,v){var acts=_stcCCActivities[oid];if(acts&&acts[ai])acts[ai].status=v;renderSTC_CC();}
@@ -4665,7 +4671,7 @@
     var totAll=_stcAllReqs.length;
     var pendAll=_stcAllReqs.filter(function(r){return r.status==='draft';}).length;
     var quotedAll=_stcAllReqs.filter(function(r){return r.status==='approved';}).length;
-    var activeAll=_stcAllReqs.filter(function(r){return r.status==='released'||r.status==='fulfilled';}).length;
+    var activeAll=_stcAllReqs.filter(function(r){return r.status==='released'||r.status==='in_fulfillment'||r.status==='fulfilled';}).length;
     var _stcStatusOrder={draft:0,approved:1,released:2,fulfilled:3};
     var rows=_stcAllReqs.slice();
     if(_stcCCProjFilter!=='all')rows=rows.filter(function(r){return r.proj===_stcCCProjFilter;});
@@ -4698,6 +4704,22 @@
     h+='</div>';
     if(!_stcYardNotifOpen){h+='<button onclick="_stcYardNotifOpen=true;renderSTC_CC()" style="font-size:11.5px;border:1px solid #86efac;border-radius:5px;padding:4px 10px;background:#fff;color:#15803d;cursor:pointer;font-weight:600;white-space:nowrap">Reply</button>';}
     h+='</div>';
+    // Return requests notification
+    var _pendingReturns=_stcReturnRequests.filter(function(rr){return !rr.dismissed;});
+    if(_pendingReturns.length){
+      _pendingReturns.forEach(function(rr,ri){
+        var rrIdx=_stcReturnRequests.indexOf(rr);
+        h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px">';
+        h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;margin-top:2px"><path d="M9 15L3 9l6-6M3 9h13a5 5 0 010 10h-1"/></svg>';
+        h+='<div style="flex:1;min-width:0">';
+        h+='<span style="font-size:12.5px;font-weight:700;color:#92400e">'+rr.projCode+' · Return request</span>';
+        h+='<span style="font-size:12.5px;color:#78350f"> — project team has requested a return of <b>'+rr.itemDesc+'</b> (Qty '+rr.qty+' '+rr.uom+') from '+rr.bundleName+'.</span>';
+        h+='<div style="font-size:11px;color:#b45309;margin-top:3px">'+rr.date+'</div>';
+        h+='</div>';
+        h+='<button onclick="_stcReturnRequests['+rrIdx+'].dismissed=true;renderSTC_CC()" style="font-size:11px;border:1px solid #fcd34d;border-radius:5px;padding:4px 10px;background:#fff;color:#92400e;cursor:pointer;font-weight:600;white-space:nowrap;flex-shrink:0">Acknowledge</button>';
+        h+='</div>';
+      });
+    }
     h+='<div style="display:flex;gap:4px;padding-bottom:10px;border-bottom:1px solid var(--g100);margin-bottom:10px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
       var act=_stcCCProjFilter===pr[0];
