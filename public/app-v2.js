@@ -1570,8 +1570,8 @@
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add FPO',addTitle:'Add FPO',addBtnLabel:'Add FPO to plan',
-      vitals:[{label:'Assemblies planned',value:'13',sub:'3 assembly types',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'3',sub:'active order lines',tone:'info',icon:IC.box},{label:'Committed',value:'$476K',sub:'+ 2 pending pricing',tone:'ok',icon:IC.dollar},{label:'On-track to need date',value:'11 of 13',sub:'2 off track · needs attention',tone:'warn',icon:IC.chart}],
-      v1:'13 assemblies planned · 3 in fabrication · MV Stuffed Rack and Bathroom batteries pending submittal approval.',
+      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'4 of 6',sub:'2 off track — needs attention',tone:'warn',icon:IC.chart}],
+      v1:'6 assemblies in plan · 2 in fabrication · MV Stuffed Rack and Bathroom batteries pending submittal approval.',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
@@ -5073,7 +5073,7 @@
     function splitRow(sp,i){
       var released=sp.state==='Released';
       var hasPending=!released&&(sp.pendingRelease||0)>0;
-      var subSt=released&&sp.subState?'<br><span style="font-size:10px;color:var(--g400);font-style:italic">'+sp.subState+'</span>':'';
+      var subSt='';
       return '<tr style="border-bottom:1px solid var(--border)">'
         +'<td style="padding:8px 10px;font-size:12px;color:var(--g400)">'+(i+1)+'</td>'
         +'<td style="padding:8px 10px;font-size:13px;font-weight:600">'+sp.qty+' units</td>'
@@ -5128,7 +5128,7 @@
       +'<button onclick="var q=document.getElementById(\'fpo-next-qty\');q.value=Math.max(1,+q.value-10)" style="padding:2px 9px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;font-size:13px;font-weight:700">−</button>'
       +'<input id="fpo-next-qty" type="number" min="1" value="'+_defNext+'" style="width:60px;text-align:center;border:1px solid var(--g200);border-radius:4px;padding:3px 5px;font-size:13px;font-weight:600">'
       +'<button onclick="var q=document.getElementById(\'fpo-next-qty\');q.value=+q.value+10" style="padding:2px 9px;border:1px solid var(--g200);border-radius:4px;background:#fff;cursor:pointer;font-size:13px;font-weight:700">+</button>'
-      +'<button onclick="_queueFpoRelease(\''+pk+'\','+rowIdx+')" style="padding:4px 14px;background:#1d4ed8;border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">Request release to 02S →</button>'
+      +'<button onclick="_queueFpoRelease(\''+pk+'\','+rowIdx+')" style="padding:4px 14px;background:#1d4ed8;border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">Add release</button>'
       +'</div></div>';
     body+=openModal('FPO Release Plan \u2014 '+(row.asm||row.item||''),body);
   }
@@ -5176,7 +5176,7 @@
     function splitRow(sp,i){
       var released=sp.state==='Released';
       var hasPending=(sp.pendingRelease||0)>0;
-      var subSt=released&&sp.subState?'<br><span style="font-size:10px;color:#6b7280;font-style:italic">'+sp.subState+'</span>':'';
+      var subSt='';
       return '<tr style="border-bottom:1px solid #e5e7eb">'
         +'<td style="padding:8px 10px;font-size:12px;color:#6b7280">'+(i+1)+'</td>'
         +'<td style="padding:8px 10px;font-size:13px;font-weight:600">'+sp.qty+' units</td>'
@@ -8092,7 +8092,7 @@ charges:[
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     if(pk==='logistics'){var _st=r.status||r.state;var _coRQ=(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id&&c.status==='quote_revised';});if(_coRQ)h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();openCpRevisedQuoteModal(\''+_coRQ.id+'\')">Revised quote ready →</button>';if(_st==='Draft')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Submitted for scoping — 02S will contact you to begin pricing.\')">Submit for Scoping / Pricing</button>';else if(_st==='Pending Approval'){h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();toast(\'Approved — 02S will release to order.\')">Approve →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Revise / Resubmit</button>';}else if(_st==='Fulfilled / Delivered')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Off-rent request submitted — 02S will coordinate pickup.\')">Request Off-Rent</button>';else if(_st!=='Completed / Closed'&&_st!=='Returned'&&_st!=='Fulfilled / Delivered'&&_st!=='In Scoping / Pricing'&&_st!=='Approved'&&_st!=='Released to Order')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Submit change order</button>';}
     h+='</div>';
-    if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPO Releases</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs=sp.state==='Released'&&sp.subState?'<span style="font-size:10px;color:var(--g400);margin-left:4px">· '+sp.subState+'</span>':'';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
+    if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPO Releases</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs='';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
     return h;
   }
 
@@ -12090,7 +12090,7 @@ charges:[
     var pendingSplits=row.splits.filter(function(s){return s.pendingRelease>0;});
     if(!pendingSplits.length)return;
     var sp=pendingSplits[0];var spIdx=row.splits.indexOf(sp);
-    var body='<div style="margin-bottom:14px">'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:6px">Project team triggered <b style="color:#1d4ed8">'+sp.pendingRelease+' units</b> for release</div>'+'<div style="font-size:11.5px;color:var(--g600)">'+sp.note+' &middot; Need by: '+sp.need+'</div>'+'</div>'+'<div style="display:flex;gap:10px;margin-bottom:14px">'+'<button onclick="closeModal();ccApproveRelease(\''+p+'\',\''+proj+'\','+rowIdx+','+spIdx+')" style="flex:1;padding:10px;background:#059669;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:700;cursor:pointer">\u2713 Approve '+sp.pendingRelease+' units</button>'+'<button onclick="closeModal();openCcFpoSplitModal(\''+p+'\',\''+proj+'\','+rowIdx+')" style="flex:1;padding:10px;background:var(--g100);border:1px solid var(--g200);border-radius:7px;color:var(--charcoal);font-size:13px;font-weight:600;cursor:pointer">\u22ef Split myself</button>'+'</div>'+'<div style="font-size:11px;color:var(--g400);text-align:center">Approving will create sales order ORD-501'+(2+spIdx)+' in T3</div>';
+    var body='<div style="margin-bottom:14px">'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:6px">Project team triggered <b style="color:#1d4ed8">'+sp.pendingRelease+' units</b> for release</div>'+'<div style="font-size:11.5px;color:var(--g600)">'+sp.note+' &middot; Need by: '+sp.need+'</div>'+'</div>'+'<div style="display:flex;gap:10px;margin-bottom:14px">'+'<button onclick="closeModal();ccApproveRelease(\''+p+'\',\''+proj+'\','+rowIdx+','+spIdx+')" style="flex:1;padding:10px;background:#059669;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:700;cursor:pointer">\u2713 Approve '+sp.pendingRelease+' units</button>'+'<button onclick="closeModal();openCcFpoSplitModal(\''+p+'\',\''+proj+'\','+rowIdx+')" style="flex:1;padding:10px;background:var(--g100);border:1px solid var(--g200);border-radius:7px;color:var(--charcoal);font-size:13px;font-weight:600;cursor:pointer">'+'</div>'+'<div style="font-size:11px;color:var(--g400);text-align:center">Approving will create sales order ORD-501'+(2+spIdx)+' in T3</div>';
     openModal('Release Approval — '+(row.item||row.asm||''),body);
   }
   function ccApproveRelease(p,proj,rowIdx,spIdx){
@@ -12376,7 +12376,7 @@ charges:[
     b+='<div id="fq-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
     b+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px;font-weight:600">Tag document type</div>';
     b+='<div style="display:flex;gap:8px;align-items:center">';
-    b+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option>RFIs</option><option>Submittals</option><option>Engineering</option><option>Safety</option><option>Quality</option><option>Quotes / Bills of Lading</option><option>Shipping / Logistics</option><option>Crew Design</option><option>Change Orders</option><option>Turnover — COPI</option><option>Turnover — COPO</option></select>';
+    b+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option>Billing</option><option>RFIs</option><option>Submittals</option><option>Engineering</option><option>Safety</option><option>Quality</option><option>Quotes / Bills of Lading</option><option>Shipping / Logistics</option><option>Crew Design</option><option>Change Orders</option><option>Turnover — COPI</option><option>Turnover — COPO</option></select>';
     b+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();var c=this.parentElement.nextElementSibling;c.style.display=\'block\';toast(\'Document uploaded (demo)\')">Upload</button>';
     b+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
     b+='</div>';
@@ -15002,7 +15002,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         +'<div style="flex:1"><div style="font-size:11.5px;font-weight:700;color:#b45309">Project team queued '+_pendQty+' units for release</div>'
         +'<div style="font-size:11px;color:#92400e;margin-top:2px">'+_pendSp.map(function(s){return s.qty+' units \u00b7 '+s.need;}).join(' \u00b7 ')+'</div></div>'
         +'<button onclick="ccApproveRelease(\'prefab\',\''+proj+'\','+idx+','+_spls.indexOf(_pendSp[0])+')" style="padding:5px 14px;background:#059669;border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Approve \u2192</button>'
-        +'<button onclick="openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')" style="padding:5px 12px;background:var(--g100);border:1px solid var(--g200);border-radius:5px;color:var(--charcoal);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">Split myself</button>'
         +'</div>';}
     h+='</div></div>';
     }
@@ -15089,7 +15088,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     h+='<div id="dp-up-panel" style="display:none;background:var(--g50);border:1px solid var(--g200);border-radius:6px;padding:10px 12px;margin-bottom:10px">';
     h+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px;font-weight:600">Tag document type</div>';
     h+='<div style="display:flex;gap:8px;align-items:center">';
-    h+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option value="RFIs">RFIs</option><option value="Submittals">Submittals</option><option value="Engineering">Engineering</option><option value="Safety">Safety</option><option value="Quality">Quality</option><option value="Quotes">Quotes / Bills of Lading</option><option value="Shipping">Shipping / Logistics</option><option value="Crew Design">Crew Focused Design</option><option value="Change Orders">Change Orders / Schedule Impacts</option><option value="Turnover — COPI">Turnover — COPI</option><option value="Turnover — COPO">Turnover — COPO</option></select>';
+    h+='<select style="flex:1;border:1px solid var(--g200);border-radius:4px;padding:5px 8px;font-size:12px;font-family:inherit;color:var(--g700);background:#fff"><option value="">Select type…</option><option value="Billing">Billing</option><option value="RFIs">RFIs</option><option value="Submittals">Submittals</option><option value="Engineering">Engineering</option><option value="Safety">Safety</option><option value="Quality">Quality</option><option value="Quotes">Quotes / Bills of Lading</option><option value="Shipping">Shipping / Logistics</option><option value="Crew Design">Crew Focused Design</option><option value="Change Orders">Change Orders / Schedule Impacts</option><option value="Turnover — COPI">Turnover — COPI</option><option value="Turnover — COPO">Turnover — COPO</option></select>';
     h+='<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();dpUploadAttach(this)">Upload</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();this.parentElement.parentElement.style.display=\'none\'">Cancel</button>';
     h+='</div>';
@@ -15551,7 +15550,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         });
       }
     });
-    if(showProjCol){
+    if(showProjCol&&p!=='prefab'){
       var adhocFiltered=cfg.rows;
       adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
     }
@@ -15567,7 +15566,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       var _pfbAll=allReqRows.filter(function(r){return r._type==='dp';});
       var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In Fulfillment';}).length;
       var _pfbNA=_pfbAll.filter(function(r){return r.state==='Awaiting pricing'||r.dateShifted;}).length;
-      var _pfbOT=_pfbAll.filter(function(r){return r.onTrack===true;}).length;
+      var _pfbOT=_pfbAll.filter(function(r){return r.onTrack!==false;}).length;
       h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
       [{k:'Assemblies tracked',v:_pfbAll.length+'',sub:'Across all projects',tone:'ok'},
        {k:'In fabrication',v:_pfbInFab+'',sub:'Active fab orders',tone:'info'},
@@ -15743,11 +15742,11 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         mount.innerHTML=h;
         return;
       }
-      h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
+      if(p!=='prefab'){h+='<div class="fq-filters" style="margin:6px 0 4px;padding:0"><div class="ff-grp"><span class="ff-lbl">Source</span><div class="ff-seg">';
       [['all','All'],['dp','Demand plan'],['adhoc','Ad hoc']].forEach(function(o){
         h+='<button class="ff-b'+(dpSrcFil===o[0]?' on':'')+' btn-sm" onclick="dpSetSrcFilter(\''+p+'\',\''+o[0]+'\')">'+o[1]+'</button>';
       });
-      h+='</div></div></div>';
+      h+='</div></div></div>';}
     }
     var gtA=isDpView?(p==='prefab'?'1.4fr 70px 110px 150px 100px 120px 80px 130px':'1.6fr 80px 150px 105px 120px 90px 175px'):(showProjCol?'1.3fr 90px 116px 150px 1fr 100px 110px':'1.3fr 90px 116px 1.2fr 100px 110px');
     if(!isDpView){ h+='<div class="eq-cap" style="margin-bottom:10px">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'<span>Recommended actions for all pending requests are in the fulfillment queue. Click any request for more information.</span></div>'; }
