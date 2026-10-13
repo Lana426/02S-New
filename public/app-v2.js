@@ -1570,7 +1570,7 @@
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add FPO',addTitle:'Add FPO',addBtnLabel:'Add FPO to plan',
-      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'4 of 6',sub:'2 off track — needs attention',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'5 of 6',sub:'1 off track — Bathroom batteries',tone:'warn',icon:IC.chart}],
       v1:'6 assemblies in plan · 2 in fabrication · MV Stuffed Rack and Bathroom batteries pending submittal approval.',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
@@ -12100,10 +12100,8 @@ charges:[
     var qtyApr=sp.pendingRelease||0;
     sp.state='Released';sp.ordId='ORD-501'+(2+spIdx);sp.subState='Work Order Created';
     sp.qty=qtyApr;delete sp.pendingRelease;
-    var _exp=Array.from(document.querySelectorAll('[id^="dpx-"]')).filter(function(el){return el.style.display!=='none';}).map(function(el){return el.id;});
     renderCcDemand(p);
-    _exp.forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='block';});
-    toast('Approved — release queued for production');
+    if(p==='prefab')dpPfbCcDetail(proj,rowIdx);
   }
   function ccAddSplit(p,proj,rowIdx){
     var pkg=CC_PROJ_DP[p];if(!pkg)return;var cfg=pkg[proj];if(!cfg)return;
@@ -14156,7 +14154,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       ]}
     },
     prefab:{
-      hercules:{budget:900000,dpSpent:476000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'1 active',c:'Submittal pending',v:'MV Stuffed Rack',vt:'warn'},{a:'Mechanical',b:'1 active',c:'',v:'Adjustable Pipe Supports',vt:'info'},{a:'Concrete',b:'1 delivered',c:'Delivered Jun',v:'Column Forms',vt:'ok'}],varSummary:'MV Stuffed Rack submittal under review · Bathroom batteries need-by shifted to Oct 15',rows:[
+      hercules:{budget:900000,dpSpent:476000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'2 active',c:'In Fulfillment · Submittal',v:'Combiner Box · MV Stuffed Rack',vt:'info'},{a:'Mechanical',b:'2 active',c:'In Production · Requested',v:'Pipe Supports · Bathroom batteries',vt:'warn'},{a:'Concrete',b:'1 delivered · 1 planned',c:'Delivered Jun · FPO pending',v:'Column Forms · Deck Panels',vt:'ok'}],varSummary:'MV Stuffed Rack submittal under review · Bathroom batteries need-by shifted to Oct 15',rows:[
         {item:'Combiner Box',cat:'Electrical',qty:'500',window:'Sep 5',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,ordId:null,cost:'$5.5M',firm:'TBD',splits:[{id:'SPL-CB-1',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'SPL-CB-2',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'SPL-CB-3',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
         {item:'MV Stuffed Rack',cat:'Electrical',qty:'2 units',window:'Oct 20',state:'Requested',p6Act:'MV switchgear installation',onTrack:false,ordId:null,fqRef:'REQ-F-061',cost:'Pending',firm:'TBD'},
         {item:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12 modules',window:'Sep 28',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
@@ -17045,7 +17043,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
     prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add FPO',addTitle:'Add FPO',addBtnLabel:'Add FPO to plan',
-      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'4 of 6',sub:'2 off track — needs attention',tone:'warn',icon:IC.chart}],
+      vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'5 of 6',sub:'1 off track — Bathroom batteries',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
