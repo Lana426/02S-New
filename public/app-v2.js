@@ -12090,7 +12090,7 @@ charges:[
     var pendingSplits=row.splits.filter(function(s){return s.pendingRelease>0;});
     if(!pendingSplits.length)return;
     var sp=pendingSplits[0];var spIdx=row.splits.indexOf(sp);
-    var body='<div style="margin-bottom:14px">'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:6px">Project team triggered <b style="color:#1d4ed8">'+sp.pendingRelease+' units</b> for release</div>'+'<div style="font-size:11.5px;color:var(--g600)">'+sp.note+' &middot; Need by: '+sp.need+'</div>'+'</div>'+'<div style="display:flex;gap:10px;margin-bottom:14px">'+'<button onclick="closeModal();ccApproveRelease(\''+p+'\',\''+proj+'\','+rowIdx+','+spIdx+')" style="flex:1;padding:10px;background:#059669;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:700;cursor:pointer">\u2713 Approve '+sp.pendingRelease+' units</button>'+'<button onclick="closeModal();openCcFpoSplitModal(\''+p+'\',\''+proj+'\','+rowIdx+')" style="flex:1;padding:10px;background:var(--g100);border:1px solid var(--g200);border-radius:7px;color:var(--charcoal);font-size:13px;font-weight:600;cursor:pointer">'+'</div>'+'<div style="font-size:11px;color:var(--g400);text-align:center">Approving will create sales order ORD-501'+(2+spIdx)+' in T3</div>';
+    var body='<div style="margin-bottom:14px">'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:6px">Project team triggered <b style="color:#1d4ed8">'+sp.pendingRelease+' units</b> for release</div>'+'<div style="font-size:11.5px;color:var(--g600)">'+sp.note+' &middot; Need by: '+sp.need+'</div>'+'</div>'+'<div style="display:flex;gap:10px;margin-bottom:14px">'+'<button onclick="closeModal();ccApproveRelease(\''+p+'\',\''+proj+'\','+rowIdx+','+spIdx+')" style="flex:1;padding:10px;background:#059669;border:none;border-radius:7px;color:#fff;font-size:13px;font-weight:700;cursor:pointer">\u2713 Approve '+sp.pendingRelease+' units</button>'+'</div>'+'<div style="font-size:11px;color:var(--g400);text-align:center">Approving will create sales order ORD-501'+(2+spIdx)+' in T3</div>';
     openModal('Release Approval — '+(row.item||row.asm||''),body);
   }
   function ccApproveRelease(p,proj,rowIdx,spIdx){
@@ -15468,7 +15468,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       if(lin){
         var mp=lin.margin; var bl=lin.baseline; var dl=lin.delta; var dr=lin.draft;
         h+='<div style="display:flex;gap:10px;margin:14px 0 10px;align-items:stretch">';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'margin\')">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'margin\')">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Margin plan</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+mp.rom+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+mp.id+' \u00b7 '+mp.date+'</div>'
@@ -15477,7 +15477,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
            +'</div>';
         if(bl){
         h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff;cursor:pointer" onclick="dpShowLineage(\''+p+'\',\''+selProj+'\',\'baseline\')">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Baseline demand plan</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+bl.total+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+bl.id+' · '+bl.date+' · '+bl.items+' items</div>'
@@ -15486,7 +15486,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
            +'</div>';
         h+='<div style="display:flex;align-items:center;color:var(--g400);font-size:18px;padding:0 4px">→</div>';
         var dlTone=dl.added>0?'warn':'ok';
-        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics">'
+        h+='<div style="flex:1;border:1px solid var(--g200);border-radius:8px;padding:12px 14px;background:#fff">'
            +'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Current vs. baseline</div>'
            +'<div style="font-size:13px;font-weight:700;color:var(--g900)">'+dl.value+'</div>'
            +'<div style="font-size:11px;color:var(--g500);margin-top:3px">'+dl.added+' line'+(dl.added===1?'':'s')+' added since baseline</div>'
@@ -15519,7 +15519,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
       var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
       var driftPct=Math.round(100*pd.adHoc/((pd.dpSpent+pd.adHoc)||1));
-      h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px;margin:14px 0" data-cap="Logistics spend management|||02S views standard-plan vs. supplemental spend in CC, tracking budget movement to control project logistics economics">';
+      h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px;margin:14px 0">';
       h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
       h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Plan vs. actual spend — '+pLabel+'</div>';
       h+='<div style="display:flex;gap:16px">';
@@ -15782,28 +15782,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       });
       h+='</div>';
     }
-    if(p==='prefab'&&isDpView&&selProj!=='all'&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].budget){
-      var pd=CC_PROJ_DP[p][selProj];
-      var pDp=Math.min(100,Math.round(100*pd.dpSpent/pd.budget));
-      var pAh=Math.min(100-pDp,Math.round(100*pd.adHoc/pd.budget));
-      var driftPct=Math.round(100*pd.adHoc/((pd.dpSpent+pd.adHoc)||1));
-      h+='<div style="background:var(--g50);border:1px solid var(--g100);border-radius:8px;padding:14px 16px;margin:0 0 14px">';
-      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
-      h+='<div style="font-size:12px;font-weight:700;color:var(--g900)">Plan vs. actual spend — '+pLabel+'</div>';
-      h+='<div style="display:flex;gap:16px">';
-      h+='<span style="font-size:11.5px;color:var(--g600)"><span style="display:inline-block;width:10px;height:10px;background:var(--charcoal);border-radius:2px;margin-right:4px;vertical-align:middle"></span>On-plan: '+fmtK(pd.dpSpent)+'</span>';
-      h+='<span style="font-size:11.5px;color:var(--g600)"><span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:2px;margin-right:4px;vertical-align:middle"></span>Ad hoc vs. baseline: '+fmtK(pd.adHoc)+'</span>';
-      h+='<span style="font-size:11.5px;color:var(--g500)">Budget: '+fmtK(pd.budget)+'</span>';
-      h+='</div></div>';
-      h+='<div style="display:flex;height:10px;border-radius:4px;overflow:hidden;background:var(--g200)">';
-      h+='<div style="width:'+pDp+'%;background:var(--charcoal);transition:width .3s"></div>';
-      h+='<div style="width:'+pAh+'%;background:#f59e0b;transition:width .3s"></div>';
-      h+='</div>';
-      h+='<div style="display:flex;justify-content:space-between;margin-top:5px">';
-      h+='<span style="font-size:11px;color:var(--g500)">'+pDp+'% on-plan spend</span>';
-      h+='<span style="font-size:11px;font-weight:600;color:'+(driftPct>10?'#f59e0b':'var(--g700)')+'">'  +driftPct+'% ad hoc vs. baseline</span>';
-      h+='</div></div>';
-    }
+
     if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';h+=_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[]);
       h+='<button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule</button>';h+='<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()" style="font-size:11px">Active only</button>';h+='<button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')" style="margin-left:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add FPO</button>';h+='<span style="font-size:11.5px;color:var(--g500);margin-left:10px">'+visRows.length+' items · '+pLabel+'</span></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
