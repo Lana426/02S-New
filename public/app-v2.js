@@ -6253,8 +6253,8 @@ function cpNudgeReplySubmit(ni,type){
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(planRows.length){
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
-        h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ITEM','QTY','NEED BY','COST','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
+        ['ITEM','QTY','NEED BY','COST','% DONE','STATUS','DOCS'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6267,7 +6267,7 @@ function cpNudgeReplySubmit(ni,type){
           var pct=acts.length?Math.round(doneActs/acts.length*100):0;
           var pctColor=pct===100?'var(--success)':pct>=50?'#3b82f6':'var(--g400)';
           h+='<div style="border-top:1px solid var(--g100)">';
-          h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+          h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+'</div>';
           h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+row.firm+'</div>';
@@ -6279,8 +6279,9 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="flex:1;height:6px;background:var(--g100);border-radius:4px;overflow:hidden;max-width:52px"><div style="width:'+pct+'%;height:100%;background:'+pctColor+';border-radius:4px"></div></div>';
           h+='<span style="font-size:10.5px;font-weight:600;color:'+pctColor+'">'+(acts.length?pct+'%':'\u2014')+'</span>';
           h+='</div>';
-          h+='<div><select style="font-size:11px;font-weight:600;padding:3px 6px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
-          STATUSES.forEach(function(s){h+='<option value="'+s+'"'+(row.state===s?' selected':'')+'>'+s+'</option>';});
+          var _CC_ABBR={'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'};
+          h+='<div><select style="font-size:11px;font-weight:600;padding:3px 6px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:114px;width:100%" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
+          STATUSES.forEach(function(s){h+='<option value="'+s+'"'+(row.state===s?' selected':'')+'>'+((_CC_ABBR[s])||s)+'</option>';});
           h+='</select></div>';
           h+='<div style="display:flex;align-items:center;gap:4px">';
           if(row.state==='Proposal sent'){
@@ -6291,10 +6292,6 @@ function cpNudgeReplySubmit(ni,type){
             h+='<span style="font-size:11px;color:var(--g400)">\u2014</span>';
           }
           h+='</div>';
-          var _ccDlvrs=row.deliverables||[];
-          h+='<div style="display:flex;align-items:center">'+(_ccDlvrs.length?
-            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:#0891b2" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">'+_ccDlvrs.length+' file'+(_ccDlvrs.length===1?'':'s')+'</button>':
-            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">&uarr;</button>')+'</div>';
           h+='</div>';
 
           // Expanded activity gantt — logistics CSS classes
