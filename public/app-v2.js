@@ -5703,11 +5703,38 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
       });
       body+='</div>';
     }
-    body+='<div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px">';
-    body+='<input id="ps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="psDlvrAddLink('+ri+')">Add link</button></div>';
+    body+='<div style="margin-bottom:8px">';
+    body+='<label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Upload files</label>';
+    body+='<input id="ps-dlvr-file" type="file" multiple style="font-size:12px;width:100%" onchange="psDlvrAddFiles('+ri+',this.files)">';
+    body+='</div>';
+    body+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    body+='<div style="flex:1"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Or paste a link</label><input id="ps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
+    body+='<button class="btn btn-ghost btn-sm" style="margin-top:18px;flex-shrink:0" onclick="psDlvrAddLink('+ri+')">Add link</button></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
     openModal('Deliverables \u2014 '+r.service,body);
+  }
+  function psDlvrAddFiles(ri,files){
+    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r||!files||!files.length)return;
+    if(!r.deliverables)r.deliverables=[];
+    var added=0;
+    Array.from(files).forEach(function(f){
+      r.deliverables.push({name:f.name,url:null,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+      added++;
+    });
+    closeModal();renderProfServicesDP();
+    toast(added+' file'+(added===1?'':'s')+' added \u2014 '+r.service);
+  }
+  function ccPsDlvrAddFiles(proj,rowIdx,files){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[rowIdx];if(!row||!files||!files.length)return;
+    if(!row.deliverables)row.deliverables=[];
+    var added=0;
+    Array.from(files).forEach(function(f){
+      row.deliverables.push({name:f.name,url:null,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+      added++;
+    });
+    closeModal();renderCcProfServices();
+    toast(added+' file'+(added===1?'':'s')+' added \u2014 '+row.item);
   }
   function psDlvrAddLink(ri){
     var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r)return;
@@ -5742,9 +5769,13 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
       });
       body+='</div>';
     }
-    body+='<div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px">';
-    body+='<input id="ccps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="ccPsDlvrAddLink(\''+proj+'\','+rowIdx+')">Add link</button></div>';
+    body+='<div style="margin-bottom:8px">';
+    body+='<label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Upload files</label>';
+    body+='<input id="ccps-dlvr-file" type="file" multiple style="font-size:12px;width:100%" onchange="ccPsDlvrAddFiles(\''+proj+'\','+rowIdx+',this.files)">';
+    body+='</div>';
+    body+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
+    body+='<div style="flex:1"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Or paste a link</label><input id="ccps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
+    body+='<button class="btn btn-ghost btn-sm" style="margin-top:18px;flex-shrink:0" onclick="ccPsDlvrAddLink(\''+proj+'\','+rowIdx+')">Add link</button></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
     openModal('Deliverables \u2014 '+row.item,body);
   }
@@ -6674,7 +6705,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
     h+='<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;position:relative">';
@@ -6710,7 +6741,8 @@ function renderProfServicesDP(){
         h+='<div>'+(_dlvrs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs.length+' file'+(_dlvrs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();openPsDeliverables('+ri+')">&uarr; Upload</button>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
-        h+='<span class="tag '+t+'">'+r.state+'</span>';
+        var _stLabel=({'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'})[r.state]||r.state;
+        h+='<span class="tag '+t+'" title="'+r.state+'">'+_stLabel+'</span>';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'profservices\','+ri+')" title="Edit line item">&#9998;</button>';}
         h+='</div></div>';
         h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
@@ -18066,7 +18098,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsBrowseModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button><button class="ff-b'+(window._psActiveOnly?' on':'')+' btn-sm" onclick="psToggleActiveOnly()">'+(window._psActiveOnly?'&#10003; Active only':'Active only')+'</button></div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button><button class="ff-b'+(window._psActiveOnly?' on':'')+' btn-sm" onclick="psToggleActiveOnly()">'+(window._psActiveOnly?'&#10003; Active only':'Active only')+'</button></div>';
     if(!ns&&window._psCpNudges&&window._psCpNudges.length){
       h+='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;margin-bottom:14px">';
       h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:'+(window._psCpNudges.length>1?'6':'0')+'px">';
@@ -18099,9 +18131,9 @@ function renderProfServicesDP(){
     var groupMap={};
     PS_CATS.forEach(function(c){groupMap[c]=[];});
     cfg.rows.forEach(function(r,ri){var cat=r.category||'Other';if(!groupMap[cat])groupMap[cat]=[];groupMap[cat].push({r:r,ri:ri});});
-    var gt='1fr 80px 170px 130px 90px 82px 110px';
+    var gt='1fr 80px 170px 130px 90px 82px 82px 110px';
     h+='<div class="dp-tbl">';
-    h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span class="c">Qty</span><span>Need by</span><span>Cost code</span><span class="r">Cost</span><span>Docs</span><span>Status</span></div>';
+    h+='<div class="dp-head" style="grid-template-columns:'+gt+'"><span>Service</span><span class="c">Qty</span><span>Need by</span><span>Cost code</span><span class="r">Cost</span><span>Docs</span><span>Deliverables</span><span>Status</span></div>';
     var anyRows=false;
     PS_CATS.forEach(function(cat){
       var entries=groupMap[cat];if(!entries||!entries.length)return;anyRows=true;
@@ -18117,11 +18149,14 @@ function renderProfServicesDP(){
         h+='<div>'+dName+'<div class="sub">'+dSub+'</div></div>';
         h+='<div class="c">'+r.qty+'</div><div>'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(r.window)+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
         h+='<div>'+(_dn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();openPsDocsModal('+ri+')">'+_dn+' doc'+(_dn===1?'':'s')+'</button>':(_needsDocs?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#b45309;border-color:#d97706" onclick="event.stopPropagation();openPsDocsModal('+ri+')">Needed</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>'))+'</div>';
+        var _dlvrs2=r.deliverables||[];
+        h+='<div>'+(_dlvrs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs2.length+' file'+(_dlvrs2.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();openPsDeliverables('+ri+')">&uarr; Upload</button>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         var _pIdx=-1;_props.forEach(function(p,pi){if(p.rowIdx===ri&&p.state!=='Approved')_pIdx=pi;});
         if(_pIdx>=0){h+='<button class="btn btn-dark btn-sm" style="font-size:11px;padding:2px 8px;white-space:nowrap" onclick="event.stopPropagation();openPsProposalModal('+_pIdx+')">Review \u2192</button>';}
-        else{h+='<span class="tag '+t+'">'+r.state+'</span>';}
+        else{var _stLbl2=({'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'})[r.state]||r.state;
+h+='<span class="tag '+t+'" title="'+r.state+'">'+_stLbl2+'</span>';}
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\'profservices\','+ri+')" title="Edit line item">&#9998;</button>';}
         h+='</div></div>';
         h+='<div id="dp-drill-profservices-'+ri+'" class="otrack" style="display:none">'+buildDPTrack('profservices',r,ri)+'</div>';
