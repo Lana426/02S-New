@@ -2551,7 +2551,7 @@
      notes:[{who:'02S Logistics',when:'Sep 25 2026',text:'Auto-approved — total $340, within $500 threshold. Released to T3, delivery by Oct 5.'}],attachments:[]},
     {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
-     desc:'Fall Protection Kit',status:'fulfilled',needBy:'2026-10-12',ccCategorized:true,
+     desc:'Fall Protection Kit',status:'fulfilled',needBy:'2026-10-12',ccCategorized:true,confirmedBy:'Lana Butorovic',confirmedAt:'Oct 12, 2026',
      costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,price:2580,qty:1,
      spLineItems:[
        {no:1,desc:'Fall protection harness (Petzl Avao Bod)',qty:12,uom:'EA',price:195,ext:2340},
@@ -2900,7 +2900,9 @@
     var dateVal=dateEl&&dateEl.value?new Date(dateEl.value+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):null;
     var projCode=(_stcProjCodes&&_stcProjCodes[r.proj])||r.proj.toUpperCase().slice(0,3);
     var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    var note='Return requested — '+m.item.desc+' · Qty '+qty+(dateVal?' · Pickup by '+dateVal:'');
+    var notesEl=document.getElementById('stc-ret-notes');
+    var extraNote=notesEl&&notesEl.value.trim()?' · '+notesEl.value.trim():'';
+    var note='Return requested — '+m.item.desc+' · Qty '+qty+(dateVal?' · Pickup by '+dateVal:'')+extraNote;
     r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:note}]);
     _stcReturnRequests.push({proj:r.proj,projCode:projCode,bundleName:m.bundleName,itemDesc:m.item.desc,qty:qty,uom:m.item.uom||'EA',pickupDate:dateVal,reqIdx:m.reqIdx,lineIdx:m.lineIdx,date:now,dismissed:false,response:null});
     _stcReturnModal=null;
@@ -2931,6 +2933,10 @@
     h+='<div>';
     h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:6px">Pickup by</label>';
     h+='<input id="stc-ret-date" type="date" style="'+iS+'">';
+    h+='</div>';
+    h+='<div>';
+    h+='<label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:6px">Notes</label>';
+    h+='<textarea id="stc-ret-notes" rows="3" onclick="event.stopPropagation()" placeholder="Any additional context for this return…" style="width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 10px;font-size:12px;font-family:inherit;resize:none;outline:none;color:var(--g900)"></textarea>';
     h+='</div>';
     h+='</div>';
     h+='</div>';
@@ -3167,7 +3173,7 @@
     return h;
   }
 
-  function _stcQuoteTableHTML(lineItems,total,ref,accepted){
+  function _stcQuoteTableHTML(lineItems,total,ref,accepted,hideVendorRate){
     // Renders a site-services-style line-item quote table (read-only)
     var th='<th style="font-size:11px;font-weight:700;color:var(--g600);padding:6px 8px;text-align:';
     var h='<div style="overflow-x:auto;margin-bottom:8px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
@@ -3176,7 +3182,7 @@
     h+=th+'left">Description</th>';
     h+=th+'center">Qty</th>';
     h+=th+'center">UOM</th>';
-    h+=th+'right">Vendor rate</th>';
+    if(!hideVendorRate){h+=th+'right">Vendor rate</th>';}
     h+=th+'right">02S Rate</th>';
     h+=th+'right">Extended</th></tr></thead><tbody>';
     (lineItems||[]).forEach(function(li,i){
@@ -3186,11 +3192,11 @@
       h+='<td style="padding:7px 8px;color:var(--g900)">'+li.desc+'</td>';
       h+='<td style="padding:7px 8px;text-align:center;color:var(--g700)">'+li.qty+'</td>';
       h+='<td style="padding:7px 8px;text-align:center;color:var(--g500)">'+li.uom+'</td>';
-      h+='<td style="padding:7px 8px;text-align:right;color:var(--g500);font-variant-numeric:tabular-nums">$'+li.vendorRate+'</td>';
+      if(!hideVendorRate){h+='<td style="padding:7px 8px;text-align:right;color:var(--g500);font-variant-numeric:tabular-nums">$'+li.vendorRate+'</td>';}
       h+='<td style="padding:7px 8px;text-align:right;color:var(--g700);font-weight:600;font-variant-numeric:tabular-nums">$'+li.rate+'</td>';
       h+='<td style="padding:7px 8px;text-align:right;font-weight:600;color:var(--g900);font-variant-numeric:tabular-nums">$'+ext.toLocaleString()+'</td></tr>';
     });
-    h+='<tr style="border-top:2px solid var(--g200)"><td colspan="6" style="padding:8px;text-align:right;font-size:12px;font-weight:600;color:var(--g700)">Total</td>';
+    h+='<tr style="border-top:2px solid var(--g200)"><td colspan="'+(hideVendorRate?5:6)+'" style="padding:8px;text-align:right;font-size:12px;font-weight:600;color:var(--g700)">Total</td>';
     h+='<td style="padding:8px;text-align:right;font-size:16px;font-weight:700;color:#0d9488;font-variant-numeric:tabular-nums">$'+total.toLocaleString()+'</td></tr>';
     h+='</tbody></table></div>';
     if(ref)h+='<div style="text-align:right;font-size:11px;color:var(--g400);margin-bottom:8px">02S Quote Ref: '+ref+'</div>';
@@ -3237,11 +3243,11 @@
       h+='</div></div>';
     }
 
-    // VMI active — Add to scope
+    // VMI active — Add already fulfilled scope
     if(r.type==='vmi'&&(r.status==='released'||r.status==='fulfilled')){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:12px">';
-      h+='<div style="font-size:12px;color:var(--g600)">Add additional items to this VMI scope</div>';
-      h+='<button onclick="event.stopPropagation();_stcOpenModal()" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px"><span style="font-size:15px;line-height:1">+</span> Add to scope</button>';
+      h+='<div style="font-size:12px;color:var(--g600)">Add scope confirmed with vendor</div>';
+      h+='<button onclick="event.stopPropagation();_stcOpenFulfilledScopeModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px"><span style="font-size:15px;line-height:1">+</span> Add already fulfilled scope</button>';
       h+='</div>';
     }
 
@@ -3292,6 +3298,20 @@
       h+='</tbody></table></div></div>';
     }
 
+    if(r.type==='sp'&&r.status==='released'){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:12px">';
+      h+='<div style="font-size:12px;color:var(--g600)">Have you received this order?</div>';
+      h+='<button onclick="event.stopPropagation();_stcConfirmReceipt('+idx+')" style="font-size:12.5px;font-weight:700;padding:7px 16px;border:none;border-radius:7px;background:#15803d;color:#fff;cursor:pointer;white-space:nowrap">Confirm receipt</button>';
+      h+='</div>';
+    }
+    if(r.type==='sp'&&r.status==='fulfilled'&&r.confirmedBy){
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:8px 0 8px;display:flex;align-items:center;gap:6px">';
+      h+='<svg viewBox="0 0 16 16" fill="none" stroke="#16a34a" stroke-width="2" style="width:12px;height:12px;flex-shrink:0"><path d="M13 4L6 11l-3-3"/></svg>';
+      h+='<span style="font-size:11.5px;color:#15803d;font-weight:600">Receipt confirmed</span>';
+      h+='<span style="font-size:11.5px;color:var(--g500)">by '+r.confirmedBy+(r.confirmedAt?' · '+r.confirmedAt:'')+'</span>';
+      h+='</div>';
+    }
+
     var notes=r.notes||[];
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
@@ -3308,18 +3328,10 @@
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();_stcSendNote('+idx+')">Send</button>';
     h+='</div></div>';
     var docs=r.attachments||[];
-    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
-    if(docs.length){
-      docs.forEach(function(d,di){
-        var label=(d.name||d)+(d.ref?' · '+d.ref:'');
-        h+='<span class="doc-chip" onclick="event.stopPropagation();_stcOpenDoc('+idx+','+di+')">'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+label+'</span>';
-      });
-    }else{
-      h+='<span style="font-size:12px;color:var(--g400)">No documents attached</span>';
-    }
-    h+='</div></div>';
+    h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Documents'+(docs.length?' ('+docs.length+')':'')+'</div>';
+    h+='<button onclick="event.stopPropagation();_stcOpenDocsModal('+idx+')" style="font-size:11.5px;font-weight:600;padding:4px 10px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);cursor:pointer">'+(docs.length?'View &amp; upload':'+ Upload')+'</button>';
+    h+='</div>';
     return h;
   }
 
@@ -3458,14 +3470,21 @@
     h+='<div class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quote pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
     h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted &amp; in fulfillment</div></div>';
     h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">committed this period</div></div>';
+    var ICO_RENT='<rect x="1" y="3" width="22" height="13" rx="2"/><path d="M16 21H8M12 17v4"/>';
+    var ICO_CYCLE='<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>';
+    var toolsOnRent=rows.filter(function(r){return r.type==='sp'&&(r.status==='released'||r.status==='in_fulfillment'||r.status==='fulfilled');}).length;
+    var recurringCost=rows.filter(function(r){return r.type==='vmi';}).reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
+    h+='<div class="vital '+(toolsOnRent>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_RENT)+'Tools on Rent</div><div class="vv">'+toolsOnRent+'</div><div class="vsub">SP orders active or delivered</div></div>';
+    h+='<div class="vital '+(recurringCost>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CYCLE)+'Recurring Cost</div><div class="vv">'+(recurringCost>0?_stcFmt(recurringCost):'—')+'</div><div class="vsub">VMI committed value</div></div>';
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
     h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
     h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
-    h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ Request</button>';
+    h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:'+(_stcFilter==='vmi'?'6px':'6px 0 0 6px')+';padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ '+(_stcFilter==='vmi'?'Request':'New Request')+'</button>';
+    if(_stcFilter!=='vmi'){h+='<button onclick="_stcOpenReturnPickerModal()" style="display:inline-flex;align-items:center;gap:5px;background:#3f3f46;color:#fff;border:none;border-left:1px solid #52525b;border-radius:0 6px 6px 0;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">&#8617; Return</button>';}
     h+='</div>';
 
-    var cols='2fr 1fr 65px 80px 80px 150px 90px 90px';
+    var cols='2fr 1fr 65px 80px 80px 150px 90px 90px 70px';
     function _stcRenderRow(r){
       var oi=_stcAllReqs.indexOf(r);
       var tone=_stcTone[r.status]||'neu';
@@ -3488,6 +3507,8 @@
       rh+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
       rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
       rh+='</div>';
+      var _rdocs=r.attachments||[];
+      rh+='<div>'+(_rdocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px" onclick="event.stopPropagation();_stcOpenDocsModal('+oi+')">'+_rdocs.length+' doc'+(_rdocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400)" onclick="event.stopPropagation();_stcOpenDocsModal('+oi+')">+ Doc</button>')+'</div>';
       rh+='</div>';
       rh+='<div id="stc-drill-'+oi+'" class="otrack" style="display:none">'+_stcBuildTrack(r,oi)+'</div>';
       return rh;
@@ -3497,7 +3518,7 @@
       h+='<div style="padding:40px;text-align:center;color:var(--g400);font-size:13px">No '+(_stcFilter==='vmi'?'VMI':_stcFilter==='sp'?'Self-Perform':'STC')+' requests yet — click <b>+ Request</b> to get started.</div>';
     }else{
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
-      h+='<span>Item</span><span>Category</span><span>Qty</span><span>Price</span><span>Total</span><span>Cost Code</span><span>Cost Type</span><span>Status</span></div>';
+      h+='<span>Item</span><span>Category</span><span>Qty</span><span>Price</span><span>Total</span><span>Cost Code</span><span>Cost Type</span><span>Status</span><span>Docs</span></div>';
       var bundledRows=rows.filter(function(r){return !!r.bundleId;});
       var standaloneRows=rows.filter(function(r){return !r.bundleId;});
       var _bundleOrder={},_boi=0;
@@ -3730,8 +3751,9 @@
         var rtCol=reqTypeColors[reqTypeLabel]||'#0891b2';
         var rtBg=reqTypeBg[reqTypeLabel]||'#e0f2fe';
         var spTotal=r.price&&r.qty?r.price*r.qty:r.price||0;
-        var isAutoApproveEligible=r.ccPath==='sp'&&spTotal>0&&spTotal<500;
-        var isManualSP=r.ccPath==='sp'&&spTotal>=500;
+        var spUnitPriceChk=r.price||0;
+        var isAutoApproveEligible=r.ccPath==='sp'&&spUnitPriceChk>0&&spUnitPriceChk<500;
+        var isManualSP=r.ccPath==='sp'&&spUnitPriceChk>=500;
         var isQuoted=r.status==='quoted';
         var rowBg=isQuoted?'background:#fffbeb;':isAutoApproveEligible?'background:#f0fdf4;':isManualSP?'background:#fff7ed;':reqTypeLabel==='Return'?'background:#fff5f5;':'';
         h+='<div class="dp-row" style="grid-template-columns:'+icols+';align-items:start;'+rowBg+'">';
@@ -3773,7 +3795,7 @@
           h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:4px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#e0f2fe;color:#0891b2">Self-Perform</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
           if(isManualSP){
             h+='<div style="font-size:10.5px;color:#b45309;font-weight:600;background:#fef3c7;border:1px solid #fcd34d;border-radius:4px;padding:3px 7px">Pending project team approval</div>';
-            h+='<div style="font-size:10px;color:var(--g400);margin-top:2px">Total '+_stcFmt(spTotal)+' — above $500 threshold</div>';
+            h+='<div style="font-size:10px;color:var(--g400);margin-top:2px">Unit price '+_stcFmt(spUnitPriceChk)+' — at or above $500 threshold</div>';
           }else{
             h+='<button onclick="event.stopPropagation();_stcCCSetStatus('+gi+',\'approved\');toast(\'Approved — fulfillment begins\')" style="font-size:10.5px;font-weight:600;padding:3px 7px;border:none;border-radius:4px;background:#0891b2;color:#fff;cursor:pointer">Approve &amp; fulfill</button>';
           }
@@ -3858,7 +3880,7 @@
     // SP: confirm order (pending) + yard availability request
     if(r.type==='sp'&&r.status==='pending'){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
-      h+='<div style="font-size:11px;font-weight:700;color:#b45309;margin-bottom:10px">Above $500 threshold — review before releasing to T3</div>';
+      h+='<div style="font-size:11px;font-weight:700;color:#b45309;margin-bottom:10px">Above $500 per unit — review before releasing to T3</div>';
       var spTot=r.price&&r.qty?r.price*r.qty:(r.price||0);
       if(r.spLineItems&&r.spLineItems.length){
         h+='<div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
@@ -3881,6 +3903,12 @@
       h+='<div style="padding:10px 18px 10px;border-top:1px solid var(--g150);display:flex;align-items:center;justify-content:space-between;gap:12px">';
       h+='<div style="font-size:12px;color:var(--g600)">Request yard inventory availability</div>';
       h+='<button onclick="event.stopPropagation();_stcOpenYardModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">Check yard availability →</button>';
+      h+='</div>';
+    }
+    if(r.type==='vmi'&&(r.status==='released'||r.status==='fulfilled')){
+      h+='<div style="padding:10px 18px 10px;border-top:1px solid var(--g150);display:flex;align-items:center;justify-content:space-between;gap:12px">';
+      h+='<div style="font-size:12px;color:var(--g600)">Add scope confirmed with vendor</div>';
+      h+='<button onclick="event.stopPropagation();_stcOpenFulfilledScopeModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px"><span style="font-size:15px;line-height:1">+</span> Add already fulfilled scope</button>';
       h+='</div>';
     }
     h+='<div style="padding:10px 18px 12px;border-top:1px solid var(--g150)">';
@@ -3989,6 +4017,20 @@
   var _stcQReviewModal=null; // idx of item under CP quote review
   var _stcCCViewModal=null; // idx of item whose accepted quote CC is viewing
   var _stcCCQModal=null; // {idx, vendor, ref, items:[{desc,qty,uom,vendorRate,rate}]}
+  var _stcDocsModal=null;
+  var _stcFulfilledScopeModal=null;
+  function _stcOpenDocsModal(idx){_stcDocsModal=idx;var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcDocsModalHTML());}
+  function _stcCloseDocsModal(){_stcDocsModal=null;var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();}
+  function _stcDocsAddFile(idx,files){var r=_stcAllReqs[idx];if(!r)return;r.attachments=r.attachments||[];for(var i=0;i<files.length;i++){r.attachments.push({name:files[i].name,ref:'DOC-'+Date.now(),status:'Uploaded'});}var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcDocsModalHTML());}
+  function _stcDocsModalHTML(){if(_stcDocsModal===null)return '';var r=_stcAllReqs[_stcDocsModal];if(!r)return '';var docs=r.attachments||[];var h='<div id="stc-docs-ov" onclick="if(event.target===this)_stcCloseDocsModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Documentation &middot; '+(r.bundleName||r.desc)+'</div>';h+='<button onclick="_stcCloseDocsModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:16px 20px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Attached Documentation ('+docs.length+')</div>';h+='<label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);cursor:pointer">+ Upload<input type="file" multiple style="display:none" onchange="_stcDocsAddFile('+_stcDocsModal+',this.files)"></label>';h+='</div>';if(!docs.length){h+='<div style="text-align:center;padding:24px 0;color:var(--g400);font-size:13px">No documents attached yet.</div>';}else{docs.forEach(function(d){var label=(d.name||d)+(d.ref?' &middot; '+d.ref:'');h+='<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--g200);border-radius:7px;margin-bottom:6px">';h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';h+='<span style="font-size:12.5px;color:var(--g900);flex:1">'+label+'</span>';if(d.status)h+='<span style="font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;background:#f0fdf4;color:#15803d">'+d.status+'</span>';h+='</div>';});}h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseDocsModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Close</button>';h+='</div>';h+='</div></div>';return h;}
+  function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcReturnPickerModalHTML());}
+  function _stcCloseReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();}
+  function _stcReturnPickerModalHTML(){var eligible=_stcAllReqs.filter(function(r){return r.type==='sp'&&(r.status==='in_fulfillment'||r.status==='fulfilled')&&r.spLineItems&&r.spLineItems.length;});var h='<div id="stc-retpick-ov" onclick="if(event.target===this)_stcCloseReturnPickerModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Return Request &mdash; select order</div>';h+='<button onclick="_stcCloseReturnPickerModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:12px 20px;max-height:60vh;overflow-y:auto">';if(!eligible.length){h+='<div style="font-size:13px;color:var(--g400);padding:10px 0">No eligible SP orders for return.</div>';}eligible.forEach(function(r){var gi=_stcAllReqs.indexOf(r);h+='<div onclick="_stcCloseReturnPickerModal();_stcOpenReturnModal('+gi+',0)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--g200);border-radius:8px;margin-bottom:8px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'#fff\'">';h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+(r.bundleName||r.desc)+'</div>';h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+r.id+' &middot; '+r.spLineItems.length+' line item'+(r.spLineItems.length===1?'':'s')+'</div></div>';h+='<span style="font-size:12px;color:var(--g400)">Select &rarr;</span>';h+='</div>';});h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseReturnPickerModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';h+='</div>';h+='</div></div>';return h;}
+  function _stcConfirmReceipt(idx){var r=_stcAllReqs[idx];if(!r)return;r.status='fulfilled';r.confirmedBy='Lana Butorovic';var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});r.confirmedAt=now;r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:'Receipt confirmed.'}]);renderSTC();toast('Receipt confirmed.');}
+  function _stcOpenFulfilledScopeModal(idx){_stcFulfilledScopeModal={idx:idx};var ov=document.getElementById('stc-fscope-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcFulfilledScopeModalHTML());}
+  function _stcCloseFulfilledScopeModal(){_stcFulfilledScopeModal=null;var ov=document.getElementById('stc-fscope-ov');if(ov)ov.remove();}
+  function _stcSubmitFulfilledScope(){if(!_stcFulfilledScopeModal)return;var r=_stcAllReqs[_stcFulfilledScopeModal.idx];if(!r)return;var itemEl=document.getElementById('stc-fscope-item');var qtyEl=document.getElementById('stc-fscope-qty');var dateEl=document.getElementById('stc-fscope-date');var typeEl=document.getElementById('stc-fscope-type');var ccEl=document.getElementById('stc-fscope-cc');if(!itemEl||!itemEl.value.trim()){toast('Item name required.');return;}var li={no:(r.kitItems?r.kitItems.length+1:1),desc:itemEl.value.trim(),qty:parseInt(qtyEl&&qtyEl.value)||1,uom:'EA',rate:0,ext:0,deliveredDate:dateEl&&dateEl.value,orderType:typeEl&&typeEl.value,costCode:ccEl&&ccEl.value.trim()};r.kitItems=r.kitItems||[];r.kitItems.push(li);_stcCloseFulfilledScopeModal();renderSTC();renderSTC_CC();toast('Fulfilled scope added.');}
+  function _stcFulfilledScopeModalHTML(){if(!_stcFulfilledScopeModal)return '';var r=_stcAllReqs[_stcFulfilledScopeModal.idx];if(!r)return '';var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--g900);outline:none;background:#fff';var lS='font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:5px';var h='<div id="stc-fscope-ov" onclick="if(event.target===this)_stcCloseFulfilledScopeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Add already fulfilled scope</div>';h+='<button onclick="_stcCloseFulfilledScopeModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:20px;display:flex;flex-direction:column;gap:14px">';h+='<div><label style="'+lS+'">Item</label><input id="stc-fscope-item" type="text" placeholder="Item description&hellip;" style="'+iS+'"></div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';h+='<div><label style="'+lS+'">Quantity</label><input id="stc-fscope-qty" type="number" min="1" value="1" style="'+iS+'"></div>';h+='<div><label style="'+lS+'">Date delivered</label><input id="stc-fscope-date" type="date" style="'+iS+'"></div>';h+='</div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';h+='<div><label style="'+lS+'">Order type</label><select id="stc-fscope-type" style="'+iS+'"><option value="ad-hoc">Ad-hoc</option><option value="recurring">Recurring</option></select></div>';h+='<div><label style="'+lS+'">Cost code</label><input id="stc-fscope-cc" type="text" placeholder="0600-0200-0000-0001" style="'+iS+'"></div>';h+='</div>';h+='</div>';h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseFulfilledScopeModal()" style="flex:1;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';h+='<button onclick="_stcSubmitFulfilledScope()" style="flex:1;padding:9px;border:none;border-radius:8px;background:#18181b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Add scope</button>';h+='</div>';h+='</div></div>';return h;}
   function _stcOpenCCQuoteModal(idx){
     var r=_stcAllReqs[idx];if(!r)return;
     var auto='QT-'+r.id+'-'+new Date().getFullYear();
@@ -4179,7 +4221,7 @@
     h+='</div>';
     // Line items table
     h+='<div style="padding:16px 22px 8px">';
-    h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,null);
+    h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,null,true);
     if(q.notes)h+='<div style="font-size:12px;color:var(--g600);background:var(--g50);border-radius:6px;padding:10px 12px;margin-top:8px;line-height:1.5"><span style="font-weight:600">Vendor notes:</span> '+q.notes+'</div>';
     var _qIsReviewable=(r.status==='quoted');
     if(_qIsReviewable){
@@ -4355,14 +4397,14 @@
       r.status='scoping';
       _stcCatModal=null;renderSTC_CC();toast('Categorized as VMI — next: prepare and send quote to project team.');
     }else{
-      var spTotal=r.price&&r.qty?r.price*r.qty:(r.price||0);
-      if(spTotal>0&&spTotal<500){
+      var spUnitPrice=r.price||0;
+      if(spUnitPrice>0&&spUnitPrice<500){
         r.status='released';
-        r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 9, 2026',text:'Auto-released to T3 — total '+('$'+spTotal)+' under $500 threshold.'}]);
-        _stcCatModal=null;renderSTC_CC();toast('Auto-released to T3 — total under $500 threshold.');
+        r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 9, 2026',text:'Auto-released to T3 — unit price $'+spUnitPrice+' under $500 threshold.'}]);
+        _stcCatModal=null;renderSTC_CC();toast('Auto-released to T3 — unit price under $500 threshold.');
       }else{
         r.status='pending';
-        _stcCatModal=null;renderSTC_CC();toast('Categorized as Self-Perform — review and confirm before sending to T3.');
+        _stcCatModal=null;renderSTC_CC();toast('Categorized as Self-Perform — at or above $500 per unit, review before sending to T3.');
       }
     }
   }
@@ -4910,9 +4952,9 @@
           });
           h+='</div>';
         }
-        var cols='2fr 80px 90px 105px 90px';
+        var cols='2fr 80px 90px 105px 90px 70px';
         h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+cols+'">';
-        h+='<span>Item</span><span>Type</span><span>Need By</span><span>Status</span><span>Value</span></div>';
+        h+='<span>Item</span><span>Type</span><span>Need By</span><span>Status</span><span>Value</span><span>Docs</span></div>';
         var _ccBndRendered={};
         rows.forEach(function(r){
           var gi=_stcAllReqs.indexOf(r);
@@ -4933,6 +4975,8 @@
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
           h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—')+'</div>';
+          var _ccdocs=r.attachments||[];
+          h+='<div>'+(_ccdocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">'+_ccdocs.length+' doc'+(_ccdocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400)" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">+ Doc</button>')+'</div>';
           h+='</div>';
           h+='<div id="stccc-drill-'+gi+'" class="otrack" style="display:'+(_stcCCDrillOpen===gi?'block':'none')+'">'+_stcBuildCCTrack(r,gi)+'</div>';
         });
