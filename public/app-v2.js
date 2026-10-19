@@ -5703,13 +5703,9 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
       });
       body+='</div>';
     }
-    body+='<div style="margin-bottom:8px">';
-    body+='<label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Upload files</label>';
-    body+='<input id="ps-dlvr-file" type="file" multiple style="font-size:12px;width:100%" onchange="psDlvrAddFiles('+ri+',this.files)">';
-    body+='</div>';
-    body+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
-    body+='<div style="flex:1"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Or paste a link</label><input id="ps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
-    body+='<button class="btn btn-ghost btn-sm" style="margin-top:18px;flex-shrink:0" onclick="psDlvrAddLink('+ri+')">Add link</button></div>';
+    if(!r.deliverables||!r.deliverables.length){
+      body+='<div style="padding:18px 0;text-align:center;color:var(--g400);font-size:12.5px">No deliverables uploaded by 02S yet.</div>';
+    }
     body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
     openModal('Deliverables \u2014 '+r.service,body);
   }
@@ -6253,8 +6249,8 @@ function cpNudgeReplySubmit(ni,type){
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(planRows.length){
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
-        h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ITEM','QTY','NEED BY','COST','% DONE','STATUS','DOCS'].forEach(function(c){
+        h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
+        ['ITEM','QTY','NEED BY','COST','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6267,7 +6263,7 @@ function cpNudgeReplySubmit(ni,type){
           var pct=acts.length?Math.round(doneActs/acts.length*100):0;
           var pctColor=pct===100?'var(--success)':pct>=50?'#3b82f6':'var(--g400)';
           h+='<div style="border-top:1px solid var(--g100)">';
-          h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+          h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+'</div>';
           h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+row.firm+'</div>';
@@ -6292,6 +6288,10 @@ function cpNudgeReplySubmit(ni,type){
             h+='<span style="font-size:11px;color:var(--g400)">\u2014</span>';
           }
           h+='</div>';
+          var _ccDlvrs=row.deliverables||[];
+          h+='<div style="display:flex;align-items:center">'+(_ccDlvrs.length?
+            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:#0891b2" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">'+_ccDlvrs.length+' file'+(_ccDlvrs.length===1?'':'s')+'</button>':
+            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">&uarr; Upload</button>')+'</div>';
           h+='</div>';
 
           // Expanded activity gantt — logistics CSS classes
@@ -6735,7 +6735,7 @@ function renderProfServicesDP(){
         h+='<div class="c">'+r.qty+'</div><div>'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(r.window)+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
         h+='<div>'+(_dn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();openPsDocsModal('+ri+')">'+_dn+' doc'+(_dn===1?'':'s')+'</button>':(_needsDocs?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#b45309;border-color:#d97706" onclick="event.stopPropagation();openPsDocsModal('+ri+')">Needed</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>'))+'</div>';
         var _dlvrs=r.deliverables||[];
-        h+='<div>'+(_dlvrs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs.length+' file'+(_dlvrs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();openPsDeliverables('+ri+')">&uarr; Upload</button>')+'</div>';
+        h+='<div>'+(_dlvrs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs.length+' file'+(_dlvrs.length===1?'':'s')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         var _stLabel=({'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'})[r.state]||r.state;
@@ -18147,7 +18147,7 @@ function renderProfServicesDP(){
         h+='<div class="c">'+r.qty+'</div><div>'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(r.window)+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
         h+='<div>'+(_dn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();openPsDocsModal('+ri+')">'+_dn+' doc'+(_dn===1?'':'s')+'</button>':(_needsDocs?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#b45309;border-color:#d97706" onclick="event.stopPropagation();openPsDocsModal('+ri+')">Needed</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>'))+'</div>';
         var _dlvrs2=r.deliverables||[];
-        h+='<div>'+(_dlvrs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs2.length+' file'+(_dlvrs2.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();openPsDeliverables('+ri+')">&uarr; Upload</button>')+'</div>';
+        h+='<div>'+(_dlvrs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs2.length+' file'+(_dlvrs2.length===1?'':'s')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         var _pIdx=-1;_props.forEach(function(p,pi){if(p.rowIdx===ri&&p.state!=='Approved')_pIdx=pi;});
