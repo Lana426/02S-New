@@ -2534,13 +2534,13 @@
     {id:'STC-005',proj:'hercules',type:'sp',cat:'Small Tools',
      bundleId:'BND-SP-HRC3',bundleName:'Impact Drill Kit',
      desc:'Impact Drill Kit',status:'pending',needBy:'2026-11-05',ccCategorized:true,
-     costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:1200,price:1167,qty:1,
+     costCode:'0600-0100-0000-0001',date:'Sep 17',sa:1,ea:4,budget:1200,price:1767,qty:1,
      reqType:'New',itemComment:'HEPA-ready attachment required — concrete dust exposure near occupied building',
      spLineItems:[
-       {no:1,desc:'SDS Max rotary hammer (Bosch GBH18V-26)',qty:3,uom:'EA',price:389,ext:1167}
+       {no:1,desc:'SDS Max rotary hammer (Bosch GBH18V-26)',qty:3,uom:'EA',price:589,ext:1767}
      ],
      notes:[{who:'Lana Butorovic',when:'Sep 17 2026',text:'HEPA-ready attachment required — concrete dust exposure near occupied building'},
-            {who:'02S Logistics',when:'Sep 23 2026',text:'Order total $1,167 — above $500 threshold, routed for CC review before release to T3.'}],attachments:[]},
+            {who:'02S Logistics',when:'Sep 23 2026',text:'Order total $1,767 — unit price $589 above $500 threshold, routed for CC review before release to T3.'}],attachments:[]},
     {id:'STC-007',proj:'hercules',type:'sp',cat:'Consumables',
      bundleId:'BND-SP-HRC4',bundleName:'Site Consumables Pack',
      desc:'Site Consumables Pack',status:'released',needBy:'2026-10-05',ccCategorized:true,
@@ -3243,10 +3243,10 @@
       h+='</div></div>';
     }
 
-    // VMI active — Add already fulfilled scope
+    // VMI active — Add scope options
     if(r.type==='vmi'&&(r.status==='released'||r.status==='fulfilled')){
-      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:12px">';
-      h+='<div style="font-size:12px;color:var(--g600)">Add scope confirmed with vendor</div>';
+      h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px;display:flex;align-items:center;justify-content:flex-end;gap:8px">';
+      h+='<button onclick="event.stopPropagation();_stcOpenModal()" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap">New scope request</button>';
       h+='<button onclick="event.stopPropagation();_stcOpenFulfilledScopeModal('+idx+')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px"><span style="font-size:15px;line-height:1">+</span> Add already fulfilled scope</button>';
       h+='</div>';
     }
@@ -3472,16 +3472,18 @@
     h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">committed this period</div></div>';
     var ICO_RENT='<rect x="1" y="3" width="22" height="13" rx="2"/><path d="M16 21H8M12 17v4"/>';
     var ICO_CYCLE='<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>';
-    var toolsOnRent=rows.filter(function(r){return r.type==='sp'&&(r.status==='released'||r.status==='in_fulfillment'||r.status==='fulfilled');}).length;
-    var recurringCost=rows.filter(function(r){return r.type==='vmi';}).reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
-    h+='<div class="vital '+(toolsOnRent>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_RENT)+'Tools on Rent</div><div class="vv">'+toolsOnRent+'</div><div class="vsub">SP orders active or delivered</div></div>';
-    h+='<div class="vital '+(recurringCost>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CYCLE)+'Recurring Cost</div><div class="vv">'+(recurringCost>0?_stcFmt(recurringCost):'—')+'</div><div class="vsub">VMI committed value</div></div>';
+    if(_stcFilter==='sp'){
+      var toolsOnRent=rows.filter(function(r){return r.type==='sp'&&(r.status==='released'||r.status==='in_fulfillment'||r.status==='fulfilled');}).length;
+      var recurringCost=rows.filter(function(r){return r.type==='sp';}).reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
+      h+='<div class="vital '+(toolsOnRent>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_RENT)+'Tools on Rent</div><div class="vv">'+toolsOnRent+'</div><div class="vsub">SP orders active or delivered</div></div>';
+      h+='<div class="vital '+(recurringCost>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CYCLE)+'Recurring Cost</div><div class="vv">'+(recurringCost>0?_stcFmt(recurringCost):'—')+'</div><div class="vsub">SP committed value</div></div>';
+    }
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
     h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
     h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
     h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:'+(_stcFilter==='vmi'?'6px':'6px 0 0 6px')+';padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ '+(_stcFilter==='vmi'?'Request':'New Request')+'</button>';
-    if(_stcFilter!=='vmi'){h+='<button onclick="_stcOpenReturnPickerModal()" style="display:inline-flex;align-items:center;gap:5px;background:#3f3f46;color:#fff;border:none;border-left:1px solid #52525b;border-radius:0 6px 6px 0;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">&#8617; Return</button>';}
+    if(_stcFilter!=='vmi'){h+='<button onclick="_stcOpenReturnPickerModal()" style="display:inline-flex;align-items:center;gap:5px;background:#3f3f46;color:#fff;border:none;border-left:1px solid #52525b;border-radius:0 6px 6px 0;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">Return Request</button>';}
     h+='</div>';
 
     var cols='2fr 1fr 65px 80px 80px 150px 90px 90px 70px';
@@ -3880,7 +3882,7 @@
     // SP: confirm order (pending) + yard availability request
     if(r.type==='sp'&&r.status==='pending'){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
-      h+='<div style="font-size:11px;font-weight:700;color:#b45309;margin-bottom:10px">Above $500 per unit — review before releasing to T3</div>';
+      if((r.price||0)>=500){h+='<div style="font-size:11px;font-weight:700;color:#b45309;margin-bottom:10px">Above $500 per unit — review before releasing to T3</div>';}
       var spTot=r.price&&r.qty?r.price*r.qty:(r.price||0);
       if(r.spLineItems&&r.spLineItems.length){
         h+='<div style="overflow-x:auto;margin-bottom:10px"><table style="width:100%;border-collapse:collapse;font-size:12px">';
@@ -4022,7 +4024,7 @@
   function _stcOpenDocsModal(idx){_stcDocsModal=idx;var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcDocsModalHTML());}
   function _stcCloseDocsModal(){_stcDocsModal=null;var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();}
   function _stcDocsAddFile(idx,files){var r=_stcAllReqs[idx];if(!r)return;r.attachments=r.attachments||[];for(var i=0;i<files.length;i++){r.attachments.push({name:files[i].name,ref:'DOC-'+Date.now(),status:'Uploaded'});}var ov=document.getElementById('stc-docs-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcDocsModalHTML());}
-  function _stcDocsModalHTML(){if(_stcDocsModal===null)return '';var r=_stcAllReqs[_stcDocsModal];if(!r)return '';var docs=r.attachments||[];var h='<div id="stc-docs-ov" onclick="if(event.target===this)_stcCloseDocsModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Documentation &middot; '+(r.bundleName||r.desc)+'</div>';h+='<button onclick="_stcCloseDocsModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:16px 20px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Attached Documentation ('+docs.length+')</div>';h+='<label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);cursor:pointer">+ Upload<input type="file" multiple style="display:none" onchange="_stcDocsAddFile('+_stcDocsModal+',this.files)"></label>';h+='</div>';if(!docs.length){h+='<div style="text-align:center;padding:24px 0;color:var(--g400);font-size:13px">No documents attached yet.</div>';}else{docs.forEach(function(d){var label=(d.name||d)+(d.ref?' &middot; '+d.ref:'');h+='<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--g200);border-radius:7px;margin-bottom:6px">';h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';h+='<span style="font-size:12.5px;color:var(--g900);flex:1">'+label+'</span>';if(d.status)h+='<span style="font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:4px;background:#f0fdf4;color:#15803d">'+d.status+'</span>';h+='</div>';});}h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseDocsModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Close</button>';h+='</div>';h+='</div></div>';return h;}
+  function _stcDocsModalHTML(){if(_stcDocsModal===null)return '';var r=_stcAllReqs[_stcDocsModal];if(!r)return '';var docs=r.attachments||[];var h='<div id="stc-docs-ov" onclick="if(event.target===this)_stcCloseDocsModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Documentation &middot; '+(r.bundleName||r.desc)+'</div>';h+='<button onclick="_stcCloseDocsModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:16px 20px">';h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Attached Documentation ('+docs.length+')</div>';h+='<label style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:5px 12px;border:1.5px solid var(--g300);border-radius:6px;background:#fff;color:var(--g700);cursor:pointer">+ Upload<input type="file" multiple style="display:none" onchange="_stcDocsAddFile('+_stcDocsModal+',this.files)"></label>';h+='</div>';if(!docs.length){h+='<div style="text-align:center;padding:24px 0;color:var(--g400);font-size:13px">No documents attached yet.</div>';}else{docs.forEach(function(d){var label=(d.name||d)+(d.ref?' &middot; '+d.ref:'');h+='<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--g200);border-radius:7px;margin-bottom:6px">';h+='<svg viewBox="0 0 24 24" fill="none" stroke="var(--g500)" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>';h+='<span style="font-size:12.5px;color:var(--g900);flex:1">'+label+'</span>';h+='</div>';});}h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseDocsModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Close</button>';h+='</div>';h+='</div></div>';return h;}
   function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcReturnPickerModalHTML());}
   function _stcCloseReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();}
   function _stcReturnPickerModalHTML(){var eligible=_stcAllReqs.filter(function(r){return r.type==='sp'&&(r.status==='in_fulfillment'||r.status==='fulfilled')&&r.spLineItems&&r.spLineItems.length;});var h='<div id="stc-retpick-ov" onclick="if(event.target===this)_stcCloseReturnPickerModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Return Request &mdash; select order</div>';h+='<button onclick="_stcCloseReturnPickerModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:12px 20px;max-height:60vh;overflow-y:auto">';if(!eligible.length){h+='<div style="font-size:13px;color:var(--g400);padding:10px 0">No eligible SP orders for return.</div>';}eligible.forEach(function(r){var gi=_stcAllReqs.indexOf(r);h+='<div onclick="_stcCloseReturnPickerModal();_stcOpenReturnModal('+gi+',0)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--g200);border-radius:8px;margin-bottom:8px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'#fff\'">';h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+(r.bundleName||r.desc)+'</div>';h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+r.id+' &middot; '+r.spLineItems.length+' line item'+(r.spLineItems.length===1?'':'s')+'</div></div>';h+='<span style="font-size:12px;color:var(--g400)">Select &rarr;</span>';h+='</div>';});h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseReturnPickerModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';h+='</div>';h+='</div></div>';return h;}
@@ -4292,13 +4294,7 @@
     h+='<div style="padding:14px 24px">';
     h+=_stcQuoteTableHTML(q.lineItems,q.total,q.ref,q.acceptedAt);
     h+='</div>';
-    // Accepted badge if accepted
-    if(q.acceptedAt){
-      h+='<div style="padding:0 24px 20px;display:flex;align-items:center;gap:8px">';
-      h+='<span style="display:inline-flex;align-items:center;gap:5px;background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:#15803d">';
-      h+='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px"><path d="M13 4L6 11l-3-3"/></svg> Accepted '+q.acceptedAt+'</span>';
-      h+='</div>';
-    }
+
     h+='</div></div>';
     return h;
   }
