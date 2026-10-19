@@ -2458,7 +2458,7 @@
        {no:5,desc:'Tip cleaning brush set',qty:12,uom:'EA',vendorRate:4,rate:6,ext:72},
        {no:6,desc:'Wire brush 8" stainless',qty:24,uom:'EA',vendorRate:3,rate:4,ext:96}
      ],
-     quote:{vendor:'Airgas Inc.',ref:'QT-STC-001',total:1268,sentBy:'02S Logistics',sentAt:'Sep 16, 2026',acceptedAt:'Sep 17, 2026',
+     quote:{vendor:'Airgas Inc.',ref:'QT-STC-001',total:1268,sentBy:'02S Procurement',sentAt:'Sep 16, 2026',acceptedAt:'Sep 17, 2026',
        lineItems:[
          {no:1,desc:'Welding wire ER70S-6 (33lb spool)',qty:12,uom:'EA',vendorRate:28,rate:36,ext:432},
          {no:2,desc:'Stick electrodes E6013 (50lb box)',qty:8,uom:'BX',vendorRate:22,rate:32,ext:256},
@@ -2467,8 +2467,8 @@
          {no:5,desc:'Tip cleaning brush set',qty:12,uom:'EA',vendorRate:4,rate:6,ext:72},
          {no:6,desc:'Wire brush 8" stainless',qty:24,uom:'EA',vendorRate:3,rate:4,ext:96}
        ]},
-     notes:[{who:'Lana Butorovic',when:'Sep 15 2026',text:'Recurring VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'},
-            {who:'02S Logistics',when:'Sep 20 2026',text:'Quote accepted and released to Airgas. Auto-reorder cadence active.'}],
+     notes:[{who:'Ravi Kamboh',when:'Sep 15 2026',text:'Recurring VMI order for welding wire, electrodes, and flux core. Qty increased 20% vs. prior month.'},
+            {who:'02S Procurement',when:'Sep 20 2026',text:'Quote accepted and released to Airgas. Auto-reorder cadence active.'}],
      attachments:[{name:'VMI restocking plan rev 2',ref:'VMI-001-R2',status:'Approved'}]},
     {id:'STC-003',proj:'hercules',type:'vmi',cat:'Abrasives',
      bundleId:'BND-VMI-HRC2',bundleName:'Abrasives & Grinding VMI',
@@ -2484,7 +2484,7 @@
        {no:6,desc:'Wire cup brush 4.5" carbon steel',qty:12,uom:'EA',vendorRate:7,rate:9,ext:108},
        {no:7,desc:'Sanding pad 5" hook & loop 80-grit (50-pk)',qty:2,uom:'PK',vendorRate:16,rate:21,ext:42}
      ],
-     notes:[{who:'Lana Butorovic',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
+     notes:[{who:'Ravi Kamboh',when:'Sep 10 2026',text:'Grinding discs running low in Zone A. Increase order qty by 20% vs. standard.'}],
      attachments:[]},
     {id:'STC-006',proj:'hercules',type:'vmi',cat:'PPE & Safety',
      bundleId:'BND-VMI-HRC3',bundleName:'PPE Safety Bundle — VMI',
@@ -2504,7 +2504,7 @@
      ],
      quote:{vendor:'Grainger Industrial Supply',ref:'QT-STC-006',total:3180,
        notes:'Bundle pricing based on Tier 1 national VMI rates. Conex setup and monthly replenishment included. SKUs matched to site-approved Milwaukee & Radians program.',
-       sentBy:'02S Logistics',sentAt:'Sep 28, 2026',
+       sentBy:'02S Procurement',sentAt:'Sep 28, 2026',
        lineItems:[
          {no:1,desc:'Safety helmet Milwaukee 48-73-1070 vented (Type II)',qty:40,uom:'EA',vendorRate:15,rate:20,ext:800},
          {no:2,desc:'Safety glasses anti-fog Milwaukee 48-73-2205',qty:80,uom:'EA',vendorRate:4,rate:5.50,ext:440},
@@ -2516,8 +2516,8 @@
          {no:8,desc:'N95 respirator Radians RADN95 (20pk)',qty:6,uom:'EA',vendorRate:17,rate:22,ext:132},
          {no:9,desc:'First aid kit 250-person Uline H-9997',qty:2,uom:'EA',vendorRate:82,rate:106,ext:212}
        ]},
-     notes:[{who:'Lana Butorovic',when:'Sep 22 2026',text:'Need PPE package set up for full site crew — ~40 workers. Align to Milwaukee & Radians program.'},
-            {who:'02S Logistics',when:'Sep 28 2026',text:'Quote prepared based on Tier 1 national VMI rates. 9-SKU bundle covers helmets, eyewear, gloves, vests, hearing, respiratory, and first aid.'}],
+     notes:[{who:'Ravi Kamboh',when:'Sep 22 2026',text:'Need PPE package set up for full site crew — ~40 workers. Align to Milwaukee & Radians program.'},
+            {who:'02S Procurement',when:'Sep 28 2026',text:'Quote prepared based on Tier 1 national VMI rates. 9-SKU bundle covers helmets, eyewear, gloves, vests, hearing, respiratory, and first aid.'}],
      attachments:[{name:'VMI PPE Quote — Sep 28',ref:'Q-STC-006',status:'Pending review'}]},
     // ── Hercules SP ──
     {id:'STC-002',proj:'hercules',type:'sp',cat:'Small Tools',
@@ -2539,8 +2539,8 @@
      spLineItems:[
        {no:1,desc:'SDS Max rotary hammer (Bosch GBH18V-26)',qty:3,uom:'EA',price:589,ext:1767}
      ],
-     notes:[{who:'Lana Butorovic',when:'Sep 17 2026',text:'HEPA-ready attachment required — concrete dust exposure near occupied building'},
-            {who:'02S Logistics',when:'Sep 23 2026',text:'Order total $1,767 — unit price $589 above $500 threshold, routed for CC review before release to T3.'}],attachments:[]},
+     notes:[{who:'Ravi Kamboh',when:'Sep 17 2026',text:'HEPA-ready attachment required — concrete dust exposure near occupied building'},
+            {who:'02S Procurement',when:'Sep 23 2026',text:'Order total $1,767 — unit price $589 above $500 threshold, routed for CC review before release to T3.'}],attachments:[]},
     {id:'STC-007',proj:'hercules',type:'sp',cat:'Consumables',
      bundleId:'BND-SP-HRC4',bundleName:'Site Consumables Pack',
      desc:'Site Consumables Pack',status:'released',needBy:'2026-10-05',ccCategorized:true,
@@ -2548,17 +2548,17 @@
      spLineItems:[
        {no:1,desc:'Extension cord 50ft 12AWG (Husky)',qty:10,uom:'EA',price:34,ext:340}
      ],
-     notes:[{who:'02S Logistics',when:'Sep 25 2026',text:'Auto-approved — total $340, within $500 threshold. Released to T3, delivery by Oct 5.'}],attachments:[]},
+     notes:[{who:'02S Procurement',when:'Sep 25 2026',text:'Auto-approved — total $340, within $500 threshold. Released to T3, delivery by Oct 5.'}],attachments:[]},
     {id:'STC-004',proj:'hercules',type:'sp',cat:'Safety & Specialty',
      bundleId:'BND-SP-HRC2',bundleName:'Fall Protection Kit',
-     desc:'Fall Protection Kit',status:'fulfilled',needBy:'2026-10-12',ccCategorized:true,confirmedBy:'Lana Butorovic',confirmedAt:'Oct 12, 2026',
+     desc:'Fall Protection Kit',status:'fulfilled',needBy:'2026-10-12',ccCategorized:true,confirmedBy:'Ravi Kamboh',confirmedAt:'Oct 12, 2026',
      costCode:'0600-0200-0000-0001',date:'Sep 14',sa:3,ea:4,budget:2800,price:2580,qty:1,
      spLineItems:[
        {no:1,desc:'Fall protection harness (Petzl Avao Bod)',qty:12,uom:'EA',price:195,ext:2340},
        {no:2,desc:'Shock-absorbing lanyard 6ft (3M DBI-SALA)',qty:12,uom:'EA',price:18,ext:216},
        {no:3,desc:'Safety glasses ANSI Z87.1 (12-pack)',qty:2,uom:'PK',price:18,ext:24}
      ],
-     notes:[{who:'Lana Butorovic',when:'Sep 14 2026',text:'Required for steel erection crew — 12 units needed before Oct 1.'},
+     notes:[{who:'Ravi Kamboh',when:'Sep 14 2026',text:'Required for steel erection crew — 12 units needed before Oct 1.'},
             {who:'02S Procurement',when:'Sep 16 2026',text:'Delivery confirmed, scheduled Sep 30 via Grainger.'}],
      attachments:[{name:'Safety harness spec sheet',ref:'STC-004-SPEC',status:'Approved'}]},
     // ── Barry Rose VMI ──
@@ -2812,7 +2812,7 @@
     var inp=document.getElementById('stc-note-'+idx);
     if(!inp||!inp.value.trim())return;
     _stcAllReqs[idx].notes=_stcAllReqs[idx].notes||[];
-    _stcAllReqs[idx].notes.push({who:'Lana Butorovic',when:'Just now',text:inp.value.trim()});
+    _stcAllReqs[idx].notes.push({who:'Ravi Kamboh',when:'Just now',text:inp.value.trim()});
     inp.value='';
     toast('Note sent to 02S');
   }
@@ -2863,7 +2863,7 @@
     var cc=document.getElementById('stc-bnd-cc');
     var needBy=nb?nb.value:'';var costCode=cc?cc.value:'0600-0100-0000-0001';
     selected.forEach(function(item,si){
-      var initNotes=item._comment?[{who:'Lana Butorovic',when:'Now',text:item._comment}]:[];
+      var initNotes=item._comment?[{who:'Ravi Kamboh',when:'Now',text:item._comment}]:[];
       _stcAllReqs.push({id:cfg.bundleId+'-'+(si+1),bundleId:cfg.bundleId,bundleName:cfg.name,
         proj:'hercules',type:'sp',desc:item.name,cat:item.cat,qty:item.qty,price:item.price,
         date:'Now',status:'requested',needBy:needBy,costCode:costCode,
@@ -2881,7 +2881,7 @@
     var qty=qtyEl?parseInt(qtyEl.value)||1:1;
     var reason=reasonEl?reasonEl.value.trim():'';
     var note='Return request submitted — Qty '+qty+(reason?': '+reason:'');
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 8, 2026',text:note}]);
+    r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:'Oct 8, 2026',text:note}]);
     renderSTC();toast('Return request submitted — 02S will coordinate pickup.');
   }
   function _stcOpenReturnModal(idx,li){
@@ -2903,7 +2903,7 @@
     var notesEl=document.getElementById('stc-ret-notes');
     var extraNote=notesEl&&notesEl.value.trim()?' · '+notesEl.value.trim():'';
     var note='Return requested — '+m.item.desc+' · Qty '+qty+(dateVal?' · Pickup by '+dateVal:'')+extraNote;
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:note}]);
+    r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:now,text:note}]);
     _stcReturnRequests.push({proj:r.proj,projCode:projCode,bundleName:m.bundleName,itemDesc:m.item.desc,qty:qty,uom:m.item.uom||'EA',pickupDate:dateVal,reqIdx:m.reqIdx,lineIdx:m.lineIdx,date:now,dismissed:false,response:null});
     _stcReturnModal=null;
     renderSTC();
@@ -3049,7 +3049,7 @@
     var _spQty=parseInt((document.getElementById('stc-sp-qty')||{value:'1'}).value,10)||1;
     var notesEl=document.getElementById('stc-sp-notes');
     var reqNote=notesEl&&notesEl.value.trim()?notesEl.value.trim():'';
-    var initNotes=reqNote?[{who:'Lana Butorovic',when:'Now',text:reqNote}]:[];
+    var initNotes=reqNote?[{who:'Ravi Kamboh',when:'Now',text:reqNote}]:[];
     var spStatus='requested';
     _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),proj:'hercules',type:'sp',cat:cat||'General',desc:desc,status:'requested',needBy:nb?nb.value:'',costCode:'0600-0100-0000-0001',date:'Now',sa:1,ea:4,price:price,qty:_spQty,itemComment:reqNote,notes:initNotes,attachments:[]});
     _stcModal.open=false;
@@ -3122,7 +3122,7 @@
     var lineCount=r.spLineItems&&r.spLineItems.length?r.spLineItems.length:(r.kitItems&&r.kitItems.length?r.kitItems.length:1);
     var msg='Yard availability inquiry sent — '+lineCount+' line item'+(lineCount!==1?'s':'');
     if(noteText)msg+=' · '+noteText;
-    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Just now',text:msg}]);
+    r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Just now',text:msg}]);
     _stcYardModal=null;
     toast('Inquiry sent to other yards');
     renderSTC_CC();
@@ -3954,7 +3954,7 @@
     rr.dismissed=true;
     rr.response={msg:msg||'02S has acknowledged your return request and will be in touch to coordinate pickup.',when:now};
     var r=_stcAllReqs[rr.reqIdx];
-    if(r){r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:now,text:'Return acknowledged — '+(msg||'02S will coordinate pickup.')}]);}
+    if(r){r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:now,text:'Return acknowledged — '+(msg||'02S will coordinate pickup.')}]);}
     _stcCCReturnAckModal=null;
     renderSTC_CC();
     renderSTC();
@@ -4007,7 +4007,7 @@
     if(!inp||!inp.value.trim()){toast('Enter a note first');return;}
     var r=_stcAllReqs[idx];if(!r)return;
     if(!r.notes)r.notes=[];
-    r.notes.push({who:'02S Logistics',when:'Oct 2, 2026',text:inp.value.trim()});
+    r.notes.push({who:'02S Procurement',when:'Oct 2, 2026',text:inp.value.trim()});
     _stcCCDrillOpen=idx;
     renderSTC_CC();
   }
@@ -4028,10 +4028,10 @@
   function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcReturnPickerModalHTML());}
   function _stcCloseReturnPickerModal(){var ov=document.getElementById('stc-retpick-ov');if(ov)ov.remove();}
   function _stcReturnPickerModalHTML(){var eligible=_stcAllReqs.filter(function(r){return r.type==='sp'&&(r.status==='in_fulfillment'||r.status==='fulfilled')&&r.spLineItems&&r.spLineItems.length;});var h='<div id="stc-retpick-ov" onclick="if(event.target===this)_stcCloseReturnPickerModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Return Request &mdash; select order</div>';h+='<button onclick="_stcCloseReturnPickerModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:12px 20px;max-height:60vh;overflow-y:auto">';if(!eligible.length){h+='<div style="font-size:13px;color:var(--g400);padding:10px 0">No eligible SP orders for return.</div>';}eligible.forEach(function(r){var gi=_stcAllReqs.indexOf(r);h+='<div onclick="_stcCloseReturnPickerModal();_stcOpenReturnModal('+gi+',0)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--g200);border-radius:8px;margin-bottom:8px;cursor:pointer;background:#fff" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'#fff\'">';h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900)">'+(r.bundleName||r.desc)+'</div>';h+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+r.id+' &middot; '+r.spLineItems.length+' line item'+(r.spLineItems.length===1?'':'s')+'</div></div>';h+='<span style="font-size:12px;color:var(--g400)">Select &rarr;</span>';h+='</div>';});h+='</div>';h+='<div style="padding:12px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseReturnPickerModal()" style="width:100%;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';h+='</div>';h+='</div></div>';return h;}
-  function _stcConfirmReceipt(idx){var r=_stcAllReqs[idx];if(!r)return;r.status='fulfilled';r.confirmedBy='Lana Butorovic';var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});r.confirmedAt=now;r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:now,text:'Receipt confirmed.'}]);renderSTC();toast('Receipt confirmed.');}
+  function _stcConfirmReceipt(idx){var r=_stcAllReqs[idx];if(!r)return;r.status='fulfilled';r.confirmedBy='Ravi Kamboh';var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});r.confirmedAt=now;r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:now,text:'Receipt confirmed.'}]);renderSTC();toast('Receipt confirmed.');}
   function _stcOpenFulfilledScopeModal(idx){_stcFulfilledScopeModal={idx:idx};var ov=document.getElementById('stc-fscope-ov');if(ov)ov.remove();document.body.insertAdjacentHTML('beforeend',_stcFulfilledScopeModalHTML());}
   function _stcCloseFulfilledScopeModal(){_stcFulfilledScopeModal=null;var ov=document.getElementById('stc-fscope-ov');if(ov)ov.remove();}
-  function _stcSubmitFulfilledScope(){if(!_stcFulfilledScopeModal)return;var r=_stcAllReqs[_stcFulfilledScopeModal.idx];if(!r)return;var itemEl=document.getElementById('stc-fscope-item');var qtyEl=document.getElementById('stc-fscope-qty');var dateEl=document.getElementById('stc-fscope-date');var typeEl=document.getElementById('stc-fscope-type');var ccEl=document.getElementById('stc-fscope-cc');if(!itemEl||!itemEl.value.trim()){toast('Item name required.');return;}var notesEl=document.getElementById('stc-fscope-notes');var noteTxt=notesEl&&notesEl.value.trim();var li={no:(r.kitItems?r.kitItems.length+1:1),desc:itemEl.value.trim(),qty:parseInt(qtyEl&&qtyEl.value)||1,uom:'EA',rate:0,ext:0,deliveredDate:dateEl&&dateEl.value,orderType:typeEl&&typeEl.value,costCode:ccEl&&ccEl.value.trim(),notes:noteTxt||''};if(noteTxt){r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),text:'Fulfilled scope added: '+itemEl.value.trim()+(noteTxt?' — '+noteTxt:'')}]);}r.kitItems=r.kitItems||[];r.kitItems.push(li);_stcCloseFulfilledScopeModal();renderSTC();renderSTC_CC();toast('Fulfilled scope added.');}
+  function _stcSubmitFulfilledScope(){if(!_stcFulfilledScopeModal)return;var r=_stcAllReqs[_stcFulfilledScopeModal.idx];if(!r)return;var itemEl=document.getElementById('stc-fscope-item');var qtyEl=document.getElementById('stc-fscope-qty');var dateEl=document.getElementById('stc-fscope-date');var typeEl=document.getElementById('stc-fscope-type');var ccEl=document.getElementById('stc-fscope-cc');if(!itemEl||!itemEl.value.trim()){toast('Item name required.');return;}var notesEl=document.getElementById('stc-fscope-notes');var noteTxt=notesEl&&notesEl.value.trim();var li={no:(r.kitItems?r.kitItems.length+1:1),desc:itemEl.value.trim(),qty:parseInt(qtyEl&&qtyEl.value)||1,uom:'EA',rate:0,ext:0,deliveredDate:dateEl&&dateEl.value,orderType:typeEl&&typeEl.value,costCode:ccEl&&ccEl.value.trim(),notes:noteTxt||''};if(noteTxt){r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),text:'Fulfilled scope added: '+itemEl.value.trim()+(noteTxt?' — '+noteTxt:'')}]);}r.kitItems=r.kitItems||[];r.kitItems.push(li);_stcCloseFulfilledScopeModal();renderSTC();renderSTC_CC();toast('Fulfilled scope added.');}
   function _stcFulfilledScopeModalHTML(){if(!_stcFulfilledScopeModal)return '';var r=_stcAllReqs[_stcFulfilledScopeModal.idx];if(!r)return '';var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;color:var(--g900);outline:none;background:#fff';var lS='font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);display:block;margin-bottom:5px';var h='<div id="stc-fscope-ov" onclick="if(event.target===this)_stcCloseFulfilledScopeModal()" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100001;display:flex;align-items:center;justify-content:center;padding:20px">';h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden">';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--g150)">';h+='<div style="font-size:15px;font-weight:700;color:var(--g900)">Add already fulfilled scope</div>';h+='<button onclick="_stcCloseFulfilledScopeModal()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';h+='</div>';h+='<div style="padding:20px;display:flex;flex-direction:column;gap:14px">';h+='<div><label style="'+lS+'">Item</label><input id="stc-fscope-item" type="text" placeholder="Item description&hellip;" style="'+iS+'"></div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';h+='<div><label style="'+lS+'">Quantity</label><input id="stc-fscope-qty" type="number" min="1" value="1" style="'+iS+'"></div>';h+='<div><label style="'+lS+'">Date delivered</label><input id="stc-fscope-date" type="date" style="'+iS+'"></div>';h+='</div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';h+='<div><label style="'+lS+'">Order type</label><select id="stc-fscope-type" style="'+iS+'"><option value="ad-hoc">Ad-hoc</option><option value="recurring">Recurring</option></select></div>';h+='<div><label style="'+lS+'">Cost code</label><input id="stc-fscope-cc" type="text" placeholder="0600-0200-0000-0001" style="'+iS+'"></div>';h+='</div>';h+='<div><label style="'+lS+'">Notes</label><textarea id="stc-fscope-notes" rows="3" onclick="event.stopPropagation()" placeholder="Any context about this delivery&hellip;" style="'+iS.replace('border-radius:8px','border-radius:8px')+';resize:none"></textarea></div>';h+='</div>';h+='<div style="display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--g150)">';h+='<button onclick="_stcCloseFulfilledScopeModal()" style="flex:1;padding:9px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">Cancel</button>';h+='<button onclick="_stcSubmitFulfilledScope()" style="flex:1;padding:9px;border:none;border-radius:8px;background:#18181b;color:#fff;font-size:13px;font-weight:700;cursor:pointer">Add scope</button>';h+='</div>';h+='</div></div>';return h;}
   function _stcOpenCCQuoteModal(idx){
     var r=_stcAllReqs[idx];if(!r)return;
@@ -4081,9 +4081,9 @@
     });
     if(!vendor){toast('Enter vendor name');return;}
     if(!items.some(function(it){return it.desc&&it.rate>0;})){toast('Add at least one line item with a rate');return;}
-    r.quote={vendor:vendor,ref:ref,total:total,notes:notes,sentBy:'02S Logistics',sentAt:'Oct 7, 2026',lineItems:items};
+    r.quote={vendor:vendor,ref:ref,total:total,notes:notes,sentBy:'02S Procurement',sentAt:'Oct 7, 2026',lineItems:items};
     r.status='quoted';
-    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 7, 2026',text:'Quote sent to project team — $'+total.toLocaleString()+'. '+notes}]);
+    r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Oct 7, 2026',text:'Quote sent to project team — $'+total.toLocaleString()+'. '+notes}]);
     _stcCCQModal=null;
     renderSTC_CC();toast('Quote sent to project team');
   }
@@ -4164,9 +4164,9 @@
     var total=totalEl?parseFloat(totalEl.value)||0:0;
     if(!total){toast('Enter a quote total first');return;}
     var notes=notesEl?notesEl.value.trim():'';
-    r.quote={total:total,notes:notes||'Bundle pricing per VMI agreement.',sentBy:'02S Logistics',sentAt:'Oct 7, 2026'};
+    r.quote={total:total,notes:notes||'Bundle pricing per VMI agreement.',sentBy:'02S Procurement',sentAt:'Oct 7, 2026'};
     r.status='quoted';
-    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 7, 2026',text:'Quote sent to project team — $'+total.toLocaleString()+'. Awaiting acceptance.'}]);
+    r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Oct 7, 2026',text:'Quote sent to project team — $'+total.toLocaleString()+'. Awaiting acceptance.'}]);
     _stcCCDrillOpen=idx;
     renderSTC_CC();toast('Quote sent to project team');
   }
@@ -4180,7 +4180,7 @@
     var txt=el?el.value.trim():'';
     if(!txt){toast('Add a comment before returning');return;}
     r.status='scoping';
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Now',text:'Quote returned — awaiting revision: '+txt}]);
+    r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:'Now',text:'Quote returned — awaiting revision: '+txt}]);
     renderSTC();toast('Quote returned — awaiting revised quote from 02S');
   }
   function _stcOpenQReviewModal(idx){_stcQReviewModal=idx;renderSTC();}
@@ -4197,7 +4197,7 @@
     if(!txt){toast('Add feedback before returning');return;}
     var r=_stcAllReqs[idx];if(!r)return;
     r.status='scoping';
-    r.notes=(r.notes||[]).concat([{who:'Lana Butorovic',when:'Oct 7, 2026',text:'Quote returned — awaiting revision: '+txt}]);
+    r.notes=(r.notes||[]).concat([{who:'Ravi Kamboh',when:'Oct 7, 2026',text:'Quote returned — awaiting revision: '+txt}]);
     _stcQReviewModal=null;renderSTC();toast('Quote returned — awaiting revised quote from 02S');
   }
   function _stcQReviewModalHTML(){
@@ -4321,7 +4321,7 @@
     var txt=document.getElementById('stc-sp-return-txt');
     if(!txt||!txt.value.trim()){toast('Add a note before returning');return;}
     var r=_stcAllReqs[idx];if(!r)return;
-    r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 9, 2026',text:'Returned to project team: '+txt.value.trim()}]);
+    r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Oct 9, 2026',text:'Returned to project team: '+txt.value.trim()}]);
     r.status='requested';r.ccCategorized=false;
     closeModal();_stcCCDrillOpen=null;renderSTC_CC();toast('Request returned to project team');
   }
@@ -4396,7 +4396,7 @@
       var spUnitPrice=r.price||0;
       if(spUnitPrice>0&&spUnitPrice<500){
         r.status='released';
-        r.notes=(r.notes||[]).concat([{who:'02S Logistics',when:'Oct 9, 2026',text:'Auto-released to T3 — unit price $'+spUnitPrice+' under $500 threshold.'}]);
+        r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Oct 9, 2026',text:'Auto-released to T3 — unit price $'+spUnitPrice+' under $500 threshold.'}]);
         _stcCatModal=null;renderSTC_CC();toast('Auto-released to T3 — unit price under $500 threshold.');
       }else{
         r.status='pending';
@@ -4597,7 +4597,7 @@
     var inp=document.getElementById('stc-yard-reply-inp');
     if(!inp||!inp.value.trim()){toast('Enter a reply first');return;}
     var r02=_stcAllReqs.find(function(r){return r.id==='STC-002';});
-    if(r02){if(!r02.notes)r02.notes=[];r02.notes.push({who:'02S Logistics',when:'Oct 5, 2026',text:inp.value.trim()});}
+    if(r02){if(!r02.notes)r02.notes=[];r02.notes.push({who:'02S Procurement',when:'Oct 5, 2026',text:inp.value.trim()});}
     _stcYardNotifOpen=false;
     toast('Reply sent to Marcus D. at Phoenix yard');
     renderSTC_CC();
@@ -7523,7 +7523,7 @@ function renderProfServicesDP(){
       {who:'Dana Reyes · You',when:'May 20',text:'Confirmed rental extension through Oct 31. Civil support scope continuing.'}
     ],
     'ORD-3054':[
-      {who:'02S Logistics',when:'Aug 1',text:'Crane assembly confirmed on site Aug 3 per schedule. Rigger crew en route.'},
+      {who:'02S Procurement',when:'Aug 1',text:'Crane assembly confirmed on site Aug 3 per schedule. Rigger crew en route.'},
       {who:'Dana Reyes · You',when:'Jul 30',text:'North gate reserved. Coordinated with structural foreman for Aug 3 mob window.'}
     ],
     'ORD-3093':[
