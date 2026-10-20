@@ -3840,13 +3840,6 @@
       });
     }
     h+='</div>';
-    h+='<div style="padding:8px 18px 10px;border-top:1px solid var(--g150);display:flex;align-items:center;gap:10px">';
-    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Status</div>';
-    var _stcStatusOpts=[['draft','Draft'],['scoping','In Scoping / Pricing'],['pending','Pending Approval'],['approved','Approved'],['released','Released to Order'],['in_fulfillment','In Fulfillment'],['fulfilled','Fulfilled / Delivered'],['returned','Returned']];
-    h+='<select onchange="event.stopPropagation();_stcCCManualStatus('+idx+',this.value)" onclick="event.stopPropagation()" style="font-size:12px;font-weight:600;padding:5px 10px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g800);cursor:pointer;outline:none">';
-    _stcStatusOpts.forEach(function(o){h+='<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>';});
-    h+='</select>';
-    h+='</div>';
     if((r.type==='vmi'||r.ccPath==='vmi')&&(r.status==='draft'||r.status==='scoping')){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
       h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Prepare &amp; send quote →</button>';
@@ -4989,7 +4982,9 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
           h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
-          h+='<div><span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span></div>';
+          var _stcSOpts=[['draft','Draft'],['scoping','In Scoping / Pricing'],['pending','Pending Approval'],['approved','Approved'],['released','Released to Order'],['in_fulfillment','In Fulfillment'],['fulfilled','Fulfilled / Delivered'],['returned','Returned'],['closed','Completed / Closed']];
+          var _stcSelOpts=_stcSOpts.map(function(o){return '<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');
+          h+='<div onclick="event.stopPropagation()"><select onchange="event.stopPropagation();_stcCCManualStatus('+gi+',this.value)" onclick="event.stopPropagation()" style="font-size:11px;font-weight:600;padding:3px 8px;border:none;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';cursor:pointer;outline:none;max-width:140px">'+_stcSelOpts+'</select></div>';
           h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—')+'</div>';
           var _ccdocs=r.attachments||[];
           h+='<div>'+(_ccdocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">'+_ccdocs.length+' doc'+(_ccdocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400)" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">+ Doc</button>')+'</div>';
