@@ -5745,24 +5745,32 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r)return;
     if(!r.deliverables)r.deliverables=[];
     var body='<div style="padding:2px 0">';
-    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:12px">Upload files or paste links to live documents (Autodesk, SharePoint, BIM360).</p>';
+    var hasOff=r.deliverables.some(function(d){return d.track==='off_track';});
+    if(hasOff)body+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:#dc2626"><b>⚠ Off-track deliverable flagged by 02S</b> — review notes below.</div>';
+    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:10px">Deliverables uploaded and tracked by the 02S team.</p>';
     if(r.deliverables.length){
       body+='<div style="margin-bottom:12px">';
       r.deliverables.forEach(function(d,di){
-        body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--g150);border-radius:6px;margin-bottom:5px;background:var(--g50)">';
+        var isOff=d.track==='off_track';
+        var tBg=isOff?'#fef2f2':'#f0fdf4';var tCol=isOff?'#dc2626':'#16a34a';
+        body+='<div style="border:1px solid '+(isOff?'#fca5a5':'var(--g150)')+';border-radius:6px;padding:9px 12px;margin-bottom:6px;background:'+(isOff?'#fffafa':'var(--g50)')+'">';
         body+='<div>';
-        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">\ud83d\udd17 '+d.name+'</a>';
-        else body+='<span style="font-size:12px;color:var(--g800)">\ud83d\udcc4 '+d.name+'</span>';
-        if(d.addedAt)body+='<div style="font-size:10px;color:var(--g400);margin-top:1px">Added '+d.addedAt+'</div>';
-        body+='</div><button onclick="psDlvrRemove('+ri+','+di+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;padding:2px 5px">\u00d7</button></div>';
+        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">🔗 '+d.name+'</a>';
+        else body+='<span style="font-size:12px;font-weight:500;color:var(--g800)">📄 '+d.name+'</span>';
+        body+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
+        if(d.addedAt)body+='<span style="font-size:10px;color:var(--g400)">Added '+d.addedAt+'</span>';
+        if(d.dueDate)body+='<span style="font-size:10px;color:var(--g600)">Due '+d.dueDate+'</span>';
+        if(d.track)body+='<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:'+tBg+';color:'+tCol+'">'+(isOff?'⚠ Off track':'✓ On track')+'</span>';
+        body+='</div>';
+        if(d.trackNote&&isOff)body+='<div style="font-size:11px;color:#dc2626;margin-top:3px;font-style:italic">'+d.trackNote+'</div>';
+        body+='</div></div>';
       });
       body+='</div>';
-    }
-    if(!r.deliverables||!r.deliverables.length){
+    }else{
       body+='<div style="padding:18px 0;text-align:center;color:var(--g400);font-size:12.5px">No deliverables uploaded by 02S yet.</div>';
     }
     body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
-    openModal('Deliverables \u2014 '+r.service,body);
+    openModal('Deliverables — '+r.service,body);
   }
   function psDlvrAddFiles(ri,files){
     var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r||!files||!files.length)return;
@@ -5807,28 +5815,37 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     var row=rows&&rows[rowIdx];if(!row)return;
     if(!row.deliverables)row.deliverables=[];
     var body='<div style="padding:2px 0">';
-    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:12px">Upload deliverables or add links to live documents (Autodesk, SharePoint, BIM360).</p>';
+    var hasOff=row.deliverables.some(function(d){return d.track==='off_track';});
+    if(hasOff)body+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:#dc2626"><b>⚠ Off-track deliverables</b> — CP project team has been notified.</div>';
+    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:10px">Track deliverables against due dates and flag on/off track status.</p>';
     if(row.deliverables.length){
       body+='<div style="margin-bottom:12px">';
       row.deliverables.forEach(function(d,di){
-        body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--g150);border-radius:6px;margin-bottom:5px;background:var(--g50)">';
-        body+='<div>';
-        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">\ud83d\udd17 '+d.name+'</a>';
-        else body+='<span style="font-size:12px;color:var(--g800)">\ud83d\udcc4 '+d.name+'</span>';
-        if(d.addedAt)body+='<div style="font-size:10px;color:var(--g400);margin-top:1px">Added '+d.addedAt+'</div>';
-        body+='</div><button onclick="ccPsDlvrRemove(\''+proj+'\','+rowIdx+','+di+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;padding:2px 5px">\u00d7</button></div>';
+        var isOff=d.track==='off_track';
+        var tBg=isOff?'#fef2f2':'#f0fdf4';var tCol=isOff?'#dc2626':'#16a34a';
+        body+='<div style="border:1px solid '+(isOff?'#fca5a5':'var(--g200)')+';border-radius:6px;padding:9px 12px;margin-bottom:6px;background:'+(isOff?'#fffafa':'#fff')+'">';
+        body+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">';
+        body+='<div style="flex:1">';
+        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">🔗 '+d.name+'</a>';
+        else body+='<span style="font-size:12px;color:var(--g800);font-weight:500">📄 '+d.name+'</span>';
+        body+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
+        if(d.addedAt)body+='<span style="font-size:10px;color:var(--g400)">Added '+d.addedAt+'</span>';
+        if(d.dueDate)body+='<span style="font-size:10px;color:var(--g600)">Due '+d.dueDate+'</span>';
+        if(d.track)body+='<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:'+tBg+';color:'+tCol+'">'+(isOff?'⚠ Off track':'✓ On track')+'</span>';
+        body+='</div>';
+        if(d.trackNote&&isOff)body+='<div style="font-size:11px;color:#dc2626;margin-top:3px;font-style:italic">'+d.trackNote+'</div>';
+        body+='</div>';
+        body+='<button onclick="ccPsDlvrRemove(\''+proj+'\','+rowIdx+','+di+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;padding:2px 5px">×</button>';
+        body+='</div></div>';
       });
       body+='</div>';
+    }else{
+      body+='<div style="padding:14px;text-align:center;color:var(--g400);font-size:12px;margin-bottom:10px">No deliverables yet.</div>';
     }
-    body+='<div style="margin-bottom:8px">';
-    body+='<label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Upload files</label>';
-    body+='<input id="ccps-dlvr-file" type="file" multiple style="font-size:12px;width:100%" onchange="ccPsDlvrAddFiles(\''+proj+'\','+rowIdx+',this.files)">';
-    body+='</div>';
-    body+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
-    body+='<div style="flex:1"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Or paste a link</label><input id="ccps-dlvr-link" type="url" placeholder="Paste Autodesk / SharePoint / BIM360 link..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
-    body+='<button class="btn btn-ghost btn-sm" style="margin-top:18px;flex-shrink:0" onclick="ccPsDlvrAddLink(\''+proj+'\','+rowIdx+')">Add link</button></div>';
-    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
-    openModal('Deliverables \u2014 '+row.item,body);
+    body+='<div style="display:flex;gap:8px;justify-content:space-between">';
+    body+='<button class="btn btn-dark btn-sm" onclick="closeModal();openCcPsDlvrAdd(\''+proj+'\','+rowIdx+')">+ Add deliverable</button>';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
+    openModal('Deliverables — '+row.item,body);
   }
   function ccPsDlvrAddLink(proj,rowIdx){
     var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
@@ -6344,8 +6361,9 @@ function cpNudgeReplySubmit(ni,type){
           }
           h+='</div>';
           var _ccDlvrs=row.deliverables||[];
+          var _ccDlvrsOff=_ccDlvrs.some(function(d){return d.track==='off_track';});
           h+='<div style="display:flex;align-items:center">'+(_ccDlvrs.length?
-            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:#0891b2" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">'+_ccDlvrs.length+' file'+(_ccDlvrs.length===1?'':'s')+'</button>':
+            '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:'+(_ccDlvrsOff?'#dc2626':'#0891b2')+'" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">'+_ccDlvrs.length+' file'+(_ccDlvrs.length===1?'':'s')+(_ccDlvrsOff?' ⚠':'')+'</button>':
             '<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 5px;color:var(--g400);border-style:dashed" onclick="event.stopPropagation();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">&uarr; Upload</button>')+'</div>';
           h+='</div>';
 
