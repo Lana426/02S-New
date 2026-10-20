@@ -1549,7 +1549,7 @@
         {role:'Structural special inspection',service:'As-Built Verification',category:'Geospatial',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:3,ea:11,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',service:'New Install — Building Automation',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Proposal received',linkOrd:'ORD-5001',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {role:'Environmental / SWPPP monitoring',service:'Utility Locating/Marking',category:'Geospatial',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:2,linkOrd:'ORD-3092',attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
-        {role:'VDC / BIM coordination',service:'Building Information Modeling (BIM)',category:'Mapping',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
+        {role:'VDC / BIM coordination',service:'Building Information Modeling (BIM)',category:'Mapping',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}],deliverables:[{name:'BIM Model — Milestone 1 (Civil grading)',url:null,addedAt:'Aug 5, 2026',dueDate:'Aug 10, 2026',track:'on_track',trackNote:''},{name:'BIM coordination report — Jul 2026',url:null,addedAt:'Aug 15, 2026',dueDate:'Aug 18, 2026',track:'on_track',trackNote:''},{name:'Clash detection report — Structural MEP',url:null,addedAt:'Sep 2, 2026',dueDate:'Sep 1, 2026',track:'off_track',trackNote:'Model updates pending RFI resolution from structural engineer — ETA Sep 12'}]},
         {role:'Site survey crew',service:'Topographic Survey',category:'Mapping',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:1,ea:4,linkOrd:'ORD-3009',attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ],proposals:[{id:'PS-PROP-001',proj:'hercules',rowIdx:3,service:'BESS commissioning agent',category:'Building Automation Services',firm:'ABB Enterprise Software',cost:'$34K/mo',window:'Nov 2026 \u2013 Mar 2027',scope:'Full BESS commissioning: factory acceptance testing support, field commissioning including grid interconnect and functional performance testing, and final commissioning report.',attachments:[{type:'Proposal',name:'BESS commissioning proposal \u2014 ABB Enterprise Software',ref:'PROP-BESS-001',status:'For review'}],state:'Pending CP approval',sent:'Aug 14, 2026',expires:'Sep 5, 2026'}]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
@@ -5702,6 +5702,33 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     closeModal();renderProfServicesDP();
     toast('Scope addition submitted \u2014 '+r.service);
   }
+  function psApproveSubLine(rowIdx,si){
+    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[rowIdx];if(!r||!r.subLines||!r.subLines[si])return;
+    r.subLines[si].state='Approved';
+    renderProfServicesDP();
+    toast('Scope addition approved');
+  }
+  function psCommentSubLine(rowIdx,si){
+    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[rowIdx];if(!r||!r.subLines||!r.subLines[si])return;
+    var sub=r.subLines[si];
+    openModal('Send comment to 02S','<div style="padding:4px 0">'+'<div style="font-size:12px;color:var(--g600);margin-bottom:10px">Regarding: <b>'+sub.desc+'</b></div>'
+      +'<textarea id="ps-sub-comment" rows="3" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px;font-family:inherit" placeholder="Describe your concern or revision request..."></textarea>'
+      +'<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">'
+      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
+      +'<button class="btn btn-dark btn-sm" onclick="psSubCommentSubmit('+rowIdx+','+si+')">Send to 02S</button>'
+      +'</div></div>');
+  }
+  function psSubCommentSubmit(rowIdx,si){
+    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[rowIdx];if(!r||!r.subLines||!r.subLines[si])return;
+    var txt=(document.getElementById('ps-sub-comment')||{}).value||'';
+    if(!txt.trim()){alert('Please enter a comment.');return;}
+    r.subLines[si].state='Comment sent';
+    r.subLines[si].comment=txt.trim();
+    window._ccNudges=window._ccNudges||[];
+    window._ccNudges.unshift({id:'subs-'+Date.now(),svc:r.service||'Professional service',project:'Hercules Solar + BESS',question:'CP comment on scope addition “'+r.subLines[si].desc+'”: '+txt.trim(),from:'GC Ops',ts:'Just now',answered:false});
+    closeModal();renderProfServicesDP();
+    toast('Comment sent to 02S');
+  }
   function openPsAddModal(cat,svc,l2){
     var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
     var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
@@ -6173,8 +6200,6 @@ function cpNudgeReplySubmit(ni,type){
       h+='<button style="padding:4px 12px;border-radius:5px;border:1px solid '+(act?'var(--charcoal)':'var(--g200)')+';background:'+(act?'var(--charcoal)':'#fff')+';color:'+(act?'#fff':'var(--g700)')+';font-size:12px;cursor:pointer;font-weight:'+(act?'600':'400')+'" onclick="dpSetProjFilter(\'profservices\',\''+pr[0]+'\')">'+pr[1]+'</button>';
     });
     h+='<span class="spacer"></span>';
-    h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
-    h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
     h+='</div>';
 
     // KPI cards — using .vital CSS class matching logistics look
@@ -6321,6 +6346,10 @@ function cpNudgeReplySubmit(ni,type){
       var rows=ccData?ccData.rows:[];
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(planRows.length){
+        h+='<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:8px">';
+        h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
+        h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
+        h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:1fr 68px 148px 80px 130px 120px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
         ['ITEM','QTY','NEED BY','COST','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
@@ -6630,9 +6659,7 @@ function ccPsViewSentProposal(proj, rowIdx){
     body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
     body+='<div><label style="'+lbl+'">FTE / quantity</label><input id="ccps-ms-qty" type="text" placeholder="e.g. 2 FTE" style="'+inp+'"></div>';
     body+='<div><label style="'+lbl+'">Monthly cost (est.)</label><input id="ccps-ms-cost" type="text" placeholder="e.g. $28K/mo" style="'+inp+'"></div></div>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
-    body+='<div><label style="'+lbl+'">Start month</label><input id="ccps-ms-start" type="month" style="'+inp+'"></div>';
-    body+='<div><label style="'+lbl+'">End month</label><input id="ccps-ms-end" type="month" style="'+inp+'"></div></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Need-by date <span style="font-weight:400;color:var(--g400)">(optional)</span></label><input id="ccps-ms-needby" type="date" style="'+inp+'"></div>';
     body+='<div style="margin-bottom:14px"><label style="'+lbl+'">Notes</label>';
     body+='<textarea id="ccps-ms-notes" rows="2" placeholder="Any context for the project team..." style="'+inp+';resize:vertical"></textarea></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
@@ -6645,16 +6672,17 @@ function ccPsViewSentProposal(proj, rowIdx){
     if(!svc.trim()){alert('Service name is required.');return;}
     var firm=(document.getElementById('ccps-ms-firm')||{}).value||'TBD';
     var qty=(document.getElementById('ccps-ms-qty')||{}).value||'TBD';
+    var cost=(document.getElementById('ccps-ms-cost')||{}).value||'';
     var notes=(document.getElementById('ccps-ms-notes')||{}).value||'';
-    var fmtM=function(v){if(!v)return '';var p=v.split('-');var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[parseInt(p[1])-1]+' '+p[0];};
-    var start=(document.getElementById('ccps-ms-start')||{}).value;
-    var end=(document.getElementById('ccps-ms-end')||{}).value;
-    var win=start?(fmtM(start)+(end?' – '+fmtM(end):'+')):'';
+    var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];};
+    var needby=(document.getElementById('ccps-ms-needby')||{}).value;
+    var win=needby?('Need by '+fmtD(needby)):'';
     var selProj=window._dpCcProjMap&&window._dpCcProjMap['profservices']?window._dpCcProjMap['profservices']:'hercules';
     var rows=CC_PROJ_DP.profservices[selProj]&&CC_PROJ_DP.profservices[selProj].rows;if(!rows)return;
     rows.push({item:svc.trim(),l3cat:svc.trim(),qty:qty,window:win,state:'Active',ordId:null,firm:firm,acts:[],attachments:[],deliverables:[]});
     window._psCpNudges=window._psCpNudges||[];
-    window._psCpNudges.unshift({msg:'02S added service to plan: “'+svc.trim()+'” — please review.',ts:'Just now'});
+    var _nd='02S added service to plan: “'+svc.trim()+'”'+(cost?' · Est. cost: '+cost:'')+(win?' · '+win:'')+'. Please review and approve.';
+    window._psCpNudges.unshift({msg:_nd,ts:'Just now'});
     closeModal();renderCcProfServices();
     toast('Added to plan — CP notified');
   }
@@ -8565,7 +8593,8 @@ charges:[
     var notes=EQ_LINE_NOTES[l.id]||[];
     if(notes.length){
       h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
-      h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
+      if(pk==='profservices'){var _psubs=(r.subLines||[]).filter(function(s){return s.state!=='Approved'&&s.state!=='Declined'&&s.state!=='Comment sent';});if(_psubs.length){h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-bottom:10px">';h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#b45309;margin-bottom:8px">'+_psubs.length+' scope addition'+(_psubs.length>1?'s':'')+' pending review</div>';_psubs.forEach(function(sub,si){var _osi=(r.subLines||[]).indexOf(sub);h+='<div style="'+(si>0?'border-top:1px solid #fcd34d;padding-top:8px;':'')+'"><div style="font-size:12.5px;font-weight:600;color:var(--g900);margin-bottom:2px">'+sub.desc+'</div>';if(sub.needBy)h+='<div style="font-size:11px;color:var(--g600);margin-bottom:7px">Need by: '+sub.needBy+'</div>';h+='<div style="display:flex;gap:8px">';h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();psApproveSubLine('+rowIdx+','+_osi+')">Approve →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();psCommentSubLine('+rowIdx+','+_osi+')">Back to 02S with comments</button>';h+='</div></div>';});h+='</div>';}}
+    h+='<div data-cap="Shared documents, messages &amp; decisions|||Both sides contribute and consume quotes, documents, comments and any key decisions (e.g., schedule changes) against each service line, working from one shared contextual record" style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Notes &amp; history</div>';
       notes.forEach(function(n){
         h+='<div style="margin-bottom:8px"><div style="display:flex;gap:8px;align-items:baseline;margin-bottom:2px"><span style="font-size:12px;font-weight:600;color:var(--g900)">'+n.who+'</span><span style="font-size:11px;color:var(--g400)">'+n.when+'</span></div>';
         h+='<div style="font-size:12px;color:var(--g700);line-height:1.5">'+n.text+'</div></div>';
@@ -12018,7 +12047,7 @@ charges:[
   window._cpNudges=[{msg:'Temp Toilets & Handwash Stations — United Site Services quote received, $4,600 total. 20 portable units + 6 handwash stations for Sep–Oct. Awaiting approval to schedule.',ts:'Aug 29, 2026 · 9:14 AM',rowIdx:3}];
   window._cpNudgesV=4;
 }
-  window._psCpNudges=window._psCpNudges||[{msg:'02S initiated scope addition: “New Install — Building Automation (BAS)” — please review and approve.',ts:'Sep 3, 2026 · 10:42 AM'},{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'}];
+  window._psCpNudges=window._psCpNudges||[{msg:'02S initiated scope addition: “New Install — Building Automation (BAS)” — Vendor: Siemens · Est. cost: $18K/mo · Need by: Oct 15, 2026. Please review and approve.',ts:'Sep 3, 2026 · 10:42 AM'},{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'}];
   window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
@@ -17602,7 +17631,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         {role:'Structural special inspection',service:'As-Built Verification',category:'Geospatial',firm:'Terracon',qty:'2 FTE',window:'Jun 2026 \u2013 Feb 2027',code:'3100-6200-0000-0001 \u00b7 Solar pile',cost:'$16K/mo',state:'Active',scope:'Engineering & oversight',sa:3,ea:11,linkOrd:'ORD-3091',attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {role:'BESS commissioning agent',service:'New Install — Building Automation',category:'Building Automation Services',firm:'3rd-party',qty:'2 FTE',window:'Nov 2026 \u2013 Mar 2027',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$34K/mo',state:'Proposal received',scope:'BESS & commissioning',sa:8,ea:12,attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {role:'Environmental / SWPPP monitoring',service:'Utility Locating/Marking',category:'Geospatial',firm:'SWCA',qty:'1 FTE',window:'Mar 2026 \u2013 May 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$9K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:1,attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
-        {role:'VDC / BIM coordination',service:'Building Information Modeling (BIM)',category:'Mapping',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
+        {role:'VDC / BIM coordination',service:'Building Information Modeling (BIM)',category:'Mapping',firm:'WSP',qty:'3 FTE',window:'Apr 2026 \u2013 Oct 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$24K/mo',state:'Active',scope:'Engineering & oversight',sa:1,ea:7,linkOrd:'ORD-3120',attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}],deliverables:[{name:'BIM Model — Milestone 1 (Civil grading)',url:null,addedAt:'Aug 5, 2026',dueDate:'Aug 10, 2026',track:'on_track',trackNote:''},{name:'BIM coordination report — Jul 2026',url:null,addedAt:'Aug 15, 2026',dueDate:'Aug 18, 2026',track:'on_track',trackNote:''},{name:'Clash detection report — Structural MEP',url:null,addedAt:'Sep 2, 2026',dueDate:'Sep 1, 2026',track:'off_track',trackNote:'Model updates pending RFI resolution from structural engineer — ETA Sep 12'}]},
         {role:'Site survey crew',service:'Topographic Survey',category:'Mapping',firm:'Bowman',qty:'2 FTE',window:'Apr 2026 \u2013 Jul 2026',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$12K/mo',state:'Demobilized',scope:'Survey & site monitoring',sa:0,ea:3,attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ],proposals:[{id:'PS-PROP-001',proj:'hercules',rowIdx:3,service:'BESS commissioning agent',category:'Building Automation Services',firm:'ABB Enterprise Software',cost:'$34K/mo',window:'Nov 2026 \u2013 Mar 2027',scope:'Full BESS commissioning: factory acceptance testing support, field commissioning including grid interconnect and functional performance testing, and final commissioning report.',attachments:[{type:'Proposal',name:'BESS commissioning proposal \u2014 ABB Enterprise Software',ref:'PROP-BESS-001',status:'For review'}],state:'Pending CP approval',sent:'Aug 14, 2026',expires:'Sep 5, 2026'}]},
     procurement:{ title:'Procurement demand plan', chip:'Small tools &amp; consumables', icon:IC.cart, singular:'procurement',
