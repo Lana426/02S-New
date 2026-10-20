@@ -3840,6 +3840,13 @@
       });
     }
     h+='</div>';
+    h+='<div style="padding:8px 18px 10px;border-top:1px solid var(--g150);display:flex;align-items:center;gap:10px">';
+    h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">Status</div>';
+    var _stcStatusOpts=[['draft','Draft'],['scoping','In Scoping / Pricing'],['pending','Pending Approval'],['approved','Approved'],['released','Released to Order'],['in_fulfillment','In Fulfillment'],['fulfilled','Fulfilled / Delivered'],['returned','Returned']];
+    h+='<select onchange="event.stopPropagation();_stcCCManualStatus('+idx+',this.value)" onclick="event.stopPropagation()" style="font-size:12px;font-weight:600;padding:5px 10px;border:1.5px solid var(--g200);border-radius:7px;background:#fff;color:var(--g800);cursor:pointer;outline:none">';
+    _stcStatusOpts.forEach(function(o){h+='<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>';});
+    h+='</select>';
+    h+='</div>';
     if((r.type==='vmi'||r.ccPath==='vmi')&&(r.status==='draft'||r.status==='scoping')){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
       h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Prepare &amp; send quote →</button>';
@@ -3914,6 +3921,7 @@
       h+='<button onclick="event.stopPropagation();_stcOpenFulfilledScopeModal('+idx+',\'cc\')" style="font-size:12px;font-weight:600;padding:6px 14px;border:1.5px solid var(--g300);border-radius:7px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px"><span style="font-size:15px;line-height:1">+</span> Add already fulfilled scope</button>';
       h+='</div>';
     }
+    h+=_stcRenderScopeAdditions(r,true);
     h+='<div style="padding:10px 18px 12px;border-top:1px solid var(--g150)">';
     h+='<div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:6px">Add note</div>';
     h+='<div style="display:flex;gap:8px">';
@@ -3932,6 +3940,15 @@
     var isOpen=el.style.display==='block';
     el.style.display=isOpen?'none':'block';
     if(chev)chev.style.transform=isOpen?'':'rotate(180deg)';
+  }
+  function _stcCCManualStatus(idx,val){
+    var r=_stcAllReqs[idx];if(!r)return;
+    var prev=r.status;r.status=val;
+    var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    var lbl={draft:'Draft',scoping:'In Scoping / Pricing',pending:'Pending Approval',approved:'Approved',released:'Released to Order',in_fulfillment:'In Fulfillment',fulfilled:'Fulfilled / Delivered',returned:'Returned'};
+    r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:now,text:'Status updated: '+(lbl[prev]||prev)+' → '+(lbl[val]||val)}]);
+    renderSTC();renderSTC_CC();
+    toast('Status updated to '+(lbl[val]||val));
   }
   function _stcCCDrillToggle(idx){
     var el=document.getElementById('stccc-drill-'+idx);
