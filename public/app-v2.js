@@ -6145,7 +6145,7 @@ function cpNudgeReplySubmit(ni,type){
     var PNAMES={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
     var PCOL={hercules:'#1e6b4f',barryrose:'#2e4e8e',vdc14:'#7a3d8e'};
     var PCODE={hercules:'HRC',barryrose:'BRW',vdc14:'VDC'};
-    var STATUSES=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Proposal sent','Fulfilled / Delivered','Returned (Rental only)','Completed / Closed'];
+    var STATUSES=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Proposal sent','Active','Fulfilled / Delivered','Returned (Rental only)','Demobilized','Completed / Closed'];
     if(!window._ccPsExp)window._ccPsExp={};
     var proposals=DP.profservices&&DP.profservices.proposals||[];
     var sentProps=proposals.filter(function(p){
@@ -6174,6 +6174,7 @@ function cpNudgeReplySubmit(ni,type){
     });
     h+='<span class="spacer"></span>';
     h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
+    h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
     h+='</div>';
 
     // KPI cards — using .vital CSS class matching logistics look
@@ -6604,6 +6605,170 @@ function ccPsViewSentProposal(proj, rowIdx){
     toast('✓ Stages built — active delivery starts '+nbEl.options[nbEl.selectedIndex].text);
   }
   
+  function openCcPsAddService(){
+    var body='<div style="padding:4px 0">';
+    body+='<p style="font-size:12.5px;color:var(--g600);margin-bottom:16px">Is this a brand-new service or are you adding scope to an existing order?</p>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">';
+    body+='<button onclick="closeModal();openCcPsManualAdd()" style="padding:14px 10px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left">';
+    body+='<div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:4px">+ Manually add to plan</div>';
+    body+='<div style="font-size:11.5px;color:var(--g500)">Add a new service line to the plan</div></button>';
+    body+='<button onclick="closeModal();openCcPsAmendPicker()" style="padding:14px 10px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left">';
+    body+='<div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:4px">↗ Add to scope</div>';
+    body+='<div style="font-size:11.5px;color:var(--g500)">Amend or expand an existing order</div></button></div>';
+    body+='<div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11px;color:#0369a1">';
+    body+='<b>⚡ For demo purposes</b> — manually adding to plan mainly applies to BAS to reflect direct-to-owner order tracking.</div>';
+    body+='<div style="display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button></div></div>';
+    openModal('Add service',body);
+  }
+  function openCcPsManualAdd(){
+    var lbl='font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px';
+    var inp='width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box';
+    var body='<div style="padding:2px 0">';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Service name <span style="color:#dc2626">*</span></label>';
+    body+='<input id="ccps-ms-svc" type="text" placeholder="e.g. Building Automation (BAS) commissioning" style="'+inp+'"></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Firm / vendor</label><input id="ccps-ms-firm" type="text" placeholder="e.g. Siemens, Honeywell" style="'+inp+'"></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
+    body+='<div><label style="'+lbl+'">FTE / quantity</label><input id="ccps-ms-qty" type="text" placeholder="e.g. 2 FTE" style="'+inp+'"></div>';
+    body+='<div><label style="'+lbl+'">Monthly cost (est.)</label><input id="ccps-ms-cost" type="text" placeholder="e.g. $28K/mo" style="'+inp+'"></div></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">';
+    body+='<div><label style="'+lbl+'">Start month</label><input id="ccps-ms-start" type="month" style="'+inp+'"></div>';
+    body+='<div><label style="'+lbl+'">End month</label><input id="ccps-ms-end" type="month" style="'+inp+'"></div></div>';
+    body+='<div style="margin-bottom:14px"><label style="'+lbl+'">Notes</label>';
+    body+='<textarea id="ccps-ms-notes" rows="2" placeholder="Any context for the project team..." style="'+inp+';resize:vertical"></textarea></div>';
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="ccPsSaveManualAdd()">Add to plan &amp; notify CP →</button></div></div>';
+    openModal('Manually add to plan',body);
+  }
+  function ccPsSaveManualAdd(){
+    var svc=(document.getElementById('ccps-ms-svc')||{}).value||'';
+    if(!svc.trim()){alert('Service name is required.');return;}
+    var firm=(document.getElementById('ccps-ms-firm')||{}).value||'TBD';
+    var qty=(document.getElementById('ccps-ms-qty')||{}).value||'TBD';
+    var notes=(document.getElementById('ccps-ms-notes')||{}).value||'';
+    var fmtM=function(v){if(!v)return '';var p=v.split('-');var m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return m[parseInt(p[1])-1]+' '+p[0];};
+    var start=(document.getElementById('ccps-ms-start')||{}).value;
+    var end=(document.getElementById('ccps-ms-end')||{}).value;
+    var win=start?(fmtM(start)+(end?' – '+fmtM(end):'+')):'';
+    var selProj=window._dpCcProjMap&&window._dpCcProjMap['profservices']?window._dpCcProjMap['profservices']:'hercules';
+    var rows=CC_PROJ_DP.profservices[selProj]&&CC_PROJ_DP.profservices[selProj].rows;if(!rows)return;
+    rows.push({item:svc.trim(),l3cat:svc.trim(),qty:qty,window:win,state:'Active',ordId:null,firm:firm,acts:[],attachments:[],deliverables:[]});
+    window._psCpNudges=window._psCpNudges||[];
+    window._psCpNudges.unshift({msg:'02S added service to plan: “'+svc.trim()+'” — please review.',ts:'Just now'});
+    closeModal();renderCcProfServices();
+    toast('Added to plan — CP notified');
+  }
+  function openCcPsAmendPicker(){
+    var selProj=window._dpCcProjMap&&window._dpCcProjMap['profservices']?window._dpCcProjMap['profservices']:'hercules';
+    var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[selProj]&&CC_PROJ_DP.profservices[selProj].rows)||[];
+    var eligible=rows.filter(function(r){return ['Active','In Scoping / Pricing','Pending Approval','Approved','Released to Order'].indexOf(r.state)>=0;});
+    if(!eligible.length){openModal('Add to scope','<div style="padding:16px;text-align:center;color:var(--g500);font-size:12.5px">No active orders to amend for this project.</div>');return;}
+    var body='<div style="padding:2px 0"><p style="font-size:12px;color:var(--g600);margin-bottom:12px">Select the order to add scope to:</p>';
+    rows.forEach(function(r,ri){
+      if(eligible.indexOf(r)<0)return;
+      body+='<div onclick="closeModal();openCcPsAmendSubLine(\''+selProj+'\','+ri+')" style="padding:10px 12px;border:1px solid var(--g200);border-radius:7px;margin-bottom:7px;cursor:pointer;background:#fff">';
+      body+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.item+'</div>';
+      body+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+r.state+' · '+(r.window||'window TBD')+'</div></div>';
+    });
+    body+='<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button></div></div>';
+    openModal('Add to scope — select order',body);
+  }
+  function openCcPsAmendSubLine(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var r=rows&&rows[ri];if(!r)return;
+    var inp='width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box';
+    var body='<div style="padding:2px 0">';
+    body+='<div style="padding:8px 12px;background:var(--g50);border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--g700)"><b>'+r.item+'</b> — adding scope</div>';
+    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Scope addition description</label><input id="ccps-amd-desc" type="text" placeholder="Describe the additional scope..." style="'+inp+'"></div>';
+    body+='<div style="margin-bottom:14px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date</label><input id="ccps-amd-nb" type="date" style="'+inp+'"></div>';
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="ccPsSaveAmendSubLine(\''+proj+'\','+ri+')">Add to scope →</button></div></div>';
+    openModal('Add to scope — '+r.item,body);
+  }
+  function ccPsSaveAmendSubLine(proj,ri){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var r=rows&&rows[ri];if(!r)return;
+    var desc=(document.getElementById('ccps-amd-desc')||{}).value||'Additional scope';
+    var nb=(document.getElementById('ccps-amd-nb')||{}).value;
+    var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];};
+    if(!r.subLines)r.subLines=[];
+    r.subLines.push({desc:desc,needBy:fmtD(nb),state:'Active'});
+    window._psCpNudges=window._psCpNudges||[];
+    window._psCpNudges.unshift({msg:'02S added scope to “'+r.item+'”: '+desc+(fmtD(nb)?' — needed by '+fmtD(nb):'')+'. Please review and approve.',ts:'Just now'});
+    closeModal();renderCcProfServices();
+    toast('Scope addition saved — CP notified');
+  }
+  function openCcPsDlvrAdd(proj,rowIdx){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[rowIdx];if(!row)return;
+    var lbl='font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px';
+    var inp='width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box';
+    var body='<div style="padding:2px 0">';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Deliverable name <span style="color:#dc2626">*</span></label><input id="ccd-name" type="text" placeholder="e.g. BIM clash detection report" style="'+inp+'"></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Upload file</label><input id="ccd-file" type="file" multiple style="font-size:12px;width:100%"></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Or paste a link</label><input id="ccd-link" type="url" placeholder="Autodesk / SharePoint / BIM360..." style="'+inp+'"></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Due date <span style="font-weight:400;color:var(--g400)">(optional)</span></label><input id="ccd-duedate" type="date" style="'+inp+'"></div>';
+    body+='<div style="margin-bottom:10px"><label style="'+lbl+'">Delivery status</label>';
+    body+='<select id="ccd-track" onchange="ccDlvrTrackChange()" style="'+inp+'">';
+    body+='<option value="on_track">✓ On track</option><option value="off_track">⚠ Off track</option></select></div>';
+    body+='<div id="ccd-note-wrap" style="display:none;margin-bottom:10px">';
+    body+='<label style="font-size:11px;font-weight:600;color:#dc2626;display:block;margin-bottom:3px">Reason for off-track <span>*</span></label>';
+    body+='<textarea id="ccd-note" rows="2" placeholder="Explain delay and expected resolution..." style="'+inp+';resize:vertical;border-color:#fca5a5"></textarea></div>';
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal();ccPsViewDeliverables(\''+proj+'\','+rowIdx+')">Back</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="ccPsDlvrSave(\''+proj+'\','+rowIdx+')">Save deliverable</button></div></div>';
+    openModal('Add deliverable — '+row.item,body);
+  }
+  function ccDlvrTrackChange(){
+    var t=document.getElementById('ccd-track');
+    var w=document.getElementById('ccd-note-wrap');
+    if(t&&w)w.style.display=(t.value==='off_track')?'block':'none';
+  }
+  function ccPsDlvrSave(proj,rowIdx){
+    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
+    var row=rows&&rows[rowIdx];if(!row)return;
+    if(!row.deliverables)row.deliverables=[];
+    var nameEl=document.getElementById('ccd-name');
+    var fileEl=document.getElementById('ccd-file');
+    var linkEl=document.getElementById('ccd-link');
+    var ddEl=document.getElementById('ccd-duedate');
+    var trackEl=document.getElementById('ccd-track');
+    var noteEl=document.getElementById('ccd-note');
+    var track=trackEl?trackEl.value:'on_track';
+    var note=noteEl?noteEl.value.trim():'';
+    if(track==='off_track'&&!note){alert('Please add a note explaining why this is off track.');return;}
+    var customName=nameEl?nameEl.value.trim():'';
+    var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];};
+    var dueDate=ddEl&&ddEl.value?fmtD(ddEl.value):'';
+    var now=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    var added=false;
+    if(fileEl&&fileEl.files&&fileEl.files.length){
+      Array.from(fileEl.files).forEach(function(f){
+        row.deliverables.push({name:customName||f.name,url:null,addedAt:now,dueDate:dueDate,track:track,trackNote:note});
+      });
+      added=true;
+    }else if(linkEl&&linkEl.value.trim()){
+      var url=linkEl.value.trim();
+      var name=customName||(url.replace(/^https?:\/\//,'').split('/').pop()||url);
+      row.deliverables.push({name:name,url:url,addedAt:now,dueDate:dueDate,track:track,trackNote:note});
+      added=true;
+    }else if(customName){
+      row.deliverables.push({name:customName,url:null,addedAt:now,dueDate:dueDate,track:track,trackNote:note});
+      added=true;
+    }
+    if(!added){alert('Please enter a name, file, or link.');return;}
+    if(proj==='hercules'&&DP.profservices&&DP.profservices.rows&&DP.profservices.rows[rowIdx]){
+      var cpRow=DP.profservices.rows[rowIdx];
+      if(!cpRow.deliverables)cpRow.deliverables=[];
+      cpRow.deliverables=row.deliverables.slice();
+    }
+    if(track==='off_track'){
+      window._psCpNudges=window._psCpNudges||[];
+      window._psCpNudges.unshift({msg:'⚠ 02S flagged off-track deliverable for “'+row.item+'”: '+note,ts:'Just now'});
+    }
+    closeModal();ccPsViewDeliverables(proj,rowIdx);
+    toast('Deliverable saved'+(track==='off_track'?' — CP notified':''));
+  }
   function openCcPsAddActivity(proj,ri){
     var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
     var row=rows&&rows[ri];if(!row)return;
@@ -6808,7 +6973,8 @@ function renderProfServicesDP(){
         h+='<div class="c">'+r.qty+'</div><div>'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(r.window)+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
         h+='<div>'+(_dn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();openPsDocsModal('+ri+')">'+_dn+' doc'+(_dn===1?'':'s')+'</button>':(_needsDocs?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#b45309;border-color:#d97706" onclick="event.stopPropagation();openPsDocsModal('+ri+')">Needed</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>'))+'</div>';
         var _dlvrs=r.deliverables||[];
-        h+='<div>'+(_dlvrs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs.length+' file'+(_dlvrs.length===1?'':'s')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
+        var _dlvrsOff=_dlvrs.some(function(d){return d.track==='off_track';});
+        h+='<div>'+(_dlvrs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:'+(_dlvrsOff?'#dc2626':'#0891b2')+'" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs.length+' file'+(_dlvrs.length===1?'':'s')+(_dlvrsOff?' ⚠':'')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         var _stLabel=({'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'})[r.state]||r.state;
@@ -11852,7 +12018,7 @@ charges:[
   window._cpNudges=[{msg:'Temp Toilets & Handwash Stations — United Site Services quote received, $4,600 total. 20 portable units + 6 handwash stations for Sep–Oct. Awaiting approval to schedule.',ts:'Aug 29, 2026 · 9:14 AM',rowIdx:3}];
   window._cpNudgesV=4;
 }
-  window._psCpNudges=window._psCpNudges||[{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'}];
+  window._psCpNudges=window._psCpNudges||[{msg:'02S initiated scope addition: “New Install — Building Automation (BAS)” — please review and approve.',ts:'Sep 3, 2026 · 10:42 AM'},{msg:'02S question re: BESS commissioning agent — Can you confirm whether grid interconnect functional testing should be included in scope? ABB needs this to finalize the proposal.',ts:'Aug 28, 2026 · 2:17 PM'}];
   window._ptNudges=window._ptNudges||[{id:'ptn-demo',taskId:'mct-012',svc:'Temp Power Distribution Equip.',project:'Hercules Solar + BESS',question:'GC Ops needs the single-line electrical diagram from the electrical lead to finalize the temp power distribution vendor selection — can you share the latest version?',from:'GC Ops',ts:'Aug 24, 2026 · 9:14 AM',answered:false}];
   function openNsNudgeModal(idx){
     var n=(window._ccNudges||[])[idx];if(!n)return;
@@ -14518,7 +14684,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'As-Built Verification',l3cat:'As-Built Verification',qty:'2 FTE',window:'Jun 2026–Feb 2027',state:'Active',ordId:'ORD-3091',fqRef:'REQ-S-2103',cost:'$16K/mo',firm:'Terracon',acts:[{n:'Scope & contracting',st:'Done',s:1.75,e:2.38,who:'Marcus T.'},{n:'Mobilization',st:'Done',s:2.38,e:3,who:'Marcus T.'},{n:'Active delivery',st:'In progress',s:3,e:10.38,who:'Marcus T.'},{n:'Closeout',st:'Not started',s:10.38,e:11.0,who:''}],attachments:[{type:'Engineering',name:'Special inspection program — IBC §1705',ref:'SIP-3091-001',status:'Approved'},{type:'Engineering',name:'Monthly inspection report — Jul 2026',ref:'MIR-3091-JUL',status:'Current'}]},
         {item:'New Install — Building Automation',l3cat:'Building Automation (DDC)',qty:'2 FTE',window:'Nov 2026–Mar 2027',state:'Proposal sent',ordId:'ORD-5001',cost:'$34K/mo',firm:'TBD',fqRef:'REQ-S-2108',acts:[{n:'Scope & contracting',st:'Not started',s:6.75,e:7.38,who:''},{n:'Mobilization',st:'Not started',s:7.38,e:8,who:''},{n:'Active delivery',st:'Not started',s:8,e:11.38,who:''},{n:'Closeout',st:'Not started',s:11.38,e:12.0,who:''}],attachments:[{type:'Engineering',name:'BESS commissioning scope of work — draft',ref:'SOW-BESS-COM-001',status:'Draft'},{type:'Submittals',name:'Vendor RFP — commissioning agent',ref:'RFP-COM-BESS-001',status:'Issued'}]},
         {item:'Utility Locating/Marking',l3cat:'Utility Locating/Marking',qty:'1 FTE',window:'Mar–May 2026',state:'Demobilized',ordId:'ORD-3092',cost:'$9K/mo',firm:'SWCA',acts:[{n:'Scope & contracting',st:'Done',s:-1.25,e:-0.62,who:'Jordan P.'},{n:'Mobilization',st:'Done',s:-0.62,e:0,who:'Jordan P.'},{n:'Active delivery',st:'Done',s:0,e:1.38,who:'Jordan P.'},{n:'Closeout',st:'Done',s:1.38,e:2.0,who:'Jordan P.'}],attachments:[{type:'Engineering',name:'SWPPP permit — Hercules Solar project',ref:'SWPPP-HRC-001',status:'Executed'},{type:'Engineering',name:'Environmental monitoring log — final',ref:'EML-3092-FINAL',status:'Closed'},{type:'Submittals',name:'Demobilization closeout letter — SWCA',ref:'CLO-3092-001',status:'Approved'}]},
-        {item:'Building Information Modeling (BIM)',l3cat:'Building Information Modeling (BIM)',qty:'3 FTE',window:'Apr–Oct 2026',state:'Active',ordId:'ORD-3120',fqRef:'REQ-S-2116',cost:'$24K/mo',firm:'WSP',acts:[{n:'Scope & contracting',st:'Done',s:-0.25,e:0.38,who:'Dana S.'},{n:'Mobilization',st:'Done',s:0.38,e:1,who:'Dana S.'},{n:'Active delivery',st:'In progress',s:1,e:6.38,who:'Dana S.'},{n:'Closeout',st:'Not started',s:6.38,e:7.0,who:''}],attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}]},
+        {item:'Building Information Modeling (BIM)',l3cat:'Building Information Modeling (BIM)',qty:'3 FTE',window:'Apr–Oct 2026',state:'Active',ordId:'ORD-3120',fqRef:'REQ-S-2116',cost:'$24K/mo',firm:'WSP',acts:[{n:'Scope & contracting',st:'Done',s:-0.25,e:0.38,who:'Dana S.'},{n:'Mobilization',st:'Done',s:0.38,e:1,who:'Dana S.'},{n:'Active delivery',st:'In progress',s:1,e:6.38,who:'Dana S.'},{n:'Closeout',st:'Not started',s:6.38,e:7.0,who:''}],attachments:[{type:'Engineering',name:'VDC / BIM scope of work — Hercules Solar',ref:'SOW-VDC-HRC-001',status:'Executed'},{type:'Engineering',name:'BIM execution plan rev B',ref:'BEP-HRC-001',status:'Approved'},{type:'Submittals',name:'Monthly deliverable log — Aug 2026',ref:'DEL-VDC-AUG',status:'Current'}],deliverables:[{name:'BIM Model — Milestone 1 (Civil grading)',url:null,addedAt:'Aug 5, 2026',dueDate:'Aug 10, 2026',track:'on_track',trackNote:''},{name:'BIM coordination report — Jul 2026',url:null,addedAt:'Aug 15, 2026',dueDate:'Aug 18, 2026',track:'on_track',trackNote:''},{name:'Clash detection report — Structural MEP',url:null,addedAt:'Sep 2, 2026',dueDate:'Sep 1, 2026',track:'off_track',trackNote:'Model updates pending RFI resolution from structural engineer — ETA Sep 12'}]},
         {item:'Topographic Survey',l3cat:'Topographic Survey',qty:'2 FTE',window:'Apr–Jul 2026',state:'Demobilized',ordId:'ORD-3009',cost:'$12K/mo',firm:'Bowman',acts:[{n:'Scope & contracting',st:'Done',s:-0.25,e:0.38,who:'Alex R.'},{n:'Mobilization',st:'Done',s:0.38,e:1,who:'Alex R.'},{n:'Active delivery',st:'Done',s:1,e:1.75,who:'Alex R.'},{n:'Closeout',st:'Done',s:1.75,e:2.38,who:'Alex R.'}],attachments:[{type:'Engineering',name:'Final site survey report — Hercules phase 2',ref:'SURV-3009-FINAL',status:'Approved'},{type:'Engineering',name:'As-built survey drawings rev C',ref:'ASBUILT-3009-RC',status:'Approved'},{type:'Submittals',name:'Deliverable acceptance letter — survey crew',ref:'DAL-3009-001',status:'Executed'}]}
       ]},
       barryrose:{budget:950000,dpSpent:610000,adHoc:0,
@@ -18220,7 +18386,8 @@ function renderProfServicesDP(){
         h+='<div class="c">'+r.qty+'</div><div>'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(r.window)+'</div><div class="sub">'+r.code+'</div><div class="r">'+r.cost+'</div>';
         h+='<div>'+(_dn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();openPsDocsModal('+ri+')">'+_dn+' doc'+(_dn===1?'':'s')+'</button>':(_needsDocs?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#b45309;border-color:#d97706" onclick="event.stopPropagation();openPsDocsModal('+ri+')">Needed</button>':'<span style="color:var(--g400);font-size:11.5px">&mdash;</span>'))+'</div>';
         var _dlvrs2=r.deliverables||[];
-        h+='<div>'+(_dlvrs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:#0891b2" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs2.length+' file'+(_dlvrs2.length===1?'':'s')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
+        var _dlvrs2Off=_dlvrs2.some(function(d){return d.track==='off_track';});
+        h+='<div>'+(_dlvrs2.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:'+(_dlvrs2Off?'#dc2626':'#0891b2')+'" onclick="event.stopPropagation();openPsDeliverables('+ri+')">'+_dlvrs2.length+' file'+(_dlvrs2.length===1?'':'s')+(_dlvrs2Off?' ⚠':'')+'</button>':'<span style="font-size:11px;color:var(--g400)">&mdash;</span>')+'</div>';
         h+='<div style="display:flex;align-items:center;gap:5px">';
         if(['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0){h+='<input type="checkbox" id="dpchk-profservices-'+ri+'" onchange="dpToggleSel(\'profservices\','+ri+',this.checked)" style="margin-right:4px;cursor:pointer;accent-color:var(--red)" onclick="event.stopPropagation()">';}
         var _pIdx=-1;_props.forEach(function(p,pi){if(p.rowIdx===ri&&p.state!=='Approved')_pIdx=pi;});
