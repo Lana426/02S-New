@@ -6359,7 +6359,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:1fr 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ITEM','QTY','NEED BY','EST. END','SPEND / BUDGET','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        ['ITEM','QTY','NEED BY','EST. END','COST','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6381,17 +6381,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+((function(w){var p=w.split('–');if(p.length<2)return w.indexOf('+')>=0?'Ongoing':'—';return(p[p.length-1]||'').trim()||'—';}))(row.window)+'</div>';
-          (function(){
-            if(row.budget!=null&&row.spent!=null){
-              var _spPct=Math.round(row.spent/row.budget*100);
-              var _diff=_spPct-pct;
-              var _pc=_diff>15?'#dc2626':_diff<-15?'#059669':'#6b7280';
-              var _pl=_diff>15?'\u25b2 over-pacing':_diff<-15?'\u25bc under-pacing':'\u2713 on pace';
-              h+='<div><div style="font-size:12px;font-weight:600;color:var(--g900)">$'+(row.spent/1000).toFixed(0)+'K<span style="font-size:10.5px;font-weight:400;color:var(--g400)"> / $'+(row.budget/1000).toFixed(0)+'K</span></div><div style="font-size:9.5px;color:'+_pc+'">'+_pl+'</div></div>';
-            }else{
-              h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(row.cost||'\u2014')+'</div>';
-            }
-          })()
+          h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(row.cost||'\u2014')+'</div>';
           h+='<div style="display:flex;align-items:center;gap:6px">';
           h+='<div style="flex:1;height:6px;background:var(--g100);border-radius:4px;overflow:hidden;max-width:52px"><div style="width:'+pct+'%;height:100%;background:'+pctColor+';border-radius:4px"></div></div>';
           h+='<span style="font-size:10.5px;font-weight:600;color:'+pctColor+'">'+(acts.length?pct+'%':'\u2014')+'</span>';
@@ -10630,9 +10620,9 @@ charges:[
   ];
   // ── Project metadata — region assignment + project FSM ─────────────────────
   var _ccProjectMeta=[
-    {id:'hercules',label:'Hercules Solar + BESS',region:'Southwest',natl:'Southwest',value:'$42M',vp:'Dave Schmaltz',director:'Mike O\'Regan',pm:'Jared Miller',genSupt:'Jacob Klima',constrStart:'Mar 2026',constrEnd:'Jan 2027',fsm:{name:'Alex Reed',email:'a.reed@02s.com',phone:'(555) 482-3099'}},
-    {id:'barryrose',label:'Barry Rose WRF',region:'Southeast',natl:'Southeast',value:'$28M',vp:'Rachel Kim',director:'Tom Phillips',pm:'Sarah Chen',genSupt:'Mike Torres',constrStart:'Jan 2026',constrEnd:'Dec 2026',fsm:{name:'Dana Kim',email:'d.kim@02s.com',phone:'(555) 482-3098'}},
-    {id:'vdc14',label:'VDC14',region:'Midwest',natl:'Central',value:'$55M',vp:'James Wong',director:'Lisa Park',pm:'Kevin Brooks',genSupt:'Dan Reed',constrStart:'Feb 2026',constrEnd:'Mar 2027',fsm:{name:'Jordan Sun',email:'j.sun@02s.com',phone:'(555) 482-3097'}}
+    {id:'hercules',label:'Hercules Solar + BESS',region:'NORPAC',natl:'NORPAC',value:'$42M',vp:'M. Fitzgerald',director:'J. Miller',pm:'A. Torres',genSupt:'R. Banks',constrStart:'Mar 2026',constrEnd:'Jan 2027',fsm:{name:'Alex Reed',email:'a.reed@02s.com',phone:'(555) 482-3099'}},
+    {id:'barryrose',label:'Barry Rose WRF',region:'SOUTHERN',natl:'SOUTHERN',value:'$28M',vp:'T. Reynolds',director:'K. Nguyen',pm:'L. Reyes',genSupt:'D. Okafor',constrStart:'Jan 2026',constrEnd:'Dec 2026',fsm:{name:'Dana Kim',email:'d.kim@02s.com',phone:'(555) 482-3098'}},
+    {id:'vdc14',label:'VDC14',region:'SOUTHWEST',natl:'SOUTHWEST',value:'$55M',vp:'C. Alvarez',director:'B. Harmon',pm:'S. Patel',genSupt:'W. Diaz',constrStart:'Feb 2026',constrEnd:'Mar 2027',fsm:{name:'Jordan Sun',email:'j.sun@02s.com',phone:'(555) 482-3097'}}
   ];
   // ── Project coordinators — project-level only; lead+mgr come from above ────
   var _ccContacts=[
