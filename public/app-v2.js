@@ -3119,8 +3119,10 @@
     if(!r)return;
     var noteEl=document.getElementById('stc-yard-note');
     var noteText=noteEl?noteEl.value.trim():'';
-    var lineCount=r.spLineItems&&r.spLineItems.length?r.spLineItems.length:(r.kitItems&&r.kitItems.length?r.kitItems.length:1);
-    var msg='Yard availability inquiry sent — '+lineCount+' line item'+(lineCount!==1?'s':'');
+    var lines2=r.spLineItems||r.kitItems||[];
+    var lineCount=lines2.length||(r.spLineItems&&r.spLineItems.length?r.spLineItems.length:(r.kitItems&&r.kitItems.length?r.kitItems.length:1));
+    var qtyEdits=[];lines2.forEach(function(li,i){var el=document.getElementById('stc-yd-qty-'+i);var q=el?parseInt(el.value)||li.qty:li.qty;if(q!==li.qty)qtyEdits.push(li.desc+': '+q+' (of '+li.qty+')');});
+    var msg='Yard availability inquiry sent — '+lineCount+' line item'+(lineCount!==1?'s':'')+(qtyEdits.length?' (partial: '+qtyEdits.join(', ')+')':'');
     if(noteText)msg+=' · '+noteText;
     r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Just now',text:msg}]);
     _stcYardModal=null;
@@ -3152,9 +3154,10 @@
       h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Items being requested</div>';
       h+='<div style="border:1px solid var(--g200);border-radius:6px;overflow:hidden;margin-bottom:14px">';
       lines.forEach(function(li,i){
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:'+(i%2===0?'#fff':'var(--g50)')+';font-size:11.5px">';
-        h+='<span style="color:var(--g700)">'+li.desc+'</span>';
-        h+='<span style="color:var(--g500);white-space:nowrap;margin-left:8px;font-variant-numeric:tabular-nums">×'+li.qty+' '+(li.uom||'EA')+'</span>';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:'+(i%2===0?'#fff':'var(--g50)')+';font-size:11.5px;gap:8px">';
+        h+='<span style="color:var(--g700);flex:1">'+li.desc+'</span>';
+        h+='<span style="color:var(--g400);font-size:10.5px;margin-right:2px">'+(li.uom||'EA')+'</span>';
+        h+='<input type="number" id="stc-yd-qty-'+i+'" value="'+li.qty+'" min="1" max="'+li.qty+'" onclick="event.stopPropagation()" style="width:54px;border:1px solid var(--g200);border-radius:5px;padding:3px 6px;font-size:11.5px;text-align:center;font-variant-numeric:tabular-nums;background:#fff;color:var(--g900)">';
         h+='</div>';
       });
       h+='</div>';
@@ -4490,21 +4493,94 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     ]
   };
   var _stcCCActOpenId=null;
+  var _stcCCRentOpen=false;
   var _stcYardNotifOpen=false;
   var _stcReturnRequests=[];
   var _stcReturnModal=null;  // {reqIdx,lineIdx,maxQty,item,bundleName,proj}
   var _stcCCReturnAckModal=null; // index into _stcReturnRequests
+  var _stcFlagTeamModal=null; // {oid,ai,ti}
 
   function _stcCCActToggle(oid){_stcCCActOpenId=(_stcCCActOpenId===oid)?null:oid;renderSTC_CC();}
   function _stcCCActSetStatus(oid,ai,v){var acts=_stcCCActivities[oid];if(acts&&acts[ai])acts[ai].status=v;renderSTC_CC();}
   function _stcCCActToggleTask(oid,ai,ti){var acts=_stcCCActivities[oid];if(acts&&acts[ai]&&acts[ai].tasks[ti])acts[ai].tasks[ti].done=!acts[ai].tasks[ti].done;renderSTC_CC();}
   function _stcCCActDeleteAct(oid,ai){var acts=_stcCCActivities[oid];if(acts)acts.splice(ai,1);renderSTC_CC();}
+  function _stcCCActEditActivity(oid,ai){
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    var act=acts[ai];
+    var r=null;for(var _ai=0;_ai<_stcAllReqs.length;_ai++){if(_stcAllReqs[_ai].id===oid){r=_stcAllReqs[_ai];break;}}
+    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
+    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var cur=Math.round((new Date(act.end)-new Date(act.start))/86400000)||14;
+    var b='<div style="display:flex;flex-direction:column;gap:13px">';
+    b+='<div><label style="'+lS+'">Activity name <span style="color:#ef4444">*</span></label>';
+    b+='<input id="stcae-lbl" type="text" value="'+act.label.replace(/"/g,'&quot;')+'" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lS+'">Duration (days)</label>';
+    b+='<input id="stcae-dur" type="number" min="1" value="'+cur+'" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
+    b+='<div><label style="'+lS+'">Assign to</label>';
+    b+='<select id="stcae-owner" style="'+iS+';background:#fff">';
+    pOpts.forEach(function(p){b+='<option'+(p===act.owner?' selected':'')+'>'+p+'</option>';});
+    b+='</select></div></div>';
+    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="_stcSubmitEditActivity(\''+oid+'\','+ai+')">Save changes</button>';
+    b+='</div></div>';
+    openModal('Edit activity'+(r?' — '+r.desc:''),b);
+    setTimeout(function(){var el=document.getElementById('stcae-lbl');if(el)el.focus();},80);
+  }
+  function _stcSubmitEditActivity(oid,ai){
+    var lblEl=document.getElementById('stcae-lbl');
+    if(!lblEl||!lblEl.value.trim()){if(lblEl)lblEl.style.borderColor='#dc2626';return;}
+    var durEl=document.getElementById('stcae-dur');
+    var ownerEl=document.getElementById('stcae-owner');
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    var act=acts[ai];
+    var dur=parseInt(durEl&&durEl.value)||14;
+    var endMs=new Date(act.start).getTime()+dur*86400000;
+    function toIso(ms){var d=new Date(ms);return d.toISOString().slice(0,10);}
+    act.label=lblEl.value.trim();
+    act.owner=ownerEl?ownerEl.value:'--';
+    act.end=toIso(endMs);
+    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Activity updated');
+  }
   function _stcCCActAddActivity(oid){
-    var lbl=window.prompt('Activity name:','');if(!lbl||!lbl.trim())return;
+    var r=null;for(var _ai=0;_ai<_stcAllReqs.length;_ai++){if(_stcAllReqs[_ai].id===oid){r=_stcAllReqs[_ai];break;}}
+    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
+    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var b='<div style="display:flex;flex-direction:column;gap:13px">';
+    b+='<div><label style="'+lS+'">Activity name <span style="color:#ef4444">*</span></label>';
+    b+='<input id="stcaa-lbl" type="text" placeholder="e.g. Vendor Coordination" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lS+'">Duration (days)</label>';
+    b+='<input id="stcaa-dur" type="number" min="1" placeholder="14" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
+    b+='<div><label style="'+lS+'">Assign to</label>';
+    b+='<select id="stcaa-owner" style="'+iS+';background:#fff">';
+    pOpts.forEach(function(p){b+='<option>'+p+'</option>';});
+    b+='</select></div></div>';
+    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="_stcSubmitAddActivity(\''+oid+'\')">&rarr; Add activity</button>';
+    b+='</div></div>';
+    openModal('Add activity'+(r?' — '+r.desc:''),b);
+    setTimeout(function(){var el=document.getElementById('stcaa-lbl');if(el)el.focus();},80);
+  }
+  function _stcSubmitAddActivity(oid){
+    var lblEl=document.getElementById('stcaa-lbl');
+    if(!lblEl||!lblEl.value.trim()){if(lblEl)lblEl.style.borderColor='#dc2626';return;}
+    var durEl=document.getElementById('stcaa-dur');
+    var ownerEl=document.getElementById('stcaa-owner');
+    var dur=parseInt(durEl&&durEl.value)||14;
+    var baseMs=new Date('2026-10-05').getTime();
+    var endMs=baseMs+dur*86400000;
+    function toIso(ms){var d=new Date(ms);return d.toISOString().slice(0,10);}
     if(!_stcCCActivities[oid])_stcCCActivities[oid]=[];
-    var today='2026-10-05';var endDef='2026-10-19';
-    _stcCCActivities[oid].push({id:'a'+Date.now(),label:lbl.trim(),status:'pending',owner:'--',start:today,end:endDef,tasks:[]});
-    _stcCCActOpenId=oid;renderSTC_CC();
+    _stcCCActivities[oid].push({id:'a'+Date.now(),label:lblEl.value.trim(),status:'pending',
+      owner:ownerEl?ownerEl.value:'--',start:toIso(baseMs),end:toIso(endMs),tasks:[]});
+    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Activity added');
   }
   function _stcCCActAddTask(oid,ai){
     var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
@@ -4615,6 +4691,49 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     toast('Reply sent to Marcus D. at Phoenix yard');
     renderSTC_CC();
   }
+  function _stcOpenFlagTeamModal(oid,ai,ti){
+    _stcFlagTeamModal={oid:oid,ai:ai,ti:ti};
+    var acts=_stcCCActivities[oid]||[];
+    var act=acts[ai]||{};
+    var task=(act.tasks&&act.tasks[ti])||{};
+    var r=null;for(var _fi=0;_fi<_stcAllReqs.length;_fi++){if(_stcAllReqs[_fi].id===oid){r=_stcAllReqs[_fi];break;}}
+    var due=task.due?new Date(task.due).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD';
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;resize:vertical;transition:border-color .15s';
+    var taskLbl=(task.label||'Task').replace(/'/g,"\\'");
+    var itemDesc=(r?r.desc:oid).replace(/'/g,"\\'");
+    var projName=(_stcProjNames[r&&r.proj]||'').replace(/'/g,"\\'");
+    var h='<div id="stc-flag-ov" onclick="if(event.target===this){_stcFlagTeamModal=null;var ov=document.getElementById(\'stc-flag-ov\');if(ov)ov.remove();}" style="position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px">';
+    h+='<div onclick="event.stopPropagation()" style="background:#fff;border-radius:12px;max-width:540px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25)">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--g150)">';
+    h+='<div style="font-size:16px;font-weight:700;color:var(--g900)">Flag project team \u2014 '+task.label+'</div>';
+    h+='<button onclick="_stcFlagTeamModal=null;var ov=document.getElementById(\'stc-flag-ov\');if(ov)ov.remove()" style="background:none;border:none;font-size:22px;color:var(--g400);cursor:pointer;padding:2px 6px;line-height:1">&times;</button>';
+    h+='</div>';
+    h+='<div style="padding:20px 22px">';
+    h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:9px;padding:14px 16px;margin-bottom:18px">';
+    h+='<div style="font-size:13px;font-weight:600;color:var(--g900);margin-bottom:5px">'+task.label+'</div>';
+    h+='<div style="font-size:12px;color:var(--g500)">'+(r?r.desc:oid)+' \u00b7 Due '+due+(projName?' \u00b7 '+projName:'')+'</div>';
+    h+='</div>';
+    h+='<label style="font-size:11px;font-weight:700;color:var(--g700);display:block;margin-bottom:6px">Message to project team</label>';
+    h+='<textarea id="stc-flag-msg" rows="4" placeholder="What do you need from the project team?" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></textarea>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:10px;padding:16px 22px;border-top:1px solid var(--g150)">';
+    h+='<button onclick="_stcFlagTeamModal=null;var ov=document.getElementById(\'stc-flag-ov\');if(ov)ov.remove()" class="btn btn-ghost">Cancel</button>';
+    h+='<button onclick="_stcSubmitFlagTeam()" style="margin-left:auto;display:inline-flex;align-items:center;gap:6px;background:#18181b;border:none;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">Send flag \u2197</button>';
+    h+='</div></div></div>';
+    document.body.insertAdjacentHTML('beforeend',h);
+    setTimeout(function(){var el=document.getElementById('stc-flag-msg');if(el)el.focus();},80);
+  }
+  function _stcSubmitFlagTeam(){
+    var msgEl=document.getElementById('stc-flag-msg');
+    var msg=msgEl?msgEl.value.trim():'';
+    if(!msg){if(msgEl)msgEl.style.borderColor='#dc2626';return;}
+    var m=_stcFlagTeamModal;if(!m)return;
+    var r=null;for(var _fi=0;_fi<_stcAllReqs.length;_fi++){if(_stcAllReqs[_fi].id===m.oid){r=_stcAllReqs[_fi];break;}}
+    if(r){r.notes=(r.notes||[]).concat([{who:'02S Procurement',when:'Now',text:'\u2197 Flag sent to project team: '+msg}]);}
+    _stcFlagTeamModal=null;
+    var ov=document.getElementById('stc-flag-ov');if(ov)ov.remove();
+    toast('Flag sent to project team');
+  }
   function _stcBuildActivitiesView(projFilter){
     var projs=projFilter&&projFilter!=='all'?[projFilter]:['hercules','barryrose','vdc14'];
     var rows=_stcAllReqs.filter(function(r){return projs.indexOf(r.proj)>=0;});
@@ -4687,6 +4806,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
             h+='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-left:1px solid var(--g100);padding:6px">';
             if(act.tasks.length){h+='<span style="background:#3b82f6;color:#fff;border-radius:9px;padding:1px 6px;font-size:9px;font-weight:700;min-width:18px;text-align:center">'+doneTasks+'/'+act.tasks.length+'</span>';}
             h+='<button onclick="event.stopPropagation();_stcCCActAddTask(\''+oid+'\','+ai+')" style="font-size:10px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g500);cursor:pointer;white-space:nowrap">+ Task</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCActEditActivity(\''+oid+'\','+ai+')" style="font-size:9px;border:1px solid var(--g200);border-radius:5px;padding:2px 6px;background:#fff;color:var(--g600);cursor:pointer">Edit</button>';
             h+='<button onclick="event.stopPropagation();_stcCCActDeleteAct(\''+oid+'\','+ai+')" style="font-size:9px;border:none;background:none;color:var(--g300);cursor:pointer;padding:0">Remove</button>';
             h+='</div></div>';
           });
@@ -4749,6 +4869,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
       tH+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+assignee+(due?' · '+due:'')+'</div>';
       tH+='</div>';
       tH+='<span style="font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:10px;background:'+priBg[pri]+';color:'+priC[pri]+';flex-shrink:0">'+priL[pri]+'</span>';
+      tH+='<button onclick="event.stopPropagation();_stcOpenFlagTeamModal(\''+r.id+'\','+ai+','+ti+')" style="display:inline-flex;align-items:center;gap:3px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:11px;font-weight:600;color:#1d4ed8;padding:2px 8px;cursor:pointer;white-space:nowrap;flex-shrink:0">Flag \u2197</button>';
       tH+='<button onclick="event.stopPropagation();_stcCCActEditTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:12px;color:var(--g400);cursor:pointer;padding:0 3px;flex-shrink:0" title="Edit">&#9998;</button>';
       tH+='<button onclick="event.stopPropagation();_stcCCActDeleteTask(\''+r.id+'\','+ai+','+ti+')" style="background:none;border:none;font-size:14px;color:var(--g300);cursor:pointer;padding:0 3px;flex-shrink:0" title="Remove">&times;</button>';
       tH+='</div>';
@@ -4825,6 +4946,27 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
       });
     }
     return h;
+  }
+  function _stcExportRentList(proj){
+    var rows=_stcAllReqs.filter(function(r){return r.proj===proj&&r.type==='sp'&&['released','in_fulfillment','fulfilled'].indexOf(r.status)>=0;});
+    if(!rows.length){toast('No tools currently on rent for this project');return;}
+    var lines=['Item,Order ID,Qty,UOM,Need By,Status'];
+    rows.forEach(function(r){
+      var nb=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'TBD';
+      var st=(_stcLbl[r.status]||r.status).replace(/,/g,' ');
+      if(r.spLineItems&&r.spLineItems.length){
+        r.spLineItems.forEach(function(li){
+          lines.push('"'+li.desc.replace(/"/g,"''")+'",'+r.id+','+li.qty+','+li.uom+','+nb+','+st);
+        });
+      }else{
+        lines.push('"'+(r.desc||'').replace(/"/g,"''")+'",'+r.id+','+(r.qty||1)+',EA,'+nb+','+st);
+      }
+    });
+    var csv=lines.join('\n');
+    var blob=new Blob([csv],{type:'text/csv'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='tools_on_rent_'+(proj||'project')+'_'+new Date().toISOString().slice(0,10)+'.csv';
+    a.click();toast('Exported tools on rent list');
   }
   function renderSTC_CC(){
     var root=document.getElementById('ccStcRoot');
@@ -4980,7 +5122,11 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
           h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
           h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
-          h+='<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span></div>';
+          var _canReroute=r.ccCategorized&&(r.status==='scoping'||r.status==='draft'||r.status==='pending'||r.status==='requested');
+          h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
+          h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
+          if(_canReroute){h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="font-size:9.5px;border:none;background:none;color:var(--g400);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Change</button>';}
+          h+='</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           var _stcSOpts=[['draft','Draft'],['scoping','In Scoping / Pricing'],['pending','Pending Approval'],['approved','Approved'],['released','Released to Order'],['in_fulfillment','In Fulfillment'],['fulfilled','Fulfilled / Delivered'],['returned','Returned'],['closed','Completed / Closed']];
           var _stcSelOpts=_stcSOpts.map(function(o){return '<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');
@@ -4992,6 +5138,50 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           h+='<div id="stccc-drill-'+gi+'" class="otrack" style="display:'+(_stcCCDrillOpen===gi?'block':'none')+'">'+_stcBuildCCTrack(r,gi)+'</div>';
         });
         h+='</div>';
+        // ── Tools on rent collapsible section ──────────────────────────────
+        var _rentRows=rows.filter(function(r){return r.type==='sp'&&['released','in_fulfillment','fulfilled'].indexOf(r.status)>=0;});
+        if(_rentRows.length){
+          h+='<div style="margin-top:18px;border:1px solid var(--g200);border-radius:10px;overflow:hidden">';
+          h+='<div onclick="window._stcCCRentOpen=!window._stcCCRentOpen;renderSTC_CC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer" onmouseover="this.style.background=\'#f0f9ff\'" onmouseout="this.style.background=\'var(--g50)\'">';
+          h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
+          h+='<span style="font-size:13px;font-weight:700;color:var(--g900);flex:1">All Tools on Rent</span>';
+          h+='<span style="font-size:12px;color:var(--g500);margin-right:6px">'+_rentRows.length+' order'+('')+(_rentRows.length===1?'':'s')+'</span>';
+          h+='<button onclick="event.stopPropagation();_stcExportRentList(_stcCCProjFilter)" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:4px 11px;border:1px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;margin-right:6px">';
+          h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>';
+          h+='<svg style="width:14px;height:14px;color:var(--g400);flex-shrink:0;transition:transform .2s;'+(window._stcCCRentOpen?'transform:rotate(180deg);':'')+' " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+          h+='</div>';
+          if(window._stcCCRentOpen){
+            h+='<div style="padding:14px 16px;background:#fff">';
+            h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+            h+='<span>Item</span><span>Order ID</span><span>Qty</span><span>Need By</span><span>Status</span></div>';
+            _rentRows.forEach(function(rr){
+              var nb=rr.needBy?new Date(rr.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
+              var tone=_stcTone[rr.status]||'neu';
+              var lbl=_stcLbl[rr.status]||rr.status;
+              if(rr.spLineItems&&rr.spLineItems.length){
+                rr.spLineItems.forEach(function(li,lii){
+                  h+='<div class="dp-row" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+                  h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+li.desc+'</div>';
+                  h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
+                  h+='<div style="font-size:12px;color:var(--g700)">'+li.qty+' '+(li.uom||'EA')+'</div>';
+                  h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
+                  h+=(lii===0?'<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>':'<div></div>');
+                  h+='</div>';
+                });
+              }else{
+                h+='<div class="dp-row" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+                h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+rr.desc+'</div>';
+                h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
+                h+='<div style="font-size:12px;color:var(--g700)">'+(rr.qty||1)+' EA</div>';
+                h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
+                h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+                h+='</div>';
+              }
+            });
+            h+='</div></div>';
+          }
+          h+='</div>';
+        }
       }
     }
     root.innerHTML=h;
