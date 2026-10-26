@@ -3553,6 +3553,50 @@
       }
       h+='</div>';
     }
+    // ── CP Tools on Rent collapsible section ──────────────────────────────────
+    var _cpRentRows=allRows.filter(function(r){return r.type==='sp'&&['released','in_fulfillment','fulfilled'].indexOf(r.status)>=0;});
+    if(_cpRentRows.length){
+      h+='<div style="margin-top:20px;border:1px solid var(--g200);border-radius:10px;overflow:hidden">';
+      h+='<div onclick="window._stcCPRentOpen=!window._stcCPRentOpen;renderSTC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer" onmouseover="this.style.background=\'#f0f9ff\'" onmouseout="this.style.background=\'var(--g50)\'">';
+      h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
+      h+='<span style="font-size:13px;font-weight:700;color:var(--g900);flex:1">All Tools on Rent</span>';
+      h+='<span style="font-size:12px;color:var(--g500);margin-right:6px">'+_cpRentRows.length+' order'+(_cpRentRows.length===1?'':'s')+'</span>';
+      h+='<button onclick="event.stopPropagation();_stcExportRentList(\'hercules\')" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:4px 11px;border:1px solid var(--g300);border-radius:5px;background:#fff;color:var(--g700);cursor:pointer;white-space:nowrap;margin-right:6px">';
+      h+='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>';
+      h+='<svg style="width:14px;height:14px;color:var(--g400);flex-shrink:0;transition:transform .2s;'+(window._stcCPRentOpen?'transform:rotate(180deg);':'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
+      h+='</div>';
+      if(window._stcCPRentOpen){
+        h+='<div style="padding:14px 16px;background:#fff">';
+        h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+        h+='<span>Item</span><span>Order ID</span><span>Qty</span><span>Need By</span><span>Status</span></div>';
+        _cpRentRows.forEach(function(rr){
+          var nb=rr.needBy?new Date(rr.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'TBD';
+          var tone=_stcTone[rr.status]||'neu';
+          var lbl=_stcLbl[rr.status]||rr.status;
+          if(rr.spLineItems&&rr.spLineItems.length){
+            rr.spLineItems.forEach(function(li){
+              h+='<div class="dp-row" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+              h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+li.desc+'</div>';
+              h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
+              h+='<div style="font-size:12px;color:var(--g700)">'+li.qty+' '+(li.uom||'EA')+'</div>';
+              h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
+              h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+              h+='</div>';
+            });
+          }else{
+            h+='<div class="dp-row" style="grid-template-columns:2fr 90px 70px 80px 100px">';
+            h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+rr.desc+'</div>';
+            h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
+            h+='<div style="font-size:12px;color:var(--g700)">'+(rr.qty||1)+' EA</div>';
+            h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
+            h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+            h+='</div>';
+          }
+        });
+        h+='</div></div>';
+      }
+      h+='</div>';
+    }
 
     root.innerHTML=h;
     var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();
@@ -4517,6 +4561,45 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     b+='</div>';
     b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
     b+='<div><label style="'+lS+'">Start date</label>';
+    b+='<input id="stcae-start" type="date" value="'+act.start+'" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
+    b+='<div><label style="'+lS+'">End date</label>';
+    b+='<input id="stcae-end" type="date" value="'+act.end+'" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div></div>';
+    b+='<div><label style="'+lS+'">Assign to</label>';
+    b+='<select id="stcae-owner" style="'+iS+';background:#fff">';
+    pOpts.forEach(function(p){b+='<option>'+(p===act.owner?' selected':'')+'>'+p+'</option>';});
+    b+='</select></div>';
+    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
+    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+    b+='<button class="btn btn-dark" onclick="_stcSubmitEditActivity(\''+oid+'\','+ai+')">Save changes</button>';
+    b+='</div></div>';
+    openModal('Edit activity'+(r?' — '+r.desc:''),b);
+    setTimeout(function(){var el=document.getElementById('stcae-lbl');if(el)el.focus();},80);
+  }
+  function _stcSubmitEditActivity(oid,ai){
+    var lblEl=document.getElementById('stcae-lbl');
+    if(!lblEl||!lblEl.value.trim()){if(lblEl)lblEl.style.borderColor='#dc2626';return;}
+    var startEl=document.getElementById('stcae-start');
+    var endEl=document.getElementById('stcae-end');
+    var ownerEl=document.getElementById('stcae-owner');
+    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
+    var act=acts[ai];
+    act.label=lblEl.value.trim();
+    act.owner=ownerEl?ownerEl.value:'--';
+    if(startEl&&startEl.value)act.start=startEl.value;
+    if(endEl&&endEl.value)act.end=endEl.value;
+    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Activity updated');
+  }
+  function _stcCCActAddActivity(oid){
+    var r=null;for(var _ai=0;_ai<_stcAllReqs.length;_ai++){if(_stcAllReqs[_ai].id===oid){r=_stcAllReqs[_ai];break;}}
+    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
+    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
+    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
+    var b='<div style="display:flex;flex-direction:column;gap:13px">';
+    b+='<div><label style="'+lS+'">Activity name <span style="color:#ef4444">*</span></label>';
+    b+='<input id="stcaa-lbl" type="text" placeholder="e.g. Vendor Coordination" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
+    b+='</div>';
+    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
+    b+='<div><label style="'+lS+'">Start date</label>';
     b+='<input id="stcaa-start" type="date" value="2026-10-26" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
     b+='<div><label style="'+lS+'">End date</label>';
     b+='<input id="stcaa-end" type="date" value="2026-11-09" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div></div>';
@@ -5084,7 +5167,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
           h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
           h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
-          var _canReroute=r.ccCategorized&&(r.status==='scoping'||r.status==='draft'||r.status==='pending'||r.status==='requested'||r.status==='approved');
+          var _canReroute=(r.status==='draft')||(r.ccCategorized&&(r.status==='scoping'||r.status==='pending'||r.status==='requested'||r.status==='approved'));
           h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
           h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
           if(_canReroute){h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="font-size:9.5px;border:none;background:none;color:var(--g400);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Change</button>';}
