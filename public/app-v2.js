@@ -4511,56 +4511,19 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
     var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
     var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
-    var cur=Math.round((new Date(act.end)-new Date(act.start))/86400000)||14;
     var b='<div style="display:flex;flex-direction:column;gap:13px">';
     b+='<div><label style="'+lS+'">Activity name <span style="color:#ef4444">*</span></label>';
     b+='<input id="stcae-lbl" type="text" value="'+act.label.replace(/"/g,'&quot;')+'" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
     b+='</div>';
     b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-    b+='<div><label style="'+lS+'">Duration (days)</label>';
-    b+='<input id="stcae-dur" type="number" min="1" value="'+cur+'" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
-    b+='<div><label style="'+lS+'">Assign to</label>';
-    b+='<select id="stcae-owner" style="'+iS+';background:#fff">';
-    pOpts.forEach(function(p){b+='<option'+(p===act.owner?' selected':'')+'>'+p+'</option>';});
-    b+='</select></div></div>';
-    b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
-    b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
-    b+='<button class="btn btn-dark" onclick="_stcSubmitEditActivity(\''+oid+'\','+ai+')">Save changes</button>';
-    b+='</div></div>';
-    openModal('Edit activity'+(r?' — '+r.desc:''),b);
-    setTimeout(function(){var el=document.getElementById('stcae-lbl');if(el)el.focus();},80);
-  }
-  function _stcSubmitEditActivity(oid,ai){
-    var lblEl=document.getElementById('stcae-lbl');
-    if(!lblEl||!lblEl.value.trim()){if(lblEl)lblEl.style.borderColor='#dc2626';return;}
-    var durEl=document.getElementById('stcae-dur');
-    var ownerEl=document.getElementById('stcae-owner');
-    var acts=_stcCCActivities[oid];if(!acts||!acts[ai])return;
-    var act=acts[ai];
-    var dur=parseInt(durEl&&durEl.value)||14;
-    var endMs=new Date(act.start).getTime()+dur*86400000;
-    function toIso(ms){var d=new Date(ms);return d.toISOString().slice(0,10);}
-    act.label=lblEl.value.trim();
-    act.owner=ownerEl?ownerEl.value:'--';
-    act.end=toIso(endMs);
-    _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Activity updated');
-  }
-  function _stcCCActAddActivity(oid){
-    var r=null;for(var _ai=0;_ai<_stcAllReqs.length;_ai++){if(_stcAllReqs[_ai].id===oid){r=_stcAllReqs[_ai];break;}}
-    var pOpts=['You','James R.','Marcus D. (Yard)','Sarah Chen','Dana Reyes'];
-    var iS='width:100%;box-sizing:border-box;border:1.5px solid var(--g200);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--g900);font-family:inherit;outline:none;transition:border-color .15s';
-    var lS='font-size:10.5px;font-weight:600;color:var(--g700);display:block;margin-bottom:5px';
-    var b='<div style="display:flex;flex-direction:column;gap:13px">';
-    b+='<div><label style="'+lS+'">Activity name <span style="color:#ef4444">*</span></label>';
-    b+='<input id="stcaa-lbl" type="text" placeholder="e.g. Vendor Coordination" style="'+iS.replace('12px','13px')+';padding:9px 12px" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'">';
-    b+='</div>';
-    b+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-    b+='<div><label style="'+lS+'">Duration (days)</label>';
-    b+='<input id="stcaa-dur" type="number" min="1" placeholder="14" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
+    b+='<div><label style="'+lS+'">Start date</label>';
+    b+='<input id="stcaa-start" type="date" value="2026-10-26" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div>';
+    b+='<div><label style="'+lS+'">End date</label>';
+    b+='<input id="stcaa-end" type="date" value="2026-11-09" style="'+iS+'" onfocus="this.style.borderColor=\'#3b82f6\'" onblur="this.style.borderColor=\'var(--g200)\'"></div></div>';
     b+='<div><label style="'+lS+'">Assign to</label>';
     b+='<select id="stcaa-owner" style="'+iS+';background:#fff">';
     pOpts.forEach(function(p){b+='<option>'+p+'</option>';});
-    b+='</select></div></div>';
+    b+='</select></div>';
     b+='<div class="modal-foot" style="margin-top:2px"><span class="spacer"></span>';
     b+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
     b+='<button class="btn btn-dark" onclick="_stcSubmitAddActivity(\''+oid+'\')">&rarr; Add activity</button>';
@@ -4571,15 +4534,14 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
   function _stcSubmitAddActivity(oid){
     var lblEl=document.getElementById('stcaa-lbl');
     if(!lblEl||!lblEl.value.trim()){if(lblEl)lblEl.style.borderColor='#dc2626';return;}
-    var durEl=document.getElementById('stcaa-dur');
+    var startEl=document.getElementById('stcaa-start');
+    var endEl=document.getElementById('stcaa-end');
     var ownerEl=document.getElementById('stcaa-owner');
-    var dur=parseInt(durEl&&durEl.value)||14;
-    var baseMs=new Date('2026-10-05').getTime();
-    var endMs=baseMs+dur*86400000;
-    function toIso(ms){var d=new Date(ms);return d.toISOString().slice(0,10);}
+    var sDate=startEl&&startEl.value?startEl.value:'2026-10-26';
+    var eDate=endEl&&endEl.value?endEl.value:'2026-11-09';
     if(!_stcCCActivities[oid])_stcCCActivities[oid]=[];
     _stcCCActivities[oid].push({id:'a'+Date.now(),label:lblEl.value.trim(),status:'pending',
-      owner:ownerEl?ownerEl.value:'--',start:toIso(baseMs),end:toIso(endMs),tasks:[]});
+      owner:ownerEl?ownerEl.value:'--',start:sDate,end:eDate,tasks:[]});
     _stcCCActOpenId=oid;closeModal();renderSTC_CC();toast('Activity added');
   }
   function _stcCCActAddTask(oid,ai){
@@ -5122,7 +5084,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
           h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
           h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
-          var _canReroute=r.ccCategorized&&(r.status==='scoping'||r.status==='draft'||r.status==='pending'||r.status==='requested');
+          var _canReroute=r.ccCategorized&&(r.status==='scoping'||r.status==='draft'||r.status==='pending'||r.status==='requested'||r.status==='approved');
           h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
           h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
           if(_canReroute){h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="font-size:9.5px;border:none;background:none;color:var(--g400);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Change</button>';}
@@ -5165,7 +5127,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
                   h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
                   h+='<div style="font-size:12px;color:var(--g700)">'+li.qty+' '+(li.uom||'EA')+'</div>';
                   h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
-                  h+=(lii===0?'<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>':'<div></div>');
+                  h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
                   h+='</div>';
                 });
               }else{
