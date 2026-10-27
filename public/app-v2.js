@@ -3630,7 +3630,6 @@
     h+='<div style="display:flex;gap:14px;margin-bottom:14px">';
     h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7c3aed"></span>VMI</span>';
     h+='<span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g500)"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#0891b2"></span>Self-Perform</span>';
-    h+='<span style="font-size:11.5px;color:var(--g400)">Hover any bar to see details</span>';
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
     h+='<div></div>';
@@ -3650,17 +3649,13 @@
       [0,1,2].forEach(function(wi){
         h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
         if(wi===wk){
-          h+='<div data-tip="'+tipTxt+'" '+
-             'onmouseenter="var _t=document.getElementById(\'_stcTip\');if(_t){_t.textContent=this.dataset.tip;_t.style.display=\'block\';var _r=this.getBoundingClientRect();_t.style.left=(_r.left+_r.width/2)+\'px\';_t.style.top=(_r.top-6)+\'px\';}" '+
-             'onmouseleave="var _t=document.getElementById(\'_stcTip\');if(_t)_t.style.display=\'none\';" '+
-             'style="background:'+barCol+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+(r.type==='vmi'?'VMI':'SP')+' · '+r.id+'</div>';
+          h+='<div style="background:'+barCol+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+(r.type==='vmi'?'VMI':'SP')+' · '+r.id+'</div>';
         }
         h+='</div>';
       });
       h+='</div>';
     });
     h+='</div>';
-    h+='<div id="_stcTip" style="display:none;position:fixed;z-index:9999;background:rgba(24,24,27,.92);color:#fff;font-size:11.5px;padding:5px 10px;border-radius:6px;pointer-events:none;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-6px"></div>';
     h+='</div>';
     return h;
   }
