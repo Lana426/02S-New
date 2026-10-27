@@ -1755,7 +1755,7 @@
     var barColor={'Fulfilled / Delivered':'#3d6b4f','Scheduled':'#2e6e8e','Pending Approval':'#7a6130','In Scoping / Pricing':'#7a6130','Draft':'#94a3b8','At-risk':'#b91c1c','Released to Order':'#2e6e8e','Approved':'#1d6b8c'};
     var action=rows.filter(function(r){return r.state==='Quoted'||r.state==='Requested'||r.state==='At-risk';}).length;
     var gt='220px 1fr 1fr 1fr';
-    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming site-service across projects to have a consolidated view of upcoming demand, and has a portfolio-level view of service-level statuses across projects" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming fulfillment activity and demand across all projects, providing a portfolio-level signal for proactive resource and inventory planning" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
     h+='<span style="font-size:12px;color:var(--g400)">Aug 25–Sep 14, 2026</span>';
@@ -3471,7 +3471,7 @@
     h+='</div>';
     h+='<div class="vitals">';
     h+='<div class="vital '+(total>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CLIP)+(_stcFilter==='vmi'?'VMI Kits':_stcFilter==='sp'?'SP Orders':'All Orders')+'</div><div class="vv">'+total+'</div><div class="vsub">tracked this period</div></div>';
-    h+='<div class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quote pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
+    h+='<div data-cap="Quote management|||02S develops and submits a vendor quote in CC; Project Team reviews, approves, or returns the quote with comments in CP; approval releases the order into fulfillment scheduling" class="vital '+(quotedCt>0?'warn':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_WARN)+'Quote pending</div><div class="vv">'+quotedCt+'</div><div class="vsub">awaiting your review</div></div>';
     h+='<div class="vital ok"><div class="vk">'+_stcMkSVG(ICO_OK)+'Active</div><div class="vv">'+active+'</div><div class="vsub">accepted &amp; in fulfillment</div></div>';
     h+='<div class="vital '+(quotedVal>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_DLR)+'Total value</div><div class="vv">'+(quotedVal>0?_stcFmt(quotedVal):'—')+'</div><div class="vsub">committed this period</div></div>';
     var ICO_RENT='<rect x="1" y="3" width="22" height="13" rx="2"/><path d="M16 21H8M12 17v4"/>';
@@ -3479,15 +3479,15 @@
     if(_stcFilter==='sp'){
       var toolsOnRent=rows.filter(function(r){return r.type==='sp'&&(r.status==='released'||r.status==='in_fulfillment'||r.status==='fulfilled');}).length;
       var recurringCost=rows.filter(function(r){return r.type==='sp';}).reduce(function(s,r){return r.price&&r.qty?s+r.price*r.qty:r.price?s+r.price:s;},0);
-      h+='<div class="vital '+(toolsOnRent>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_RENT)+'Tools on Rent</div><div class="vv">'+toolsOnRent+'</div><div class="vsub">SP orders active or delivered</div></div>';
+      h+='<div data-cap="Tools on rent visibility & export|||Project Team views all self-perform tools currently on rent with line-item status in CP; 02S manages the rent register in CC; both sides can export a summary for cost tracking and handover documentation" class="vital '+(toolsOnRent>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_RENT)+'Tools on Rent</div><div class="vv">'+toolsOnRent+'</div><div class="vsub">SP orders active or delivered</div></div>';
       h+='<div class="vital '+(recurringCost>0?'ok':'neu')+'"><div class="vk">'+_stcMkSVG(ICO_CYCLE)+'Recurring Cost</div><div class="vv">'+(recurringCost>0?_stcFmt(recurringCost):'—')+'</div><div class="vsub">SP committed value</div></div>';
     }
     h+='</div>';
     h+='<div style="display:flex;gap:6px;align-items:center;margin:14px 0;justify-content:flex-end">';
     h+='<button class="btn btn-ghost btn-sm" style="font-size:12px;padding:5px 12px">Baseline plan</button>';
     h+='<button onclick="toast(\'Submitted to 02S\')" style="display:inline-flex;align-items:center;gap:5px;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">'+_stcMkSVG('<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>') +'Submit to 02S</button>';
-    h+='<button onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:'+(_stcFilter==='vmi'?'6px':'6px 0 0 6px')+';padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ '+(_stcFilter==='vmi'?'Request':'New Request')+'</button>';
-    if(_stcFilter!=='vmi'){h+='<button onclick="_stcOpenReturnPickerModal()" style="display:inline-flex;align-items:center;gap:5px;background:#3f3f46;color:#fff;border:none;border-left:1px solid #52525b;border-radius:0 6px 6px 0;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">Return Request</button>';}
+    h+='<button data-cap="VMI & self-perform request submission|||Project Team submits tool and consumable requests in CP with quantity and need-by date; 02S receives all submissions in the CC queue for review and categorization" onclick="_stcOpenModal()" style="display:inline-flex;align-items:center;gap:5px;background:#18181b;color:#fff;border:none;border-radius:'+(_stcFilter==='vmi'?'6px':'6px 0 0 6px')+';padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">+ '+(_stcFilter==='vmi'?'Request':'New Request')+'</button>';
+    if(_stcFilter!=='vmi'){h+='<button data-cap="Return management|||Project Team flags items for return in CP; 02S manages the return process and confirms completion in CC, keeping both sides aligned on outstanding rent liability and return status" onclick="_stcOpenReturnPickerModal()" style="display:inline-flex;align-items:center;gap:5px;background:#3f3f46;color:#fff;border:none;border-left:1px solid #52525b;border-radius:0 6px 6px 0;padding:5px 13px;font-size:12px;font-weight:600;cursor:pointer">Return Request</button>';}
     h+='</div>';
 
     var cols='2fr 1fr 65px 80px 80px 150px 90px 90px 70px';
@@ -3557,7 +3557,7 @@
     var _cpRentRows=allRows.filter(function(r){return r.type==='sp'&&['released','in_fulfillment','fulfilled'].indexOf(r.status)>=0;});
     if(_cpRentRows.length){
       h+='<div style="margin-top:20px;border:1px solid var(--g200);border-radius:10px;overflow:hidden">';
-      h+='<div onclick="window._stcCPRentOpen=!window._stcCPRentOpen;renderSTC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer">';
+      h+='<div data-cap="Tools on rent visibility & export|||Project Team views all self-perform tools currently on rent with line-item status in CP; 02S manages the rent register in CC; both sides can export a summary for cost tracking and handover documentation" onclick="window._stcCPRentOpen=!window._stcCPRentOpen;renderSTC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer">';
       h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
       h+='<span style="font-size:13px;font-weight:700;color:var(--g900);flex:1">All Tools on Rent</span>';
       h+='<span style="font-size:12px;color:var(--g500);margin-right:6px">'+_cpRentRows.length+' order'+(_cpRentRows.length===1?'':'s')+'</span>';
@@ -3623,7 +3623,7 @@
     });
     var visible=sorted.filter(function(r){return r.needBy&&(new Date(r.needBy))>=(new Date('2026-09-21'));});
     var gt='200px 1fr 1fr 1fr';
-    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming site-service across projects to have a consolidated view of upcoming demand, and has a portfolio-level view of service-level statuses across projects" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
+    var h='<div data-cap="3-week lookahead & portfolio management|||02S works a consolidated 3-week view in CC of upcoming fulfillment activity and demand across all projects, providing a portfolio-level signal for proactive resource and inventory planning" style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
     h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px">';
     h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
     h+='<span style="font-size:12px;color:var(--g400)">Sep 21–Oct 11, 2026</span></div>';
@@ -3716,7 +3716,7 @@
         var acts=_stcOrderTimelines[oid]||[];
         h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
+        h+='<span data-cap="Activity & task planning|||02S schedules fulfillment activities in CC when an order is released, assigns owners, sets start and end dates, and breaks work into flaggable sub-tasks; progress is tracked by activity, owner, and order across all active projects" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
         h+='<span style="font-size:11px;color:var(--g400)">Sep–Jan · Est. active delivery: '+nbFmt+'</span>';
         h+='<button onclick="event.stopPropagation();toast(\'Edit mode — coming soon\')" style="font-size:11px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer">Edit</button>';
         h+='</div>';
@@ -3884,7 +3884,7 @@
     h+='</div>';
     if((r.type==='vmi'||r.ccPath==='vmi')&&(r.status==='draft'||r.status==='scoping')){
       h+='<div style="padding:12px 18px 14px;border-top:1px solid var(--g150)">';
-      h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Prepare &amp; send quote →</button>';
+      h+='<button data-cap="Quote management|||02S develops and submits a vendor quote in CC; Project Team reviews, approves, or returns the quote with comments in CP; approval releases the order into fulfillment scheduling" onclick="event.stopPropagation();_stcOpenCCQuoteModal('+idx+')" style="font-size:12.5px;font-weight:700;padding:8px 18px;border:none;border-radius:7px;background:#7c3aed;color:#fff;cursor:pointer">Prepare &amp; send quote →</button>';
       h+='</div>';
     }else if(r.status==='quoted'&&r.quote){
       h+='<div style="padding:12px 18px 12px;border-top:1px solid var(--g150);display:flex;align-items:center;justify-content:space-between;gap:12px">';
@@ -4288,7 +4288,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     h+='</div>';
     // Action buttons
     h+='<div style="padding:0 22px 14px;display:flex;gap:10px">';
-    if(_qIsReviewable){h+='<button onclick="_stcApproveQModal('+idx+')" style="flex:1;font-size:13px;font-weight:700;padding:10px 14px;border:none;border-radius:8px;background:#18181b;color:#fff;cursor:pointer">Approve → Release to Order</button>';}
+    if(_qIsReviewable){h+='<button data-cap="Quote management|||02S develops and submits a vendor quote in CC; Project Team reviews, approves, or returns the quote with comments in CP; approval releases the order into fulfillment scheduling" onclick="_stcApproveQModal('+idx+')" style="flex:1;font-size:13px;font-weight:700;padding:10px 14px;border:none;border-radius:8px;background:#18181b;color:#fff;cursor:pointer">Approve → Release to Order</button>';}
     h+='<button onclick="_stcCloseQReviewModal()" style="padding:10px 14px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;color:var(--g600);font-size:13px;font-weight:600;cursor:pointer">'+(_qIsReviewable?'Cancel':'Close')+'</button>';
     h+='</div>';
     if(_qIsReviewable){
@@ -4807,7 +4807,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
       if(isOpen){
         h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-        h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
+        h+='<span data-cap="Activity & task planning|||02S schedules fulfillment activities in CC when an order is released, assigns owners, sets start and end dates, and breaks work into flaggable sub-tasks; progress is tracked by activity, owner, and order across all active projects" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
         h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
         h+='</div>';
         if(!acts.length){
@@ -5083,7 +5083,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
         h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-top:20px">';
         h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
         h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-        h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
+        h+='<span data-cap="Fulfillment path categorization|||02S reviews each incoming request in CC and assigns it as VMI or self-perform, triggering the appropriate downstream workflow; 02S or the Project Team can reroute the assignment at any point before fulfillment" style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
         h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+allPending.length+' pending</span></div>';
         allPending.forEach(function(r){
           var gi=_stcAllReqs.indexOf(r);
@@ -5101,7 +5101,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var _rEst=r.price&&r.qty?(r.price*r.qty):(r.budget||0);
           if(_rEst)h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);margin-top:2px">Est. '+_stcFmt(_rEst)+'</div>';
           h+='</div>';
-          h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
+          h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" data-cap="Fulfillment path categorization|||02S reviews each incoming request in CC and assigns it as VMI or self-perform, triggering the appropriate downstream workflow; 02S or the Project Team can reroute the assignment at any point before fulfillment" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
           h+='</div>';
         });
         h+='</div>';
@@ -5123,7 +5123,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;margin-bottom:16px">';
           h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
-          h+='<span style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
+          h+='<span data-cap="Fulfillment path categorization|||02S reviews each incoming request in CC and assigns it as VMI or self-perform, triggering the appropriate downstream workflow; 02S or the Project Team can reroute the assignment at any point before fulfillment" style="font-size:13px;font-weight:700;color:#92400e">Incoming requests – review and categorize</span>';
           h+='<span style="font-size:12px;color:#b45309;margin-left:auto">'+pendingSP.length+' pending</span></div>';
           pendingSP.forEach(function(r){
             var gi=_stcAllReqs.indexOf(r);
@@ -5138,7 +5138,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
             var _rEst2=r.price&&r.qty?(r.price*r.qty):(r.budget||0);
             if(_rEst2)h+='<div style="font-size:11.5px;font-weight:600;color:var(--g700);margin-top:2px">Est. '+_stcFmt(_rEst2)+'</div>';
             h+='</div>';
-            h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
+            h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" data-cap="Fulfillment path categorization|||02S reviews each incoming request in CC and assigns it as VMI or self-perform, triggering the appropriate downstream workflow; 02S or the Project Team can reroute the assignment at any point before fulfillment" style="display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #fde68a;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:11.5px;font-weight:600;color:#92400e;white-space:nowrap">Categorize →</button>';
             h+='</div>';
           });
           h+='</div>';
@@ -5161,10 +5161,10 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var lbl=_stcLbl[r.status]||r.status;
           var nbFmt=r.needBy?new Date(r.needBy).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
           h+='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer" onclick="_stcCCDrillToggle('+gi+')">';
-          h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
+          h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div><div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+'</div>'+(r.type==='sp'&&r.ccCategorized&&r.status!=='released'&&r.status!=='fulfilled'?'<div style="margin-top:4px"><button onclick="event.stopPropagation();_stcOpenYardModal('+gi+')" data-cap="Yard availability check|||02S checks yard inventory in CC before sourcing externally; partial quantities can be fulfilled from yard stock, reducing lead time and external spend, with partial fill tracked per line item" style="font-size:10.5px;font-weight:600;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;color:#0891b2;cursor:pointer;white-space:nowrap">⇗ Check yard</button></div>':'')+'</div>';
           var _canReroute=(r.status==='draft')||(r.ccCategorized&&(r.status==='scoping'||r.status==='pending'||r.status==='requested'||r.status==='approved'));
           h+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
-          h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
+          h+='<span data-cap="Fulfillment path categorization|||02S reviews each incoming request in CC and assigns it as VMI or self-perform, triggering the appropriate downstream workflow; 02S or the Project Team can reroute the assignment at any point before fulfillment" style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'SP')+'</span>';
           if(_canReroute){h+='<button onclick="event.stopPropagation();_stcCCCategorize('+gi+')" style="font-size:9.5px;border:none;background:none;color:var(--g400);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px">Change</button>';}
           h+='</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
@@ -5182,7 +5182,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
         var _rentRows=rows.filter(function(r){return r.type==='sp'&&['released','in_fulfillment','fulfilled'].indexOf(r.status)>=0;});
         if(_rentRows.length){
           h+='<div style="margin-top:18px;border:1px solid var(--g200);border-radius:10px;overflow:hidden">';
-          h+='<div onclick="window._stcCCRentOpen=!window._stcCCRentOpen;renderSTC_CC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer">';
+          h+='<div data-cap="Tools on rent visibility & export|||Project Team views all self-perform tools currently on rent with line-item status in CP; 02S manages the rent register in CC; both sides can export a summary for cost tracking and handover documentation" onclick="window._stcCCRentOpen=!window._stcCCRentOpen;renderSTC_CC()" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50);cursor:pointer">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" style="width:15px;height:15px;flex-shrink:0"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>';
           h+='<span style="font-size:13px;font-weight:700;color:var(--g900);flex:1">All Tools on Rent</span>';
           h+='<span style="font-size:12px;color:var(--g500);margin-right:6px">'+_rentRows.length+' order'+('')+(_rentRows.length===1?'':'s')+'</span>';
