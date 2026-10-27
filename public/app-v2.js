@@ -3511,7 +3511,7 @@
       rh+=(r.status==='draft'||(r.type!=='vmi'&&!r.ccCategorized)?'<div style="font-size:12px;color:var(--g400)">—</div>':'<div><span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+(r.type==='vmi'?'#f3e8ff':'#e0f2fe')+';color:'+(r.type==='vmi'?'#7c3aed':'#0891b2')+'">'+(r.type==='vmi'?'VMI':'Self-Perform')+'</span></div>');
       // Status column: always show status chip
       rh+='<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">';
-      rh+='<span style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
+      rh+='<span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="display:inline-block;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600">'+lbl+'</span>';
       rh+='</div>';
       var _rdocs=r.attachments||[];
       rh+='<div>'+(_rdocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px" onclick="event.stopPropagation();_stcOpenDocsModal('+oi+')">'+_rdocs.length+' doc'+(_rdocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400)" onclick="event.stopPropagation();_stcOpenDocsModal('+oi+')">+ Doc</button>')+'</div>';
@@ -3535,7 +3535,7 @@
         if(!_renderedBundles[r.bundleId]){
           _renderedBundles[r.bundleId]=true;
           var bColor=r.type==='vmi'?'#7c3aed':'#0891b2';
-          h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
+          h+='<div data-cap="Bundle & kit request management|||Project Team can group multiple line items into a single bundled submission in CP, reducing overhead for multi-item needs such as PPE kits or grouped consumable packages that ship together" style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
           h+='<svg viewBox="0 0 24 24" fill="none" stroke="'+bColor+'" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
           h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+bColor+'">'+(r.type==='vmi'?'VMI Kit':'Self-Perform')+'</span>';
           h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
@@ -3580,7 +3580,7 @@
               h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
               h+='<div style="font-size:12px;color:var(--g700)">'+li.qty+' '+(li.uom||'EA')+'</div>';
               h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
-              h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+              h+='<div><span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
               h+='</div>';
             });
           }else{
@@ -3589,7 +3589,7 @@
             h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
             h+='<div style="font-size:12px;color:var(--g700)">'+(rr.qty||1)+' EA</div>';
             h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
-            h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+            h+='<div><span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
             h+='</div>';
           }
         });
@@ -3707,7 +3707,7 @@
       h+='<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;color:var(--g900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+r.desc+'</div>';
       h+='<div style="font-size:11px;color:var(--g400);margin-top:1px">'+r.id+'</div></div>';
       h+='<span style="font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;background:'+tBg+';color:'+tCol+';flex-shrink:0">'+tLbl+'</span>';
-      h+='<span style="background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;flex-shrink:0">'+lbl+'</span>';
+      h+='<span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';border-radius:8px;padding:2px 9px;font-size:11px;font-weight:600;flex-shrink:0">'+lbl+'</span>';
       h+='<span style="font-size:12px;color:var(--g600);flex-shrink:0;min-width:58px;text-align:right">'+nbFmt+'</span>';
       h+='<span style="font-size:12px;font-weight:600;color:var(--g700);flex-shrink:0;min-width:52px;text-align:right">'+val+'</span>';
       h+='<svg style="width:14px;height:14px;color:var(--g400);flex-shrink:0;transition:transform .2s;'+(isOpen?'transform:rotate(180deg);':'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>';
@@ -3847,7 +3847,7 @@
         }else{
           // VMI — open quote modal
           h+='<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600;padding:1px 6px;border-radius:4px;background:#f3e8ff;color:#7c3aed">VMI Kit</span><button onclick="event.stopPropagation();_stcCCClassify('+gi+',null)" style="font-size:10px;background:none;border:none;color:var(--g400);cursor:pointer">✕</button></div>';
-          h+='<button onclick="event.stopPropagation();_stcOpenCCQuoteModal('+gi+')" style="font-size:10.5px;font-weight:700;padding:4px 9px;border:none;border-radius:4px;background:#7c3aed;color:#fff;cursor:pointer">Build &amp; send quote →</button>';
+          h+='<button data-cap="Quote management|||02S develops and submits a vendor quote in CC; Project Team reviews, approves, or returns the quote with comments in CP; approval releases the order into fulfillment scheduling" onclick="event.stopPropagation();_stcOpenCCQuoteModal('+gi+')" style="font-size:10.5px;font-weight:700;padding:4px 9px;border:none;border-radius:4px;background:#7c3aed;color:#fff;cursor:pointer">Build &amp; send quote →</button>';
         }
         h+='</div>';
         h+='</div>';
@@ -4808,7 +4808,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
         h+='<div style="border-top:1px solid var(--g200);background:#fafafa;padding:14px 16px">';
         h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
         h+='<span data-cap="Activity & task planning|||02S schedules fulfillment activities in CC when an order is released, assigns owners, sets start and end dates, and breaks work into flaggable sub-tasks; progress is tracked by activity, owner, and order across all active projects" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--g400)">Activity Timeline</span>';
-        h+='<button onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
+        h+='<button data-cap="Activity & task planning|||02S schedules fulfillment activities in CC when an order is released, assigns owners, sets start and end dates, and breaks work into flaggable sub-tasks; progress is tracked by activity, owner, and order across all active projects" onclick="event.stopPropagation();_stcCCActAddActivity(\''+oid+'\')" style="font-size:11.5px;border:1px solid var(--g200);border-radius:5px;padding:3px 10px;background:#fff;color:var(--g700);cursor:pointer;font-weight:600">+ Add activity</button>';
         h+='</div>';
         if(!acts.length){
           h+='<div style="font-size:12.5px;color:var(--g400);text-align:center;padding:20px 0;font-style:italic">No activities yet — click &quot;+ Add activity&quot; to get started.</div>';
@@ -5151,7 +5151,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           var gi=_stcAllReqs.indexOf(r);
           if(r.bundleId&&!_ccBndRendered[r.bundleId]){
             _ccBndRendered[r.bundleId]=true;
-            h+='<div style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
+            h+='<div data-cap="Bundle & kit request management|||Project Team can group multiple line items into a single bundled submission in CP, reducing overhead for multi-item needs such as PPE kits or grouped consumable packages that ship together" style="background:var(--g50);border-bottom:1px solid var(--g200);border-top:2px solid var(--g200);padding:7px 14px;display:flex;align-items:center;gap:8px">';
             h+='<svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:13px;height:13px;flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>';
             h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed">Bundle</span>';
             h+='<span style="font-size:11.5px;font-weight:700;color:var(--g800)">'+r.bundleName+'</span>';
@@ -5170,7 +5170,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
           h+='<div style="font-size:12px;color:var(--g700)">'+nbFmt+'</div>';
           var _stcSOpts=[['draft','Draft'],['scoping','In Scoping / Pricing'],['pending','Pending Approval'],['approved','Approved'],['released','Released to Order'],['in_fulfillment','In Fulfillment'],['fulfilled','Fulfilled / Delivered'],['returned','Returned'],['closed','Completed / Closed']];
           var _stcSelOpts=_stcSOpts.map(function(o){return '<option value="'+o[0]+'"'+(r.status===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('');
-          h+='<div style="width:100%;overflow:hidden" onclick="event.stopPropagation()"><select onchange="event.stopPropagation();_stcCCManualStatus('+gi+',this.value)" onclick="event.stopPropagation()" style="font-size:11px;font-weight:600;padding:3px 6px;border:none;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';cursor:pointer;outline:none;width:100%;box-sizing:border-box">'+_stcSelOpts+'</select></div>';
+          h+='<div style="width:100%;overflow:hidden" onclick="event.stopPropagation()"><select data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" onchange="event.stopPropagation();_stcCCManualStatus('+gi+',this.value)" onclick="event.stopPropagation()" style="font-size:11px;font-weight:600;padding:3px 6px;border:none;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+';cursor:pointer;outline:none;width:100%;box-sizing:border-box">'+_stcSelOpts+'</select></div>';
           h+='<div style="font-size:12px;color:var(--g700);font-variant-numeric:tabular-nums">'+(r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—')+'</div>';
           var _ccdocs=r.attachments||[];
           h+='<div>'+(_ccdocs.length?'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">'+_ccdocs.length+' doc'+(_ccdocs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 6px;color:var(--g400)" onclick="event.stopPropagation();_stcOpenDocsModal('+gi+')">+ Doc</button>')+'</div>';
@@ -5205,7 +5205,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
                   h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
                   h+='<div style="font-size:12px;color:var(--g700)">'+li.qty+' '+(li.uom||'EA')+'</div>';
                   h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
-                  h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+                  h+='<div><span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
                   h+='</div>';
                 });
               }else{
@@ -5214,7 +5214,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
                 h+='<div style="font-size:11.5px;color:var(--g400)">'+rr.id+'</div>';
                 h+='<div style="font-size:12px;color:var(--g700)">'+(rr.qty||1)+' EA</div>';
                 h+='<div style="font-size:12px;color:var(--g600)">'+nb+'</div>';
-                h+='<div><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
+                h+='<div><span data-cap="Fulfillment status management|||02S maintains detailed fulfillment status in CC; Project Team sees the current status for each order in CP, covering each request from submission through on-site delivery and return" style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:8px;background:'+_stcTB[tone]+';color:'+_stcTC[tone]+'">'+lbl+'</span></div>';
                 h+='</div>';
               }
             });
