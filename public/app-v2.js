@@ -6610,14 +6610,13 @@ function cpNudgeReplySubmit(ni,type){
       var rows=ccData?ccData.rows:[];
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(window._ccPsActiveOnly){planRows=planRows.filter(function(r){return r.state==='Active';});}
+      if(window._psCatFilter&&window._psCatFilter!=='All'){planRows=planRows.filter(function(r){return _psCatOf(r)===window._psCatFilter;});}
       var _pmx=null;for(var _pmi=0;_pmi<_ccProjectMeta.length;_pmi++){if(_ccProjectMeta[_pmi].id===proj){_pmx=_ccProjectMeta[_pmi];break;}}
       if(_pmx){h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:12px 18px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:8px">Project context</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px 20px">'+[['Region / Natl Market',_pmx.region+(_pmx.natl?' / '+_pmx.natl:'')],['Construction value',_pmx.value||'\u2014'],['VP',_pmx.vp||'\u2014'],['Director',_pmx.director||'\u2014'],['PM',_pmx.pm||'\u2014'],['Gen. Superintendent',_pmx.genSupt||'\u2014'],['Construction dates',_pmx.constrStart&&_pmx.constrEnd?_pmx.constrStart+' \u2013 '+_pmx.constrEnd:'\u2014']].map(function(f){return '<div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">'+f[0]+'</div><div style="font-size:12px;color:var(--g800);font-weight:500">'+f[1]+'</div></div>';}).join('')+'</div></div>';}
       if(planRows.length){
         h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">';
+        h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(planRows)+'</div>';
         h+='<div style="display:flex;gap:6px;align-items:center">';
-        var _psGRcur=window._ccPsGanttRange||'3M';
-        h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'
-          +['3W','1M','3M','6M','1Y'].map(function(r){return '<button class="ff-b btn-sm'+(_psGRcur===r?' on':'')+'" style="padding:2px 8px;font-size:10.5px" onclick="window._ccPsGanttRange=\''+r+'\'  ;renderCcProfServices()">'+r+'</button>';}).join('')+'</div>';
         h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
         h+='</div>';
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
