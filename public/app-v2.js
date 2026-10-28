@@ -6659,7 +6659,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ITEM','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        ['ORDER #','ITEM','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6676,8 +6676,9 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
-          h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(row.linkOrd?row.linkOrd+' · ':'')+' '+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
+          h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
           h+='</div>';
+          h+='<div style="font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+(row.linkOrd||'—')+'</div>';
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+((function(w){var p=w.split('–');if(p.length<2)return w.indexOf('+')>=0?'Ongoing':'—';return(p[p.length-1]||'').trim()||'—';}))(row.window)+'</div>';
@@ -6733,17 +6734,15 @@ function cpNudgeReplySubmit(ni,type){
               h+='<span style="font-size:11.5px;color:#0f172a"><b>Cost</b> $'+Math.round(_totSpent)+'K</span>';
               h+='<span style="font-size:11.5px;color:#0f172a"><b>Revenue</b> $'+_totRev+'K</span>';
               h+='<span style="font-size:11.5px;color:#0f172a"><b>Billed</b> $'+_totBill+'K</span>';
-              h+='<span style="font-size:9px;color:#0369a1;background:#e0f2fe;padding:1px 6px;border-radius:10px">from T3</span>';
               h+='</div>';
             }
             h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">';
-            [['Cost to Date','$'+_spent+'K','from CMIC','#0891b2','T3'],['Projected Cost to Complete','$'+_ptc+'K','updated in CMIC','#6366f1','T3'],['Revenue to Date','$'+_rev+'K','cost-recognized','#059669','T3'],['Billing to Date','$'+_billed+'K','invoices sent','#d97706','T3'],['Projected Margin',_pmargin+'%','revenue − cost / revenue','#15803d','Calc'],['Monthly Cost Rate','$'+(_costM||'—')+'K/mo','current run rate','#4b5563','T3']].forEach(function(m){
+            [['Cost to Date','$'+_spent+'K','','#0891b2'],['Projected Cost to Complete','$'+_ptc+'K','','#6366f1'],['Revenue to Date','$'+_rev+'K','','#059669'],['Billing to Date','$'+_billed+'K','','#d97706'],['Projected Margin',_pmargin+'%','rev. − cost / rev.','#15803d'],['Monthly Cost Rate','$'+(_costM||'—')+'K/mo','current run rate','#4b5563','T3']].forEach(function(m){
               h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:10px 12px">';
               h+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:4px">'+m[0]+'</div>';
               h+='<div style="font-size:18px;font-weight:700;color:'+m[3]+'">'+m[1]+'</div>';
               h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">';
               h+='<span style="font-size:10px;color:var(--g400)">'+m[2]+'</span>';
-              if(m[4])h+='<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd">'+m[4]+'</span>';
               h+='</div></div>';
             });
             h+='</div>';
