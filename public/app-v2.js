@@ -6657,7 +6657,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
-        h+='<div style="display:grid;grid-template-columns:1fr 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
+        h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
         ['ITEM','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
@@ -6672,7 +6672,7 @@ function cpNudgeReplySubmit(ni,type){
           var pct=acts.length?Math.round(doneActs/acts.length*100):0;
           var pctColor=pct===100?'var(--success)':pct>=50?'#3b82f6':'var(--g400)';
           h+='<div style="border-top:1px solid var(--g100)">';
-          h+='<div style="display:grid;grid-template-columns:1fr 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+          h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
           h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(row.linkOrd?row.linkOrd+' · ':'')+' '+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
