@@ -6478,10 +6478,8 @@ function cpNudgeReplySubmit(ni,type){
         var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows)||[];
         rows.forEach(function(row){
           (row.acts||[]).forEach(function(act){
-            var _laRF=window._ccPsLaRange||'3W';var _laSpan={'3W':1,'1M':1.5,'3M':3,'6M':6,'1Y':12}[_laRF]||1;
-            if(act.s<=TOD+_laSpan&&act.e>=TOD){
-              var _mo=Math.max(0,act.s-TOD);
-              var wk=_laRF==='3W'?(act.e<=TOD?0:(act.s>=TOD+1?2:1)):_laRF==='1M'?Math.min(3,Math.floor(_mo*4)):_laRF==='1Y'?Math.min(3,Math.floor(_mo/3)):Math.min(_laRF==='6M'?5:2,Math.floor(_mo));
+            if(act.s<=TOD+1&&act.e>=TOD){
+              var wk=act.e<=TOD?0:(act.s>=TOD+1?2:1);
               var bc=act.st==='Done'?'#2e6e8e':(act.st==='In progress'?'#3d6b4f':'#94a3b8');
               laRows.push({lbl:row.item,sub:act.n,proj:proj,bc:bc,wk:wk,who:act.who||''});
             }
@@ -6492,38 +6490,26 @@ function cpNudgeReplySubmit(ni,type){
         if(p.expires)laRows.push({lbl:p.service,sub:'Proposal expires '+p.expires,proj:p.proj,bc:'#b91c1c',wk:0,who:''});
       });
       if(laRows.length){
-        var _laR=window._ccPsLaRange||'3W';
-        var _laCfgs={
-          '3W':{gt:'220px 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3'],lbl:'3-week view'},
-          '1M':{gt:'200px 1fr 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3','Wk 4'],lbl:'1-month view'},
-          '3M':{gt:'200px 1fr 1fr 1fr',hdrs:['Oct 2026','Nov 2026','Dec 2026'],lbl:'3-month view'},
-          '6M':{gt:'150px 1fr 1fr 1fr 1fr 1fr 1fr',hdrs:['Oct','Nov','Dec','Jan','Feb','Mar'],lbl:'6-month view'},
-          '1Y':{gt:'180px 1fr 1fr 1fr 1fr',hdrs:["Q4 '26","Q1 '27","Q2 '27","Q3 '27"],lbl:'1-year view'}
-        };
-        var _laCfg=_laCfgs[_laR]||_laCfgs['3W'];
-        var gt=_laCfg.gt;
-        var _laColIdxs=_laCfg.hdrs.map(function(_,i){return i;});
+        var gt='220px 1fr 1fr 1fr';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
+        h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
         h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-        h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'
-          +['3W','1M','3M','6M','1Y'].map(function(r){return '<button style="padding:3px 8px;font-size:10.5px;border:none;border-radius:5px;cursor:pointer;font-weight:600;'
-            +'background:'+(r===_laR?'#fff':'transparent')+';color:'+(r===_laR?'var(--charcoal)':'var(--g400)')+';box-shadow:'+(r===_laR?'0 1px 3px rgba(0,0,0,.1)':'none')+' onclick="window._ccPsLaRange=\''+r+'\';renderCcProfServices()">'+r+'</button>';}).join('')+'</div>';
+        h+='<span style="font-size:12px;color:var(--g400)">Wk 1 / Wk 2 / Wk 3</span>';
         h+='</div>';
-        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:14px">'+_laCfg.lbl+' \u2014 hover any bar to see details</div>';
+        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
         h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
         h+='<div></div>';
-        _laCfg.hdrs.forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+        ['Wk 1','Wk 2','Wk 3'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
         h+='</div>';
         h+='<div style="max-height:300px;overflow-y:auto">';
-        laRows.slice(0,Math.min(laRows.length,12)).forEach(function(r){
+        laRows.slice(0,6).forEach(function(r){
           var tipTxt=(r.lbl+' \u00b7 '+r.sub+(r.who?' \u00b7 '+r.who:'')).replace(/'/g,'\u2019');
           h+='<div style="display:grid;grid-template-columns:'+gt+';align-items:center;min-height:38px;border-top:1px solid var(--g100)">';
           h+='<div style="padding:5px 10px 5px 0;display:flex;align-items:center;gap:6px;min-width:0">';
           h+='<span style="background:'+(PCOL[r.proj]||'#555')+';color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0">'+(PCODE[r.proj]||r.proj.slice(0,3).toUpperCase())+'</span>';
           h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.lbl+'</span>';
           h+='</div>';
-          _laColIdxs.forEach(function(wi){
+          [0,1,2].forEach(function(wi){
             h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
             if(wi===r.wk){
               h+='<div data-tip="'+tipTxt+'" '+
@@ -6618,6 +6604,7 @@ function cpNudgeReplySubmit(ni,type){
       var rows=ccData?ccData.rows:[];
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(window._ccPsActiveOnly){planRows=planRows.filter(function(r){return r.state==='Active';});}
+      if(window._psCatFilter&&window._psCatFilter!=='All'){planRows=planRows.filter(function(r){return r.category===window._psCatFilter;});}
       var _pmx=null;for(var _pmi=0;_pmi<_ccProjectMeta.length;_pmi++){if(_ccProjectMeta[_pmi].id===proj){_pmx=_ccProjectMeta[_pmi];break;}}
       if(_pmx){h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:12px 18px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:8px">Project context</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px 20px">'+[['Region / Natl Market',_pmx.region+(_pmx.natl?' / '+_pmx.natl:'')],['Construction value',_pmx.value||'\u2014'],['VP',_pmx.vp||'\u2014'],['Director',_pmx.director||'\u2014'],['PM',_pmx.pm||'\u2014'],['Gen. Superintendent',_pmx.genSupt||'\u2014'],['Construction dates',_pmx.constrStart&&_pmx.constrEnd?_pmx.constrStart+' \u2013 '+_pmx.constrEnd:'\u2014']].map(function(f){return '<div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">'+f[0]+'</div><div style="font-size:12px;color:var(--g800);font-weight:500">'+f[1]+'</div></div>';}).join('')+'</div></div>';}
       if(planRows.length){
