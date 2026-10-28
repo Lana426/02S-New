@@ -6485,7 +6485,7 @@ function cpNudgeReplySubmit(ni,type){
               var _mo=Math.max(0,act.s-TOD);
               var wk=_laR==='3W'?(act.e<=TOD?0:(act.s>=TOD+1?2:1)):_laR==='1M'?Math.min(3,Math.floor(_mo*4/_laSpan)):_laR==='1Y'?Math.min(3,Math.floor(_mo/3)):Math.min(_laNCols-1,Math.floor(_mo));
               var bc=act.st==='Done'?'#2e6e8e':(act.st==='In progress'?'#3d6b4f':'#94a3b8');
-              laRows.push({lbl:row.item,sub:act.n,proj:proj,bc:bc,wk:wk,who:act.who||''});
+              laRows.push({lbl:row.item,item:row.item,sub:act.n,proj:proj,bc:bc,wk:wk,who:act.who||''});
             }
           });
         });
@@ -6493,6 +6493,8 @@ function cpNudgeReplySubmit(ni,type){
       proposals.forEach(function(p){
         if(p.expires)laRows.push({lbl:p.service,sub:'Proposal expires '+p.expires,proj:p.proj,bc:'#b91c1c',wk:0,who:''});
       });
+      var _laRowsAll=laRows.slice();
+      if(window._psCatFilter&&window._psCatFilter!=='All'){laRows=laRows.filter(function(r){return _psCatOf(r)===window._psCatFilter;});}
       if(laRows.length){
         var _laCfg={'3W':{gt:'220px 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3']},'1M':{gt:'200px 1fr 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3','Wk 4']},'3M':{gt:'200px 1fr 1fr 1fr',hdrs:['Oct','Nov','Dec']},'6M':{gt:'150px 1fr 1fr 1fr 1fr 1fr 1fr',hdrs:['Oct','Nov','Dec','Jan','Feb','Mar']},'1Y':{gt:'180px 1fr 1fr 1fr 1fr',hdrs:['Q4','Q1','Q2','Q3']}}[_laR]||{gt:'220px 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3']};
         var gt=_laCfg.gt;
@@ -6502,7 +6504,8 @@ function cpNudgeReplySubmit(ni,type){
         h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
         h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'+['3W','1M','3M','6M','1Y'].map(function(rv){return '<button style="padding:3px 8px;font-size:10.5px;border:none;border-radius:5px;cursor:pointer;font-weight:600;background:'+(rv===_laR?'#fff':'transparent')+';color:'+(rv===_laR?'var(--charcoal)':'var(--g400)')+';box-shadow:'+(rv===_laR?'0 1px 3px rgba(0,0,0,.1)':'none')+'" onclick="window._ccPsLaRange=\''+rv+'\';renderCcProfServices()">'+rv+'</button>';}).join('')+'</div>';
         h+='</div>';
-        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:14px">Hover any bar to see details</div>';
+        h+='<div style="margin-bottom:8px;margin-top:-2px">'+_psCatBtns(_laRowsAll)+'</div>';
+        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:10px">Hover any bar to see details</div>';
         h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
         h+='<div></div>';
         _laCfg.hdrs.forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
