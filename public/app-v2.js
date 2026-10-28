@@ -7242,8 +7242,8 @@ function ccPsViewSentProposal(proj, rowIdx){
 
   function _psCatOf(r){
     var s=((r.category||r.cat||r.item||'')+'').toLowerCase();
-    if(/map|survey|subsurface|lidar|aerial|topograph|gis|bim|vdc/.test(s))return 'Mapping';
-    if(/geospatial|field eng|grade control|machine control|trench|gpr|utility loc|utility map/.test(s))return 'Geospatial';
+    if(/map|survey|subsurface|lidar|aerial|topograph|gis|bim|vdc|as.built|layout|drone|topo/.test(s))return 'Mapping';
+    if(/geospatial|field eng|grade control|machine control|trench|gpr|utility loc|utility map|gps|base setup|rover|rtk|calibration|total station/.test(s))return 'Geospatial';
     if(/visual|vr|4d|render|animat|imagery|photo|video/.test(s))return 'Visualization';
     if(/bas|building auto|ddc|plc|controls|hvac/.test(s))return 'BAS / Controls';
     if(/infrared|irt|thermograph/.test(s))return 'Infrared';
