@@ -5708,7 +5708,24 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk);
     toast(ids.length+' line item'+(ids.length===1?'':'s')+' submitted to 02S');
   }
-function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:column;gap:10px">'+'<button onclick="closeModal();_openFpoUpload()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#3b82f6\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Upload FPO</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attach a project team FPO document</div></div></button>'+'<button onclick="closeModal();window._dpDirect=true;openDPAdd(\'prefab\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#16a34a\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Manual entry</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Enter assembly details directly</div></div></button></div>';openModal('Add FPO',body);}
+function _openGeoEmergency(){
+    var body='<div style="padding:4px 0">';
+    body+='<div style="padding:10px 14px;background:#fef2f2;border:1px solid rgba(220,38,38,.3);border-radius:7px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px">';
+    body+='<span style="font-size:18px">\u26a0\ufe0f</span>';
+    body+='<div><div style="font-size:13px;font-weight:700;color:#dc2626">Emergency / Quick React request</div>';
+    body+='<div style="font-size:11px;color:#991b1b;margin-top:2px">For urgent, unplanned geospatial support. 02S responds within 2 hrs by phone. Billed hourly (T&amp;M).</div></div></div>';
+    [['geo-emg-svc','Service needed','e.g. Utility locating, GPR scan, Survey control'],['geo-emg-loc','Site / location','e.g. Block C near transformer 4A'],['geo-emg-contact','Contact name & number','e.g. J. Smith \u00b7 555-123-4567'],['geo-emg-hrs','Estimated hours','e.g. 4-8 hours']].forEach(function(f){
+      body+='<div style="margin-bottom:10px">';
+      body+='<label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[1]+'</label>';
+      body+='<input id="'+f[0]+'" type="text" placeholder="'+f[2]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';
+    });
+    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    body+='<button class="btn btn-dark btn-sm" style="background:#dc2626;border-color:#dc2626" onclick="closeModal();toast(\'\u26a0\ufe0f Emergency request submitted \u2014 02S will call within 2 hours\')">Submit emergency request \u2192</button>';
+    body+='</div></div>';
+    openModal('Emergency Request \u2014 Geospatial',body);
+  }
+  function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:column;gap:10px">'+'<button onclick="closeModal();_openFpoUpload()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#3b82f6\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Upload FPO</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attach a project team FPO document</div></div></button>'+'<button onclick="closeModal();window._dpDirect=true;openDPAdd(\'prefab\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#16a34a\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Manual entry</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Enter assembly details directly</div></div></button></div>';openModal('Add FPO',body);}
   function _openFpoUpload(){var body='<div>'+'<div style="border:2px dashed var(--g300);border-radius:8px;padding:28px;text-align:center;background:var(--g50);cursor:pointer" onclick="document.getElementById(\'fpo-file-in\').click()">'+'<svg viewBox="0 0 24 24" fill="none" stroke="var(--g400)" stroke-width="2" style="width:28px;height:28px;margin:0 auto 10px;display:block"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:4px">Click to select FPO document</div>'+'<div style="font-size:11px;color:var(--g400)">PDF, Word, or Excel</div>'+'<input id="fpo-file-in" type="file" accept=".pdf,.docx,.xlsx" style="display:none"></div>'+'<div style="margin-top:12px;padding:10px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;font-size:11.5px;color:#92400e">Staged for wireframe purposes — in production, uploading an FPO would auto-parse it into plan lines.</div>'+'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+'<button onclick="closeModal()" style="padding:7px 18px;border:1px solid var(--g200);border-radius:5px;background:#fff;cursor:pointer;font-size:13px">Cancel</button>'+'<button onclick="closeModal()" style="padding:7px 18px;background:#1d4ed8;border:none;border-radius:5px;color:#fff;cursor:pointer;font-size:13px;font-weight:600">Upload FPO</button></div></div>';openModal('Upload FPO',body);}
   function openDPAdd(pk){if(pk==='prefab'&&!window._dpDirect){_openFpoPreModal();return;}window._dpDirect=false; dpAddPk=pk; var cfg=DP[pk];
     var f='<div class="mform">';
@@ -5828,13 +5845,13 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     'MEP Systems Scan':{required:['Specifications','Site access or remote system access'],nth:['Access to construction documents','Project schedule','Coordination meeting']},
     'Solar Panel Scan':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
     'Warranty Closeout Scan':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'New Install \u2014 Building Automation':{required:['2D drawing set (MEP set minimum)','Specifications','Site access or remote system access'],nth:['Project schedule']},
-    'New Install \u2014 Problem Solving':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
+    'New Install \u2014 Building Automation':{required:['2D drawing set (MEP set minimum)','Specifications'],nth:['Site access or remote system access','Project schedule']},
+    'New Install \u2014 Problem Solving':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
     'New Install \u2014 Analytics':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'New Install \u2014 Training':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'Existing System \u2014 Problem Solving':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
+    'New Install \u2014 Training':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
+    'Existing System \u2014 Problem Solving':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
     'Existing System \u2014 Analytics':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'Existing System \u2014 Training':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']}
+    'Existing System \u2014 Training':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']}
   };
   var PS_SCHEDULE_RANGES={
     'General Utility Locating':'*2\u20134 weeks','Utility Testholing':'*2\u20134 weeks','CCTV Pipe Inspection':'*2\u20134 weeks','Surface & Concrete Scanning':'*2\u20134 weeks','Geographic Information Systems':'*2\u20134 weeks','Building Information Modeling (BIM)':'Follows project coordination schedule',
@@ -5985,14 +6002,14 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     }
     var body='<div style="padding:2px 0"><div style="font-size:11.5px;color:var(--g600);margin-bottom:12px;padding:6px 10px;background:var(--g50);border-radius:5px">'+breadcrumb+'</div>';
     
-    [['Scope / description','What is needed and for how long?'],['Cost code','e.g. 0100-0100-0000-0001']].forEach(function(f){body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[0]+'</label><input type="text" placeholder="'+f[1]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';});
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date <span style=\"color:var(--red)\">*</span></label><input id="ps-need-by" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">P6 activity anchor <span style=\"font-size:10px;font-weight:400;color:var(--g400)\">(optional)</span></label><input id="ps-p6-anchor" type="text" placeholder="e.g. A1234" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div></div>';
+    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Cost code</label><input type="text" placeholder="e.g. 0100-0100-0000-0001" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date <span style=\"color:var(--red)\">*</span></label><input id="ps-need-by" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div style="margin-top:5px;padding:7px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:10.5px;color:#1e40af;line-height:1.6"><b>Deliverable-based</b> (report, model, scan): date deliverable is due to you.<br><b>Service-based</b> (T&amp;M, ongoing): date service <i>begins</i> — use End date for close-out.<br><b>Proposal needed by</b>: deadline for 02S to submit the proposal.</div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">P6 activity anchor <span style=\"font-size:10px;font-weight:400;color:var(--g400)\">(optional)</span></label><select id="ps-p6-anchor" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff;color:var(--g700)"><option value="">Not linked to P6</option><option value="A1001">A1001 — Site survey &amp; boundary control</option><option value="A1050">A1050 — Utility locating &amp; marking</option><option value="A1100">A1100 — Subsurface investigation</option><option value="A1200">A1200 — Topographic survey</option><option value="A1300">A1300 — Aerial imagery / LiDAR</option><option value="A2001">A2001 — BAS / DDC commissioning</option><option value="A2050">A2050 — MEP systems scan</option><option value="A3001">A3001 — VDC / BIM coordination</option><option value="A3050">A3050 — 4D simulation &amp; sequencing</option><option value="A4001">A4001 — Geotechnical investigation</option><option value="A5001">A5001 — Special inspections</option><option value="A5050">A5050 — Third-party commissioning</option><option value="other">Other / Not yet in P6</option></select></div></div>';
     body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">End date <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-end-date" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Proposal needed by <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-proposal-due" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div></div>';
     body+=docsHtml+'<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button id="ps-submit-btn" class="btn btn-dark btn-sm" onclick="psSvcSubmit()">Add to plan \u2192</button></div></div>';
     window._psAddCat=cat;window._psAddSvc=svc;window._psAddL2=l2||null;
     openModal('Add service \u00b7 '+svc,body);
   }
-  function psSvcSubmit(){var cat=window._psAddCat||'Other';var svc=window._psAddSvc||'Service';var nb=document.getElementById('ps-need-by');var p6=document.getElementById('ps-p6-anchor');if(!nb||!nb.value){alert('Need by date is required.');return;}var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+p[0];};var _ed=document.getElementById('ps-end-date');var win='Need by '+fmtD(nb.value)+(_ed&&_ed.value?' \u2013 '+fmtD(_ed.value):'');var p6v=p6&&p6.value.trim();if(p6v)win+=' \u00b7 P6: '+p6v;var _pd=document.getElementById('ps-proposal-due');var _pdFmt=_pd&&_pd.value?fmtD(_pd.value):null;var allDocs=Object.values(window._psDocStatus||{});var docsOk=allDocs.length&&allDocs.every(Boolean);var state=docsOk?'Requested':'In Scoping / Pricing';DP.profservices.rows.push({role:svc,service:svc,category:cat,firm:'TBD',qty:'TBD',window:win,code:'TBD',cost:'TBD',state:state,proposalDue:_pdFmt||undefined,attachments:[]});closeModal();renderProfServicesDP();toast('Added '+svc+' \u2014 '+(docsOk?'request submitted':'in scoping until pricing confirmed'));}
+  function psSvcSubmit(){var cat=window._psAddCat||'Other';var svc=window._psAddSvc||'Service';var nb=document.getElementById('ps-need-by');var p6=document.getElementById('ps-p6-anchor');if(!nb||!nb.value){alert('Need by date is required.');return;}var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+p[0];};var _ed=document.getElementById('ps-end-date');var win='Need by '+fmtD(nb.value)+(_ed&&_ed.value?' \u2013 '+fmtD(_ed.value):'');var p6v=p6&&p6.value.trim();if(p6v)win+=' \u00b7 P6: '+p6v;var _pd=document.getElementById('ps-proposal-due');var _pdFmt=_pd&&_pd.value?fmtD(_pd.value):null;var allDocs=Object.values(window._psDocStatus||{});var docsOk=!allDocs.length||allDocs.every(Boolean);var state=docsOk?'Requested':'In Scoping / Pricing';DP.profservices.rows.push({role:svc,service:svc,category:cat,firm:'TBD',qty:'TBD',window:win,code:'TBD',cost:'TBD',state:state,proposalDue:_pdFmt||undefined,attachments:[]});closeModal();renderProfServicesDP();var _dm='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px">';_dm+='<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px;flex-shrink:0"><path d="M20 6L9 17l-5-5"/></svg>';_dm+='<div style="flex:1">';_dm+='<div style="font-size:13px;font-weight:600;color:#15803d">'+svc+' added</div>';_dm+='<div style="font-size:11px;color:#166534;margin-top:1px">'+(docsOk?'Request submitted to 02S':'In scoping \u2014 add required docs to confirm')+'</div></div>';_dm+='<button class="btn btn-dark btn-sm" style="flex-shrink:0" onclick="closeModal();openPsBrowseModal()">+ Add another</button>';_dm+='<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="closeModal()">Done</button>';_dm+='</div>';openModal('',_dm);}
   function psFreeTextRoute(){
     var inp=document.getElementById('ps-svc-search');var val=inp?inp.value.trim():'';
     var body='<div style="padding:2px 0"><p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your request will be sent to the 02S professional services team. They\'ll review and follow up to clarify requirements and match to available services.</p><div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">What do you need?</label><textarea id="ps-ft-input" rows="3" placeholder="Describe the service you\'re looking for..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff">'+val+'</textarea></div><div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-dark btn-sm" onclick="psFreeTextSubmit()">Route to 02S team →</button></div></div>';
@@ -6197,6 +6214,13 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
     body+='<span style="font-size:11px;color:var(--g500)">Not sure what you need?</span>';
     body+='<button class="btn btn-ghost btn-sm" onclick="closeModal();psFreeTextRoute()">\u2192 Describe to 02S team</button>';
     body+='</div>';
+    
+    body+='<div style="margin-top:12px;border:1px solid rgba(220,38,38,.35);border-radius:8px;padding:12px 14px;background:#fef2f2;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="closeModal();_openGeoEmergency()">';
+    body+='<span style="font-size:18px;flex-shrink:0">\u26a0\ufe0f</span>';
+    body+='<div><div style="font-size:12.5px;font-weight:700;color:#dc2626">Emergency / Quick React \u2014 Geospatial</div>';
+    body+='<div style="font-size:10.5px;color:#991b1b;margin-top:2px">Urgent, unplanned support \u2014 02S responds within 2 hrs \u00b7 billed hourly (T&amp;M)</div>';
+    body+='</div></div>';
+
     openModal('Browse 02S professional service offerings',body);
   }
   function psBrowseShowCat(ci){
@@ -6231,7 +6255,7 @@ function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:co
       var sched=PS_SCHEDULE_RANGES&&PS_SCHEDULE_RANGES[svc];
       body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--g200);border-radius:6px;margin-bottom:6px">';
       body+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+svc+'</div>';
-      if(sched)body+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+sched+'</div>';
+      
       body+='</div>';
       body+='<button class="btn btn-dark btn-sm" onclick="psBrowseSelectSvc('+ci+','+li+','+si+')">\u2192 Add</button>';
       body+='</div>';
@@ -6583,13 +6607,19 @@ function cpNudgeReplySubmit(ni,type){
       var _pmx=null;for(var _pmi=0;_pmi<_ccProjectMeta.length;_pmi++){if(_ccProjectMeta[_pmi].id===proj){_pmx=_ccProjectMeta[_pmi];break;}}
       if(_pmx){h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:12px 18px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:8px">Project context</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px 20px">'+[['Region / Natl Market',_pmx.region+(_pmx.natl?' / '+_pmx.natl:'')],['Construction value',_pmx.value||'\u2014'],['VP',_pmx.vp||'\u2014'],['Director',_pmx.director||'\u2014'],['PM',_pmx.pm||'\u2014'],['Gen. Superintendent',_pmx.genSupt||'\u2014'],['Construction dates',_pmx.constrStart&&_pmx.constrEnd?_pmx.constrStart+' \u2013 '+_pmx.constrEnd:'\u2014']].map(function(f){return '<div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">'+f[0]+'</div><div style="font-size:12px;color:var(--g800);font-weight:500">'+f[1]+'</div></div>';}).join('')+'</div></div>';}
       if(planRows.length){
-        h+='<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:8px">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">';
+        h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(planRows)+'</div>';
+        h+='<div style="display:flex;gap:6px;align-items:center">';
+        var _psGRcur=window._ccPsGanttRange||'3M';
+        h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'
+          +['3W','1M','3M','6M','1Y'].map(function(r){return '<button class="ff-b btn-sm'+(_psGRcur===r?' on':'')+'" style="padding:2px 8px;font-size:10.5px" onclick="window._ccPsGanttRange=\''+r+'\'  ;renderCcProfServices()">'+r+'</button>';}).join('')+'</div>';
         h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
+        h+='</div>';
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:1fr 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ITEM','QTY','NEED BY','EST. END','COST','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        ['ITEM','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6645,7 +6675,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='</div>';
           if(acts.length){
             var _lE=0;acts.forEach(function(a){if(a.e>_lE)_lE=a.e;});
-            var rN=Math.min(N,Math.max(Math.ceil(_lE+0.75),TOD+2));
+            var _grCap={'3W':1,'1M':1,'3M':3,'6M':6,'1Y':12}[window._ccPsGanttRange||'3M']||3;var rN=Math.min(_grCap,Math.max(Math.ceil(_lE+0.75),TOD+2));
             var mh='';MO.slice(0,rN).forEach(function(m){mh+='<div class="gh-m">'+m+'</div>';});
             var gridBg='repeating-linear-gradient(to right,transparent 0,transparent calc('+(100/rN).toFixed(3)+'% - 1px),var(--g150) calc('+(100/rN).toFixed(3)+'% - 1px),var(--g150) calc('+(100/rN).toFixed(3)+'%))';
             var todayPct=(TOD/rN).toFixed(4);
@@ -6731,7 +6761,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.item+'</div>';
           h+='<span class="tag '+tone+'">'+r.state+'</span>';
           h+='</div>';
-          h+='<div style="font-size:11px;color:var(--g600)">'+r.qty+' \u00b7 '+(r.window||'')+'</div>';
+          h+='<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">';h+='<span style="font-size:11px;color:var(--g600)">'+r.qty+' \u00b7 '+(r.window||'')+'</span>';if(r.proposalDue)h+='<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:4px;background:#fef3c7;color:#92400e;border:1px solid #fcd34d">Due: '+r.proposalDue+'</span>';h+='</div>';
           if(missing.length){
             h+='<div style="margin-top:5px;font-size:10.5px;color:var(--warning)">\u26a0 '+missing.length+' doc'+(missing.length===1?'':'s')+' missing: '+missing.join(', ')+'</div>';
           }
@@ -6776,7 +6806,7 @@ function ccPsViewSentProposal(proj, rowIdx){
     body+='<div style="text-align:right;font-size:11.5px;color:var(--g600)"><div>Sent: '+(prop?prop.sent:'—')+'</div>';
     body+='<div style="margin-top:2px">Expires: '+(prop&&prop.expires?prop.expires:'30 days')+'</div></div></div>';
     body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-    [['Project',(pnames[proj]||proj)],['Service',row.item],['Firm',(prop?prop.firm:(row.firm||'TBD'))],['Timeline',(prop?prop.window:(row.window||'—'))]].forEach(function(kv){
+    [['Project',(pnames[proj]||proj)],['Service',row.item],['Timeline',(prop?prop.window:(row.window||'—'))]].forEach(function(kv){
       body+='<div><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">'+kv[0]+'</div>';
       body+='<div style="font-size:12.5px;color:var(--g900);font-weight:500">'+kv[1]+'</div></div>';
     });
@@ -6802,7 +6832,7 @@ function ccPsViewSentProposal(proj, rowIdx){
   function ccPsViewDocs(proj,ri){
     var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
     var row=rows&&rows[ri];if(!row)return;
-    openModal('Documents — '+row.item,'<div style="padding:2px 0">'+attachmentsHTML(row.attachments||[])+'<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>');
+    openModal('Documents — '+row.item,'<div style="padding:2px 0">'+attachmentsHTML(row.attachments||[])+'<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>'+(prop&&prop.pdfName?'<button style="margin-left:8px;font-size:11.5px;padding:3px 10px;border:1px solid var(--g200);border-radius:5px;background:#fff;cursor:pointer" onclick="toast(\'\u2193 '+prop.pdfName+'\')">\u2193 '+prop.pdfName+'</button>':'')+'</div></div>');
   }
   var _PS_SCHED={
     'General Utility Locating':'~2-6 weeks','Utility Testholing':'~1-3 weeks',
@@ -7134,11 +7164,12 @@ function ccPsViewSentProposal(proj, rowIdx){
     body+='<div style="font-size:11px;margin-top:2px">'+row.qty+' \u00b7 '+(row.window||'window TBD')+'</div>';
     if(row.attachments&&row.attachments.length){body+='<div style="margin-top:5px;font-size:10.5px;color:var(--g500)">CP attached: '+row.attachments.map(function(a){return a.name;}).join(', ')+'</div>';}
     body+='</div>';
-    [['ps-prop-firm','Proposed firm','e.g. ABB Inc.'],['ps-prop-cost','Cost / rate','e.g. $34K/mo'],['ps-prop-win','Engagement window','e.g. Nov 2026 \u2013 Mar 2027']].forEach(function(f){
+    [['ps-prop-cost','Cost / rate','e.g. $34K/mo'],['ps-prop-win','Engagement window','e.g. Nov 2026 \u2013 Mar 2027']].forEach(function(f){
       body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">'+f[1]+'</label><input id="'+f[0]+'" type="text" placeholder="'+f[2]+'" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
     });
     body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Scope summary</label>';
     body+='<textarea id="ps-prop-scope" rows="3" placeholder="Describe scope, deliverables, and key terms..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea></div>';
+    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Proposal PDF <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><div style="border:1.5px dashed var(--g300);border-radius:6px;padding:12px 16px;text-align:center;background:var(--g50);cursor:pointer" onclick="document.getElementById(\'ps-prop-pdf\').click()"><div id="ps-prop-pdf-lbl" style="font-size:11.5px;color:var(--g500)">\u2191 Click to attach PDF</div><input id="ps-prop-pdf" type="file" accept=".pdf" style="display:none" onchange="document.getElementById(\'ps-prop-pdf-lbl\').textContent=this.files[0]?this.files[0].name:\'\u2191 Click to attach PDF\'"></div></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
     body+='<button class="btn btn-dark btn-sm" onclick="ccPsProposalSave(\''+proj+'\','+ri+')">Send proposal to CP \u2192</button></div></div>';
     openModal('Create proposal \u2014 '+row.item,body);
@@ -7168,7 +7199,7 @@ function ccPsViewSentProposal(proj, rowIdx){
     var prop={
       id:'PS-PROP-'+(101+((DP.profservices.proposals&&DP.profservices.proposals.length)||0)),
       proj:proj,rowIdx:ri,service:row.item,category:row.category||'Professional Services',
-      firm:gv('ps-prop-firm')||'TBD',cost:gv('ps-prop-cost')||'TBD',
+      cost:gv('ps-prop-cost')||'TBD',pdfName:(function(){var pf=document.getElementById('ps-prop-pdf');return pf&&pf.files&&pf.files[0]?pf.files[0].name:null;})(),
       window:gv('ps-prop-win')||row.window||'TBD',
       scope:gv('ps-prop-scope'),attachments:[],
       state:'Pending CP approval',sent:'Aug 2026',expires:'Sep 2026'
@@ -7201,7 +7232,25 @@ function ccPsViewSentProposal(proj, rowIdx){
     props.splice(pi,1);
     renderCcProfServices();toast('Proposal recalled');
   }
-function renderProfServicesDP(){
+
+  function _psCatOf(r){
+    var s=((r.category||r.cat||r.item||'')+'').toLowerCase();
+    if(/map|survey|subsurface|lidar|aerial|topograph|gis|bim|vdc/.test(s))return 'Mapping';
+    if(/geospatial|field eng|grade control|machine control|trench|gpr|utility loc|utility map/.test(s))return 'Geospatial';
+    if(/visual|vr|4d|render|animat|imagery|photo|video/.test(s))return 'Visualization';
+    if(/bas|building auto|ddc|plc|controls|hvac/.test(s))return 'BAS / Controls';
+    if(/infrared|irt|thermograph/.test(s))return 'Infrared';
+    return 'Other';
+  }
+  function _psCatBtns(rows){
+    var cats=['All','Mapping','Geospatial','Visualization','BAS / Controls','Infrared'];
+    var active=cats.filter(function(c){return c==='All'||rows.some(function(r){return _psCatOf(r)===c;});});
+    return active.map(function(c){
+      return '<button class="ff-b'+((window._psCatFilter||'All')===c?' on':'')+'" onclick="psSetCatFilter(\''+c+'\')">'+ c+'</button>';
+    }).join('');
+  }
+  function psSetCatFilter(f){window._psCatFilter=f;renderProfServicesDP();renderCcProfServices();}
+  function renderProfServicesDP(){
     var pk='profservices'; var cfg=DP[pk]; var mount=document.getElementById('dp-'+pk); if(!cfg||!mount)return;
     var ns=CURRENT==='ns';
     var LSPARK='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg>';
@@ -7211,7 +7260,7 @@ function renderProfServicesDP(){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
+    h+='<div class="eq-toolbar">';h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(cfg&&cfg.rows||[])+'</div>';h+='<span class="spacer"></span>';h+='<button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
     h+='<div style="display:flex;gap:8px;align-items:center"><div style="flex:1;position:relative">';
