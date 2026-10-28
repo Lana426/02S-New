@@ -5971,6 +5971,7 @@ function _openGeoEmergency(){
     closeModal();
     alert('⚡ Emergency request sent. The 02S team has been notified.');
     if(typeof renderCcProfServices==='function')renderCcProfServices();
+    if(typeof renderProfServicesDP==='function')renderProfServicesDP();
   }
   function _ccPsEmgReply(ri){
     var req=(window._ccPsEmgReqs||[])[ri];if(!req)return;
@@ -5986,6 +5987,40 @@ function _openGeoEmergency(){
   function _ccPsEmgAddScope(ri){
     var req=(window._ccPsEmgReqs||[])[ri];if(!req)return;
     openPsBrowseModal&&openPsBrowseModal();
+  }
+  function openPsAddModal(cat,svc,l2){
+    var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
+    var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
+    var docsDef=PS_STD_DOCS[svc]||{required:[],nth:[]};
+    var reqDocs=docsDef.required||[];var nthDocs=docsDef.nth||[];
+    var sched=PS_SCHEDULE_RANGES&&PS_SCHEDULE_RANGES[svc];
+    window._psDocStatus={};reqDocs.forEach(function(d){window._psDocStatus[d]=false;});
+    var breadcrumb=l2?(cat+' › '+l2+' › '+svc):(cat+' › '+svc);
+    var docsHtml='';
+    if(reqDocs.length||nthDocs.length){
+      docsHtml='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">';
+      if(reqDocs.length){
+        docsHtml+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Required to price</div>';
+        docsHtml+='<div style="font-size:11px;color:var(--g600);margin-bottom:8px;line-height:1.5">Submit before 02S can finalize pricing. You can request now — status stays <strong>Pending pricing</strong> until all required docs are in.</div>';
+        docsHtml+='<div id="ps-req-docs" style="display:flex;flex-direction:column;gap:6px">';
+        docsHtml+=reqDocs.map(function(d,di){return '<div id="psdoc-'+di+'" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff"><div style="display:flex;align-items:center;gap:8px"><span id="psdoc-chk-'+di+'" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--g300);display:inline-block;flex-shrink:0"></span><span style="font-size:11.5px;color:var(--g800)">'+d+'</span></div><button style="font-size:11px;padding:3px 10px;border:1px solid var(--g200);border-radius:4px;cursor:pointer;background:#fff;color:var(--g700)" onclick="psMarkDocAttached('+di+',this,'+JSON.stringify(d)+')">Attach</button></div>';}).join('');
+        docsHtml+='</div>';
+      }
+      if(nthDocs.length){
+        docsHtml+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-top:'+(reqDocs.length?'10px':'0')+';margin-bottom:5px">Nice to have — submit if available</div>';
+        docsHtml+=nthDocs.map(function(d){return '<div style="font-size:11.5px;color:var(--g500);padding:3px 0 3px 8px;border-left:2px solid var(--g100)">▪ '+d+'</div>';}).join('');
+      }
+      docsHtml+='</div>';
+    }
+    var body='<div style="padding:2px 0"><div style="font-size:11.5px;color:var(--g600);margin-bottom:12px;padding:6px 10px;background:var(--g50);border-radius:5px">'+breadcrumb+'</div>';
+    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Cost code</label><input type="text" placeholder="e.g. 0100-0100-0000-0001" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Proposal needed by <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-proposal-due" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"><div style="margin-top:4px;font-size:10px;color:var(--g400)">Deadline for 02S to submit the proposal</div></div><div style="padding:7px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:10.5px;color:#1e40af;line-height:1.6;margin-top:18px"><b>Deliverable-based:</b> date due to you.<br><b>Service-based:</b> service start date.</div></div>';
+    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date <span style="color:#dc2626">*</span></label><input id="ps-need-by" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">End date <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-end-date" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div></div>';
+    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">P6 activity anchor <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><select id="ps-p6-anchor" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff;color:var(--g700)"><option value="">Not linked to P6</option><option value="A1001">A1001 — Site survey &amp; boundary control</option><option value="A1050">A1050 — Utility locating &amp; marking</option><option value="A1100">A1100 — Subsurface investigation</option><option value="A1200">A1200 — Topographic survey</option><option value="A1300">A1300 — Aerial imagery / LiDAR</option><option value="A2001">A2001 — BAS commissioning</option><option value="A2050">A2050 — MEP systems scan</option><option value="A3001">A3001 — VDC / BIM coordination</option><option value="A3050">A3050 — 4D simulation &amp; sequencing</option><option value="A4001">A4001 — Geotechnical investigation</option><option value="A5001">A5001 — Special inspections</option><option value="A5050">A5050 — Third-party commissioning</option><option value="other">Other / Not yet in P6</option></select></div>';
+    body+=docsHtml+'<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Supporting documents <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><div style="border:2px dashed var(--g200);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;background:var(--g50)"><input type="file" id="ps-req-files" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange="window._psReqFiles=this.files;var lbl=document.getElementById(\'ps-file-lbl\');if(lbl)lbl.textContent=this.files.length?this.files.length+\' file\'+(this.files.length===1?\'\':\'s\')+\' selected\':\'Drop files or click to browse\'"><span style="font-size:20px">&#128206;</span><span id="ps-file-lbl" style="font-size:12px;color:var(--g500)">Drop files or click to browse</span></div></div>';
+    body+='<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button id="ps-submit-btn" class="btn btn-dark btn-sm" onclick="psSvcSubmit()">Add to plan &#8594;</button></div></div>';
+    window._psAddCat=cat;window._psAddSvc=svc;window._psAddL2=l2||null;
+    openModal('Add service · '+svc,body);
   }
   function openPsDeliverables(ri){
     var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r)return;
@@ -6640,7 +6675,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="display:grid;grid-template-columns:1fr 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
-          h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+row.firm+'</div>';
+          h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(row.linkOrd?row.linkOrd+' · ':'')+' '+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
           h+='</div>';
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
@@ -6687,12 +6722,28 @@ function cpNudgeReplySubmit(ni,type){
           h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="openCcPsAddActivity(\''+proj+'\','+rowIdx+')">+ Add activity</button>';
           h+='</div>';
           if(_finView){
+            var _allFin=planRows.filter(function(r){return r.state==='Active';});
+            var _totSpent=_allFin.reduce(function(s,r){var m=r.cost&&r.cost.match(/\$([\.\d]+)K/);return s+(m?parseFloat(m[1])*((r.ea||0)-(r.sa||0)||6)*0.81:0);},0);
+            var _totRev=Math.round(_totSpent*1.22);
+            var _totBill=Math.round(_totRev*0.74);
+            if(_allFin.length>1){
+              h+='<div style="display:flex;gap:12px;flex-wrap:wrap;padding:8px 12px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:7px;margin-bottom:10px;align-items:center">';
+              h+='<span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#0369a1;margin-right:4px">Σ All '+_allFin.length+' active</span>';
+              h+='<span style="font-size:11.5px;color:#0f172a"><b>Cost</b> $'+Math.round(_totSpent)+'K</span>';
+              h+='<span style="font-size:11.5px;color:#0f172a"><b>Revenue</b> $'+_totRev+'K</span>';
+              h+='<span style="font-size:11.5px;color:#0f172a"><b>Billed</b> $'+_totBill+'K</span>';
+              h+='<span style="font-size:9px;color:#0369a1;background:#e0f2fe;padding:1px 6px;border-radius:10px">from T3</span>';
+              h+='</div>';
+            }
             h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">';
-            [['Cost to Date','$'+_spent+'K','from CMIC','#0891b2'],['Projected Cost to Complete','$'+_ptc+'K','updated in CMIC','#6366f1'],['Revenue to Date','$'+_rev+'K','cost-recognized','#059669'],['Billing to Date','$'+_billed+'K','invoices sent','#d97706'],['Projected Margin',_pmargin+'%','revenue − cost / revenue','#15803d'],['Monthly Cost Rate','$'+(_costM||'—')+'K/mo','current run rate','#4b5563']].forEach(function(m){
+            [['Cost to Date','$'+_spent+'K','from CMIC','#0891b2','T3'],['Projected Cost to Complete','$'+_ptc+'K','updated in CMIC','#6366f1','T3'],['Revenue to Date','$'+_rev+'K','cost-recognized','#059669','T3'],['Billing to Date','$'+_billed+'K','invoices sent','#d97706','T3'],['Projected Margin',_pmargin+'%','revenue − cost / revenue','#15803d','Calc'],['Monthly Cost Rate','$'+(_costM||'—')+'K/mo','current run rate','#4b5563','T3']].forEach(function(m){
               h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:8px;padding:10px 12px">';
               h+='<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:4px">'+m[0]+'</div>';
               h+='<div style="font-size:18px;font-weight:700;color:'+m[3]+'">'+m[1]+'</div>';
-              h+='<div style="font-size:10px;color:var(--g400);margin-top:2px">'+m[2]+'</div></div>';
+              h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-top:3px">';
+              h+='<span style="font-size:10px;color:var(--g400)">'+m[2]+'</span>';
+              if(m[4])h+='<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd">'+m[4]+'</span>';
+              h+='</div></div>';
             });
             h+='</div>';
             if(_budget>0){
@@ -7294,7 +7345,7 @@ function ccPsViewSentProposal(proj, rowIdx){
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi">'+LSPARK+'</span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar">';h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(cfg&&cfg.rows||[])+'</div>';h+='<span class="spacer"></span>';h+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;padding:5px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px" onclick="_openPsEmergency()"><span style="font-size:14px">⚡</span>Emergency</button>';
+    h+='<div class="eq-toolbar">';h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(cfg&&cfg.rows||[])+'</div>';h+='<span class="spacer"></span>';h+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;padding:5px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px" onclick="_openPsEmergency()"><span style="font-size:14px">⚡</span>Emergency'+(window._ccPsEmgReqs&&window._ccPsEmgReqs.length?' <span style="background:rgba(255,255,255,.3);border-radius:8px;padding:0 5px;font-size:10px">✓ sent</span>':'')+' </button>';
           h+='<button class="btn btn-dark btn-sm" onclick="openPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Add service</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button></div>';
     h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:10px;padding:12px 14px;margin-bottom:14px;position:relative">';
     h+='<div style="font-size:11px;font-weight:600;color:var(--g600);margin-bottom:6px">Not sure what service you need?</div>';
