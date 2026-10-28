@@ -6504,7 +6504,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
         h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'+['3W','1M','3M','6M','1Y'].map(function(rv){return '<button style="padding:3px 8px;font-size:10.5px;border:none;border-radius:5px;cursor:pointer;font-weight:600;background:'+(rv===_laR?'#fff':'transparent')+';color:'+(rv===_laR?'var(--charcoal)':'var(--g400)')+';box-shadow:'+(rv===_laR?'0 1px 3px rgba(0,0,0,.1)':'none')+'" onclick="window._ccPsLaRange=\''+rv+'\';renderCcProfServices()">'+rv+'</button>';}).join('')+'</div>';
         h+='</div>';
-        h+='<div style="margin-bottom:8px;margin-top:-2px">'+_psCatBtns(_laRowsAll)+'</div>';
+        h+='<div style="margin-bottom:8px;margin-top:-2px">'+['All','Mapping','Geospatial','Visualization','Owner Furnished Equipment','BAS / Controls','Infrared'].map(function(c){return '<button class="ff-b'+((window._psCatFilter||'All')===c?' on':'')+'" onclick="psSetCatFilter(\''+c+'\')">'+ c+'</button>';}).join('')+'</div>';
         h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:10px">Hover any bar to see details</div>';
         h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
         h+='<div></div>';
@@ -7246,11 +7246,12 @@ function ccPsViewSentProposal(proj, rowIdx){
     if(/geospatial|field eng|grade control|machine control|trench|gpr|utility loc|utility map|gps|base setup|rover|rtk|calibration|total station/.test(s))return 'Geospatial';
     if(/visual|vr|4d|render|animat|imagery|photo|video/.test(s))return 'Visualization';
     if(/bas|building auto|ddc|plc|controls|hvac/.test(s))return 'BAS / Controls';
+    if(/ofe|owner furnished|furnished equip|equipment procurement/.test(s))return 'Owner Furnished Equipment';
     if(/infrared|irt|thermograph/.test(s))return 'Infrared';
     return 'Other';
   }
   function _psCatBtns(rows){
-    var cats=['All','Mapping','Geospatial','Visualization','BAS / Controls','Infrared'];
+    var cats=['All','Mapping','Geospatial','Visualization','Owner Furnished Equipment','BAS / Controls','Infrared'];
     var active=cats.filter(function(c){return c==='All'||rows.some(function(r){return _psCatOf(r)===c;});});
     return active.map(function(c){
       return '<button class="ff-b'+((window._psCatFilter||'All')===c?' on':'')+'" onclick="psSetCatFilter(\''+c+'\')">'+ c+'</button>';
