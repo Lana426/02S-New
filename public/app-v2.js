@@ -6474,12 +6474,16 @@ function cpNudgeReplySubmit(ni,type){
     // 3-week lookahead — ALL projects only
     if(selProj==='all'){
       var laRows=[];
+      var _laR=window._ccPsLaRange||'3W';
+      var _laSpan={'3W':1,'1M':1.5,'3M':3,'6M':6,'1Y':12}[_laR]||1;
+      var _laNCols={'3W':3,'1M':4,'3M':3,'6M':6,'1Y':4}[_laR]||3;
       allProjs.forEach(function(proj){
         var rows=(CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows)||[];
         rows.forEach(function(row){
           (row.acts||[]).forEach(function(act){
-            if(act.s<=TOD+1&&act.e>=TOD){
-              var wk=act.e<=TOD?0:(act.s>=TOD+1?2:1);
+            if(act.s<=TOD+_laSpan&&act.e>=TOD){
+              var _mo=Math.max(0,act.s-TOD);
+              var wk=_laR==='3W'?(act.e<=TOD?0:(act.s>=TOD+1?2:1)):_laR==='1M'?Math.min(3,Math.floor(_mo*4/_laSpan)):_laR==='1Y'?Math.min(3,Math.floor(_mo/3)):Math.min(_laNCols-1,Math.floor(_mo));
               var bc=act.st==='Done'?'#2e6e8e':(act.st==='In progress'?'#3d6b4f':'#94a3b8');
               laRows.push({lbl:row.item,sub:act.n,proj:proj,bc:bc,wk:wk,who:act.who||''});
             }
@@ -6490,26 +6494,28 @@ function cpNudgeReplySubmit(ni,type){
         if(p.expires)laRows.push({lbl:p.service,sub:'Proposal expires '+p.expires,proj:p.proj,bc:'#b91c1c',wk:0,who:''});
       });
       if(laRows.length){
-        var gt='220px 1fr 1fr 1fr';
+        var _laCfg={'3W':{gt:'220px 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3']},'1M':{gt:'200px 1fr 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3','Wk 4']},'3M':{gt:'200px 1fr 1fr 1fr',hdrs:['Oct','Nov','Dec']},'6M':{gt:'150px 1fr 1fr 1fr 1fr 1fr 1fr',hdrs:['Oct','Nov','Dec','Jan','Feb','Mar']},'1Y':{gt:'180px 1fr 1fr 1fr 1fr',hdrs:['Q4','Q1','Q2','Q3']}}[_laR]||{gt:'220px 1fr 1fr 1fr',hdrs:['Wk 1','Wk 2','Wk 3']};
+        var gt=_laCfg.gt;
+        var _laColIdxs=_laCfg.hdrs.map(function(_,i){return i;});
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
-        h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
         h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-        h+='<span style="font-size:12px;color:var(--g400)">Wk 1 / Wk 2 / Wk 3</span>';
+        h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'+['3W','1M','3M','6M','1Y'].map(function(rv){return '<button style="padding:3px 8px;font-size:10.5px;border:none;border-radius:5px;cursor:pointer;font-weight:600;background:'+(rv===_laR?'#fff':'transparent')+';color:'+(rv===_laR?'var(--charcoal)':'var(--g400)')+';box-shadow:'+(rv===_laR?'0 1px 3px rgba(0,0,0,.1)':'none')+'" onclick="window._ccPsLaRange=\''+rv+'\';renderCcProfServices()">'+rv+'</button>';}).join('')+'</div>';
         h+='</div>';
-        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
+        h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:14px">Hover any bar to see details</div>';
         h+='<div style="display:grid;grid-template-columns:'+gt+';margin-bottom:2px">';
         h+='<div></div>';
-        ['Wk 1','Wk 2','Wk 3'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+        _laCfg.hdrs.forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
         h+='</div>';
         h+='<div style="max-height:300px;overflow-y:auto">';
-        laRows.slice(0,6).forEach(function(r){
+        laRows.slice(0,Math.min(laRows.length,12)).forEach(function(r){
           var tipTxt=(r.lbl+' \u00b7 '+r.sub+(r.who?' \u00b7 '+r.who:'')).replace(/'/g,'\u2019');
           h+='<div style="display:grid;grid-template-columns:'+gt+';align-items:center;min-height:38px;border-top:1px solid var(--g100)">';
           h+='<div style="padding:5px 10px 5px 0;display:flex;align-items:center;gap:6px;min-width:0">';
           h+='<span style="background:'+(PCOL[r.proj]||'#555')+';color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0">'+(PCODE[r.proj]||r.proj.slice(0,3).toUpperCase())+'</span>';
           h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.lbl+'</span>';
           h+='</div>';
-          [0,1,2].forEach(function(wi){
+          _laColIdxs.forEach(function(wi){
             h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
             if(wi===r.wk){
               h+='<div data-tip="'+tipTxt+'" '+
@@ -6604,12 +6610,10 @@ function cpNudgeReplySubmit(ni,type){
       var rows=ccData?ccData.rows:[];
       var planRows=rows.filter(function(r){return ['Requested','Pending pricing'].indexOf(r.state)<0;});
       if(window._ccPsActiveOnly){planRows=planRows.filter(function(r){return r.state==='Active';});}
-      if(window._psCatFilter&&window._psCatFilter!=='All'){planRows=planRows.filter(function(r){return r.category===window._psCatFilter;});}
       var _pmx=null;for(var _pmi=0;_pmi<_ccProjectMeta.length;_pmi++){if(_ccProjectMeta[_pmi].id===proj){_pmx=_ccProjectMeta[_pmi];break;}}
       if(_pmx){h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:10px;padding:12px 18px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-bottom:8px">Project context</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px 20px">'+[['Region / Natl Market',_pmx.region+(_pmx.natl?' / '+_pmx.natl:'')],['Construction value',_pmx.value||'\u2014'],['VP',_pmx.vp||'\u2014'],['Director',_pmx.director||'\u2014'],['PM',_pmx.pm||'\u2014'],['Gen. Superintendent',_pmx.genSupt||'\u2014'],['Construction dates',_pmx.constrStart&&_pmx.constrEnd?_pmx.constrStart+' \u2013 '+_pmx.constrEnd:'\u2014']].map(function(f){return '<div><div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:1px">'+f[0]+'</div><div style="font-size:12px;color:var(--g800);font-weight:500">'+f[1]+'</div></div>';}).join('')+'</div></div>';}
       if(planRows.length){
         h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">';
-        h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(planRows)+'</div>';
         h+='<div style="display:flex;gap:6px;align-items:center">';
         var _psGRcur=window._ccPsGanttRange||'3M';
         h+='<div style="display:flex;gap:2px;background:var(--g100);border-radius:6px;padding:2px">'
