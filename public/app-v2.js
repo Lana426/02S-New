@@ -5956,7 +5956,7 @@ function _openGeoEmergency(){
     body+='<div style="font-size:11.5px;color:#991b1b;margin-top:2px">02S responds ASAP · billed hourly (T&amp;M). No proposal step.</div></div>';
     body+='</div>';
     body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Describe the service you need <span style="color:#dc2626">*</span></label>';
-    body+='<textarea id="ps-emg-desc" rows="4" placeholder="What happened and what support do you need? Include location, safety considerations, and any time constraints." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea></div>';
+    body+='<textarea id="ps-emg-desc" rows="4" placeholder="Describe what emergency service you need from the professional services team — include your location, what’s happening, and any time constraints." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
     body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
     body+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;padding:5px 14px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer" onclick="_psEmgSubmit()">Send emergency request ⚡</button>';
@@ -6471,6 +6471,24 @@ function cpNudgeReplySubmit(ni,type){
         h+='</div></div></div>';
       });
     }
+    // Emergency request strip
+    if(window._ccPsEmgReqs&&window._ccPsEmgReqs.length){
+      window._ccPsEmgReqs.forEach(function(req,ri){
+        h+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:12px 16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start">';
+        h+='<span style="font-size:20px;flex-shrink:0">⚡</span>';
+        h+='<div style="flex:1;min-width:0">';
+        h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">';
+        h+='<span style="font-size:12px;font-weight:700;color:#dc2626">Emergency request</span>';
+        h+='<span style="font-size:11px;color:#991b1b">· '+(req.proj||'Unknown project')+'</span>';
+        h+='<span style="font-size:10px;color:#b91c1c;background:#fee2e2;padding:1px 6px;border-radius:10px">'+(req.ts||'just now')+'</span>';
+        h+='</div>';
+        h+='<div style="font-size:12.5px;color:#7f1d1d;margin-bottom:8px">'+req.desc+'</div>';
+        h+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
+        h+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;font-size:11px;padding:3px 10px;cursor:pointer;border-radius:4px" onclick="_ccPsEmgAddScope('+ri+')">+ Add order line</button>';
+        h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="window._ccPsEmgReqs.splice('+ri+',1);renderCcProfServices()">Dismiss</button>';
+        h+='</div></div></div>';
+      });
+    }
     // Project tabs — with bottom border matching logistics style
     h+='<div style="display:flex;gap:4px;padding-bottom:13px;border-bottom:1px solid var(--g100);margin-bottom:14px">';
     [['all','All projects'],['hercules','Hercules Solar + BESS'],['barryrose','Barry Rose WRF'],['vdc14','VDC14']].forEach(function(pr){
@@ -6674,11 +6692,11 @@ function cpNudgeReplySubmit(ni,type){
           var pctColor=pct===100?'var(--success)':pct>=50?'#3b82f6':'var(--g400)';
           h+='<div style="border-top:1px solid var(--g100)">';
           h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+          h+='<div style="font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+({'hercules':'PRJ-0047','barryrose':'PRJ-0031','vdc14':'PRJ-0058'}[proj]||proj)+'</div>';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
           h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
           h+='</div>';
-          h+='<div style="font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+({'hercules':'PRJ-0047','barryrose':'PRJ-0031','vdc14':'PRJ-0058'}[proj]||proj)+'</div>';
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+((function(w){var p=w.split('–');if(p.length<2)return w.indexOf('+')>=0?'Ongoing':'—';return(p[p.length-1]||'').trim()||'—';}))(row.window)+'</div>';
