@@ -5989,6 +5989,19 @@ function _openGeoEmergency(){
     var req=(window._ccPsEmgReqs||[])[ri];if(!req)return;
     openPsBrowseModal&&openPsBrowseModal();
   }
+  function _ccPsEmgReplyInline(ri){
+    var _demos=[{proj:'Hercules Solar + BESS',desc:'Drone malfunction during site survey — GPS base station inoperative. Need immediate replacement unit and re-calibration support on site.',ts:'9:42 AM'}];
+    var req=(window._ccPsEmgReqs&&window._ccPsEmgReqs[ri])||_demos[0];
+    var body='<div style="padding:4px 0">';
+    body+='<p style="font-size:12.5px;color:var(--g600);margin-bottom:4px">Responding to: <b>'+req.proj+'</b></p>';
+    body+='<p style="font-size:12px;color:var(--g400);margin-bottom:12px;font-style:italic">'+req.desc+'</p>';
+    body+='<textarea id="cc-emg-reply" rows="4" placeholder="Write your response to the project team..." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea>';
+    body+='<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">';
+    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
+    body+='<button class="btn btn-dark btn-sm" onclick="var t=document.getElementById(\'cc-emg-reply\');if(t&&t.value.trim()){closeModal();toast(\'Reply sent to project team.\');}else{alert(\'Please write a reply.\');}">Send reply</button>';
+    body+='</div></div>';
+    openModal('Reply to emergency — '+req.proj,body);
+  }
   function openPsAddModal(cat,svc,l2){
     var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
     var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
@@ -6486,7 +6499,7 @@ function cpNudgeReplySubmit(ni,type){
       h+='<div style="font-size:12.5px;color:#7f1d1d;margin-bottom:8px">'+req.desc+'</div>';
       h+='<div style="display:flex;gap:6px;flex-wrap:wrap">';
       h+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;font-size:11px;padding:3px 10px;cursor:pointer;border-radius:4px" onclick="openPsAddService()">+ Add order line</button>';
-      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px">Reply to team</button>';
+      h+='<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="_ccPsEmgReplyInline('+ri+')">Reply to team</button>';
       if(!req._demo)h+='<button class="btn btn-ghost btn-sm" style="font-size:11px;color:var(--g400)" onclick="(window._ccPsEmgReqs=window._ccPsEmgReqs||[]).splice(ri,1);renderCcProfServices()">Resolve</button>';
       h+='</div></div></div>';
     });
