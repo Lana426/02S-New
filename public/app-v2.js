@@ -6677,7 +6677,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:1fr 90px 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['ORDER #','ITEM','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6695,7 +6695,6 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+({'hercules':'PRJ-0047','barryrose':'PRJ-0031','vdc14':'PRJ-0058'}[proj]||proj)+'</div>';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
-          h+='<div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+(PNAMES[proj]||proj)+' · '+row.firm+'</div>';
           h+='</div>';
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
