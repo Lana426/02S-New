@@ -5955,7 +5955,7 @@ function _openGeoEmergency(){
     body+='<div><div style="font-size:13px;font-weight:700;color:#dc2626">Emergency / Quick React</div>';
     body+='<div style="font-size:11.5px;color:#991b1b;margin-top:2px">02S responds ASAP · billed hourly (T&amp;M). No proposal step.</div></div>';
     body+='</div>';
-    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Describe the emergency <span style="color:#dc2626">*</span></label>';
+    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Describe the service you need <span style="color:#dc2626">*</span></label>';
     body+='<textarea id="ps-emg-desc" rows="4" placeholder="What happened and what support do you need? Include location, safety considerations, and any time constraints." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea></div>';
     body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
     body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
