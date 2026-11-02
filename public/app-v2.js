@@ -6690,9 +6690,9 @@ function cpNudgeReplySubmit(ni,type){
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
-        h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','FRAC','FCAC','COST %','BILLED','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
-          h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
+        h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;padding:10px 18px;background:var(--g50);border-bottom:1px solid var(--g100);align-items:end">';
+        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','FRAC','FCAC','COST TO DATE %','BILLED TO DATE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+          h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;line-height:1.3;word-break:break-word">'+c+'</div>';
         });
         h+='</div>';
         var _urgSet={};planRows.forEach(function(row,ri){if(row.proposalDue&&row.state==='Requested'){var _MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};var _pp=row.proposalDue.replace(',','').split(/\s+/);var _dd=new Date(parseInt(_pp[2]),_MON[_pp[0]],parseInt(_pp[1]));var _dys=Math.round((_dd-new Date(2026,9,21))/(1000*60*60*24));if(_dys>=0&&_dys<=3)_urgSet[ri]=_dys;}});
