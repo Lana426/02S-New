@@ -6690,8 +6690,8 @@ function cpNudgeReplySubmit(ni,type){
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
-        h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 124px 130px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
-        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','REVENUE','% DONE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;padding:8px 18px;background:var(--g50);border-bottom:1px solid var(--g100)">';
+        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','FRAC','FCAC','COST %','BILLED','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em">'+c+'</div>';
         });
         h+='</div>';
@@ -6704,8 +6704,17 @@ function cpNudgeReplySubmit(ni,type){
           var doneActs=acts.filter(function(a){return a.st==='Done';}).length;
           var pct=acts.length?Math.round(doneActs/acts.length*100):0;
           var pctColor=pct===100?'var(--success)':pct>=50?'#3b82f6':'var(--g400)';
+          var _costM=row.cost&&row.cost.match(/\$([\.\d]+)K/)?parseFloat(row.cost.match(/\$([\.\d]+)K/)[1]):0;
+          var _months=(row.ea||0)-(row.sa||0)||6;var _budget=_costM?Math.round(_costM*_months):0;
+          var _spent=_budget?Math.round(_budget*0.81):0;
+          var _rev=_spent?Math.round(_spent*1.22):0;
+          var _billed=_rev?Math.round(_rev*0.74):0;
+          var _ptc=_budget?Math.round((_budget-_spent)*0.95):0;
+          var _frac=_budget?Math.round((_spent+_ptc)*1.22):0;
+          var _fcac=_budget?Math.round(_spent+_ptc):0;
+          var _costPct=_fcac?Math.round(_spent/_fcac*100):0;
           h+='<div style="border-top:1px solid var(--g100)">';
-          h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 124px 130px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
+          h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;cursor:pointer;padding:11px 18px;align-items:center;background:#fff" onclick="ccPsToggleRow(\''+rowId+'\')">';
           h+='<div style="font-size:12px;font-weight:600;color:var(--g700);white-space:nowrap">'+({'hercules':'PRJ-0047','barryrose':'PRJ-0031','vdc14':'PRJ-0058'}[proj]||proj)+'</div>';
           h+='<div>';
           h+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.item+(_urgSet[rowIdx]!==undefined?'<span style="margin-left:6px;font-size:9px;font-weight:700;color:#fff;background:#dc2626;border-radius:3px;padding:1px 5px;vertical-align:middle">URGENT</span>':'')+'</div>';
@@ -6713,11 +6722,10 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:12.5px;color:var(--g700)">'+row.qty+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(function(w){var p=w.split('–');var s=p[0].trim();if(!/\d/.test(s)){var yr=(p[p.length-1]||'').match(/\d{4}/);if(yr)s=s+' '+yr[0];}return s;})(row.window)+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+((function(w){var p=w.split('–');if(p.length<2)return w.indexOf('+')>=0?'Ongoing':'—';return(p[p.length-1]||'').trim()||'—';}))(row.window)+'</div>';
-          h+='<div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(row.cost||'\u2014')+'</div>';
-          h+='<div style="display:flex;align-items:center;gap:6px">';
-          h+='<div style="flex:1;height:6px;background:var(--g100);border-radius:4px;overflow:hidden;max-width:52px"><div style="width:'+pct+'%;height:100%;background:'+pctColor+';border-radius:4px"></div></div>';
-          h+='<span style="font-size:10.5px;font-weight:600;color:'+pctColor+'">'+(acts.length?pct+'%':'\u2014')+'</span>';
-          h+='</div>';
+          h+='<div style="font-size:12px;font-weight:600;color:var(--g800)">'+(_frac?'$'+_frac+'K':'\u2014')+'</div>';
+          h+='<div style="font-size:12px;color:var(--g700)">'+(_fcac?'$'+_fcac+'K':'\u2014')+'</div>';
+          h+='<div style="font-size:12px;color:var(--g700)">'+(_costPct?_costPct+'%':'\u2014')+'</div>';
+          h+='<div style="font-size:12px;color:var(--g700)">'+(_billed?'$'+_billed+'K':'\u2014')+'</div>';
           var _CC_ABBR={'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'};
           h+='<div><select style="font-size:11px;font-weight:600;padding:3px 6px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:114px;width:100%" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
           STATUSES.forEach(function(s){h+='<option value="'+s+'"'+(row.state===s?' selected':'')+'>'+((_CC_ABBR[s])||s)+'</option>';});
