@@ -6727,7 +6727,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:12px;color:var(--g700)">'+(_costPct?_costPct+'%':'\u2014')+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(_billed?'$'+_billed+'K':'\u2014')+'</div>';
           var _CC_ABBR={'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'};
-          h+='<div><select style="font-size:11px;font-weight:600;padding:3px 6px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:114px;width:100%" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
+          h+='<div><select style="font-size:10px;font-weight:600;padding:2px 4px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:100px;width:100%" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
           STATUSES.forEach(function(s){h+='<option value="'+s+'"'+(row.state===s?' selected':'')+'>'+((_CC_ABBR[s])||s)+'</option>';});
           h+='</select></div>';
           h+='<div style="display:flex;align-items:center;gap:4px">';
