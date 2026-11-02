@@ -6684,10 +6684,10 @@ function cpNudgeReplySubmit(ni,type){
       if(planRows.length){
         h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">';
         h+='<div style="display:flex;gap:4px;flex-wrap:wrap">'+_psCatBtns(planRows)+'</div>';
-        h+='<div style="display:flex;gap:6px;align-items:center">';
+        h+='<div style="display:flex;gap:8px;align-items:center">';
         h+='<button class="ff-b'+(window._ccPsActiveOnly?' on':'')+' btn-sm" onclick="ccPsToggleActiveOnly()">'+(window._ccPsActiveOnly?'&#10003; Active only':'Active only')+'</button>';
-        h+='</div>';
         h+='<button class="btn btn-dark btn-sm" onclick="openCcPsAddService()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg> Add to scope</button>';
+        h+='</div>';
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;padding:10px 18px;background:var(--g50);border-bottom:1px solid var(--g100);align-items:end">';
@@ -6727,7 +6727,7 @@ function cpNudgeReplySubmit(ni,type){
           h+='<div style="font-size:12px;color:var(--g700)">'+(_costPct?_costPct+'%':'\u2014')+'</div>';
           h+='<div style="font-size:12px;color:var(--g700)">'+(_billed?'$'+_billed+'K':'\u2014')+'</div>';
           var _CC_ABBR={'In Scoping / Pricing':'Scoping','Pending Approval':'Pend. Approval','Released to Order':'Released','Fulfilled / Delivered':'Fulfilled','Returned (Rental only)':'Returned','Completed / Closed':'Completed'};
-          h+='<div><select style="font-size:10px;font-weight:600;padding:2px 4px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:100px;width:100%" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
+          h+='<div><select style="font-size:10px;font-weight:600;padding:1px 4px;border-radius:4px;background:'+tbc+';color:'+tc+';border:1px solid '+tc+';cursor:pointer;max-width:96px;width:100%;appearance:none;-webkit-appearance:none" onchange="event.stopPropagation();ccPsChangeRowStatus(\''+proj+'\','+rowIdx+',this.value)" onclick="event.stopPropagation()">';
           STATUSES.forEach(function(s){h+='<option value="'+s+'"'+(row.state===s?' selected':'')+'>'+((_CC_ABBR[s])||s)+'</option>';});
           h+='</select></div>';
           h+='<div style="display:flex;align-items:center;gap:4px">';
