@@ -6691,7 +6691,7 @@ function cpNudgeReplySubmit(ni,type){
         h+='</div>';
         h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:16px">';
         h+='<div style="display:grid;grid-template-columns:90px 1fr 68px 100px 110px 82px 82px 72px 82px 100px 80px 80px;padding:10px 18px;background:var(--g50);border-bottom:1px solid var(--g100);align-items:end">';
-        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','FORECAST REVENUE AT COMPLETION','FORECAST COST AT COMPLETION','COST TO DATE %','BILLED TO DATE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
+        ['PROJECT #','ORDER','QTY','NEED BY','EST. END','FRAC','FCAC','COST TO DATE %','BILLED TO DATE','STATUS','DOCS','DELIVERABLES'].forEach(function(c){
           h+='<div style="font-size:10px;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.06em;line-height:1.3;word-break:break-word">'+c+'</div>';
         });
         h+='</div>';
