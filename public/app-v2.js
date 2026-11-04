@@ -1569,12 +1569,12 @@
         {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3105'},
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
-    prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add SOV line',addTitle:'Add SOV line',addBtnLabel:'Add SOV line to plan',
+    prefab:{ title:'Prefab plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add SOV line',addTitle:'Add SOV line',addBtnLabel:'Add SOV line to plan',
       vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'5 of 6',sub:'1 off track — Bathroom batteries',tone:'warn',icon:IC.chart}],
       v1:'6 assemblies in plan · 2 in fabrication · MV Stuffed Rack and Bathroom batteries pending submittal approval.',
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
-      cols:[{key:'asm',label:'SOV line item',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'leadTime',label:'Lead time',w:'90px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'104px',sub:'unitPrice'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'220px'}],
+      cols:[{key:'asm',label:'SOV line item',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'leadTime',label:'Lead time',w:'90px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'220px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,dateStatus:'proposed',propNeed:'Dec 17',propNote:'Shop capacity \u2014 Area C slot opens Dec 17',note:'Area C — rows 25–32'}]},
@@ -5248,6 +5248,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
   var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
+    if(pk==='prefab')h+=_pfbCpNotices();
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -5264,7 +5265,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
     if(pk==='prefab'&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows=_srows.filter(function(r){return r.cat===window._pfbCatFilter;});}
-    if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
+
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
       var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
@@ -13396,6 +13397,27 @@ charges:[
     openModal('SOV line — '+row.item,h);_pfbWide(720);
   }
 
+  /* ----- project-team notifications (shown at top of page) ----- */
+  function _pfbNoticeCard(bg,bd,lc,label,items){
+    var h='<div style="background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:14px 18px;margin-bottom:12px"><div style="font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+lc+';margin-bottom:6px">'+label+'</div>';
+    items.forEach(function(it,n){h+='<div style="display:flex;align-items:center;gap:14px;padding:6px 0;'+(n?'border-top:1px solid '+bd:'')+'"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--g900)">'+it.t+'</div><div style="font-size:12px;color:var(--g600);margin-top:1px">'+it.s+'</div></div><button onclick="openFpoSplitModal(\'prefab\','+it.i+')" style="background:#fff;border:1px solid '+lc+';color:'+lc+';border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">'+it.b+' →</button></div>';});
+    return h+'</div>';
+  }
+  function _pfbCpNotices(){
+    var rows=(DP.prefab&&DP.prefab.rows)||[],h='';
+    var off=[],prop=[],flg=[];
+    rows.forEach(function(r,i){
+      var nm=r.asm||r.item;
+      if(r.onTrack===false)off.push({i:i,t:nm,s:'Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':'')+' · '+(r.p6Act||''),b:'Review'});
+      _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed')prop.push({i:i,t:nm+' · '+f.id,s:'02S proposed '+(f.o.propNeed||'')+' (requested '+f.need+')'+(f.o.propNote?' — '+f.o.propNote:''),b:'Accept or counter'});});
+      _pfbFlagsOf(r).forEach(function(fl){flg.push({i:i,t:nm+' · '+fl.level+' '+fl.ref,s:fl.type+(fl.note?' — '+fl.note:''),b:'View'});});
+    });
+    if(off.length)h+=_pfbNoticeCard('#fffbeb','#fcd34d','#b45309',off.length+' assembl'+(off.length>1?'ies':'y')+' off track',off);
+    if(prop.length)h+=_pfbNoticeCard('#eff6ff','#bfdbfe','#1d4ed8','New need-by dates proposed by 02S',prop);
+    if(flg.length)h+=_pfbNoticeCard('#fdf5ec','#f3d2ad','#b4531a',flg.length+' flag'+(flg.length>1?'s':'')+' from 02S · informational',flg);
+    return h;
+  }
+
   /* ----- CC KPIs by FPO status ----- */
   function _pfbAllSov(){var o=[];['hercules','barryrose','vdc14'].forEach(function(p){var c=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[p];if(c&&c.rows)c.rows.forEach(function(r){o.push(r);});});return o;}
   function _pfbKpiHTML(rows,label){
@@ -15435,7 +15457,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       roll:[{a:'Electrical & HV',b:'$8.0M',c:'Q2–Q4 2026',v:'+$0.3M',vt:'warn'},{a:'Mechanical systems',b:'$820K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Tools & consumables',b:'$103K',c:'Q2–Q4 2026',v:'on plan',vt:'ok'},{a:'Structural materials',b:'$62K',c:'Q3 2026',v:'on plan',vt:'ok'},{a:'Specialty items',b:'$58K',c:'Q4 2026',v:'Requested',vt:'neu'}],
       varSummary:'MV switchgear and BESS containers are past order-by — PO release critical for Nov substation date. Tools & consumables $103K across the portfolio.',
       consol:{save:'~$110K + 2 wk',cta:'Combine POs',detail:'MV switchgear and BESS containers share the same OEM (Eaton/Tesla). Combine POs to hit the next volume tier and shorten lead time by 2 weeks.'} },
-    prefab:{ mount:'ccDpPrefab', title:'Pre-fab demand plan', icon:'layers', decCol:'Stage',
+    prefab:{ mount:'ccDpPrefab', title:'Prefab plan', icon:'layers', decCol:'Stage',
       kpis:[{k:'Active projects',v:'3',sub:'hercules \u00b7 barryrose \u00b7 vdc14',tone:'ok',icon:'proj'},{k:'Assemblies in plan',v:'13',sub:'across all projects',tone:'ok',icon:'layers'},{k:'Awaiting taxonomy',v:'0',sub:'need confirmation',tone:'ok',icon:'tax',dyn:'tax'},{k:'On schedule',v:'12 of 13',sub:'1 off track · Bathroom batteries',tone:'warn',icon:'chart'}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'',
@@ -17219,8 +17241,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div>';
     }
 
-    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';h+=_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[]);
-      h+='<button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule</button>';h+='<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()" style="font-size:11px">Active only</button>';h+='<button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')" style="margin-left:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add SOV</button>';h+='<span style="font-size:11.5px;color:var(--g500);margin-left:10px">'+visRows.length+' items · '+pLabel+'</span></div>';}
+    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add SOV line</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>Lead time</span><span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -18477,11 +18498,11 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'HEPA vacuums \u2014 10 gal',itemSub:'cordless · silica dust control · OSHA Table 1',qty:'6',needby:'Aug 1',orderby:'Jul 15 \u00b7 2 wk',code:'0100-0100-0000-0001 \u00b7 General conditions',cost:'$4K',state:'Delivered',linkOrd:'ORD-3105'},
         {item:'Wire crimpers \u2014 hydraulic',itemSub:'11T / 12T · BESS &amp; electrical terminations',qty:'8',needby:'Oct 1',orderby:'Sep 5 \u00b7 4 wk',code:'2600-3300-0000-0001 \u00b7 BESS &amp; Substation',cost:'$8K',state:'Planned',quoteRef:'Q-63414'}
       ]},
-    prefab:{ title:'Prefab demand plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add SOV line',addTitle:'Add SOV line',addBtnLabel:'Add SOV line to plan',
+    prefab:{ title:'Prefab plan', chip:'Shop-fabricated assemblies', icon:IC.layers, singular:'prefab',addBtnOpen:'Add SOV line',addTitle:'Add SOV line',addBtnLabel:'Add SOV line to plan',
       vitals:[{label:'Assemblies in plan',value:'6',sub:'2 in fab · 2 requested · 1 planned',tone:'ok',icon:IC.layers},{label:'In fabrication',value:'2',sub:'Combiner Box + Pipe Supports active',tone:'info',icon:IC.box},{label:'FPO committed',value:'$5.8M',sub:'Combiner Box · Pipe Supports · Column Forms',tone:'ok',icon:IC.dollar},{label:'On schedule',value:'5 of 6',sub:'1 off track — Bathroom batteries',tone:'warn',icon:IC.chart}],
       ns:'02S ties each assembly\u2019s submittal \u2192 fabrication \u2192 delivery back to its install date \u2014 the BESS e-houses need submittal approval this week to protect November energization.',
       cap:'Assemblies are made-to-order, so pricing is quoted by 02S after submittal. The team sets quantity, need-on-site date, and cost code.',
-      cols:[{key:'asm',label:'SOV line item',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'leadTime',label:'Lead time',w:'90px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'104px',sub:'unitPrice'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'220px'}],
+      cols:[{key:'asm',label:'SOV line item',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'leadTime',label:'Lead time',w:'90px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'220px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,dateStatus:'proposed',propNeed:'Dec 17',propNote:'Shop capacity \u2014 Area C slot opens Dec 17',note:'Area C — rows 25–32'}]},
@@ -18936,6 +18957,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
   var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
+    if(pk==='prefab')h+=_pfbCpNotices();
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -18952,7 +18974,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
     if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
     if(pk==='prefab'&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows=_srows.filter(function(r){return r.cat===window._pfbCatFilter;});}
-    if(pk==='prefab'){var _offT=_srows.filter(function(r){return r.onTrack===false;});if(_offT.length){h+='<div style="margin-bottom:12px;padding:10px 14px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.28);border-radius:8px;display:flex;align-items:flex-start;gap:10px"><span style="font-size:15px;line-height:1.3">\u26a0\ufe0f</span><div><div style="font-size:12px;font-weight:700;color:#b45309">'+_offT.length+' assembl'+(_offT.length===1?'y':'ies')+' off track</div>'+_offT.map(function(r){return '<div style="font-size:11px;color:#92400e;margin-top:3px">'+(r.asm||r.item||'Assembly')+'</div>';}).join('')+'</div></div>';}}
+
     _srows.forEach(function(r){
       var origIdx=cfg.rows.indexOf(r);
       var _edRow=['Draft','Planned','Pending pricing','Requested'].indexOf(r.state)>=0;
