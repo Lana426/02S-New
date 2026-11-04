@@ -12543,40 +12543,88 @@ charges:[
     h+='</div>';
     return h;
   }
-  function _pfbCcFpoSection(proj,idx){
-    var row=_pfbRow('cc',proj,idx);if(!row)return '';
-    window._pfbDetailCtx=true;
-    var l=_pfbFpoList(row),multi=!!(row.splits&&row.splits.length);
-    var h='';
-    var open=l.filter(function(f){var d=_pfbDS(f.o,f.st);return d==='requested'||d==='countered';});
-    if(open.length){
-      h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;padding:12px 16px;margin:10px 18px 4px">';
-      h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b45309;margin-bottom:8px">Need-by confirmation</div>';
-      open.forEach(function(f,n){
-        h+='<div style="'+(n?'border-top:1px solid #fde68a;padding-top:10px;margin-top:10px':'')+'">';
-        h+='<div style="font-size:11.5px;color:#92400e;margin-bottom:4px"><span style="font-family:monospace">'+f.id+'</span> \u00b7 '+_pfbQty(f.qty)+'</div>';
-        h+=_pfbDateCell('cc',proj,idx,f);
-        h+='</div>';
-      });
-      h+='</div>';
-    }
-    h+='<div style="padding:10px 18px 4px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:6px">FPOs'+(multi?' ('+l.length+')':' \u2014 SOV line = single FPO')+'</div>';
-    l.forEach(function(f){
-      var ds=_pfbDS(f.o,f.st);
-      h+='<div style="display:grid;grid-template-columns:92px 74px 52px minmax(0,1fr) 64px;align-items:start;gap:8px;padding:7px 10px;background:var(--g50);border-radius:6px;font-size:11.5px;margin-bottom:4px">';
-      h+='<span style="font-family:monospace;font-size:10px;color:var(--g500);padding-top:3px">'+f.id+'</span>';
-      h+='<span style="font-weight:600;padding-top:2px;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);padding-top:2px;white-space:nowrap">'+f.need+'</span>';
-      h+='<span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub);
-      if(ds==='requested')h+='<span style="font-size:10.5px;color:#b45309;font-weight:700">date to confirm</span>';
-      else if(ds==='proposed')h+='<span style="font-size:10.5px;color:#1d4ed8;font-weight:700">proposed '+(f.o.propNeed||'')+'</span>';
-      else if(ds==='countered')h+='<span style="font-size:10.5px;color:#b45309;font-weight:700">countered '+(f.o.counterNeed||'')+'</span>';
-      if((f.o.flags||[]).length)h+='<span style="font-size:10.5px;color:#b45309;font-weight:700">\u2691 '+f.o.flags.length+'</span>';
-      h+='</span>';
-      h+='<button onclick="closeModal();pfbFlag(\''+proj+'\','+idx+','+f.i+')" style="font-size:10px;padding:2px 8px;border:1px solid var(--g300);border-radius:4px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600;white-space:nowrap">\u2691 Flag</button>';
-      h+='</div>';
+  /* ----- modern progress stepper ----- */
+  function _pfbStepper(labels,idx,accent,small){
+    var n=labels.length,sz=small?16:24,G='#2F7A43',OFF='#D4D4D8';
+    var h='<div style="display:flex;align-items:flex-start">';
+    labels.forEach(function(l,i){
+      var done=i<idx,act=i===idx;
+      var lc=(i>0&&i<=idx)?G:OFF,rc=(i<n-1&&i<idx)?G:OFF;
+      var circ;
+      if(done)circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" width="'+(sz-8)+'" height="'+(sz-8)+'" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
+      else if(act)circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;border:2px solid '+accent+';box-shadow:0 0 0 4px '+accent+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:'+(sz-14)+'px;height:'+(sz-14)+'px;border-radius:50%;background:'+accent+'"></div></div>';
+      else circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;border:2px solid '+OFF+';flex-shrink:0"></div>';
+      h+='<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center">';
+      h+='<div style="display:flex;align-items:center;width:100%"><div style="flex:1;height:2px;background:'+(i?lc:'transparent')+'"></div>'+circ+'<div style="flex:1;height:2px;background:'+(i<n-1?rc:'transparent')+'"></div></div>';
+      h+='<div style="margin-top:8px;font-size:'+(small?'10':'11.5')+'px;line-height:1.3;text-align:center;padding:0 3px;'+(act?'font-weight:700;color:'+accent:done?'font-weight:500;color:var(--g700)':'color:var(--g400)')+'">'+l+'</div></div>';
     });
-    h+='</div>';
+    return h+'</div>';
+  }
+  function _pfbCard(inner,extra){return '<div style="border:1px solid var(--g150);border-radius:12px;padding:16px 18px;margin-bottom:14px;background:#fff;'+(extra||'')+'">'+inner+'</div>';}
+  function _pfbH(t,right){return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g500)">'+t+'</div>'+(right||'')+'</div>';}
+
+  function _pfbCcFpoList(proj,idx,row){
+    var l=_pfbFpoList(row),multi=!!(row.splits&&row.splits.length);
+    var inner=_pfbH('FPOs'+(multi?' · '+l.length:' · SOV line is a single FPO'),'<button onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')" style="background:none;border:none;color:#1d4ed8;font-size:11.5px;font-weight:600;cursor:pointer">Manage FPOs →</button>');
+    l.forEach(function(f,n){
+      var ds=_pfbDS(f.o,f.st);
+      inner+='<div style="display:grid;grid-template-columns:96px 78px 56px minmax(0,1fr) 64px;align-items:center;gap:10px;padding:10px 0;'+(n?'border-top:1px solid var(--g100)':'')+';font-size:12px">';
+      inner+='<span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span>';
+      inner+='<span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span>';
+      inner+='<span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub);
+      if(ds==='requested')inner+='<span style="font-size:10.5px;color:#b45309;font-weight:700">● date to confirm</span>';
+      else if(ds==='proposed')inner+='<span style="font-size:10.5px;color:#1d4ed8;font-weight:700">● proposed '+(f.o.propNeed||'')+'</span>';
+      else if(ds==='countered')inner+='<span style="font-size:10.5px;color:#b45309;font-weight:700">● countered '+(f.o.counterNeed||'')+'</span>';
+      if((f.o.flags||[]).length)inner+='<span style="font-size:10.5px;color:#b45309;font-weight:700">⚑ '+f.o.flags.length+'</span>';
+      inner+='</span><button onclick="closeModal();pfbFlag(\''+proj+'\','+idx+','+f.i+')" style="font-size:10.5px;padding:3px 0;border:1px solid var(--g300);border-radius:6px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600;white-space:nowrap;text-align:center">⚑ Flag</button></div>';
+    });
+    return _pfbCard(inner);
+  }
+  function _pfbCcActions(proj,idx,row){
+    var h='';
+    var pf=_pfbRowStatus(row);
+    if(pf==='Requested'||pf==='In Review'){
+      var inner=_pfbH('Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Notes to project team</label><input id="pfbNote-'+proj+'-'+idx+'" placeholder="Scope clarifications or conditions…" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div></div><button class="btn btn-dark btn-sm" onclick="pfbSubmitPricing(\''+proj+'\','+idx+')">Send pricing to project team →</button>';
+      h+=_pfbCard(inner,'border-left:3px solid #d97706');
+    }
+    var open=_pfbFpoList(row).filter(function(f){var d=_pfbDS(f.o,f.st);return d==='requested'||d==='countered';});
+    if(open.length){
+      var inn=_pfbH('Need-by confirmation','<span style="font-size:11px;color:var(--g400)">'+open.length+' FPO'+(open.length>1?'s':'')+' awaiting a decision</span>');
+      open.forEach(function(f,n){
+        inn+='<div style="'+(n?'border-top:1px solid var(--g100);margin-top:12px;padding-top:12px':'')+'"><div style="font-size:11.5px;color:var(--g500);margin-bottom:6px"><span style="font-family:monospace">'+f.id+'</span> · '+_pfbQty(f.qty)+'</div>'+_pfbDateCell('cc',proj,idx,f)+'</div>';
+      });
+      h+=_pfbCard(inn,'border-left:3px solid #1d4ed8');
+    }
     return h;
+  }
+  function dpPfbCcDetail(proj,idx){
+    var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;
+    window._pfbDetailCtx=true;
+    var ord=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;
+    var st=_pfbRowStatus(row),multi=!!(row.splits&&row.splits.length);
+    var subSt=row.subState||null,subFpo='';
+    if(!subSt&&multi){var ff=_pfbFpoList(row).filter(function(f){return f.st==='In Fulfillment';})[0];if(ff){subSt=ff.sub;subFpo=ff.id;}}
+    var h='';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px"><div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(st,subSt)+(row.onTrack===false?'<span style="font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border-radius:10px;padding:2px 9px">⚠ Off track</span>':'')+'</div><div style="font-size:11.5px;color:var(--g500);margin-top:6px">'+(row.cat||'')+(row.p6None?' · <span style="color:#b45309;font-weight:600">No P6 link — manual date</span>':(row.p6Act?' · P6: '+row.p6Act:''))+'</div></div>'+(multi?'<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Update FPO statuses →</button>':'<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>')+'</div>';
+    var si={'Planned / FPO':0,'Requested':1,'In Review':2,'In Fulfillment':3,'Invoiced / Closed':5}[st];if(si==null)si=0;
+    var acc=si<=2&&si>0?'#d97706':si===3?'#265D9F':'#26241F';
+    var pc=_pfbH('Progress')+_pfbStepper(PFB_FSTAT,si,acc);
+    if(st==='In Fulfillment'||st==='Invoiced / Closed'){
+      var fi=SUB_STATUSES_FULFILLMENT.indexOf(subSt);if(st==='Invoiced / Closed')fi=SUB_STATUSES_FULFILLMENT.length;
+      pc+='<div style="border-top:1px solid var(--g100);margin-top:16px;padding-top:14px">'+_pfbH('Fulfillment stage'+(subFpo?' \u00b7 '+subFpo:''))+_pfbStepper(SUB_STATUSES_FULFILLMENT,fi,'#265D9F',true)+'</div>';
+    }
+    h+=_pfbCard(pc);
+    if(row.dateShifted&&row.shiftNote){h+=_pfbCard('<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#b45309;margin-bottom:6px">⚠ Schedule impact — 02S note</div>'+(row.origWindow?'<div style="font-size:11.5px;color:#92400e;margin-bottom:4px">Original date <span style="text-decoration:line-through">'+row.origWindow+'</span> → <b>'+row.window+'</b></div>':'')+'<div style="font-size:12px;color:#92400e;line-height:1.5">'+row.shiftNote+'</div>','background:#fffbeb;border-color:#fcd34d');}
+    var facts=[['Qty',_pfbQty(row.qty)],['Need by',row.window||'—'],['Lead time',row.leadTime||'—'],['Unit bid price',row.unitPrice||'—'],['Cost',row.cost||'—']];
+    h+='<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px">';
+    facts.forEach(function(f){h+='<div style="background:var(--g50);border-radius:10px;padding:9px 11px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">'+f[0]+'</div><div style="font-size:12.5px;font-weight:600;color:var(--g900);overflow-wrap:anywhere">'+f[1]+'</div></div>';});
+    h+='</div>';
+    h+=_pfbCcFpoList(proj,idx,row);
+    h+=_pfbCcActions(proj,idx,row);
+    if(ord){var b=buildDpBillingInline(row.ordId);if(b)h+=_pfbCard(b);}
+    var fl=_pfbFlagsOf(row);
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
+    openModal('SOV line — '+row.item,h);_pfbWide(720);
   }
 
   /* ----- CC KPIs by FPO status ----- */
@@ -15656,61 +15704,6 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     closeModal();renderCcDemand('prefab');
     toast('FPO added to plan — state: Requested');
   }
-  function dpPfbCcDetail(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var ord=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;var ns=CURRENT==='ns';var h='';h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:var(--g50);border-bottom:1px solid var(--g150)">';h+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:3px">SOV status</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+row.state+(row.subState?' · '+row.subState:'')+'</div></div>';h+=((row.splits&&row.splits.length)?'<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Update FPO statuses →</button>':'<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>')
-    
-    +'</div>';h+='</div>';
-
-    var _pfbT=(window._pfbCcTab&&window._pfbCcTab[proj+'-'+idx])||'overview';
-    h+='<div style="display:flex;align-items:center;border-bottom:1px solid var(--g150);padding:0 18px">';
-    h+='<button onclick="window._pfbCcTab=window._pfbCcTab||{};window._pfbCcTab[\''+proj+'-'+idx+'\']=\'overview\';dpPfbCcDetail(\''+proj+'\','+idx+')" style="padding:7px 14px;font-size:12px;font-weight:600;border:none;border-bottom:2px solid '+(_pfbT==='overview'?'var(--charcoal)':'transparent')+';background:none;cursor:pointer;color:'+(_pfbT==='overview'?'var(--charcoal)':'var(--g400)')+'">Overview</button>';
-    h+='</div>';
-    if(_pfbT==='overview'){
-    if(row.state==='In Fulfillment'||row.state==='Invoiced / Closed'){
-    h+=buildFulfillmentStepper(row.subState);
-    var _spls=row.splits||[];var _sRel=_spls.filter(function(s){return s.state==='Released';}).length;if(false){h+='<div style="padding:10px 18px 2px">';h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:8px">FPO Release Breakdown</div>';h+='<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">';_spls.forEach(function(s){var _sc=s.state==='Released'?'#10b981':s.state==='Planning'?'#94a3b8':'#3b82f6';var _sbg=s.state==='Released'?'rgba(16,185,129,.07)':s.state==='Planning'?'#f8fafc':'rgba(59,130,246,.07)';var _ck=s.state==='Released'?'✓ ':'';h+='<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:'+_sbg+';border-radius:6px;font-size:11.5px">';h+='<div style="font-family:monospace;font-size:10px;color:#64748b;flex-shrink:0;width:70px">'+s.id+'</div>';h+='<div style="flex:1;color:#374151">'+s.qty+' · '+s.need+(s.note?' · <span style="color:#94a3b8">'+s.note+'</span>':'')+'</div>';h+='<div style="font-size:10.5px;font-weight:700;color:'+_sc+'">'+_ck+s.state+'</div>';if(s.ordId)h+='<div style="font-family:monospace;font-size:10px;color:#94a3b8">'+s.ordId+'</div>';h+='</div>';});h+='<div style="font-size:11px;color:#64748b;padding-top:2px">'+_sRel+' of '+_spls.length+' FPOs released</div>';
-    var _pendSp=_spls.filter(function(s){return(s.pendingRelease||0)>0;});
-    if(_pendSp.length){
-      var _pendQty=_pendSp.reduce(function(t,s){return t+(s.pendingRelease||0);},0);
-      h+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
-        +'<div style="flex:1"><div style="font-size:11.5px;font-weight:700;color:#b45309">Project team queued '+_pendQty+' units for release</div>'
-        +'<div style="font-size:11px;color:#92400e;margin-top:2px">'+_pendSp.map(function(s){return s.qty+' units \u00b7 '+s.need;}).join(' \u00b7 ')+'</div></div>'
-        +'<button onclick="ccApproveRelease(\'prefab\',\''+proj+'\','+idx+','+_spls.indexOf(_pendSp[0])+')" style="padding:5px 14px;background:#059669;border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Approve \u2192</button>'
-        +'</div>';}
-    h+='</div></div>';
-    }
-    }else{
-    h+=buildPrefabStagesStepper(row.state);if(row.state==='Submittal'){h+='<div style="margin:0 0 10px;background:var(--g50);border:1px dashed var(--g200);border-radius:6px;padding:10px 18px;font-size:11.5px;color:var(--g500)">Submittal under review — awaiting 02S acknowledgement.</div>';}if(row.state==='Requested'||row.state==='In Review'){h+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;padding:12px 16px;margin:0 0 10px">';h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#b45309;margin-bottom:8px">Pricing submission</div>';h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">';h+='<div><label style="font-size:11px;font-weight:600;color:var(--g600);display:block;margin-bottom:3px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:6px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';h+='</div>';h+='<div style="margin-bottom:8px"><label style="font-size:11px;font-weight:600;color:var(--g600);display:block;margin-bottom:3px">Notes to project team</label><textarea id="pfbNote-'+proj+'-'+idx+'" rows="2" placeholder="Include scope clarifications or conditions…" style="width:100%;padding:6px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea></div>';h+='<button class="btn btn-dark btn-sm" onclick="pfbSubmitPricing(\''+proj+'\','+idx+')">Send pricing to project team →</button>';h+='</div>';}}
-    }
-    else{
-    var CCMO2=['Sep','Oct','Nov','Dec','Jan','Feb'];var CCN2=CCMO2.length;
-    var ccMH2='';CCMO2.forEach(function(m){ccMH2+='<div class="gh-mo">'+m+'</div>';});
-    var ccGBg2='repeating-linear-gradient(90deg,#e4e4e7 0,#e4e4e7 1px,transparent 1px,transparent calc(100%/'+CCN2+'))';
-    var CCSTG2=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
-    var CCDR2={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
-    if(!row._fabSched){row._fabSched=CCSTG2.map(function(s){return{name:s,dur:CCDR2[s]||1,status:'Not started'};});var _ci3=CCSTG2.indexOf(row.subState||'');if(_ci3>0)row._fabSched.forEach(function(a,i){if(i<_ci3)a.status='Done';else if(i===_ci3)a.status='In progress';});}
-    var _tot4=row._fabSched.reduce(function(t,a){return t+((a.dur||1)/30);},0)||1;var _off4=0;
-    h+='<div class="g-wrap" style="margin:14px 0">';
-    h+='<div class="g-head"><div class="g-label" style="width:190px">Activity</div><div class="gh-months">'+ccMH2+'</div></div>';
-    h+='<div class="g-body">';
-    row._fabSched.forEach(function(act,ai){
-      var _ac2=act.status==='Done'?'onrent':(act.status==='In progress'?'submitted':'offrent');
-      var _aL4=(_off4/_tot4*100).toFixed(2);var _aW4=(Math.max(0.5,(act.dur||1)/30)/_tot4*100).toFixed(2);
-      h+='<div class="grow" style="min-height:48px">';
-      h+='<div class="g-label" style="width:190px;flex-direction:column;align-items:flex-start;padding:5px 14px;gap:3px;white-space:normal;height:auto">';
-      h+='<span style="font-size:11.5px;font-weight:500;color:var(--g700)">'+act.name+'</span>';
-      h+='<div style="display:flex;align-items:center;gap:4px">';
-      h+='<select onchange="CC_PROJ_DP[\'prefab\'][\''+proj+'\'].rows['+idx+']._fabSched['+ai+'].status=this.value;dpPfbCcDetail(\''+proj+'\','+idx+')" style="font-size:9px;padding:1px 4px;border-radius:3px;border:1px solid var(--g200);background:#fff;cursor:pointer">'+['Done','In progress','Not started'].map(function(s){return'<option value="'+s+'"'+(act.status===s?' selected':'')+'>'+s+'</option>';}).join('')+'</select>';
-      h+='<input type="number" min="0" value="'+act.dur+'" onchange="CC_PROJ_DP[\'prefab\'][\''+proj+'\'].rows['+idx+']._fabSched['+ai+'].dur=+this.value||0;dpPfbCcDetail(\''+proj+'\','+idx+')" style="width:40px;border:1px solid var(--g200);border-radius:3px;padding:1px 4px;font-size:9px;text-align:center" title="Days">';
-      h+='<span style="font-size:8.5px;color:var(--g400)">d</span>';
-      h+='</div></div>';
-      h+='<div class="g-track" style="background-image:'+ccGBg2+';height:48px;overflow:hidden">';
-      h+='<div class="g-bar '+_ac2+' vw" style="top:13px;left:'+_aL4+'%;width:calc('+_aW4+'% - 3px)" title="'+act.name+' \u00b7 '+act.dur+' days"></div>';
-      h+='</div></div>';
-      _off4+=(act.dur||1)/30;
-    });
-    h+='</div></div>';
-    }
-h+=_pfbCcFpoSection(proj,idx);if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+='<div style="margin:0 0 10px;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 18px">';h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#b45309;margin-bottom:5px">⚠ Schedule impact — 02S note</div>';if(row.origWindow)h+='<div style="font-size:11px;margin-bottom:4px;color:#92400e">Original date: <span style="text-decoration:line-through">'+row.origWindow+'</span> → <b>'+row.window+'</b></div>';h+='<div style="font-size:11.5px;color:#92400e;line-height:1.5">'+row.shiftNote+'</div>';h+='</div>';}h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;padding:6px 18px 10px;font-size:11.5px">';h+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Qty</div><div style="font-weight:500;color:var(--g900)">'+(row.qty||'—')+'</div></div>';h+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Need by</div><div style="font-weight:500;color:var(--g900)">'+(row.window||'—')+'</div></div>';h+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Unit bid price</div><div style="font-weight:500;color:var(--g900)">'+(row.unitPrice||'\u2014')+'</div></div>';h+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Lead time</div><div style="font-weight:500;color:var(--g900)">'+(row.leadTime||'\u2014')+'</div></div>';h+='<div><div style="color:var(--g500);font-size:10.5px;margin-bottom:2px">Cost</div><div style="font-weight:500;color:var(--g900)">'+(row.cost||'—')+'</div></div>';h+='</div>';h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';h+='<button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">\u2691 Flag SOV line</button>';h+='<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button>';h+='</div>';openModal('SOV line \u2014 '+row.item,h);_pfbWide(700);}
   function ccDpTracker(ordId){
     var o=ORDERS.filter(function(x){return x.id===ordId;})[0];
     if(!o){toast('No order data for '+ordId);return;}
@@ -16460,7 +16453,7 @@ h+=_pfbCcFpoSection(proj,idx);if(ord)h+=buildDpBillingInline(row.ordId);if(row.d
     }
 
     if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'Demand plan</span><span class="spacer"></span>';h+=_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[]);
-      h+='<button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule</button>';h+='<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()" style="font-size:11px">Active only</button>';h+='<button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')" style="margin-left:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add FPO / SOV</button>';h+='<span style="font-size:11.5px;color:var(--g500);margin-left:10px">'+visRows.length+' items · '+pLabel+'</span></div>';}
+      h+='<button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule</button>';h+='<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()" style="font-size:11px">Active only</button>';h+='<button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')" style="margin-left:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add SOV</button>';h+='<span style="font-size:11.5px;color:var(--g500);margin-left:10px">'+visRows.length+' items · '+pLabel+'</span></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>Lead time</span><span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
