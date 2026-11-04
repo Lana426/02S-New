@@ -8953,8 +8953,8 @@ charges:[
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(((r.state||r.status)==='At-risk'||(r.state||r.status)==='Needs attention')?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(((r.state||r.status)==='At-risk'||(r.state||r.status)==='Needs attention')?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state||r.status]||(r.state||r.status))+'</div>';
     }
     if(pk==='prefab'){h+=_pfbDrillFpos(pk,r,rowIdx);}
-    if(r.linkOrd){var _bl=buildDpBillingInline(r.linkOrd);if(_bl)h+=_bl;}
-    var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];
+    if(r.linkOrd){var _bl=buildDpBillingInline(r.linkOrd);if(_bl)h+=(pk==='prefab'?_pfbFold('Billing history',' \u00b7 '+((CC_DP_BILLS[r.linkOrd]||[]).length)+' invoice'+(((CC_DP_BILLS[r.linkOrd]||[]).length)===1?'':'s'),_bl.replace(/<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:\.04em;color:var\(--g500\);margin-bottom:6px">Billing history<\/div>/,'')):_bl);}
+    var notes=DP_LINE_NOTES[pk+'-'+rowIdx]||[];var _nSt=h.length;
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 4px">';
     if(_dpCoSub){var _coSubRQ=_dpCoSub.status==='quote_revised';var _coSubClr=_coSubRQ?'#166534':'#92400e';var _coSubBg=_coSubRQ?'#f0fdf4':'#fff7ed';var _coSubBdr=_coSubRQ?'#86efac':'#fed7aa';var _coSubLbl=_coSubRQ?'Revised quote ready for your review':'Change order pending 02S review';h+='<div style="background:'+_coSubBg+';border:1px solid '+_coSubBdr+';border-radius:6px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><div><span style="font-size:10px;font-weight:700;color:'+_coSubClr+';text-transform:uppercase;letter-spacing:.04em">'+_dpCoSub.id+'</span><span style="font-size:11.5px;color:'+_coSubClr+';margin-left:8px">'+_coSubLbl+'</span></div>'+((_dpCoSub.ts)?'<span style="font-size:10.5px;color:var(--g400)">'+(_dpCoSub.ts||'').split('·')[0].trim()+'</span>':'')+'</div>';}
@@ -8968,8 +8968,9 @@ charges:[
     h+='<input style="flex:1;border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;outline:none;color:var(--g900)" placeholder="'+(CURRENT==='ns'?'Reply to project team…':'Add a note to 02S…')+'" id="plan-note-'+pk+'-'+rowIdx+'">';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();postPlanNote(\''+pk+'-'+rowIdx+'\')" >Send</button>';
     h+='</div></div>';
+    if(pk==='prefab'){h=_pfbFoldTail(h,_nSt,'Notes &amp; history',' \u00b7 '+notes.length+(notes.length===1?' note':' notes'));}
     
-    var _rAtts=r.attachments&&r.attachments.length?r.attachments.map(function(a){return (a.name||a)+(a.ref?' · '+a.ref:'');}):null;var docs=_rAtts||[];
+    var _rAtts=r.attachments&&r.attachments.length?r.attachments.map(function(a){return (a.name||a)+(a.ref?' · '+a.ref:'');}):null;var docs=_rAtts||[];var _dSt=h.length;
     h+='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:10px 0 10px">';
     h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:8px">Documents</div>';
     h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';
@@ -8977,6 +8978,7 @@ charges:[
       h+='<span class="doc-chip" onclick="event.stopPropagation();openDocChip(\''+d.replace(/'/g,"\\'")+'\')" >'+svg('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',2)+d+'</span>';
     });
     h+='</div></div>';
+    if(pk==='prefab'){h=_pfbFoldTail(h,_dSt,'Documents',' \u00b7 '+docs.length);}
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
@@ -13297,30 +13299,29 @@ charges:[
   }
 
   /* ----- project-team drill-down + CC detail FPO lists ----- */
+  function _pfbFold(title,meta,inner){
+    return '<details onclick="event.stopPropagation()" style="border-top:1px solid var(--g150)"><summary style="cursor:pointer;padding:10px 18px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">'+title+(meta?'<span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--g400)">'+meta+'</span>':'')+'</summary>'+inner+'</details>';
+  }
+  function _pfbFoldTail(h,start,title,meta){
+    var seg=h.slice(start).replace(/<div data-cap="Shared documents[^>]*>[^<]*<\/div>/,'').replace(/<div style="font-size:10\.5px;font-weight:700;text-transform:uppercase;letter-spacing:\.05em;color:var\(--g500\);margin-bottom:8px">Documents<\/div>/,'').replace('border-top:1px solid var(--g150);','');
+    return h.slice(0,start)+_pfbFold(title,meta,seg);
+  }
   function _pfbDrillFpos(pk,r,rowIdx){
     var l=_pfbFpoList(r),multi=!!(r.splits&&r.splits.length);
-    var h='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:12px 0 8px">';
-    h+='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:11.5px;color:var(--g600)">';
-    h+='<span>Unit bid price <b style="color:var(--g900)">'+(r.unitPrice||'\u2014')+'</b></span><span>Lead time <b style="color:var(--g900)">'+(r.leadTime||'\u2014')+'</b></span><span>'+(r.p6None?'<b style="color:#b45309">No P6 link \u2014 manual date</b>':'P6 <b style="color:var(--g900)">'+(r.p6Act||'\u2014')+'</b>')+'</span></div>';
-    if(!multi&&r.sameDate==='breakdown')h+='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-bottom:8px">\u26a0 02S asked for an FPO breakdown \u2014 open Manage FPOs to split this SOV line.</div>';
-    if(!multi&&r.sameDate==='claimed')h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:8px">Single-date delivery noted \u2014 awaiting 02S confirmation.</div>';
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPOs'+(multi?' ('+l.length+')':' \u2014 SOV line = single FPO')+'</span>';
-    h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage FPOs \u2192</button></div>';
+    var mb='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px;white-space:nowrap">Manage FPOs →</button>';
+    var h='<div style="border-top:1px solid var(--g150);margin:0 18px;padding:12px 0 10px">';
+    if(!multi&&r.sameDate==='breakdown')h+='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-bottom:8px">⚠ 02S asked for an FPO breakdown — open Manage FPOs to split this SOV line.</div>';
+    h+='<div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--g500);margin-bottom:'+(multi?'10':'6')+'px"><span>Unit bid price <b style="color:var(--g900)">'+(r.unitPrice||'—')+'</b></span><span>Lead time <b style="color:var(--g900)">'+(r.leadTime||'—')+'</b></span><span>'+(r.p6None?'<b style="color:#b45309">No P6 link</b>':'P6 <b style="color:var(--g900)">'+(r.p6Act||'—')+'</b>')+'</span><span style="flex:1"></span>'+(multi?'':mb)+'</div>';
+    if(multi)h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPOs · '+l.length+'</span>'+mb+'</div>';
     l.forEach(function(f){
-      var ds=_pfbDS(f.o,f.st);
-      h+='<div style="display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--g100);flex-wrap:wrap">';
-      h+='<span style="font-family:monospace;font-size:10.5px;color:var(--g500);min-width:88px">'+f.id+'</span>';
-      h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+_pfbQty(f.qty)+'</span>';
-      h+='<span style="font-size:11.5px;color:var(--g600);min-width:60px">'+f.need+'</span>';
-      h+=_pfbChip(f.st,f.sub);
-      if(ds==='proposed')h+='<span style="font-size:10.5px;font-weight:700;color:#1d4ed8">02S proposed '+(f.o.propNeed||'')+' \u2014 review</span>';
-      else if(ds==='countered')h+='<span style="font-size:10.5px;font-weight:700;color:#b45309">Counter sent \u2014 awaiting 02S</span>';
-      else if(ds==='requested')h+='<span style="font-size:10.5px;color:#b45309">date awaiting 02S</span>';
-      if((f.o.flags||[]).length)h+='<span style="font-size:10.5px;font-weight:700;color:#b45309">\u2691 '+f.o.flags.length+'</span>';
-      h+='</div>';
+      var ds=_pfbDS(f.o,f.st),note='';
+      if(ds==='proposed')note='<span style="font-size:10.5px;font-weight:700;color:#1d4ed8">● 02S proposed '+(f.o.propNeed||'')+'</span>';
+      else if(ds==='countered')note='<span style="font-size:10.5px;font-weight:700;color:#b45309">● counter sent</span>';
+      else if(ds==='requested')note='<span style="font-size:10.5px;color:#b45309">● date awaiting 02S</span>';
+      if(r.sameDate==='claimed'&&!multi)note='<span style="font-size:10.5px;color:var(--g500)">single date noted — awaiting 02S</span>';
+      h+='<div style="display:grid;grid-template-columns:92px 74px 56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 0;font-size:12px"><span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span><span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub)+note+((f.o.flags||[]).length?'<span style="font-size:10.5px;font-weight:700;color:#b45309">⚑ '+f.o.flags.length+'</span>':'')+'</span></div>';
     });
-    h+='</div>';
-    return h;
+    return h+'</div>';
   }
   /* ----- modern progress stepper ----- */
   var PFB_IC={check:'<path d="M20 6L9 17l-5-5"/>',file:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',filecheck:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',tool:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',cc:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>'};
