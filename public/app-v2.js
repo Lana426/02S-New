@@ -1533,7 +1533,7 @@
   }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In Scoping / Pricing':'warn','Pending Approval':'warn','Fulfilled / Delivered':'ok','Completed / Closed':'ok','Released to Order':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','In Scoping / Pricing':'info','Pending Approval':'warn','Approved':'ok','Released to Order':'ok','Fulfilled / Delivered':'ok','Returned (Rental only)':'neu','Completed / Closed':'neu','Completed / Closed':'neu','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In Scoping / Pricing':'warn','Pending Approval':'warn','Fulfilled / Delivered':'ok','Completed / Closed':'ok','Released to Order':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','In Scoping / Pricing':'info','Pending Approval':'warn','Approved':'ok','Released to Order':'ok','Fulfilled / Delivered':'ok','Returned (Rental only)':'neu','Completed / Closed':'neu','Completed / Closed':'neu','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -1577,9 +1577,9 @@
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,splits:[{id:'SPL-CB-1',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'SPL-CB-2',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'SPL-CB-3',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
-        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true},
-        {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
+        {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
+        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
+        {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'Requested',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
         {asm:'Deck Panels',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
         {asm:'Column Forms',cat:'Concrete',qty:'8',need:'Jun 20',stage:'Delivered · order ORD-3106',code:'2600-0540-0000-0001 · Module install',cost:'$147K',state:'Invoiced / Closed',p6Act:'Column installation',onTrack:true,linkOrd:'ORD-3106',attachments:[]}
@@ -5507,7 +5507,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
             :'<span style="display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,.1);color:#b45309;border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600">\u25cb Planning</span>')
         +'</td>'
         +'<td style="padding:8px 10px;font-size:11px;color:var(--g400)">'+( sp.note||''  )+'</td>'
-        +'<td style="padding:8px 10px"></td>'
+        +'<td style="padding:8px 10px"><button onclick="event.stopPropagation();_pfbFlagIssue(sp.id,row.asm||row.item)" style="font-size:10.5px;padding:3px 8px;border:1px solid var(--g300);border-radius:4px;background:transparent;cursor:pointer;color:var(--g500)">⚑ Flag</button></td>'
         +'</tr>';
     }
     var body='<div style="font-size:12px;color:var(--g400);margin-bottom:12px">'
@@ -5726,696 +5726,8 @@ function _openGeoEmergency(){
     body+='</div></div>';
     openModal('Emergency Request \u2014 Geospatial',body);
   }
-  function _openFpoPreModal(){var body='<div style="display:flex;flex-direction:column;gap:10px">'+'<button onclick="closeModal();_openFpoUpload()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#3b82f6\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Upload FPO</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attach a project team FPO document</div></div></button>'+'<button onclick="closeModal();window._dpDirect=true;openDPAdd(\'prefab\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#16a34a\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'+'<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+'<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'+'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Manual entry</div>'+'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Enter assembly details directly</div></div></button></div>';openModal('Add FPO',body);}
-  function _openFpoUpload(){var body='<div>'+'<div style="border:2px dashed var(--g300);border-radius:8px;padding:28px;text-align:center;background:var(--g50);cursor:pointer" onclick="document.getElementById(\'fpo-file-in\').click()">'+'<svg viewBox="0 0 24 24" fill="none" stroke="var(--g400)" stroke-width="2" style="width:28px;height:28px;margin:0 auto 10px;display:block"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'+'<div style="font-size:13px;font-weight:600;color:var(--charcoal);margin-bottom:4px">Click to select FPO document</div>'+'<div style="font-size:11px;color:var(--g400)">PDF, Word, or Excel</div>'+'<input id="fpo-file-in" type="file" accept=".pdf,.docx,.xlsx" style="display:none"></div>'+'<div style="margin-top:12px;padding:10px 12px;background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;font-size:11.5px;color:#92400e">Staged for wireframe purposes — in production, uploading an FPO would auto-parse it into plan lines.</div>'+'<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:14px">'+'<button onclick="closeModal()" style="padding:7px 18px;border:1px solid var(--g200);border-radius:5px;background:#fff;cursor:pointer;font-size:13px">Cancel</button>'+'<button onclick="closeModal()" style="padding:7px 18px;background:#1d4ed8;border:none;border-radius:5px;color:#fff;cursor:pointer;font-size:13px;font-weight:600">Upload FPO</button></div></div>';openModal('Upload FPO',body);}
-  function openDPAdd(pk){if(pk==='prefab'&&!window._dpDirect){_openFpoPreModal();return;}window._dpDirect=false; dpAddPk=pk; var cfg=DP[pk];
-    var f='<div class="mform">';
-    f+='<div class="mf"><label>'+cfg.addName.label+'</label>';if(cfg.addName.opts&&cfg.addName.opts.length){f+='<select id="dpaName" class="acc-sel wfull" onchange="if(dpAddPk===\'logistics\')dpLogCheckLeadTime()"><option value="">— select a service —</option>'+cfg.addName.opts.map(function(o){return '<option value="'+o+'">'+o+'</option>';}).join('')+'</select>';}else{f+='<input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'">';}f+='</div>';
-    var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)" onchange="if(dpAddPk===\'logistics\')dpLogCheckLeadTime()">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
-    f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
-    f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';if(pk==='prefab'){f+='<div class="mf"><label>P6 schedule activity <span style="font-size:10px;color:#ef4444;font-weight:700">required</span></label><select id="dpaP6" class="acc-sel wfull"><option value="">\u2014 select P6 activity \u2014</option>'+['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'].map(function(a){return'<option>'+a+'</option>';}).join('')+'</select></div>';f+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-top:4px;display:flex;gap:8px;align-items:flex-start"><span>\ud83d\udccc</span><div style="font-size:11.5px"><b>Date anchoring</b> \u2014 After you submit, 02S will align fabrication milestones to the selected P6 schedule activity. Any adjustment to this date will have downstream impacts on the fabrication lifecycle and will be communicated accordingly.</div></div>';}f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 02S will confirm pricing after you submit.</span></div>';
-    f+=(pk==='logistics'?'<div id="dpa-lt-warn" style="display:none;margin-top:8px;padding:10px 13px;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px"><div style="display:flex;gap:8px;align-items:flex-start"><span style="font-size:16px;flex-shrink:0">&#9888;</span><div><div style="font-size:11.5px;font-weight:600;color:#9a3412;margin-bottom:2px">Expedited request — premium may apply</div><div id="dpa-lt-msg" style="font-size:11px;color:#c2410c;line-height:1.5"></div></div></div></div>':'');
-    f+='</div>';
-    openModal(cfg.addTitle||'Add '+cfg.singular+' demand line', f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpAddSave()">'+( cfg.addBtnLabel||'Add to plan')+'</button></div></div>');
-  }
-  function dpLogCheckLeadTime(){
-    var svcEl=document.getElementById('dpaName');
-    var dtEl=document.getElementById('dpaWhen');
-    var warn=document.getElementById('dpa-lt-warn');
-    if(!warn)return;
-    var svc=svcEl?svcEl.value:'';
-    var dt=dtEl?dtEl.value:'';
-    if(!svc||!dt){warn.style.display='none';return;}
-    var ik=(DP&&DP.logistics&&DP.logistics.intake)||{};
-    var svcs=[].concat(ik.core||[]).concat(ik.archetype||[]).concat(ik.optional||[]);
-    var meta=svcs.find(function(s){return s.service===svc;})||{};
-    var lt=meta.leadTime||0;
-    if(!lt){warn.style.display='none';return;}
-    var needBy=new Date(dt+'T00:00:00');
-    var orderBy=new Date(needBy.getTime()-lt*86400000);
-    if(new Date()>orderBy){
-      warn.style.display='block';
-      var msg=document.getElementById('dpa-lt-msg');
-      if(msg)msg.textContent=svc+' has a '+lt+'-day standard lead time. Your requested date falls within that window — 02S may apply an expedited fee to fulfill on schedule.';
-    }else{
-      warn.style.display='none';
-    }
-  }
-  function dpAddSave(){
-    var pk=dpAddPk, cfg=DP[pk], a=cfg.add;
-    var name=dpGv('dpaName').trim(); if(!name){ toast('Enter a name first'); return; }
-    var row={state:'Planned'};
-    row[a.nameKey]=name;
-    if(a.subKey){ var sc=dpGv('dpaScope').trim(); if(sc)row[a.subKey]=sc; }
-    row[a.qtyKey]=dpGv('dpaQty')||'\u2014';
-    var _dw=dpGv('dpaWhen'),_dwE=dpGv('dpaWhenEnd'),_dwT=dpGv('dpaWhenTime');var _mn2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];function _fmtD(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(v)){var d=new Date(v+'T00:00:00');return _mn2[d.getMonth()]+' '+d.getDate();}if(/^\d{4}-\d{2}$/.test(v)){var p=v.split('-');return _mn2[parseInt(p[1],10)-1]+' '+p[0];}return v;}_dw=_fmtD(_dw);if(_dwE)_dw=(_dw||'')+' \u2013 '+_fmtD(_dwE);else if(_dwT&&_dw)_dw+=(' \u00b7 '+_dwT);row[a.whenKey]=_dw||'\u2014';
-    row.code=dpGv('dpaCode');
-    if(a.costKey)row[a.costKey]='Pending';
-    if(pk==='logistics'){var _rawWhen=document.getElementById('dpaWhen');if(_rawWhen&&_rawWhen.value){var _ik2=(DP&&DP.logistics&&DP.logistics.intake)||{};var _sv2=[].concat(_ik2.core||[]).concat(_ik2.archetype||[]).concat(_ik2.optional||[]);var _me2=_sv2.find(function(s){return s.service===name;})||{};var _lt2=_me2.leadTime||0;if(_lt2){var _nb2=new Date(_rawWhen.value+'T00:00:00');var _ob2=new Date(_nb2.getTime()-_lt2*86400000);if(new Date()>_ob2)row.expeditedPremium=true;}}}
-    cfg.rows.push(row); closeModal(); if(pk==='logistics'){renderLogPlan();}else{renderDP(pk);}
-    toast('Planning line item added \u2014 select and submit to 02S when ready');
-  }
-  function dpSubmit(pk){ var cfg=DP[pk],n=0; var sel=dpSel[pk]||{}; var selIds=Object.keys(sel).map(Number); if(selIds.length){ selIds.forEach(function(i){ if(cfg.rows[i]&&(cfg.rows[i].state==='Draft'||cfg.rows[i].state==='Planned'||cfg.rows[i].state==='Pending pricing')){cfg.rows[i].state='Requested';n++;} }); } else { cfg.rows.forEach(function(r){ if(r.state==='Draft'||r.state==='Planned'){ r.state='Requested'; n++; } }); } dpSel[pk]={}; if(!n){ toast('No planned lines to submit'); return; } if(pk==='profservices')renderProfServicesDP();else if(pk==='logistics')renderLogPlan();else renderDP(pk); toast(n+' line'+(n===1?'':'s')+' submitted to 02S'); }
-  var PS_TAXONOMY={
-    'Mapping':['Subsurface Utility Mapping','Topography & Aerial Imagery'],
-    'Visualization':['Images','Videos','Physical Models','Virtual Reality'],
-    'Geospatial':['Field Engineering','Construction Data Preparation','Construction Automation'],
-    'Owner Furnished Equipment':['Design','Planning','Procurement','GPS Base Setup & Calibration'],
-    'Infrared Thermography':['PreConstruction Scan','Building Enclosure Scan','MEP Systems Scan','Solar Panel Scan','Warranty Closeout Scan'],
-    'Building Automation Services':['Direct Digital Controls (DDC)','Programmable Logic Controls (PLC)']
-  };
-  var PS_L3={
-    'Subsurface Utility Mapping':['General Utility Locating','Utility Testholing','CCTV Pipe Inspection','Surface & Concrete Scanning','Geographic Information Systems','Building Information Modeling (BIM)'],
-    'Topography & Aerial Imagery':['Airborne Thermography','Aerial Imagery','Topographic Survey','Remote Sensing','Airborne Lidar','Aerial Inspection'],
-    'Images':['Logistics Plan Rendering','Architectural Rendering','Diagrammatic Rendering'],
-    'Videos':['4D Animation','Explainer','Drone-Tracked'],
-    'Physical Models':['On Site Map','Video Model'],
-    'Virtual Reality':['Immersive Environment','Interactive Virtual Tour'],
-    'Field Engineering':['Site Control','Construction Layout','As-Built Verification','Aerial Progress Mapping','Utility Locating/Marking','Concrete GPS Scanning','Bathymetry'],
-    'Construction Data Preparation':['Civil Model Processing','Utility Model Processing','Grading File Preparation','Trench File Preparation','Layout File Preparation','Machine Control File Preparation'],
-    'Construction Automation':['GPS Base Setup & Calibration','Grade Control Support','File Machine Support','Trenching Support'],
-    'Direct Digital Controls (DDC)':['New Install \u2014 Building Automation','New Install \u2014 Problem Solving','New Install \u2014 Analytics','New Install \u2014 Training','Existing System \u2014 Problem Solving','Existing System \u2014 Analytics','Existing System \u2014 Training'],
-    'Programmable Logic Controls (PLC)':['New Install \u2014 Building Automation','New Install \u2014 Problem Solving','New Install \u2014 Analytics','New Install \u2014 Training','Existing System \u2014 Problem Solving','Existing System \u2014 Analytics','Existing System \u2014 Training']
-  };
-  var PS_STD_DOCS={
-    'General Utility Locating':{required:['Project limits (including address/coordinates)'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'Utility Testholing':{required:['Project limits (including address/coordinates)'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'CCTV Pipe Inspection':{required:['Project limits (including address/coordinates)'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'Surface & Concrete Scanning':{required:['Project limits (including address/coordinates)'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'Geographic Information Systems':{required:['Project limits (including address/coordinates)','Existing GIS schemas and data dictionary'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'Building Information Modeling (BIM)':{required:['Project limits (including address/coordinates)'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control']},
-    'Airborne Thermography':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Aerial Imagery':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Topographic Survey':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Remote Sensing':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Airborne Lidar':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Aerial Inspection':{required:['Project limits (including address/coordinates)','Existing topographic survey','Existing ALTA survey'],nth:['Existing subsurface utility records','Proposed project plans (demo, utility, building)','Survey control','Property access plan']},
-    'Logistics Plan Rendering':{required:['Site sketch (location of office, equipment, cranes, etc.)'],nth:['Concrete pour plan (if applicable)']},
-    'Architectural Rendering':{required:['3D model or 2D drawing set','Hardscape plan','Material palette'],nth:['Landscape plan','Desired viewpoints']},
-    'Diagrammatic Rendering':{required:['3D model or 2D drawing set'],nth:['Phasing notes','Hardscape plan','Landscape plan','Material palette','Desired viewpoints','Storyboard outline']},
-    '4D Animation':{required:[],nth:['3D model (if applicable)','Supporting documentation','Phasing notes','Hardscape plan','Landscape plan','Material palette','Desired viewpoints']},
-    'Explainer':{required:['3D model or 2D drawing set'],nth:['Supporting documentation','Phasing notes','Hardscape plan','Landscape plan','Material palette','Desired viewpoints','Storyboard outline']},
-    'Drone-Tracked':{required:['3D model or 2D drawing set'],nth:['Phasing notes','Hardscape plan','Landscape plan','Material palette','Desired viewpoints','Storyboard outline']},
-    'On Site Map':{required:['3D model or 2D drawing set'],nth:['Preparation board size','Landscape plan','Material palette']},
-    'Video Model':{required:['3D model or 2D drawing set'],nth:['Hardscape plan','Landscape plan','Material palette']},
-    'Immersive Environment':{required:['3D model or 2D drawing set','Material palette'],nth:['Hardscape plan','Landscape plan','Desired viewpoints','Coordination meeting']},
-    'Interactive Virtual Tour':{required:['3D model or 2D drawing set'],nth:['Hardscape plan','Landscape plan','Material palette']},
-    'Site Control':{required:['Access to construction documents','Project schedule'],nth:[]},
-    'Construction Layout':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting']},
-    'As-Built Verification':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting']},
-    'Aerial Progress Mapping':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting']},
-    'Utility Locating/Marking':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting']},
-    'Concrete GPS Scanning':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Bathymetry':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Civil Model Processing':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Utility Model Processing':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Grading File Preparation':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Trench File Preparation':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Layout File Preparation':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Machine Control File Preparation':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'GPS Base Setup & Calibration':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Grade Control Support':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'File Machine Support':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Trenching Support':{required:['Access to construction documents','Project schedule','Site point of contact'],nth:['Coordination meeting']},
-    'Design':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting','Site point of contact']},
-    'Planning':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting','Site point of contact']},
-    'Procurement':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting','Site point of contact']},
-    'Project Delivery':{required:['Access to construction documents','Project schedule'],nth:['Coordination meeting','Site point of contact']},
-    'PreConstruction Scan':{required:['Specifications','Site access or remote system access'],nth:['Access to construction documents','Project schedule','Coordination meeting']},
-    'Building Enclosure Scan':{required:['Specifications','Site access or remote system access'],nth:['Access to construction documents','Project schedule','Coordination meeting']},
-    'MEP Systems Scan':{required:['Specifications','Site access or remote system access'],nth:['Access to construction documents','Project schedule','Coordination meeting']},
-    'Solar Panel Scan':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'Warranty Closeout Scan':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'New Install \u2014 Building Automation':{required:['2D drawing set (MEP set minimum)','Specifications'],nth:['Site access or remote system access','Project schedule']},
-    'New Install \u2014 Problem Solving':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
-    'New Install \u2014 Analytics':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'New Install \u2014 Training':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
-    'Existing System \u2014 Problem Solving':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']},
-    'Existing System \u2014 Analytics':{required:['Site access or remote system access'],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule']},
-    'Existing System \u2014 Training':{required:[],nth:['2D drawing set (MEP set minimum)','Specifications','Project schedule','Site access or remote system access']}
-  };
-  var PS_SCHEDULE_RANGES={
-    'General Utility Locating':'*2\u20134 weeks','Utility Testholing':'*2\u20134 weeks','CCTV Pipe Inspection':'*2\u20134 weeks','Surface & Concrete Scanning':'*2\u20134 weeks','Geographic Information Systems':'*2\u20134 weeks','Building Information Modeling (BIM)':'Follows project coordination schedule',
-    'Airborne Thermography':'*2\u20134 weeks','Aerial Imagery':'*2\u20134 weeks','Topographic Survey':'*2\u20134 weeks','Remote Sensing':'*2\u20134 weeks','Airborne Lidar':'*2\u20134 weeks','Aerial Inspection':'*2\u20134 weeks',
-    'Logistics Plan Rendering':'*2\u20134 weeks','Architectural Rendering':'*2\u20134 weeks','Diagrammatic Rendering':'*2\u20134 weeks',
-    '4D Animation':'*4\u20136 weeks','Explainer':'*2\u20134 weeks','Drone-Tracked':'*2\u20134 weeks',
-    'On Site Map':'*2\u20134 weeks','Video Model':'*2\u20134 weeks',
-    'Immersive Environment':'*4\u20136 weeks','Interactive Virtual Tour':'*4\u20136 weeks',
-    'Site Control':'Ongoing throughout operations','Construction Layout':'Ongoing throughout operations','As-Built Verification':'Ongoing throughout operations','Aerial Progress Mapping':'Ongoing throughout operations','Utility Locating/Marking':'Ongoing throughout operations','Concrete GPS Scanning':'1\u20132 days per visit','Bathymetry':'*1\u20132 weeks',
-    'Civil Model Processing':'*1\u20132 days','Utility Model Processing':'*1\u20132 days','Grading File Preparation':'*1\u20132 days','Trench File Preparation':'*1\u20132 days','Layout File Preparation':'*1\u20132 days','Machine Control File Preparation':'*1\u20132 days',
-    'GPS Base Setup & Calibration':'*1\u20132 days','Grade Control Support':'Ongoing throughout operations','File Machine Support':'Ongoing throughout operations','Trenching Support':'Ongoing throughout operations',
-    'Design':'Ongoing (design phase)','Planning':'Ongoing throughout project','Procurement':'Ongoing (procurement phase)','Project Delivery':'Ongoing throughout project',
-    'PreConstruction Scan':'*1 week','Building Enclosure Scan':'*1 week','MEP Systems Scan':'*2\u20133 weeks (scope-dependent)','Solar Panel Scan':'*2\u20133 weeks','Warranty Closeout Scan':'*1 week',
-    'New Install \u2014 Building Automation':'Dependent on volume','New Install \u2014 Problem Solving':'Dependent on scope','New Install \u2014 Analytics':'Dependent on scope','New Install \u2014 Training':'*1 week','Existing System \u2014 Problem Solving':'Dependent on scope','Existing System \u2014 Analytics':'Dependent on scope','Existing System \u2014 Training':'*1 week'
-  };
-  function psSearchFilter(val){
-    var drop=document.getElementById('ps-search-drop');if(!drop)return;
-    if(!val||val.length<1){drop.style.display='none';return;}
-    var lv=val.toLowerCase();var matches=[];
-    Object.keys(PS_TAXONOMY).forEach(function(cat){
-      PS_TAXONOMY[cat].forEach(function(l2){
-        if(PS_L3[l2]&&PS_L3[l2].length){
-          PS_L3[l2].forEach(function(svc){
-            if(svc.toLowerCase().indexOf(lv)>=0||l2.toLowerCase().indexOf(lv)>=0||cat.toLowerCase().indexOf(lv)>=0)
-              matches.push({cat:cat,l2:l2,svc:svc});
-          });
-        } else {
-          if(l2.toLowerCase().indexOf(lv)>=0||cat.toLowerCase().indexOf(lv)>=0)
-            matches.push({cat:cat,l2:null,svc:l2});
-        }
-      });
-    });
-    if(!matches.length){drop.innerHTML='<div style="padding:10px 12px;font-size:11.5px;color:var(--g600)">No taxonomy match \u2014 <button style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:11.5px;padding:0;text-decoration:underline" onclick="psFreeTextRoute()">route to 02S team for review</button></div>';drop.style.display='block';return;}
-    window._psSearchMatches=matches;
-    drop.innerHTML=matches.slice(0,8).map(function(m,mi){var path=m.l2?(m.cat+' \u203a '+m.l2):m.cat;return '<div style="padding:8px 12px;border-bottom:1px solid var(--g100);cursor:pointer" onmousedown="event.preventDefault();psSearchSelect('+mi+')" onmouseover="this.style.background=\'var(--g50)\'" onmouseout="this.style.background=\'\'><div style="font-size:12px;font-weight:600;color:var(--g900)">'+m.svc+'</div><div style="font-size:10.5px;color:var(--g500);margin-top:1px">'+path+'</div></div>';}).join('');
-    drop.style.display='block';
-  }
-  function psSearchSelect(mi){
-    var m=(window._psSearchMatches||[])[mi];if(!m)return;
-    openPsAddModal(m.cat,m.svc,m.l2);
-  }
-  function openPsAddService(){
-    var body='<div style="padding:4px 0">';
-    body+='<p style="font-size:12.5px;color:var(--g600);margin-bottom:16px">Is this a brand-new service request, or are you adding scope to an existing order?</p>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-    body+='<button onclick="closeModal();openPsBrowseModal()" style="padding:14px 10px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left">';
-    body+='<div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:4px">\u2795 New request</div>';
-    body+='<div style="font-size:11.5px;color:var(--g500)">Add a new line to the service plan</div>';
-    body+='</button>';
-    body+='<button onclick="closeModal();openPsAmendPicker()" style="padding:14px 10px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left">';
-    body+='<div style="font-size:13px;font-weight:700;color:var(--g900);margin-bottom:4px">\u2197 Add to scope</div>';
-    body+='<div style="font-size:11.5px;color:var(--g500)">Amend or expand an existing order</div>';
-    body+='</button></div>';
-    body+='<div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button></div></div>';
-    openModal('Add service',body);
-  }
-  function openPsAmendPicker(){
-    var rows=DP.profservices&&DP.profservices.rows||[];
-    var eligible=rows.filter(function(r){
-      return ['In Scoping / Pricing','Pending Approval','Approved','Released to Order','Active'].indexOf(r.state)>=0;
-    });
-    if(!eligible.length){
-      openModal('Add to scope','<div style="padding:16px;text-align:center;color:var(--g500);font-size:12.5px">No active orders to amend. Use \'New request\' to start one.</div>');
-      return;
-    }
-    var body='<div style="padding:2px 0"><p style="font-size:12px;color:var(--g600);margin-bottom:12px">Select the existing order to add scope to:</p>';
-    rows.forEach(function(r,ri){
-      if(eligible.indexOf(r)<0)return;
-      body+='<div onclick="closeModal();openPsAmendSubLine('+ri+')" style="padding:10px 12px;border:1px solid var(--g200);border-radius:7px;margin-bottom:7px;cursor:pointer;background:#fff">';
-      body+='<div style="font-size:13px;font-weight:600;color:var(--g900)">'+r.service+'</div>';
-      body+='<div style="font-size:11px;color:var(--g500);margin-top:2px">'+r.state+' \u00b7 '+(r.window||'window TBD')+'</div></div>';
-    });
-    body+='<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button></div></div>';
-    openModal('Add to scope \u2014 select order',body);
-  }
-  function openPsAmendSubLine(parentRi){
-    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[parentRi];if(!r)return;
-    var body='<div style="padding:2px 0">';
-    body+='<div style="padding:8px 12px;background:var(--g50);border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--g700)"><b>'+r.service+'</b> \u2014 adding scope</div>';
-    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Scope addition description</label><input id="ps-amend-desc" type="text" placeholder="Describe the additional scope..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box"></div>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Proposal needed by <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-proposal-due" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"><div style="margin-top:4px;font-size:10px;color:var(--g400)">Deadline for 02S to submit the proposal</div></div><div style="padding:7px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:10.5px;color:#1e40af;line-height:1.6;margin-top:18px"><b>Deliverable-based:</b> date due to you.<br><b>Service-based:</b> service start date.</div></div>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date <span style="color:#dc2626">*</span></label><input id="ps-need-by" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">End date <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-end-date" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div></div>';
-    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">P6 activity anchor <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><select id="ps-p6-anchor" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff;color:var(--g700)"><option value="">Not linked to P6</option><option value="A1001">A1001 — Site survey &amp; boundary control</option><option value="A1050">A1050 — Utility locating &amp; marking</option><option value="A1100">A1100 — Subsurface investigation</option><option value="A1200">A1200 — Topographic survey</option><option value="A1300">A1300 — Aerial imagery / LiDAR</option><option value="A2001">A2001 — BAS commissioning</option><option value="A2050">A2050 — MEP systems scan</option><option value="A3001">A3001 — VDC / BIM coordination</option><option value="A3050">A3050 — 4D simulation &amp; sequencing</option><option value="A4001">A4001 — Geotechnical investigation</option><option value="A5001">A5001 — Special inspections</option><option value="A5050">A5050 — Third-party commissioning</option><option value="other">Other / Not yet in P6</option></select></div>';
-    body+=docsHtml+'<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Supporting documents <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><div style="border:2px dashed var(--g200);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;background:var(--g50)"><input type="file" id="ps-req-files" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange=\"window._psReqFiles=this.files;var lbl=document.getElementById(\'ps-file-lbl\');if(lbl)lbl.textContent=this.files.length?this.files.length+\' file\'+(this.files.length===1?\'\':\'s\')+\' selected\':\'Drop files or click to browse\'\"><span style="font-size:20px">&#128206;</span><span id="ps-file-lbl" style="font-size:12px;color:var(--g500)">Drop files or click to browse</span></div></div>'+'<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button id="ps-submit-btn" class="btn btn-dark btn-sm" onclick="psSvcSubmit()">Add to plan &#8594;</button></div></div>';
-    window._psAddCat=cat;window._psAddSvc=svc;window._psAddL2=l2||null;
-    openModal('Add service \u00b7 '+svc,body);
-  }
-  function psSvcSubmit(){var cat=window._psAddCat||'Other';var svc=window._psAddSvc||'Service';var nb=document.getElementById('ps-need-by');var p6=document.getElementById('ps-p6-anchor');if(!nb||!nb.value){alert('Need by date is required.');return;}var fmtD=function(v){if(!v)return '';var p=v.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+p[0];};var _ed=document.getElementById('ps-end-date');var win='Need by '+fmtD(nb.value)+(_ed&&_ed.value?' \u2013 '+fmtD(_ed.value):'');var p6v=p6&&p6.value.trim();if(p6v)win+=' \u00b7 P6: '+p6v;var _pd=document.getElementById('ps-proposal-due');var _pdFmt=_pd&&_pd.value?fmtD(_pd.value):null;var allDocs=Object.values(window._psDocStatus||{});var docsOk=!allDocs.length||allDocs.every(Boolean);var state=docsOk?'Requested':'In Scoping / Pricing';var _reqRow={role:svc,service:svc,category:cat,firm:'TBD',qty:'TBD',window:win,code:'TBD',cost:'TBD',state:state,proposalDue:_pdFmt||undefined,attachments:[]};DP.profservices.rows.push(_reqRow);window._psCpRows=(window._psCpRows||[]);window._psCpRows.push(_reqRow);closeModal();renderProfServicesDP();var _dm='<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px">';_dm+='<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px;flex-shrink:0"><path d="M20 6L9 17l-5-5"/></svg>';_dm+='<div style="flex:1">';_dm+='<div style="font-size:13px;font-weight:600;color:#15803d">'+svc+' added</div>';_dm+='<div style="font-size:11px;color:#166534;margin-top:1px">'+(docsOk?'Request submitted to 02S':'In scoping \u2014 add required docs to confirm')+'</div></div>';_dm+='<button class="btn btn-dark btn-sm" style="flex-shrink:0" onclick="closeModal();openPsBrowseModal()">+ Add another</button>';_dm+='<button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="closeModal()">Done</button>';_dm+='</div>';openModal('',_dm);}
-  function psFreeTextRoute(){
-    var inp=document.getElementById('ps-svc-search');var val=inp?inp.value.trim():'';
-    var body='<div style="padding:2px 0"><p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your request will be sent to the 02S professional services team. They\'ll review and follow up to clarify requirements and match to available services.</p><div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">What do you need?</label><textarea id="ps-ft-input" rows="3" placeholder="Describe the service you\'re looking for..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff">'+val+'</textarea></div><div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-dark btn-sm" onclick="psFreeTextSubmit()">Route to 02S team →</button></div></div>';
-    openModal('Unclassified service request',body);
-  }
-  function psFreeTextSubmit(){var el=document.getElementById('ps-ft-input');var desc=el?el.value.trim():'';DP.profservices.rows.push({role:desc||'Unclassified request',service:desc||'Unclassified request',category:'Other',firm:'TBD',qty:'TBD',window:'TBD',code:'TBD',cost:'TBD',state:'Requested',attachments:[]});closeModal();renderProfServicesDP();toast('Request routed to 02S professional services team');}
-  function _openPsEmergency(){
-    if(!window._ccPsEmgReqs)window._ccPsEmgReqs=[];
-    var body='<div style="padding:4px 0">';
-    body+='<div style="padding:10px 14px;background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start">';
-    body+='<span style="font-size:22px">⚡</span>';
-    body+='<div><div style="font-size:13px;font-weight:700;color:#dc2626">Emergency / Quick React</div>';
-    body+='<div style="font-size:11.5px;color:#991b1b;margin-top:2px">02S responds ASAP · billed hourly (T&amp;M). No proposal step.</div></div>';
-    body+='</div>';
-    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Describe the service you need <span style="color:#dc2626">*</span></label>';
-    body+='<textarea id="ps-emg-desc" rows="4" placeholder="Describe what emergency service you need from the professional services team — include what’s happening and any time constraints." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea></div>';
-    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
-    body+='<button class="btn btn-sm" style="background:#dc2626;color:#fff;border:none;padding:5px 14px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer" onclick="_psEmgSubmit()">Send emergency request ⚡</button>';
-    body+='</div></div>';
-    openModal('Emergency request',body);
-  }
-  function _psEmgSubmit(){
-    var desc=(document.getElementById('ps-emg-desc')||{}).value||'';
-    if(!desc.trim()){alert('Please describe the emergency.');return;}
-    if(!window._ccPsEmgReqs)window._ccPsEmgReqs=[];
-    var now=new Date();var ts=now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
-    window._ccPsEmgReqs.unshift({desc:desc.trim(),proj:CURRENT_PROJ||'Hercules Solar',ts:ts});
-    closeModal();
-    alert('⚡ Emergency request sent. The 02S team has been notified.');
-    if(typeof renderCcProfServices==='function')renderCcProfServices();
-    if(typeof renderProfServicesDP==='function')renderProfServicesDP();
-  }
-  function _ccPsEmgReply(ri){
-    var req=(window._ccPsEmgReqs||[])[ri];if(!req)return;
-    var body='<div style="padding:4px 0">';
-    body+='<p style="font-size:12.5px;color:var(--g600);margin-bottom:12px">Reply to: <b>'+req.proj+'</b> emergency request</p>';
-    body+='<textarea id="emg-reply-txt" rows="4" placeholder="Your response to the project team..." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box"></textarea>';
-    body+='<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
-    body+='<button class="btn btn-dark btn-sm" onclick="closeModal();alert('+'\'Reply sent to project team.\')">Send reply</button>';
-    body+='</div></div>';
-    openModal('Reply to emergency — '+req.proj,body);
-  }
-  function _ccPsEmgAddScope(ri){
-    var req=(window._ccPsEmgReqs||[])[ri];if(!req)return;
-    openPsBrowseModal&&openPsBrowseModal();
-  }
-  function _ccPsEmgReplyInline(ri){
-    var _demos=[{proj:'Hercules Solar + BESS',desc:'Drone malfunction during site survey — GPS base station inoperative. Need immediate replacement unit and re-calibration support on site.',ts:'9:42 AM'}];
-    var req=(window._ccPsEmgReqs&&window._ccPsEmgReqs[ri])||_demos[0];
-    var body='<div style="padding:4px 0">';
-    body+='<p style="font-size:12.5px;color:var(--g600);margin-bottom:4px">Responding to: <b>'+req.proj+'</b></p>';
-    body+='<p style="font-size:12px;color:var(--g400);margin-bottom:12px;font-style:italic">'+req.desc+'</p>';
-    body+='<textarea id="cc-emg-reply" rows="4" placeholder="Write your response to the project team..." style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:5px;font-size:12.5px;box-sizing:border-box;resize:vertical"></textarea>';
-    body+='<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>';
-    body+='<button class="btn btn-dark btn-sm" onclick="var t=document.getElementById(\'cc-emg-reply\');if(t&&t.value.trim()){closeModal();toast(\'Reply sent to project team.\');}else{alert(\'Please write a reply.\');}">Send reply</button>';
-    body+='</div></div>';
-    openModal('Reply to emergency — '+req.proj,body);
-  }
-  function openPsAddModal(cat,svc,l2){
-    var drop=document.getElementById('ps-search-drop');if(drop)drop.style.display='none';
-    var inp=document.getElementById('ps-svc-search');if(inp)inp.value='';
-    var docsDef=PS_STD_DOCS[svc]||{required:[],nth:[]};
-    var reqDocs=docsDef.required||[];var nthDocs=docsDef.nth||[];
-    var sched=PS_SCHEDULE_RANGES&&PS_SCHEDULE_RANGES[svc];
-    window._psDocStatus={};reqDocs.forEach(function(d){window._psDocStatus[d]=false;});
-    var breadcrumb=l2?(cat+' › '+l2+' › '+svc):(cat+' › '+svc);
-    var docsHtml='';
-    if(reqDocs.length||nthDocs.length){
-      docsHtml='<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--g100)">';
-      if(reqDocs.length){
-        docsHtml+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin-bottom:6px">Required to price</div>';
-        docsHtml+='<div style="font-size:11px;color:var(--g600);margin-bottom:8px;line-height:1.5">Submit before 02S can finalize pricing. You can request now — status stays <strong>Pending pricing</strong> until all required docs are in.</div>';
-        docsHtml+='<div id="ps-req-docs" style="display:flex;flex-direction:column;gap:6px">';
-        docsHtml+=reqDocs.map(function(d,di){return '<div id="psdoc-'+di+'" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border:1px solid var(--g200);border-radius:6px;background:#fff"><div style="display:flex;align-items:center;gap:8px"><span id="psdoc-chk-'+di+'" style="width:16px;height:16px;border-radius:50%;border:2px solid var(--g300);display:inline-block;flex-shrink:0"></span><span style="font-size:11.5px;color:var(--g800)">'+d+'</span></div><button style="font-size:11px;padding:3px 10px;border:1px solid var(--g200);border-radius:4px;cursor:pointer;background:#fff;color:var(--g700)" onclick="psMarkDocAttached('+di+',this,'+JSON.stringify(d)+')">Attach</button></div>';}).join('');
-        docsHtml+='</div>';
-      }
-      if(nthDocs.length){
-        docsHtml+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-top:'+(reqDocs.length?'10px':'0')+';margin-bottom:5px">Nice to have — submit if available</div>';
-        docsHtml+=nthDocs.map(function(d){return '<div style="font-size:11.5px;color:var(--g500);padding:3px 0 3px 8px;border-left:2px solid var(--g100)">▪ '+d+'</div>';}).join('');
-      }
-      docsHtml+='</div>';
-    }
-    var body='<div style="padding:2px 0"><div style="font-size:11.5px;color:var(--g600);margin-bottom:12px;padding:6px 10px;background:var(--g50);border-radius:5px">'+breadcrumb+'</div>';
-    body+='<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Cost code</label><input type="text" placeholder="e.g. 0100-0100-0000-0001" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Proposal needed by <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-proposal-due" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"><div style="margin-top:4px;font-size:10px;color:var(--g400)">Deadline for 02S to submit the proposal</div></div><div style="padding:7px 10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;font-size:10.5px;color:#1e40af;line-height:1.6;margin-top:18px"><b>Deliverable-based:</b> date due to you.<br><b>Service-based:</b> service start date.</div></div>';
-    body+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">Need by date <span style="color:#dc2626">*</span></label><input id="ps-need-by" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div><div><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">End date <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><input id="ps-end-date" type="date" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff"></div></div>';
-    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:3px">P6 activity anchor <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><select id="ps-p6-anchor" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;background:#fff;color:var(--g700)"><option value="">Not linked to P6</option><option value="A1001">A1001 — Site survey &amp; boundary control</option><option value="A1050">A1050 — Utility locating &amp; marking</option><option value="A1100">A1100 — Subsurface investigation</option><option value="A1200">A1200 — Topographic survey</option><option value="A1300">A1300 — Aerial imagery / LiDAR</option><option value="A2001">A2001 — BAS commissioning</option><option value="A2050">A2050 — MEP systems scan</option><option value="A3001">A3001 — VDC / BIM coordination</option><option value="A3050">A3050 — 4D simulation &amp; sequencing</option><option value="A4001">A4001 — Geotechnical investigation</option><option value="A5001">A5001 — Special inspections</option><option value="A5050">A5050 — Third-party commissioning</option><option value="other">Other / Not yet in P6</option></select></div>';
-    body+=docsHtml+'<div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Supporting documents <span style="font-size:10px;font-weight:400;color:var(--g400)">(optional)</span></label><div style="border:2px dashed var(--g200);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;background:var(--g50)"><input type="file" id="ps-req-files" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange="window._psReqFiles=this.files;var lbl=document.getElementById(\'ps-file-lbl\');if(lbl)lbl.textContent=this.files.length?this.files.length+\' file\'+(this.files.length===1?\'\':\'s\')+\' selected\':\'Drop files or click to browse\'"><span style="font-size:20px">&#128206;</span><span id="ps-file-lbl" style="font-size:12px;color:var(--g500)">Drop files or click to browse</span></div></div>';
-    body+='<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button><button id="ps-submit-btn" class="btn btn-dark btn-sm" onclick="psSvcSubmit()">Add to plan &#8594;</button></div></div>';
-    window._psAddCat=cat;window._psAddSvc=svc;window._psAddL2=l2||null;
-    openModal('Add service · '+svc,body);
-  }
-  function openPsDeliverables(ri){
-    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r)return;
-    if(!r.deliverables)r.deliverables=[];
-    var body='<div style="padding:2px 0">';
-    var hasOff=r.deliverables.some(function(d){return d.track==='off_track';});
-    if(hasOff)body+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:#dc2626"><b>⚠ Off-track deliverable flagged by 02S</b> — review notes below.</div>';
-    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:10px">Deliverables uploaded and tracked by the 02S team.</p>';
-    if(r.deliverables.length){
-      body+='<div style="margin-bottom:12px">';
-      r.deliverables.forEach(function(d,di){
-        var isOff=d.track==='off_track';
-        var tBg=isOff?'#fef2f2':'#f0fdf4';var tCol=isOff?'#dc2626':'#16a34a';
-        body+='<div style="border:1px solid '+(isOff?'#fca5a5':'var(--g150)')+';border-radius:6px;padding:9px 12px;margin-bottom:6px;background:'+(isOff?'#fffafa':'var(--g50)')+'">';
-        body+='<div>';
-        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">🔗 '+d.name+'</a>';
-        else body+='<span style="font-size:12px;font-weight:500;color:var(--g800)">📄 '+d.name+'</span>';
-        body+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
-        if(d.addedAt)body+='<span style="font-size:10px;color:var(--g400)">Added '+d.addedAt+'</span>';
-        if(d.dueDate)body+='<span style="font-size:10px;color:var(--g600)">Due '+d.dueDate+'</span>';
-        if(d.track)body+='<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:'+tBg+';color:'+tCol+'">'+(isOff?'⚠ Off track':'✓ On track')+'</span>';
-        body+='</div>';
-        if(d.trackNote&&isOff)body+='<div style="font-size:11px;color:#dc2626;margin-top:3px;font-style:italic">'+d.trackNote+'</div>';
-        body+='</div></div>';
-      });
-      body+='</div>';
-    }else{
-      body+='<div style="padding:18px 0;text-align:center;color:var(--g400);font-size:12.5px">No deliverables uploaded by 02S yet.</div>';
-    }
-    body+='<div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
-    openModal('Deliverables — '+r.service,body);
-  }
-  function psDlvrAddFiles(ri,files){
-    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r||!files||!files.length)return;
-    if(!r.deliverables)r.deliverables=[];
-    var added=0;
-    Array.from(files).forEach(function(f){
-      r.deliverables.push({name:f.name,url:null,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-      added++;
-    });
-    closeModal();renderProfServicesDP();
-    toast(added+' file'+(added===1?'':'s')+' added \u2014 '+r.service);
-  }
-  function ccPsDlvrAddFiles(proj,rowIdx,files){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[rowIdx];if(!row||!files||!files.length)return;
-    if(!row.deliverables)row.deliverables=[];
-    var added=0;
-    Array.from(files).forEach(function(f){
-      row.deliverables.push({name:f.name,url:null,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-      added++;
-    });
-    closeModal();renderCcProfServices();
-    toast(added+' file'+(added===1?'':'s')+' added \u2014 '+row.item);
-  }
-  function psDlvrAddLink(ri){
-    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];if(!r)return;
-    var url=(document.getElementById('ps-dlvr-link')||{}).value||'';
-    if(!url.trim()){alert('Please enter a URL.');return;}
-    if(!r.deliverables)r.deliverables=[];
-    var name=url.replace(/^https?:\/\//,'').split('/').pop()||url;
-    r.deliverables.push({name:name,url:url,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-    closeModal();openPsDeliverables(ri);
-  }
-  function psDlvrRemove(ri,di){
-    var r=DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri];
-    if(!r||!r.deliverables)return;
-    r.deliverables.splice(di,1);
-    closeModal();renderProfServicesDP();
-  }
-  function ccPsViewDeliverables(proj,rowIdx){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[rowIdx];if(!row)return;
-    if(!row.deliverables)row.deliverables=[];
-    var body='<div style="padding:2px 0">';
-    var hasOff=row.deliverables.some(function(d){return d.track==='off_track';});
-    if(hasOff)body+='<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:11.5px;color:#dc2626"><b>⚠ Off-track deliverables</b> — CP project team has been notified.</div>';
-    body+='<p style="font-size:12px;color:var(--g600);margin-bottom:10px">Track deliverables against due dates and flag on/off track status.</p>';
-    if(row.deliverables.length){
-      body+='<div style="margin-bottom:12px">';
-      row.deliverables.forEach(function(d,di){
-        var isOff=d.track==='off_track';
-        var tBg=isOff?'#fef2f2':'#f0fdf4';var tCol=isOff?'#dc2626':'#16a34a';
-        body+='<div style="border:1px solid '+(isOff?'#fca5a5':'var(--g200)')+';border-radius:6px;padding:9px 12px;margin-bottom:6px;background:'+(isOff?'#fffafa':'#fff')+'">';
-        body+='<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">';
-        body+='<div style="flex:1">';
-        if(d.url)body+='<a href="'+d.url+'" target="_blank" style="font-size:12px;color:#0891b2;font-weight:500;text-decoration:none">🔗 '+d.name+'</a>';
-        else body+='<span style="font-size:12px;color:var(--g800);font-weight:500">📄 '+d.name+'</span>';
-        body+='<div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap">';
-        if(d.addedAt)body+='<span style="font-size:10px;color:var(--g400)">Added '+d.addedAt+'</span>';
-        if(d.dueDate)body+='<span style="font-size:10px;color:var(--g600)">Due '+d.dueDate+'</span>';
-        if(d.track)body+='<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:'+tBg+';color:'+tCol+'">'+(isOff?'⚠ Off track':'✓ On track')+'</span>';
-        body+='</div>';
-        if(d.trackNote&&isOff)body+='<div style="font-size:11px;color:#dc2626;margin-top:3px;font-style:italic">'+d.trackNote+'</div>';
-        body+='</div>';
-        body+='<button onclick="ccPsDlvrRemove(\''+proj+'\','+rowIdx+','+di+')" style="background:none;border:none;cursor:pointer;color:var(--g400);font-size:14px;padding:2px 5px">×</button>';
-        body+='</div></div>';
-      });
-      body+='</div>';
-    }else{
-      body+='<div style="padding:14px;text-align:center;color:var(--g400);font-size:12px;margin-bottom:10px">No deliverables yet.</div>';
-    }
-    body+='<div style="display:flex;gap:8px;justify-content:space-between">';
-    body+='<button class="btn btn-dark btn-sm" onclick="closeModal();openCcPsDlvrAdd(\''+proj+'\','+rowIdx+')">+ Add deliverable</button>';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
-    openModal('Deliverables — '+row.item,body);
-  }
-  function ccPsDlvrAddLink(proj,rowIdx){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[rowIdx];if(!row)return;
-    var url=(document.getElementById('ccps-dlvr-link')||{}).value||'';
-    if(!url.trim()){alert('Please enter a URL.');return;}
-    if(!row.deliverables)row.deliverables=[];
-    var name=url.replace(/^https?:\/\//,'').split('/').pop()||url;
-    row.deliverables.push({name:name,url:url,addedAt:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
-    closeModal();ccPsViewDeliverables(proj,rowIdx);
-  }
-  function ccPsDlvrRemove(proj,rowIdx,di){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[rowIdx];if(!row||!row.deliverables)return;
-    row.deliverables.splice(di,1);
-    closeModal();renderCcProfServices();
-  }
-  function openPsDocsModal(ri){
-    var r=DP.profservices.rows[ri];if(!r)return;
-    var cat=r.category||'Other';var svcKey=r.service||r.role||cat;var docsDef=PS_STD_DOCS[svcKey]||{required:[],nth:[]};var stdDocs=(docsDef.required||[]).concat(docsDef.nth||[]);var submitted=r.attachments||[];
-    var body='<div style="padding:2px 0">';
-    if(stdDocs.length){body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:8px">'+cat+' · Required documents</div>';stdDocs.forEach(function(doc){var found=submitted.find(function(s){return s.name&&s.name.toLowerCase().indexOf(doc.split(' ')[0].toLowerCase())>=0;});body+='<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--g100)"><span style="font-size:14px;color:'+(found?'#10b981':'#d1d5db')+'">'+(found?'&#10003;':'&#9711;')+'</span><span style="font-size:12px;color:var(--g800);flex:1">'+doc+'</span></div>';});}
-    if(submitted.length){var _sg={};submitted.forEach(function(d){if(!_sg[d.type])_sg[d.type]=[];_sg[d.type].push(d);});body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);margin:12px 0 6px">Submitted documents</div><div style="border-top:1px solid var(--g100);padding-top:10px">';Object.keys(_sg).forEach(function(type){body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:rgba(99,102,241,.85);margin:6px 0 3px">'+type+'</div>';_sg[type].forEach(function(d){body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--g50);border-radius:4px;border:1px solid var(--g100);margin-bottom:3px"><div style="min-width:0;flex:1"><span style="font-size:11.5px;color:var(--g900)">'+d.name+'</span><span style="font-size:10px;color:var(--g400);margin-left:8px">'+d.ref+'</span></div><button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px" onclick="event.stopPropagation();dpDocDownload(\''+d.ref+'\')">↓ PDF</button></div>';});});body+='</div>';}
-    body+='<div style="margin-top:12px;border-top:1px solid var(--g100);padding-top:12px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Upload documents</div><div style="border:2px dashed var(--g200);border-radius:6px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;position:relative;background:var(--g50)"><input type="file" id="ps-docs-upload" multiple style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%" onchange=\"var lbl=document.getElementById(\'ps-docs-upload-lbl\');if(lbl)lbl.textContent=this.files.length?this.files.length+\' file\'+(this.files.length===1?\'\':\'s\')+\' selected\':\'Drop files or click to browse\'\"><span style="font-size:18px">&#128206;</span><span id="ps-docs-upload-lbl" style="font-size:12px;color:var(--g500)">Drop files or click to browse</span></div></div>'+'<div style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button></div></div>';
-    openModal('Documents · '+(r.service||r.role||''),body);
-  }
-
-
-  function psMarkDocAttached(di,btn,docName){
-    if(!window._psDocStatus)window._psDocStatus={};
-    window._psDocStatus[docName]=true;
-    var chk=document.getElementById('psdoc-chk-'+di);
-    if(chk){chk.style.background='#10b981';chk.style.borderColor='#10b981';chk.innerHTML='<svg viewBox="0 0 12 12" style="width:10px;height:10px;display:block;margin:1px auto" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>';}
-    var row=document.getElementById('psdoc-'+di);if(row)row.style.background='#f0fdf4';
-    btn.textContent='Attached';btn.style.background='#ecfdf5';btn.style.borderColor='#10b981';btn.style.color='#059669';btn.disabled=true;
-    var allDone=Object.values(window._psDocStatus).every(function(v){return v;});
-    var sub=document.getElementById('ps-submit-btn');
-    if(sub&&allDone){sub.style.opacity='1';sub.style.pointerEvents='auto';}
-  }
-
-  function psDblClickRow(ri){
-    var props=DP.profservices&&DP.profservices.proposals||[];
-    for(var i=0;i<props.length;i++){if(props[i].rowIdx===ri&&props[i].state!=='Approved'){openPsProposalModal(i);return;}}
-    openPsDocsModal(ri);
-  }
-  function ccPsNotifyDocs(proj,ri){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[ri];if(!row)return;
-    if(!row.docNotified)row.docNotified=true;
-    renderCcProfServices();
-    toast('CP team notified to upload missing documents for '+row.item);
-  }
-  function ccPsChangeRowStatus(proj,ri,newState){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    if(!rows||!rows[ri])return;
-    rows[ri].state=newState;
-    if(proj==='hercules'&&DP.profservices&&DP.profservices.rows&&DP.profservices.rows[ri]){
-      DP.profservices.rows[ri].state=newState;
-    }
-    renderCcProfServices();
-    toast('Status updated — CP view reflects change');
-  }
-  function ccPsSetActStatus(proj,ri,ai,newSt){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    if(!rows||!rows[ri])return;
-    var act=rows[ri].acts&&rows[ri].acts[ai];if(!act)return;
-    act.st=newSt;
-    renderCcProfServices();
-  }
-  function psShowBrowseHint(){
-    var drop=document.getElementById('ps-search-drop');if(!drop)return;
-    var inp=document.getElementById('ps-svc-search');var val=inp?inp.value:'';
-    if(val.length>0){psSearchFilter(val);return;}
-    drop.innerHTML='<div style="padding:10px 12px;font-size:11.5px;color:var(--g600)">Type to search, or <span style="color:#2563eb;cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'ps-search-drop\').style.display=\'none\';openPsBrowseModal()">browse all categories</span></div>';
-    drop.style.display='block';
-  }
-  function openPsBrowseModal(){
-    var cats=Object.keys(PS_TAXONOMY);
-    var body='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 0">';
-    cats.forEach(function(cat,ci){
-      var svcs=PS_TAXONOMY[cat];
-      body+='<div style="border:1px solid var(--g200);border-radius:8px;padding:12px;cursor:pointer" onclick="psBrowseShowCat('+ci+')">';
-      body+='<div style="font-size:12.5px;font-weight:700;color:var(--g900);margin-bottom:5px">'+cat+'</div>';
-      body+='<div style="font-size:10.5px;color:var(--g500);margin-bottom:6px">'+svcs.length+' service'+(svcs.length===1?'':'s')+'</div>';
-      body+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
-      svcs.slice(0,3).forEach(function(s){body+='<span style="font-size:10px;padding:2px 6px;background:var(--g50);border:1px solid var(--g200);border-radius:3px;color:var(--g600)">'+s+'</span>';});
-      if(svcs.length>3)body+='<span style="font-size:10px;color:var(--g400)">+more</span>';
-      body+='</div></div>';
-    });
-    body+='</div><div style="margin-top:14px;border-top:1px solid var(--g100);padding-top:14px;display:flex;align-items:center;justify-content:space-between">';
-    body+='<span style="font-size:11px;color:var(--g500)">Not sure what you need?</span>';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal();psFreeTextRoute()">\u2192 Describe to 02S team</button>';
-    body+='</div>';
-    
-    
-
-    openModal('Browse 02S professional service offerings',body);
-  }
-  function psBrowseShowCat(ci){
-    var cats=Object.keys(PS_TAXONOMY);var cat=cats[ci];
-    var l2s=PS_TAXONOMY[cat]||[];
-    var body='<div style="padding:2px 0">';
-    body+='<button style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;margin-bottom:12px;padding:0" onclick="closeModal();openPsBrowseModal()">\u2190 All categories</button>';
-    body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:10px">'+cat+'</div>';
-    l2s.forEach(function(l2,li){
-      var hasL3=PS_L3[l2]&&PS_L3[l2].length>0;
-      body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--g200);border-radius:6px;margin-bottom:6px">';
-      body+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+l2+'</div>';
-      if(hasL3)body+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">'+PS_L3[l2].length+' service types</div>';
-      body+='</div>';
-      if(hasL3){
-        body+='<button class="btn btn-ghost btn-sm" onclick="psBrowseShowL2('+ci+','+li+')">Browse \u203a</button>';
-      } else {
-        body+='<button class="btn btn-dark btn-sm" onclick="psBrowseSelectSvc('+ci+','+li+',-1)">\u2192 Add</button>';
-      }
-      body+='</div>';
-    });
-    body+='<div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="closeModal();openPsBrowseModal()">Back</button></div></div>';
-    openModal(cat,body);
-  }
-  function psBrowseShowL2(ci,li){
-    var cats=Object.keys(PS_TAXONOMY);var cat=cats[ci];
-    var l2=PS_TAXONOMY[cat][li];var svcs=PS_L3[l2]||[];
-    var body='<div style="padding:2px 0">';
-    body+='<button style="background:none;border:none;cursor:pointer;color:#2563eb;font-size:12px;margin-bottom:4px;padding:0" onclick="psBrowseShowCat('+ci+')">\u2190 Back to '+cat+'</button>';
-    body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin:8px 0 10px">'+l2+'</div>';
-    svcs.forEach(function(svc,si){
-      var sched=PS_SCHEDULE_RANGES&&PS_SCHEDULE_RANGES[svc];
-      body+='<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--g200);border-radius:6px;margin-bottom:6px">';
-      body+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+svc+'</div>';
-      
-      body+='</div>';
-      body+='<button class="btn btn-dark btn-sm" onclick="psBrowseSelectSvc('+ci+','+li+','+si+')">\u2192 Add</button>';
-      body+='</div>';
-    });
-    body+='<div style="margin-top:14px;display:flex;justify-content:flex-end"><button class="btn btn-ghost btn-sm" onclick="psBrowseShowCat('+ci+')">Back</button></div></div>';
-    openModal(cat+' \u203a '+l2,body);
-  }
-  function psBrowseSelectSvc(ci,li,si){
-    var cats=Object.keys(PS_TAXONOMY);var cat=cats[ci];
-    var l2=PS_TAXONOMY[cat][li];
-    var svc=(si>=0&&PS_L3[l2])?PS_L3[l2][si]:l2;
-    var l2ctx=(si>=0)?l2:null;
-    closeModal();openPsAddModal(cat,svc,l2ctx);
-  }
-  function openPsProposalModal(idx){
-    var props=DP.profservices&&DP.profservices.proposals;
-    var prop=props&&props[idx];if(!prop)return;
-    var body='<div style="padding:2px 0"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">';
-    [['Proposed firm',prop.firm],['Cost / rate',prop.cost],['Engagement window',prop.window],['Sent',prop.sent],['Expires',prop.expires||'\u2014']].forEach(function(f){
-      body+='<div><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:2px">'+f[0]+'</div>';
-      body+='<div style="font-size:12.5px;font-weight:500;color:var(--g900)">'+f[1]+'</div></div>';
-    });
-    body+='</div>';
-    if(prop.scope){
-      body+='<div style="background:var(--g50);border-radius:7px;padding:10px 12px;margin-bottom:14px">';
-      body+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:5px">Scope</div>';
-      body+='<div style="font-size:12px;color:var(--g700);line-height:1.6">'+prop.scope+'</div></div>';
-    }
-    if(prop.attachments&&prop.attachments.length){
-      body+='<div style="margin-bottom:14px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--g500);margin-bottom:6px">Documents</div>'+attachmentsHTML(prop.attachments)+'</div>';
-    }
-    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>';
-    body+='<button class="btn btn-ghost btn-sm" onclick="cpPsAskQuestion('+idx+')">Ask a question</button>';
-    body+='<button class="btn btn-ghost btn-sm" onclick="psSendBack('+idx+')">Send back with comments</button>';
-    body+='<button class="btn btn-dark btn-sm" onclick="approvePsProposal('+idx+')">Approve \u0026 activate \u2192</button>';
-    body+='</div></div>';
-    openModal('Proposal \u2014 '+prop.service,body);
-  }
-  function approvePsProposal(idx){
-    var props=DP.profservices&&DP.profservices.proposals;
-    var prop=props&&props[idx];if(!prop)return;
-    var rows=DP.profservices.rows;
-    if(rows&&rows[prop.rowIdx]){
-      rows[prop.rowIdx].state='Active';
-      if(prop.firm)rows[prop.rowIdx].firm=prop.firm;
-      if(prop.cost)rows[prop.rowIdx].cost=prop.cost;
-      if(prop.window)rows[prop.rowIdx].window=prop.window;
-    }
-    prop.state='Approved';
-    closeModal();renderProfServicesDP();
-    toast('Service activated \u2014 '+prop.service);
-  }
-  function psSendBack(idx){
-    var props=DP.profservices&&DP.profservices.proposals;
-    var prop=props&&props[idx];if(!prop)return;
-    closeModal();
-    openModal('Send back \u2014 '+prop.service,
-      '<div style="padding:2px 0"><p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Describe what needs to change so 02S can revise the proposal.</p>'
-      +'<textarea id="ps-sb-note" rows="3" placeholder="e.g. Please include MEP systems commissioning in scope..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
-      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
-      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-dark btn-sm" onclick="(function(){closeModal();toast(\'Feedback sent to 02S team\');})()">Send to 02S \u2192</button>'
-      +'</div></div>');
-  }
-
-  function cpPsAskQuestion(idx){
-    var props=DP.profservices&&DP.profservices.proposals;
-    var prop=props&&props[idx];if(!prop)return;
-    closeModal();
-    openModal('Ask a question \u2014 '+prop.service,
-      '<div style="padding:2px 0">'
-      +'<p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your question will be sent to 02S and will appear in their notification feed.</p>'
-      +'<textarea id="cp-ps-ask-txt" rows="3" placeholder="e.g. Does the scope include grid interconnect testing?" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
-      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
-      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-dark btn-sm" onclick="cpPsAskQuestionSubmit('+idx+')">Send to 02S \u2192</button>'
-      +'</div></div>');
-  }
-  function cpPsAskQuestionSubmit(idx){
-    var el=document.getElementById('cp-ps-ask-txt');
-    var txt=el?el.value.trim():'';
-    if(!txt)return;
-    var props=DP.profservices&&DP.profservices.proposals;
-    var prop=props&&props[idx];
-    var pnames={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vdc14:'VDC14'};
-    window._ccNudges=window._ccNudges||[];
-    window._ccNudges.unshift({id:'nudge-ps-'+Date.now(),svc:prop?prop.service:'Proposal question',project:prop?(pnames[prop.proj]||prop.proj):'',question:txt,from:'GC Ops',ts:'Just now',answered:false});
-    closeModal();
-    toast('Question sent to 02S team');
-  }
-
-  function ccPsAskCp(proj,ri){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[ri];if(!row)return;
-    openModal('Ask a question \u2014 '+row.item,
-      '<div style="padding:2px 0">'
-      +'<p style="font-size:12.5px;color:var(--g700);margin-bottom:12px">Your question will be sent to the project team and will appear in their notification feed.</p>'
-      +'<textarea id="cc-ps-ask-txt" rows="3" placeholder="e.g. Can you confirm the headcount and mobilization window?" style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea>'
-      +'<div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">'
-      +'<button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>'
-      +'<button class="btn btn-dark btn-sm" onclick="ccPsAskCpSubmit(\''+proj+'\','+ri+')">Send to project team \u2192</button>'
-      +'</div></div>');
-  }
-  function openCcPsCloseSvcModal(proj,ri){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[ri];if(!row)return;
-    var body='<div style="padding:2px 0">';
-    body+='<div style="font-size:12.5px;color:var(--g700);margin-bottom:14px">Close or cancel the request for <b>'+row.item+'</b>? The project team will be notified.</div>';
-    body+='<div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:var(--g700);display:block;margin-bottom:4px">Reason (optional)</label>';
-    body+='<textarea id="ccps-close-reason" rows="3" placeholder="e.g. Out of scope, budget not approved..." style="width:100%;padding:7px 9px;border:1px solid var(--g200);border-radius:5px;font-size:12px;box-sizing:border-box;resize:vertical"></textarea></div>';
-    body+='<div style="display:flex;gap:8px;justify-content:flex-end">';
-    body+='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Keep open</button>';
-    body+='<button class="btn btn-dark btn-sm" onclick="ccPsCloseSvc(\''+proj+'\','+ri+')">Confirm close / cancel</button>';
-    body+='</div></div>';
-    openModal('Close / Cancel \u2014 '+row.item,body);
-  }
-  function ccPsCloseSvc(proj,ri){
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    if(!rows||!rows[ri])return;
-    var reason=(document.getElementById('ccps-close-reason')||{}).value||'';
-    rows[ri].state='Completed / Closed';
-    if(reason)rows[ri]._closeNote=reason;
-    closeModal();renderCcProfServices();
-    toast('Request closed \u2014 '+rows[ri].item);
-  }
-  function ccPsAskCpSubmit(proj,ri){
-    var el=document.getElementById('cc-ps-ask-txt');
-    var txt=el?el.value.trim():'';
-    if(!txt)return;
-    var rows=CC_PROJ_DP.profservices&&CC_PROJ_DP.profservices[proj]&&CC_PROJ_DP.profservices[proj].rows;
-    var row=rows&&rows[ri];
-    window._psCpNudges=window._psCpNudges||[];
-    window._psCpNudges.unshift({msg:'02S question re: '+(row?row.item:'professional service')+' — '+txt,ts:'Just now'});
-    closeModal();
-    toast('Question sent to project team');
-  }
-function cpNudgeReply(ni,type){
-  var arr=type==='ps'?(window._psCpNudges||[]):(window._cpNudges||[]);
-  var n=arr[ni]||{};
-  openModal('Reply to 02S','<div style="padding:4px 0"><div style="font-size:12px;color:#475569;margin-bottom:10px;line-height:1.5">'+n.msg+'</div>'
-    +'<textarea id="cpReplyTxt" rows="3" style="width:100%;box-sizing:border-box;border:1px solid var(--g200);border-radius:6px;padding:8px;font-size:13px" placeholder="Type your reply to 02S..."></textarea></div>',
-    '<button class="btn btn-primary" onclick="cpNudgeReplySubmit('+ni+',\''+type+'\')"  >Send reply</button>');
-}
+  function _openFpoPreModal(){var body='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">How is this FPO being created?</p><div style="display:flex;flex-direction:column;gap:8px">';body+='<button onclick="closeModal();_openSovPicklist()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #c4b5fd;border-radius:8px;background:#faf5ff;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:18px;height:18px"><path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#6d28d9">From SOV / Exhibit 1</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">Pick a scope line item — unit price &amp; lead time auto-filled from the agreed schedule of values</div></div></button>';body+='<button onclick="closeModal();window._fpoNeedsQuote=true;_openFpoPreForm()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #fcd34d;border-radius:8px;background:#fffbeb;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#fef3c7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#b45309">Needs 02S quote</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">No unit price in SOV yet — 02S will estimate and send pricing back for confirmation</div></div></button>';body+='<button onclick="closeModal();window._dpDirect=true;openDPAdd(\'prefab\')" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #bbf7d0;border-radius:8px;background:#f0fdf4;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#15803d">Ad hoc / manual entry</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">No SOV reference — enter details directly, O2S will set pricing</div></div></button>';body+='</div></div>';openModal('Add FPO',body);}
+  function _openSovPicklist(){openModal('Select from SOV / Exhibit 1','<div style="padding:16px"><p style="font-size:12px;color:var(--g500);margin:0 0 12px">Upload your project Exhibit 1 to enable SOV-referenced FPO creation. Once uploaded, line items and unit prices appear here for selection.</p><div style="border:1.5px dashed var(--g300);border-radius:8px;padding:20px;text-align:center"><div style="font-size:13px;font-weight:600;color:var(--g700);margin-bottom:6px">Upload Exhibit 1 / SOV</div><div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">.xlsx or .pdf · Agreed scope + unit prices + lead times</div><button class="btn btn-dark btn-sm" onclick="closeModal()">Upload Exhibit 1</button></div></div>');}
 function cpNudgeReplySubmit(ni,type){
   var txt=(document.getElementById('cpReplyTxt')||{}).value||'';
   if(!txt.trim())return;
@@ -7515,7 +6827,7 @@ function ccPsViewSentProposal(proj, rowIdx){
   var STAGES_LOG=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Completed / Closed'];
   var STAGES_PROC=['In fulfillment','Ordered','Delivered'];
   var STAGES_FAB=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
-  var STAGES_PREFAB_OPS=['Planned / FPO','Requested','In Fulfillment','Invoiced / Closed'];
+  var STAGES_PREFAB_OPS=['Planned / FPO','Requested','In Review','In Fulfillment','Invoiced / Closed'];
   var SUB_STATUSES_FULFILLMENT=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
   var STAGES_SVC=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Returned (Rental only)','Completed / Closed'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
@@ -9121,7 +8433,7 @@ charges:[
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     if(pk==='logistics'){var _st=r.status||r.state;var _coRQ=(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id&&c.status==='quote_revised';});if(_coRQ)h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();openCpRevisedQuoteModal(\''+_coRQ.id+'\')">Revised quote ready →</button>';if(_st==='Draft')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Submitted for scoping — 02S will contact you to begin pricing.\')">Submit for Scoping / Pricing</button>';else if(_st==='Pending Approval'){h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();toast(\'Approved — 02S will release to order.\')">Approve →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Revise / Resubmit</button>';}else if(_st==='Fulfilled / Delivered')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Off-rent request submitted — 02S will coordinate pickup.\')">Request Off-Rent</button>';else if(_st!=='Completed / Closed'&&_st!=='Returned'&&_st!=='Fulfilled / Delivered'&&_st!=='In Scoping / Pricing'&&_st!=='Approved'&&_st!=='Released to Order')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Submit change order</button>';}
     h+='</div>';
-    if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPO Releases</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs='';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
+    if(pk==='prefab'){var _sps=r.splits||[];h+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';h+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;padding:6px 10px;background:var(--g50);border-radius:5px;border:1px solid var(--g150)">';h+='<span style="font-size:11px;color:var(--g500)">Unit price·</span>';h+='<span style="font-size:11px;font-weight:600;color:var(--g800)">'+(r.unitPrice||'—')+'</span>';h+='<span style="font-size:11px;color:var(--g500);margin-left:8px">Lead time·</span>';h+='<span style="font-size:11px;font-weight:600;color:var(--g800)">'+(r.leadTime||'—')+'</span>';h+='</div>';h+='<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPOs</span>';h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage releases →</button>';h+='</div>';if(!_sps.length){h+='<div style="font-size:12px;color:var(--g400);padding:4px 0">No releases defined yet</div>';}else{_sps.forEach(function(sp,si){var _rc=sp.state==='Released'?'#059669':sp.pendingRelease?'#1d4ed8':'#b45309';var _rb=sp.state==='Released'?'rgba(16,185,129,.1)':sp.pendingRelease?'rgba(59,130,246,.1)':'rgba(245,158,11,.1)';var _ri=sp.state==='Released'?'✓':sp.pendingRelease?'⏳':'○';var _rl=sp.state==='Released'?'Released':sp.pendingRelease?sp.pendingRelease+' queued':'Planning';var _rs='';h+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--g100)">';h+='<span style="font-size:10px;color:var(--g400);min-width:52px">'+(sp.id||('#'+(si+1)))+'</span>';h+='<span style="font-size:12px;font-weight:600;min-width:70px">'+sp.qty+' units</span>';h+='<span style="font-size:11px;color:var(--g500);min-width:52px">'+sp.need+'</span>';h+='<span style="background:'+_rb+';color:'+_rc+';border:1px solid '+_rb+';border-radius:8px;padding:1px 7px;font-size:10px;font-weight:600">'+_ri+' '+_rl+'</span>'+_rs;h+='</div>';});}h+='</div>';}
     return h;
   }
 
@@ -13049,6 +12361,7 @@ charges:[
   }
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbUpdateState(proj,idx,state,subState){var rows=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows;if(rows&&rows[idx]!==undefined){rows[idx].state=state;if(subState!==undefined)rows[idx].subState=subState;else if(state!=='In Fulfillment')rows[idx].subState=null;renderCcDemand('prefab');}}
+  function _pfbFlagIssue(fpoId,itemName){var _types=['Design change','Price escalation','Date / schedule','Scope gap','Other'];var _opts=_types.map(function(t){return '<option>'+t+'</option>';}).join('');var body='<div class="fq-calc">';body+='<div class="fq-crow"><span>FPO</span><span style="font-weight:600;font-family:monospace">'+(fpoId||'—')+'</span></div>';body+='<div class="fq-crow"><span>Item</span><span>'+(itemName||'—')+'</span></div>';body+='<div class="fq-crow"><span>Issue type</span><span><select id="pfbFlagType" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px">'+_opts+'</select></span></div>';body+='<div class="fq-crow" style="align-items:flex-start"><span>Notes</span><textarea id="pfbFlagNote" rows="3" style="border:1px solid var(--g200);border-radius:6px;padding:6px 10px;font-size:11.5px;width:100%;resize:vertical" placeholder="Describe the issue..."></textarea></div>';body+='</div>';body+='<div style="font-size:10.5px;color:var(--g400);padding:0 16px 4px">Informational only — does not stop the FPO process. The O2S team will review offline.</div>';body+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';body+='<button class="btn btn-dark" onclick="closeModal();_pfbFlagDone()">⚑ Submit flag</button></div>';openModal('⚑ Flag Issue — '+(fpoId||'FPO'),body);}function _pfbFlagDone(){toast('⚑ Issue flagged — O2S team notified');}
   function pfbStatusModal(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var _mo=STAGES_PREFAB_OPS.map(function(s){return '<option value="'+s+'"'+(s===row.state?' selected':'')+'>'+s+'</option>';}).join('');var _ms=SUB_STATUSES_FULFILLMENT.map(function(s){return '<option value="'+s+'"'+(s===row.subState?' selected':'')+'>'+s+'</option>';}).join('');var _subDisp=row.state==='In Fulfillment'?'flex':'none';openModal('Update status — '+row.item,'<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+row.state+(row.subState?' · '+row.subState:'')+'</span></div><div class="fq-crow"><span>New status</span><span><select id="pfbStatSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px" onchange="var r=document.getElementById(\'pfbSubRow\');if(r)r.style.display=this.value===\'In Fulfillment\'?\'flex\':\'none\'">'+_mo+'</select></span></div><div id="pfbSubRow" class="fq-crow" style="display:'+_subDisp+'"><span>Fulfillment detail</span><span><select id="pfbSubSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px">'+_ms+'</select></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="(function(){var s=document.getElementById(\'pfbStatSel\');if(s&&s.value){var sub=document.getElementById(\'pfbSubSel\');pfbUpdateState(\''+proj+'\','+idx+',s.value,(s.value===\'In fulfillment\'&&sub)?sub.value:undefined);closeModal();}})();">Save</button></div>');}
   function pfbInformTeam(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var orig=row.origWindow||'';var msg='Need-by date for '+row.item+' has been updated'+(orig?' from '+orig+' to '+row.window:' to '+row.window)+'.'+(row.shiftNote?' '+row.shiftNote:'')+'  Please adjust downstream planning accordingly.';var _mh='<div class="fq-calc">';_mh+='<div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div>';if(orig)_mh+='<div class="fq-crow"><span>Original date</span><span style="text-decoration:line-through;color:var(--g400)">'+orig+'</span></div>';_mh+='<div class="fq-crow"><span>New need-by</span><span style="color:#b45309;font-weight:600">'+row.window+'</span></div>';_mh+='<div class="fq-crow" style="align-items:flex-start"><span style="padding-top:4px">Impact</span><span><textarea id="pfbMsgTa" style="width:260px;height:90px;border:1px solid var(--g200);border-radius:5px;padding:6px 8px;font-size:11px;resize:vertical">'+(row.shiftNote||msg)+'</textarea></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="closeModal();toast(\'Notification sent\')">Send notification</button></div>';openModal('Flag project team',_mh);}
   function pfbCloseEditModal(){var m=document.getElementById('pfb-edit-modal');if(m)m.remove();}
@@ -15181,7 +14494,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     },
     prefab:{
       hercules:{budget:900000,dpSpent:476000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'2 active',c:'In Fulfillment · Submittal',v:'Combiner Box · MV Stuffed Rack',vt:'info'},{a:'Mechanical',b:'2 active',c:'In Production · Requested',v:'Pipe Supports · Bathroom batteries',vt:'warn'},{a:'Concrete',b:'1 delivered · 1 planned',c:'Delivered Jun · FPO pending',v:'Column Forms · Deck Panels',vt:'ok'}],varSummary:'MV Stuffed Rack submittal under review · Bathroom batteries need-by shifted to Oct 15',rows:[
-        {item:'Combiner Box',cat:'Electrical',qty:'500',window:'Sep 5',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,ordId:null,cost:'$5.5M',firm:'TBD',splits:[{id:'SPL-CB-1',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'SPL-CB-2',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'SPL-CB-3',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
+        {item:'Combiner Box',cat:'Electrical',qty:'500',window:'Sep 5',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,ordId:null,cost:'$5.5M',firm:'TBD',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
         {item:'MV Stuffed Rack',cat:'Electrical',qty:'2 units',window:'Oct 20',state:'Requested',p6Act:'MV switchgear installation',onTrack:false,ordId:null,fqRef:'REQ-F-061',cost:'Pending',firm:'TBD'},
         {item:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12 modules',window:'Sep 28',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {item:'Bathroom batteries',cat:'Mechanical',qty:'2 units',window:'Oct 15',state:'Requested',p6Act:'Battery installation',onTrack:false,dateShifted:true,origWindow:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'Pending',firm:'TBD',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
@@ -15424,7 +14737,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     ]
   };
   var dpCur=null;
-  var _DP_TONE_MAP={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var _DP_TONE_MAP={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   function ccDpItemModal(pillar,proj,idx){
     var r=(CC_PROJ_DP[pillar]&&CC_PROJ_DP[pillar][proj]&&CC_PROJ_DP[pillar][proj].rows)||[];
     r=r[idx]; if(!r){toast('Row not found');return;}
@@ -15966,22 +15279,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
 
   var _ccAddFpoProj=null;
-  function openCcAddFpo(proj){
-    _ccAddFpoProj=(proj==='all'?'hercules':proj);
-    var body='<div style="display:flex;flex-direction:column;gap:10px">'
-      +'<button onclick="closeModal();_openFpoUpload()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#3b82f6\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'
-      +'<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +'<svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" style="width:18px;height:18px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>'
-      +'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Upload FPO</div>'
-      +'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Attach a project team FPO document</div></div></button>'
-      +'<button onclick="closeModal();_openCcFpoForm()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid var(--g200);border-radius:8px;background:#fff;cursor:pointer;text-align:left;width:100%" onmouseover="this.style.borderColor=\'#16a34a\'" onmouseout="this.style.borderColor=\'var(--g200)\'">'
-      +'<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +'<svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>'
-      +'</div><div><div style="font-size:13px;font-weight:600;color:var(--charcoal)">Manual entry</div>'
-      +'<div style="font-size:11.5px;color:var(--g500);margin-top:2px">Enter assembly details directly</div></div></button>'
-      +'</div>';
-    openModal('Add FPO',body);
-  }
+  function openCcAddFpo(proj){_ccAddFpoProj=(proj==='all'?'hercules':proj);var body='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">How is this FPO being created?</p><div style="display:flex;flex-direction:column;gap:8px">';body+='<button onclick="closeModal();_openCcSovPicklist()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #c4b5fd;border-radius:8px;background:#faf5ff;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#ede9fe;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" style="width:18px;height:18px"><path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#6d28d9">From SOV / Exhibit 1</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">Select a scope line item — unit price auto-populated from the project schedule of values</div></div></button>';body+='<button onclick="closeModal();window._ccFpoNeedsQuote=true;_openCcFpoForm()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #fcd34d;border-radius:8px;background:#fffbeb;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#fef3c7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" style="width:18px;height:18px"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#b45309">Needs 02S estimate</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">No unit price in SOV — 02S does the takeoff &amp; sends pricing back to the project team</div></div></button>';body+='<button onclick="closeModal();_openCcFpoForm()" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #bbf7d0;border-radius:8px;background:#f0fdf4;cursor:pointer;text-align:left;width:100%"><div style="width:36px;height:36px;border-radius:8px;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" style="width:18px;height:18px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div style="font-size:13px;font-weight:700;color:#15803d">Ad hoc / manual entry</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">No SOV reference — enter assembly details directly</div></div></button>';body+='</div></div>';openModal('Add FPO',body);  }
+  function _openCcSovPicklist(){openModal('Select from SOV / Exhibit 1','<div style="padding:16px"><p style="font-size:12px;color:var(--g500);margin:0 0 12px">Upload the project Exhibit 1 to enable SOV-referenced FPO creation. Line items and agreed unit prices will be pre-populated for selection.</p><div style="border:1.5px dashed var(--g300);border-radius:8px;padding:20px;text-align:center"><div style="font-size:13px;font-weight:600;color:var(--g700);margin-bottom:6px">Upload Exhibit 1 / SOV</div><div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">.xlsx or .pdf</div><button class="btn btn-dark btn-sm" onclick="closeModal()">Upload Exhibit 1</button></div></div>');}
   function _openCcFpoForm(){
     var _p6=['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'];
     var f='<div class="mform">';
@@ -16564,7 +15863,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       h+='</div></div>';
     }
     if(cfg.cap){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
-    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Completed / Closed':'ok','Fulfilled / Delivered':'info','Pending Approval':'warn','In Scoping / Pricing':'warn','Approved':'info','Released to Order':'info','Planned':'neu'};
+    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Completed / Closed':'ok','Fulfilled / Delivered':'info','Pending Approval':'warn','In Scoping / Pricing':'warn','Approved':'info','Released to Order':'info','Planned':'neu','In Review':'warn'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
     var showProjCol=(selProj==='all');
     var allReqRows=[];
@@ -16591,7 +15890,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     if(p==='prefab'&&isDpView&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){visRows=visRows.filter(function(r){return r.cat===window._pfbCatFilter;});rowsToRender=visRows;moreN=visRows.length-5;}
     if(p==='prefab'&&selProj==='all'){
       var _pfbAll=allReqRows.filter(function(r){return r._type==='dp';});
-      var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In Fulfillment';}).length;
+      var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In Fulfillment';}).length;var _relCount=_pfbAll.filter(function(r){return r.state==='In Fulfillment'&&(r.subState==='Released to Shop'||r.subState==='Work Order Created');}).length;var _fabCount=_pfbAll.filter(function(r){return r.state==='In Fulfillment'&&(r.subState==='In Production'||r.subState==='In Procurement');}).length;var _delCount=_pfbAll.filter(function(r){return r.state==='Invoiced / Closed'||r.subState==='Delivered';}).length;
       var _pfbNA=_pfbAll.filter(function(r){return r.state==='Awaiting pricing'||r.dateShifted;}).length;
       var _pfbOT=_pfbAll.filter(function(r){return r.onTrack!==false;}).length;
       h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
@@ -16600,7 +15899,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
        {k:'On track',v:_pfbOT+' of '+_pfbAll.length,sub:'vs. need date',tone:_pfbOT===_pfbAll.length?'ok':'warn'},
        {k:'Needs attention',v:_pfbNA?_pfbNA+'':'\u2014',sub:_pfbNA?'Awaiting pricing or date-shifted':'All clear',tone:_pfbNA?'warn':'neu'}
       ].forEach(function(k){h+='<div class="vital '+k.tone+'"><div class="vk">'+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div></div>';});
-      h+='</div>';
+      h+='</div>';h+='<div style="display:flex;gap:6px;margin:-6px 0 14px;flex-wrap:wrap">';['Released to shop · '+_relCount,'In production · '+_fabCount,'Delivered · '+_delCount].forEach(function(lbl){h+='<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;background:var(--g100);color:var(--g700);border:1px solid var(--g200)">'+lbl+'</span>';});h+='</div>';
       var _PFBCOL={hercules:'#1e6b4f',barryrose:'#2e4e8e',vdc14:'#7a3d8e'};
       var _PFBCODE={hercules:'HRC',barryrose:'BRW',vdc14:'VDC'};
       var _pfbLA=[
@@ -16610,18 +15909,20 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
         {lbl:'E-house submittal decision',sub:'BESS e-houses \u2014 02S review in progress',proj:'hercules',bc:'#b45309',wk:1},
         {lbl:'Pipe rack final QC',sub:'Shop drawings approved \u2014 4 of 12 complete',proj:'hercules',bc:'#2e6e8e',wk:1},
         {lbl:'Pump skid assemblies',sub:'Manufacturing \u2014 need-by Oct 5',proj:'hercules',bc:'#3d6b4f',wk:2},
-        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2}
+        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2},
+        {lbl:'Stairwell panel delivery',sub:'Barry Rose WRF — need-by Sep 28',proj:'barryrose',bc:'#3d6b4f',wk:3},
+        {lbl:'BESS e-house pre-wire',sub:'Hercules — final QC sign-off pending',proj:'hercules',bc:'#b45309',wk:3}
       ];
-      var _pfbGt='220px 1fr 1fr 1fr';
+      var _pfbGt='220px 1fr 1fr 1fr 1fr';
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
       h+='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:3px">';
-      h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">3-week lookahead</span>';
-      h+='<span style="font-size:12px;color:var(--g400)">Sep 1\u201321, 2026</span>';
+      h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">4-week lookahead</span>';
+      h+='<span style="font-size:12px;color:var(--g400)">Sep 1\u201328, 2026</span>';
       h+='</div>';
       h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
       h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';margin-bottom:2px">';
       h+='<div></div>';
-      ['Sep 1\u20137','Sep 8\u201314','Sep 15\u201321'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
+      ['Sep 1\u20137','Sep 8\u201314','Sep 15\u201321','Sep 22\u201328'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
       h+='</div>';
       h+='<div style="max-height:300px;overflow-y:auto">';
       _pfbLA.forEach(function(r){
@@ -18034,7 +17335,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
   function ccGoFulfill(ref){ fqView='orders'; fqFP='all'; fqFPr='all'; fqFS='all'; _fqShowAll=!!ref; if(ref)ccHighlight=ref; ccGo('fulfill'); }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -18075,9 +17376,9 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
       cols:[{key:'asm',label:'Assembly',w:'1fr'},{key:'qty',label:'Qty',cls:'c',w:'80px'},{key:'need',label:'Need on-site',w:'100px'},{key:'p6Act',label:'P6 Activity',w:'155px'},{key:'code',label:'Cost code',w:'150px'},{key:'cost',label:'Quote',cls:'r',w:'96px'},{key:'__docs',label:'Documents',w:'88px'},{key:'__state',label:'Status',w:'124px'}],
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
-        {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,splits:[{id:'SPL-CB-1',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'SPL-CB-2',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'SPL-CB-3',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
-        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true},
-        {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
+        {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,note:'Area C — rows 25–32'}]},
+        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
+        {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'Requested',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
         {asm:'Deck Panels',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
         {asm:'Column Forms',cat:'Concrete',qty:'8',need:'Jun 20',stage:'Delivered · order ORD-3106',code:'2600-0540-0000-0001 · Module install',cost:'$147K',state:'Invoiced / Closed',p6Act:'Column installation',onTrack:true,linkOrd:'ORD-3106',attachments:[]}
@@ -18751,7 +18052,7 @@ if(ord)h+=buildDpBillingInline(row.ordId);if(row.dateShifted&&row.shiftNote){h+=
     f+='<div class="mf"><label>'+cfg.addName.label+'</label>';if(cfg.addName.opts&&cfg.addName.opts.length){f+='<select id="dpaName" class="acc-sel wfull" onchange="if(dpAddPk===\'logistics\')dpLogCheckLeadTime()"><option value="">— select a service —</option>'+cfg.addName.opts.map(function(o){return '<option value="'+o+'">'+o+'</option>';}).join('')+'</select>';}else{f+='<input id="dpaName" class="rin" placeholder="'+cfg.addName.ph+'">';}f+='</div>';
     var _wLbl=cfg.addWhen.label;var _wHtml;if(_wLbl==='Need on-site'||_wLbl==='Need-by date'){_wHtml='<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;color:var(--charcoal)" onchange="if(dpAddPk===\'logistics\')dpLogCheckLeadTime()">';}else if(_wLbl==='Mobilize \u2192 demobilize'){_wHtml='<div style="display:flex;align-items:center;gap:6px">'+'<input id="dpaWhen" type="month" class="rin" style="cursor:pointer;flex:1">'+'<span style="color:var(--g400);font-size:13px;padding:0 2px">\u2013</span>'+'<input id="dpaWhenEnd" type="month" class="rin" style="cursor:pointer;flex:1">'+'</div>';}else if(_wLbl==='Date &amp; window'){_wHtml='<div style="display:flex;gap:6px">'+'<input id="dpaWhen" type="date" class="rin" style="cursor:pointer;flex:2">'+'<input id="dpaWhenTime" class="rin" placeholder="time e.g. 6 AM" style="flex:1">'+'</div>';}else{_wHtml='<input id="dpaWhen" class="rin" placeholder="'+cfg.addWhen.ph+'">';}f+='<div class="mf2"><div class="mf"><label>'+cfg.addQty.label+'</label><input id="dpaQty" class="rin" placeholder="'+cfg.addQty.ph+'"></div><div class="mf"><label>'+cfg.addWhen.label+'</label>'+_wHtml+'</div></div>';
     f+='<div class="mf"><label>Cost code</label><select id="dpaCode" class="acc-sel wfull">'+dpCodeOpts()+'</select></div>';
-    f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';if(pk==='prefab'){f+='<div class="mf"><label>P6 schedule activity <span style="font-size:10px;color:#ef4444;font-weight:700">required</span></label><select id="dpaP6" class="acc-sel wfull"><option value="">\u2014 select P6 activity \u2014</option>'+['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'].map(function(a){return'<option>'+a+'</option>';}).join('')+'</select></div>';f+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-top:4px;display:flex;gap:8px;align-items:flex-start"><span>\ud83d\udccc</span><div style="font-size:11.5px"><b>Date anchoring</b> \u2014 After you submit, 02S will align fabrication milestones to the selected P6 schedule activity. Any adjustment to this date will have downstream impacts on the fabrication lifecycle and will be communicated accordingly.</div></div>';}f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 02S will confirm pricing after you submit.</span></div>';
+    f+='<div class="mf"><label>Scope / notes <span class="opt">optional</span></label><input id="dpaScope" class="rin" placeholder="Schedule activity or note"></div>';if(pk==='prefab'){f+='<div class="mf"><label>P6 schedule activity <span style="font-size:10px;color:#ef4444;font-weight:700">required</span></label><select id="dpaP6" class="acc-sel wfull"><option value="">\u2014 select P6 activity \u2014</option><option value="none">No P6 schedule — manual date only (date won’t auto-shift)</option>'+['Pipe rack install — Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation — module install','Combiner box installation','Overhead MEP install — Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning — systems startup'].map(function(a){return'<option>'+a+'</option>';}).join('')+'</select></div>';f+='<div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-top:4px;display:flex;gap:8px;align-items:flex-start"><span>\ud83d\udccc</span><div style="font-size:11.5px"><b>Date anchoring</b> \u2014 After you submit, 02S will align fabrication milestones to the selected P6 schedule activity. Any adjustment to this date will have downstream impacts on the fabrication lifecycle and will be communicated accordingly.</div></div>';}f+='<div class="eqf-rate pending">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',2)+'<span><b>Pricing set by 02S</b> \u2014 02S will confirm pricing after you submit.</span></div>';
     f+=(pk==='logistics'?'<div id="dpa-lt-warn" style="display:none;margin-top:8px;padding:10px 13px;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px"><div style="display:flex;gap:8px;align-items:flex-start"><span style="font-size:16px;flex-shrink:0">&#9888;</span><div><div style="font-size:11.5px;font-weight:600;color:#9a3412;margin-bottom:2px">Expedited request — premium may apply</div><div id="dpa-lt-msg" style="font-size:11px;color:#c2410c;line-height:1.5"></div></div></div></div>':'');
     f+='</div>';
     openModal(cfg.addTitle||'Add '+cfg.singular+' demand line', f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="dpAddSave()">'+( cfg.addBtnLabel||'Add to plan')+'</button></div></div>');
