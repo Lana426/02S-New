@@ -13398,24 +13398,28 @@ charges:[
   }
 
   /* ----- project-team notifications (shown at top of page) ----- */
-  function _pfbNoticeCard(bg,bd,lc,label,items){
-    var h='<div style="background:'+bg+';border:1px solid '+bd+';border-radius:10px;padding:14px 18px;margin-bottom:12px"><div style="font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+lc+';margin-bottom:6px">'+label+'</div>';
-    items.forEach(function(it,n){h+='<div style="display:flex;align-items:center;gap:14px;padding:6px 0;'+(n?'border-top:1px solid '+bd:'')+'"><div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:600;color:var(--g900)">'+it.t+'</div><div style="font-size:12px;color:var(--g600);margin-top:1px">'+it.s+'</div></div><button onclick="openFpoSplitModal(\'prefab\','+it.i+')" style="background:#fff;border:1px solid '+lc+';color:'+lc+';border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">'+it.b+' →</button></div>';});
-    return h+'</div>';
+  function _pfbNotice(c,label,title,ref,detail,meta,right){
+    return '<div style="background:'+c.bg+';border:1px solid '+c.bd+';border-radius:8px;padding:11px 14px;margin-bottom:6px;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+c.lc+';margin-bottom:4px">'+label+'</div><div style="font-size:12px;font-weight:600;color:var(--g900)">'+title+(ref?'<span style="font-size:10.5px;font-weight:400;color:var(--g500);margin-left:8px">'+ref+'</span>':'')+'</div>'+(detail?'<div style="font-size:11px;color:'+c.dc+';margin-top:3px">'+detail+'</div>':'')+(meta?'<div style="font-size:10.5px;color:var(--g500);margin-top:2px">'+meta+'</div>':'')+'</div>'+right+'</div>';
+  }
+  var _PFB_NC={amber:{bg:'#fffbeb',bd:'#fcd34d',lc:'#92400e',dc:'#b45309'},green:{bg:'#f0fdf4',bd:'#86efac',lc:'#166534',dc:'#15803d'},orange:{bg:'#fff7ed',bd:'#fed7aa',lc:'#c2410c',dc:'#9a3412'},blue:{bg:'#eff6ff',bd:'#bfdbfe',lc:'#1d4ed8',dc:'#1e40af'}};
+  function pfbApproveQuote(i){
+    var row=DP.prefab.rows[i];if(!row)return;
+    _pfbMirrors(row).forEach(function(m){m.quoteSent=false;m.quoteNeeded=false;m.state='Planned / FPO';});
+    toast('Quote approved — SOV line added to your plan');
+    try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
   }
   function _pfbCpNotices(){
-    var rows=(DP.prefab&&DP.prefab.rows)||[],h='';
-    var off=[],prop=[],flg=[];
+    var rows=(DP.prefab&&DP.prefab.rows)||[],h='<div style="margin-bottom:14px">';var n=0;
+    var NC=_PFB_NC;
+    var btn=function(col,lbl,fn){return '<button class="btn btn-dark btn-sm" style="background:'+col+';border-color:'+col+';white-space:nowrap" onclick="'+fn+'">'+lbl+' →</button>';};
     rows.forEach(function(r,i){
       var nm=r.asm||r.item;
-      if(r.onTrack===false)off.push({i:i,t:nm,s:'Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':'')+' · '+(r.p6Act||''),b:'Review'});
-      _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed')prop.push({i:i,t:nm+' · '+f.id,s:'02S proposed '+(f.o.propNeed||'')+' (requested '+f.need+')'+(f.o.propNote?' — '+f.o.propNote:''),b:'Accept or counter'});});
-      _pfbFlagsOf(r).forEach(function(fl){flg.push({i:i,t:nm+' · '+fl.level+' '+fl.ref,s:fl.type+(fl.note?' — '+fl.note:''),b:'View'});});
+      if(r.quoteSent){n++;h+=_pfbNotice(NC.green,'Quote ready for review',nm,'SOV line',(r.unitPrice||'')+' · '+(r.cost||'')+' total',(r.leadTime?'Lead time '+r.leadTime+' · ':'')+'02S sent a quote because no unit price was on the SOV',btn('#15803d','Review &amp; approve','pfbApproveQuote('+i+')'));}
+      if(r.onTrack===false){n++;h+=_pfbNotice(NC.amber,'Assembly off track',nm,'SOV line','Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':''),'P6: '+(r.p6Act||'—'),btn('#b45309','Review','openFpoSplitModal(\'prefab\','+i+')'));}
+      _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed'){n++;h+=_pfbNotice(NC.blue,'New need-by date proposed by 02S',nm,f.id,'Proposed '+(f.o.propNeed||'')+' · requested '+f.need,f.o.propNote||'',btn('#1d4ed8','Accept or counter','openFpoSplitModal(\'prefab\','+i+')'));}});
+      _pfbFlagsOf(r).forEach(function(fl){n++;h+=_pfbNotice(NC.orange,'Flag from 02S · informational',nm,fl.level+' '+fl.ref,fl.type,fl.note||'','<button onclick="openFpoSplitModal(\'prefab\','+i+')" style="font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600;white-space:nowrap">View →</button>');});
     });
-    if(off.length)h+=_pfbNoticeCard('#fffbeb','#fcd34d','#b45309',off.length+' assembl'+(off.length>1?'ies':'y')+' off track',off);
-    if(prop.length)h+=_pfbNoticeCard('#eff6ff','#bfdbfe','#1d4ed8','New need-by dates proposed by 02S',prop);
-    if(flg.length)h+=_pfbNoticeCard('#fdf5ec','#f3d2ad','#b4531a',flg.length+' flag'+(flg.length>1?'s':'')+' from 02S · informational',flg);
-    return h;
+    return n?h+'</div>':'';
   }
 
   /* ----- CC KPIs by FPO status ----- */
@@ -13460,74 +13464,86 @@ charges:[
   }
   function _openFpoPreModal(){
     var b='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">How do you want to add this to your prefab plan?</p><div style="display:flex;flex-direction:column;gap:8px">';
-    b+=_pfbPathBtn('closeModal();_pfbUploadSov()','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','We read size, description, quantity, unit bid price and lead time from your document. If a price can\u2019t be extracted, the line goes to 02S for a quote.');
+    b+=_pfbPathBtn('closeModal();_pfbUploadSov(\'cp\')','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','We read size, description, quantity, unit bid price and lead time from your document. If a price can\u2019t be extracted, the line goes to 02S for a quote.');
     b+=_pfbPathBtn('closeModal();window._dpDirect=true;openDPAdd(\'prefab\')','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','Create manually','#15803d','Enter the line item yourself \u2014 02S will set pricing.');
     b+='</div></div>';
     openModal('Add to prefab plan',b);
   }
-  function _pfbUploadSov(){
-    var b='<div style="padding:4px 0 8px"><div style="border:1.5px dashed var(--g300);border-radius:10px;padding:26px;text-align:center;background:var(--g50)"><div style="font-size:13px;font-weight:600;color:var(--g800);margin-bottom:4px">Drop your SOV / Exhibit 1 here</div><div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">.pdf or .xlsx \u00b7 agreed scope, unit bid prices, lead times</div><div style="font-size:11px;color:var(--g500);margin-bottom:8px">Demo \u2014 simulate an uploaded PDF:</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-dark btn-sm" onclick="_pfbSovParsed(true)">PDF with unit prices</button><button class="btn btn-ghost btn-sm" onclick="_pfbSovParsed(false)">PDF without prices</button></div></div></div>';
+  function _pfbUploadSov(side){
+    window._pfbUpSide=side||'cp';
+    var cc=window._pfbUpSide==='cc';
+    var b='<div style="padding:4px 0 8px"><div style="border:1.5px dashed var(--g300);border-radius:10px;padding:26px;text-align:center;background:var(--g50)"><div style="font-size:13px;font-weight:600;color:var(--g800);margin-bottom:4px">Drop the SOV / Exhibit 1 here</div><div style="font-size:11.5px;color:var(--g500);margin-bottom:14px">.pdf or .xlsx · agreed scope, unit bid prices, lead times</div><div style="font-size:11px;color:var(--g500);margin-bottom:8px">Demo — simulate an uploaded PDF:</div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-dark btn-sm" onclick="_pfbSovParsed(true)">PDF with unit prices</button><button class="btn btn-ghost btn-sm" onclick="_pfbSovParsed(false)">PDF without prices</button></div></div></div>';
     openModal('Upload SOV / Exhibit 1',b);
   }
   function _pfbSovParsed(withPrice){
+    var cc=window._pfbUpSide==='cc';
     var th='padding:7px 8px;text-align:left;font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap';
     var lines=PFB_PARSED.map(function(l,i){
       var price=withPrice?l.price:(i===0?l.price:null);
       var lead=withPrice?l.lead:(i===2?null:l.lead);
-      return {size:l.size,desc:l.desc,qty:l.qty,price:price,lead:lead,conf:l.conf,need:l.need};
+      return {size:l.size,desc:l.desc,cat:l.cat,qty:l.qty,price:price,lead:lead,conf:l.conf,need:l.need};
     });
     window._pfbParsedLines=lines;
     var noPrice=lines.filter(function(l){return l.price==null;}).length;
-    var b='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Parsed <b style="color:var(--g800)">Hercules_Exhibit1_Electrical.pdf</b> \u00b7 '+lines.length+' line items found. Review, set need-by dates, then add to your SOV.</div>';
-    b+=noPrice
-      ?'<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#92400e"><b>\u26a0 '+noPrice+' line'+(noPrice>1?'s':'')+' without a unit price.</b> Those lines go to the quoting process \u2014 02S estimates and sends pricing back for your confirmation. Priced lines are added as agreed.</div>'
-      :'<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#166534"><b>\u2713 Unit prices extracted</b> for all lines \u2014 they are added to your SOV at the agreed bid price. No quote needed.</div>';
+    var proj=_ccAddFpoProj||'hercules';
+    var b='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Parsed <b style="color:var(--g800)">Hercules_Exhibit1_Electrical.pdf</b> · '+lines.length+' line items found. '+(cc?'Review, then add to '+(_PROJ_NAMES[proj]||proj)+'’s SOV.':'Review, set need-by dates, then add to your SOV.')+'</div>';
+    if(noPrice)b+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#92400e"><b>⚠ '+noPrice+' line'+(noPrice>1?'s':'')+' without a unit price.</b> '+(cc?'Enter your quote below. These lines go to the project team as a quote to approve; priced lines are added as agreed.':'Those lines go to the quoting process — 02S estimates and sends pricing back for your confirmation. Priced lines are added as agreed.')+'</div>';
+    else b+='<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#166534"><b>✓ Unit prices extracted</b> for all lines — they are added to the SOV at the agreed bid price. No quote needed.</div>';
     b+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200)"><thead><tr style="background:var(--g50)"><th style="'+th+'"></th><th style="'+th+'">Size</th><th style="'+th+'">Description</th><th style="'+th+'">Est. qty</th><th style="'+th+'">Unit bid price</th><th style="'+th+'">Lead time</th><th style="'+th+'">Need-by</th><th style="'+th+'">Match</th></tr></thead><tbody>';
+    var inp='border:1px solid #fcd34d;border-radius:4px;padding:3px 6px;font-size:11.5px;background:#fffbeb;width:92px';
     lines.forEach(function(l,i){
       b+='<tr style="border-top:1px solid var(--g150)"><td style="padding:8px"><input type="checkbox" id="pfbUpChk'+i+'" checked></td>';
       b+='<td style="padding:8px;font-size:11.5px">'+l.size+'</td><td style="padding:8px;font-size:12px;font-weight:600">'+l.desc+'</td><td style="padding:8px;font-size:12px">'+l.qty+'</td>';
-      b+='<td style="padding:8px;font-size:12px">'+(l.price!=null?'$'+l.price.toLocaleString('en-US'):'<span style="color:#b45309;font-weight:600">Not found \u2014 quote</span>')+'</td>';
-      b+='<td style="padding:8px;font-size:12px">'+(l.lead||'<span style="color:#b45309;font-weight:600">Not found</span>')+'</td>';
+      b+='<td style="padding:8px;font-size:12px">'+(l.price!=null?'$'+l.price.toLocaleString('en-US'):(cc?'<input id="pfbUpPrice'+i+'" type="number" min="1" placeholder="$ / unit" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found — quote</span>'))+'</td>';
+      b+='<td style="padding:8px;font-size:12px">'+(l.lead||(cc?'<input id="pfbUpLead'+i+'" placeholder="e.g. 8 weeks" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found</span>'))+'</td>';
       b+='<td style="padding:8px"><input type="date" id="pfbUpNeed'+i+'" value="'+l.need+'" style="border:1px solid var(--g200);border-radius:4px;padding:2px 5px;font-size:11px"></td>';
       b+='<td style="padding:8px"><span style="font-size:10.5px;font-weight:700;color:'+(l.conf>=95?'#2F7A43':'#8A6D1F')+'">'+l.conf+'%</span></td></tr>';
     });
     b+='</tbody></table></div>';
     b+='<div class="mform" style="margin-top:12px">'+_pfbP6Html('pfbUp')+'</div>';
-    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_pfbAddParsed()">Add selected lines to SOV</button></div></div>';
-    openModal('Review extracted SOV lines',b);_pfbWide(880);
+    b+='<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-red" onclick="_pfbAddParsed()">'+(cc&&noPrice?'Add lines &amp; send quote':'Add selected lines to SOV')+'</button></div></div>';
+    openModal('Review extracted SOV lines',b);_pfbWide(900);
   }
   function _pfbAddParsed(){
+    var cc=window._pfbUpSide==='cc';
     var lines=window._pfbParsedLines||[];
     var none=(document.getElementById('pfbUpP6None')||{}).checked;
     var p6=(document.getElementById('pfbUpP6')||{}).value||'';
-    if(!none&&!p6){toast('Select a P6 activity, or check \u201cNo P6 schedule\u201d');return;}
-    var p6txt=none?'\u26a0 No P6 \u2014 manual date':p6;
-    var rows=DP.prefab.rows,first=rows.length,n=0,hc=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab.hercules;
-    lines.forEach(function(l,i){
-      var chk=document.getElementById('pfbUpChk'+i);if(chk&&!chk.checked)return;
-      var nd=(document.getElementById('pfbUpNeed'+i)||{}).value||l.need;var need=_pfbFmtDate(nd);
-      var priced=l.price!=null;
-      var unit=priced?'$'+l.price.toLocaleString('en-US')+'/unit':'TBD \u2014 quote pending';
-      var cost=priced?_pfbMoney(l.price*l.qty):'Pending';
-      var st=priced?'Planned / FPO':'Requested';
-      var base={cat:l.cat,qty:String(l.qty),state:st,cost:cost,p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:unit,leadTime:l.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,source:'SOV upload',size:l.size,code:'2600-0540-0000-0001 \u00b7 Electrical'};
-      var r1={asm:l.desc,need:need};for(var k in base)r1[k]=base[k];rows.push(r1);
-      if(hc&&hc.rows){var r2={item:l.desc,window:need,firm:'TBD',poc:'TBD',phone:''};for(var k2 in base)r2[k2]=base[k2];hc.rows.push(r2);}
-      n++;
+    if(!none&&!p6){toast('Select a P6 activity, or check “No P6 schedule”');return;}
+    var p6txt=none?'⚠ No P6 — manual date':p6;
+    var picked=[];
+    for(var i=0;i<lines.length;i++){
+      var chk=document.getElementById('pfbUpChk'+i);if(chk&&!chk.checked)continue;
+      var l=lines[i],entered=false,price=l.price,lead=l.lead;
+      if(cc&&price==null){var pv=parseFloat((document.getElementById('pfbUpPrice'+i)||{}).value);if(!pv){toast('Enter a unit price for each unpriced line (or untick it)');return;}price=pv;entered=true;}
+      if(cc&&!lead)lead=((document.getElementById('pfbUpLead'+i)||{}).value||'').trim()||'TBD';
+      picked.push({l:l,i:i,price:price,lead:lead,entered:entered});
+    }
+    if(!picked.length){toast('Select at least one line');return;}
+    var proj=cc?(_ccAddFpoProj||'hercules'):'hercules';
+    var ccRows=CC_PROJ_DP.prefab[proj].rows,first=cc?ccRows.length:DP.prefab.rows.length;
+    picked.forEach(function(x){
+      var l=x.l,nd=(document.getElementById('pfbUpNeed'+x.i)||{}).value||l.need,need=_pfbFmtDate(nd);
+      var priced=x.price!=null;
+      var st=!priced?'Requested':(x.entered?'Submittal':'Planned / FPO');
+      var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?'$'+x.price.toLocaleString('en-US')+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,code:'2600-0540-0000-0001 · Electrical'};
+      if(!cc||proj==='hercules'){var r1={asm:l.desc,need:need};for(var k in base)r1[k]=base[k];DP.prefab.rows.push(r1);}
+      var r2={item:l.desc,window:need,firm:'TBD',poc:'TBD',phone:''};for(var k2 in base)r2[k2]=base[k2];ccRows.push(r2);
     });
-    if(!n){toast('Select at least one line');return;}
+    var n=picked.length,quoted=picked.filter(function(x){return x.entered;}).length;
     closeModal();
     try{renderDP('prefab');}catch(e){}
     try{renderCcDemand('prefab');}catch(e){}
-    toast(n+' SOV line'+(n>1?'s':'')+' added'+(lines.some(function(l){return l.price==null;})?' \u2014 unpriced lines sent to 02S for quote':''));
-    openFpoSplitModal('prefab',first);
+    toast(n+' SOV line'+(n>1?'s':'')+' added'+(cc?(quoted?' — quote sent to project team for '+quoted+' line'+(quoted>1?'s':''):''):(picked.some(function(x){return x.price==null;})?' — unpriced lines sent to 02S for quote':'')));
+    if(cc)openCcFpoSplitModal('prefab',proj,first);else openFpoSplitModal('prefab',first);
   }
 
   /* ----- 02S: initiate FPO / add SOV line ----- */
   function openCcAddFpo(proj){
     _ccAddFpoProj=(proj==='all'?'hercules':proj);
     var b='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">What would you like to add for '+(_PROJ_NAMES[_ccAddFpoProj]||_ccAddFpoProj)+'?</p><div style="display:flex;flex-direction:column;gap:8px">';
-    b+=_pfbPathBtn('closeModal();_openCcNewFpo()','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M12 5v14M5 12h14"/>','Initiate a new FPO','#6d28d9','Raise an FPO against an existing SOV line (e.g. 02S drafts it from P6). The project team confirms the need-by date.');
+    b+=_pfbPathBtn('closeModal();_openCcNewFpo()','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M12 5v14M5 12h14"/>','Initiate a new FPO','#1d4ed8','Raise an FPO against an existing SOV line (e.g. 02S drafts it from P6). The project team confirms the need-by date.');
+    b+=_pfbPathBtn('closeModal();_pfbUploadSov(\'cc\')','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','Read the line items from a PDF. If a price is found it\u2019s added as agreed; if not, you enter a quote and it goes to the project team to approve.');
     b+=_pfbPathBtn('closeModal();_openCcFpoForm()','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','New SOV line (manual)','#15803d','Add a scope line that isn\u2019t on the project SOV yet.');
     b+='</div></div>';
     openModal('Add FPO / SOV line',b);
