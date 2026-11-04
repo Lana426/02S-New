@@ -12920,8 +12920,8 @@ charges:[
   var _PFB_TONE={'Planned / FPO':['#52525B','#F4F4F5'],'Requested':['#265D9F','#E7EEF7'],'In Review':['#8A6D1F','#F5EDD6'],'In Fulfillment':['#2F7A43','#E4F1E7'],'Invoiced / Closed':['#52525B','#E4E4E7']};
   var PFB_PARSED=[
     {size:'6 in.',desc:"10' SST Adjustable Pipe Support",cat:'Mechanical',qty:6,price:1545.40,lead:'8 weeks',conf:98,need:'2026-10-15'},
-    {size:'4 in.',desc:"2' Galv Adjustable Pipe Support ~ Supports in Well House (See Project Plans for Detail)",cat:'Mechanical',qty:3,price:650.63,lead:'8 weeks',conf:96,need:'2026-10-30'},
-    {size:'2 in.',desc:"2GAS 2' Galvanized Adjustable Support ~ Supports in Well House (See Project Plans for Detail)",cat:'Mechanical',qty:4,price:650.63,lead:'8 weeks',conf:91,need:'2026-11-12'}
+    {size:'4 in.',desc:"2' Galv Adjustable Pipe Support",detail:'Supports in Well House (See Project Plans for Detail)',cat:'Mechanical',qty:3,price:650.63,lead:'8 weeks',conf:96,need:'2026-10-30'},
+    {size:'2 in.',desc:"2GAS 2' Galvanized Adjustable Support",detail:'Supports in Well House (See Project Plans for Detail)',cat:'Mechanical',qty:4,price:650.63,lead:'8 weeks',conf:91,need:'2026-11-12'}
   ];
 
   function _pfbP(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:n%1?2:0});}
@@ -13125,7 +13125,7 @@ charges:[
     h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px">';
     [['Qty (SOV)',_pfbQty(total||row.qty)],['Unit bid price',row.unitPrice||'\u2014'],['Lead time',row.leadTime||'\u2014'],['Est. value',est]].forEach(function(c){h+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:7px;padding:8px 10px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+c[0]+'</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+c[1]+'</div></div>';});
     h+='</div>';
-    h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">'+(row.code||row.cat||'')+(row.p6None?' \u00b7 <span style="color:#b45309;font-weight:600">No P6 link \u2014 manual date (won\u2019t auto-shift)</span>':(row.p6Act?' \u00b7 P6: '+row.p6Act:''))+(row.quoteNeeded?' \u00b7 <span style="color:#b45309;font-weight:600">No unit price on SOV \u2014 quote requested</span>':'')+'</div>';
+    h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">'+(row.detail?'<b style="color:var(--g700);font-weight:600">'+row.detail+'</b> \u00b7 ':'')+(row.code||row.cat||'')+(row.p6None?' \u00b7 <span style="color:#b45309;font-weight:600">No P6 link \u2014 manual date (won\u2019t auto-shift)</span>':(row.p6Act?' \u00b7 P6: '+row.p6Act:''))+(row.quoteNeeded?' \u00b7 <span style="color:#b45309;font-weight:600">No unit price on SOV \u2014 quote requested</span>':'')+'</div>';
     var _cnt={},_ord=[];list.forEach(function(f){var k=f.st+'|'+(f.sub||'');if(!_cnt[k]){_cnt[k]={st:f.st,sub:f.sub,n:0};_ord.push(k);}_cnt[k].n++;});
     h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 14px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">SOV status</span>'+_pfbChip(_pfbRowStatus(row),row.subState||null)+'<span style="color:var(--g300)">\u203a</span><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">FPOs</span>'+_ord.map(function(k){return _pfbChip(_cnt[k].st,_cnt[k].sub)+(_cnt[k].n>1?'<span style="font-size:11px;color:var(--g500);margin-left:-4px">\u00d7'+_cnt[k].n+'</span>':'');}).join('')+'</div>';
     h+=_pfbPricingCard(side,proj,idx,row);
@@ -13188,8 +13188,8 @@ charges:[
       h+='<div style="font-size:12px;font-weight:700;color:var(--g800);margin-bottom:2px">'+(cc?'Initiate a new FPO for this SOV line':'Add an FPO')+'</div>';
       h+='<div style="font-size:11px;color:var(--g500);margin-bottom:8px">Allocated '+alloc+' / '+total+' units'+(pool?' \u00b7 '+pool+' unallocated':' \u00b7 quantity is taken from the first planned FPO')+(cc?' \u00b7 the project team will be asked to confirm the date.':'.')+'</div>';
       h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-      h+='<input id="pfbNewQty" type="number" min="1" value="'+(pool||Math.max(1,Math.round(total/2)))+'" style="width:70px;text-align:center;border:1px solid var(--g200);border-radius:4px;padding:4px 5px;font-size:13px;font-weight:600">';
-      h+='<span style="font-size:11px;color:var(--g500)">units, need-by</span>';
+      var mxq=_pfbMaxNewQty(row);h+='<input id="pfbNewQty" type="number" min="1" '+(total>0?'max="'+mxq+'" ':'')+'value="'+Math.max(1,Math.min(mxq||1,pool||Math.round(total/2)))+'" style="width:70px;text-align:center;border:1px solid var(--g200);border-radius:4px;padding:4px 5px;font-size:13px;font-weight:600">';
+      h+='<span style="font-size:11px;color:var(--g500)">units (max '+mxq+'), need-by</span>';
       h+='<input id="pfbNewDate" type="date" style="border:1px solid var(--g200);border-radius:4px;padding:4px 6px;font-size:12px">';
       h+='<input id="pfbNewNote" type="text" placeholder="Note (e.g. Area D \u2014 rows 33\u201340)" style="flex:1;min-width:150px;border:1px solid var(--g200);border-radius:4px;padding:4px 8px;font-size:12px">';
       h+='<button onclick="pfbAddFpo(\''+side+'\',\''+proj+'\','+idx+')" style="padding:5px 14px;background:'+(cc?'#059669':'#1d4ed8')+';border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">'+(cc?'Initiate FPO \u2192':'Add FPO')+'</button>';
@@ -13286,10 +13286,18 @@ charges:[
     if(m.dateStatus)sp.dateStatus=m.dateStatus;
     m.splits=[sp];m.fpoMode='split';
   }
+  function _pfbMaxNewQty(row){
+    var total=parseInt(row.qty)||0,list=_pfbFpoList(row);
+    var alloc=list.reduce(function(s,f){return s+(parseInt(f.qty)||0);},0),pool=Math.max(0,total-alloc),m=pool;
+    list.forEach(function(f){if(f.st==='Planned / FPO'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))m=Math.max(m,pool+(parseInt(f.qty)||0)-1);});
+    return m;
+  }
   function _pfbAddFpoCore(side,proj,idx,q,dv,note){
     var row=_pfbRow(side,proj,idx);if(!row)return false;
     if(!q||!dv){toast('Enter a quantity and a need-by date');return false;}
     var cc=side==='cc',need=_pfbFmtDate(dv),total=parseInt(row.qty)||0;
+    if(q<1){toast('Quantity must be at least 1');return false;}
+    if(total>0){var mx=_pfbMaxNewQty(row);if(q>mx){toast(mx>0?'Only '+mx+' of '+total+' units are left to allocate \u2014 FPOs can\u2019t add up to more than the SOV quantity':'All '+total+' units are already allocated to FPOs \u2014 reduce a planned FPO first');return false;}}
     var list=_pfbFpoList(row);var alloc=list.reduce(function(s,f){return s+(parseInt(f.qty)||0);},0);
     var pool=Math.max(0,total-alloc),take=Math.max(0,q-pool),donor=-1;
     if(take>0){
@@ -13579,7 +13587,7 @@ charges:[
     var lines=PFB_PARSED.map(function(l,i){
       var price=withPrice?l.price:(i===0?l.price:null);
       var lead=withPrice?l.lead:(i===2?null:l.lead);
-      return {size:l.size,desc:l.desc,cat:l.cat,qty:l.qty,price:price,lead:lead,conf:l.conf,need:l.need};
+      return {size:l.size,desc:l.desc,detail:l.detail,cat:l.cat,qty:l.qty,price:price,lead:lead,conf:l.conf,need:l.need};
     });
     window._pfbParsedLines=lines;
     var noPrice=lines.filter(function(l){return l.price==null;}).length;
@@ -13591,7 +13599,7 @@ charges:[
     var inp='border:1px solid #fcd34d;border-radius:4px;padding:3px 6px;font-size:11.5px;background:#fffbeb;width:92px';
     lines.forEach(function(l,i){
       b+='<tr style="border-top:1px solid var(--g150)"><td style="padding:8px"><input type="checkbox" id="pfbUpChk'+i+'" checked></td>';
-      b+='<td style="padding:8px;font-size:11.5px">'+l.size+'</td><td style="padding:8px;font-size:12px;font-weight:600">'+l.desc+'</td><td style="padding:8px;font-size:12px">'+l.qty+'</td>';
+      b+='<td style="padding:8px;font-size:11.5px">'+l.size+'</td><td style="padding:8px;font-size:12px;font-weight:600">'+l.desc+(l.detail?'<div style="font-size:10.5px;font-weight:400;color:var(--g500);margin-top:1px">'+l.detail+'</div>':'')+'</td><td style="padding:8px;font-size:12px">'+l.qty+'</td>';
       b+='<td style="padding:8px;font-size:12px">'+(l.price!=null?_pfbP(l.price):(cc?'<input id="pfbUpPrice'+i+'" type="number" min="1" placeholder="$ / unit" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found — quote</span>'))+'</td>';
       b+='<td style="padding:8px;font-size:12px">'+(l.lead||(cc?'<input id="pfbUpLead'+i+'" placeholder="e.g. 8 weeks" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found</span>'))+'</td>';
       b+='<td style="padding:8px"><input type="date" id="pfbUpNeed'+i+'" value="'+l.need+'" style="border:1px solid var(--g200);border-radius:4px;padding:2px 5px;font-size:11px"></td>';
@@ -13624,7 +13632,7 @@ charges:[
       var l=x.l,nd=(document.getElementById('pfbUpNeed'+x.i)||{}).value||l.need,need=_pfbFmtDate(nd);
       var priced=x.price!=null;
       var st=!priced?'Requested':(x.entered?'Submittal':'Planned / FPO');
-      var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?_pfbP(x.price)+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,code:'2600-0540-0000-0001 · Electrical'};
+      var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?_pfbP(x.price)+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,detail:l.detail||'',code:'2600-0540-0000-0001 · Electrical'};
       if(!cc||proj==='hercules'){var r1={asm:l.desc,need:need};for(var k in base)r1[k]=base[k];DP.prefab.rows.push(r1);}
       var r2={item:l.desc,window:need,firm:'TBD',poc:'TBD',phone:''};for(var k2 in base)r2[k2]=base[k2];ccRows.push(r2);
     });
