@@ -1578,7 +1578,7 @@
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,dateStatus:'proposed',propNeed:'Dec 17',propNote:'Shop capacity \u2014 Area C slot opens Dec 17',note:'Area C — rows 25–32'}]},
-        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
+        {asm:'MV Stuffed Rack',sameDate:'claimed',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
         {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
         {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
@@ -12409,7 +12409,7 @@ charges:[
     var total=parseInt(row.qty)||0;
     var alloc=multi?row.splits.reduce(function(s,x){return s+(parseInt(x.qty)||0);},0):total;
     var pending=row.fpoMode==='pending';
-    var showBuilder=multi||row.fpoMode==='split'||pending;
+    var showBuilder=multi||row.fpoMode==='split'||pending||row.sameDate==='breakdown'||cc;
     var unitN=_pfbNum(row.unitPrice);
     var est=unitN?_pfbMoney(unitN*total):(row.cost||'\u2014');
     var th='padding:7px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap';
@@ -12418,7 +12418,22 @@ charges:[
     [['Qty (SOV)',_pfbQty(total||row.qty)],['Unit bid price',row.unitPrice||'\u2014'],['Lead time',row.leadTime||'\u2014'],['Est. value',est]].forEach(function(c){h+='<div style="background:var(--g50);border:1px solid var(--g150);border-radius:7px;padding:8px 10px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+c[0]+'</div><div style="font-size:13px;font-weight:600;color:var(--g900)">'+c[1]+'</div></div>';});
     h+='</div>';
     h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">'+(row.code||row.cat||'')+(row.p6None?' \u00b7 <span style="color:#b45309;font-weight:600">No P6 link \u2014 manual date (won\u2019t auto-shift)</span>':(row.p6Act?' \u00b7 P6: '+row.p6Act:''))+(row.quoteNeeded?' \u00b7 <span style="color:#b45309;font-weight:600">No unit price on SOV \u2014 quote requested</span>':'')+'</div>';
-    h+='<label style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1.5px solid '+(pending?'#fcd34d':'var(--g200)')+';background:'+(pending?'#fffbeb':'#fff')+';border-radius:8px;cursor:pointer;margin-bottom:12px"><input type="checkbox" style="margin-top:3px" '+((!multi&&!showBuilder)?'checked ':'')+'onchange="pfbSetSame(\''+side+'\',\''+proj+'\','+idx+',this.checked)"><div><div style="font-size:12.5px;font-weight:700;color:var(--g900)">All quantities delivered on the same need-by date?</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">'+(pending?'Choose how this SOV line becomes FPO(s). ':'')+'Yes \u2192 the SOV line becomes a single FPO. No \u2192 break it into FPOs, each with its own quantity and need-by date.</div></div></label>';
+    var sd=row.sameDate;
+    if(!multi){
+      if(!cc){
+        var note='';
+        if(sd==='claimed')note='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-top:6px">\u23f3 Noted for 02S \u2014 waiting for them to confirm they can deliver the full quantity by '+_pfbNeed(row)+'.</div>';
+        else if(sd==='accepted')note='<div style="font-size:11.5px;color:#2F7A43;font-weight:600;margin-top:6px">\u2713 02S confirmed single-date delivery.</div>';
+        else if(sd==='breakdown')note='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-top:6px">\u26a0 02S can\u2019t deliver all '+total+' units by '+_pfbNeed(row)+' \u2014 please break this SOV line into FPOs with their own need-by dates.</div>';
+        h+='<div style="padding:10px 12px;border:1.5px solid '+(sd==='breakdown'||pending?'#fcd34d':'var(--g200)')+';background:'+(sd==='breakdown'||pending?'#fffbeb':'#fff')+';border-radius:8px;margin-bottom:12px"><label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer"><input type="checkbox" style="margin-top:3px" '+(!showBuilder?'checked ':'')+'onchange="pfbSetSame(\''+side+'\',\''+proj+'\','+idx+',this.checked)"><div><div style="font-size:12.5px;font-weight:700;color:var(--g900)">All quantities delivered on the same need-by date?</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">'+(pending?'Choose how this SOV line becomes FPO(s). ':'')+'Yes \u2192 the SOV line is a single FPO (02S confirms they can deliver it all on that date). No \u2192 break it into FPOs, each with its own quantity and need-by date.</div></div></label>'+note+'</div>';
+      } else if(sd==='claimed'){
+        h+='<div style="padding:12px 14px;border:1px solid var(--g150);border-left:3px solid #1d4ed8;background:#fff;border-radius:10px;margin-bottom:12px"><div style="font-size:12.5px;font-weight:700;color:var(--g900)">Project team: all '+total+' units needed by '+_pfbNeed(row)+'</div><div style="font-size:11.5px;color:var(--g500);margin:2px 0 8px">They flagged this SOV line as a single FPO. Confirm you can deliver everything on that date, or ask them to break it into FPOs.</div><button onclick="pfbSameDecision(\''+proj+'\','+idx+',true)" style="background:#059669;color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;margin-right:6px">Accept single date</button><button onclick="pfbSameDecision(\''+proj+'\','+idx+',false)" style="background:#fff;color:var(--g700);border:1px solid var(--g300);border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Request FPO breakdown</button></div>';
+      } else if(sd==='accepted'){
+        h+='<div style="font-size:11.5px;color:#2F7A43;font-weight:600;margin-bottom:12px">\u2713 Single-date delivery confirmed \u2014 this SOV line is one FPO.</div>';
+      } else if(sd==='breakdown'){
+        h+='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-bottom:12px">\u23f3 FPO breakdown requested \u2014 awaiting the project team.</div>';
+      }
+    }
     h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:6px">FPOs'+(multi?' ('+list.length+')':' \u2014 SOV line is a single FPO')+'</div>';
     h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200);border-radius:6px;overflow:hidden"><thead><tr style="background:var(--g50)"><th style="'+th+'">FPO</th><th style="'+th+'">Qty</th><th style="'+th+'">Need-by</th><th style="'+th+'">Value</th><th style="'+th+'">Status</th><th style="'+th+'">'+(cc?'Update':'Action')+'</th></tr></thead><tbody>';
     list.forEach(function(f){
@@ -12467,17 +12482,18 @@ charges:[
   }
   function pfbSetSame(side,proj,idx,checked){
     var row=_pfbRow(side,proj,idx);if(!row)return;
-    if(checked){
-      if(row.splits&&row.splits.length){
-        var ok=row.splits.every(function(s){return _pfbFpoStatus(s)==='Planned / FPO';});
-        if(!ok){toast('FPOs already submitted or in fulfillment \u2014 cannot merge into a single FPO');_pfbReopen(side,proj,idx);return;}
-      }
-      _pfbMirrors(row).forEach(function(m){m.splits=[];m.fpoMode='single';});
-      toast('SOV line is now a single FPO');
-    } else {
-      _pfbMirrors(row).forEach(function(m){m.fpoMode='split';});
-    }
+    _pfbMirrors(row).forEach(function(m){
+      if(checked){m.splits=[];m.fpoMode='single';m.sameDate='claimed';}
+      else{m.fpoMode='split';m.sameDate=null;}
+    });
+    toast(checked?'Noted \u2014 02S will confirm single-date delivery':'Add FPOs below, each with its own need-by date');
     _pfbReopen(side,proj,idx);
+  }
+  function pfbSameDecision(proj,idx,accept){
+    var row=_pfbRow('cc',proj,idx);if(!row)return;
+    _pfbMirrors(row).forEach(function(m){if(accept){m.sameDate='accepted';m.fpoMode='single';}else{m.sameDate='breakdown';m.fpoMode='split';}});
+    toast(accept?'Single-date delivery accepted \u2014 SOV line is one FPO':'Breakdown requested \u2014 project team notified');
+    _pfbReopen('cc',proj,idx);
   }
   function _pfbToSplit(m){
     if(m.splits&&m.splits.length)return;
@@ -12525,6 +12541,8 @@ charges:[
     var h='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g200)">';
     h+='<div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:11.5px;color:var(--g600)">';
     h+='<span>Unit bid price <b style="color:var(--g900)">'+(r.unitPrice||'\u2014')+'</b></span><span>Lead time <b style="color:var(--g900)">'+(r.leadTime||'\u2014')+'</b></span><span>'+(r.p6None?'<b style="color:#b45309">No P6 link \u2014 manual date</b>':'P6 <b style="color:var(--g900)">'+(r.p6Act||'\u2014')+'</b>')+'</span></div>';
+    if(!multi&&r.sameDate==='breakdown')h+='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-bottom:8px">\u26a0 02S asked for an FPO breakdown \u2014 open Manage FPOs to split this SOV line.</div>';
+    if(!multi&&r.sameDate==='claimed')h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:8px">Single-date delivery noted \u2014 awaiting 02S confirmation.</div>';
     h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400)">FPOs'+(multi?' ('+l.length+')':' \u2014 SOV line = single FPO')+'</span>';
     h+='<button onclick="event.stopPropagation();openFpoSplitModal(\''+pk+'\','+rowIdx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">Manage FPOs \u2192</button></div>';
     l.forEach(function(f){
@@ -12544,19 +12562,15 @@ charges:[
     return h;
   }
   /* ----- modern progress stepper ----- */
-  function _pfbStepper(labels,idx,accent,small){
-    var n=labels.length,sz=small?16:24,G='#2F7A43',OFF='#D4D4D8';
-    var h='<div style="display:flex;align-items:flex-start">';
+  var PFB_IC={check:'<path d="M20 6L9 17l-5-5"/>',file:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',filecheck:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',tool:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',cc:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>'};
+  var PFB_ICONS_MAIN=[PFB_IC.file,PFB_IC.send,PFB_IC.search,PFB_IC.filecheck,PFB_IC.box];
+  var PFB_ICONS_SUB=[PFB_IC.file,PFB_IC.cart,PFB_IC.send,PFB_IC.tool,PFB_IC.cc,PFB_IC.box,PFB_IC.truck,PFB_IC.check];
+  function _pfbStepper(labels,idx,icons){
+    var h='<div class="trk" style="padding:6px 4px 2px">';
     labels.forEach(function(l,i){
-      var done=i<idx,act=i===idx;
-      var lc=(i>0&&i<=idx)?G:OFF,rc=(i<n-1&&i<idx)?G:OFF;
-      var circ;
-      if(done)circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:'+G+';display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 24 24" width="'+(sz-8)+'" height="'+(sz-8)+'" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>';
-      else if(act)circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;border:2px solid '+accent+';box-shadow:0 0 0 4px '+accent+'22;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:'+(sz-14)+'px;height:'+(sz-14)+'px;border-radius:50%;background:'+accent+'"></div></div>';
-      else circ='<div style="width:'+sz+'px;height:'+sz+'px;border-radius:50%;background:#fff;border:2px solid '+OFF+';flex-shrink:0"></div>';
-      h+='<div style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:center">';
-      h+='<div style="display:flex;align-items:center;width:100%"><div style="flex:1;height:2px;background:'+(i?lc:'transparent')+'"></div>'+circ+'<div style="flex:1;height:2px;background:'+(i<n-1?rc:'transparent')+'"></div></div>';
-      h+='<div style="margin-top:8px;font-size:'+(small?'10':'11.5')+'px;line-height:1.3;text-align:center;padding:0 3px;'+(act?'font-weight:700;color:'+accent:done?'font-weight:500;color:var(--g700)':'color:var(--g400)')+'">'+l+'</div></div>';
+      var cls=i<idx?'done':i===idx?'cur':'future';
+      var ic=i<idx?PFB_IC.check:(icons[i]||PFB_IC.file);
+      h+='<div class="step '+cls+'"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+ic+'</svg></div><div class="slbl" style="text-align:center;padding:0 2px">'+l+'</div></div>';
     });
     return h+'</div>';
   }
@@ -12587,6 +12601,7 @@ charges:[
       var inner=_pfbH('Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Notes to project team</label><input id="pfbNote-'+proj+'-'+idx+'" placeholder="Scope clarifications or conditions…" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div></div><button class="btn btn-dark btn-sm" onclick="pfbSubmitPricing(\''+proj+'\','+idx+')">Send pricing to project team →</button>';
       h+=_pfbCard(inner,'border-left:3px solid #d97706');
     }
+    if(!(row.splits&&row.splits.length)&&row.sameDate==='claimed'){h+=_pfbCard(_pfbH('Single need-by date')+'<div style="font-size:12.5px;color:var(--g800);margin-bottom:10px">Project team noted that all '+(parseInt(row.qty)||row.qty)+' units are needed by <b>'+_pfbNeed(row)+'</b> and this SOV line is a single FPO. Confirm you can deliver everything on that date, or ask them to break it into FPOs.</div><button class="btn btn-dark btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',true)">Accept single date</button> <button class="btn btn-ghost btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',false)">Request FPO breakdown</button>','border-left:3px solid #1d4ed8');}
     var open=_pfbFpoList(row).filter(function(f){var d=_pfbDS(f.o,f.st);return d==='requested'||d==='countered';});
     if(open.length){
       var inn=_pfbH('Need-by confirmation','<span style="font-size:11px;color:var(--g400)">'+open.length+' FPO'+(open.length>1?'s':'')+' awaiting a decision</span>');
@@ -12607,11 +12622,10 @@ charges:[
     var h='';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px"><div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(st,subSt)+(row.onTrack===false?'<span style="font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border-radius:10px;padding:2px 9px">⚠ Off track</span>':'')+'</div><div style="font-size:11.5px;color:var(--g500);margin-top:6px">'+(row.cat||'')+(row.p6None?' · <span style="color:#b45309;font-weight:600">No P6 link — manual date</span>':(row.p6Act?' · P6: '+row.p6Act:''))+'</div></div>'+(multi?'<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Update FPO statuses →</button>':'<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>')+'</div>';
     var si={'Planned / FPO':0,'Requested':1,'In Review':2,'In Fulfillment':3,'Invoiced / Closed':5}[st];if(si==null)si=0;
-    var acc=si<=2&&si>0?'#d97706':si===3?'#265D9F':'#26241F';
-    var pc=_pfbH('Progress')+_pfbStepper(PFB_FSTAT,si,acc);
+    var pc=_pfbH('Progress')+_pfbStepper(PFB_FSTAT,si,PFB_ICONS_MAIN);
     if(st==='In Fulfillment'||st==='Invoiced / Closed'){
       var fi=SUB_STATUSES_FULFILLMENT.indexOf(subSt);if(st==='Invoiced / Closed')fi=SUB_STATUSES_FULFILLMENT.length;
-      pc+='<div style="border-top:1px solid var(--g100);margin-top:16px;padding-top:14px">'+_pfbH('Fulfillment stage'+(subFpo?' \u00b7 '+subFpo:''))+_pfbStepper(SUB_STATUSES_FULFILLMENT,fi,'#265D9F',true)+'</div>';
+      pc+='<div style="border-top:1px solid var(--g100);margin-top:16px;padding-top:14px">'+_pfbH('Fulfillment stage'+(subFpo?' \u00b7 '+subFpo:''))+_pfbStepper(SUB_STATUSES_FULFILLMENT,fi,PFB_ICONS_SUB)+'</div>';
     }
     h+=_pfbCard(pc);
     if(row.dateShifted&&row.shiftNote){h+=_pfbCard('<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#b45309;margin-bottom:6px">⚠ Schedule impact — 02S note</div>'+(row.origWindow?'<div style="font-size:11.5px;color:#92400e;margin-bottom:4px">Original date <span style="text-decoration:line-through">'+row.origWindow+'</span> → <b>'+row.window+'</b></div>':'')+'<div style="font-size:12px;color:#92400e;line-height:1.5">'+row.shiftNote+'</div>','background:#fffbeb;border-color:#fcd34d');}
@@ -14892,7 +14906,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     prefab:{
       hercules:{budget:900000,dpSpent:476000,adHoc:145000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'2 active',c:'In Fulfillment · Submittal',v:'Combiner Box · MV Stuffed Rack',vt:'info'},{a:'Mechanical',b:'2 active',c:'In Production · Requested',v:'Pipe Supports · Bathroom batteries',vt:'warn'},{a:'Concrete',b:'1 delivered · 1 planned',c:'Delivered Jun · FPO pending',v:'Column Forms · Deck Panels',vt:'ok'}],varSummary:'MV Stuffed Rack submittal under review · Bathroom batteries need-by shifted to Oct 15',rows:[
         {item:'Combiner Box',leadTime:'10 weeks',unitPrice:'$11,000/unit',cat:'Electrical',qty:'500',window:'Sep 5',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,ordId:null,cost:'$5.5M',firm:'TBD',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,dateStatus:'proposed',propNeed:'Dec 17',propNote:'Shop capacity \u2014 Area C slot opens Dec 17',note:'Area C — rows 25–32'}]},
-        {item:'MV Stuffed Rack',leadTime:'12 weeks',unitPrice:'TBD — needs 02S quote',cat:'Electrical',qty:'2 units',window:'Oct 20',state:'Requested',p6Act:'MV switchgear installation',onTrack:false,ordId:null,fqRef:'REQ-F-061',cost:'Pending',firm:'TBD'},
+        {item:'MV Stuffed Rack',sameDate:'claimed',leadTime:'12 weeks',unitPrice:'TBD — needs 02S quote',cat:'Electrical',qty:'2 units',window:'Oct 20',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,ordId:null,fqRef:'REQ-F-061',cost:'Pending',firm:'TBD'},
         {item:'Adjustable Pipe Supports',leadTime:'8 weeks',unitPrice:'$1,545.40/unit',cat:'Mechanical',qty:'12 modules',window:'Sep 28',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {item:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2 units',window:'Oct 15',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origWindow:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'Pending',firm:'TBD',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
         {item:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',window:'Nov 10',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true,ordId:null,cost:'$95K',firm:'TBD'},
@@ -16220,6 +16234,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       var adhocFiltered=cfg.rows;
       adhocFiltered.forEach(function(r){ allReqRows.push({_type:'adhoc',_projLabel:r.project,_raw:r}); });
     }
+    if(p==='prefab'){allReqRows.sort(function(a,b){if(a._type!=='dp'||b._type!=='dp')return 0;var ra=CC_PROJ_DP.prefab[a._proj].rows[a._idx],rb=CC_PROJ_DP.prefab[b._proj].rows[b._idx];var ao=ra.onTrack===false?1:0,bo=rb.onTrack===false?1:0;if(ao!==bo)return bo-ao;var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});}
     var isDpView=!showProjCol;
     var dpSrcFil=isDpView?'dp':(_dpCcSrcF[p]||'all');
     var visRows=isDpView?allReqRows:(dpSrcFil==='all'?allReqRows:allReqRows.filter(function(r){return r._type===(dpSrcFil==='dp'?'dp':'adhoc');}));
@@ -17718,7 +17733,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       add:{nameKey:'asm',qtyKey:'qty',whenKey:'need',costKey:'cost'}, addName:{label:'Assembly',ph:'e.g. Combiner Box',opts:['Combiner Box','MV Stuffed Rack','Adjustable Pipe Supports','Bathroom batteries','Deck Panels','Column Forms','multi-trade racking','stainless steel piping','beam forms','Empty DV Rack','Empty MV Rack','Skids','Welded pipe']}, addQty:{label:'Quantity',ph:'e.g. 2'}, addWhen:{label:'Need on-site',ph:'e.g. Nov 1'},
       rows:[
         {asm:'Combiner Box',cat:'Electrical',qty:'500',need:'Sep 5',code:'2600-0540-0000-0001 · Electrical',cost:'$5.5M',state:'In Fulfillment',p6Act:'Combiner box installation',onTrack:true,unitPrice:'$11,000/unit',leadTime:'10 weeks',splits:[{id:'FPO-CB-001',qty:100,need:'Sep 5',cost:'$1.1M',state:'Released',ordId:'ORD-5010',subState:'In Production',note:'Area A — rows 1–12'},{id:'FPO-CB-002',qty:150,need:'Oct 20',cost:'$1.65M',state:'Released',ordId:'ORD-5011',subState:'Work Order Created',note:'Area B — rows 13–24'},{id:'FPO-CB-003',qty:100,need:'Dec 10',cost:'$1.1M',state:'Planning',ordId:null,pendingRelease:100,dateStatus:'proposed',propNeed:'Dec 17',propNote:'Shop capacity \u2014 Area C slot opens Dec 17',note:'Area C — rows 25–32'}]},
-        {asm:'MV Stuffed Rack',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
+        {asm:'MV Stuffed Rack',sameDate:'claimed',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — needs 02S quote',leadTime:'12 weeks'},
         {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
         {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
