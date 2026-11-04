@@ -12919,11 +12919,12 @@ charges:[
   var PFB_P6_LIST=['Pipe rack install \u2014 Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation \u2014 module install','Combiner box installation','Overhead MEP install \u2014 Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning \u2014 systems startup'];
   var _PFB_TONE={'Planned / FPO':['#52525B','#F4F4F5'],'Requested':['#265D9F','#E7EEF7'],'In Review':['#8A6D1F','#F5EDD6'],'In Fulfillment':['#2F7A43','#E4F1E7'],'Invoiced / Closed':['#52525B','#E4E4E7']};
   var PFB_PARSED=[
-    {size:'4 in. x 4 in. x 4 in.',desc:'Junction Box Assembly, NEMA 4X',cat:'Electrical',qty:120,price:385,lead:'6 weeks',conf:98,need:'2026-10-15'},
-    {size:'12-circuit',desc:'DC Combiner Box, 1500V',cat:'Electrical',qty:60,price:1240,lead:'10 weeks',conf:96,need:'2026-10-30'},
-    {size:'35 kV',desc:'MV Cable Termination Kit',cat:'Electrical',qty:24,price:2150,lead:'8 weeks',conf:91,need:'2026-11-12'}
+    {size:'6 in.',desc:"10' SST Adjustable Pipe Support",cat:'Mechanical',qty:6,price:1545.40,lead:'8 weeks',conf:98,need:'2026-10-15'},
+    {size:'4 in.',desc:"2' Galv Adjustable Pipe Support ~ Supports in Well House (See Project Plans for Detail)",cat:'Mechanical',qty:3,price:650.63,lead:'8 weeks',conf:96,need:'2026-10-30'},
+    {size:'2 in.',desc:"2GAS 2' Galvanized Adjustable Support ~ Supports in Well House (See Project Plans for Detail)",cat:'Mechanical',qty:4,price:650.63,lead:'8 weeks',conf:91,need:'2026-11-12'}
   ];
 
+  function _pfbP(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:n%1?2:0});}
   function _pfbWide(px){var c=document.querySelector('#modal .modal-card');if(c){c.style.width=px+'px';c.style.maxWidth='calc(100vw - 48px)';}}
   function _jsq(s){return String(s==null?'':s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
   function _pfbCode(nm){var w=String(nm||'X').replace(/[^A-Za-z0-9 ]/g,'').split(/\s+/).filter(Boolean);if(!w.length)return 'X';var c=w.length>1?w.map(function(x){return x[0];}).join(''):w[0].slice(0,3);return c.toUpperCase().slice(0,3);}
@@ -12935,6 +12936,7 @@ charges:[
   function _pfbQty(q){return (typeof q==='number'||/^\d+$/.test(String(q)))?q+' units':String(q==null?'\u2014':q);}
   function _pfbUnitOf(cost,qty){var n=_pfbNum(cost);if(!n)return null;var q=parseInt(qty);if(!q)q=1;return '$'+Math.round(n/q).toLocaleString('en-US')+'/unit';}
   function pfbNormalizeUnits(){
+    _pfbSeedPricing();
     var sets=[(DP.prefab&&DP.prefab.rows)||[]];
     ['hercules','barryrose','vdc14'].forEach(function(p){var c=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[p];if(c&&c.rows)sets.push(c.rows);});
     sets.forEach(function(rows){rows.forEach(function(r){
@@ -12972,6 +12974,7 @@ charges:[
     if(c)out+='<div style="font-size:9.5px;color:#b45309;font-weight:700">'+c+' countered</div>';
     if(p)out+='<div style="font-size:9.5px;color:#1d4ed8;font-weight:700">'+p+' proposed</div>';
     if(n)out+='<div style="font-size:9.5px;color:#b45309;font-weight:700">to confirm</div>';
+    if(row.pricing){var _ps=row.pricing.status;out+='<div style="font-size:9.5px;font-weight:700;color:'+(_ps==='approved'?'#15803d':(_ps==='returned'?'#b45309':'#1d4ed8'))+'">'+(_ps==='sent'?'pricing for review':(_ps==='returned'?'pricing returned':'pricing approved'))+'</div>';}
     return out;
   }
   function _pfbApplyStatus(t,st,sub,isRow){
@@ -13125,6 +13128,7 @@ charges:[
     h+='<div style="font-size:11.5px;color:var(--g500);margin-bottom:12px">'+(row.code||row.cat||'')+(row.p6None?' \u00b7 <span style="color:#b45309;font-weight:600">No P6 link \u2014 manual date (won\u2019t auto-shift)</span>':(row.p6Act?' \u00b7 P6: '+row.p6Act:''))+(row.quoteNeeded?' \u00b7 <span style="color:#b45309;font-weight:600">No unit price on SOV \u2014 quote requested</span>':'')+'</div>';
     var _cnt={},_ord=[];list.forEach(function(f){var k=f.st+'|'+(f.sub||'');if(!_cnt[k]){_cnt[k]={st:f.st,sub:f.sub,n:0};_ord.push(k);}_cnt[k].n++;});
     h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 14px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">SOV status</span>'+_pfbChip(_pfbRowStatus(row),row.subState||null)+'<span style="color:var(--g300)">\u203a</span><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">FPOs</span>'+_ord.map(function(k){return _pfbChip(_cnt[k].st,_cnt[k].sub)+(_cnt[k].n>1?'<span style="font-size:11px;color:var(--g500);margin-left:-4px">\u00d7'+_cnt[k].n+'</span>':'');}).join('')+'</div>';
+    h+=_pfbPricingCard(side,proj,idx,row);
     var sd=row.sameDate;
     if(!multi){
       if(!cc){
@@ -13359,8 +13363,8 @@ charges:[
   function _pfbCcActions(proj,idx,row){
     var h='';
     var pf=_pfbRowStatus(row);
-    if(pf==='Requested'||pf==='In Review'){
-      var inner=_pfbH('Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Notes to project team</label><input id="pfbNote-'+proj+'-'+idx+'" placeholder="Scope clarifications or conditions…" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div></div><button class="btn btn-dark btn-sm" onclick="pfbSubmitPricing(\''+proj+'\','+idx+')">Send pricing to project team →</button>';
+    if((pf==='Requested'||pf==='In Review')&&!(row.pricing&&row.pricing.status!=='returned')){
+      var inner=_pfbH(row.pricing?'Revise pricing':'Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Notes to project team</label><input id="pfbNote-'+proj+'-'+idx+'" placeholder="Scope clarifications or conditions…" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div></div><button class="btn btn-dark btn-sm" onclick="pfbSendPrice(\''+proj+'\','+idx+')">'+(row.pricing?'Send revised pricing':'Send pricing to project team')+' →</button>';
       h+=_pfbCard(inner,'border-left:3px solid #d97706');
     }
     if(!(row.splits&&row.splits.length)&&row.sameDate==='claimed'){h+=_pfbCard(_pfbH('Single need-by date')+'<div style="font-size:12.5px;color:var(--g800);margin-bottom:10px">Project team noted that all '+(parseInt(row.qty)||row.qty)+' units are needed by <b>'+_pfbNeed(row)+'</b> and this SOV line is a single FPO. Confirm you can deliver everything on that date, or propose a breakdown into FPOs with the dates you can meet.</div><button class="btn btn-dark btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',true)">Accept single date</button> <button class="btn btn-ghost btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',false)">Propose FPO breakdown</button>','border-left:3px solid #1d4ed8');}
@@ -13396,12 +13400,82 @@ charges:[
     h+='<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px">';
     facts.forEach(function(f){h+='<div style="background:var(--g50);border-radius:10px;padding:9px 11px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:3px">'+f[0]+'</div><div style="font-size:12.5px;font-weight:600;color:var(--g900);overflow-wrap:anywhere">'+f[1]+'</div></div>';});
     h+='</div>';
+    h+=_pfbPricingCard('cc',proj,idx,row);
     h+=_pfbCcFpoList(proj,idx,row);
     h+=_pfbCcActions(proj,idx,row);
     if(ord){var b=buildDpBillingInline(row.ordId);if(b)h+=_pfbCard(b);}
     var fl=_pfbFlagsOf(row);
     h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
     openModal('SOV line — '+row.item,h);_pfbWide(720);
+  }
+
+  /* ----- pricing review: 02S sends pricing, project team approves or returns with comments ----- */
+  function _pfbSeedPricing(){
+    if(window._pfbPriceSeeded)return;window._pfbPriceSeeded=true;
+    var mk=function(){return {status:'sent',total:85000,unit:42500,sentOn:'Nov 3',thread:[{from:'02S',when:'Nov 3',text:'Pricing covers 2 battery assemblies, UL-listed cabinets and delivery to site. Valid 30 days. Lead time 6 weeks from approval.'}]};};
+    var a=DP.prefab&&DP.prefab.rows&&DP.prefab.rows.filter(function(r){return r.asm==='Bathroom batteries';})[0];
+    var b=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab.hercules&&CC_PROJ_DP.prefab.hercules.rows.filter(function(r){return r.item==='Bathroom batteries';})[0];
+    if(a&&!a.pricing)a.pricing=mk();if(b&&!b.pricing)b.pricing=mk();
+  }
+  function _pfbPriceThread(p){
+    var h='';(p.thread||[]).forEach(function(m){var us=m.from==='02S';
+      h+='<div style="display:flex;gap:8px;margin-top:8px"><div style="flex:none;width:22px;height:22px;border-radius:50%;background:'+(us?'#E01E37':'#1d4ed8')+';color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">'+(us?'02S':'PT')+'</div><div style="flex:1;min-width:0;background:var(--g50);border:1px solid var(--g150);border-radius:8px;padding:7px 10px"><div style="font-size:10.5px;color:var(--g500);margin-bottom:2px"><b style="color:var(--g800)">'+(us?'02S':'Project team')+'</b> \u00b7 '+m.when+'</div><div style="font-size:12px;color:var(--g800);line-height:1.45">'+m.text+'</div></div></div>';});
+    return h;
+  }
+  function _pfbPricingCard(side,proj,idx,row){
+    var p=row&&row.pricing;if(!p)return '';
+    var cc=side==='cc',k=side+'-'+proj+'-'+idx;
+    var tone={sent:['#d97706','Awaiting project team review'],returned:['#b45309','Returned with comments \u2014 02S to revise'],approved:['#15803d','Approved by project team']}[p.status];
+    var inner=_pfbH('Pricing submission',_pfbPriceChip(p));
+    inner+='<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px">';
+    [['Unit price','$'+p.unit.toLocaleString('en-US')+'/unit'],['Total',_pfbMoney(p.total)],['Lead time',row.leadTime||'\u2014']].forEach(function(c){inner+='<div style="background:var(--g50);border-radius:8px;padding:8px 10px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+c[0]+'</div><div style="font-size:13px;font-weight:700;color:var(--g900)">'+c[1]+'</div></div>';});
+    inner+='</div>'+_pfbPriceThread(p);
+    if(!cc&&p.status==='sent'){
+      inner+='<textarea id="pfbPrC-'+k+'" rows="2" placeholder="Add comments for 02S (required to return)\u2026" style="width:100%;margin-top:12px;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12px;font-family:inherit;box-sizing:border-box;resize:vertical"></textarea>';
+      inner+='<div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-dark btn-sm" style="background:#15803d;border-color:#15803d" onclick="pfbPriceApprove(\''+proj+'\','+idx+')">Approve pricing</button><button class="btn btn-ghost btn-sm" onclick="pfbPriceReturn(\''+proj+'\','+idx+')">Return with comments</button></div>';
+    } else if(!cc&&p.status==='returned'){
+      inner+='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-top:10px">\u23f3 Waiting for 02S to send revised pricing.</div>';
+    } else if(!cc&&p.status==='approved'){
+      inner+='<div style="font-size:11.5px;color:#15803d;font-weight:600;margin-top:10px">\u2713 You approved this pricing \u2014 02S will move the line to In Fulfillment when production starts.</div>';
+    } else if(cc&&p.status==='sent'){
+      inner+='<div style="font-size:11.5px;color:var(--g500);margin-top:10px">Sent '+p.sentOn+' \u00b7 waiting for the project team to approve or return with comments.</div>';
+    } else if(cc&&p.status==='approved'){
+      inner+='<div style="font-size:11.5px;color:#15803d;font-weight:600;margin-top:10px">\u2713 Project team approved \u2014 update the status to In Fulfillment once production starts.</div>';
+    }
+    return _pfbCard(inner,'border-left:3px solid '+tone[0]);
+  }
+  function _pfbPriceChip(p){
+    var m={sent:['#8A6D1F','#F5EDD6','Sent \u00b7 awaiting review'],returned:['#b45309','#fef3c7','Returned with comments'],approved:['#2F7A43','#E4F1E7','Approved']}[p.status];
+    return '<span style="display:inline-flex;background:'+m[1]+';color:'+m[0]+';border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">'+m[2]+'</span>';
+  }
+  function _pfbPriceDone(msg){
+    closeModal();toast(msg);
+    try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
+  }
+  function _pfbPriceMirrors(proj,idx,side){var r=_pfbRow(side,proj,idx);return _pfbMirrors(r);}
+  function pfbPriceApprove(proj,idx){
+    var r=_pfbRow('cp',proj,idx),p=r&&r.pricing;if(!p)return;
+    var c=((document.getElementById('pfbPrC-cp-'+proj+'-'+idx)||{}).value||'').trim();
+    var base=(p.thread||[]).slice(),pc=JSON.parse(JSON.stringify(p));_pfbMirrors(r).forEach(function(m){var q=m.pricing||(m.pricing=JSON.parse(JSON.stringify(pc)));q.status='approved';q.thread=base.slice();q.thread.push({from:'PT',when:'Nov 4',text:c||'Pricing approved.'});m.unitPrice='$'+p.unit.toLocaleString('en-US')+'/unit';m.cost=_pfbMoney(p.total);});
+    _pfbPriceDone('Pricing approved \u2014 02S notified');
+  }
+  function pfbPriceReturn(proj,idx){
+    var r=_pfbRow('cp',proj,idx),p=r&&r.pricing;if(!p)return;
+    var c=((document.getElementById('pfbPrC-cp-'+proj+'-'+idx)||{}).value||'').trim();
+    if(!c){toast('Add a comment so 02S knows what to revise');return;}
+    var base=(p.thread||[]).slice(),pc=JSON.parse(JSON.stringify(p));_pfbMirrors(r).forEach(function(m){var q=m.pricing||(m.pricing=JSON.parse(JSON.stringify(pc)));q.status='returned';q.thread=base.slice();q.thread.push({from:'PT',when:'Nov 4',text:c});});
+    _pfbPriceDone('Returned to 02S with your comments');
+  }
+  function pfbSendPrice(proj,idx){
+    var el=document.getElementById('pfbPrice-'+proj+'-'+idx),nt=document.getElementById('pfbNote-'+proj+'-'+idx);
+    var tot=el?_pfbNum(el.value.indexOf('$')<0?'$'+el.value:el.value):0;
+    if(!tot){toast('Enter a cost estimate.');return;}
+    var r=_pfbRow('cc',proj,idx),q=parseInt(r.qty)||1,note=((nt||{}).value||'').trim();
+    var old=r.pricing,thread=(old&&old.thread?old.thread.slice():[]);
+    thread.push({from:'02S',when:'Nov 4',text:note||(old?'Revised pricing attached.':'Pricing submitted for your review.')});
+    var np={status:'sent',total:tot,unit:Math.round(tot/q*100)/100,sentOn:'Nov 4',thread:thread};
+    _pfbMirrors(r).forEach(function(m){m.pricing=JSON.parse(JSON.stringify(np));if(!m.splits||!m.splits.length)m.state='In Review';});
+    _pfbPriceDone('Pricing sent to project team for review');
   }
 
   /* ----- project-team notifications (shown at top of page) ----- */
@@ -13416,12 +13490,14 @@ charges:[
     try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
   }
   function _pfbCpNotices(){
+    _pfbSeedPricing();
     var rows=(DP.prefab&&DP.prefab.rows)||[],h='<div style="margin-bottom:14px">';var n=0;
     var NC=_PFB_NC;
     var btn=function(col,lbl,fn){return '<button class="btn btn-dark btn-sm" style="background:'+col+';border-color:'+col+';white-space:nowrap" onclick="'+fn+'">'+lbl+' →</button>';};
     rows.forEach(function(r,i){
       var nm=r.asm||r.item;
       if(r.quoteSent){n++;h+=_pfbNotice(NC.green,'Quote ready for review',nm,'SOV line',(r.unitPrice||'')+' · '+(r.cost||'')+' total',(r.leadTime?'Lead time '+r.leadTime+' · ':'')+'02S sent a quote because no unit price was on the SOV',btn('#15803d','Review &amp; approve','pfbApproveQuote('+i+')'));}
+      if(r.pricing&&r.pricing.status==='sent'){n++;h+=_pfbNotice(NC.green,'Pricing ready for review',nm,'SOV line','$'+r.pricing.unit.toLocaleString('en-US')+'/unit \u00b7 '+_pfbMoney(r.pricing.total)+' total','02S sent pricing \u00b7 '+(r.leadTime?'lead time '+r.leadTime+' \u00b7 ':'')+'approve it or return with comments',btn('#15803d','Review pricing','openFpoSplitModal(\'prefab\','+i+')'));}
       if(r.onTrack===false){n++;h+=_pfbNotice(NC.amber,'Assembly off track',nm,'SOV line','Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':''),'P6: '+(r.p6Act||'—'),btn('#b45309','Review','openFpoSplitModal(\'prefab\','+i+')'));}
       _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed'){n++;h+=_pfbNotice(NC.blue,'New need-by date proposed by 02S',nm,f.id,'Proposed '+(f.o.propNeed||'')+' · requested '+f.need,f.o.propNote||'',btn('#1d4ed8','Accept or counter','openFpoSplitModal(\'prefab\','+i+')'));}});
       _pfbFlagsOf(r).forEach(function(fl){n++;h+=_pfbNotice(NC.orange,'Flag from 02S · informational',nm,fl.level+' '+fl.ref,fl.type,fl.note||'','<button onclick="openFpoSplitModal(\'prefab\','+i+')" style="font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600;white-space:nowrap">View →</button>');});
@@ -13493,15 +13569,15 @@ charges:[
     window._pfbParsedLines=lines;
     var noPrice=lines.filter(function(l){return l.price==null;}).length;
     var proj=_ccAddFpoProj||'hercules';
-    var b='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Parsed <b style="color:var(--g800)">Hercules_Exhibit1_Electrical.pdf</b> · '+lines.length+' line items found. '+(cc?'Review, then add to '+(_PROJ_NAMES[proj]||proj)+'’s SOV.':'Review, set need-by dates, then add to your SOV.')+'</div>';
+    var b='<div style="font-size:11.5px;color:var(--g500);margin-bottom:10px">Parsed <b style="color:var(--g800)">Hercules_Exhibit1_Piping.pdf</b> · '+lines.length+' line items found. '+(cc?'Review, then add to '+(_PROJ_NAMES[proj]||proj)+'’s SOV.':'Review, set need-by dates, then add to your SOV.')+'</div>';
     if(noPrice)b+='<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#92400e"><b>⚠ '+noPrice+' line'+(noPrice>1?'s':'')+' without a unit price.</b> '+(cc?'Enter your quote below. These lines go to the project team as a quote to approve; priced lines are added as agreed.':'Those lines go to the quoting process — 02S estimates and sends pricing back for your confirmation. Priced lines are added as agreed.')+'</div>';
     else b+='<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:9px 12px;margin-bottom:10px;font-size:11.5px;color:#166534"><b>✓ Unit prices extracted</b> for all lines — they are added to the SOV at the agreed bid price. No quote needed.</div>';
-    b+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200)"><thead><tr style="background:var(--g50)"><th style="'+th+'"></th><th style="'+th+'">Size</th><th style="'+th+'">Description</th><th style="'+th+'">Est. qty</th><th style="'+th+'">Unit bid price</th><th style="'+th+'">Lead time</th><th style="'+th+'">Need-by</th><th style="'+th+'">Match</th></tr></thead><tbody>';
+    b+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200)"><thead><tr style="background:var(--g50)"><th style="'+th+'"></th><th style="'+th+'">Size</th><th style="'+th+'">Description</th><th style="'+th+'">Est. qty</th><th style="'+th+'">Unit bid price</th><th style="'+th+'">Lead time</th><th style="'+th+'">Need-by</th><th style="'+th+'">Confidence %</th></tr></thead><tbody>';
     var inp='border:1px solid #fcd34d;border-radius:4px;padding:3px 6px;font-size:11.5px;background:#fffbeb;width:92px';
     lines.forEach(function(l,i){
       b+='<tr style="border-top:1px solid var(--g150)"><td style="padding:8px"><input type="checkbox" id="pfbUpChk'+i+'" checked></td>';
       b+='<td style="padding:8px;font-size:11.5px">'+l.size+'</td><td style="padding:8px;font-size:12px;font-weight:600">'+l.desc+'</td><td style="padding:8px;font-size:12px">'+l.qty+'</td>';
-      b+='<td style="padding:8px;font-size:12px">'+(l.price!=null?'$'+l.price.toLocaleString('en-US'):(cc?'<input id="pfbUpPrice'+i+'" type="number" min="1" placeholder="$ / unit" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found — quote</span>'))+'</td>';
+      b+='<td style="padding:8px;font-size:12px">'+(l.price!=null?_pfbP(l.price):(cc?'<input id="pfbUpPrice'+i+'" type="number" min="1" placeholder="$ / unit" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found — quote</span>'))+'</td>';
       b+='<td style="padding:8px;font-size:12px">'+(l.lead||(cc?'<input id="pfbUpLead'+i+'" placeholder="e.g. 8 weeks" style="'+inp+'">':'<span style="color:#b45309;font-weight:600">Not found</span>'))+'</td>';
       b+='<td style="padding:8px"><input type="date" id="pfbUpNeed'+i+'" value="'+l.need+'" style="border:1px solid var(--g200);border-radius:4px;padding:2px 5px;font-size:11px"></td>';
       b+='<td style="padding:8px"><span style="font-size:10.5px;font-weight:700;color:'+(l.conf>=95?'#2F7A43':'#8A6D1F')+'">'+l.conf+'%</span></td></tr>';
@@ -13533,7 +13609,7 @@ charges:[
       var l=x.l,nd=(document.getElementById('pfbUpNeed'+x.i)||{}).value||l.need,need=_pfbFmtDate(nd);
       var priced=x.price!=null;
       var st=!priced?'Requested':(x.entered?'Submittal':'Planned / FPO');
-      var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?'$'+x.price.toLocaleString('en-US')+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,code:'2600-0540-0000-0001 · Electrical'};
+      var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?_pfbP(x.price)+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,code:'2600-0540-0000-0001 · Electrical'};
       if(!cc||proj==='hercules'){var r1={asm:l.desc,need:need};for(var k in base)r1[k]=base[k];DP.prefab.rows.push(r1);}
       var r2={item:l.desc,window:need,firm:'TBD',poc:'TBD',phone:''};for(var k2 in base)r2[k2]=base[k2];ccRows.push(r2);
     });
