@@ -13196,7 +13196,22 @@ charges:[
       h+='</div></div>';
     }
     if(cc)h+='<div style="display:flex;justify-content:flex-end;margin-top:12px;padding-top:10px;border-top:1px solid var(--g150)"><button onclick="pfbFlag(\''+proj+'\','+idx+',-1)" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600">\u2691 Flag SOV line</button></div>';
+    var q=window._pfbQ,qi=q?q.idxs.indexOf(idx):-1;
+    if(q&&qi>=0&&q.side===side&&q.proj===proj){
+      var bn='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:700;color:#1e40af">Set up FPOs \u00b7 line '+(qi+1)+' of '+q.idxs.length+'</div><div style="font-size:11px;color:#1d4ed8">Say whether all units ship on one date, or break the line into FPOs</div></div><div style="display:flex;gap:6px;flex-wrap:wrap">';
+      q.idxs.forEach(function(ix,k){var r2=_pfbRow(side,proj,ix),done=r2.fpoMode!=='pending',cur=k===qi;bn+='<button onclick="pfbQGo('+k+')" style="font-size:11px;padding:4px 10px;border-radius:14px;cursor:pointer;font-weight:600;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid '+(cur?'#1d4ed8':'#bfdbfe')+';background:'+(cur?'#1d4ed8':'#fff')+';color:'+(cur?'#fff':'#1e40af')+'">'+(done?'\u2713 ':(k+1)+'. ')+(r2.asm||r2.item)+'</button>';});
+      h=bn+'</div></div>'+h;
+      var last=qi===q.idxs.length-1;
+      h+='<div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--g150)"><button class="btn btn-ghost btn-sm" onclick="pfbQEnd()">Finish later</button><div style="display:flex;gap:8px;align-items:center">'+(row.fpoMode==='pending'?'<span style="font-size:11px;color:#b45309;font-weight:600">FPOs not set for this line yet</span>':'<span style="font-size:11px;color:#15803d;font-weight:600">\u2713 FPOs set</span>')+'<button class="btn btn-dark btn-sm" onclick="pfbQGo('+(last?-1:qi+1)+')">'+(last?'Finish':'Next line')+' \u2192</button></div></div>';
+    }
     openModal('SOV line \u2014 '+nm,h);_pfbWide(940);
+  }
+  function pfbQGo(k){var q=window._pfbQ;if(!q)return;if(k<0||k>=q.idxs.length){pfbQEnd();return;}if(q.side==='cc')openCcFpoSplitModal('prefab',q.proj,q.idxs[k]);else openFpoSplitModal('prefab',q.idxs[k]);}
+  function pfbQEnd(){
+    var q=window._pfbQ;window._pfbQ=null;closeModal();if(!q)return;
+    var rows=q.idxs.map(function(ix){return _pfbRow(q.side,q.proj,ix);}),left=rows.filter(function(r){return r.fpoMode==='pending';}).length;
+    toast(left?left+' line'+(left>1?'s':'')+' still need FPOs \u2014 open them from the list when ready':'All '+rows.length+' lines set up');
+    try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
   }
   function pfbEditToggle(proj,idx,si){var k=proj+'-'+idx+'-'+si;window._pfbEditKey=(window._pfbEditKey===k)?null:k;_pfbSovModal('cc',proj,idx);}
   function pfbEditApply(proj,idx,si){var st=(document.getElementById('pfbEdSt')||{}).value,sub=(document.getElementById('pfbEdSub')||{}).value;window._pfbEditKey=null;pfbFpoSetStatus('cc',proj,idx,si,st,st==='In Fulfillment'?sub:undefined);}
@@ -13618,7 +13633,9 @@ charges:[
     try{renderDP('prefab');}catch(e){}
     try{renderCcDemand('prefab');}catch(e){}
     toast(n+' SOV line'+(n>1?'s':'')+' added'+(cc?(quoted?' — quote sent to project team for '+quoted+' line'+(quoted>1?'s':''):''):(picked.some(function(x){return x.price==null;})?' — unpriced lines sent to 02S for quote':'')));
-    if(cc)openCcFpoSplitModal('prefab',proj,first);else openFpoSplitModal('prefab',first);
+    var ix=[];for(var j=0;j<n;j++)ix.push(first+j);
+    window._pfbQ={side:cc?'cc':'cp',proj:proj,idxs:ix};
+    pfbQGo(0);
   }
 
   /* ----- 02S: manual SOV line ----- */
