@@ -13011,19 +13011,25 @@ charges:[
   }
 
   /* ----- status by FPO ----- */
-  function pfbFpoSetStatus(side,proj,idx,si,st,sub){
-    var row=_pfbRow(side,proj,idx);if(!row)return;
-    var t0=si>=0?row.splits[si]:row;if(!t0)return;
+  function pfbFpoSetStatus(side,proj,idx,si,st,sub,note){
+    var row=_pfbRow(side,proj,idx);if(!row)return false;
+    var t0=si>=0?row.splits[si]:row;if(!t0)return false;
+    var prev=_pfbFpoList(row)[si>=0?si:0],effSub=st==='In Fulfillment'?(sub||(prev.st==='In Fulfillment'?prev.sub:null)||'Work Order Created'):null;
+    var back=_pfbRank(st,effSub)<_pfbRank(prev.st,prev.sub);
+    if(back&&!note){toast('Add a reason for moving back \u2014 it is shared with the project team');return false;}
+    var nt=back?{from:_pfbStLabel(prev.st,prev.sub),to:_pfbStLabel(st,effSub),text:note,when:'Nov 5',ack:false}:null;
     var ord=t0.ordId||('ORD-'+(5030+Math.floor(Math.random()*60)));
     _pfbEach(row,si,function(t,m,isRow){
       _pfbApplyStatus(t,st,sub,isRow);
+      if(nt)(t.statusNotes=t.statusNotes||[]).push({from:nt.from,to:nt.to,text:nt.text,when:nt.when,ack:false});
       if((st==='In Fulfillment'||st==='Invoiced / Closed')&&!t.ordId)t.ordId=ord;
       if(st==='Requested'&&(!t.dateStatus||t.dateStatus==='draft'||t.dateStatus==='confirmed'))t.dateStatus='requested';
       if(st==='In Fulfillment'||st==='Invoiced / Closed')t.dateStatus='confirmed';
       _pfbRollup(m);
     });
-    toast(st==='Requested'?'FPO submitted to 02S':'FPO status updated \u2014 '+st+(sub?' \u00b7 '+sub:''));
+    toast(nt?'Moved back \u2014 note sent to the project team':(st==='Requested'?'FPO submitted to 02S':'FPO status updated \u2014 '+st+(sub?' \u00b7 '+sub:'')));
     _pfbReopen(side,proj,idx);
+    return true;
   }
 
   /* ----- need-by date negotiation ----- */
@@ -13172,7 +13178,8 @@ charges:[
       }
       h+='</td></tr>';
       if(cc&&window._pfbEditKey===proj+'-'+idx+'-'+si){
-        h+='<tr><td colspan="6" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\'" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+PFB_FSTAT.map(function(x){return '<option'+(x===f.st?' selected':'')+'>'+x+'</option>';}).join('')+'</select><select id="pfbEdSub" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select><button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer">Apply</button></div></td></tr>';
+        window._pfbRegCur={st:f.st,sub:f.sub};
+        h+='<tr><td colspan="6" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\';pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+PFB_FSTAT.map(function(x){return '<option'+(x===f.st?' selected':'')+'>'+x+'</option>';}).join('')+'</select><select id="pfbEdSub" onchange="pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'+_pfbNoteBox('')+'<button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-end">Apply</button></div></td></tr>';
       }
     });
     h+='</tbody></table></div>';
@@ -13182,6 +13189,7 @@ charges:[
       flagsAll.forEach(function(fl){h+='<div style="font-size:11.5px;color:#92400e;padding:2px 0"><b>'+fl.level+' '+fl.ref+'</b> \u00b7 '+fl.type+(fl.note?' \u2014 '+fl.note:'')+' <span style="color:#b45309;opacity:.7">\u00b7 '+fl.ts+'</span></div>';});
       h+='</div>';
     }
+    h+=_pfbStatusNotesCard(row);
     if(showBuilder){
       var pool=Math.max(0,total-alloc);
       h+='<div style="background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:12px 14px;margin-top:12px">';
@@ -13195,7 +13203,8 @@ charges:[
       h+='<button onclick="pfbAddFpo(\''+side+'\',\''+proj+'\','+idx+')" style="padding:5px 14px;background:'+(cc?'#059669':'#1d4ed8')+';border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">'+(cc?'Initiate FPO \u2192':'Add FPO')+'</button>';
       h+='</div></div>';
     }
-    if(cc)h+='<div style="display:flex;justify-content:flex-end;margin-top:12px;padding-top:10px;border-top:1px solid var(--g150)"><button onclick="pfbFlag(\''+proj+'\','+idx+',-1)" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600">\u2691 Flag SOV line</button></div>';
+    if(cc)h+='<div style="margin-top:12px">'+_pfbUnallocHTML(row)+'</div>';
+    if(cc)h+='<div style="display:flex;justify-content:flex-end;margin-top:0;padding-top:10px;border-top:1px solid var(--g150)"><button onclick="pfbFlag(\''+proj+'\','+idx+',-1)" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600">\u2691 Flag SOV line</button></div>';
     var q=window._pfbQ,qi=q?q.idxs.indexOf(idx):-1;
     if(q&&qi>=0&&q.side===side&&q.proj===proj){
       var bn='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:700;color:#1e40af">Set up FPOs \u00b7 line '+(qi+1)+' of '+q.idxs.length+'</div><div style="font-size:11px;color:#1d4ed8">Say whether all units ship on one date, or break the line into FPOs</div></div><div style="display:flex;gap:6px;flex-wrap:wrap">';
@@ -13214,7 +13223,7 @@ charges:[
     try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
   }
   function pfbEditToggle(proj,idx,si){var k=proj+'-'+idx+'-'+si;window._pfbEditKey=(window._pfbEditKey===k)?null:k;_pfbSovModal('cc',proj,idx);}
-  function pfbEditApply(proj,idx,si){var st=(document.getElementById('pfbEdSt')||{}).value,sub=(document.getElementById('pfbEdSub')||{}).value;window._pfbEditKey=null;pfbFpoSetStatus('cc',proj,idx,si,st,st==='In Fulfillment'?sub:undefined);}
+  function pfbEditApply(proj,idx,si,k){k=k||'';var st=(document.getElementById('pfbEdSt'+k)||{}).value,sub=(document.getElementById('pfbEdSub'+k)||{}).value,note=((document.getElementById('pfbEdTxt'+k)||{}).value||'').trim();if(pfbFpoSetStatus('cc',proj,idx,si,st,st==='In Fulfillment'?sub:undefined,note))window._pfbEditKey=null;}
   function pfbSetSame(side,proj,idx,checked){
     var row=_pfbRow(side,proj,idx);if(!row)return;
     _pfbMirrors(row).forEach(function(m){
@@ -13425,13 +13434,67 @@ charges:[
     h+='</div>';
     h+=_pfbPricingCard('cc',proj,idx,row);
     h+=_pfbCcFpoList(proj,idx,row);
+    h+=_pfbStatusNotesCard(row);
     h+=_pfbCcActions(proj,idx,row);
     if(ord){var b=buildDpBillingInline(row.ordId);if(b)h+=_pfbCard(b);}
+    h+=_pfbUnallocHTML(row);
     var fl=_pfbFlagsOf(row);
     h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
     openModal('SOV line — '+row.item,h);_pfbWide(720);
   }
 
+  /* ----- moving an FPO back in the timeline requires a note for the project team ----- */
+  function _pfbRank(st,sub){var i=PFB_FSTAT.indexOf(st);if(i<0)i=0;var s=0;if(st==='In Fulfillment')s=Math.max(0,SUB_STATUSES_FULFILLMENT.indexOf(sub||'Work Order Created'));return i*100+s;}
+  function _pfbStLabel(st,sub){return st+(sub?' \u00b7 '+sub:'');}
+  function pfbRegCheck(k){
+    var cur=window._pfbRegCur;if(!cur)return;
+    var st=(document.getElementById('pfbEdSt'+k)||{}).value,subEl=document.getElementById('pfbEdSub'+k);
+    var sub=st==='In Fulfillment'&&subEl?subEl.value:null;
+    var box=document.getElementById('pfbEdNote'+k);
+    if(box)box.style.display=_pfbRank(st,sub||(st==='In Fulfillment'?'Work Order Created':null))<_pfbRank(cur.st,cur.sub)?'':'none';
+  }
+  function _pfbNoteBox(k){
+    return '<div id="pfbEdNote'+k+'" style="display:none;flex:1;min-width:260px;align-items:flex-start;gap:8px"><div style="flex:1"><div style="font-size:10.5px;font-weight:700;color:#b45309;margin-bottom:3px">Moving back \u2014 reason required <span style="font-weight:500;color:var(--g500)">\u00b7 shared with the project team on this FPO</span></div><textarea id="pfbEdTxt'+k+'" rows="2" placeholder="e.g. QC failed on 12 units \u2014 rework needed before release" style="width:100%;box-sizing:border-box;border:1px solid #fcd34d;background:#fffbeb;border-radius:6px;padding:6px 9px;font-size:12px;font-family:inherit;resize:vertical"></textarea></div></div>';
+  }
+  function _pfbStatusNotesOf(row){
+    var out=[];_pfbFpoList(row).forEach(function(f){(f.o.statusNotes||[]).forEach(function(n){out.push({id:f.id,n:n});});});return out;
+  }
+  function _pfbStatusNotesCard(row){
+    var l=_pfbStatusNotesOf(row);if(!l.length)return '';
+    var inner=_pfbH('Status notes from 02S',' <span style="font-size:11px;color:var(--g400)">'+l.length+'</span>');
+    l.slice().reverse().forEach(function(x,i){inner+='<div style="'+(i?'border-top:1px solid var(--g100);margin-top:10px;padding-top:10px':'')+'"><div style="font-size:11px;color:var(--g500);margin-bottom:3px"><span style="font-family:monospace">'+x.id+'</span> \u00b7 <b style="color:#b45309">\u21a9 Moved back</b> \u00b7 '+x.n.from+' \u2192 '+x.n.to+' \u00b7 '+x.n.when+'</div><div style="font-size:12.5px;color:var(--g800);line-height:1.45">'+x.n.text+'</div></div>';});
+    return _pfbCard(inner,'border-left:3px solid #d97706');
+  }
+  function pfbViewNotes(i){
+    var r=DP.prefab.rows[i];if(r)_pfbFpoList(r).forEach(function(f){(f.o.statusNotes||[]).forEach(function(n){n.ack=true;});});
+    try{renderDP('prefab');}catch(e){}
+    openFpoSplitModal('prefab',i);
+  }
+  function _pfbUnalloc(row){
+    var total=parseInt(row.qty)||0,multi=!!(row.splits&&row.splits.length);
+    var alloc=multi?row.splits.reduce(function(s,x){return s+(parseInt(x.qty)||0);},0):((row.fpoMode==='pending'||row.fpoMode==='split')?0:total);
+    return {total:total,alloc:Math.min(alloc,total),un:Math.max(0,total-alloc),multi:multi};
+  }
+  function _pfbUnallocHTML(row){
+    var u=_pfbUnalloc(row);if(!u.total)return '';
+    var pct=Math.round(u.alloc/u.total*100),none=!u.multi&&u.alloc===0;
+    var col=u.un?'#b45309':'#15803d';
+    return '<div style="display:flex;align-items:center;gap:14px;background:'+(u.un?'#fffbeb':'#f0fdf4')+';border:1px solid '+(u.un?'#fcd34d':'#bbf7d0')+';border-radius:10px;padding:10px 14px;margin-bottom:12px"><div style="flex:none"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+col+'">Unallocated units</div><div style="font-size:20px;font-weight:700;color:'+col+';line-height:1.15">'+u.un+' <span style="font-size:12px;font-weight:600;color:var(--g500)">of '+u.total+'</span></div></div><div style="flex:1;min-width:0"><div style="height:6px;background:#fff;border:1px solid var(--g150);border-radius:4px;overflow:hidden"><div style="width:'+pct+'%;height:100%;background:'+(u.un?'#d97706':'#16a34a')+'"></div></div><div style="font-size:11px;color:var(--g600);margin-top:5px">'+(none?'No FPOs yet \u2014 all '+u.total+' units are unallocated.':(u.un?u.alloc+' units are in FPOs \u00b7 '+u.un+' not yet assigned to an FPO.':'All '+u.total+' units are allocated to FPOs.'))+'</div></div></div>';
+  }
+  function pfbStatusModal(proj,idx){
+    var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;
+    var st=_pfbRowStatus(row),sub=row.subState||null;window._pfbRegCur={st:st,sub:sub};
+    var sel='border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px';
+    var mo=PFB_FSTAT.map(function(s){return '<option'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+    var ms=SUB_STATUSES_FULFILLMENT.map(function(s){return '<option'+(s===sub?' selected':'')+'>'+s+'</option>';}).join('');
+    var b='<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+_pfbStLabel(st,sub)+'</span></div>';
+    b+='<div class="fq-crow"><span>New status</span><span><select id="pfbEdStM" style="'+sel+'" onchange="var r=document.getElementById(\'pfbEdSubRowM\');if(r)r.style.display=this.value===\'In Fulfillment\'?\'flex\':\'none\';pfbRegCheck(\'M\')">'+mo+'</select></span></div>';
+    b+='<div id="pfbEdSubRowM" class="fq-crow" style="display:'+(st==='In Fulfillment'?'flex':'none')+'"><span>Fulfillment detail</span><span><select id="pfbEdSubM" style="'+sel+'" onchange="pfbRegCheck(\'M\')">'+ms+'</select></span></div></div>';
+    b+='<div style="padding:0 16px 8px">'+_pfbNoteBox('M')+'</div>';
+    b+='<div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="pfbEditApply(\''+proj+'\','+idx+',-1,\'M\')">Save</button></div>';
+    window._pfbDetailCtx=true;
+    openModal('Update status \u2014 '+row.item,b);
+  }
   /* ----- pricing review: 02S sends pricing, project team approves or returns with comments ----- */
   function _pfbSeedPricing(){
     if(window._pfbPriceSeeded)return;window._pfbPriceSeeded=true;
@@ -13523,6 +13586,7 @@ charges:[
       if(r.pricing&&r.pricing.status==='sent'){n++;h+=_pfbNotice(NC.green,'Pricing ready for review',nm,'SOV line','$'+r.pricing.unit.toLocaleString('en-US')+'/unit \u00b7 '+_pfbMoney(r.pricing.total)+' total','02S sent pricing \u00b7 '+(r.leadTime?'lead time '+r.leadTime+' \u00b7 ':'')+'approve it or return with comments',btn('#15803d','Review pricing','openFpoSplitModal(\'prefab\','+i+')'));}
       if(r.onTrack===false){n++;h+=_pfbNotice(NC.amber,'Assembly off track',nm,'SOV line','Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':''),'P6: '+(r.p6Act||'—'),btn('#b45309','Review','openFpoSplitModal(\'prefab\','+i+')'));}
       _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed'){n++;h+=_pfbNotice(NC.blue,'New need-by date proposed by 02S',nm,f.id,'Proposed '+(f.o.propNeed||'')+' · requested '+f.need,f.o.propNote||'',btn('#1d4ed8','Accept or counter','openFpoSplitModal(\'prefab\','+i+')'));}});
+      _pfbFpoList(r).forEach(function(f){(f.o.statusNotes||[]).forEach(function(nt){if(nt.ack)return;n++;h+=_pfbNotice(NC.amber,'FPO status moved back by 02S',nm,f.id,nt.from+' \u2192 '+nt.to,nt.text,btn('#b45309','View note','pfbViewNotes('+i+')'));});});
       _pfbFlagsOf(r).forEach(function(fl){n++;h+=_pfbNotice(NC.orange,'Flag from 02S · informational',nm,fl.level+' '+fl.ref,fl.type,fl.note||'','<button onclick="openFpoSplitModal(\'prefab\','+i+')" style="font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600;white-space:nowrap">View →</button>');});
     });
     return n?h+'</div>':'';
@@ -13709,7 +13773,6 @@ charges:[
     if(_pfbAddFpoCore('cc',proj,idx,q,dv,note)){closeModal();renderCcDemand('prefab');openCcFpoSplitModal('prefab',proj,idx);}
   }
 
-  function pfbStatusModal(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var _mo=STAGES_PREFAB_OPS.map(function(s){return '<option value="'+s+'"'+(s===row.state?' selected':'')+'>'+s+'</option>';}).join('');var _ms=SUB_STATUSES_FULFILLMENT.map(function(s){return '<option value="'+s+'"'+(s===row.subState?' selected':'')+'>'+s+'</option>';}).join('');var _subDisp=row.state==='In Fulfillment'?'flex':'none';openModal('Update status — '+row.item,'<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+row.state+(row.subState?' · '+row.subState:'')+'</span></div><div class="fq-crow"><span>New status</span><span><select id="pfbStatSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px" onchange="var r=document.getElementById(\'pfbSubRow\');if(r)r.style.display=this.value===\'In Fulfillment\'?\'flex\':\'none\'">'+_mo+'</select></span></div><div id="pfbSubRow" class="fq-crow" style="display:'+_subDisp+'"><span>Fulfillment detail</span><span><select id="pfbSubSel" style="border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px">'+_ms+'</select></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="(function(){var s=document.getElementById(\'pfbStatSel\');if(s&&s.value){var sub=document.getElementById(\'pfbSubSel\');pfbUpdateState(\''+proj+'\','+idx+',s.value,(s.value===\'In Fulfillment\'&&sub)?sub.value:undefined);closeModal();}})();">Save</button></div>');}
   function pfbInformTeam(proj,idx){var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;var orig=row.origWindow||'';var msg='Need-by date for '+row.item+' has been updated'+(orig?' from '+orig+' to '+row.window:' to '+row.window)+'.'+(row.shiftNote?' '+row.shiftNote:'')+'  Please adjust downstream planning accordingly.';var _mh='<div class="fq-calc">';_mh+='<div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div>';if(orig)_mh+='<div class="fq-crow"><span>Original date</span><span style="text-decoration:line-through;color:var(--g400)">'+orig+'</span></div>';_mh+='<div class="fq-crow"><span>New need-by</span><span style="color:#b45309;font-weight:600">'+row.window+'</span></div>';_mh+='<div class="fq-crow" style="align-items:flex-start"><span style="padding-top:4px">Impact</span><span><textarea id="pfbMsgTa" style="width:260px;height:90px;border:1px solid var(--g200);border-radius:5px;padding:6px 8px;font-size:11px;resize:vertical">'+(row.shiftNote||msg)+'</textarea></span></div></div><div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-dark" onclick="closeModal();toast(\'Notification sent\')">Send notification</button></div>';openModal('Flag project team',_mh);}
   function pfbCloseEditModal(){var m=document.getElementById('pfb-edit-modal');if(m)m.remove();}
   function pfbResetEditDates(idx){delete _pfbP6Overrides[idx];pfbCloseEditModal();renderCcDemand('prefab');}
