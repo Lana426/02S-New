@@ -1533,7 +1533,7 @@
   }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In Scoping / Pricing':'warn','Pending Approval':'warn','Fulfilled / Delivered':'ok','Completed / Closed':'ok','Released to Order':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','In Scoping / Pricing':'info','Pending Approval':'warn','Approved':'ok','Released to Order':'ok','Fulfilled / Delivered':'ok','Returned (Rental only)':'neu','Completed / Closed':'neu','Completed / Closed':'neu','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In Scoping / Pricing':'warn','Pending Approval':'warn','Fulfilled / Delivered':'ok','Completed / Closed':'ok','Released to Order':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','In Scoping / Pricing':'info','Pending Approval':'warn','Approved':'ok','Released to Order':'ok','Fulfilled / Delivered':'ok','Returned (Rental only)':'neu','Completed / Closed':'neu','Completed / Closed':'neu','Quoted':'warn','Closed':'ok','Completed':'ok','Planned':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -1581,7 +1581,7 @@
         {asm:'MV Stuffed Rack',sameDate:'claimed',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — quote pending',leadTime:'12 weeks'},
         {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
-        {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
+        {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned',p6Act:'Deck installation',onTrack:true},
         {asm:'Column Forms',leadTime:'6 weeks',cat:'Concrete',qty:'8',need:'Jun 20',stage:'Delivered · order ORD-3106',code:'2600-0540-0000-0001 · Module install',cost:'$147K',state:'Invoiced / Closed',p6Act:'Column installation',onTrack:true,linkOrd:'ORD-3106',attachments:[]}
       ]},
     logistics:{
@@ -5240,7 +5240,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
   
   function dpGv(id){ var e=document.getElementById(id); return e?(''+e.value):''; }
   function dpCodeOpts(){ var c=['0100-0100-0000-0001 \u00b7 General conditions','0200-0320-0000-0001 \u00b7 Site earthwork','3100-6200-0000-0001 \u00b7 Solar pile','26-540 \u00b7 Module Racking','2600-3300-0000-0001 \u00b7 BESS &amp; Substation','01-540 \u00b7 Temporary Power']; return c.map(function(x){return '<option>'+x+'</option>';}).join(''); }
-  var _dp_pri={'Planned / FPO':0,'In Review':1,'In Fulfillment':3,'Invoiced / Closed':6,'Draft':0,'Pending pricing':0,'Needs attention':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7,'Completed / Closed':7};
+  var _dp_pri={'Planned':0,'In Review':1,'In Fulfillment':3,'Invoiced / Closed':6,'Draft':0,'Pending pricing':0,'Needs attention':0,'At-risk':1,'Requested':1,'Submittal':2,'In fabrication':3,'In transit':4,'PO issued':4,'Active':4,'Projected':5,'Delivered':6,'Demobilized':7,'Completed / Closed':7};
   function renderDP(pk){
     if(pk==='profservices'){ renderProfServicesDP(); return; }
     if(pk==='prefab')pfbNormalizeUnits();
@@ -5248,7 +5248,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
   var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
-    if(pk==='prefab')h+=_pfbReqCpPanel()+_pfbCpNotices();
+    if(pk==='prefab')h+=_pfbCpNotices();
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -5263,7 +5263,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
-    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
+    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
     if(pk==='prefab'&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows=_srows.filter(function(r){return r.cat===window._pfbCatFilter;});}
 
     _srows.forEach(function(r){
@@ -5273,7 +5273,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
         else if(c.key==='__state'){ var _ds=r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">'+'<div style="display:flex;align-items:center;gap:5px">'+(pk==='prefab'&&r.onTrack!==undefined?'<span style="font-size:9px;padding:1px 7px;border-radius:8px;font-weight:700;white-space:nowrap;min-width:64px;text-align:center;display:inline-block;background:'+(r.onTrack?'rgba(16,185,129,.1)':'rgba(245,158,11,.1)')+';color:'+(r.onTrack?'#059669':'#b45309')+';border:1px solid '+(r.onTrack?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)')+'">'+(r.onTrack?'\u2713 On track':'\u26a0 Off track')+'</span>':'')
-        +'<span class="tag '+t+'"'+(pk==='prefab'?' style="min-width:104px;text-align:center;white-space:nowrap;display:inline-block"':'')+'>'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'+'</div>'; }
+        +'<span class="tag '+t+'"'+(pk==='prefab'?' style="min-width:104px;text-align:center;white-space:nowrap;display:inline-block"':'')+'>'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'+(r.reqStage?'<div style="font-size:10px;color:var(--g500)">'+r.reqStage+'</div>':'')+'</div>'; }
         else if(pk==='prefab'&&c.key==='need'&&r.dateShifted){ h+='<div><span style="color:#b45309;font-weight:600">'+r[c.key]+'</span>'+(r.origNeed?'<div style="font-size:10px;color:var(--g400)">was '+r.origNeed+'</div>':'')+'</div>'; } else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -5284,9 +5284,9 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
+      var _stgDone3={'Draft':0,'Planned':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
-      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
+      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
       h+='<div style="margin-top:6px">';
       if(!_srows2.length){h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">No assemblies match the current filters</div>';}
@@ -5294,7 +5294,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
         var origIdx=cfg.rows.indexOf(r);
         var _exp=window._pfbSchExpand&&window._pfbSchExpand['prefab-'+origIdx];
         var _doneN=_stgDone3[r.state]||0;
-        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned / FPO':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
+        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
         h+='<div style="border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;overflow:hidden">';
         h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--g50);cursor:pointer;user-select:none" onclick="pfbSchToggle(\'prefab\',\''+origIdx+'\')">';
         h+='<span style="font-size:11px;color:var(--g400);min-width:10px">'+(_exp?'\u25be':'\u25b8')+'</span>';
@@ -7377,11 +7377,11 @@ function ccPsViewSentProposal(proj, rowIdx){
   var STAGES_LOG=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Completed / Closed'];
   var STAGES_PROC=['In fulfillment','Ordered','Delivered'];
   var STAGES_FAB=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
-  var STAGES_PREFAB_OPS=['Planned / FPO','Requested','In Review','In Fulfillment','Invoiced / Closed'];
+  var STAGES_PREFAB_OPS=['Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'];
   var SUB_STATUSES_FULFILLMENT=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
   var STAGES_SVC=['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Returned (Rental only)','Completed / Closed'];
   function _stageArr(o){if(o.pillar==='equipment')return STAGES_EQ;if(o.pillar==='logistics')return STAGES_LOG;if(o.pillar==='procurement')return STAGES_PROC;if(o.pillar==='prefab')return STAGES_FAB;if(o.pillar==='profservices')return STAGES_SVC;return STAGES_OTHER;}
-  var STATUS_TAG={'Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Requested':'neu','Acknowledged':'neu','In fulfillment':'info','In fabrication':'info','Submittal':'info','QC approved':'ok','Plan line':'neu','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Demobilized':'neu','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
+  var STATUS_TAG={'Planned':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Requested':'neu','Acknowledged':'neu','In fulfillment':'info','In fabrication':'info','Submittal':'info','QC approved':'ok','Plan line':'neu','Delivered':'info','On-Rent':'ok','Off-Rent':'neu','Fulfilled':'ok','Demobilized':'neu','Pending':'warn','Approved':'ok','Finalized':'neu','Disputed':'bad','Scheduled':'neu','In transit':'info','Active':'ok','SOW executed':'neu'};
 
   var ORDERS=[
     {id:'ORD-4471',proj:'barryrose',od:'2026-08-10',item:'Tower Crane — self-erect',sub:'5 units · structure phase · Barry Rose WRF',pillar:'equipment',dates:'Aug 20 – Dec 31',cost:'0140-0000-0000-0001',stage:1,plan:null,qty:5,mrate:35000,fqRef:'fq1',needsConfirmation:true,confirmMsg:'02S has reviewed your request and confirmed the taxonomy: Asset › Lifting › Tower crane › Self-erect (remote pendant). Rate: $35,000/unit/mo. Please confirm you accept this pricing to proceed.',latest:'Pending your confirmation — 02S has confirmed spec and pricing',latestTone:'warn',fresh:true},
@@ -8777,9 +8777,9 @@ charges:[
       stageOf:function(r){var m={Draft:0,'Pending pricing':0,Requested:1,Acknowledged:1,'PO issued':2,Delivered:3,'At-risk':1,'Needs attention':1};return m[r.state]!=null?m[r.state]:1;}
     },
     prefab:{
-      labels:['Planned / FPO','Requested','In Review','In Fulfillment','Invoiced / Closed'],
+      labels:['Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'],
       icons:['<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>','<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>','<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>','<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>','<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>','<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/>'],
-      stageOf:function(r){var m={'Planned / FPO':0,Draft:0,'Planned':0,'Pending pricing':0,Requested:1,'In Review':2,Submittal:2,'In fabrication':3,'In fulfillment':3,'In Fulfillment':3,'Work Order Created':3,'In Procurement':3,'Released to Shop':3,'In Production':3,'QC Review':3,'Production Complete':3,'In Transit':3,Delivered:4,'Invoiced / Closed':4,Completed:4};return m[r.state]!=null?m[r.state]:0;}
+      stageOf:function(r){var m={'Planned':0,Draft:0,'Planned':0,'Pending pricing':0,Requested:1,'In Review':2,Submittal:2,'In fabrication':3,'In fulfillment':3,'In Fulfillment':3,'Work Order Created':3,'In Procurement':3,'Released to Shop':3,'In Production':3,'QC Review':3,'Production Complete':3,'In Transit':3,Delivered:4,'Invoiced / Closed':4,Completed:4};return m[r.state]!=null?m[r.state]:0;}
     },
     logistics:{
       labels:['Draft','In Scoping / Pricing','Pending Approval','Approved','Released to Order','Fulfilled / Delivered','Completed / Closed'],
@@ -8927,6 +8927,7 @@ charges:[
     return h;
   }
   function buildDPTrack(pk,r,rowIdx){
+    if(pk==='prefab'){var _q1=_rqOpenOf(r);if(_q1)return _rqTrack(_q1,'cp');}
     var chain=DP_CHAIN[pk]; if(!chain)return '';
     var chainStage=chain.stageOf(r);
     var _ordId=chainStage>0?(r.linkOrd||r.ordId||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
@@ -12914,10 +12915,10 @@ charges:[
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbUpdateState(proj,idx,state,subState){var rows=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows;if(rows&&rows[idx]!==undefined){rows[idx].state=state;if(subState!==undefined)rows[idx].subState=subState;else if(state!=='In Fulfillment')rows[idx].subState=null;renderCcDemand('prefab');}}
   /* ===== PREFAB SOV / FPO MODEL ===== */
-  var PFB_FSTAT=['Planned / FPO','Requested','In Review','In Fulfillment','Invoiced / Closed'];
+  var PFB_FSTAT=['Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'];
   var PFB_SUBS_GRP={wo:['Work Order Created','In Procurement','Released to Shop'],prod:['In Production','QC Review','Production Complete'],del:['In Transit','Delivered']};
   var PFB_P6_LIST=['Pipe rack install \u2014 Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation \u2014 module install','Combiner box installation','Overhead MEP install \u2014 Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning \u2014 systems startup'];
-  var _PFB_TONE={'Planned / FPO':['#52525B','#F4F4F5'],'Requested':['#265D9F','#E7EEF7'],'In Review':['#8A6D1F','#F5EDD6'],'In Fulfillment':['#2F7A43','#E4F1E7'],'Invoiced / Closed':['#52525B','#E4E4E7']};
+  var _PFB_TONE={'Planned':['#52525B','#F4F4F5'],'Requested':['#265D9F','#E7EEF7'],'In Review':['#8A6D1F','#F5EDD6'],'In Fulfillment':['#2F7A43','#E4F1E7'],'Invoiced / Closed':['#52525B','#E4E4E7']};
   var PFB_PARSED=[
     {size:'6 in.',desc:"10' SST Adjustable Pipe Support",cat:'Mechanical',qty:6,price:1545.40,lead:'8 weeks',conf:98,need:'2026-10-15'},
     {size:'4 in.',desc:"2' Galv Adjustable Pipe Support",detail:'Supports in Well House (See Project Plans for Detail)',cat:'Mechanical',qty:3,price:650.63,lead:'8 weeks',conf:96,need:'2026-10-30'},
@@ -12936,6 +12937,7 @@ charges:[
   function _pfbQty(q){return (typeof q==='number'||/^\d+$/.test(String(q)))?q+' units':String(q==null?'\u2014':q);}
   function _pfbUnitOf(cost,qty){var n=_pfbNum(cost);if(!n)return null;var q=parseInt(qty);if(!q)q=1;return '$'+Math.round(n/q).toLocaleString('en-US')+'/unit';}
   function pfbNormalizeUnits(){
+    _rqAll();
     _pfbSeedPricing();
     var sets=[(DP.prefab&&DP.prefab.rows)||[]];
     ['hercules','barryrose','vdc14'].forEach(function(p){var c=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[p];if(c&&c.rows)sets.push(c.rows);});
@@ -12958,16 +12960,16 @@ charges:[
     if(sp.closed)return 'Invoiced / Closed';
     if(sp.state==='Released')return 'In Fulfillment';
     if((sp.pendingRelease||0)>0)return sp.review?'In Review':'Requested';
-    return 'Planned / FPO';
+    return 'Planned';
   }
-  function _pfbRowStatus(row){var s=row.state;if(s==='Planned'||s==='Draft'||s==='Pending pricing')return 'Planned / FPO';if(s==='Submittal')return 'In Review';return s;}
+  function _pfbRowStatus(row){var s=row.state;if(s==='Planned'||s==='Draft'||s==='Pending pricing')return 'Planned';if(s==='Submittal')return 'In Review';return s;}
   function _pfbFpoList(row){
     if(row.splits&&row.splits.length)return row.splits.map(function(sp,i){var st=_pfbFpoStatus(sp);return {o:sp,i:i,id:sp.id||('FPO-'+(i+1)),qty:sp.qty,need:_pfbNeed(sp),st:st,sub:sp.subState||(st==='In Fulfillment'?'Work Order Created':null),ordId:sp.ordId||null,isRow:false};});
     var nm=row.asm||row.item||'';var st2=_pfbRowStatus(row);
     return [{o:row,i:-1,id:row.fpoId||('FPO-'+_pfbCode(nm)+'-001'),qty:row.qty,need:_pfbNeed(row),st:st2,sub:row.subState||null,ordId:row.ordId||row.linkOrd||null,isRow:true}];
   }
-  function _pfbChip(st,sub){var t=_PFB_TONE[st]||_PFB_TONE['Planned / FPO'];return '<span style="display:inline-flex;align-items:center;background:'+t[1]+';color:'+t[0]+';border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">'+st+(sub?' \u00b7 '+sub:'')+'</span>';}
-  function _pfbDS(t,st){if(t.dateStatus)return t.dateStatus;if(st==='Requested'||st==='In Review')return 'requested';if(st==='Planned / FPO')return 'draft';return 'confirmed';}
+  function _pfbChip(st,sub){var t=_PFB_TONE[st]||_PFB_TONE['Planned'];return '<span style="display:inline-flex;align-items:center;background:'+t[1]+';color:'+t[0]+';border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">'+st+(sub?' \u00b7 '+sub:'')+'</span>';}
+  function _pfbDS(t,st){if(t.dateStatus)return t.dateStatus;if(st==='Requested'||st==='In Review')return 'requested';if(st==='Planned')return 'draft';return 'confirmed';}
   function _pfbDateBadge(row){
     var n=0,p=0,c=0;_pfbFpoList(row).forEach(function(f){var d=_pfbDS(f.o,f.st);if(d==='requested')n++;else if(d==='proposed')p++;else if(d==='countered')c++;});
     var out='';
@@ -12980,7 +12982,7 @@ charges:[
   function _pfbApplyStatus(t,st,sub,isRow){
     if(isRow){t.state=st;if(st==='In Fulfillment'){t.subState=sub||t.subState||'Work Order Created';}else if(st!=='Invoiced / Closed'){t.subState=null;}return;}
     t.status=st;t.review=(st==='In Review');
-    if(st==='Planned / FPO'){t.state='Planning';t.pendingRelease=0;delete t.closed;t.subState=null;}
+    if(st==='Planned'){t.state='Planning';t.pendingRelease=0;delete t.closed;t.subState=null;}
     else if(st==='Requested'||st==='In Review'){t.state='Planning';t.pendingRelease=parseInt(t.qty)||1;delete t.closed;t.subState=null;}
     else if(st==='In Fulfillment'){t.state='Released';t.pendingRelease=0;delete t.closed;t.subState=sub||t.subState||'Work Order Created';}
     else{t.state='Released';t.pendingRelease=0;t.closed=true;t.subState='Delivered';}
@@ -12993,7 +12995,7 @@ charges:[
     else if(has('In Fulfillment'))st='In Fulfillment';
     else if(has('In Review'))st='In Review';
     else if(has('Requested'))st='Requested';
-    else st='Planned / FPO';
+    else st='Planned';
     row.state=st;
     if(st==='In Fulfillment'){var f=row.splits.filter(function(s){return _pfbFpoStatus(s)==='In Fulfillment';})[0];row.subState=f?(f.subState||'Work Order Created'):row.subState;}
     else if(st!=='Invoiced / Closed'){row.subState=null;}
@@ -13114,6 +13116,7 @@ charges:[
   function openFpoSplitModal(pk,rowIdx){_pfbSovModal('cp','hercules',rowIdx);}
   function openCcFpoSplitModal(p,proj,rowIdx){_pfbSovModal('cc',proj,rowIdx);}
   function _pfbSovModal(side,proj,idx){
+    var _r0=_pfbRow(side,proj,idx),_q0=_rqOpenOf(_r0);if(_q0){openPfbReq(side,_q0.id);return;}
     pfbNormalizeUnits();
     window._pfbDetailCtx=false;
     var row=_pfbRow(side,proj,idx);if(!row)return;
@@ -13172,7 +13175,7 @@ charges:[
         var ek=proj+'-'+idx+'-'+si,isOpen=window._pfbEditKey===ek;
         h+='<div style="display:flex;gap:6px;align-items:center"><button onclick="pfbEditToggle(\''+proj+'\','+idx+','+si+')" style="font-size:11px;padding:4px 10px;border:1px solid '+(isOpen?'var(--charcoal)':'var(--g300)')+';border-radius:6px;background:'+(isOpen?'var(--charcoal)':'#fff')+';color:'+(isOpen?'#fff':'var(--g700)')+';cursor:pointer;font-weight:600;white-space:nowrap">'+(isOpen?'Close':'Update status')+'</button><button onclick="pfbFlag(\''+proj+'\','+idx+','+si+')" title="Flag FPO" style="font-size:11px;padding:4px 8px;border:1px solid var(--g300);border-radius:6px;background:#fff;color:var(--g600);cursor:pointer">\u2691</button></div>';
       } else {
-        if(f.st==='Planned / FPO')h+='<button onclick="pfbFpoSetStatus(\''+side+'\',\''+proj+'\','+idx+','+si+',\'Requested\')" style="background:#1d4ed8;border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;white-space:nowrap">Submit to 02S \u2192</button>';
+        if(f.st==='Planned')h+='<button onclick="pfbFpoSetStatus(\''+side+'\',\''+proj+'\','+idx+','+si+',\'Requested\')" style="background:#1d4ed8;border:none;border-radius:5px;color:#fff;font-size:11px;font-weight:700;padding:4px 11px;cursor:pointer;white-space:nowrap">Submit to 02S \u2192</button>';
         else if(f.st==='Requested'||f.st==='In Review')h+='<span style="font-size:11px;color:var(--g500)">With 02S</span>';
         else h+='<span style="font-size:11px;color:var(--g500)">'+(f.ordId?'Order '+f.ordId:'\u2014')+'</span>';
       }
@@ -13272,7 +13275,7 @@ charges:[
     if(sum!==total){toast('Quantities must add up to '+total+' units');return;}
     var note=((document.getElementById('pfbPbNote')||{}).value||'').trim();
     _pfbMirrors(row).forEach(function(m){
-      var base=_pfbRowStatus(m),st=(base==='Requested'||base==='In Review')?base:'Planned / FPO';
+      var base=_pfbRowStatus(m),st=(base==='Requested'||base==='In Review')?base:'Planned';
       var unitN=_pfbNum(m.unitPrice),totN=_pfbNum(m.cost),mt=parseInt(m.qty)||0,code=_pfbCode(m.asm||m.item),orig=_pfbNeed(m);
       m.splits=rows.map(function(r,i){var sp={id:'FPO-'+code+'-'+('00'+(i+1)).slice(-3),qty:r.q,need:orig,cost:unitN?_pfbMoney(unitN*r.q):(totN&&mt?_pfbMoney(totN*r.q/mt):'Pending'),state:'Planning',note:'',dateStatus:'proposed',propNeed:_pfbFmtDate(r.d),propNote:note,initiatedBy:'02S'};_pfbApplyStatus(sp,st,null,false);return sp;});
       m.fpoMode='split';m.sameDate='breakdown';m.breakdownProposal={by:'02S',note:note};_pfbRollup(m);
@@ -13288,7 +13291,7 @@ charges:[
   }
   function _pfbToSplit(m){
     if(m.splits&&m.splits.length)return;
-    var nm=m.asm||m.item||'';var st=_pfbRowStatus(m);if(m.quoteNeeded&&st==='Requested')st='Planned / FPO';
+    var nm=m.asm||m.item||'';var st=_pfbRowStatus(m);if(m.quoteNeeded&&st==='Requested')st='Planned';
     var sp={id:'FPO-'+_pfbCode(nm)+'-001',qty:parseInt(m.qty)||0,need:_pfbNeed(m),cost:m.cost||'\u2014',state:'Planning',note:''};
     _pfbApplyStatus(sp,st,m.subState,false);
     if(m.ordId||m.linkOrd)sp.ordId=m.ordId||m.linkOrd;
@@ -13298,7 +13301,7 @@ charges:[
   function _pfbMaxNewQty(row){
     var total=parseInt(row.qty)||0,list=_pfbFpoList(row);
     var alloc=list.reduce(function(s,f){return s+(parseInt(f.qty)||0);},0),pool=Math.max(0,total-alloc),m=pool;
-    list.forEach(function(f){if(f.st==='Planned / FPO'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))m=Math.max(m,pool+(parseInt(f.qty)||0)-1);});
+    list.forEach(function(f){if(f.st==='Planned'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))m=Math.max(m,pool+(parseInt(f.qty)||0)-1);});
     return m;
   }
   function _pfbAddFpoCore(side,proj,idx,q,dv,note){
@@ -13310,7 +13313,7 @@ charges:[
     var list=_pfbFpoList(row);var alloc=list.reduce(function(s,f){return s+(parseInt(f.qty)||0);},0);
     var pool=Math.max(0,total-alloc),take=Math.max(0,q-pool),donor=-1;
     if(take>0){
-      list.some(function(f,i){if((f.st==='Planned / FPO'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))&&(parseInt(f.qty)||0)>take){donor=i;return true;}return false;});
+      list.some(function(f,i){if((f.st==='Planned'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))&&(parseInt(f.qty)||0)>take){donor=i;return true;}return false;});
       if(donor<0){toast('Not enough unallocated units \u2014 reduce a planned FPO first');return false;}
     }
     var unitN=_pfbNum(row.unitPrice),totN=_pfbNum(row.cost);
@@ -13320,7 +13323,7 @@ charges:[
       _pfbToSplit(m);
       if(donor>=0){var d=m.splits[donor];d.qty=(parseInt(d.qty)||0)-take;d.cost=costOf(d.qty);}
       if(!nid)nid='FPO-'+_pfbCode(m.asm||m.item)+'-'+('00'+(m.splits.length+1)).slice(-3);
-      var sp={id:nid,qty:q,need:need,cost:costOf(q),state:'Planning',status:'Planned / FPO',note:note||'',dateStatus:cc?'proposed':'draft'};
+      var sp={id:nid,qty:q,need:need,cost:costOf(q),state:'Planning',status:'Planned',note:note||'',dateStatus:cc?'proposed':'draft'};
       if(cc){sp.propNeed=need;sp.initiatedBy='02S';}
       m.splits.push(sp);_pfbRollup(m);
     });
@@ -13420,7 +13423,7 @@ charges:[
     if(!subSt&&multi){var ff=_pfbFpoList(row).filter(function(f){return f.st==='In Fulfillment';})[0];if(ff){subSt=ff.sub;subFpo=ff.id;}}
     var h='';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px"><div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(st,subSt)+(row.onTrack===false?'<span style="font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border-radius:10px;padding:2px 9px">⚠ Off track</span>':'')+'</div><div style="font-size:11.5px;color:var(--g500);margin-top:6px">'+(row.cat||'')+(row.p6None?' · <span style="color:#b45309;font-weight:600">No P6 link — manual date</span>':(row.p6Act?' · P6: '+row.p6Act:''))+'</div></div>'+(multi?'<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Update FPO statuses →</button>':'<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>')+'</div>';
-    var si={'Planned / FPO':0,'Requested':1,'In Review':2,'In Fulfillment':3,'Invoiced / Closed':5}[st];if(si==null)si=0;
+    var si={'Planned':0,'Requested':1,'In Review':2,'In Fulfillment':3,'Invoiced / Closed':5}[st];if(si==null)si=0;
     var pc=_pfbH('Progress')+_pfbStepper(PFB_FSTAT,si,PFB_ICONS_MAIN);
     if(st==='In Fulfillment'||st==='Invoiced / Closed'){
       var fi=SUB_STATUSES_FULFILLMENT.indexOf(subSt);if(st==='Invoiced / Closed')fi=SUB_STATUSES_FULFILLMENT.length;
@@ -13571,11 +13574,13 @@ charges:[
   var _PFB_NC={amber:{bg:'#fffbeb',bd:'#fcd34d',lc:'#92400e',dc:'#b45309'},green:{bg:'#f0fdf4',bd:'#86efac',lc:'#166534',dc:'#15803d'},orange:{bg:'#fff7ed',bd:'#fed7aa',lc:'#c2410c',dc:'#9a3412'},blue:{bg:'#eff6ff',bd:'#bfdbfe',lc:'#1d4ed8',dc:'#1e40af'}};
   function pfbApproveQuote(i){
     var row=DP.prefab.rows[i];if(!row)return;
-    _pfbMirrors(row).forEach(function(m){m.quoteSent=false;m.quoteNeeded=false;m.state='Planned / FPO';});
+    _pfbMirrors(row).forEach(function(m){m.quoteSent=false;m.quoteNeeded=false;m.state='Planned';});
     toast('Quote approved — SOV line added to your plan');
     try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
   }
-  /* ===== Prefab request step (before the SOV): Request > Define > Confirm scope > Build quote > Accept > Execute ===== */
+  /* ===== Prefab request step (before the SOV): Request > Define > Confirm scope > Build quote > Accept > Execute =====
+     A request creates a plan line item right away (state In Review, with the request step shown under it).
+     Accepting the quote moves the line to Planned, ready for FPO setup. */
   var PFB_CATALOG={
     'Electrical':['Combiner box assemblies (RE)','UL listed IC panels (water)','Load break disconnects (RE)','Piles and pile caps (RE)','Underground pipe racks','Underground conduit racks'],
     'Concrete':['Cast-in-place prefab formwork','Garage beam system','Custom block-outs in concrete','Aluminum gang forms','Edge form and beam sides','Square and pilaster columns','Modular trailer deck system','Custom radius formwork (CNC)','Custom mold formwork','Underground precast trench products','Public protection safety panels','Formwork detailing'],
@@ -13591,38 +13596,40 @@ charges:[
   function _rqAll(){
     if(PFB_REQ)return PFB_REQ;
     PFB_REQ=[
-      {id:'REQ-101',proj:'hercules',path:'commercial',title:'Load break disconnects (RE)',cat:'Electrical',product:'Load break disconnects (RE)',features:'1500V DC, 4-input, NEMA 4X, pad-mount',qty:12,need:'2027-02-02',loc:'Block 7 inverter pads',desc:'',files:[],status:'submitted',waiting:'02S',round:1,created:'Nov 12',via:'',thread:[{from:'PT',when:'Nov 12',text:'Request submitted: 12 load break disconnects for the Block 7 inverter pads.'}],scope:null,quote:null},
-      {id:'REQ-102',proj:'hercules',path:'custom',title:'Underground utility rack — Zone C crossings',cat:'Electrical',product:'',features:'',qty:'',need:'2027-03-09',loc:'Zone C',desc:'We need a prefabricated rack system to carry power and communication conduit under the Zone C haul road crossings. Standard underground conduit racks do not fit the trench depth shown on the civil drawings.',files:['Zone-C-utility-plan.pdf','Spec-26-05-33-raceways.pdf'],status:'defining',waiting:'PT',round:2,created:'Nov 9',via:'',thread:[{from:'PT',when:'Nov 9',text:'Request submitted with the Zone C plan and raceway spec.'},{from:'02S',when:'Nov 11',text:'Detailed review started. The plan and the spec show different conduit counts for the crossings. How many conduits per crossing, and do the racks need to be galvanized? Please also confirm the trench depth.'}],scope:null,quote:null},
-      {id:'REQ-103',proj:'hercules',path:'commercial',title:'Combiner box assemblies (RE)',cat:'Electrical',product:'Combiner box assemblies (RE)',features:'1500V, 12-input, NEMA 4X',qty:30,need:'2027-01-19',loc:'Blocks 3-5',desc:'',files:[],status:'accept',waiting:null,round:1,created:'Oct 28',via:'',thread:[{from:'PT',when:'Oct 28',text:'Request submitted: 30 combiner box assemblies for Blocks 3-5.'},{from:'02S',when:'Nov 3',text:'Standard review complete. The product meets the project plans and specs. Scope proposal sent.'},{from:'PT',when:'Nov 4',text:'Scope confirmed.'},{from:'02S',when:'Nov 10',text:'Quote attached with direct costs, overhead and margin shown. Valid 30 days; lead time 8 weeks from acceptance.'}],scope:{product:'Combiner box assemblies (RE)',qty:30,unit:'units',summary:'30 assembled combiner boxes, 1500V, 12-input, NEMA 4X, factory-wired and tested, delivered to site in three lots.'},quote:{direct:118000,oh:8,margin:12,total:142733,unit:4758,lead:'8 weeks',sentOn:'Nov 10'}},
-      {id:'REQ-104',proj:'hercules',path:'commercial',title:'Pipe supports',cat:'Mechanical & plumbing',product:'Pipe supports',features:'Adjustable, 6 in to 10 in pipe, galvanized',qty:40,need:'2027-03-16',loc:'Yard B pipe rack',desc:'',files:[],status:'quoting',waiting:null,round:1,created:'Nov 5',via:'',thread:[{from:'PT',when:'Nov 5',text:'Request submitted: 40 adjustable pipe supports for the Yard B pipe rack.'},{from:'02S',when:'Nov 8',text:'Standard review complete. The product meets the project plans and specs. Scope proposal sent.'},{from:'PT',when:'Nov 11',text:'Scope confirmed.'}],scope:{product:'Pipe supports',qty:40,unit:'units',summary:'40 adjustable galvanized pipe supports for 6 in to 10 in pipe, delivered to Yard B in two lots.'},quote:null}
+      {id:'REQ-101',proj:'hercules',path:'commercial',title:'Load break disconnects (RE)',cat:'Electrical',product:'Load break disconnects (RE)',features:'1500V DC, 4-input, NEMA 4X, pad-mount',qty:12,need:'2027-02-02',loc:'Block 7 inverter pads',desc:'',files:[],ctx:{self:'Yes',union:'No',unionNote:'',price:'Within budget — about $9K per unit'},status:'submitted',waiting:'02S',round:1,created:'Nov 12',via:'',thread:[{from:'PT',when:'Nov 12',text:'Request submitted: 12 load break disconnects for the Block 7 inverter pads.'}],scope:null,quote:null},
+      {id:'REQ-102',proj:'hercules',path:'custom',title:'Underground utility rack — Zone C crossings',cat:'Electrical',product:'',features:'',qty:'',need:'2027-03-09',loc:'Zone C',desc:'We need a prefabricated rack system to carry power and communication conduit under the Zone C haul road crossings. Standard underground conduit racks do not fit the trench depth shown on the civil drawings.',files:['Zone-C-utility-plan.pdf','Spec-26-05-33-raceways.pdf'],ctx:{self:'TBD',union:'Yes',unionNote:'Union labor on site',price:'Not set yet'},status:'defining',waiting:'PT',round:2,created:'Nov 9',via:'',thread:[{from:'PT',when:'Nov 9',text:'Request submitted with the Zone C plan and raceway spec.'},{from:'02S',when:'Nov 11',text:'Detailed review started. The plan and the spec show different conduit counts for the crossings. How many conduits per crossing, and do the racks need to be galvanized? Please also confirm the trench depth.'}],scope:null,quote:null},
+      {id:'REQ-103',proj:'hercules',path:'commercial',title:'Combiner box assemblies (RE)',cat:'Electrical',product:'Combiner box assemblies (RE)',features:'1500V, 12-input, NEMA 4X',qty:30,need:'2027-01-19',loc:'Blocks 3-5',desc:'',files:[],ctx:{self:'Yes',union:'No',unionNote:'',price:'Within budget'},status:'accept',waiting:null,round:1,created:'Oct 28',via:'',thread:[{from:'PT',when:'Oct 28',text:'Request submitted: 30 combiner box assemblies for Blocks 3-5.'},{from:'02S',when:'Nov 3',text:'Standard review complete. The product meets the project plans and specs. Scope proposal sent.'},{from:'PT',when:'Nov 4',text:'Scope confirmed.'},{from:'02S',when:'Nov 10',text:'Pricing attached. Valid 30 days; lead time 8 weeks from acceptance.'}],scope:{product:'Combiner box assemblies (RE)',qty:30,unit:'units',summary:'30 assembled combiner boxes, 1500V, 12-input, NEMA 4X, factory-wired and tested, delivered to site in three lots.',feas:'Feasible as requested',fit:'Within facility capability and capacity'},quote:{total:142733,unit:4758,lead:'8 weeks',sentOn:'Nov 10'}},
+      {id:'REQ-104',proj:'hercules',path:'commercial',title:'Pipe supports',cat:'Mechanical & plumbing',product:'Pipe supports',features:'Adjustable, 6 in to 10 in pipe, galvanized',qty:40,need:'2027-03-16',loc:'Yard B pipe rack',desc:'',files:[],ctx:{self:'Yes',union:'No',unionNote:'',price:'Not set yet'},status:'quoting',waiting:null,round:1,created:'Nov 5',via:'',thread:[{from:'PT',when:'Nov 5',text:'Request submitted: 40 adjustable pipe supports for the Yard B pipe rack.'},{from:'02S',when:'Nov 8',text:'Standard review complete. The product meets the project plans and specs. Scope proposal sent.'},{from:'PT',when:'Nov 11',text:'Scope confirmed.'}],scope:{product:'Pipe supports',qty:40,unit:'units',summary:'40 adjustable galvanized pipe supports for 6 in to 10 in pipe, delivered to Yard B in two lots.',feas:'Feasible as requested',fit:'Within facility capability and capacity'},quote:null}
     ];
+    PFB_REQ.forEach(_rqMakeLines);
     return PFB_REQ;
   }
   function _rqGet(id){return _rqAll().filter(function(r){return r.id===id;})[0];}
+  function _rqOpenOf(row){var q=row&&row.reqId&&PFB_REQ&&_rqGet(row.reqId);return q&&q.status!=='accepted'?q:null;}
   function _rqStep(r){return {submitted:2,defining:2,declined:2,confirm:3,quoting:4,accept:5,accepted:6}[r.status]||1;}
-  function _rqMine(r,side){if(r.status==='declined')return side==='cp'&&!r.ack;return _rqBall(r)===(side==='cp'?'PT':'02S');}
   function _rqBall(r){if(r.status==='submitted'||r.status==='quoting')return '02S';if(r.status==='defining')return r.waiting||'02S';if(r.status==='confirm'||r.status==='accept')return 'PT';return null;}
-  function _rqPrompt(r,side){
-    if(!_rqMine(r,side))return '';
-    var last=r.thread[r.thread.length-1]||{},t='';
-    if(side==='cp'){
-      if(r.status==='defining')t='02S asked: '+last.text;
-      else if(r.status==='confirm')t='Scope proposed: '+((r.scope||{}).summary||'');
-      else if(r.status==='accept'&&r.quote)t='Quote: '+_rqUSD(r.quote.total)+' total · '+_rqUSD(r.quote.unit)+'/unit · lead time '+r.quote.lead+' · direct costs, overhead and margin shown';
-      else if(r.status==='declined')t='02S cannot support this as submitted: '+last.text;
-    } else {
-      if(r.status==='defining'&&last.from==='PT')t='Project team replied: '+last.text;
-      else if(r.status==='quoting')t='Scope confirmed · add pricing';
-      else if(r.status==='submitted')t='New request · review it and define the scope';
-    }
-    if(t.length>160)t=t.slice(0,157)+'...';
-    return t?'<div style="font-size:11px;color:#92400e;margin-top:3px">'+_rqE(t)+'</div>':'';
+  function _rqMine(r,side){if(r.status==='declined')return side==='cp'&&!r.ack;return _rqBall(r)===(side==='cp'?'PT':'02S');}
+
+  /* --- plan line items that mirror each request (CP and CC) --- */
+  function _rqRowsOf(r){var a=[];if(r.idxCp!=null&&DP.prefab.rows[r.idxCp])a.push(DP.prefab.rows[r.idxCp]);var cc=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[r.proj];if(r.idxCc!=null&&cc&&cc.rows[r.idxCc])a.push(cc.rows[r.idxCc]);return a;}
+  function _rqMakeLines(r){
+    if(r.idxCp!=null||r.idxCc!=null)return;
+    var cat=PFB_CAT_MAP[r.cat]||r.cat||'Mechanical',need=r.need?_pfbFmtDate(r.need):'TBD';
+    var base={cat:cat,qty:'—',state:'In Review',cost:'Pending',p6Act:'—',p6None:false,onTrack:true,unitPrice:'TBD',leadTime:'TBD',fpoMode:'pending',dateStatus:'draft',quoteNeeded:false,quoteSent:false,source:'Request '+r.id,size:r.features||'',detail:r.desc||'',reqId:r.id,code:'2600-0540-0000-0001 · '+cat};
+    var r1={asm:r.title,need:need},r2={item:r.title,window:need,firm:'TBD',poc:'TBD',phone:''},k;
+    for(k in base){r1[k]=base[k];r2[k]=base[k];}
+    if(r.proj==='hercules'){DP.prefab.rows.push(r1);r.idxCp=DP.prefab.rows.length-1;}
+    if(!CC_PROJ_DP.prefab[r.proj])CC_PROJ_DP.prefab[r.proj]={rows:[]};
+    CC_PROJ_DP.prefab[r.proj].rows.push(r2);r.idxCc=CC_PROJ_DP.prefab[r.proj].rows.length-1;
+    _rqSync(r);
   }
-  function _rqChip(r,side){
-    var mine=_rqMine(r,side);
-    var t={submitted:side==='cp'?'With 02S for review':'New — review needed',defining:_rqBall(r)==='PT'?(side==='cp'?'02S asked a question':'Waiting on project team'):(side==='cp'?'02S is defining scope':'Define scope'),confirm:side==='cp'?'Confirm scope':'Waiting on scope confirmation',quoting:side==='cp'?'02S is building quote':'Build quote',accept:side==='cp'?'Quote ready — accept':'Waiting on acceptance',accepted:'Committed to SOV',declined:'Not practical'}[r.status];
-    var c=r.status==='accepted'?['#2F7A43','#E4F1E7']:r.status==='declined'?['#b91c1c','#fef2f2']:mine?['#92400e','#fef3c7']:['#52525B','#F4F4F5'];
-    return '<span style="display:inline-flex;background:'+c[1]+';color:'+c[0]+';border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600;white-space:nowrap">'+t+'</span>';
+  function _rqSync(r){
+    var acc=r.status==='accepted',dec=r.status==='declined',qn=r.scope?r.scope.qty:r.qty;
+    var stage=acc?'':(dec?'Not practical':PFB_RQ_STEPS[_rqStep(r)-1][0]+' · '+(_rqBall(r)==='PT'?'Project team':'02S'));
+    _rqRowsOf(r).forEach(function(m){m.state=acc?'Planned':(dec?'Cancelled':'In Review');m.reqStage=stage;m.qty=qn?String(qn):'—';m.detail=(r.scope&&r.scope.summary)||r.desc||'';});
+  }
+  function _rqTrack(q,side){
+    return '<div style="padding:16px 20px">'+_rqStepper(q)+_rqBanner(q,side)+'<button class="btn btn-dark btn-sm" onclick="event.stopPropagation();openPfbReq(\''+side+'\',\''+q.id+'\')">Open request</button></div>';
   }
   function _rqPathChip(r){return '<span style="display:inline-flex;border:1px solid '+(r.path==='commercial'?'#bfdbfe':'#ddd6fe')+';background:'+(r.path==='commercial'?'#eff6ff':'#f5f3ff')+';color:'+(r.path==='commercial'?'#1d4ed8':'#6d28d9')+';border-radius:10px;padding:1px 8px;font-size:10px;font-weight:700;white-space:nowrap">'+(r.path==='commercial'?'Commercial product':'Custom product')+'</span>';}
   function _rqStepper(r){
@@ -13636,35 +13643,41 @@ charges:[
     });
     return h+'</div>';
   }
-  function _rqRows(side,proj){
-    return _rqAll().filter(function(r){return proj==='all'||r.proj===proj;}).sort(function(a,b){
-      var am=_rqMine(a,side)?0:1,bm=_rqMine(b,side)?0:1;return am-bm;});
+
+  /* --- notifications: requests that need the viewer's action --- */
+  function _rqNotices(side,proj){
+    var out=[],NC=_PFB_NC,btn=function(col,lbl,id){return '<button class="btn btn-dark btn-sm" style="background:'+col+';border-color:'+col+';white-space:nowrap" onclick="openPfbReq(\''+side+'\',\''+id+'\')">'+lbl+' →</button>';};
+    _rqAll().forEach(function(r){
+      if((proj!=='all'&&r.proj!==proj)||!_rqMine(r,side))return;
+      var last=r.thread[r.thread.length-1]||{},qn=r.scope?r.scope.qty:r.qty,t=_rqE(r.title),meta='Prefab request · '+PFB_RQ_STEPS[_rqStep(r)-1][0]+' step';
+      if(side==='cp'){
+        if(r.status==='defining')out.push(_pfbNotice(NC.amber,'02S needs more information',t,r.id,_rqE(last.text),meta+' · round '+r.round,btn('#b45309','Reply',r.id)));
+        else if(r.status==='confirm')out.push(_pfbNotice(NC.blue,'Scope proposal ready to confirm',t,r.id,_rqE((r.scope||{}).summary||''),meta,btn('#1d4ed8','Review scope',r.id)));
+        else if(r.status==='accept'&&r.quote)out.push(_pfbNotice(NC.green,'Pricing ready to accept',t,r.id,_rqUSD(r.quote.total)+' total · '+_rqUSD(r.quote.unit)+'/unit'+(r.quote.lead?' · lead time '+_rqE(r.quote.lead):''),meta,btn('#15803d','Review pricing',r.id)));
+        else if(r.status==='declined')out.push(_pfbNotice(NC.orange,'02S cannot support this request as submitted',t,r.id,_rqE(last.text),'Prefab request · not practical',btn('#c2410c','View',r.id)));
+      } else {
+        if(r.status==='submitted')out.push(_pfbNotice(NC.blue,'New prefab request',t,r.id,(r.path==='commercial'?'Commercial product · standard review':'Custom product · detailed review')+(qn?' · '+qn+' units':''),r.via?'Logged via '+_rqE(r.via):'Submitted '+r.created,btn('#1d4ed8','Define scope',r.id)));
+        else if(r.status==='defining')out.push(_pfbNotice(NC.amber,'Project team replied',t,r.id,_rqE(last.text),meta+' · round '+r.round,btn('#b45309','Continue',r.id)));
+        else if(r.status==='quoting')out.push(_pfbNotice(NC.green,'Scope confirmed — add pricing',t,r.id,_rqE((r.scope||{}).summary||''),meta,btn('#15803d','Add pricing',r.id)));
+      }
+    });
+    return out;
   }
-  function _rqRowHTML(r,side){
-    var mine=_rqMine(r,side),qn=r.scope?r.scope.qty:r.qty;
-    var sub=[r.id,r.cat||'Category TBD',qn?qn+' units':'Quantity TBD',r.need?'need-by '+_pfbFmtDate(r.need):'',r.via?'logged by 02S via '+r.via:'submitted '+r.created].filter(Boolean).join(' · ');
-    return '<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--g150);'+(mine?'border-left:3px solid #f59e0b;padding-left:11px;background:#fffdf5':'')+'"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:12.5px;font-weight:600;color:var(--g900)">'+_rqE(r.title)+'</span>'+_rqPathChip(r)+'</div><div style="font-size:11px;color:var(--g500);margin-top:2px">'+_rqE(sub)+'</div>'+_rqPrompt(r,side)+'</div>'+_rqChip(r,side)+'<button class="btn btn-ghost btn-sm" style="white-space:nowrap" onclick="openPfbReq(\''+side+'\',\''+r.id+'\')">'+(mine?'Open →':'View')+'</button></div>';
+  function _pfbReqCcNotices(proj){
+    var parts=_rqNotices('cc',proj);if(!parts.length)return '';
+    var open=!!window._rqNotOpen,vis=open?parts:parts.slice(0,2);
+    return '<div style="margin-bottom:16px"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g600)">Notifications</span><span style="font-size:11px;color:var(--g500)">'+parts.length+'</span><span style="flex:1"></span>'+(parts.length>2?'<button class="btn btn-ghost btn-sm" onclick="window._rqNotOpen=!window._rqNotOpen;renderCcDemand(\'prefab\')">'+(open?'Show fewer':'Show all '+parts.length)+'</button>':'')+'</div>'+vis.join('').replace(/<!--NT-->/g,'')+'</div>';
   }
-  function _pfbReqPanel(side,proj){
-    var rows=_rqRows(side,proj);if(!rows.length)return '';
-    var mineN=rows.filter(function(r){return _rqMine(r,side);}).length;
-    var h='<div style="border:1px solid var(--g200);border-radius:10px;background:#fff;margin:0 0 16px;overflow:hidden"><div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--g50)"><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g600)">Prefab requests</span><span style="font-size:11px;color:var(--g500)">'+rows.length+' · '+(mineN?mineN+' need'+(mineN>1?'':'s')+' your action':'nothing waiting on you')+'</span><span style="flex:1"></span>'+(side==='cc'?'<button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+proj+'\')">Add demand</button>':'<button class="btn btn-dark btn-sm" onclick="openDPAdd(\'prefab\')">Add demand</button>')+'</div>';
-    rows.forEach(function(r){h+=_rqRowHTML(r,side);});
-    return h+'</div>';
-  }
-  function _pfbReqCpPanel(){return _pfbReqPanel('cp','hercules');}
 
   /* --- project team (or 02S, logging an offline request): new request --- */
   function openPfbRequest(side,proj){
     window._rqSide=side||'cp';window._rqProj=(!proj||proj==='all')?'hercules':proj;window._rqFiles=[];
     var cc=window._rqSide==='cc';
-    var b='<div style="padding:2px 0 6px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 12px">'+(cc?'Record a request that came in by phone, email or BuildingConnected so the project team and 02S work from one record.':'Start here when you know what you need but don’t have a defined SOV yet. 02S reviews the request with you, confirms the scope, quotes it, and once you accept it becomes an SOV line.')+'</p>';
+    var b='<div style="padding:2px 0 6px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 12px">'+(cc?'Record a request that came in by phone, email or BuildingConnected so the project team and 02S work from one record.':'Start here when you know what you need but don’t have a defined SOV yet. 02S reviews the request with you, confirms the scope and prices it. The request shows up on your plan as a line item, and once you accept the pricing it moves to Planned.')+'</p>';
     b+='<div style="display:flex;flex-direction:column;gap:8px">';
     b+=_pfbPathBtn('pfbReqForm(\'commercial\')','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>','Commercial product','#1d4ed8','A repeatable catalog product, for example combiner boxes. Pick the product and features; 02S runs a standard review.');
     b+=_pfbPathBtn('pfbReqForm(\'custom\')','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>','Custom product','#6d28d9','Job-specific work with no standard definition. Describe it in free text and attach plans or drawings; 02S reviews it with you until the scope is buildable.');
-    b+='</div>';
-    if(!cc)b+='<div style="font-size:11.5px;color:var(--g500);margin-top:14px;padding-top:12px;border-top:1px solid var(--g150)">Already have a defined scope? <a href="#" onclick="closeModal();_pfbUploadSov(\'cp\');return false" style="color:#7c3aed;font-weight:600">Upload an SOV / Exhibit 1</a> and skip straight to confirming scope and pricing.</div>';
-    b+='</div>';
+    b+='</div></div>';
     openModal(cc?'Log a prefab request':'Request prefab',b);
   }
   function pfbReqCat(){
@@ -13677,6 +13690,13 @@ charges:[
     f.push(nx);var el=document.getElementById('rqFiles');if(el)el.innerHTML=_rqFileChips(f);
   }
   function _rqFileChips(f){return f.length?f.map(function(x){return '<span style="display:inline-flex;align-items:center;gap:5px;border:1px solid var(--g200);background:var(--g50);border-radius:6px;padding:3px 8px;font-size:11px;margin:0 6px 4px 0">📎 '+_rqE(x)+'</span>';}).join(''):'<span style="font-size:11px;color:var(--g400)">No files attached</span>';}
+  function _rqCtxHTML(){
+    var h='<div style="margin-top:6px;padding-top:10px;border-top:1px solid var(--g150)"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:2px">Project context</div><div style="font-size:11px;color:var(--g500);margin-bottom:8px">Helps 02S judge feasibility and how likely this demand is to materialize.</div>';
+    h+='<div class="mf"><label>Self-perform participation</label><select id="rqSelf" class="acc-sel wfull"><option>Yes</option><option>No</option><option>TBD</option></select></div>';
+    h+='<div class="mf"><label>Union considerations</label><div style="display:flex;gap:8px"><select id="rqUnion" class="acc-sel" style="width:96px"><option>Yes</option><option selected>No</option></select><input id="rqUnionNote" class="rin" style="flex:1" placeholder="Details, e.g. union labor on site, product restrictions"></div></div>';
+    h+='<div class="mf"><label>Price constraints <span class="opt">optional</span></label><input id="rqPrice" class="rin" placeholder="e.g. budget of about $400K for this scope"></div></div>';
+    return h;
+  }
   function pfbReqForm(path){
     var cc=window._rqSide==='cc',f='<div class="mform">';
     if(path==='commercial'){
@@ -13691,6 +13711,7 @@ charges:[
     }
     f+='<div class="mf"><label>Project location / zone <span class="opt">optional</span></label><input id="rqLoc" class="rin" placeholder="e.g. Block 7, Zone C, Level 2"></div>';
     f+='<div class="mf"><label>Plans, drawings &amp; documents <span class="opt">optional</span></label><div id="rqFiles" style="margin-bottom:6px">'+_rqFileChips(window._rqFiles||[])+'</div><button type="button" class="btn btn-ghost btn-sm" onclick="pfbReqAttach()">+ Attach file (demo)</button></div>';
+    f+=_rqCtxHTML();
     if(cc)f+='<div class="mf"><label>Received via</label><select id="rqVia" class="acc-sel wfull"><option>Phone</option><option>Email</option><option>BuildingConnected</option><option>In person</option></select></div>';
     f+='</div>';
     openModal((cc?'Log request — ':'Request prefab — ')+(path==='commercial'?'commercial product':'custom product'),f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="openPfbRequest(window._rqSide,window._rqProj)">Back</button><button class="btn btn-red" onclick="pfbReqSubmit(\''+path+'\')">'+(cc?'Log request':'Submit to 02S')+'</button></div></div>');
@@ -13702,9 +13723,9 @@ charges:[
     else{title=g('rqTitle');if(!title||!g('rqDesc')){toast('Add a name and description so 02S can review it');return;}}
     var all=_rqAll(),num=101+all.length;while(_rqGet('REQ-'+num))num++;
     var by=cc?'02S':'PT';
-    var r={id:'REQ-'+num,proj:window._rqProj||'hercules',path:path,title:title,cat:g('rqCat'),product:prod,features:g('rqFeat'),qty:qty||'',need:g('rqNeed'),loc:g('rqLoc'),desc:g('rqDesc'),files:(window._rqFiles||[]).slice(),status:'submitted',waiting:'02S',round:1,created:'Nov 13',via:cc?g('rqVia'):'',thread:[{from:by,when:'Nov 13',text:cc?'Request logged by 02S after it came in by '+g('rqVia').toLowerCase()+'.':'Request submitted'+(g('rqDesc')?': '+g('rqDesc'):'.')}],scope:null,quote:null};
-    all.push(r);closeModal();_rqRefresh();
-    toast(cc?'Request logged — start the review when ready':'Request sent to 02S — they will review it and define the scope with you');
+    var r={id:'REQ-'+num,proj:window._rqProj||'hercules',path:path,title:title,cat:g('rqCat'),product:prod,features:g('rqFeat'),qty:qty||'',need:g('rqNeed'),loc:g('rqLoc'),desc:g('rqDesc'),files:(window._rqFiles||[]).slice(),ctx:{self:g('rqSelf')||'TBD',union:g('rqUnion')||'No',unionNote:g('rqUnionNote'),price:g('rqPrice')||'Not set yet'},status:'submitted',waiting:'02S',round:1,created:'Nov 13',via:cc?g('rqVia'):'',thread:[{from:by,when:'Nov 13',text:cc?'Request logged by 02S after it came in by '+g('rqVia').toLowerCase()+'.':'Request submitted'+(g('rqDesc')?': '+g('rqDesc'):'.')}],scope:null,quote:null};
+    all.push(r);_rqMakeLines(r);closeModal();_rqRefresh();
+    toast(cc?'Request logged — added to the plan as In Review':'Request sent to 02S — it is on your plan as In Review');
   }
   function _rqRefresh(){try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}}
 
@@ -13716,85 +13737,76 @@ charges:[
   }
   function _rqBanner(r,side){
     var cp=side==='cp',mine=_rqMine(r,side);
-    var t=cp?{submitted:'Waiting on 02S — they will review your request and refine the scope with you.',defining:r.waiting==='PT'?'Your move — 02S needs more information. Reply below.':'Waiting on 02S — they are refining your scope.',confirm:'Your move — 02S proposed a scope. Confirm it, or return it with comments.',quoting:'Waiting on 02S — they are building your quote (direct costs, overhead and margin).',accept:'Your move — review the quote, then accept to commit to the order.',accepted:'Committed — this request is now an SOV line in your plan.',declined:'02S cannot support this request as submitted — see their reason below.'}
-      :{submitted:'Your move — review this request and define the scope. '+(r.path==='commercial'?'Standard review: confirm the product meets the project plans and specs.':'Detailed review: check constructability and iterate with the project team until the scope is buildable.'),defining:r.waiting==='PT'?'Waiting on the project team to answer your question.':'Your move — keep defining the scope'+(r.round>1?' (round '+r.round+')':'')+'.',confirm:'Waiting on the project team to confirm the proposed scope.',quoting:'Your move — set direct costs, overhead and margin, then send the quote.',accept:'Waiting on the project team to accept the quote.',accepted:'Committed — this is now an SOV line; the project team is setting up FPOs.',declined:'You marked this request as not practical.'};
+    var t=cp?{submitted:'Waiting on 02S — they will review your request and refine the scope with you.',defining:r.waiting==='PT'?'Your move — 02S needs more information. Reply below.':'Waiting on 02S — they are refining your scope.',confirm:'Your move — 02S proposed a scope. Confirm it, or return it with comments.',quoting:'Waiting on 02S — they are pricing your confirmed scope.',accept:'Your move — review the pricing, then accept to commit to the order.',accepted:'Accepted — this line is now Planned on your plan. Set up its FPOs next.',declined:'02S cannot support this request as submitted — see their reason below.'}
+      :{submitted:'Your move — review this request and define the scope. '+(r.path==='commercial'?'Standard review: confirm the product meets the project plans and specs.':'Detailed review: check constructability and iterate with the project team until the scope is buildable.'),defining:r.waiting==='PT'?'Waiting on the project team to answer your question.':'Your move — keep defining the scope'+(r.round>1?' (round '+r.round+')':'')+'.',confirm:'Waiting on the project team to confirm the proposed scope.',quoting:'Your move — enter your pricing for the confirmed scope.',accept:'Waiting on the project team to accept the pricing.',accepted:'Accepted — this line is now Planned; the project team is setting up FPOs.',declined:'You marked this request as not practical.'};
     var c=r.status==='accepted'?['#f0fdf4','#86efac','#166534']:r.status==='declined'?['#fef2f2','#fca5a5','#991b1b']:mine?['#fffbeb','#fcd34d','#92400e']:['var(--g50)','var(--g200)','var(--g600)'];
     return '<div style="background:'+c[0]+';border:1px solid '+c[1]+';color:'+c[2]+';border-radius:8px;padding:9px 12px;margin-bottom:14px;font-size:12px;font-weight:600">'+t[r.status]+'</div>';
   }
   function openPfbReq(side,id){
     var r=_rqGet(id);if(!r)return;window._rqOpen={side:side,id:id};
-    var cc=side==='cc',b='';
+    var b='';
     b+=_rqStepper(r)+_rqBanner(r,side);
     var qn=r.qty?r.qty+' units':'';
     var kv=[['Path',r.path==='commercial'?'Commercial product — standard review':'Custom product — detailed review'+(r.round>1?' · round '+r.round:'')],['Category',_rqE(r.cat)],['Product',_rqE(r.product)],['Features',_rqE(r.features)],['Estimated quantity',qn],['Need-by',r.need?_pfbFmtDate(r.need):''],['Location / zone',_rqE(r.loc)],['Submitted',r.created+(r.via?' · logged by 02S via '+_rqE(r.via):'')]];
     var inner=_pfbH('Request',_rqPathChip(r))+(r.desc?'<div style="font-size:12px;line-height:1.5;color:var(--g800);margin-bottom:10px">'+_rqE(r.desc)+'</div>':'')+_rqKV(kv);
+    inner+='<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--g150)">'+_rqKV([['Self-perform',_rqE(r.ctx.self)],['Union considerations',_rqE(r.ctx.union)+(r.ctx.unionNote?' — '+_rqE(r.ctx.unionNote):'')],['Price constraints',_rqE(r.ctx.price)]])+'</div>';
     if(r.files&&r.files.length)inner+='<div style="margin-top:10px">'+_rqFileChips(r.files)+'</div>';
     b+=_pfbCard(inner);
     if(r.scope){
       var s=r.scope,sin=_pfbH('Defined scope',r.status==='confirm'?'<span style="font-size:11px;font-weight:600;color:#1d4ed8">Awaiting confirmation</span>':(_rqStep(r)>3||r.status==='accepted'?'<span style="font-size:11px;font-weight:600;color:#15803d">✓ Confirmed</span>':''));
-      sin+='<div style="font-size:12px;line-height:1.5;color:var(--g800);margin-bottom:10px">'+_rqE(s.summary)+'</div>'+_rqKV([['Product',_rqE(s.product)],['Defined quantity',s.qty+' '+_rqE(s.unit)]]);
+      sin+='<div style="font-size:12px;line-height:1.5;color:var(--g800);margin-bottom:10px">'+_rqE(s.summary)+'</div>'+_rqKV([['Product',_rqE(s.product)],['Defined quantity',s.qty+' '+_rqE(s.unit)],['Feasibility',_rqE(s.feas)],['Facility capability and capacity',_rqE(s.fit)]]);
       b+=_pfbCard(sin,'border-left:3px solid #1d4ed8');
     }
     if(r.quote){
-      var q=r.quote,oh=q.direct*q.oh/100,mg=(q.direct+oh)*q.margin/100;
-      var qin=_pfbH('Quote',r.status==='accept'?'<span style="font-size:11px;font-weight:600;color:#92400e">Awaiting acceptance</span>':(r.status==='accepted'?'<span style="font-size:11px;font-weight:600;color:#15803d">✓ Accepted</span>':''));
-      qin+='<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:6px">';
-      [['Direct costs',_rqUSD(q.direct)],['Overhead ('+q.oh+'%)',_rqUSD(oh)],['Margin ('+q.margin+'%)',_rqUSD(mg)],['Total',_rqUSD(q.total)]].forEach(function(c){qin+='<div style="background:var(--g50);border-radius:8px;padding:8px 10px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+c[0]+'</div><div style="font-size:13px;font-weight:700;color:var(--g900)">'+c[1]+'</div></div>';});
-      qin+='</div><div style="font-size:11.5px;color:var(--g600)">'+_rqUSD(q.unit)+' per unit · lead time '+_rqE(q.lead)+' · sent '+q.sentOn+'</div>';
+      var q=r.quote;
+      var qin=_pfbH('Pricing',r.status==='accept'?'<span style="font-size:11px;font-weight:600;color:#92400e">Awaiting acceptance</span>':(r.status==='accepted'?'<span style="font-size:11px;font-weight:600;color:#15803d">✓ Accepted</span>':''));
+      qin+='<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:4px">';
+      [['Unit price',_rqUSD(q.unit)+'/unit'],['Total',_rqUSD(q.total)],['Lead time',q.lead||'—']].forEach(function(c){qin+='<div style="background:var(--g50);border-radius:8px;padding:8px 10px"><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g400);margin-bottom:2px">'+c[0]+'</div><div style="font-size:13px;font-weight:700;color:var(--g900)">'+c[1]+'</div></div>';});
+      qin+='</div><div style="font-size:11px;color:var(--g500)">Sent '+q.sentOn+'</div>';
       b+=_pfbCard(qin,'border-left:3px solid #d97706');
     }
-    b+=_pfbCard(_pfbH('Conversation')+(r.thread.length?_pfbPriceThread({thread:r.thread}):'')+'');
+    b+=_pfbCard(_pfbH('Conversation')+(r.thread.length?_pfbPriceThread({thread:r.thread}):''));
     b+=_rqActions(r,side);
     openModal(_rqE(r.title)+' <span style="font-size:11px;font-weight:400;color:var(--g400);margin-left:6px">'+r.id+'</span>',b);_pfbWide(780);
   }
   var _rqTA='width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12px;font-family:inherit;box-sizing:border-box;resize:vertical;margin-top:8px';
   function _rqActions(r,side){
-    var id=r.id,h='',cc=side==='cc',ball=_rqBall(r);
+    var id=r.id,h='',cc=side==='cc';
     var btn=function(cls,style,fn,lbl){return '<button class="btn '+cls+' btn-sm" style="'+style+'" onclick="'+fn+'">'+lbl+'</button>';};
     if(!cc){
       if(r.status==='declined'){return '<div style="display:flex;gap:8px">'+btn('btn-dark','','pfbReqAck(\''+id+'\')','Got it')+'</div>';}
       if(r.status==='defining'&&r.waiting==='PT')return '<textarea id="rqMsg" rows="3" placeholder="Reply to 02S…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','','pfbReqReply(\''+id+'\')','Send reply')+'</div>';
       if(r.status==='confirm')return '<textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqConfirm(\''+id+'\')','Confirm scope')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
-      if(r.status==='accept')return '<div class="mform" style="margin-top:6px">'+_pfbP6Html('pfbRq')+'</div><textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqAccept(\''+id+'\')','Accept &amp; commit to order')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
+      if(r.status==='accept')return '<div class="mform" style="margin-top:6px">'+_pfbP6Html('pfbRq')+'</div><textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqAccept(\''+id+'\')','Accept pricing')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
       if(r.status==='submitted'||r.status==='defining'||r.status==='quoting')return '<textarea id="rqMsg" rows="2" placeholder="Add information for 02S (optional)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-ghost','','pfbReqNote(\''+id+'\')','Send note to 02S')+'</div>';
-      if(r.status==='accepted'&&r.idxCp!=null)return '<div style="display:flex;gap:8px">'+btn('btn-dark','','closeModal();openFpoSplitModal(\'prefab\','+r.idxCp+')','Open SOV line')+'</div>';
+      if(r.status==='accepted'&&r.idxCp!=null)return '<div style="display:flex;gap:8px">'+btn('btn-dark','','closeModal();openFpoSplitModal(\'prefab\','+r.idxCp+')','Set up FPOs')+'</div>';
       return '';
     }
     if(r.status==='submitted'||(r.status==='defining'&&r.waiting==='02S')){
       var sc=r.scope||{},qd=sc.qty||r.qty||'';
       var opts='<option>Bespoke — new product definition</option>';Object.keys(PFB_CATALOG).forEach(function(k){opts+='<optgroup label="'+k+'">'+PFB_CATALOG[k].map(function(x){return '<option'+((sc.product||r.product)===x?' selected':'')+'>'+_rqE(x)+'</option>';}).join('')+'</optgroup>';});
+      var sel=function(idn,list,cur){return '<select id="'+idn+'" class="acc-sel wfull">'+list.map(function(x){return '<option'+(cur===x?' selected':'')+'>'+x+'</option>';}).join('')+'</select>';};
       h+='<div class="mform" style="border-top:1px solid var(--g150);padding-top:12px">';
       h+='<div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g500);margin-bottom:8px">'+(r.path==='commercial'?'Standard review':'Detailed review')+' — define the scope</div>';
       h+='<div class="mf2"><div class="mf"><label>Map to product</label><select id="rqMap" class="acc-sel wfull">'+opts+'</select></div><div class="mf"><label>Defined quantity</label><div style="display:flex;gap:6px"><input id="rqDq" type="number" min="1" class="rin" value="'+qd+'" style="flex:1"><input id="rqUnit" class="rin" value="'+_rqE(sc.unit||'units')+'" style="width:78px"></div></div></div>';
+      h+='<div class="mf2"><div class="mf"><label>Feasibility</label>'+sel('rqFeas',['Feasible as requested','Feasible with changes'],sc.feas)+'</div><div class="mf"><label>Facility capability and capacity</label>'+sel('rqFit',['Within facility capability and capacity','Capability OK — capacity check needed'],sc.fit)+'</div></div>';
       h+='<div class="mf"><label>Scope summary</label><textarea id="rqSum" rows="3" class="rin" style="height:auto;padding:8px 10px;resize:vertical" placeholder="What 02S will build: product, key specs, quantities, delivery approach.">'+_rqE(sc.summary||'')+'</textarea></div>';
       h+='<div class="mf"><label>Message to project team <span class="opt">required for a question or a decline</span></label><textarea id="rqMsg" rows="2" class="rin" style="height:auto;padding:8px 10px;resize:vertical"></textarea></div></div>';
       h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">'+btn('btn-dark','','pfbReqPropose(\''+id+'\')','Send scope proposal')+btn('btn-ghost','','pfbReqAsk(\''+id+'\')','Ask project team a question')+btn('btn-ghost','color:#b91c1c','pfbReqDecline(\''+id+'\')','Not practical — decline')+'</div>';
       return h;
     }
     if(r.status==='quoting'){
-      var lead=(r.quote&&r.quote.lead)||'';
-      h+='<div class="mform" style="border-top:1px solid var(--g150);padding-top:12px"><div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g500);margin-bottom:8px">Build quote — '+(r.scope?r.scope.qty:r.qty)+' '+_rqE(r.scope?r.scope.unit:'units')+'</div>';
-      h+='<div class="mf2"><div class="mf"><label>Direct costs ($)</label><input id="rqDir" type="number" min="1" class="rin" oninput="pfbReqCalc()" placeholder="materials + labor"></div><div class="mf"><label>Lead time</label><input id="rqLead" class="rin" value="'+_rqE(lead)+'" placeholder="e.g. 8 weeks"></div></div>';
-      h+='<div class="mf2"><div class="mf"><label>Overhead (%)</label><input id="rqOh" type="number" min="0" class="rin" value="8" oninput="pfbReqCalc()"></div><div class="mf"><label>Margin (%)</label><input id="rqMg" type="number" min="0" class="rin" value="12" oninput="pfbReqCalc()"></div></div>';
-      h+='<div id="rqCalc" style="background:var(--g50);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--g600);margin-bottom:8px">Enter direct costs to see the total.</div>';
-      h+='<div class="mf"><label>Note to project team <span class="opt">optional</span></label><textarea id="rqMsg" rows="2" class="rin" style="height:auto;padding:8px 10px;resize:vertical" placeholder="Assumptions, validity period, exclusions…"></textarea></div></div>';
-      h+='<div style="display:flex;gap:8px;margin-top:6px">'+btn('btn-dark','','pfbReqSendQuote(\''+id+'\')','Send quote to project team')+'</div>';
-      return h;
+      var lb='font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px',ip='width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box';
+      var inner=_pfbH(r.quote?'Revise pricing':'Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="'+lb+'">Cost estimate</label><input id="rqCost" placeholder="e.g. $145,000" style="'+ip+'"></div><div><label style="'+lb+'">Notes to project team</label><input id="rqMsg" placeholder="Scope clarifications or conditions…" style="'+ip+'"></div></div><button class="btn btn-dark btn-sm" onclick="pfbReqSendQuote(\''+id+'\')">Send pricing to project team →</button>';
+      return _pfbCard(inner,'border-left:3px solid #d97706');
     }
     if(r.status==='defining'||r.status==='confirm'||r.status==='accept')return '<textarea id="rqMsg" rows="2" placeholder="Add a note or comment for the project team…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-ghost','','pfbReqNote(\''+id+'\',\'cc\')','Send note to project team')+'</div>';
     if(r.status==='accepted'&&r.idxCc!=null)return '<div style="display:flex;gap:8px">'+btn('btn-dark','','closeModal();openCcFpoSplitModal(\'prefab\',\''+r.proj+'\','+r.idxCc+')','Open SOV line')+'</div>';
     return '';
   }
-  function pfbReqCalc(){
-    var n=function(id){return parseFloat((document.getElementById(id)||{}).value)||0;},d=n('rqDir'),el=document.getElementById('rqCalc');if(!el)return;
-    var r=_rqGet((window._rqOpen||{}).id),qty=r?(r.scope?r.scope.qty:r.qty)||1:1;
-    if(!d){el.innerHTML='Enter direct costs to see the total.';return;}
-    var oh=d*n('rqOh')/100,mg=(d+oh)*n('rqMg')/100,t=d+oh+mg;
-    el.innerHTML='Direct '+_rqUSD(d)+' + overhead '+_rqUSD(oh)+' + margin '+_rqUSD(mg)+' = <b style="color:var(--g900)">'+_rqUSD(t)+'</b> total · '+_rqUSD(t/qty)+' per unit';
-  }
-  function _rqPost(r,from,text,msgOnly){r.thread.push({from:from,when:'Nov 13',text:text});}
+  function _rqPost(r,from,text){r.thread.push({from:from,when:'Nov 13',text:text});}
   function _rqMsg(){return ((document.getElementById('rqMsg')||{}).value||'').trim();}
-  function _rqDone(msg,keep){toast(msg);_rqRefresh();if(keep&&window._rqOpen)openPfbReq(window._rqOpen.side,window._rqOpen.id);else closeModal();}
+  function _rqDone(msg,keep){var r=_rqGet((window._rqOpen||{}).id);if(r)_rqSync(r);toast(msg);_rqRefresh();if(keep&&window._rqOpen)openPfbReq(window._rqOpen.side,window._rqOpen.id);else closeModal();}
   function pfbReqNote(id,side){var r=_rqGet(id),m=_rqMsg(),cc=side==='cc';if(!r||!m){toast('Write a note first');return;}_rqPost(r,cc?'02S':'PT',m);_rqDone(cc?'Note sent to the project team':'Note sent to 02S',true);}
   function pfbReqReply(id){var r=_rqGet(id),m=_rqMsg();if(!r||!m){toast('Write a reply first');return;}_rqPost(r,'PT',m);r.waiting='02S';_rqDone('Reply sent — 02S will continue defining the scope',true);}
   function pfbReqAsk(id){var r=_rqGet(id),m=_rqMsg();if(!r||!m){toast('Write your question in the message box');return;}_rqPost(r,'02S',m);r.status='defining';r.waiting='PT';_rqDone('Question sent to the project team',true);}
@@ -13803,51 +13815,46 @@ charges:[
     var q=parseInt(g('rqDq'))||0,sum=g('rqSum');
     if(!q){toast('Enter the defined quantity');return;}
     if(!sum){toast('Add a scope summary for the project team');return;}
-    r.scope={product:g('rqMap'),qty:q,unit:g('rqUnit')||'units',summary:sum};
-    _rqPost(r,'02S','Scope proposal sent: '+q+' '+r.scope.unit+'.'+(_rqMsg()?' '+_rqMsg():''));
+    r.scope={product:g('rqMap'),qty:q,unit:g('rqUnit')||'units',summary:sum,feas:g('rqFeas'),fit:g('rqFit')};
+    _rqPost(r,'02S','Scope proposal sent: '+q+' '+r.scope.unit+' — '+r.scope.feas.toLowerCase()+'.'+(_rqMsg()?' '+_rqMsg():''));
     r.status='confirm';r.waiting=null;_rqDone('Scope proposal sent to the project team',true);
   }
   function pfbReqDecline(id){var r=_rqGet(id),m=_rqMsg();if(!r)return;if(!m){toast('Add the reason in the message box');return;}_rqPost(r,'02S','Not practical as submitted: '+m);r.status='declined';r.waiting=null;_rqDone('Request closed — project team notified',true);}
   function pfbReqAck(id){var r=_rqGet(id);if(r)r.ack=true;closeModal();_rqRefresh();}
-  function pfbReqConfirm(id){var r=_rqGet(id);if(!r)return;_rqPost(r,'PT','Scope confirmed.'+(_rqMsg()?' '+_rqMsg():''));r.status='quoting';r.waiting=null;_rqDone('Scope confirmed — 02S will build the quote',true);}
+  function pfbReqConfirm(id){var r=_rqGet(id);if(!r)return;_rqPost(r,'PT','Scope confirmed.'+(_rqMsg()?' '+_rqMsg():''));r.status='quoting';r.waiting=null;_rqDone('Scope confirmed — 02S will price it',true);}
   function pfbReqReturn(id){
     var r=_rqGet(id),m=_rqMsg();if(!r)return;if(!m){toast('Add a comment so 02S knows what to change');return;}
     _rqPost(r,'PT',m);
     if(r.status==='confirm'){r.status='defining';r.waiting='02S';r.round=(r.round||1)+1;_rqDone('Returned to 02S with your comments',true);}
-    else{r.status='quoting';_rqDone('Quote returned to 02S with your comments',true);}
+    else{r.status='quoting';_rqDone('Pricing returned to 02S with your comments',true);}
   }
   function pfbReqSendQuote(id){
-    var r=_rqGet(id),n=function(x){return parseFloat((document.getElementById(x)||{}).value)||0;},d=n('rqDir');if(!r)return;
-    if(!d){toast('Enter the direct costs');return;}
-    var lead=((document.getElementById('rqLead')||{}).value||'').trim();if(!lead){toast('Enter a lead time');return;}
-    var oh=d*n('rqOh')/100,mg=(d+oh)*n('rqMg')/100,t=Math.round(d+oh+mg),qty=(r.scope?r.scope.qty:r.qty)||1;
-    r.quote={direct:d,oh:n('rqOh'),margin:n('rqMg'),total:t,unit:Math.round(t/qty*100)/100,lead:lead,sentOn:'Nov 13'};
-    _rqPost(r,'02S',_rqMsg()||'Quote attached with direct costs, overhead and margin shown.');
-    r.status='accept';_rqDone('Quote sent to the project team',true);
+    var r=_rqGet(id),el=document.getElementById('rqCost');if(!r)return;
+    var tot=el?_pfbNum(el.value.indexOf('$')<0?'$'+el.value:el.value):0;
+    if(!tot){toast('Enter a cost estimate.');return;}
+    var qty=(r.scope?r.scope.qty:r.qty)||1;
+    r.quote={total:Math.round(tot),unit:Math.round(tot/qty*100)/100,lead:'',sentOn:'Nov 13'};
+    _rqPost(r,'02S',_rqMsg()||(r.thread.some(function(m){return m.text.indexOf('Pricing')===0;})?'Revised pricing attached.':'Pricing submitted for your review.'));
+    r.status='accept';_rqDone('Pricing sent to the project team',true);
   }
   function pfbReqAccept(id){
     var r=_rqGet(id);if(!r||!r.quote)return;
     var none=(document.getElementById('pfbRqP6None')||{}).checked,p6=(document.getElementById('pfbRqP6')||{}).value||'';
     if(!none&&!p6){toast('Select a P6 activity, or check “No P6 schedule”');return;}
-    var q=r.quote,sc=r.scope||{},qty=sc.qty||r.qty||1,cat=PFB_CAT_MAP[r.cat]||r.cat||'Mechanical',name=r.title,need=r.need?_pfbFmtDate(r.need):'TBD';
-    var thread=r.thread.slice();thread.push({from:'PT',when:'Nov 13',text:'Quote accepted.'+(_rqMsg()?' '+_rqMsg():'')});
+    var q=r.quote,sc=r.scope||{},qty=sc.qty||r.qty||1;
+    var thread=r.thread.slice();thread.push({from:'PT',when:'Nov 13',text:'Pricing accepted.'+(_rqMsg()?' '+_rqMsg():'')});
     var pr={status:'approved',total:q.total,unit:q.unit,sentOn:q.sentOn,thread:thread};
-    var base={cat:cat,qty:String(qty),state:'Planned / FPO',cost:_pfbMoney(q.total),p6Act:none?'⚠ No P6 — manual date':p6,p6None:!!none,onTrack:true,unitPrice:_pfbP(q.unit)+'/unit',leadTime:q.lead,fpoMode:'pending',quoteNeeded:false,quoteSent:false,source:'Request '+r.id,size:r.features||'',detail:sc.summary||r.desc||'',reqId:r.id,code:'2600-0540-0000-0001 · '+cat};
-    var proj=r.proj||'hercules',ccRows=CC_PROJ_DP.prefab[proj].rows;
-    var r1={asm:name,need:need},r2={item:name,window:need,firm:'TBD',poc:'TBD',phone:''},k;
-    for(k in base){r1[k]=base[k];r2[k]=base[k];}
-    r1.pricing=JSON.parse(JSON.stringify(pr));r2.pricing=JSON.parse(JSON.stringify(pr));
-    DP.prefab.rows.push(r1);ccRows.push(r2);
-    r.idxCp=DP.prefab.rows.length-1;r.idxCc=ccRows.length-1;
-    r.thread=thread;r.status='accepted';r.waiting=null;
+    r.thread=thread;r.status='accepted';r.waiting=null;_rqSync(r);
+    _rqRowsOf(r).forEach(function(m){m.cost=_pfbMoney(q.total);m.unitPrice=_pfbP(q.unit)+'/unit';if(q.lead)m.leadTime=q.lead;m.p6Act=none?'⚠ No P6 — manual date':p6;m.p6None=!!none;m.pricing=JSON.parse(JSON.stringify(pr));});
     closeModal();_rqRefresh();
-    toast('Quote accepted — SOV line added. Now set up its FPOs.');
-    window._pfbQ={side:'cp',proj:proj,idxs:[r.idxCp]};pfbQGo(0);
+    toast('Pricing accepted — line is now Planned. Set up its FPOs.');
+    window._pfbQ={side:'cp',proj:r.proj,idxs:[r.idxCp]};pfbQGo(0);
   }
   function _pfbCpNotices(){
     _pfbSeedPricing();
     var rows=(DP.prefab&&DP.prefab.rows)||[],h='';var n=0;
     var NC=_PFB_NC;
+    var _rn=_rqNotices('cp','hercules');h+=_rn.join('');n+=_rn.length;
     var btn=function(col,lbl,fn){return '<button class="btn btn-dark btn-sm" style="background:'+col+';border-color:'+col+';white-space:nowrap" onclick="'+fn+'">'+lbl+' →</button>';};
     rows.forEach(function(r,i){
       var nm=r.asm||r.item;
@@ -13869,11 +13876,11 @@ charges:[
     var c={plan:0,req:0,rev:0,wo:0,prod:0,del:0},tot=0;
     rows.forEach(function(r){_pfbFpoList(r).forEach(function(f){
       tot++;var s=f.st;
-      if(s==='Planned / FPO')c.plan++;else if(s==='Requested')c.req++;else if(s==='In Review')c.rev++;
+      if(s==='Planned')c.plan++;else if(s==='Requested')c.req++;else if(s==='In Review')c.rev++;
       else if(s==='Invoiced / Closed')c.del++;
       else{var sub=f.sub||'Work Order Created';if(PFB_SUBS_GRP.prod.indexOf(sub)>=0)c.prod++;else if(PFB_SUBS_GRP.del.indexOf(sub)>=0)c.del++;else c.wo++;}
     });});
-    var tiles=[['Planned / FPO',c.plan,'not yet submitted','neu'],['Requested',c.req,'awaiting 02S','info'],['In Review',c.rev,'02S pricing &amp; date review','warn'],['WO &amp; procurement',c.wo,'work order \u00b7 procurement \u00b7 released to shop','info'],['In production',c.prod,'production \u00b7 QC \u00b7 complete','info'],['Delivered / closed',c.del,'in transit \u00b7 delivered \u00b7 invoiced','ok']];
+    var tiles=[['Planned',c.plan,'not yet submitted','neu'],['Requested',c.req,'awaiting 02S','info'],['In Review',c.rev,'02S pricing &amp; date review','warn'],['WO &amp; procurement',c.wo,'work order \u00b7 procurement \u00b7 released to shop','info'],['In production',c.prod,'production \u00b7 QC \u00b7 complete','info'],['Delivered / closed',c.del,'in transit \u00b7 delivered \u00b7 invoiced','ok']];
     var h='<div style="margin:0 0 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--g500)">FPOs by status \u00b7 '+label+' \u00b7 '+tot+' total</div>';
     h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px">';
     tiles.forEach(function(t){h+='<div class="vital '+t[3]+'"><div class="vk">'+t[0]+'</div><div class="vv">'+t[1]+'</div><div class="vsub">'+t[2]+'</div></div>';});
@@ -13967,7 +13974,7 @@ charges:[
     picked.forEach(function(x){
       var l=x.l,nd=(document.getElementById('pfbUpNeed'+x.i)||{}).value||l.need,need=_pfbFmtDate(nd);
       var priced=x.price!=null;
-      var st=!priced?'Requested':(x.entered?'Submittal':'Planned / FPO');
+      var st=!priced?'Requested':(x.entered?'Submittal':'Planned');
       var base={cat:l.cat,qty:String(l.qty),state:st,cost:priced?_pfbMoney(x.price*l.qty):'Pending',p6Act:p6txt,p6None:!!none,onTrack:true,unitPrice:priced?_pfbP(x.price)+'/unit':'TBD — quote pending',leadTime:x.lead||'TBD',fpoMode:'pending',quoteNeeded:!priced,quoteSent:!!x.entered,source:cc?'SOV upload (02S)':'SOV upload',size:l.size,detail:l.detail||'',code:'2600-0540-0000-0001 · Electrical'};
       if(!cc||proj==='hercules'){var r1={asm:l.desc,need:need};for(var k in base)r1[k]=base[k];DP.prefab.rows.push(r1);}
       var r2={item:l.desc,window:need,firm:'TBD',poc:'TBD',phone:''};for(var k2 in base)r2[k2]=base[k2];ccRows.push(r2);
@@ -14022,9 +14029,8 @@ charges:[
     _ccAddFpoProj=(proj==='all'?'hercules':proj);
     var b='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">What would you like to add for '+(_PROJ_NAMES[_ccAddFpoProj]||_ccAddFpoProj)+'?</p><div style="display:flex;flex-direction:column;gap:8px">';
     b+=_pfbPathBtn('closeModal();openPfbRequest(\'cc\',_ccAddFpoProj)','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','Log a prefab request','#6d28d9','Record a request that came in by phone, email or BuildingConnected. 02S then defines the scope and quotes it with the project team.');
-    b+=_pfbPathBtn('closeModal();_openCcNewFpo()','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M12 5v14M5 12h14"/>','Initiate a new FPO','#1d4ed8','Raise an FPO against an existing SOV line (e.g. 02S drafts it from P6). The project team confirms the need-by date.');
     b+=_pfbPathBtn('closeModal();_pfbUploadSov(\'cc\')','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','Read the line items from a PDF. If a price is found it\u2019s added as agreed; if not, you enter a quote and it goes to the project team to approve.');
-    b+=_pfbPathBtn('closeModal();_openCcFpoForm()','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','New SOV line (manual)','#15803d','Add a scope line that isn\u2019t on the project SOV yet.');
+    b+=_pfbPathBtn('closeModal();_openCcFpoForm()','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','Add SOV manually','#15803d','Add a scope line that isn\u2019t on the project SOV yet.');
     b+='</div></div>';
     openModal('Add demand',b);
   }
@@ -15961,7 +15967,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {id:'REQ-F-061',asset:'MV Stuffed Rack · qty 2',project:'Hercules Solar + BESS',tax:'Assembly › Electrical › MV rack',taxOk:true,leaf:'MV rack',dec:'Requested',decTone:'neu',status:'Requested'},
         {id:'REQ-F-052',asset:'Column Forms · qty 8',project:'Hercules Solar + BESS',tax:'Assembly › Concrete › Column forms',taxOk:true,leaf:'Column forms',dec:'Invoiced / Closed',decTone:'ok',status:'Invoiced / Closed'},
         {id:'REQ-F-041',asset:'multi-trade racking · qty 6 modules',project:'Barry Rose WRF',tax:'Assembly › Mechanical › Racking',taxOk:true,leaf:'Racking',dec:'In Production',decTone:'info',status:'In Production'},
-        {id:'REQ-F-063',asset:'beam forms · qty 4 panels',project:'Barry Rose WRF',tax:'Assembly › Concrete › Beam forms',taxOk:true,leaf:'Beam forms',dec:'Planned / FPO',decTone:'neu',status:'Planned / FPO'},
+        {id:'REQ-F-063',asset:'beam forms · qty 4 panels',project:'Barry Rose WRF',tax:'Assembly › Concrete › Beam forms',taxOk:true,leaf:'Beam forms',dec:'Planned',decTone:'neu',status:'Planned'},
         {id:'REQ-F-051',asset:'Empty DV Rack · lot',project:'VDC14',tax:'Assembly › Electrical › DV rack',taxOk:true,leaf:'DV rack',dec:'Requested',decTone:'neu',status:'Requested'},
         {id:'REQ-F-056',asset:'Empty MV Rack · qty 6',project:'VDC14',tax:'Assembly › Electrical › MV rack',taxOk:true,leaf:'MV rack',dec:'In Production',decTone:'info',status:'In Production'}
       ],
@@ -16181,19 +16187,19 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {item:'MV Stuffed Rack',sameDate:'claimed',leadTime:'12 weeks',unitPrice:'TBD — quote pending',cat:'Electrical',qty:'2 units',window:'Oct 20',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,ordId:null,fqRef:'REQ-F-061',cost:'Pending',firm:'TBD'},
         {item:'Adjustable Pipe Supports',leadTime:'8 weeks',unitPrice:'$1,545.40/unit',cat:'Mechanical',qty:'12 modules',window:'Sep 28',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,ordId:'ORD-3108',fqRef:'REQ-F-021',cost:'$146K',attachments:[{type:'Engineering',name:'Shop drawings — pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Engineering',name:'Material certification — A53 pipe',ref:'MC-3108-001',status:'Approved'},{type:'Submittals',name:'Fabrication schedule — Aug delivery',ref:'FS-3108-001',status:'Current'}]},
         {item:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2 units',window:'Oct 15',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origWindow:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',ordId:'ORD-5002',fqRef:'REQ-F-034',cost:'Pending',firm:'TBD',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
-        {item:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',window:'Nov 10',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true,ordId:null,cost:'$95K',firm:'TBD'},
+        {item:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',window:'Nov 10',state:'Planned',p6Act:'Deck installation',onTrack:true,ordId:null,cost:'$95K',firm:'TBD'},
         {item:'Column Forms',leadTime:'6 weeks',cat:'Concrete',qty:'8 units',window:'Jun 20',state:'Invoiced / Closed',p6Act:'Column installation',onTrack:true,ordId:'ORD-3106',fqRef:'REQ-F-052',cost:'$147K',firm:'Ironclad Mfg'}
       ]},
       barryrose:{budget:400000,dpSpent:227000,adHoc:120000,rollCols:['Assembly type','Active items'],roll:[{a:'Mechanical',b:'1 active',c:'In fabrication',v:'multi-trade racking',vt:'ok'},{a:'Concrete',b:'1 planned',c:'Pending FPO',v:'beam forms',vt:'neu'}],varSummary:'multi-trade racking in fabrication — on track. stainless steel piping and beam forms pending.',rows:[
         {item:'Multi-Trade Racking',leadTime:'8 weeks',cat:'Mechanical',qty:'6 modules',window:'Sep 10',state:'In Fulfillment',subState:'In Production',ordId:'ORD-3133',fqRef:'REQ-F-041',cost:'$92K'},
         {item:'Stainless Steel Piping',leadTime:'7 weeks',cat:'Mechanical',qty:'lot',window:'Oct 15',state:'Requested',ordId:null,fqRef:'REQ-F-063',cost:'Pending',firm:'TBD'},
-        {item:'Beam Forms',leadTime:'5 weeks',cat:'Concrete',qty:'4 panels',window:'Oct 20',state:'Planned / FPO',ordId:null,cost:'$48K',firm:'TBD'}
+        {item:'Beam Forms',leadTime:'5 weeks',cat:'Concrete',qty:'4 panels',window:'Oct 20',state:'Planned',ordId:null,cost:'$48K',firm:'TBD'}
       ]},
       vdc14:{budget:300000,dpSpent:116000,adHoc:40000,rollCols:['Assembly type','Active items'],roll:[{a:'Electrical',b:'1 active',c:'In fabrication',v:'Empty MV Rack',vt:'ok'},{a:'Mechanical',b:'2 planned',c:'Pending FPO',v:'Skids + Welded pipe',vt:'neu'}],varSummary:'Empty MV Rack in fabrication — on track. Empty DV Rack unpriced — required for fit-out.',rows:[
         {item:'Empty DV Rack',leadTime:'9 weeks',cat:'Electrical',qty:'lot',window:'Oct 10',state:'Requested',ordId:null,fqRef:'REQ-F-051',cost:'Pending',firm:'TBD'},
         {item:'Empty MV Rack',leadTime:'9 weeks',cat:'Electrical',qty:'6 panels',window:'Oct 25',state:'In Fulfillment',subState:'In Production',ordId:'ORD-3135',fqRef:'REQ-F-056',cost:'$72K',firm:'ModSpace'},
-        {item:'Skids',leadTime:'6 weeks',cat:'Mechanical',qty:'4 units',window:'Dec 15',state:'Planned / FPO',ordId:null,cost:'$48K',firm:'TBD'},
-        {item:'Welded pipe',leadTime:'4 weeks',cat:'Mechanical',qty:'2,000 sqft',window:'Nov 2026',state:'Planned / FPO',ordId:null,cost:'$68K',firm:'TBD'}
+        {item:'Skids',leadTime:'6 weeks',cat:'Mechanical',qty:'4 units',window:'Dec 15',state:'Planned',ordId:null,cost:'$48K',firm:'TBD'},
+        {item:'Welded pipe',leadTime:'4 weeks',cat:'Mechanical',qty:'2,000 sqft',window:'Nov 2026',state:'Planned',ordId:null,cost:'$68K',firm:'TBD'}
       ]}
     }
   };
@@ -16420,7 +16426,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     ]
   };
   var dpCur=null;
-  var _DP_TONE_MAP={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var _DP_TONE_MAP={'Active':'ok','On-rent':'ok','Delivered':'ok','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   function ccDpItemModal(pillar,proj,idx){
     var r=(CC_PROJ_DP[pillar]&&CC_PROJ_DP[pillar][proj]&&CC_PROJ_DP[pillar][proj].rows)||[];
     r=r[idx]; if(!r){toast('Row not found');return;}
@@ -16926,8 +16932,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   }
   
   function buildPrefabStagesStepper(state){
-    var stages=['Planned / FPO','Requested','In Review','In Fulfillment','Invoiced / Closed'];
-    var stateMap={'Planned / FPO':0,'Requested':1,'In Review':2,'Submittal':2,'In Fulfillment':3,'Invoiced / Closed':4};
+    var stages=['Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'];
+    var stateMap={'Planned':0,'Requested':1,'In Review':2,'Submittal':2,'In Fulfillment':3,'Invoiced / Closed':4};
     var ai=(stateMap[state]!=null)?stateMap[state]:-1;
     var allDone=state==='Invoiced / Closed';
     var h='<div style="margin-bottom:14px">';
@@ -17362,7 +17368,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     return '<div class="gantt">'+head+'<div class="g-body">'+today+rows+'</div></div>'+leg;
   }
   function dpSetProjFilter(p,proj){_dpCcProjMap[p]=proj;renderCcDemand(p);}
-  function renderCcDemand(p){
+  function renderCcDemand(p){if(p==='prefab')_rqAll();
     if(p==='profservices'){renderCcProfServices();return;}
     if(p==='prefab')pfbNormalizeUnits();
     if(p==='equipment')initCcEquipAssets();
@@ -17462,7 +17468,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div></div>';
     }
     if(cfg.cap){h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';}
-    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Completed / Closed':'ok','Fulfilled / Delivered':'info','Pending Approval':'warn','In Scoping / Pricing':'warn','Approved':'info','Released to Order':'info','Planned':'neu','In Review':'warn'};
+    var _DP_TONE={'Active':'ok','On-rent':'ok','Delivered':'ok','Complete':'ok','In fulfillment':'info','Scheduled':'info','PO issued':'info','In fabrication':'info','Submittal':'info','Off-rent':'info','Demobilized':'info','Projected':'neu','Draft':'neu','Requested':'neu','Pending pricing':'warn','Awaiting pricing':'warn','Needs attention':'warn','At-risk':'bad','Ordered':'info','Completed':'ok','Planned':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info','Completed / Closed':'ok','Fulfilled / Delivered':'info','Pending Approval':'warn','In Scoping / Pricing':'warn','Approved':'info','Released to Order':'info','Planned':'neu','In Review':'warn'};
     var _PROJ_MATCH={'hercules':'Hercules Solar + BESS','barryrose':'Barry Rose WRF','vdc14':'VDC14'};
     var showProjCol=(selProj==='all');
     var allReqRows=[];
@@ -17471,7 +17477,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       if(CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows){
         CC_PROJ_DP[p][proj].rows.forEach(function(r,ri){
           if(showProjCol&&(r.state==='Projected'||r.state==='Draft'))return;
-          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],cat:r.cat||null,item:r.item,qty:r.qty,window:r.window,state:r.state,subState:r.subState||null,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:(function(){var _al={'Site Security & Cameras':'Security Cameras','Site Internet & Network':'Internet Service & Network Install','Drinking Water & Bagged Ice':'Drinking Water','IT Equipment & Network Install':'Internet Service & Network Install','Site Security':'Security Guards'};var _i=(DP&&DP.logistics&&DP.logistics.intake)||{};var _s=[].concat(_i.core||[]).concat(_i.archetype||[]).concat(_i.optional||[]);var _key=_al[r.item]||r.item;var _m=_s.find(function(x){return x.service===_key;})||{};return _m.leadTime||null;})(),dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[],splits:r.splits||null});
+          allReqRows.push({_type:'dp',_proj:proj,_idx:ri,_projLabel:_PROJ_MATCH[proj],cat:r.cat||null,item:r.item,qty:r.qty,window:r.window,state:r.state,reqId:r.reqId,reqStage:r.reqStage,subState:r.subState||null,cost:r.cost,firm:r.firm,poc:r.poc||null,phone:r.phone||null,acts:r.acts||null,ordId:r.ordId||null,fqRef:r.fqRef||null,leadTime:(function(){var _al={'Site Security & Cameras':'Security Cameras','Site Internet & Network':'Internet Service & Network Install','Drinking Water & Bagged Ice':'Drinking Water','IT Equipment & Network Install':'Internet Service & Network Install','Site Security':'Security Guards'};var _i=(DP&&DP.logistics&&DP.logistics.intake)||{};var _s=[].concat(_i.core||[]).concat(_i.archetype||[]).concat(_i.optional||[]);var _key=_al[r.item]||r.item;var _m=_s.find(function(x){return x.service===_key;})||{};return _m.leadTime||null;})(),dateShifted:r.dateShifted||false,origWindow:r.origWindow||null,shiftNote:r.shiftNote||null,onTrack:(r.onTrack!==undefined?r.onTrack:null),p6Act:r.p6Act||null,attachments:r.attachments||[],splits:r.splits||null});
         });
       }
     });
@@ -17486,14 +17492,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var dpShowAll=!!_dpCcLimit[p];
     var rowsToRender=isDpView?visRows:(dpShowAll?visRows:visRows.slice(0,5));
     var moreN=visRows.length-5;
-        if(p==='prefab'&&isDpView&&window._pfbActiveOnly){visRows=visRows.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});rowsToRender=visRows;moreN=visRows.length-5;}
+        if(p==='prefab'&&isDpView&&window._pfbActiveOnly){visRows=visRows.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});rowsToRender=visRows;moreN=visRows.length-5;}
     if(p==='prefab'&&isDpView&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){visRows=visRows.filter(function(r){return r.cat===window._pfbCatFilter;});rowsToRender=visRows;moreN=visRows.length-5;}
     if(p==='prefab'&&selProj==='all'){
       var _pfbAll=allReqRows.filter(function(r){return r._type==='dp';});
       var _pfbInFab=_pfbAll.filter(function(r){return r.state==='In Fulfillment';}).length;var _relCount=_pfbAll.filter(function(r){return r.state==='In Fulfillment'&&(r.subState==='Released to Shop'||r.subState==='Work Order Created');}).length;var _fabCount=_pfbAll.filter(function(r){return r.state==='In Fulfillment'&&(r.subState==='In Production'||r.subState==='In Procurement');}).length;var _delCount=_pfbAll.filter(function(r){return r.state==='Invoiced / Closed'||r.subState==='Delivered';}).length;
       var _pfbNA=_pfbAll.filter(function(r){return r.state==='Awaiting pricing'||r.dateShifted;}).length;
       var _pfbOT=_pfbAll.filter(function(r){return r.onTrack!==false;}).length;
-      h+=_pfbReqPanel('cc','all');
+      h+=_pfbReqCcNotices('all');
       h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
       (function(){var _sov=_pfbAllSov(),_fpoN=0,_fulN=0,_attN=0,_otN=0;_sov.forEach(function(r){var att=(r.onTrack===false)||!!r.dateShifted||(r.flags||[]).length>0;_pfbFpoList(r).forEach(function(f){_fpoN++;if(f.st==='In Fulfillment')_fulN++;var d=_pfbDS(f.o,f.st);if(d==='requested'||d==='countered'||(f.o.flags||[]).length)att=true;});if(att)_attN++;if(r.onTrack!==false)_otN++;});return [{k:'SOV lines tracked',v:_sov.length+'',sub:_fpoN+' FPOs across all projects',tone:'ok'},{k:'FPOs in fulfillment',v:_fulN+'',sub:'work order created through delivered',tone:'info'},{k:'On track',v:_otN+' of '+_sov.length,sub:'SOV lines vs. need-by date',tone:_otN===_sov.length?'ok':'warn'},{k:'Needs attention',v:_attN?_attN+'':'—',sub:_attN?'off track, date decision or flag open':'All clear',tone:_attN?'warn':'neu'}];})().forEach(function(k){h+='<div class="vital '+k.tone+'"><div class="vk">'+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div></div>';});
       h+='</div>';h+=_pfbKpiHTML(_pfbAllSov(),'All projects');
@@ -17709,7 +17715,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div>';
     }
 
-    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqPanel('cc',selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
+    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqCcNotices(selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>Lead time</span><span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -17851,7 +17857,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           if(_ccRwCo.length){h+='<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;cursor:pointer;font-size:10px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:.04em;width:fit-content" onclick="event.stopPropagation();openCcChangeOrderModal(\''+_ccRwCo[0].id+'\')">CO <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#ea580c">'+_ccRwCo[0].id+'</span></span>';}
           h+='</div>';
           h+='<div>'+dpDocCell(p,row)+'</div>';
-          if(p==='prefab'){var _pfSps=row.splits||[];var _pfRel=_pfSps.filter(function(s){return s.state==='Released';}).length;var _pfStr=_pfSps.length?_pfSps.length+' FPO'+(_pfSps.length>1?'s':'')+' · '+_pfRel+' released':'SOV = single FPO';var _pfFpoBtn='<div style="display:flex;gap:4px;align-items:center"><button onclick="event.stopPropagation();openCcFpoSplitModal(\''+p+'\',\''+row._proj+'\','+row._idx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">→ Manage FPOs</button><button onclick="event.stopPropagation();pfbFlag(\''+row._proj+'\','+row._idx+',-1)" title="Flag SOV line" style="background:#fff;border:1px solid var(--g300);cursor:pointer;padding:2px 7px;color:var(--g600);font-size:11px;border-radius:4px;line-height:1.3">⚑</button></div>';if(_actCell){_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">'+_actCell+'<div style="border-top:1px solid rgba(37,99,235,.15);padding-top:4px;margin-top:1px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500);display:block;margin-top:2px">'+_pfStr+'</span></div></div>';}else{_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500)">'+_pfStr+'</span></div>';}}
+          if(p==='prefab'){var _pfSps=row.splits||[];var _pfRel=_pfSps.filter(function(s){return s.state==='Released';}).length;var _pfStr=_pfSps.length?_pfSps.length+' FPO'+(_pfSps.length>1?'s':'')+' · '+_pfRel+' released':(_rqOpenOf(row)?(row.reqStage||'Request in progress'):'SOV = single FPO');var _pfFpoBtn='<div style="display:flex;gap:4px;align-items:center"><button onclick="event.stopPropagation();openCcFpoSplitModal(\''+p+'\',\''+row._proj+'\','+row._idx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">'+(_rqOpenOf(row)?'→ Open request':'→ Manage FPOs')+'</button><button onclick="event.stopPropagation();pfbFlag(\''+row._proj+'\','+row._idx+',-1)" title="Flag SOV line" style="background:#fff;border:1px solid var(--g300);cursor:pointer;padding:2px 7px;color:var(--g600);font-size:11px;border-radius:4px;line-height:1.3">⚑</button></div>';if(_actCell){_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px">'+_actCell+'<div style="border-top:1px solid rgba(37,99,235,.15);padding-top:4px;margin-top:1px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500);display:block;margin-top:2px">'+_pfStr+'</span></div></div>';}else{_actCell='<div style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">'+_pfFpoBtn+'<span style="font-size:10px;color:var(--g500)">'+_pfStr+'</span></div>';}}
           h+='<div>'+_actCell+'</div>';
           h+='</div>';
           if(p==='logistics'&&row.acts){
@@ -17958,7 +17964,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           h+='<div style="font-size:10px;font-family:monospace;color:var(--g600)">'+((_DP_IDS[p]||{})[row._proj]||'\u2014')+'</div>';
           h+=dpSrc;
           if(showProjCol){h+='<div style="font-size:11.5px">'+row._projLabel+'</div>';}
-          h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span></div>';
+          h+='<div><span class="tag '+dpTone+'">'+_dpDisp+'</span>'+(row.reqStage?'<div style="font-size:10px;color:var(--g500);margin-top:2px">'+row.reqStage+'</div>':'')+'</div>';
           var _ccSps2=row.splits||[];var _ccRel2=_ccSps2.filter(function(s){return s.state==='Released';}).length;var _ccSplStr2=_ccSps2.length?_ccSps2.length+' FPO'+(_ccSps2.length>1?'s':'')+' \u00b7 '+_ccRel2+' released':'SOV = single FPO';h+='<div>'+(p==='prefab'?'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">'+'<button onclick="event.stopPropagation();openCcFpoSplitModal(\''+p+'\',\''+row._proj+'\','+row._idx+')" style="background:none;border:1px solid rgba(37,99,235,.3);cursor:pointer;padding:2px 10px;color:#1d4ed8;font-size:11px;font-weight:600;border-radius:4px">\u2192 Manage FPOs</button>'+'<span style="font-size:10px;color:var(--g500)">'+_ccSplStr2+'</span>'+'</div>':'<span style="font-size:10px;color:var(--g500)">View \u2192</span>')+'</div>';
           h+='</div>';
         }
@@ -17979,9 +17985,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
+      var _stgDone3={'Draft':0,'Planned':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=_pfbCcRows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
-      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
+      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
       h+='<div style="margin-top:6px">';
       if(!_srows2.length){h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">No assemblies match the current filters</div>';}
@@ -17989,7 +17995,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var origIdx=_pfbCcRows.indexOf(r);
         var _exp=window._pfbSchExpand&&window._pfbSchExpand['prefab-'+origIdx];
         var _doneN=_stgDone3[r.state]||0;
-        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned / FPO':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
+        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
         h+='<div style="border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;overflow:hidden">';
         h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--g50);cursor:pointer;user-select:none" onclick="pfbSchToggle(\'prefab\',\''+origIdx+'\')">';
         h+='<span style="font-size:11px;color:var(--g400);min-width:10px">'+(_exp?'\u25be':'\u25b8')+'</span>';
@@ -18932,7 +18938,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
   function ccGoFulfill(ref){ fqView='orders'; fqFP='all'; fqFPr='all'; fqFS='all'; _fqShowAll=!!ref; if(ref)ccHighlight=ref; ccGo('fulfill'); }
 
   /* ═══════════ OTHER-PILLAR DEMAND PLANS (config-driven strawman) ═══════════ */
-  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok','Planned / FPO':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
+  var DP_TONE={'Active':'ok','Delivered':'ok','Complete':'ok','Installed':'ok','Approved':'ok','Fulfilled':'ok','In transit':'info','In fulfillment':'info','In fabrication':'info','Submittal':'info','PO issued':'info','Scheduled':'info','Mobilized':'info','Projected':'info','Planned':'neu','Requested':'neu','Acknowledged':'neu','Draft':'neu','Demobilized':'neu','Pending pricing':'warn','Needs attention':'warn','At-risk':'bad','Proposal received':'warn','Proposal sent':'info','Quoted':'warn','Closed':'ok','Completed':'ok','Planned':'neu','In Review':'warn','In Fulfillment':'info','Invoiced / Closed':'ok','Work Order Created':'neu','In Procurement':'info','Released to Shop':'info','In Production':'info','QC Review':'warn','Production Complete':'ok','In Transit':'info'};
   var IC={dollar:'<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',check:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',people:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/>',chart:'<path d="M3 3v18h18"/><path d="M7 13l3-3 4 4 5-5"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 2"/>',warn:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.3 7L12 12l8.7-5"/>',layers:'<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',crane:'<path d="M10 3h4l7 7-4 4-7-7V3z"/><path d="M3 21h18M6 21v-6"/>'};
   var DP={
     profservices:{ title:'Professional services demand plan', chip:'Engineering, inspection &amp; commissioning', icon:IC.people, singular:'services',
@@ -18977,7 +18983,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         {asm:'MV Stuffed Rack',sameDate:'claimed',cat:'Electrical',qty:'2',need:'Oct 20',code:'2600-3300-0000-0001 · Switchgear',cost:'Pending',state:'Requested',p6Act:'MV switchgear installation',onTrack:true,unitPrice:'TBD — quote pending',leadTime:'12 weeks'},
         {asm:'Adjustable Pipe Supports',cat:'Mechanical',qty:'12',need:'Sep 28',stage:'In fabrication',code:'2600-0540-0000-0001 · Module install',cost:'$146K',state:'In Fulfillment',subState:'In Production',p6Act:'Pipe support installation',onTrack:true,linkOrd:'ORD-3108',unitPrice:'$1,545.40/unit',leadTime:'8 weeks',attachments:[{type:'Engineering',name:'Shop drawings · pipe supports rev C',ref:'SD-3108-RC',status:'Approved'},{type:'Submittals',name:'Fabrication schedule · Sep delivery',ref:'FS-3108-001',status:'Current'}]},
         {asm:'Bathroom batteries',leadTime:'6 weeks',cat:'Mechanical',qty:'2',need:'Oct 15',stage:'Submittal in review',code:'2600-3300-0000-0001 · BESS',cost:'Pending',state:'In Review',p6Act:'Battery installation',onTrack:false,dateShifted:true,origNeed:'Oct 31',shiftNote:'Need-by advanced from Oct 31 to Oct 15 to align with accelerated commissioning sequence.',linkOrd:'ORD-5002',attachments:[{type:'Submittals',name:'Submittal package rev 1',ref:'SUB-3107-R1',status:'Under review'}]},
-        {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned / FPO',p6Act:'Deck installation',onTrack:true},
+        {asm:'Deck Panels',leadTime:'5 weeks',cat:'Concrete',qty:'lot',need:'Nov 10',code:'2600-0540-0000-0001 · Structure',cost:'$95K',state:'Planned',p6Act:'Deck installation',onTrack:true},
         {asm:'Column Forms',leadTime:'6 weeks',cat:'Concrete',qty:'8',need:'Jun 20',stage:'Delivered · order ORD-3106',code:'2600-0540-0000-0001 · Module install',cost:'$147K',state:'Invoiced / Closed',p6Act:'Column installation',onTrack:true,linkOrd:'ORD-3106',attachments:[]}
       ]},
     logistics:{
@@ -19425,7 +19431,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var ns=CURRENT==='ns';
     var _dpId=(_DP_IDS[pk]&&_DP_IDS[pk].hercules)||'';
   var h='<div class="phead"><div><h1>'+cfg.title+(_dpId?' <span style="font-size:12.5px;font-weight:400;color:var(--g400);margin-left:6px">'+_dpId+'</span>':'')+'</h1><div class="meta"><span class="chip">'+svg(cfg.icon)+cfg.chip+'</span></div></div></div>';
-    if(pk==='prefab')h+=_pfbReqCpPanel()+_pfbCpNotices();
+    if(pk==='prefab')h+=_pfbCpNotices();
     h+='<div class="vitals">';
     cfg.vitals.forEach(function(v){ h+='<div class="vital '+(v.tone||'ok')+'"><div class="vk">'+svg(v.icon||IC.check)+v.label+'</div><div class="vv">'+v.value+'</div><div class="vsub">'+(v.sub||'')+'</div></div>'; });
     h+='</div>';
@@ -19440,7 +19446,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     cfg.cols.forEach(function(c){ h+='<span class="'+(c.cls||'')+'">'+c.label+'</span>'; });
     h+='</div>';
     var _srows=cfg.rows.slice().sort(function(a,b){if(pk==='prefab'){var aOT=(a.onTrack===false)?1:0,bOT=(b.onTrack===false)?1:0;if(aOT!==bOT)return bOT-aOT;}var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
-    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
+    if(pk==='prefab'&&window._pfbActiveOnly){_srows=_srows.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
     if(pk==='prefab'&&window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows=_srows.filter(function(r){return r.cat===window._pfbCatFilter;});}
 
     _srows.forEach(function(r){
@@ -19450,7 +19456,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       cfg.cols.forEach(function(c){
         if(c.key==='__docs'){ var _docs=r.attachments||[]; h+='<div>'+(_docs.length?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">'+_docs.length+' doc'+(_docs.length===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\''+pk+'\','+origIdx+')">&#43; Add</button>')+'</div>'; }
         else if(c.key==='__state'){ var _ds=r.state; var t=DP_TONE[_ds]||'neu'; h+='<div class="'+(c.cls||'')+'" style="display:flex;flex-direction:column;align-items:flex-start;gap:3px">'+'<div style="display:flex;align-items:center;gap:5px">'+(pk==='prefab'&&r.onTrack!==undefined?'<span style="font-size:9px;padding:1px 7px;border-radius:8px;font-weight:700;white-space:nowrap;min-width:64px;text-align:center;display:inline-block;background:'+(r.onTrack?'rgba(16,185,129,.1)':'rgba(245,158,11,.1)')+';color:'+(r.onTrack?'#059669':'#b45309')+';border:1px solid '+(r.onTrack?'rgba(16,185,129,.3)':'rgba(245,158,11,.3)')+'">'+(r.onTrack?'\u2713 On track':'\u26a0 Off track')+'</span>':'')
-        +'<span class="tag '+t+'"'+(pk==='prefab'?' style="min-width:104px;text-align:center;white-space:nowrap;display:inline-block"':'')+'>'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'+'</div>'; }
+        +'<span class="tag '+t+'"'+(pk==='prefab'?' style="min-width:104px;text-align:center;white-space:nowrap;display:inline-block"':'')+'>'+_ds+'</span>'+(_edRow?'<button style="background:none;border:none;cursor:pointer;padding:2px 5px;color:var(--g400);font-size:12px;line-height:1;border-radius:3px" onclick="event.stopPropagation();openDPEditModal(\''+pk+'\','+origIdx+')" title="Edit line item">&#9998;</button>':'')+'</div>'+(r.reqStage?'<div style="font-size:10px;color:var(--g500)">'+r.reqStage+'</div>':'')+'</div>'; }
         else if(pk==='prefab'&&c.key==='need'&&r.dateShifted){ h+='<div><span style="color:#b45309;font-weight:600">'+r[c.key]+'</span>'+(r.origNeed?'<div style="font-size:10px;color:var(--g400)">was '+r.origNeed+'</div>':'')+'</div>'; } else { var main=(r[c.key]!=null&&r[c.key]!=='')?r[c.key]:'\u2014'; var sub=(c.sub&&r[c.sub])?'<div class="sub">'+r[c.sub]+'</div>':''; var cls=(c.cls||'')+((c.flag&&r[c.flag])?' dp-risk':''); h+='<div class="'+cls+'">'+main+sub+'</div>'; }
       });
       h+='</div>';
@@ -19461,9 +19467,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       var PFBSTG3=['Work Order Created','In Procurement','Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'];
       var PFBDUR3={'Work Order Created':7,'In Procurement':30,'Released to Shop':3,'In Production':45,'QC Review':7,'Production Complete':5,'In Transit':14,'Delivered':0};
       var _totalDur3=PFBSTG3.reduce(function(s,st){return s+(PFBDUR3[st]||0);},0);
-      var _stgDone3={'Draft':0,'Planned / FPO':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
+      var _stgDone3={'Draft':0,'Planned':0,'Requested':0,'Acknowledged':0,'Pending pricing':0,'FPO Issued':0,'At-risk':0,'In Fulfillment':5,'Invoiced / Closed':8,'Cancelled':0,'Work Order Created':0,'In Procurement':1,'Released to Shop':2,'In Production':3,'QC Review':4,'Production Complete':5,'In Transit':6,'Delivered':7};
       var _srows2=cfg.rows.slice().sort(function(a,b){var ap=(_dp_pri[a.state]!=null?_dp_pri[a.state]:3),bp=(_dp_pri[b.state]!=null?_dp_pri[b.state]:3);return ap-bp;});
-      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned / FPO'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
+      if(window._pfbActiveOnly){_srows2=_srows2.filter(function(r){return r.state!=='Planned'&&r.state!=='Invoiced / Closed'&&r.state!=='Cancelled';});}
       if(window._pfbCatFilter&&window._pfbCatFilter!=='All'){_srows2=_srows2.filter(function(r){return r.cat===window._pfbCatFilter;});}
       h+='<div style="margin-top:6px">';
       if(!_srows2.length){h+='<div style="padding:20px;text-align:center;color:var(--g400);font-size:13px">No assemblies match the current filters</div>';}
@@ -19471,7 +19477,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         var origIdx=cfg.rows.indexOf(r);
         var _exp=window._pfbSchExpand&&window._pfbSchExpand['prefab-'+origIdx];
         var _doneN=_stgDone3[r.state]||0;
-        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned / FPO':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
+        var _sc={'Draft':'#9ca3af','Requested':'#3b82f6','Acknowledged':'#6366f1','Pending pricing':'#f59e0b','FPO Issued':'#8b5cf6','In Fulfillment':'#10b981','At-risk':'#ef4444','Invoiced / Closed':'#6b7280','Cancelled':'#6b7280','Planned':'#9ca3af','In Review':'#f59e0b'}[r.state]||'#9ca3af';
         h+='<div style="border:1px solid var(--g200);border-radius:8px;margin-bottom:6px;overflow:hidden">';
         h+='<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--g50);cursor:pointer;user-select:none" onclick="pfbSchToggle(\'prefab\',\''+origIdx+'\')">';
         h+='<span style="font-size:11px;color:var(--g400);min-width:10px">'+(_exp?'\u25be':'\u25b8')+'</span>';
