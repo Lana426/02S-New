@@ -13165,7 +13165,7 @@ charges:[
       else if(openP&&cc)h+='<div style="font-size:11.5px;color:#1d4ed8;font-weight:600;margin-bottom:12px">\u23f3 Breakdown proposed \u2014 awaiting the project team\u2019s response on '+row.splits.filter(function(x){return x.dateStatus==='proposed';}).length+' FPO date(s).</div>';
     }
     h+='<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin-bottom:6px">FPOs'+(multi?' ('+list.length+')':' \u2014 SOV line is a single FPO')+'</div>';
-    h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200);border-radius:6px;overflow:hidden"><thead><tr style="background:var(--g50)"><th style="'+th+'">FPO</th><th style="'+th+'">Qty</th><th style="'+th+'">Need-by</th><th style="'+th+'">Value</th><th style="'+th+'">Status</th><th style="'+th+'">'+(cc?'Update':'Action')+'</th></tr></thead><tbody>';
+    h+='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;border:1px solid var(--g200);border-radius:6px;overflow:hidden"><thead><tr style="background:var(--g50)"><th style="'+th+'">FPO</th><th style="'+th+'">Qty</th><th style="'+th+'">Need-by</th><th style="'+th+'">P6 activity</th><th style="'+th+'">Value</th><th style="'+th+'">Status</th><th style="'+th+'">'+(cc?'Update':'Action')+'</th></tr></thead><tbody>';
     list.forEach(function(f){
       var o=f.o,si=f.i,val=f.isRow?(row.cost||'\u2014'):(o.cost||'\u2014');
       var flags=(o.flags||[]).length;
@@ -13173,6 +13173,7 @@ charges:[
       h+='<td style="padding:9px 10px;font-family:monospace;font-size:11px;color:var(--g700)">'+f.id+(o.initiatedBy==='02S'?'<div style="font-family:inherit;font-size:9.5px;color:#7c3aed;font-weight:700">02S-initiated</div>':'')+(o.note?'<div style="font-family:inherit;font-size:10px;color:var(--g400)">'+o.note+'</div>':'')+'</td>';
       h+='<td style="padding:9px 10px;font-size:12.5px;font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</td>';
       h+='<td style="padding:9px 10px;min-width:170px">'+_pfbDateCell(side,proj,idx,f)+'</td>';
+      h+='<td style="padding:9px 10px;min-width:150px">'+_pfbFpoP6Cell(side,proj,idx,f,row)+'</td>';
       h+='<td style="padding:9px 10px;font-size:12px">'+val+'<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(o.unitPrice||row.unitPrice||'')+'</div></td>';
       h+='<td style="padding:9px 10px">'+_pfbChip(f.st,f.sub)+(f.ordId?'<div style="font-family:monospace;font-size:10px;color:var(--g400);margin-top:3px">'+f.ordId+'</div>':'')+(flags?'<div style="font-size:10px;color:#b45309;font-weight:700;margin-top:3px">\u2691 '+flags+' flag'+(flags>1?'s':'')+'</div>':'')+'</td>';
       h+='<td style="padding:9px 10px;min-width:150px">';
@@ -13187,7 +13188,7 @@ charges:[
       h+='</td></tr>';
       if(cc&&window._pfbEditKey===proj+'-'+idx+'-'+si){
         window._pfbRegCur={st:f.st,sub:f.sub};
-        h+='<tr><td colspan="6" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\';pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+PFB_FSTAT.map(function(x){return '<option'+(x===f.st?' selected':'')+'>'+x+'</option>';}).join('')+'</select><select id="pfbEdSub" onchange="pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'+_pfbNoteBox('')+'<button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-end">Apply</button></div></td></tr>';
+        h+='<tr><td colspan="7" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\';pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+PFB_FSTAT.map(function(x){return '<option'+(x===f.st?' selected':'')+'>'+x+'</option>';}).join('')+'</select><select id="pfbEdSub" onchange="pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'+_pfbNoteBox('')+'<button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-end">Apply</button></div></td></tr>';
       }
     });
     h+='</tbody></table></div>';
@@ -13207,6 +13208,7 @@ charges:[
       var mxq=_pfbMaxNewQty(row);h+='<input id="pfbNewQty" type="number" min="1" '+(total>0?'max="'+mxq+'" ':'')+'value="'+Math.max(1,Math.min(mxq||1,pool||Math.round(total/2)))+'" style="width:70px;text-align:center;border:1px solid var(--g200);border-radius:4px;padding:4px 5px;font-size:13px;font-weight:600">';
       h+='<span style="font-size:11px;color:var(--g500)">units (max '+mxq+'), need-by</span>';
       h+='<input id="pfbNewDate" type="date" style="border:1px solid var(--g200);border-radius:4px;padding:4px 6px;font-size:12px">';
+      h+=_pfbFpoP6Sel('pfbNewP6',_pfbDefP6Val(row));
       h+='<input id="pfbNewNote" type="text" placeholder="Note (e.g. Area D \u2014 rows 33\u201340)" style="flex:1;min-width:150px;border:1px solid var(--g200);border-radius:4px;padding:4px 8px;font-size:12px">';
       h+='<button onclick="pfbAddFpo(\''+side+'\',\''+proj+'\','+idx+')" style="padding:5px 14px;background:'+(cc?'#059669':'#1d4ed8')+';border:none;border-radius:5px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">'+(cc?'Initiate FPO \u2192':'Add FPO')+'</button>';
       h+='</div></div>';
@@ -13301,6 +13303,7 @@ charges:[
     _pfbApplyStatus(sp,st,m.subState,false);
     if(m.ordId||m.linkOrd)sp.ordId=m.ordId||m.linkOrd;
     if(m.dateStatus)sp.dateStatus=m.dateStatus;
+    if(m.p6Sov===undefined){m.p6Sov=m.p6Act;m.p6SovNone=!!m.p6None;}sp.p6Act=m.p6Sov||'';sp.p6None=!!m.p6SovNone;
     m.splits=[sp];m.fpoMode='split';
   }
   function _pfbMaxNewQty(row){
@@ -13309,7 +13312,7 @@ charges:[
     list.forEach(function(f){if(f.st==='Planned'||(f.isRow&&row.quoteNeeded&&f.st==='Requested'))m=Math.max(m,pool+(parseInt(f.qty)||0)-1);});
     return m;
   }
-  function _pfbAddFpoCore(side,proj,idx,q,dv,note){
+  function _pfbAddFpoCore(side,proj,idx,q,dv,note,p6,p6None){
     var row=_pfbRow(side,proj,idx);if(!row)return false;
     if(!q||!dv){toast('Enter a quantity and a need-by date');return false;}
     var cc=side==='cc',need=_pfbFmtDate(dv),total=parseInt(row.qty)||0;
@@ -13329,8 +13332,9 @@ charges:[
       if(donor>=0){var d=m.splits[donor];d.qty=(parseInt(d.qty)||0)-take;d.cost=costOf(d.qty);}
       if(!nid)nid='FPO-'+_pfbCode(m.asm||m.item)+'-'+('00'+(m.splits.length+1)).slice(-3);
       var sp={id:nid,qty:q,need:need,cost:costOf(q),state:'Planning',status:'Planned',note:note||'',dateStatus:cc?'proposed':'draft'};
+      if(p6===undefined){sp.p6Act=(m.p6Sov!==undefined?m.p6Sov:m.p6Act)||'';sp.p6None=!!(m.p6Sov!==undefined?m.p6SovNone:m.p6None);}else{sp.p6Act=p6||'';sp.p6None=!!p6None;}
       if(cc){sp.propNeed=need;sp.initiatedBy='02S';}
-      m.splits.push(sp);_pfbRollup(m);
+      m.splits.push(sp);_pfbRollup(m);_pfbP6Roll(m);
     });
     toast((cc?'FPO initiated \u2014 ':'FPO added \u2014 ')+nid);
     return true;
@@ -13339,7 +13343,9 @@ charges:[
     var q=parseInt((document.getElementById('pfbNewQty')||{}).value)||0;
     var dv=(document.getElementById('pfbNewDate')||{}).value||'';
     var note=((document.getElementById('pfbNewNote')||{}).value||'').trim();
-    if(_pfbAddFpoCore(side,proj,idx,q,dv,note))_pfbReopen(side,proj,idx);
+    var v=(document.getElementById('pfbNewP6')||{}).value||'';
+    if(!v){toast('Select a P6 activity for this FPO, or choose "No P6 \u2014 manual date"');return;}
+    if(_pfbAddFpoCore(side,proj,idx,q,dv,note,v==='__none'?'':v,v==='__none'))_pfbReopen(side,proj,idx);
   }
 
   /* ----- project-team drill-down + CC detail FPO lists ----- */
@@ -13363,7 +13369,7 @@ charges:[
       else if(ds==='countered')note='<span style="font-size:10.5px;font-weight:700;color:#b45309">● counter sent</span>';
       else if(ds==='requested')note='<span style="font-size:10.5px;color:#b45309">● date awaiting 02S</span>';
       if(r.sameDate==='claimed'&&!multi)note='<span style="font-size:10.5px;color:var(--g500)">single date noted — awaiting 02S</span>';
-      h+='<div style="display:grid;grid-template-columns:92px 74px 56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 0;font-size:12px"><span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span><span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub)+note+((f.o.flags||[]).length?'<span style="font-size:10.5px;font-weight:700;color:#b45309">⚑ '+f.o.flags.length+'</span>':'')+'</span></div>';
+      h+='<div style="display:grid;grid-template-columns:92px 74px 56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 0;font-size:12px"><span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span><span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub)+note+((f.o.flags||[]).length?'<span style="font-size:10.5px;font-weight:700;color:#b45309">⚑ '+f.o.flags.length+'</span>':'')+(function(){var c=_pfbP6Of(f,r);return '<span style=\"font-size:10.5px;color:var(--g400)\">P6: '+(c.none?'manual date':_rqE(c.act||'not set'))+'</span>';})()+'</span></div>';
     });
     return h+'</div>';
   }
@@ -13825,7 +13831,7 @@ charges:[
       if(r.status==='declined'){return '<div style="display:flex;gap:8px">'+btn('btn-dark','','pfbReqAck(\''+id+'\')','Got it')+'</div>';}
       if(r.status==='defining'&&r.waiting==='PT')return '<textarea id="rqMsg" rows="3" placeholder="Reply to 02S…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','','pfbReqReply(\''+id+'\')','Send reply')+'</div>';
       if(r.status==='confirm')return '<textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqConfirm(\''+id+'\')','Confirm scope')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
-      if(r.status==='accept')return '<div class="mform" style="margin-top:6px">'+_pfbP6Html('pfbRq')+'</div><textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqAccept(\''+id+'\')','Accept pricing')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
+      if(r.status==='accept')return '<textarea id="rqMsg" rows="2" placeholder="Comments for 02S (required to return)…" style="'+_rqTA+'"></textarea><div style="display:flex;gap:8px;margin-top:10px">'+btn('btn-dark','background:#15803d;border-color:#15803d','pfbReqAccept(\''+id+'\')','Accept pricing')+btn('btn-ghost','','pfbReqReturn(\''+id+'\')','Return with comments')+'</div>';
       if(r.status==='accepted'&&r.idxCp!=null)return '<div style="display:flex;gap:8px">'+btn('btn-dark','','closeModal();openFpoSplitModal(\'prefab\','+r.idxCp+')','Set up FPOs')+'</div>';
       return '';
     }
@@ -13885,15 +13891,13 @@ charges:[
   }
   function pfbReqAccept(id){
     var r=_rqGet(id);if(!r||!r.quote)return;
-    var none=(document.getElementById('pfbRqP6None')||{}).checked,p6=(document.getElementById('pfbRqP6')||{}).value||'';
-    if(!none&&!p6){toast('Select a P6 activity, or check “No P6 schedule”');return;}
     var q=r.quote,sc=r.scope||{},qty=sc.qty||r.qty||1;
     var thread=r.thread.slice();thread.push({from:'PT',when:'Nov 13',text:'Pricing accepted.'+(_rqMsg()?' '+_rqMsg():'')});
     var pr={status:'approved',total:q.total,unit:q.unit,sentOn:q.sentOn,thread:thread};
     r.thread=thread;r.status='accepted';r.waiting=null;_rqSync(r);
-    _rqRowsOf(r).forEach(function(m){m.code='2600-0540-0000-0001 \u00b7 '+(PFB_CAT_MAP[r.cat]||r.cat||'Mechanical');m.cost=_pfbMoney(q.total);m.unitPrice=_pfbP(q.unit)+'/unit';if(q.lead)m.leadTime=q.lead;m.p6Act=none?'⚠ No P6 — manual date':p6;m.p6None=!!none;m.pricing=JSON.parse(JSON.stringify(pr));});
+    _rqRowsOf(r).forEach(function(m){m.code='2600-0540-0000-0001 \u00b7 '+(PFB_CAT_MAP[r.cat]||r.cat||'Mechanical');m.cost=_pfbMoney(q.total);m.unitPrice=_pfbP(q.unit)+'/unit';if(q.lead)m.leadTime=q.lead;m.pricing=JSON.parse(JSON.stringify(pr));});
     closeModal();_rqRefresh();
-    toast('Pricing accepted — line is now Planned. Set up its FPOs.');
+    toast('Pricing accepted — line is now Planned. Set up its FPOs and a P6 activity for each.');
     window._pfbQ={side:'cp',proj:r.proj,idxs:[r.idxCp]};pfbQGo(0);
   }
   function _pfbCpNotices(){
@@ -13939,8 +13943,35 @@ charges:[
       ?'<span>\u26a0\ufe0f</span><div style="font-size:11.5px"><b>Manual date \u2014 not anchored to P6.</b> This need-by date will <b>not</b> shift if the project schedule moves, and 02S won\u2019t be alerted to schedule changes on this line. If the work slips you\u2019ll need to update the date yourself. Link a P6 activity wherever possible.</div>'
       :'<span>\ud83d\udccc</span><div style="font-size:11.5px"><b>Date anchoring</b> \u2014 After you submit, 02S will align fabrication milestones to the selected P6 schedule activity. Any adjustment to this date will have downstream impacts on the fabrication lifecycle and will be communicated accordingly.</div>';
   }
+  /* ----- P6 is tracked per FPO; the SOV-level P6 is only a default for new FPOs ----- */
+  function _pfbDefP6Val(row){var a=row.p6Sov!==undefined?row.p6Sov:row.p6Act,n=row.p6Sov!==undefined?row.p6SovNone:row.p6None;if(n)return '__none';return (a&&PFB_P6_LIST.indexOf(a)>=0)?a:'';}
+  function _pfbP6Of(f,row){var o=f.o;if(f.isRow)return {act:row.p6Act||'',none:!!row.p6None};if(o.p6Act!==undefined)return {act:o.p6Act||'',none:!!o.p6None};return {act:(row.p6Sov!==undefined?row.p6Sov:row.p6Act)||'',none:!!(row.p6Sov!==undefined?row.p6SovNone:row.p6None)};}
+  function _pfbFpoP6Sel(id,cur,onch){
+    var opts=PFB_P6_LIST.slice();if(cur&&cur!=='__none'&&opts.indexOf(cur)<0)opts.unshift(cur);
+    return '<select id="'+id+'" '+(onch?'onchange="'+onch+'" ':'')+'style="border:1px solid '+(cur?'var(--g200)':'#fcd34d')+';border-radius:4px;padding:4px 6px;font-size:11.5px;max-width:190px;background:'+(cur?'#fff':'#fffbeb')+'" title="P6 schedule activity for this FPO"><option value="">— P6 activity —</option>'+opts.map(function(a){return '<option'+(a===cur?' selected':'')+'>'+_rqE(a)+'</option>';}).join('')+'<option value="__none"'+(cur==='__none'?' selected':'')+'>No P6 — manual date</option></select>';
+  }
+  function _pfbFpoP6Cell(side,proj,idx,f,row){
+    var cur=_pfbP6Of(f,row),val=cur.none?'__none':cur.act;
+    if(f.st==='Planned'||f.st==='Requested'||f.st==='In Review')return _pfbFpoP6Sel('pfbP6-'+side+'-'+idx+'-'+f.i,val,'pfbSetFpoP6(\''+side+'\',\''+proj+'\','+idx+','+f.i+',this.value)')+(cur.none?'<div style="font-size:10px;color:#b45309;margin-top:3px">Won’t shift with P6</div>':'');
+    return '<div style="font-size:11.5px;color:var(--g700)">'+(cur.none?'⚠ Manual date':_rqE(cur.act||'—'))+'</div>';
+  }
+  function _pfbP6Roll(m){
+    if(!m.splits||!m.splits.length)return;
+    if(m.p6Sov===undefined){m.p6Sov=m.p6Act;m.p6SovNone=!!m.p6None;}
+    var acts=[],nones=[];
+    m.splits.forEach(function(sp){var a=sp.p6Act!==undefined?sp.p6Act:m.p6Sov,n=sp.p6Act!==undefined?!!sp.p6None:!!m.p6SovNone;nones.push(n);var l=n?'Manual date':(a||'');if(l&&acts.indexOf(l)<0)acts.push(l);});
+    m.p6Act=acts.length>1?acts.length+' P6 activities':(acts[0]||'');
+    m.p6None=nones.every(function(x){return x;});
+  }
+  function pfbSetFpoP6(side,proj,idx,si,v){
+    var row=_pfbRow(side,proj,idx);if(!row)return;var none=v==='__none',a=none?'':v;
+    _pfbEach(row,si,function(t){t.p6Act=a;t.p6None=none;});
+    _pfbMirrors(row).forEach(_pfbP6Roll);
+    toast(none?'FPO set to a manual date — it won’t shift with the P6 schedule':(a?'P6 activity set for this FPO':'P6 activity cleared for this FPO'));
+    _pfbReopen(side,proj,idx);
+  }
   function _pfbP6Html(pfx){
-    var h='<div class="mf"><label>P6 schedule activity <span style="font-size:10px;color:#ef4444;font-weight:700">required</span></label><select id="'+pfx+'P6" class="acc-sel wfull"><option value="">\u2014 select P6 activity \u2014</option>'+PFB_P6_LIST.map(function(a){return '<option>'+a+'</option>';}).join('')+'</select>';
+    var h='<div class="mf"><label>P6 schedule activity <span style="font-size:10px;color:var(--g500);font-weight:600">optional default \u00b7 each FPO gets its own</span></label><select id="'+pfx+'P6" class="acc-sel wfull"><option value="">\u2014 select P6 activity \u2014</option>'+PFB_P6_LIST.map(function(a){return '<option>'+a+'</option>';}).join('')+'</select>';
     h+='<label style="display:flex;align-items:center;gap:7px;margin-top:8px;font-size:11.5px;color:var(--g700);cursor:pointer"><input type="checkbox" id="'+pfx+'P6None" onchange="pfbP6OptOut(\''+pfx+'\',this.checked)"> No P6 schedule activity applies \u2014 use a manual date only</label></div>';
     h+='<div id="'+pfx+'Anchor" style="background:#fef3c7;border:1px solid #fcd34d;border-radius:7px;padding:10px 12px;margin-top:4px;display:flex;gap:8px;align-items:flex-start">'+_pfbAnchorInner(false)+'</div>';
     return h;
@@ -14003,7 +14034,6 @@ charges:[
     var lines=window._pfbParsedLines||[];
     var none=(document.getElementById('pfbUpP6None')||{}).checked;
     var p6=(document.getElementById('pfbUpP6')||{}).value||'';
-    if(!none&&!p6){toast('Select a P6 activity, or check “No P6 schedule”');return;}
     var p6txt=none?'⚠ No P6 — manual date':p6;
     var picked=[];
     for(var i=0;i<lines.length;i++){
@@ -14052,7 +14082,6 @@ charges:[
     var g=function(id){return ((document.getElementById(id)||{}).value||'').trim();};
     var name=g('ccFpoName');if(!name){toast('Enter an SOV line item first');return;}
     var none=(document.getElementById('ccFpoP6None')||{}).checked,p6=g('ccFpoP6');
-    if(!none&&!p6){toast('Select a P6 activity, or check “No P6 schedule”');return;}
     var qty=g('ccFpoQty')||'—',qn=parseInt(qty)||0,price=parseFloat(g('ccFpoPrice'))||0;
     var need=g('ccFpoWhen')?_pfbFmtDate(g('ccFpoWhen')):'—';
     var proj=_ccAddFpoProj||'hercules';
