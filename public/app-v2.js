@@ -5255,7 +5255,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cp\',\'xlsx\')">Export SOV</button>':'')+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
@@ -8988,6 +8988,7 @@ charges:[
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
     if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
+    if(pk==='prefab')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();pfbExportLine(\'cp\',\'hercules\','+rowIdx+')">Export SOV</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
     if(pk==='logistics'){var _st=r.status||r.state;var _coRQ=(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id&&c.status==='quote_revised';});if(_coRQ)h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();openCpRevisedQuoteModal(\''+_coRQ.id+'\')">Revised quote ready →</button>';if(_st==='Draft')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Submitted for scoping — 02S will contact you to begin pricing.\')">Submit for Scoping / Pricing</button>';else if(_st==='Pending Approval'){h+='<button class="btn btn-dark btn-sm" style="background:#059669;border-color:#059669" onclick="event.stopPropagation();toast(\'Approved — 02S will release to order.\')">Approve →</button>';h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Revise / Resubmit</button>';}else if(_st==='Fulfilled / Delivered')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();toast(\'Off-rent request submitted — 02S will coordinate pickup.\')">Request Off-Rent</button>';else if(_st!=='Completed / Closed'&&_st!=='Returned'&&_st!=='Fulfilled / Delivered'&&_st!=='In Scoping / Pricing'&&_st!=='Approved'&&_st!=='Released to Order')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openChangeOrderModal(\''+pk+'\','+rowIdx+')">Submit change order</button>';}
     h+='</div>';
@@ -13022,6 +13023,7 @@ charges:[
     var t0=si>=0?row.splits[si]:row;if(!t0)return false;
     var prev=_pfbFpoList(row)[si>=0?si:0],effSub=st==='In Fulfillment'?(sub||(prev.st==='In Fulfillment'?prev.sub:null)||'Work Order Created'):null;
     var back=_pfbRank(st,effSub)<_pfbRank(prev.st,prev.sub);
+    if(st==='In Fulfillment'&&['Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'].indexOf(effSub)>=0&&!_pfbSubOk(row)){toast('Submittals aren\u2019t approved yet \u2014 this FPO can\u2019t be released to manufacture until the owner approves them');return false;}
     if(back&&!note){toast('Add a reason for moving back \u2014 it is shared with the project team');return false;}
     var nt=back?{from:_pfbStLabel(prev.st,prev.sub),to:_pfbStLabel(st,effSub),text:note,when:'Nov 5',ack:false}:null;
     var ord=t0.ordId||('ORD-'+(5030+Math.floor(Math.random()*60)));
@@ -13033,7 +13035,7 @@ charges:[
       if(st==='In Fulfillment'||st==='Invoiced / Closed')t.dateStatus='confirmed';
       _pfbRollup(m);
     });
-    toast(nt?'Moved back \u2014 note sent to the project team':(st==='Requested'?'FPO submitted to 02S':'FPO status updated \u2014 '+st+(sub?' \u00b7 '+sub:'')));
+    toast(nt?'Moved back \u2014 note sent to the project team':(st==='Requested'?(_pfbSubOk(row)?'FPO submitted to 02S':'FPO submitted to 02S \u2014 note: 02S can\u2019t manufacture it until submittals are approved'):'FPO status updated \u2014 '+st+(sub?' \u00b7 '+sub:'')));
     _pfbReopen(side,proj,idx);
     return true;
   }
@@ -13066,7 +13068,8 @@ charges:[
     if(ds==='confirmed'){out+='<div style="font-size:10.5px;color:#2F7A43;font-weight:600;margin-top:2px">\u2713 Confirmed by 02S</div>';}
     else if(ds==='draft'){out+='<div style="font-size:10.5px;color:var(--g400);margin-top:2px">Not yet submitted</div>';}
     else if(ds==='requested'){
-      if(cc)out+='<div style="font-size:10.5px;color:#b45309;font-weight:600;margin-top:2px">Requested by project team \u2014 confirm or propose</div>'+inputs+btn('Confirm '+f.need,'confirm','#059669','#fff')+ghost('Propose new date','propose');
+      if(cc&&f.isRow&&o.sameDate==='claimed')out+='<div style="font-size:10.5px;color:#b45309;font-weight:600;margin-top:2px">Requested by project team \u2014 respond in the card above</div>';
+      else if(cc)out+='<div style="font-size:10.5px;color:#b45309;font-weight:600;margin-top:2px">Requested by project team \u2014 confirm or propose</div>'+inputs+btn('Confirm '+f.need,'confirm','#059669','#fff')+ghost('Propose new date','propose');
       else out+='<div style="font-size:10.5px;color:#b45309;font-weight:600;margin-top:2px">Awaiting 02S confirmation</div>';
     }
     else if(ds==='proposed'){
@@ -13153,7 +13156,7 @@ charges:[
         else if(sd==='breakdown')note='<div style="font-size:11.5px;color:#b45309;font-weight:600;margin-top:6px">\u26a0 02S can\u2019t deliver all '+total+' units by '+_pfbNeed(row)+' \u2014 please break this SOV line into FPOs with their own need-by dates.</div>';
         h+='<div style="padding:10px 12px;border:1.5px solid '+(sd==='breakdown'||pending?'#fcd34d':'var(--g200)')+';background:'+(sd==='breakdown'||pending?'#fffbeb':'#fff')+';border-radius:8px;margin-bottom:12px"><label style="display:flex;align-items:flex-start;gap:9px;cursor:pointer"><input type="checkbox" style="margin-top:3px" '+(!showBuilder?'checked ':'')+'onchange="pfbSetSame(\''+side+'\',\''+proj+'\','+idx+',this.checked)"><div><div style="font-size:12.5px;font-weight:700;color:var(--g900)">All quantities delivered on the same need-by date?</div><div style="font-size:11.5px;color:var(--g500);margin-top:2px">'+(pending?'Choose how this SOV line becomes FPO(s). ':'')+'Yes \u2192 the SOV line is a single FPO (02S confirms they can deliver it all on that date). No \u2192 break it into FPOs, each with its own quantity and need-by date.</div></div></label>'+note+'</div>';
       } else if(sd==='claimed'){
-        h+='<div style="padding:12px 14px;border:1px solid var(--g150);border-left:3px solid #1d4ed8;background:#fff;border-radius:10px;margin-bottom:12px"><div style="font-size:12.5px;font-weight:700;color:var(--g900)">Project team: all '+total+' units needed by '+_pfbNeed(row)+'</div><div style="font-size:11.5px;color:var(--g500);margin:2px 0 8px">They flagged this SOV line as a single FPO. Confirm you can deliver everything on that date, or propose a breakdown into FPOs with the dates you can meet.</div><button onclick="pfbSameDecision(\''+proj+'\','+idx+',true)" style="background:#059669;color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;margin-right:6px">Accept single date</button><button onclick="pfbSameDecision(\''+proj+'\','+idx+',false)" style="background:#fff;color:var(--g700);border:1px solid var(--g300);border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Propose FPO breakdown</button></div>';
+        h+='<div style="padding:12px 14px;border:1px solid var(--g150);border-left:3px solid #1d4ed8;background:#fff;border-radius:10px;margin-bottom:12px"><div style="font-size:12.5px;font-weight:700;color:var(--g900)">Project team: all '+total+' units needed by '+_pfbNeed(row)+'</div><div style="font-size:11.5px;color:var(--g500);margin:2px 0 8px">They flagged this SOV line as a single FPO. Confirm you can deliver everything on that date, or propose a breakdown into FPOs with the dates you can meet.</div><button onclick="pfbSameDecision(\''+proj+'\','+idx+',true)" style="background:#059669;color:#fff;border:none;border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;margin-right:6px">Accept single date</button><button onclick="pfbSameDecision(\''+proj+'\','+idx+',false)" style="background:#fff;color:var(--g700);border:1px solid var(--g300);border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer">Propose FPO breakdown</button>'+(_pfbSubOk(row)?'':'<button onclick="pfbSubHold(\''+proj+'\','+idx+',-1)" style="background:#fff;color:var(--g700);border:1px solid var(--g300);border-radius:5px;padding:5px 12px;font-size:11.5px;font-weight:700;cursor:pointer;margin-left:6px">Submittals not received</button>')+'</div>';
       } else if(sd==='accepted'){
         h+='<div style="font-size:11.5px;color:#2F7A43;font-weight:600;margin-bottom:12px">\u2713 Single-date delivery confirmed \u2014 this SOV line is one FPO.</div>';
       } else if(sd==='breakdown'){
@@ -13176,7 +13179,7 @@ charges:[
       h+='<td style="padding:9px 10px;min-width:170px">'+_pfbDateCell(side,proj,idx,f)+'</td>';
       h+='<td style="padding:9px 10px;min-width:150px">'+_pfbFpoP6Cell(side,proj,idx,f,row)+'</td>';
       h+='<td style="padding:9px 10px;font-size:12px">'+val+'<div style="font-size:10px;color:var(--g400);margin-top:2px">'+(o.unitPrice||row.unitPrice||'')+'</div></td>';
-      h+='<td style="padding:9px 10px">'+_pfbChip(f.st,f.sub)+(f.ordId?'<div style="font-family:monospace;font-size:10px;color:var(--g400);margin-top:3px">'+f.ordId+'</div>':'')+(flags?'<div style="font-size:10px;color:#b45309;font-weight:700;margin-top:3px">\u2691 '+flags+' flag'+(flags>1?'s':'')+'</div>':'')+'</td>';
+      h+='<td style="padding:9px 10px">'+_pfbChip(f.st,f.sub)+(o.hold==='submittals'?'<div style="font-size:10px;font-weight:700;color:#92400e;margin-top:3px">\u23f8 Awaiting submittals</div>':'')+(f.ordId?'<div style="font-family:monospace;font-size:10px;color:var(--g400);margin-top:3px">'+f.ordId+'</div>':'')+(flags?'<div style="font-size:10px;color:#b45309;font-weight:700;margin-top:3px">\u2691 '+flags+' flag'+(flags>1?'s':'')+'</div>':'')+'</td>';
       h+='<td style="padding:9px 10px;min-width:150px">';
       if(cc){
         var ek=proj+'-'+idx+'-'+si,isOpen=window._pfbEditKey===ek;
@@ -13215,7 +13218,7 @@ charges:[
       h+='</div></div>';
     }
     if(cc)h+='<div style="margin-top:12px">'+_pfbUnallocHTML(row)+'</div>';
-    if(cc)h+='<div style="display:flex;justify-content:flex-end;margin-top:0;padding-top:10px;border-top:1px solid var(--g150)"><button onclick="pfbFlag(\''+proj+'\','+idx+',-1)" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600">\u2691 Flag SOV line</button></div>';
+    if(cc)h+='<div style="display:flex;justify-content:flex-end;margin-top:0;padding-top:10px;border-top:1px solid var(--g150)"><button onclick="pfbExportLine(\'cc\',\''+proj+'\','+idx+')" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600;margin-right:8px">Export SOV</button><button onclick="pfbFlag(\''+proj+'\','+idx+',-1)" style="font-size:11.5px;padding:5px 12px;border:1px solid var(--g300);border-radius:5px;background:#fff;cursor:pointer;color:var(--g700);font-weight:600">\u2691 Flag SOV line</button></div>';
     var q=window._pfbQ,qi=q?q.idxs.indexOf(idx):-1;
     if(q&&qi>=0&&q.side===side&&q.proj===proj){
       var bn='<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px"><div style="font-size:12px;font-weight:700;color:#1e40af">Set up FPOs \u00b7 line '+(qi+1)+' of '+q.idxs.length+'</div><div style="font-size:11px;color:#1d4ed8">Say whether all units ship on one date, or break the line into FPOs</div></div><div style="display:flex;gap:6px;flex-wrap:wrap">';
@@ -13370,7 +13373,7 @@ charges:[
       else if(ds==='countered')note='<span style="font-size:10.5px;font-weight:700;color:#b45309">● counter sent</span>';
       else if(ds==='requested')note='<span style="font-size:10.5px;color:#b45309">● date awaiting 02S</span>';
       if(r.sameDate==='claimed'&&!multi)note='<span style="font-size:10.5px;color:var(--g500)">single date noted — awaiting 02S</span>';
-      h+='<div style="display:grid;grid-template-columns:92px 74px 56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 0;font-size:12px"><span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span><span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub)+note+((f.o.flags||[]).length?'<span style="font-size:10.5px;font-weight:700;color:#b45309">⚑ '+f.o.flags.length+'</span>':'')+(function(){var c=_pfbP6Of(f,r);return '<span style=\"font-size:10.5px;color:var(--g400)\">P6: '+(c.none?'manual date':_rqE(c.act||'not set'))+'</span>';})()+'</span></div>';
+      h+='<div style="display:grid;grid-template-columns:92px 74px 56px minmax(0,1fr);align-items:center;gap:10px;padding:6px 0;font-size:12px"><span style="font-family:monospace;font-size:10.5px;color:var(--g500)">'+f.id+'</span><span style="font-weight:600;white-space:nowrap">'+_pfbQty(f.qty)+'</span><span style="color:var(--g600);white-space:nowrap">'+f.need+'</span><span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(f.st,f.sub)+note+(f.o.hold==='submittals'?'<span style="font-size:10.5px;font-weight:700;color:#92400e">\u23f8 awaiting submittals</span>':'')+((f.o.flags||[]).length?'<span style="font-size:10.5px;font-weight:700;color:#b45309">⚑ '+f.o.flags.length+'</span>':'')+(function(){var c=_pfbP6Of(f,r);return '<span style=\"font-size:10.5px;color:var(--g400)\">P6: '+(c.none?'manual date':_rqE(c.act||'not set'))+'</span>';})()+'</span></div>';
     });
     return h+'</div>';
   }
@@ -13414,12 +13417,12 @@ charges:[
       var inner=_pfbH(row.pricing?'Revise pricing':'Pricing submission')+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px"><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Cost estimate</label><input id="pfbPrice-'+proj+'-'+idx+'" placeholder="e.g. $145,000" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div><div><label style="font-size:11.5px;font-weight:600;color:var(--g600);display:block;margin-bottom:4px">Notes to project team</label><input id="pfbNote-'+proj+'-'+idx+'" placeholder="Scope clarifications or conditions…" style="width:100%;padding:8px 10px;border:1px solid var(--g200);border-radius:8px;font-size:12.5px;box-sizing:border-box"></div></div><button class="btn btn-dark btn-sm" onclick="pfbSendPrice(\''+proj+'\','+idx+')">'+(row.pricing?'Send revised pricing':'Send pricing to project team')+' →</button>';
       h+=_pfbCard(inner,'border-left:3px solid #d97706');
     }
-    if(!(row.splits&&row.splits.length)&&row.sameDate==='claimed'){h+=_pfbCard(_pfbH('Single need-by date')+'<div style="font-size:12.5px;color:var(--g800);margin-bottom:10px">Project team noted that all '+(parseInt(row.qty)||row.qty)+' units are needed by <b>'+_pfbNeed(row)+'</b> and this SOV line is a single FPO. Confirm you can deliver everything on that date, or propose a breakdown into FPOs with the dates you can meet.</div><button class="btn btn-dark btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',true)">Accept single date</button> <button class="btn btn-ghost btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',false)">Propose FPO breakdown</button>','border-left:3px solid #1d4ed8');}
+    if(!(row.splits&&row.splits.length)&&row.sameDate==='claimed'){h+=_pfbCard(_pfbH('Single need-by date')+'<div style="font-size:12.5px;color:var(--g800);margin-bottom:10px">Project team noted that all '+(parseInt(row.qty)||row.qty)+' units are needed by <b>'+_pfbNeed(row)+'</b> and this SOV line is a single FPO. Confirm you can deliver everything on that date, or propose a breakdown into FPOs with the dates you can meet.</div><button class="btn btn-dark btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',true)">Accept single date</button> <button class="btn btn-ghost btn-sm" onclick="pfbSameDecision(\''+proj+'\','+idx+',false)">Propose FPO breakdown</button>'+(_pfbSubOk(row)?'':' <button class="btn btn-ghost btn-sm" onclick="pfbSubHold(\''+proj+'\','+idx+',-1)">Submittals not received</button>'),'border-left:3px solid #1d4ed8');}
     var open=_pfbFpoList(row).filter(function(f){var d=_pfbDS(f.o,f.st);return d==='requested'||d==='countered';});
-    if(open.length){
+    if(open.length&&!(!(row.splits&&row.splits.length)&&row.sameDate==='claimed')){
       var inn=_pfbH('Need-by confirmation','<span style="font-size:11px;color:var(--g400)">'+open.length+' FPO'+(open.length>1?'s':'')+' awaiting a decision</span>');
       open.forEach(function(f,n){
-        inn+='<div style="'+(n?'border-top:1px solid var(--g100);margin-top:12px;padding-top:12px':'')+'"><div style="font-size:11.5px;color:var(--g500);margin-bottom:6px"><span style="font-family:monospace">'+f.id+'</span> · '+_pfbQty(f.qty)+'</div>'+_pfbDateCell('cc',proj,idx,f)+'</div>';
+        inn+='<div style="'+(n?'border-top:1px solid var(--g100);margin-top:12px;padding-top:12px':'')+'"><div style="font-size:11.5px;color:var(--g500);margin-bottom:6px"><span style="font-family:monospace">'+f.id+'</span> · '+_pfbQty(f.qty)+'</div>'+_pfbDateCell('cc',proj,idx,f)+(_pfbSubOk(row)||f.o.hold==='submittals'?(f.o.hold==='submittals'?'<div style="font-size:11px;color:#92400e;margin-top:8px">\u23f8 On hold \u2014 project team told submittals haven\u2019t been received</div>':''):'<div style="margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="pfbSubHold(\''+proj+'\','+idx+','+f.i+')">Submittals not received</button></div>')+'</div>';
       });
       h+=_pfbCard(inn,'border-left:3px solid #1d4ed8');
     }
@@ -13454,7 +13457,7 @@ charges:[
     if(ord){var b=buildDpBillingInline(row.ordId);if(b)h+=_pfbCard(b);}
     h+=_pfbUnallocHTML(row);
     var fl=_pfbFlagsOf(row);
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-ghost btn-sm" style="margin-right:auto;margin-left:8px" onclick="pfbExportLine(\'cc\',\''+proj+'\','+idx+')">Export SOV</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
     openModal('SOV line — '+row.item,h);_pfbWide(720);
   }
 
@@ -13477,7 +13480,7 @@ charges:[
   function _pfbStatusNotesCard(row){
     var l=_pfbStatusNotesOf(row);if(!l.length)return '';
     var inner=_pfbH('Status notes from 02S',' <span style="font-size:11px;color:var(--g400)">'+l.length+'</span>');
-    l.slice().reverse().forEach(function(x,i){inner+='<div style="'+(i?'border-top:1px solid var(--g100);margin-top:10px;padding-top:10px':'')+'"><div style="font-size:11px;color:var(--g500);margin-bottom:3px"><span style="font-family:monospace">'+x.id+'</span> \u00b7 <b style="color:#b45309">\u21a9 Moved back</b> \u00b7 '+x.n.from+' \u2192 '+x.n.to+' \u00b7 '+x.n.when+'</div><div style="font-size:12.5px;color:var(--g800);line-height:1.45">'+x.n.text+'</div></div>';});
+    l.slice().reverse().forEach(function(x,i){inner+='<div style="'+(i?'border-top:1px solid var(--g100);margin-top:10px;padding-top:10px':'')+'"><div style="font-size:11px;color:var(--g500);margin-bottom:3px"><span style="font-family:monospace">'+x.id+'</span> \u00b7 '+(x.n.kind==='submittals'?'<b style="color:#92400e">\u23f8 On hold \u00b7 submittals not received</b> \u00b7 '+x.n.when:'<b style="color:#b45309">\u21a9 Moved back</b> \u00b7 '+x.n.from+' \u2192 '+x.n.to+' \u00b7 '+x.n.when)+'</div><div style="font-size:12.5px;color:var(--g800);line-height:1.45">'+x.n.text+'</div></div>';});
     return _pfbCard(inner,'border-left:3px solid #d97706');
   }
   function pfbViewNotes(i){
@@ -13741,37 +13744,36 @@ charges:[
   function _sovDownload(name,csv){
     try{var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}catch(e){}
   }
-  function pfbExportSov(kind,fmt,id){
-    if(fmt==='pdf'){toast('PDF export needs the SOV template from the project team \u2014 Excel is available now');return;}
-    var rows,name,label;
-    if(kind==='req'){
-      var r=_rqGet(id),ln=r&&_rqRowsOf(r)[0];if(!ln)return;
-      var a=_sovRowOf(ln),priced=!!r.quote;
-      a[5]=priced?r.quote.unit:'';a[6]=priced?r.quote.total:'';rows=[a];label=priced?'priced':'unpriced';name='SOV-'+r.id+'-'+label+'.csv';
-    } else {
-      var proj=kind==='plan-cc'?(id==='all'?'hercules':id):'hercules',src=kind==='plan-cc'?((CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows)||[]):DP.prefab.rows;
-      rows=src.map(_sovRowOf);label='SOV';name='Prefab-SOV-'+proj+'.csv';
-    }
-    _sovDownload(name,_sovCsv(rows));
-    toast((kind==='req'?'Exported the '+label+' SOV':'Exported the prefab SOV')+' as Excel (CSV) \u2014 '+name);
-  }
-  function _rqExportBar(r){
-    if(!r.scope)return '';
-    var lbl=r.quote?'Priced SOV':'Unpriced SOV';
-    return '<div style="display:flex;align-items:center;gap:8px;margin:-4px 0 14px"><span style="font-size:11px;color:var(--g500)">'+lbl+' from this request</span><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'req\',\'xlsx\',\''+r.id+'\')">Export to Excel</button><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'req\',\'pdf\',\''+r.id+'\')">Export to PDF</button></div>';
+  function pfbExportLine(side,proj,idx){
+    var row=_pfbRow(side,proj,idx);if(!row)return;
+    var a=_sovRowOf(row),q=row.reqId&&PFB_REQ&&_rqGet(row.reqId);
+    if(q&&q.quote&&!a[5]){a[5]=q.quote.unit;a[6]=q.quote.total;}
+    var nm='SOV-'+String(row.asm||row.item||'line').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.csv';
+    _sovDownload(nm,_sovCsv([a]));
+    toast('Exported the SOV line as Excel (CSV) \u2014 '+nm);
   }
   /* ----- submittals approved (first step of Execute) ----- */
+  function _pfbSubOk(row){return !!(row&&row.submittals&&row.submittals.approved);}
   function _pfbSubmittalCard(side,proj,idx,row,reqId){
     if(!row||row.state==='Scope definition'||row.state==='Cancelled')return '';
     var s=row.submittals||{approved:false,on:''},cc=side==='cc';
     var inner=_pfbH('Submittals',s.approved?'<span style="font-size:11px;font-weight:600;color:#15803d">\u2713 Approved by owner'+(s.on?' \u00b7 '+s.on:'')+'</span>':'<span style="font-size:11px;font-weight:600;color:#92400e">Awaiting owner approval</span>');
     inner+='<label style="display:flex;align-items:center;gap:9px;font-size:12.5px;'+(cc?'cursor:pointer':'')+'"><input type="checkbox" '+(s.approved?'checked ':'')+(cc?'':'disabled ')+'onchange="pfbSubmittalToggle(\''+proj+'\','+idx+',this.checked'+(reqId?',\''+reqId+'\'':'')+')"> Submittals approved by owner</label>';
-    inner+='<div style="font-size:11px;color:var(--g500);margin-top:6px">Fabrication starts once the owner approves the submittal drawings. '+(cc?'Tick this when the approval comes back.':'02S marks this when the owner approves.')+'</div>';
+    if(!s.approved)inner+='<div style="font-size:11.5px;color:#92400e;margin-top:8px">FPOs can be requested now, but 02S can\u2019t manufacture against them until the owner approves the submittals.</div>';
     return _pfbCard(inner,'border-left:3px solid '+(s.approved?'#15803d':'#d97706'));
+  }
+  function pfbSubHold(proj,idx,si){
+    var row=_pfbRow('cc',proj,idx);if(!row)return;
+    var f=_pfbFpoList(row)[si>=0?si:0];if(f&&f.o.hold==='submittals'){toast('This FPO is already on hold for submittals');return;}
+    var extra=((document.getElementById('pfbRs-cc-'+idx+'-'+si)||{}).value||'').trim();
+    var txt='Submittals haven\u2019t been received yet \u2014 we can\u2019t manufacture this FPO until the owner approves them.'+(extra?' '+extra:'');
+    _pfbEach(row,si,function(t){t.hold='submittals';(t.statusNotes=t.statusNotes||[]).push({kind:'submittals',from:'',to:'',text:txt,when:'Nov 13',ack:false});});
+    toast('Note sent to the project team \u2014 FPO on hold until submittals are received');
+    _pfbReopen('cc',proj,idx);
   }
   function pfbSubmittalToggle(proj,idx,on,reqId){
     var row=_pfbRow('cc',proj,idx);if(!row)return;
-    _pfbMirrors(row).forEach(function(m){m.submittals={approved:!!on,on:on?'Nov 13':''};});
+    _pfbMirrors(row).forEach(function(m){m.submittals={approved:!!on,on:on?'Nov 13':''};if(on){delete m.hold;(m.splits||[]).forEach(function(s){delete s.hold;});}});
     toast(on?'Submittals marked approved by the owner':'Submittals set back to awaiting approval');
     try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
     if(reqId)openPfbReq('cc',reqId);else _pfbReopen('cc',proj,idx);
@@ -13862,7 +13864,7 @@ charges:[
   function openPfbReq(side,id){
     var r=_rqGet(id);if(!r)return;window._rqOpen={side:side,id:id};if(r.unreadFor===side){r.unreadFor=null;setTimeout(_rqRefresh,0);}
     var b='';
-    b+=_rqStepper(r)+_rqBanner(r,side)+(side==='cc'?_rqFoundryCard(r.proj):'')+_rqExportBar(r);
+    b+=_rqStepper(r)+_rqBanner(r,side)+(side==='cc'?_rqFoundryCard(r.proj):'');
     var qn=r.qty?r.qty+' units':'';
     var kv=[['Path',r.path==='commercial'?'Commercial product \u2014 standard review':(r.path==='help'?'Talk to a person \u2014 open conversation':'Custom product \u2014 detailed review'+(r.round>1?' \u00b7 round '+r.round:''))],['Trade',_rqE(r.cat)],['Product',_rqE(r.product)],['Features',_rqE(r.features)],['Estimated quantity',qn],['Need-by',r.need?_pfbFmtDate(r.need):''],['Location / zone',_rqE(r.loc)],['Submitted',r.created+(r.via?' · logged by 02S via '+_rqE(r.via):'')]];
     var inner=_pfbH('Request',_rqPathChip(r))+(r.desc?'<div style="font-size:12px;line-height:1.5;color:var(--g800);margin-bottom:10px">'+_rqE(r.desc)+'</div>':'')+_rqKV(kv);
@@ -13976,7 +13978,7 @@ charges:[
       if(r.pricing&&r.pricing.status==='sent'){n++;h+=_pfbNotice(NC.green,'Pricing ready for review',nm,'SOV line','$'+r.pricing.unit.toLocaleString('en-US')+'/unit \u00b7 '+_pfbMoney(r.pricing.total)+' total','02S sent pricing \u00b7 '+(r.leadTime?'lead time '+r.leadTime+' \u00b7 ':'')+'approve it or return with comments',btn('#15803d','Review pricing','openFpoSplitModal(\'prefab\','+i+')'));}
       if(r.onTrack===false){n++;h+=_pfbNotice(NC.amber,'Assembly off track',nm,'SOV line','Need-by '+_pfbNeed(r)+(r.origNeed?' (was '+r.origNeed+')':''),'P6: '+(r.p6Act||'—'),btn('#b45309','Review','openFpoSplitModal(\'prefab\','+i+')'));}
       _pfbFpoList(r).forEach(function(f){if(_pfbDS(f.o,f.st)==='proposed'){n++;h+=_pfbNotice(NC.blue,'New need-by date proposed by 02S',nm,f.id,'Proposed '+(f.o.propNeed||'')+' · requested '+f.need,f.o.propNote||'',btn('#1d4ed8','Accept or counter','openFpoSplitModal(\'prefab\','+i+')'));}});
-      _pfbFpoList(r).forEach(function(f){(f.o.statusNotes||[]).forEach(function(nt){if(nt.ack)return;n++;h+=_pfbNotice(NC.amber,'FPO status moved back by 02S',nm,f.id,nt.from+' \u2192 '+nt.to,nt.text,btn('#b45309','View note','pfbViewNotes('+i+')'));});});
+      _pfbFpoList(r).forEach(function(f){(f.o.statusNotes||[]).forEach(function(nt){if(nt.ack)return;n++;h+=_pfbNotice(NC.amber,nt.kind==='submittals'?'Submittals needed before 02S can manufacture':'FPO status moved back by 02S',nm,f.id,nt.kind==='submittals'?'On hold until submittals are received':nt.from+' \u2192 '+nt.to,nt.text,btn('#b45309','View note','pfbViewNotes('+i+')'));});});
       _pfbFlagsOf(r).forEach(function(fl){n++;h+=_pfbNotice(NC.orange,'Flag from 02S · informational',nm,fl.level+' '+fl.ref,fl.type,fl.note||'','<button onclick="openFpoSplitModal(\'prefab\','+i+')" style="font-size:11px;padding:4px 12px;border-radius:5px;border:1px solid #f97316;background:#fff7ed;cursor:pointer;color:#c2410c;font-weight:600;white-space:nowrap">View →</button>');});
     });
     if(!n)return '';
@@ -17854,7 +17856,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div>';
     }
 
-    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqPanel('cc',selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cc\',\'xlsx\',\''+selProj+'\')">Export SOV</button><button class="btn btn-dark btn-sm" style="margin-left:6px" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
+    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqPanel('cc',selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>Lead time</span><span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -19577,7 +19579,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cp\',\'xlsx\')">Export SOV</button>':'')+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
