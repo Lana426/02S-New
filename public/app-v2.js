@@ -8957,7 +8957,7 @@ charges:[
       var stateNote={Draft:'Draft line — submit to 02S to begin fulfillment.',Requested:'Submitted to 02S — awaiting acknowledgement.',Acknowledged:'Acknowledged — 02S processing.','Pending pricing':'Pending 02S quote — price will be confirmed before order is placed.','At-risk':'At-risk — order-by date approaching or passed. Expedite required.'};if(pk==='prefab'&&_rqOpenOf(r))stateNote['Scope definition']=_rqTrackNote(r);
       h+='<div style="margin:0 18px 10px;background:var(--g50);border:1px '+(((r.state||r.status)==='At-risk'||(r.state||r.status)==='Needs attention')?'solid var(--red)':'dashed var(--g200)')+';border-radius:6px;padding:10px 12px;font-size:11.5px;color:'+(((r.state||r.status)==='At-risk'||(r.state||r.status)==='Needs attention')?'var(--red)':'var(--g500)')+'">'+( stateNote[r.state||r.status]||(r.state||r.status))+'</div>';
     }
-    if(pk==='prefab'){h+=_pfbDrillFpos(pk,r,rowIdx);}
+    if(pk==='prefab'&&!_rqOpenOf(r)){h+=_pfbDrillFpos(pk,r,rowIdx);}
     if(r.linkOrd){var _bl=buildDpBillingInline(r.linkOrd);if(_bl)h+=(pk==='prefab'?_pfbFold('Billing history',' \u00b7 '+((CC_DP_BILLS[r.linkOrd]||[]).length)+' invoice'+(((CC_DP_BILLS[r.linkOrd]||[]).length)===1?'':'s'),_bl.replace(/<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:\.04em;color:var\(--g500\);margin-bottom:6px">Billing history<\/div>/,'')):_bl);}
     var notes=(pk==='prefab'&&r.reqId&&PFB_REQ&&_rqGet(r.reqId))?_rqNotesOf(r):(DP_LINE_NOTES[pk+'-'+rowIdx]||[]);var _nSt=h.length;
     var _dpCoSub=pk==='logistics'?(window._CHANGE_ORDERS||[]).find(function(c){return c.ref===r.id;}):null;
