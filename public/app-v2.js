@@ -12920,7 +12920,7 @@ charges:[
   function pfbSetInstFilter(f){_pfbInstFilter=f;renderCcDemand('prefab');}
   function pfbUpdateState(proj,idx,state,subState){var rows=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows;if(rows&&rows[idx]!==undefined){rows[idx].state=state;if(subState!==undefined)rows[idx].subState=subState;else if(state!=='In Fulfillment')rows[idx].subState=null;renderCcDemand('prefab');}}
   /* ===== PREFAB SOV / FPO MODEL ===== */
-  var PFB_FSTAT=['Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'];
+  var PFB_FSTAT=['Scope definition','Planned','Requested','In Review','In Fulfillment','Invoiced / Closed'];
   var PFB_SUBS_GRP={wo:['Work Order Created','In Procurement','Released to Shop'],prod:['In Production','QC Review','Production Complete'],del:['In Transit','Delivered']};
   var PFB_P6_LIST=['Pipe rack install \u2014 Sector 1','BESS e-house commissioning','L2 headwall installation','Pump skid commissioning','Cable tray installation \u2014 module install','Combiner box installation','Overhead MEP install \u2014 Level 2','Level 2 headwall installation','Stairwell panel erection','Fire suppression header install','Structural steel erection','Mechanical piping rough-in','Electrical rough-in','HVAC equipment installation','Commissioning \u2014 systems startup'];
   var _PFB_TONE={'Scope definition':['#1d4ed8','#EFF6FF'],'Planned':['#52525B','#F4F4F5'],'Requested':['#265D9F','#E7EEF7'],'In Review':['#8A6D1F','#F5EDD6'],'In Fulfillment':['#2F7A43','#E4F1E7'],'Invoiced / Closed':['#52525B','#E4E4E7']};
@@ -13023,7 +13023,7 @@ charges:[
     var t0=si>=0?row.splits[si]:row;if(!t0)return false;
     var prev=_pfbFpoList(row)[si>=0?si:0],effSub=st==='In Fulfillment'?(sub||(prev.st==='In Fulfillment'?prev.sub:null)||'Work Order Created'):null;
     var back=_pfbRank(st,effSub)<_pfbRank(prev.st,prev.sub);
-    if(st==='In Fulfillment'&&['Released to Shop','In Production','QC Review','Production Complete','In Transit','Delivered'].indexOf(effSub)>=0&&!_pfbSubOk(row)){toast('Submittals aren\u2019t approved yet \u2014 this FPO can\u2019t be released to manufacture until the owner approves them');return false;}
+    if((st==='In Fulfillment'||st==='Invoiced / Closed')&&!_pfbSubOk(row)){toast('Submittals aren\u2019t approved yet \u2014 check them off before moving this FPO to '+st);return false;}
     if(back&&!note){toast('Add a reason for moving back \u2014 it is shared with the project team');return false;}
     var nt=back?{from:_pfbStLabel(prev.st,prev.sub),to:_pfbStLabel(st,effSub),text:note,when:'Nov 5',ack:false}:null;
     var ord=t0.ordId||('ORD-'+(5030+Math.floor(Math.random()*60)));
@@ -13192,7 +13192,7 @@ charges:[
       h+='</td></tr>';
       if(cc&&window._pfbEditKey===proj+'-'+idx+'-'+si){
         window._pfbRegCur={st:f.st,sub:f.sub};
-        h+='<tr><td colspan="7" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\';pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+PFB_FSTAT.map(function(x){return '<option'+(x===f.st?' selected':'')+'>'+x+'</option>';}).join('')+'</select><select id="pfbEdSub" onchange="pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'+_pfbNoteBox('')+'<button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-end">Apply</button></div></td></tr>';
+        h+='<tr><td colspan="7" style="background:var(--g50);padding:10px 14px;border-top:1px dashed var(--g200)"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;font-weight:700;color:var(--g600)">Set status</span><select id="pfbEdSt" onchange="document.getElementById(\'pfbEdSub\').style.display=this.value===\'In Fulfillment\'?\'\':\'none\';pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px">'+_pfbStOpts(row,f.st)+'</select><select id="pfbEdSub" onchange="pfbRegCheck(\'\')" style="border:1px solid var(--g200);border-radius:6px;padding:5px 9px;font-size:12px;display:'+(f.st==='In Fulfillment'?'':'none')+'">'+SUB_STATUSES_FULFILLMENT.map(function(x){return '<option'+(x===f.sub?' selected':'')+'>'+x+'</option>';}).join('')+'</select>'+(_pfbSubOk(row)?'':'<span style="font-size:11px;color:#92400e;font-weight:600">Submittals aren\u2019t approved yet \u2014 In Fulfillment is locked</span>')+_pfbNoteBox('')+'<button onclick="pfbEditApply(\''+proj+'\','+idx+','+si+')" style="background:var(--charcoal);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;align-self:flex-end">Apply</button></div></td></tr>';
       }
     });
     h+='</tbody></table></div>';
@@ -13378,8 +13378,8 @@ charges:[
     return h+'</div>';
   }
   /* ----- modern progress stepper ----- */
-  var PFB_IC={check:'<path d="M20 6L9 17l-5-5"/>',file:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',filecheck:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',tool:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',cc:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>'};
-  var PFB_ICONS_MAIN=[PFB_IC.file,PFB_IC.send,PFB_IC.search,PFB_IC.filecheck,PFB_IC.box];
+  var PFB_IC={pencil:'<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',check:'<path d="M20 6L9 17l-5-5"/>',file:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/>',send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>',search:'<circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>',filecheck:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/>',box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/>',truck:'<rect x="1" y="3" width="15" height="13" rx="1"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>',tool:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',cc:'<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>'};
+  var PFB_ICONS_MAIN=[PFB_IC.pencil,PFB_IC.file,PFB_IC.send,PFB_IC.search,PFB_IC.filecheck,PFB_IC.box];
   var PFB_ICONS_SUB=[PFB_IC.file,PFB_IC.cart,PFB_IC.send,PFB_IC.tool,PFB_IC.cc,PFB_IC.box,PFB_IC.truck,PFB_IC.check];
   function _pfbStepper(labels,idx,icons){
     var h='<div class="trk" style="padding:6px 4px 2px">';
@@ -13430,6 +13430,7 @@ charges:[
   }
   function dpPfbCcDetail(proj,idx){
     pfbNormalizeUnits();
+    var _r2=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows[idx],_q2=_rqOpenOf(_r2);if(_q2){openPfbReq('cc',_q2.id);return;}
     var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;
     window._pfbDetailCtx=true;
     var ord=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;
@@ -13438,7 +13439,7 @@ charges:[
     if(!subSt&&multi){var ff=_pfbFpoList(row).filter(function(f){return f.st==='In Fulfillment';})[0];if(ff){subSt=ff.sub;subFpo=ff.id;}}
     var h='';
     h+='<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px"><div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+_pfbChip(st,subSt)+(row.onTrack===false?'<span style="font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border-radius:10px;padding:2px 9px">⚠ Off track</span>':'')+'</div><div style="font-size:11.5px;color:var(--g500);margin-top:6px">'+(row.cat||'')+(row.p6None?' · <span style="color:#b45309;font-weight:600">No P6 link — manual date</span>':(row.p6Act?' · P6: '+row.p6Act:''))+'</div></div>'+(multi?'<button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Update FPO statuses →</button>':'<button class="btn btn-dark btn-sm" onclick="pfbStatusModal(\''+proj+'\','+idx+')">Update status →</button>')+'</div>';
-    var si={'Planned':0,'Requested':1,'In Review':2,'In Fulfillment':3,'Invoiced / Closed':5}[st];if(si==null)si=0;
+    var si={'Scope definition':0,'Planned':1,'Requested':2,'In Review':3,'In Fulfillment':4,'Invoiced / Closed':6}[st];if(si==null)si=1;
     var pc=_pfbH('Progress')+_pfbStepper(PFB_FSTAT,si,PFB_ICONS_MAIN);
     if(st==='In Fulfillment'||st==='Invoiced / Closed'){
       var fi=SUB_STATUSES_FULFILLMENT.indexOf(subSt);if(st==='Invoiced / Closed')fi=SUB_STATUSES_FULFILLMENT.length;
@@ -13462,6 +13463,10 @@ charges:[
   }
 
   /* ----- moving an FPO back in the timeline requires a note for the project team ----- */
+  function _pfbStOpts(row,cur){
+    var ok=_pfbSubOk(row);
+    return PFB_FSTAT.filter(function(x){return x!=='Scope definition';}).map(function(x){var lock=!ok&&(x==='In Fulfillment'||x==='Invoiced / Closed');return '<option'+(x===cur?' selected':'')+(lock?' disabled':'')+'>'+x+(lock?' (needs submittals)':'')+'</option>';}).join('');
+  }
   function _pfbRank(st,sub){var i=PFB_FSTAT.indexOf(st);if(i<0)i=0;var s=0;if(st==='In Fulfillment')s=Math.max(0,SUB_STATUSES_FULFILLMENT.indexOf(sub||'Work Order Created'));return i*100+s;}
   function _pfbStLabel(st,sub){return st+(sub?' \u00b7 '+sub:'');}
   function pfbRegCheck(k){
@@ -13503,9 +13508,10 @@ charges:[
     var row=CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows&&CC_PROJ_DP.prefab[proj].rows[idx];if(!row)return;
     var st=_pfbRowStatus(row),sub=row.subState||null;window._pfbRegCur={st:st,sub:sub};
     var sel='border:1px solid var(--g200);border-radius:6px;padding:5px 10px;font-size:11.5px';
-    var mo=PFB_FSTAT.map(function(s){return '<option'+(s===st?' selected':'')+'>'+s+'</option>';}).join('');
+    var mo=_pfbStOpts(row,st);
     var ms=SUB_STATUSES_FULFILLMENT.map(function(s){return '<option'+(s===sub?' selected':'')+'>'+s+'</option>';}).join('');
     var b='<div class="fq-calc"><div class="fq-crow"><span>Item</span><span style="font-weight:600">'+row.item+'</span></div><div class="fq-crow"><span>Current</span><span class="tag neu">'+_pfbStLabel(st,sub)+'</span></div>';
+    if(!_pfbSubOk(row))b+='<div style="padding:6px 0;font-size:11.5px;color:#92400e;font-weight:600">Submittals aren\u2019t approved yet \u2014 In Fulfillment is locked.</div>';
     b+='<div class="fq-crow"><span>New status</span><span><select id="pfbEdStM" style="'+sel+'" onchange="var r=document.getElementById(\'pfbEdSubRowM\');if(r)r.style.display=this.value===\'In Fulfillment\'?\'flex\':\'none\';pfbRegCheck(\'M\')">'+mo+'</select></span></div>';
     b+='<div id="pfbEdSubRowM" class="fq-crow" style="display:'+(st==='In Fulfillment'?'flex':'none')+'"><span>Fulfillment detail</span><span><select id="pfbEdSubM" style="'+sel+'" onchange="pfbRegCheck(\'M\')">'+ms+'</select></span></div></div>';
     b+='<div style="padding:0 16px 8px">'+_pfbNoteBox('M')+'</div>';
@@ -13661,7 +13667,7 @@ charges:[
     sets.forEach(function(rows){rows.forEach(function(r){
       if(r.scopeDef||r.reqId)return;
       var nm=r.asm||r.item||'',s=PFB_SCOPE_SEED[nm]||{};
-      r.submittals=/In Fulfillment|Invoiced/.test(r.state||'')?{approved:true,on:'Jul 12'}:{approved:false,on:''};
+      r.submittals=(/In Fulfillment|Invoiced/.test(r.state||'')||_pfbFpoList(r).some(function(f){return f.st==='In Fulfillment'||f.st==='Invoiced / Closed';}))?{approved:true,on:'Jul 12'}:{approved:false,on:''};
       r.scopeDef={product:s.product||nm,specs:s.specs||r.size||'',loc:s.loc||'',summary:s.summary||'',trade:r.cat||'',self:'Yes',awarded:'Yes',labor:'Unknown',value:'',assess:'Make as requested'};
     });});
   }
@@ -13734,23 +13740,12 @@ charges:[
     var f=PFB_FOUNDRY[proj]||PFB_FOUNDRY.hercules;
     return _pfbCard(_pfbH('Project','<span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed;background:#f5f3ff;border-radius:4px;padding:2px 6px">From Foundry</span>')+_rqKV([['Project',_rqE(f.name)],['Location',_rqE(f.loc)],['Schedule',_rqE(f.sched)]]));
   }
-  /* ----- SOV export: unpriced SOV out of definition, priced SOV once pricing is in ----- */
-  var SOV_HDR=['Line item','Trade','Product','Specs / features','Qty','Unit price','Total','Lead time','Need-by','P6 activity','Status','Source'];
-  function _sovRowOf(r){
-    var c=function(v){v=v==null?'':String(v);return (v==='\u2014'||/^(TBD|Pending)/i.test(v))?'':v;},d=r.scopeDef||{};
-    return [r.asm||r.item||'',r.cat||'',d.product||'',d.specs||'',c(r.qty).replace(/\s*units?$/i,''),c(r.unitPrice),c(r.cost),c(r.leadTime),c(r.need||r.window),c(r.p6Act),(r.state||'')+(r.reqStage?' ('+r.reqStage+')':''),r.source||''];
-  }
-  function _sovCsv(rows){return [SOV_HDR].concat(rows).map(function(a){return a.map(function(x){return '"'+String(x==null?'':x).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');}
-  function _sovDownload(name,csv){
-    try{var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}catch(e){}
-  }
-  function pfbExportLine(side,proj,idx){
-    var row=_pfbRow(side,proj,idx);if(!row)return;
-    var a=_sovRowOf(row),q=row.reqId&&PFB_REQ&&_rqGet(row.reqId);
-    if(q&&q.quote&&!a[5]){a[5]=q.quote.unit;a[6]=q.quote.total;}
-    var nm='SOV-'+String(row.asm||row.item||'line').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'')+'.csv';
-    _sovDownload(nm,_sovCsv([a]));
-    toast('Exported the SOV line as Excel (CSV) \u2014 '+nm);
+  /* ----- Export SOV (simulated in the wireframe) ----- */
+  function pfbExportLine(side,proj,idx,btn){
+    var b=btn||(window.event&&(window.event.currentTarget||window.event.target))||document.activeElement;
+    var c=b&&b.parentNode;if(!c||!c.parentNode)return;
+    var n=c.nextElementSibling;
+    if(!n||n.getAttribute('data-sim-note')!=='1'){n=document.createElement('div');n.setAttribute('data-sim-note','1');n.style.cssText='font-size:11px;font-style:italic;color:var(--g500);padding:8px 4px 4px';n.textContent='Simulated for wireframe purposes \u2014 would export a CSV of an SOV.';c.parentNode.insertBefore(n,c.nextSibling);}
   }
   /* ----- submittals approved (first step of Execute) ----- */
   function _pfbSubOk(row){return !!(row&&row.submittals&&row.submittals.approved);}
@@ -17647,15 +17642,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       var _PFBCOL={hercules:'#1e6b4f',barryrose:'#2e4e8e',vdc14:'#7a3d8e'};
       var _PFBCODE={hercules:'HRC',barryrose:'BRW',vdc14:'VDC'};
       var _pfbLA=[
-        {lbl:'Combiner box prefab array',sub:'Need-by Sep 5 \u2014 draft in progress',proj:'hercules',bc:'#b45309',wk:0},
-        {lbl:'Cable tray brackets',sub:'Awaiting pricing \u2014 fit-out dependency',proj:'vdc14',bc:'#b45309',wk:0},
-        {lbl:'MEP rack modules delivery',sub:'Barry Rose WRF \u2014 on track Sep 10',proj:'barryrose',bc:'#3d6b4f',wk:1},
-        {lbl:'E-house submittal decision',sub:'BESS e-houses \u2014 02S review in progress',proj:'hercules',bc:'#b45309',wk:1},
-        {lbl:'Pipe rack final QC',sub:'Shop drawings approved \u2014 4 of 12 complete',proj:'hercules',bc:'#2e6e8e',wk:1},
-        {lbl:'Pump skid assemblies',sub:'Manufacturing \u2014 need-by Oct 5',proj:'hercules',bc:'#3d6b4f',wk:2},
-        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2},
-        {lbl:'Stairwell panel delivery',sub:'Barry Rose WRF — need-by Sep 28',proj:'barryrose',bc:'#3d6b4f',wk:3},
-        {lbl:'BESS e-house pre-wire',sub:'Hercules — final QC sign-off pending',proj:'hercules',bc:'#b45309',wk:3}
+        {lbl:'Combiner box prefab array',sub:'Need-by Sep 5 \u2014 draft in progress',proj:'hercules',bc:'#b45309',wk:0,d:4},
+        {lbl:'Cable tray brackets',sub:'Awaiting pricing \u2014 fit-out dependency',proj:'vdc14',bc:'#b45309',wk:0,d:2},
+        {lbl:'MEP rack modules delivery',sub:'Barry Rose WRF \u2014 on track Sep 10',proj:'barryrose',bc:'#3d6b4f',wk:1,d:2},
+        {lbl:'E-house submittal decision',sub:'BESS e-houses \u2014 02S review in progress',proj:'hercules',bc:'#b45309',wk:1,d:4},
+        {lbl:'Pipe rack final QC',sub:'Shop drawings approved \u2014 4 of 12 complete',proj:'hercules',bc:'#2e6e8e',wk:1,d:3},
+        {lbl:'Pump skid assemblies',sub:'Manufacturing \u2014 need-by Oct 5',proj:'hercules',bc:'#3d6b4f',wk:2,d:2},
+        {lbl:'Cable tray runs',sub:'Pricing confirmation pending',proj:'hercules',bc:'#b45309',wk:2,d:4},
+        {lbl:'Stairwell panel delivery',sub:'Barry Rose WRF — need-by Sep 28',proj:'barryrose',bc:'#3d6b4f',wk:3,d:6},
+        {lbl:'BESS e-house pre-wire',sub:'Hercules — final QC sign-off pending',proj:'hercules',bc:'#b45309',wk:3,d:5}
       ];
       var _pfbGt='220px 1fr 1fr 1fr 1fr';
       h+='<div style="background:#fff;border:1px solid var(--g200);border-radius:12px;padding:18px 20px 14px;margin-bottom:20px;position:relative">';
@@ -17663,7 +17658,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='<span style="font-size:16px;font-weight:700;color:var(--charcoal)">4-week lookahead</span>';
       h+='<span style="font-size:12px;color:var(--g400)">Sep 1\u201328, 2026</span>';
       h+='</div>';
-      h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Hover any bar to see details</div>';
+      h+='<div style="font-size:11.5px;color:var(--g400);margin-bottom:16px">Each diamond is a milestone \u2014 a point in time, not a duration. Hover one for details.</div>';
       h+='<div style="display:grid;grid-template-columns:'+_pfbGt+';margin-bottom:2px">';
       h+='<div></div>';
       ['Sep 1\u20137','Sep 8\u201314','Sep 15\u201321','Sep 22\u201328'].forEach(function(w){h+='<div style="padding:0 0 8px 12px;border-left:1px solid var(--g150);font-size:11px;font-weight:600;color:var(--g500)">'+w+'</div>';});
@@ -17677,12 +17672,14 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         h+='<span style="font-size:12px;color:var(--g800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.lbl+'</span>';
         h+='</div>';
         [0,1,2,3].forEach(function(wi){
-          h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;display:flex;align-items:center">';
+          h+='<div style="padding:4px 6px;border-left:1px solid var(--g150);height:100%;position:relative">';
           if(wi===r.wk){
+            var _x=Math.round(r.d/7*100),_lft=!(r.wk>0&&r.d>=4);
             h+='<div data-tip="'+tipTxt+'" '+
                'onmouseenter="var _t=document.getElementById(\'_pfbTip\');if(_t){_t.textContent=this.dataset.tip;_t.style.display=\'block\';var _r=this.getBoundingClientRect();_t.style.left=(_r.left+_r.width/2)+\'px\';_t.style.top=(_r.top-6)+\'px\';}" '+
                'onmouseleave="var _t=document.getElementById(\'_pfbTip\');if(_t)_t.style.display=\'none\';" '+
-               'style="background:'+r.bc+';color:#fff;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;cursor:default">'+r.sub+'</div>';
+               'style="position:absolute;left:'+_x+'%;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;background:'+r.bc+';transform:rotate(45deg);border-radius:2px;cursor:default;z-index:1"></div>';
+            h+='<div style="position:absolute;top:50%;transform:translateY(-50%);'+(_lft?'left:calc('+_x+'% + 12px)':'right:calc('+(100-_x)+'% + 12px);text-align:right')+';font-size:10.5px;font-weight:600;color:var(--g700);white-space:nowrap">'+r.sub+'</div>';
           }
           h+='</div>';
         });
