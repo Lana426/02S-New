@@ -13691,14 +13691,14 @@ charges:[
     var out=[],NC=_PFB_NC,btn=function(col,lbl,id){return '<button class="btn btn-dark btn-sm" style="background:'+col+';border-color:'+col+';white-space:nowrap" onclick="openPfbReq(\''+side+'\',\''+id+'\')">'+lbl+' →</button>';};
     _rqAll().forEach(function(r){
       if((proj!=='all'&&r.proj!==proj)||!_rqMine(r,side))return;
-      var n0=out.length,last=r.thread[r.thread.length-1]||{},qn=r.scope?r.scope.qty:r.qty,t=_rqE(r.title),meta='Prefab request · '+PFB_RQ_STEPS[_rqStep(r)-1][0]+' step';
+      var n0=out.length,last=r.thread[r.thread.length-1]||{},qn=r.scope?r.scope.qty:r.qty,t=_rqE(r.title),meta='Scope request · '+PFB_RQ_STEPS[_rqStep(r)-1][0]+' step';
       if(side==='cp'){
         if(r.status==='defining')out.push(_pfbNotice(NC.amber,'02S needs more information',t,r.id,_rqE(last.text),meta+' · round '+r.round,btn('#b45309','Reply',r.id)));
         else if(r.status==='confirm')out.push(_pfbNotice(NC.blue,'Scope proposal ready to confirm',t,r.id,_rqE((r.scope||{}).summary||''),meta,btn('#1d4ed8','Review scope',r.id)));
         else if(r.status==='accept'&&r.quote)out.push(_pfbNotice(NC.green,'Pricing ready to accept',t,r.id,_rqUSD(r.quote.total)+' total · '+_rqUSD(r.quote.unit)+'/unit'+(r.quote.lead?' · lead time '+_rqE(r.quote.lead):''),meta,btn('#15803d','Review pricing',r.id)));
-        else if(r.status==='declined')out.push(_pfbNotice(NC.orange,'02S cannot support this request as submitted',t,r.id,_rqE(last.text),'Prefab request · not practical',btn('#c2410c','View',r.id)));
+        else if(r.status==='declined')out.push(_pfbNotice(NC.orange,'02S cannot support this request as submitted',t,r.id,_rqE(last.text),'Scope request · not practical',btn('#c2410c','View',r.id)));
       } else {
-        if(r.status==='submitted')out.push(_pfbNotice(NC.blue,'New prefab request',t,r.id,(r.path==='commercial'?'Commercial product · standard review':'Custom product · detailed review')+(qn?' · '+qn+' units':''),r.via?'Logged via '+_rqE(r.via):'Submitted '+r.created,btn('#1d4ed8','Define scope',r.id)));
+        if(r.status==='submitted')out.push(_pfbNotice(NC.blue,'New scope request',t,r.id,(r.path==='commercial'?'Commercial product · standard review':'Custom product · detailed review')+(qn?' · '+qn+' units':''),r.via?'Logged via '+_rqE(r.via):'Submitted '+r.created,btn('#1d4ed8','Define scope',r.id)));
         else if(r.status==='defining')out.push(_pfbNotice(NC.amber,'Project team replied',t,r.id,_rqE(last.text),meta+' · round '+r.round,btn('#b45309','Continue',r.id)));
         else if(r.status==='quoting')out.push(_pfbNotice(NC.green,'Scope confirmed — add pricing',t,r.id,_rqE((r.scope||{}).summary||''),meta,btn('#15803d','Add pricing',r.id)));
       }
@@ -13714,7 +13714,7 @@ charges:[
     var open=_rqAll().filter(function(r){return (proj==='all'||r.proj===proj)&&r.status!=='accepted';});
     if(!open.length)return '';
     var cards=_rqNotices(side,proj),rest=open.filter(function(r){return !_rqMine(r,side);}),show=!!window._rqShowRest||!cards.length;
-    var h='<div style="border:1px solid var(--g200);border-radius:12px;background:#fff;margin:0 0 16px;overflow:hidden"><div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50)"><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g600)">Prefab requests</span><span style="font-size:11px;color:var(--g500)">'+(cards.length?cards.length+' need'+(cards.length>1?'':'s')+' your action':'nothing waiting on you')+(rest.length?' \u00b7 '+rest.length+' in progress':'')+'</span><span style="flex:1"></span><button class="btn btn-dark btn-sm" onclick="'+(side==='cp'?'openDPAdd(\'prefab\')':'openCcAddFpo(\''+proj+'\')')+'">Add demand</button></div>';
+    var h='<div style="border:1px solid var(--g200);border-radius:12px;background:#fff;margin:0 0 16px;overflow:hidden"><div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--g50)"><span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--g600)">Scope requests</span><span style="font-size:11px;color:var(--g500)">'+(cards.length?cards.length+' need'+(cards.length>1?'':'s')+' your action':'nothing waiting on you')+(rest.length?' \u00b7 '+rest.length+' in progress':'')+'</span><span style="flex:1"></span><button class="btn btn-dark btn-sm" onclick="'+(side==='cp'?'openDPAdd(\'prefab\')':'openCcAddFpo(\''+proj+'\')')+'">Add demand</button></div>';
     if(cards.length)h+='<div style="padding:12px 16px 6px">'+cards.join('').replace(/<!--NT-->/g,'')+'</div>';
     if(rest.length){
       if(cards.length)h+='<div style="padding:0 16px 10px"><button class="btn btn-ghost btn-sm" onclick="window._rqShowRest=!window._rqShowRest;_rqRefresh()">'+(show?'Hide':'Show')+' '+rest.length+' in progress</button></div>';
@@ -13732,7 +13732,7 @@ charges:[
     b+=_pfbPathBtn('pfbReqForm(\'commercial\')','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>','Commercial product','#1d4ed8','A repeatable catalog product, for example combiner boxes. Pick the product and features; 02S runs a standard review.');
     b+=_pfbPathBtn('pfbReqForm(\'custom\')','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>','Custom product','#6d28d9','Job-specific work with no standard definition. Describe it in free text and attach plans or drawings; 02S reviews it with you until the scope is buildable.');
     b+='</div></div>';
-    openModal(cc?'Log a prefab request':'Request prefab',b);
+    openModal(cc?'Log a scope request':'Scope request',b);
   }
   function pfbReqCat(){
     var c=(document.getElementById('rqCat')||{}).value,p=document.getElementById('rqProd');if(!p)return;
@@ -13768,7 +13768,7 @@ charges:[
     f+=_rqCtxHTML();
     if(cc)f+='<div class="mf"><label>Received via</label><select id="rqVia" class="acc-sel wfull"><option>Phone</option><option>Email</option><option>BuildingConnected</option><option>In person</option></select></div>';
     f+='</div>';
-    openModal((cc?'Log request — ':'Request prefab — ')+(path==='commercial'?'commercial product':'custom product'),f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="openPfbRequest(window._rqSide,window._rqProj)">Back</button><button class="btn btn-red" onclick="pfbReqSubmit(\''+path+'\')">'+(cc?'Log request':'Submit to 02S')+'</button></div></div>');
+    openModal((cc?'Log request — ':'Scope request — ')+(path==='commercial'?'commercial product':'custom product'),f+'<div class="modal-foot"><div class="mfoot-btns" style="margin-left:auto"><button class="btn btn-ghost" onclick="openPfbRequest(window._rqSide,window._rqProj)">Back</button><button class="btn btn-red" onclick="pfbReqSubmit(\''+path+'\')">'+(cc?'Log request':'Submit to 02S')+'</button></div></div>');
   }
   function pfbReqSubmit(path){
     var g=function(id){return ((document.getElementById(id)||{}).value||'').trim();},cc=window._rqSide==='cc';
@@ -13988,7 +13988,7 @@ charges:[
   }
   function _openFpoPreModal(){
     var b='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">What would you like to add to your prefab plan?</p><div style="display:flex;flex-direction:column;gap:8px">';
-    b+=_pfbPathBtn('closeModal();openPfbRequest(\'cp\')','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','Request prefab','#1d4ed8','Tell 02S what you need — pick a catalog product or describe a custom one. 02S defines the scope with you, quotes it, and it becomes an SOV line once you accept.');
+    b+=_pfbPathBtn('closeModal();openPfbRequest(\'cp\')','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','Scope request','#1d4ed8','Tell 02S what you need — pick a catalog product or describe a custom one. 02S defines the scope with you, quotes it, and it becomes an SOV line once you accept.');
     b+=_pfbPathBtn('closeModal();_pfbUploadSov(\'cp\')','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','We read size, description, quantity, unit bid price and lead time from your document. If a price can\u2019t be extracted, the line goes to 02S for a quote.');
     b+=_pfbPathBtn('closeModal();window._dpDirect=true;openDPAdd(\'prefab\')','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','Add SOV manually','#15803d','Enter the line item yourself \u2014 02S will set pricing.');
     b+='</div></div>';
@@ -14102,7 +14102,7 @@ charges:[
   function openCcAddFpo(proj){
     _ccAddFpoProj=(proj==='all'?'hercules':proj);
     var b='<div style="padding:4px 0 8px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 10px">What would you like to add for '+(_PROJ_NAMES[_ccAddFpoProj]||_ccAddFpoProj)+'?</p><div style="display:flex;flex-direction:column;gap:8px">';
-    b+=_pfbPathBtn('closeModal();openPfbRequest(\'cc\',_ccAddFpoProj)','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','Log a prefab request','#6d28d9','Record a request that came in by phone, email or BuildingConnected. 02S then defines the scope and quotes it with the project team.');
+    b+=_pfbPathBtn('closeModal();openPfbRequest(\'cc\',_ccAddFpoProj)','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>','Log a scope request','#6d28d9','Record a request that came in by phone, email or BuildingConnected. 02S then defines the scope and quotes it with the project team.');
     b+=_pfbPathBtn('closeModal();_pfbUploadSov(\'cc\')','#c4b5fd','#faf5ff','#ede9fe','#7c3aed','<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>','Upload SOV / Exhibit 1','#6d28d9','Read the line items from a PDF. If a price is found it\u2019s added as agreed; if not, you enter a quote and it goes to the project team to approve.');
     b+=_pfbPathBtn('closeModal();_openCcFpoForm()','#bbf7d0','#f0fdf4','#dcfce7','#16a34a','<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>','Add SOV manually','#15803d','Add a scope line that isn\u2019t on the project SOV yet.');
     b+='</div></div>';
