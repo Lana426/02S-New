@@ -13727,7 +13727,7 @@ charges:[
   function openPfbRequest(side,proj){
     window._rqSide=side||'cp';window._rqProj=(!proj||proj==='all')?'hercules':proj;window._rqFiles=[];
     var cc=window._rqSide==='cc';
-    var b='<div style="padding:2px 0 6px"><p style="font-size:11.5px;color:var(--g500);margin:0 0 12px">'+(cc?'Record a request that came in by phone, email or BuildingConnected so the project team and 02S work from one record.':'Start here when you know what you need but don’t have a defined SOV yet. 02S reviews the request with you, confirms the scope and prices it. The request shows up on your plan as a line item, and once you accept the pricing it moves to Planned.')+'</p>';
+    var b='<div style="padding:2px 0 6px">'+(cc?'<p style="font-size:11.5px;color:var(--g500);margin:0 0 12px">'+'Record a request that came in by phone, email or BuildingConnected so the project team and 02S work from one record.'+'</p>':'');
     b+='<div style="display:flex;flex-direction:column;gap:8px">';
     b+=_pfbPathBtn('pfbReqForm(\'commercial\')','#bfdbfe','#eff6ff','#dbeafe','#1d4ed8','<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/>','Commercial product','#1d4ed8','A repeatable catalog product, for example combiner boxes. Pick the product and features; 02S runs a standard review.');
     b+=_pfbPathBtn('pfbReqForm(\'custom\')','#ddd6fe','#f5f3ff','#ede9fe','#7c3aed','<path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>','Custom product','#6d28d9','Job-specific work with no standard definition. Describe it in free text and attach plans or drawings; 02S reviews it with you until the scope is buildable.');
