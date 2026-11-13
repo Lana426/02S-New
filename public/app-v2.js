@@ -5255,7 +5255,7 @@ function _stcOpenReturnPickerModal(){var ov=document.getElementById('stc-retpick
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cp\',\'xlsx\')">Export SOV</button>':'')+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
@@ -13142,6 +13142,7 @@ charges:[
     var _cnt={},_ord=[];list.forEach(function(f){var k=f.st+'|'+(f.sub||'');if(!_cnt[k]){_cnt[k]={st:f.st,sub:f.sub,n:0};_ord.push(k);}_cnt[k].n++;});
     h+='<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-2px 0 14px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">SOV status</span>'+_pfbChip(_pfbRowStatus(row),row.subState||null)+'<span style="color:var(--g300)">\u203a</span><span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--g500)">FPOs</span>'+_ord.map(function(k){return _pfbChip(_cnt[k].st,_cnt[k].sub)+(_cnt[k].n>1?'<span style="font-size:11px;color:var(--g500);margin-left:-4px">\u00d7'+_cnt[k].n+'</span>':'');}).join('')+'</div>';
     h+=_pfbScopeCard(side,row);
+    h+=_pfbSubmittalCard(side,proj,idx,row);
     h+=_pfbPricingCard(side,proj,idx,row);
     var sd=row.sameDate;
     if(!multi){
@@ -13627,7 +13628,7 @@ charges:[
   function _rqMakeLines(r){
     if(r.idxCp!=null||r.idxCc!=null)return;
     var cat=PFB_CAT_MAP[r.cat]||r.cat||'Mechanical',need=r.need?_pfbFmtDate(r.need):'\u2014';
-    var base={cat:cat,qty:'\u2014',state:'Scope definition',cost:'',p6Act:'',p6None:false,unitPrice:'',leadTime:'',fpoMode:'pending',dateStatus:'draft',quoteNeeded:false,quoteSent:false,source:'Request '+r.id,size:'',detail:'',reqId:r.id,code:''};
+    var base={cat:cat,qty:'\u2014',state:'Scope definition',cost:'',p6Act:'',p6None:false,unitPrice:'',leadTime:'',fpoMode:'pending',dateStatus:'draft',submittals:{approved:false,on:''},quoteNeeded:false,quoteSent:false,source:'Request '+r.id,size:'',detail:'',reqId:r.id,code:''};
     var r1={asm:r.title,need:need},r2={item:r.title,window:need,firm:'TBD',poc:'TBD',phone:''},k;
     for(k in base){r1[k]=base[k];r2[k]=base[k];}
     if(r.proj==='hercules'){DP.prefab.rows.push(r1);r.idxCp=DP.prefab.rows.length-1;}
@@ -13657,6 +13658,7 @@ charges:[
     sets.forEach(function(rows){rows.forEach(function(r){
       if(r.scopeDef||r.reqId)return;
       var nm=r.asm||r.item||'',s=PFB_SCOPE_SEED[nm]||{};
+      r.submittals=/In Fulfillment|Invoiced/.test(r.state||'')?{approved:true,on:'Jul 12'}:{approved:false,on:''};
       r.scopeDef={product:s.product||nm,specs:s.specs||r.size||'',loc:s.loc||'',summary:s.summary||'',trade:r.cat||'',self:'Yes',awarded:'Yes',labor:'Unknown',value:'',assess:'Make as requested'};
     });});
   }
@@ -13723,6 +13725,61 @@ charges:[
     return h+'</div>';
   }
 
+  /* ----- Foundry project details shown on the 02S side of a request ----- */
+  var PFB_FOUNDRY={hercules:{name:'Hercules Solar + BESS',loc:'Hercules, CA',sched:'Mobilized Mar 2026 \u00b7 substantial completion Dec 2027'},barryrose:{name:'Barry Rose WRF',loc:'',sched:''},vdc14:{name:'VDC14',loc:'',sched:''}};
+  function _rqFoundryCard(proj){
+    var f=PFB_FOUNDRY[proj]||PFB_FOUNDRY.hercules;
+    return _pfbCard(_pfbH('Project','<span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed;background:#f5f3ff;border-radius:4px;padding:2px 6px">From Foundry</span>')+_rqKV([['Project',_rqE(f.name)],['Location',_rqE(f.loc)],['Schedule',_rqE(f.sched)]]));
+  }
+  /* ----- SOV export: unpriced SOV out of definition, priced SOV once pricing is in ----- */
+  var SOV_HDR=['Line item','Trade','Product','Specs / features','Qty','Unit price','Total','Lead time','Need-by','P6 activity','Status','Source'];
+  function _sovRowOf(r){
+    var c=function(v){v=v==null?'':String(v);return (v==='\u2014'||/^(TBD|Pending)/i.test(v))?'':v;},d=r.scopeDef||{};
+    return [r.asm||r.item||'',r.cat||'',d.product||'',d.specs||'',c(r.qty).replace(/\s*units?$/i,''),c(r.unitPrice),c(r.cost),c(r.leadTime),c(r.need||r.window),c(r.p6Act),(r.state||'')+(r.reqStage?' ('+r.reqStage+')':''),r.source||''];
+  }
+  function _sovCsv(rows){return [SOV_HDR].concat(rows).map(function(a){return a.map(function(x){return '"'+String(x==null?'':x).replace(/"/g,'""')+'"';}).join(',');}).join('\r\n');}
+  function _sovDownload(name,csv){
+    try{var b=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);}catch(e){}
+  }
+  function pfbExportSov(kind,fmt,id){
+    if(fmt==='pdf'){toast('PDF export needs the SOV template from the project team \u2014 Excel is available now');return;}
+    var rows,name,label;
+    if(kind==='req'){
+      var r=_rqGet(id),ln=r&&_rqRowsOf(r)[0];if(!ln)return;
+      var a=_sovRowOf(ln),priced=!!r.quote;
+      a[5]=priced?r.quote.unit:'';a[6]=priced?r.quote.total:'';rows=[a];label=priced?'priced':'unpriced';name='SOV-'+r.id+'-'+label+'.csv';
+    } else {
+      var proj=kind==='plan-cc'?(id==='all'?'hercules':id):'hercules',src=kind==='plan-cc'?((CC_PROJ_DP.prefab[proj]&&CC_PROJ_DP.prefab[proj].rows)||[]):DP.prefab.rows;
+      rows=src.map(_sovRowOf);label='SOV';name='Prefab-SOV-'+proj+'.csv';
+    }
+    _sovDownload(name,_sovCsv(rows));
+    toast((kind==='req'?'Exported the '+label+' SOV':'Exported the prefab SOV')+' as Excel (CSV) \u2014 '+name);
+  }
+  function _rqExportBar(r){
+    if(!r.scope)return '';
+    var lbl=r.quote?'Priced SOV':'Unpriced SOV';
+    return '<div style="display:flex;align-items:center;gap:8px;margin:-4px 0 14px"><span style="font-size:11px;color:var(--g500)">'+lbl+' from this request</span><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'req\',\'xlsx\',\''+r.id+'\')">Export to Excel</button><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'req\',\'pdf\',\''+r.id+'\')">Export to PDF</button></div>';
+  }
+  /* ----- submittals approved (first step of Execute) ----- */
+  function _pfbSubmittalCard(side,proj,idx,row,reqId){
+    if(!row||row.state==='Scope definition'||row.state==='Cancelled')return '';
+    var s=row.submittals||{approved:false,on:''},cc=side==='cc';
+    var inner=_pfbH('Submittals',s.approved?'<span style="font-size:11px;font-weight:600;color:#15803d">\u2713 Approved by owner'+(s.on?' \u00b7 '+s.on:'')+'</span>':'<span style="font-size:11px;font-weight:600;color:#92400e">Awaiting owner approval</span>');
+    inner+='<label style="display:flex;align-items:center;gap:9px;font-size:12.5px;'+(cc?'cursor:pointer':'')+'"><input type="checkbox" '+(s.approved?'checked ':'')+(cc?'':'disabled ')+'onchange="pfbSubmittalToggle(\''+proj+'\','+idx+',this.checked'+(reqId?',\''+reqId+'\'':'')+')"> Submittals approved by owner</label>';
+    inner+='<div style="font-size:11px;color:var(--g500);margin-top:6px">Fabrication starts once the owner approves the submittal drawings. '+(cc?'Tick this when the approval comes back.':'02S marks this when the owner approves.')+'</div>';
+    return _pfbCard(inner,'border-left:3px solid '+(s.approved?'#15803d':'#d97706'));
+  }
+  function pfbSubmittalToggle(proj,idx,on,reqId){
+    var row=_pfbRow('cc',proj,idx);if(!row)return;
+    _pfbMirrors(row).forEach(function(m){m.submittals={approved:!!on,on:on?'Nov 13':''};});
+    toast(on?'Submittals marked approved by the owner':'Submittals set back to awaiting approval');
+    try{renderDP('prefab');}catch(e){}try{renderCcDemand('prefab');}catch(e){}
+    if(reqId)openPfbReq('cc',reqId);else _pfbReopen('cc',proj,idx);
+  }
+  function _rqSubmittalCard(r,side){
+    var cc=side==='cc',idx=cc?r.idxCc:r.idxCp;if(idx==null)return '';
+    return _pfbSubmittalCard(side,r.proj,idx,_pfbRow(side,r.proj,idx),r.id);
+  }
   /* --- project team (or 02S, logging an offline request): new request --- */
   function openPfbRequest(side,proj){
     window._rqSide=side||'cp';window._rqProj=(!proj||proj==='all')?'hercules':proj;window._rqFiles=[];
@@ -13753,10 +13810,9 @@ charges:[
     return h;
   }
   function pfbReqSelf(){var y=(document.getElementById('rqSelf')||{}).value==='Yes',w=document.getElementById('rqAwardedWrap');if(w)w.style.display=y?'':'none';}
-  function _rqFoundry(){return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--g50);border:1px solid var(--g150);border-radius:8px;margin-bottom:12px;font-size:11.5px;color:var(--g600)"><span style="font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7c3aed;background:#f5f3ff;border-radius:4px;padding:2px 6px">Foundry</span><span>'+(_PROJ_NAMES[window._rqProj]||'Hercules Solar + BESS')+' · project, location and schedule are pulled from Foundry</span></div>';}
   function _rqHelpBox(checked){return '<label style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;border:1px dashed '+(checked?'#f59e0b':'var(--g300)')+';background:'+(checked?'#fffbeb':'#fff')+';border-radius:8px;margin-bottom:12px;font-size:12px;cursor:pointer"><input type="checkbox" '+(checked?'checked ':'')+'onchange="'+(checked?'openPfbRequest(window._rqSide,window._rqProj)':'if(this.checked)pfbReqForm(\'help\')')+'" style="margin-top:2px"><span><b>I don’t know what I need from prefab — I need to talk to a person.</b><br><span style="color:var(--g500)">Skip the details and just tell us what you’re trying to do.</span></span></label>';}
   function pfbReqForm(path){
-    var cc=window._rqSide==='cc',f='<div class="mform">'+_rqHelpBox(path==='help')+_rqFoundry();
+    var cc=window._rqSide==='cc',f='<div class="mform">'+_rqHelpBox(path==='help');
     if(path==='commercial'){
       f+='<div class="mf2"><div class="mf"><label>Trade</label><select id="rqCat" class="acc-sel wfull" onchange="pfbReqCat()"><option value="">— select —</option>'+Object.keys(PFB_CATALOG).map(function(k){return '<option>'+k+'</option>';}).join('')+'</select></div><div class="mf"><label>Product</label><select id="rqProd" class="acc-sel wfull"><option value="">— select trade first —</option></select></div></div>';
       f+='<div class="mf"><label>Features / options <span class="opt">optional</span></label><input id="rqFeat" class="rin" placeholder="e.g. 1500V, 12-input, NEMA 4X"></div>';
@@ -13806,7 +13862,7 @@ charges:[
   function openPfbReq(side,id){
     var r=_rqGet(id);if(!r)return;window._rqOpen={side:side,id:id};if(r.unreadFor===side){r.unreadFor=null;setTimeout(_rqRefresh,0);}
     var b='';
-    b+=_rqStepper(r)+_rqBanner(r,side);
+    b+=_rqStepper(r)+_rqBanner(r,side)+(side==='cc'?_rqFoundryCard(r.proj):'')+_rqExportBar(r);
     var qn=r.qty?r.qty+' units':'';
     var kv=[['Path',r.path==='commercial'?'Commercial product \u2014 standard review':(r.path==='help'?'Talk to a person \u2014 open conversation':'Custom product \u2014 detailed review'+(r.round>1?' \u00b7 round '+r.round:''))],['Trade',_rqE(r.cat)],['Product',_rqE(r.product)],['Features',_rqE(r.features)],['Estimated quantity',qn],['Need-by',r.need?_pfbFmtDate(r.need):''],['Location / zone',_rqE(r.loc)],['Submitted',r.created+(r.via?' · logged by 02S via '+_rqE(r.via):'')]];
     var inner=_pfbH('Request',_rqPathChip(r))+(r.desc?'<div style="font-size:12px;line-height:1.5;color:var(--g800);margin-bottom:10px">'+_rqE(r.desc)+'</div>':'')+_rqKV(kv);
@@ -13826,6 +13882,7 @@ charges:[
       qin+='</div><div style="font-size:11px;color:var(--g500)">Sent '+q.sentOn+'</div>';
       b+=_pfbCard(qin,'border-left:3px solid #d97706');
     }
+    if(r.status==='accepted')b+=_rqSubmittalCard(r,side);
     b+=_pfbCard(_pfbH('Conversation')+(r.thread.length?_pfbPriceThread({thread:r.thread}):'')+'<div style="display:flex;gap:8px;margin-top:12px"><input id="rqNote" class="rin" style="flex:1" placeholder="Add a note or comment\u2026"><button class="btn btn-ghost btn-sm" onclick="pfbReqSay(\''+id+'\',\''+side+'\')">Send note</button></div>');
     b+=_rqActions(r,side);
     openModal(_rqE(r.title)+' <span style="font-size:11px;font-weight:400;color:var(--g400);margin-left:6px">'+r.id+'</span>',b);_pfbWide(780);
@@ -17797,7 +17854,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div>';
     }
 
-    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqPanel('cc',selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
+    if(p==='prefab'&&isDpView){window._pfbSchProj=selProj;h+=_pfbReqPanel('cc',selProj);h+='<div class="eq-toolbar" style="margin-bottom:8px"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+'SOV lines<span style="font-weight:400;color:var(--g400);margin-left:8px;font-size:12px">'+visRows.length+' · '+pLabel+'</span></span><span class="spacer"></span><button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cc\',\'xlsx\',\''+selProj+'\')">Export SOV</button><button class="btn btn-dark btn-sm" style="margin-left:6px" onclick="openCcAddFpo(\''+selProj+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 5v14M5 12h14"/></svg> Add demand</button></div>';h+='<div class="eq-toolbar" style="margin-bottom:12px">'+_pfbCatBtns((CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]&&CC_PROJ_DP.prefab[selProj].rows)||[])+'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button><span class="spacer"></span><button class="ff-b'+(window._pfbViewMode==='schedule'?' on':'')+'" onclick="window._pfbViewMode=(window._pfbViewMode===\'schedule\'?\'lines\':\'schedule\');renderCcDemand(\'prefab\')">Schedule view</button></div>';}
         if(!_pfbSchedMode){h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+gtA+'"><span>Item</span>'+(isDpView?'<span class="c">Qty</span><span>'+((p!=='profservices'&&p!=='prefab')?'Date &amp; window':'Need by')+'</span>'+(p==='prefab'?'<span>Lead time</span><span>P6 Activity</span>':'')+'<span class="r">Cost</span>':('<span>DP ID</span><span>Source</span>'+(showProjCol?'<span>Project</span>':'')+'<span>Details</span>'))+'<span>Status</span>'+(isDpView?'<span>Docs</span>':'')+'<span>'+(isDpView?'Order / action':'')+'</span></div>';
     if(!rowsToRender.length){ h+='<div class="fq-empty">No '+(isDpView?'plan ':dpSrcFil==='dp'?'demand plan ':dpSrcFil==='adhoc'?'ad hoc ':'')+'items for '+pLabel+'.</div>'; }
     rowsToRender.forEach(function(row,_rowI){
@@ -19520,7 +19577,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     if(ns&&cfg.ns){ h+='<div class="ins-strip"><span class="isi"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6 4.5 2.3 7.1L12 16.9 5.3 21l2.3-7.1-6-4.5h7.6z"/></svg></span><div><div class="ist">02S</div><div class="isd">'+cfg.ns+'</div></div></div>'; }
     else if(!ns&&cfg.v1){ h+='<div class="ins-strip"><span class="isi">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',0)+'</span><div><div class="ist">Plan summary</div><div class="isd">'+cfg.v1+'</div></div></div>'; }
     var _baselined=PLAN_BASELINES[pk];
-    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
+    h+='<div class="eq-toolbar"><span class="spacer"></span><button class="btn btn-dark btn-sm" onclick="openDPAdd(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>'+(pk==='prefab'?'Add demand':(cfg.addBtnOpen||'Add to plan'))+'</button><button class="btn btn-red btn-sm" onclick="dpSubmit(\''+pk+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>Submit to 02S</button><button class="btn btn-ghost btn-sm" onclick="openBaselineModal(\''+pk+'\',\''+cfg.title+' demand plan\')" title="'+(_baselined?'Baselined: '+_baselined:'Approve as the version of record for forecasting')+'">'+svg('<path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/>',2)+(_baselined?'Baselined':'Approve baseline')+'</button><button class="btn btn-ghost btn-sm" onclick="go(\'billing\')" title="View orders, actuals, budget &amp; forecast">'+svg('<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',2)+' Financials</button>'+(pk==='prefab'?'<button class="btn btn-ghost btn-sm" onclick="pfbExportSov(\'plan-cp\',\'xlsx\')">Export SOV</button>':'')+(pk==='prefab'?_pfbCatBtns(cfg.rows):'')+(pk==='prefab'?'<button class="ff-b'+(window._pfbActiveOnly?' on':'')+'" onclick="pfbToggleActiveOnly()">Active only</button>':'')+'</div>';
     
     h+='<div class="eq-cap">'+svg('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>')+'<span>'+cfg.cap+'</span></div>';
     var gt=cfg.cols.map(function(c){return c.w;}).join(' ');
