@@ -13667,6 +13667,7 @@ charges:[
     sets.forEach(function(rows){rows.forEach(function(r){
       if(r.scopeDef||r.reqId)return;
       var nm=r.asm||r.item||'',s=PFB_SCOPE_SEED[nm]||{};
+      if(nm==='Combiner Box'&&r.splits&&r.splits.length===3){['A','B','C'].forEach(function(z,i){var v='Combiner box install \u2014 Area '+z;if(PFB_P6_LIST.indexOf(v)<0)PFB_P6_LIST.push(v);r.splits[i].p6Act=v;r.splits[i].p6None=false;});_pfbP6Roll(r);}
       r.submittals=(/In Fulfillment|Invoiced/.test(r.state||'')||_pfbFpoList(r).some(function(f){return f.st==='In Fulfillment'||f.st==='Invoiced / Closed';}))?{approved:true,on:'Jul 12'}:{approved:false,on:''};
       r.scopeDef={product:s.product||nm,specs:s.specs||r.size||'',loc:s.loc||'',summary:s.summary||'',trade:r.cat||'',self:'Yes',awarded:'Yes',labor:'Unknown',value:'',assess:'Make as requested'};
     });});
@@ -14010,7 +14011,7 @@ charges:[
   function _pfbP6Of(f,row){var o=f.o;if(f.isRow)return {act:row.p6Act||'',none:!!row.p6None};if(o.p6Act!==undefined)return {act:o.p6Act||'',none:!!o.p6None};return {act:(row.p6Sov!==undefined?row.p6Sov:row.p6Act)||'',none:!!(row.p6Sov!==undefined?row.p6SovNone:row.p6None)};}
   function _pfbFpoP6Sel(id,cur,onch){
     var opts=PFB_P6_LIST.slice();if(cur&&cur!=='__none'&&opts.indexOf(cur)<0)opts.unshift(cur);
-    return '<select id="'+id+'" '+(onch?'onchange="'+onch+'" ':'')+'style="border:1px solid '+(cur?'var(--g200)':'#fcd34d')+';border-radius:4px;padding:4px 6px;font-size:11.5px;max-width:190px;background:'+(cur?'#fff':'#fffbeb')+'" title="P6 schedule activity for this FPO"><option value="">— P6 activity —</option>'+opts.map(function(a){return '<option'+(a===cur?' selected':'')+'>'+_rqE(a)+'</option>';}).join('')+'<option value="__none"'+(cur==='__none'?' selected':'')+'>No P6 — manual date</option></select>';
+    return '<select id="'+id+'" '+(onch?'onchange="'+onch+'" ':'')+'style="border:1px solid '+(cur?'var(--g200)':'#fcd34d')+';border-radius:4px;padding:4px 6px;font-size:11.5px;max-width:230px;background:'+(cur?'#fff':'#fffbeb')+'" title="P6 schedule activity for this FPO"><option value="">— P6 activity —</option>'+opts.map(function(a){return '<option'+(a===cur?' selected':'')+'>'+_rqE(a)+'</option>';}).join('')+'<option value="__none"'+(cur==='__none'?' selected':'')+'>No P6 — manual date</option></select>';
   }
   function _pfbFpoP6Cell(side,proj,idx,f,row){
     var cur=_pfbP6Of(f,row),val=cur.none?'__none':cur.act;
