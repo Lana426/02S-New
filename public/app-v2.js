@@ -17840,7 +17840,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       
     }
     if(p==='prefab'&&isDpView&&CC_PROJ_DP.prefab&&CC_PROJ_DP.prefab[selProj]){h+=_pfbKpiHTML(CC_PROJ_DP.prefab[selProj].rows||[],pLabel);}
-    if(p!=='prefab'&&isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll){
+    if(p!=='prefab'&&p!=='logistics'&&isDpView&&CC_PROJ_DP[p]&&CC_PROJ_DP[p][selProj]&&CC_PROJ_DP[p][selProj].roll){
       var _rtSrc=CC_PROJ_DP[p][selProj];
       h+='<div class="vitals" style="margin-bottom:16px">';
       _rtSrc.roll.forEach(function(rr){
