@@ -2866,15 +2866,16 @@
     var nb=document.getElementById('stc-bnd-needby');
     var cc=document.getElementById('stc-bnd-cc');
     var needBy=nb?nb.value:'';var costCode=cc?cc.value:'0600-0100-0000-0001';
-    selected.forEach(function(item,si){
-      var initNotes=item._comment?[{who:'Ravi Kamboh',when:'Now',text:item._comment}]:[];
-      _stcAllReqs.push({id:cfg.bundleId+'-'+(si+1),bundleId:cfg.bundleId,bundleName:cfg.name,
-        proj:'hercules',type:'sp',desc:item.name,cat:item.cat,qty:item.qty,price:item.price,
-        date:'Now',status:'requested',needBy:needBy,costCode:costCode,
-        itemComment:item._comment||'',notes:initNotes,attachments:[]});
-    });
+    var _bnd=_stcBundles.find(function(b){return b.id===cfg.bundleId;})||{};
+    var _lines=selected.map(function(it,i){return {no:i+1,desc:it.name,qty:it.qty,uom:it.unit||'EA',price:it.price||0,ext:(it.price||0)*it.qty};});
+    var _tot=_lines.reduce(function(sm,l){return sm+l.ext;},0);
+    var _bn=selected.filter(function(it){return it._comment;}).map(function(it){return {who:'Ravi Kamboh',when:'Now',text:it.name+': '+it._comment};});
+    _stcAllReqs.push({id:'STC-X'+(100+_stcAllReqs.length),bundleId:cfg.bundleId,bundleName:cfg.name,
+      proj:'hercules',type:'sp',desc:cfg.name,cat:_bnd.cat||selected[0].cat,qty:1,price:_tot,spLineItems:_lines,
+      date:'Now',status:'requested',needBy:needBy,costCode:costCode,sa:1,ea:4,budget:_tot,
+      notes:_bn,attachments:[]});
     _stcModal.open=false;_stcModal.bundleConfig=null;_stcFilter='all';
-    renderSTC();toast('Bundle "'+cfg.name+'" added — '+selected.length+' item'+(selected.length===1?'':'s'));
+    renderSTC();toast('Bundle "'+cfg.name+'" added to plan — '+selected.length+' order line'+(selected.length===1?'':'s'));
   }
   function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
   function _stcSetFilter(f){_stcFilter=f;_stcDrillOpen=null;renderSTC();}
