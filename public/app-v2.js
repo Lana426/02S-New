@@ -2873,7 +2873,7 @@
         date:'Now',status:'requested',needBy:needBy,costCode:costCode,
         itemComment:item._comment||'',notes:initNotes,attachments:[]});
     });
-    _stcModal.open=false;_stcModal.bundleConfig=null;_stcFilter='sp';
+    _stcModal.open=false;_stcModal.bundleConfig=null;_stcFilter='all';
     renderSTC();toast('Bundle "'+cfg.name+'" added — '+selected.length+' item'+(selected.length===1?'':'s'));
   }
   function _stcCloseModal(){_stcModal.open=false;var _mex=document.getElementById('stc-modal-ov');if(_mex)_mex.remove();renderSTC();}
@@ -3505,7 +3505,7 @@
       var totalCost=r.price&&r.qty?_stcFmt(r.price*r.qty):r.price?_stcFmt(r.price):'—';
       var rowBg='';
       var rh='<div class="dp-row" style="grid-template-columns:'+cols+';cursor:pointer;'+rowBg+'" onclick="event.stopPropagation();_stcDrillToggle('+oi+')">';
-      rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+(r.bundleName||r.desc)+'</div>';
+      rh+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900);line-height:1.35">'+r.desc+'</div>';
       rh+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+' · '+r.date+'</div></div>';
       rh+='<div style="font-size:12px;color:var(--g700)">'+r.cat+'</div>';
       rh+='<div style="font-size:12px;color:var(--g700)">'+(dispQty?dispQty+(r.type==='vmi'?' kit':' units'):'—')+'</div>';
@@ -3807,7 +3807,7 @@
         var rowBg=isQuoted?'background:#fffbeb;':isAutoApproveEligible?'background:#f0fdf4;':isManualSP?'background:#fff7ed;':reqTypeLabel==='Return'?'background:#fff5f5;':'';
         h+='<div class="dp-row" style="grid-template-columns:'+icols+';align-items:start;'+rowBg+'">';
         // Col 1: request description
-        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+(r.bundleName||r.desc)+'</div>';
+        h+='<div><div style="font-size:12.5px;font-weight:600;color:var(--g900)">'+r.desc+'</div>';
         h+='<div style="font-size:11px;color:var(--g400);margin-top:2px">'+r.id+(isUrgent?' · <span style="color:#dc2626;font-weight:600">Urgent</span>':'')+' · '+_stcTagLbl(r,'Self-Perform','VMI Kit')+'</div>';
         if(r.itemComment&&!isQuoted){h+='<div style="font-size:11px;color:#0891b2;margin-top:3px;font-style:italic">"'+r.itemComment.substring(0,60)+(r.itemComment.length>60?'…':'')+'"</div>';}
         if(isQuoted&&r.quote){h+='<div style="font-size:11px;color:#b45309;margin-top:3px;font-weight:600">Quote sent: '+_stcFmt(r.quote.total)+' · '+r.quote.sentAt+'</div>';}
