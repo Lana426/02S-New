@@ -2286,9 +2286,9 @@
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Fulfilled / Delivered</span><span class="lg"><span class="gl-sw projected"></span>Draft</span><span class="lg"><span class="gl-sw submitted"></span>Pending Approval</span><span class="lg"><span class="gl-sw submitted"></span>In Scoping / Pricing</span><span class="lg"><span class="gl-sw offrent"></span>Completed / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 130px 160px 110px 160px';
+      var meCols='1fr 140px 100px 130px 160px 110px 88px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
-      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
+      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Documents</span><span>Status</span></div>';
       _logRowsVis.forEach(function(row,ri){
         var isQuoted=row.quoted&&row.cost!=null;
         var docsCount=(row.attachments||[]).length;
@@ -2305,6 +2305,7 @@
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments">Pending quote</span></div>';
         }
+        var _dcn=(row.attachments||[]).length,_dci=_logRows.indexOf(row);h+='<div>'+(_dcn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+_dci+')">'+_dcn+' doc'+(_dcn===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+_dci+')">&#43; Add</button>')+'</div>';
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         var _ari=_logRows.indexOf(row);
@@ -8925,7 +8926,7 @@ charges:[
     h+='</div></div>';
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
-    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
+    if(ord) h+=_obBillBtns(ord.id);
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openEqLineDrill(\''+l.id+'\')">Full details</button>';
     h+='</div>';
     if(ord&&ORDER_TASKS[ord.id])h+='<div class="ns-only">'+renderOrderTasksPanel(ord.id,true)+'</div>';
@@ -8934,7 +8935,7 @@ charges:[
   function buildDPTrack(pk,r,rowIdx){
     var chain=DP_CHAIN[pk]; if(!chain)return '';
     var chainStage=chain.stageOf(r);
-    var _ordId=chainStage>(pk==='prefab'?1:0)?(r.linkOrd||r.ordId||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
+    var _ordId=(chainStage>(pk==='prefab'?1:0)||r.linkOrd||r.ordId)?(r.linkOrd||r.ordId||(r.src&&r.src.indexOf('ORD-')===0?r.src:null)):null;
     var ord=_ordId?ORDERS.filter(function(o){return o.id===_ordId;})[0]:null;
     var bill=ord?BILLS.filter(function(b){return b.order===ord.id;})[0]:null;
     var steps=chain.labels.map(function(lbl,i){
@@ -8986,7 +8987,7 @@ charges:[
     if(pk==='prefab'){h=_pfbFoldTail(h,_dSt,'Documents',' \u00b7 '+docs.length);}
     h+='<div style="display:flex;gap:8px;padding:10px 18px;border-top:1px solid var(--g150)">';
     if(ord) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+ord.id+'\')">' +ord.id+' ↗</button>';
-    if(bill) h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+bill.id+'\')">' +bill.id+' ↗</button>';
+    if(ord) h+=_obBillBtns(ord.id);
     if(r.quoteRef){var _bqb=PORTAL_QUOTES.filter(function(q){return q.ref===r.quoteRef;})[0];if(_bqb)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_bqb.ref+'\')">'+ _bqb.ref+' ↗</button>';}
     if(pk==='prefab')h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();pfbExportLine(\'cp\',\'hercules\','+rowIdx+')">Export SOV</button>';
     h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDPLineDrill(\''+pk+'\','+rowIdx+')">Full details</button>';
@@ -10521,27 +10522,46 @@ charges:[
   function jumpToBill(id){ go('billing'); toast('Opening '+id+' in Billing & financials'); }
   function openOrderPreviewModal(id){
     var ord=ORDERS.filter(function(o){return o.id===id;})[0]; if(!ord)return;
-    var stgLbl={1:'Submitted',2:'Acknowledged',3:'In fulfillment',4:'On rent · active',5:'Off-rent · billing',6:'Closed'};
+    var bills=BILLS.filter(function(b){return b.order===id;});
+    var billed=bills.filter(function(b){return b.status==='Finalized'||b.status==='Approved';}).reduce(function(s,b){return s+(b.amt||0);},0);
+    var pend=bills.filter(function(b){return b.status!=='Finalized'&&b.status!=='Approved';}).reduce(function(s,b){return s+(b.amt||0);},0);
+    var st=''; try{st=stageStatus(ord);}catch(e){st=ord.status||('Stage '+ord.stage);}
     var b='<div class="fq-req"><div class="fq-req-t">'+ord.id+' · '+ord.item+'</div>';
     if(ord.sub)b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+ord.sub+'</div>';
     b+='</div><div class="fq-calc">';
-    b+='<div class="fq-crow"><span>Status</span><span><span class="tag ok">'+( stgLbl[ord.stage]||'Stage '+ord.stage)+'</span></span></div>';
+    b+='<div class="fq-crow"><span>Status</span><span><span class="tag ok">'+st+'</span></span></div>';
+    if(ord.qtyText)b+='<div class="fq-crow"><span>Quantity</span><span>'+ord.qtyText+'</span></div>';
+    if(ord.vendor)b+='<div class="fq-crow"><span>Vendor</span><span>'+ord.vendor+'</span></div>';
     if(ord.dates)b+='<div class="fq-crow"><span>Period</span><span>'+ord.dates+'</span></div>';
+    if(ord.total)b+='<div class="fq-crow"><span>Order value</span><span style="font-weight:700">'+fmt(ord.total)+(ord.monthly?' / month':'')+'</span></div>';
+    else if(ord.mrate&&ord.qty)b+='<div class="fq-crow"><span>Order value</span><span style="font-weight:700">'+fmt(ord.mrate*ord.qty)+' / month</span></div>';
+    else if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>$'+ord.mrate.toLocaleString()+' · unit</span></div>';
+    if(bills.length){b+='<div class="fq-crow"><span>Billed to date</span><span>'+fmt(billed)+(pend?' <span style="color:var(--g400);font-weight:400">· '+fmt(pend)+' pending</span>':'')+'</span></div>';}
     if(ord.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+ord.cost+'</span></div>';
-    if(ord.mrate)b+='<div class="fq-crow"><span>Monthly rate</span><span>$'+ord.mrate.toLocaleString()+'·unit</span></div>';
     if(ord.latest)b+='<div class="fq-crow" style="align-items:flex-start"><span>Latest</span><span style="color:var(--g700);max-width:260px">'+ord.latest+'</span></div>';
     b+='</div>';
+    if(bills.length){
+      b+='<div style="margin-top:10px;border-top:1px solid var(--g100);padding-top:8px"><div style="font-size:10px;font-weight:700;color:var(--g400);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Billing</div>';
+      bills.forEach(function(x){b+='<div class="fq-crow" style="cursor:pointer" onclick="closeModal();openBillPreviewModal(\''+x.id+'\')"><span style="font-size:11.5px"><b>'+x.id+'</b> <span style="color:var(--g500)">· '+x.product+'</span></span><span><span style="font-weight:600">'+fmt(x.amt)+'</span> <span class="tag '+(STATUS_TAG[x.status]||'neu')+'">'+x.status+'</span></span></div>';});
+      b+='</div>';
+    }
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
     b+='<button class="btn btn-ghost" onclick="closeModal();gotoOrder(\''+id+'\')">Open in Orders →</button></div>';
     openModal('Order details', b);
   }
   function openBillPreviewModal(id){
     var bill=getBill(id); if(!bill)return;
+    var ord=ORDERS.filter(function(o){return o.id===bill.order;})[0];
     var b='<div class="fq-req"><div class="fq-req-t">'+bill.product+'</div>';
     b+='<div class="sub" style="font-size:11.5px;margin-top:2px">'+bill.id+' · order '+bill.order+'</div></div>';
     b+='<div class="fq-calc">';
     b+='<div class="fq-crow"><span>Amount</span><span style="font-weight:700;font-size:13px">'+fmt(bill.amt)+'</span></div>';
     b+='<div class="fq-crow"><span>Status</span><span><span class="tag '+(STATUS_TAG[bill.status]||'neu')+'">'+bill.status+'</span></span></div>';
+    if(ord){
+      b+='<div class="fq-crow"><span>Order</span><span style="cursor:pointer;color:#1d4ed8" onclick="closeModal();openOrderPreviewModal(\''+ord.id+'\')">'+ord.id+' · '+ord.item+'</span></div>';
+      if(ord.total)b+='<div class="fq-crow"><span>Order value</span><span>'+fmt(ord.total)+(ord.monthly?' / month':'')+'</span></div>';
+      if(ord.qtyText)b+='<div class="fq-crow"><span>Quantity</span><span>'+ord.qtyText+'</span></div>';
+    }
     if(bill.date)b+='<div class="fq-crow"><span>Date</span><span>'+bill.date+'</span></div>';
     if(bill.cost)b+='<div class="fq-crow"><span>Cost code</span><span style="font-size:11px">'+bill.cost+'</span></div>';
     if(bill.charges&&bill.charges.length){
@@ -10550,6 +10570,8 @@ charges:[
       bill.charges.forEach(function(c){
         b+='<div class="fq-crow"><span style="font-size:11.5px">'+c.desc+'</span><span style="font-weight:600">'+fmt(c.amt)+'</span></div>';
       });
+      var cs=bill.charges.reduce(function(s,c){return s+(c.amt||0);},0);
+      if(bill.charges.length>1)b+='<div class="fq-crow" style="border-top:1px solid var(--g200);margin-top:6px;padding-top:6px"><span style="font-weight:600">Total</span><span style="font-weight:700">'+fmt(cs)+'</span></div>';
     }
     b+='</div>';
     b+='<div class="modal-foot"><button onclick="closeModal()">Close</button>';
@@ -13458,7 +13480,7 @@ charges:[
     if(ord){var b=buildDpBillingInline(row.ordId);if(b)h+=_pfbCard(b);}
     h+=_pfbUnallocHTML(row);
     var fl=_pfbFlagsOf(row);
-    h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button><button class="btn btn-ghost btn-sm" style="margin-right:auto;margin-left:8px" onclick="pfbExportLine(\'cc\',\''+proj+'\','+idx+')">Export SOV</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
+    h+='<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:4px"><button class="btn btn-ghost btn-sm" onclick="closeModal();pfbFlag(\''+proj+'\','+idx+',-1)">⚑ Flag SOV line'+(fl.length?' ('+fl.length+')':'')+'</button>'+(row.ordId?'<button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="openOrderPreviewModal(\''+row.ordId+'\')">'+row.ordId+' \u2197</button>'+_obBillBtns(row.ordId):'')+'<button class="btn btn-ghost btn-sm" style="margin-right:auto;margin-left:8px" onclick="pfbExportLine(\'cc\',\''+proj+'\','+idx+')">Export SOV</button><button class="btn btn-dark btn-sm" onclick="closeModal();openCcFpoSplitModal(\'prefab\',\''+proj+'\','+idx+')">Manage FPOs →</button></div>';
     openModal('SOV line — '+row.item,h);_pfbWide(720);
   }
 
@@ -17112,7 +17134,8 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
     var bills=CC_DP_BILLS[ordId]||[];
     var billH='';
     if(bills.length){ billH=buildDpBillingInline(ordId); }
-    openModal('Order — '+ordId, trackerHTML(o,ns)+billH);
+    var _lk='<div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-ghost btn-sm" onclick="openOrderPreviewModal(\''+ordId+'\')">'+ordId+' \u2197</button>'+_obBillBtns(ordId)+'</div>';
+    openModal('Order — '+ordId, _lk+trackerHTML(o,ns)+billH);
   }
   function dpExpandToggle(id){ var d=document.getElementById(id); if(d)d.style.display=d.style.display==='none'?'block':'none'; }
   function buildDpBillingInline(ordId){
@@ -17127,7 +17150,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       var hasD=!!(b.dispute||b.ccChange);
       var did='bdet-'+b.inv.replace(/[^a-zA-Z0-9]/g,'-');
       h+='<div class="dp-row" style="grid-template-columns:'+gb+';padding:5px 0;border-bottom:1px solid var(--g100)'+(hasD?';cursor:pointer':'')+'"'+(hasD?' onclick="event.stopPropagation();var nx=this.nextElementSibling;if(nx){nx.style.display=nx.style.display===\'none\'?\'block\':\'none\';if(nx.style.display===\'block\')nx.scrollIntoView({block:\'nearest\',behavior:\'smooth\'});}"':'')+'>';
-      h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+b.inv+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
+      h+='<div style="font-size:11px;font-family:monospace;color:var(--g900)">'+(getBill(b.inv)?'<a style="color:#1d4ed8;cursor:pointer" onclick="event.stopPropagation();openBillPreviewModal(\''+b.inv+'\')">'+b.inv+' \u2197</a>':b.inv)+(b.dispute?'<span class="tag bad" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">Dispute</span>':'')+(b.ccChange&&!b.dispute?'<span class="tag warn" style="font-size:9px;padding:0 4px;margin-left:5px;vertical-align:middle">CC change</span>':'')+(hasD?' <span style="font-size:10px;color:var(--g400)">&#9660;</span>':'')+'</div>';
       h+='<div style="font-size:11px;color:var(--g600)">'+b.period+'</div>';
       h+='<div style="font-size:12px;font-weight:600;text-align:right">'+(b.amount!=null?('$'+b.amount.toLocaleString()):'Pending')+'</div>';
       h+='<div><span class="tag '+bst+'">'+b.status+'</span></div>';
@@ -18078,7 +18101,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
               var _ccOrd=row.ordId?ORDERS.filter(function(o){return o.id===row.ordId;})[0]:null;
               var _ccBill=_ccOrd?BILLS.filter(function(b){return b.order===_ccOrd.id;})[0]:null;
               var _ccQRef=row.fqRef?(PORTAL_QUOTES||[]).filter(function(q){return q.ref===row.fqRef;})[0]:null;
-              if(_ccOrd||_ccBill||_ccQRef){h+='<div style="display:flex;gap:8px;padding:10px 0 2px;border-top:1px solid var(--g150);margin-top:4px">';if(_ccOrd)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+_ccOrd.id+'\')">'+_ccOrd.id+' ↗</button>';if(_ccBill)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+_ccBill.id+'\')">'+_ccBill.id+' ↗</button>';if(_ccQRef)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_ccQRef.ref+'\')">'+_ccQRef.ref+' ↗</button>';h+='</div>';}
+              if(_ccOrd||_ccBill||_ccQRef){h+='<div style="display:flex;gap:8px;padding:10px 0 2px;border-top:1px solid var(--g150);margin-top:4px">';if(_ccOrd)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openOrderPreviewModal(\''+_ccOrd.id+'\')">'+_ccOrd.id+' ↗</button>';if(_ccOrd)h+=_obBillBtns(_ccOrd.id);if(_ccQRef)h+='<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openQuotePreviewModal(\''+_ccQRef.ref+'\')">'+_ccQRef.ref+' ↗</button>';h+='</div>';}
               h+='</div>';
             }
           }
@@ -19448,9 +19471,9 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       h+='</div></div>';
       h+='<div class="g-legend"><span class="lg"><span class="gl-sw onrent"></span>Fulfilled / Delivered</span><span class="lg"><span class="gl-sw projected"></span>Draft</span><span class="lg"><span class="gl-sw submitted"></span>Pending Approval</span><span class="lg"><span class="gl-sw submitted"></span>In Scoping / Pricing</span><span class="lg"><span class="gl-sw offrent"></span>Completed / Closed</span><span class="lg"><span class="gl-today"></span>Today</span></div>';
     } else {
-      var meCols='1fr 140px 100px 130px 160px 110px 160px';
+      var meCols='1fr 140px 100px 130px 160px 110px 88px 160px';
       h+='<div class="dp-tbl"><div class="dp-head" style="grid-template-columns:'+meCols+'">';
-      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Status</span></div>';
+      h+='<span>Service</span><span>Vendor</span><span>Need by</span><span>Lead time</span><span>Cost code</span><span>Cost</span><span>Documents</span><span>Status</span></div>';
       _logRowsVis.forEach(function(row,ri){
         var isQuoted=row.quoted&&row.cost!=null;
         var docsCount=(row.attachments||[]).length;
@@ -19467,6 +19490,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
         } else {
           h+='<div style="display:flex;align-items:center"><span style="font-size:11px;color:var(--g400);font-style:italic" data-cap="Quote review & approval|||Project Team reviews the returned quote in CP — confirms whether to proceed, releasing the request into scheduling, or returns it with comments">Pending quote</span></div>';
         }
+        var _dcn=(row.attachments||[]).length,_dci=_logRows.indexOf(row);h+='<div>'+(_dcn?'<button class="btn btn-ghost btn-sm" style="font-size:11px;padding:2px 8px" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+_dci+')">'+_dcn+' doc'+(_dcn===1?'':'s')+'</button>':'<button class="btn btn-ghost btn-sm" style="font-size:10.5px;padding:2px 7px;color:var(--g400)" onclick="event.stopPropagation();portalDpDocModal(\'logistics\','+_dci+')">&#43; Add</button>')+'</div>';
         var _logStT={'Draft':'neu','In Scoping / Pricing':'warn','Pending Approval':'warn','Approved':'info','Released to Order':'info','Fulfilled / Delivered':'ok','Returned':'neu','Completed / Closed':'ok'}[row.status]||'neu';
         var _rowCo=(window._CHANGE_ORDERS||[]).filter(function(c){return c.ref===row.id&&(c.status==='pending_cc'||c.status==='quote_revised');});
         var _ari=_logRows.indexOf(row);
@@ -20154,3 +20178,122 @@ function ctNavNsInit(id){
   if(id==='ct-fpa'){var g=document.getElementById('scnGrid');if(g&&!g.dataset.init){g.innerHTML=scenarioCards('base');g.dataset.init='1';}}
   if(id==='ct-allocation'){var af=document.querySelector('#ct-allocation .af-step');if(af){var det=document.getElementById('afDetail');if(det&&!det.dataset.init){ctAllocPick(af,0);det.dataset.init='1';}}}
 }
+
+/* ===== Orders, bills and documents reconciled to the plan lines (all pillars) =====
+   Every plan line that has an order points at an order of the same pillar and project, whose item, quantity,
+   vendor, dates, cost code and value come from the line, and every order has a bill tied to it. */
+var OB_STATES={logistics:['Released to Order','Fulfilled / Delivered','Completed / Closed'],procurement:['In fulfillment','Ordered','Delivered','Active'],profservices:['Active','Completed / Closed','Demobilized'],prefab:['In Fulfillment','Invoiced / Closed'],equipment:[]};
+var OB_ALIAS={toilets:'sanitation',restroom:'sanitation',handwash:'sanitation'};
+var OB_CODES={'0100-0100-0000-0001':'General conditions','0200-0320-0000-0001':'Site earthwork','2600-0540-0000-0001':'Module install','2600-3300-0000-0001':'BESS & Substation','3100-2000-0000-0001':'Mass Grading','3100-6200-0000-0001':'Solar pile','3100-6300-0000-0001':'Solar pile','0100-5000-0000-0001':'Power & Temp','2600-5600-0000-0001':'Module install'};
+var OB_MON={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11},OB_MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var _OB_DONE=false;
+function _obNum(s){if(s==null)return 0;if(typeof s==='number')return s;var m=String(s).replace(/,/g,'').match(/\$?\s*([\d.]+)\s*([KkMm]?)/);if(!m)return 0;var n=parseFloat(m[1]);if(/k/i.test(m[2]))n*=1e3;else if(/m/i.test(m[2]))n*=1e6;return Math.round(n);}
+function _obToks(s){return String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(function(w){return w.length>=4&&['unit','units','temp','site','with','from','services','service','equip'].indexOf(w)<0;});}
+function _obNameOK(text,names){var t=' '+String(text||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ')+' ';return names.some(function(n){return _obToks(n).some(function(w){return t.indexOf(' '+w)>=0||(OB_ALIAS[w]&&t.indexOf(OB_ALIAS[w])>=0);});});}
+function _obWin(w){var m=String(w||'').match(/([A-Za-z]{3})[a-z]*\s+(\d+),\s*(\d{4})/);if(m)return {mo:OB_MON[m[1]],d:+m[2],y:+m[3]};m=String(w||'').match(/([A-Za-z]{3})[a-z]*\s+(\d{4})/);if(m)return {mo:OB_MON[m[1]],d:1,y:+m[2]};return {mo:8,d:1,y:2026};}
+function _obCodeStr(cp,desc){var c=cp&&(cp.code||cp.costCode)||'';if(c.indexOf('·')>=0)return c;var k=c.slice(0,19);if(!k)k='0100-0100-0000-0001';return k+' · '+(OB_CODES[k]||(cp&&cp.productLine)||desc||'General conditions');}
+function _obStage(p,state,row){
+  if(p==='logistics')return {stage:Math.max(0,STAGES_LOG.indexOf(state)),status:state};
+  if(p==='procurement'){var m={'In fulfillment':0,'Active':0,'Ordered':1,'Delivered':2};return {stage:m[state]!=null?m[state]:0,status:state==='Active'?'In fulfillment':state};}
+  if(p==='profservices'){if(state==='Completed / Closed'||state==='Demobilized')return {stage:7,status:'Completed / Closed'};if(state==='Active')return {stage:4,status:'Active'};return {stage:0,status:state};}
+  if(p==='prefab'){if(state==='Invoiced / Closed')return {stage:7,status:'Invoiced / Closed'};var best=-1,sub=row.subState||null;try{_pfbFpoList(row).forEach(function(f){var i=STAGES_FAB.indexOf(f.sub);if(f.st==='In Fulfillment'&&i>best){best=i;sub=f.sub;}});}catch(e){}if(best<0&&sub)best=STAGES_FAB.indexOf(sub);return {stage:Math.max(0,best),status:'In Fulfillment'+(sub?' · '+sub:'')};}
+  return {stage:null,status:null};
+}
+function _obLatest(p,state,name,qty,firm,win){
+  firm=firm&&firm!=='TBD'?firm:'the vendor';
+  if(/Completed|Closed|Demobilized/.test(state))return p==='profservices'?'Complete — '+firm+' demobilized. Final billing closed.':'Complete — '+qty+' '+name+' delivered by '+firm+'. Final billing closed.';
+  if(p==='profservices')return 'Active — '+firm+' on site, '+qty+'. Billed monthly.';
+  if(p==='procurement')return state==='Delivered'?'Delivered — '+qty+' received. Invoice matched to the PO.':state==='Ordered'?'Ordered — PO placed with '+firm+'.':'In fulfillment — PO issued with '+firm+'. Delivery '+win+'.';
+  if(p==='prefab')return state==='Invoiced / Closed'?'Delivered and invoiced — '+qty+'.':'In fulfillment — '+qty+' in production with 02S.';
+  if(/Fulfilled|Delivered/.test(state))return 'Delivered — '+qty+' '+name+' on site ('+firm+'). Billing in progress.';
+  return 'Released to order — '+firm+' confirmed for '+win+'.';
+}
+function _obBillStatusFor(state,fresh){if(/Completed|Closed|Demobilized|Invoiced/.test(state))return 'Finalized';if(fresh&&/Delivered|Fulfilled/.test(state))return 'Approved';return 'Pending';}
+function _obCharges(name,qtyN,amt,monthly,code){
+  qtyN=qtyN>0?qtyN:1;var rate=Math.floor(amt*(monthly?1:0.85)/qtyN),main=rate*qtyN,rest=amt-main,out=[];
+  if(monthly&&rest){qtyN=1;rate=amt;main=amt;rest=0;}
+  out.push({desc:name+(monthly?' — monthly service':' × '+qtyN)+(monthly&&qtyN>1?' × '+qtyN:''),qty:qtyN,rate:rate,amt:main,cost:code});
+  if(rest>0)out.push({desc:'Delivery, set-up and fees',qty:1,rate:rest,amt:rest,cost:code});
+  return out;
+}
+function _obPeriod(b){var m=String(b.product||'').match(/([A-Z][a-z]{2}) (\d{4})\s*$/);return m?m[1]+' '+m[2]:(b.date||'')+', 2026';}
+function _obHist(o,monthly,amt){
+  var bills=BILLS.filter(function(b){return b.order===o.id;});if(!bills.length)return;
+  var toCC=function(b){return {inv:b.id,period:_obPeriod(b),amount:b.amt,status:b.status==='Finalized'?'Paid':'Pending',cc:String(b.cost||'').split(' \u00b7 ')[0]};};
+  var old=CC_DP_BILLS[o.id]||[],keep=[];
+  if(monthly&&old.length>1){keep=old.slice(0,-1).map(function(e){var c={};for(var k in e)c[k]=e[k];if(c.amount!=null&&!/partial|\u2013/.test(c.period)&&amt)c.amount=amt;return c;});}
+  CC_DP_BILLS[o.id]=keep.concat(bills.map(toCC));
+}
+function _obRecon(){
+  if(_OB_DONE)return;_OB_DONE=true;
+  try{_pfbSeedPricing();}catch(e){}
+  var seqO=0,seqB=0,claimed={},idOf=function(){return ORDERS.map(function(o){return o.id;});};
+  var newOid=function(){var ids=idOf(),id;do{seqO++;id='ORD-6'+('000'+seqO).slice(-3);}while(ids.indexOf(id)>=0);return id;};
+  var newBid=function(){var ids=BILLS.map(function(b){return b.id;}),id;do{seqB++;id='BILL-'+(9100+seqB);}while(ids.indexOf(id)>=0);return id;};
+  // 1. duplicate order ids: keep the first, give later ones their own id
+  var seen={};ORDERS.forEach(function(o){if(seen[o.id]){o._dupOf=o.id;o.id=newOid();}seen[o.id]=true;});
+  var P=['logistics','procurement','profservices','prefab','equipment'],PROJ=['hercules','barryrose','vdc14'];
+  P.forEach(function(p){PROJ.forEach(function(proj){
+    var cc=CC_PROJ_DP[p]&&CC_PROJ_DP[p][proj]&&CC_PROJ_DP[p][proj].rows;if(!cc)return;
+    cc.forEach(function(row,i){
+      var cp=(proj==='hercules'&&DP[p]&&DP[p].rows&&DP[p].rows[i])||null;
+      var names=[row.item,cp&&(cp.item||cp.asm||cp.role||cp.service)].filter(Boolean),state=row.state;
+      var oid=row.ordId||row.linkOrd||(cp&&(cp.ordId||cp.linkOrd))||null;
+      var o=oid?ORDERS.filter(function(x){return x.id===oid;})[0]:null;
+      var okName=function(x){return p==='equipment'||p==='profservices'||_obNameOK(x.item,names);};
+      var valid=o&&!claimed[o.id]&&o.pillar===p&&okName(o);
+      var needs=OB_STATES[p].indexOf(state)>=0;
+      if(!valid&&(needs||oid)){
+        var alt=ORDERS.filter(function(x){return !claimed[x.id]&&x.pillar===p&&okName(x)&&(x.proj===proj||x._dupOf)&&x.id!==(o&&o.id);})[0];
+        if(oid&&!o){o={id:oid};ORDERS.push(o);}else if(alt&&needs){o=alt;}else if(needs){o={id:newOid()};ORDERS.push(o);}else{o=null;}
+        if(o&&!o.pillar)o.fresh=true;
+      }
+      if(!o||(!needs&&!valid&&!o.fresh))return;
+      claimed[o.id]=true;
+      var qtyTxt=row.qty||(cp&&cp.qty)||'',qtyN=parseInt(qtyTxt)||0,monthly=/\/mo/.test(row.cost||''),amt=_obNum(row.cost)||(row.pricing&&row.pricing.total)||0,firm=row.firm&&row.firm!=='TBD'?row.firm:(cp&&cp.vendor)||'',win=row.window||(cp&&cp.needBy)||'';
+      var name=(p==='profservices'&&cp&&cp.role)||row.item,code=_obCodeStr(cp,'');
+      row.ordId=o.id;if(row.linkOrd)row.linkOrd=o.id;if(cp){cp.ordId=o.id;if(cp.linkOrd)cp.linkOrd=o.id;}
+      if(p==='equipment'){ if(!o.pillar){o.pillar='equipment';o.proj=proj;o.item=name;o.sub=qtyTxt+(firm?' · '+firm:'');o.stage=1;o.plan=null;o.latest='Submitted — 02S is sourcing.';} }
+      else{
+        var st=_obStage(p,state,row),w=_obWin(win);
+        o.pillar=p;o.proj=proj;if(!o.item||o.fresh||p!=='profservices')o.item=name;
+        if(needs){
+          o.stage=st.stage;o.status=st.status;o.latest=_obLatest(p,state,name,qtyTxt,firm,win);o.latestTone='ok';
+          o.dates=win;o.sub=(qtyTxt?qtyTxt:'')+(firm?' · '+firm:'')+' · '+(proj==='hercules'?'Hercules Solar + BESS':proj==='barryrose'?'Barry Rose WRF':'VDC14');
+          o.cost=code;o.od=w.y+'-'+('0'+(w.mo+1)).slice(-2)+'-01';
+        } else if(o.fresh){o.stage=0;o.status='Requested';o.latest='Submitted — 02S is scoping this.';o.dates=win;o.sub=qtyTxt;o.cost=code;o.od='2026-08-01';}
+        o.qtyText=qtyTxt;o.vendor=firm;o.monthly=monthly;o.total=amt||o.total||0;
+      }
+      delete o.fresh;
+      // 2. bills tied to the order
+      var bs=BILLS.filter(function(b){return b.order===o.id;}),per=function(){var x=_obWin(win);return OB_MN[x.mo]+' '+x.y;};
+      var mk=function(amount,desc,statusFor,product,date){var cc2=o.cost||code;return {id:newBid(),order:o.id,product:product||name+' — '+per(),amt:amount,cost:cc2,status:statusFor,date:date||(OB_MN[_obWin(win).mo]+' '+_obWin(win).d),day:3,notes:0,charges:_obCharges(desc||name,qtyN,amount,monthly,cc2)};};
+      if(p==='prefab'&&row.splits&&row.splits.length&&!bs.length){
+        var unitN=_obNum(row.unitPrice);
+        row.splits.forEach(function(sp){var f=(function(){try{return _pfbFpoStatus(sp);}catch(e){return '';}})();if(f==='In Fulfillment'&&unitN){var a=unitN*(parseInt(sp.qty)||0);var b=mk(a,name+' — '+sp.id,'Pending',name+' — '+sp.id+' · '+sp.qty+' units');b.charges=[{desc:name+' — '+sp.id,qty:parseInt(sp.qty)||1,rate:unitN,amt:a,cost:b.cost}];BILLS.push(b);}});
+      } else if(!bs.length){
+        var b2=mk(amt||o.total||0,name,_obBillStatusFor(state,true));if(!b2.amt){b2.amt=_obNum(o.mrate)*(o.qty||1)||0;}BILLS.push(b2);
+      } else {
+        bs.forEach(function(b){
+          if(p!=='equipment'&&!_obNameOK(b.product,names)){var oneTime=!monthly;b.product=name+' — '+per();b.amt=amt||b.amt;b.cost=o.cost||code;b.charges=_obCharges(name,qtyN,b.amt,monthly,b.cost);}
+          if(p!=='equipment'&&monthly&&bs.length===1&&amt&&b.amt!==amt){b.amt=amt;b.charges=_obCharges(name,qtyN,amt,true,b.cost||o.cost||code);}
+          if(p!=='equipment'&&/Completed|Closed|Demobilized|Invoiced/.test(state))b.status='Finalized';
+        });
+      }
+      if(p!=='equipment'){_obHist(o,monthly,amt);
+      }
+    });
+  });});
+  // 3. site services: Customer Portal shows the same numbers, vendors and documents as Command Center
+  var ccl=CC_PROJ_DP.logistics.hercules.rows,cpl=(DP.logistics&&DP.logistics.rows)||[];
+  ccl.forEach(function(r,i){var c=cpl[i];if(!c)return;
+    if(OB_STATES.logistics.indexOf(r.state)>=0){var amt=_obNum(r.cost);if(amt&&c.cost!==amt){if(c.quoteData&&c.quoteData.lines&&c.quoteData.lines.length){var tot=c.quoteData.lines.reduce(function(s,l){return s+(l.ext||0);},0);if(tot){var f=amt/tot,run=0;c.quoteData.lines.forEach(function(l,k){var last=k===c.quoteData.lines.length-1;if(l.ext!=null){l.ext=last?amt-run:Math.round(l.ext*f);run+=l.ext;if(l.rate!=null&&l.qty)l.rate=Math.round(l.ext/l.qty*100)/100;}});}}c.cost=amt;}
+      if(r.firm&&r.firm!=='TBD')c.vendor=r.firm;c.qty=r.qty;}
+    var a=(r.attachments&&r.attachments.length)?r.attachments:(c.attachments||[]);r.attachments=a;c.attachments=a;});
+  // site services KPI cards on the Customer Portal follow the lines
+  try{var vit=DP.logistics.vitals||[],ordered=cpl.filter(function(x){return OB_STATES.logistics.indexOf(x.status)>=0;}),committed=ordered.reduce(function(t,x){return t+(x.cost||0);},0);
+    var live=cpl.filter(function(x){return x.status!=='Completed / Closed'&&x.status!=='Returned';}),fd=live.filter(function(x){return x.status==='Fulfilled / Delivered'||x.status==='Released to Order';}).length;
+    vit.forEach(function(v){if(/committed/i.test(v.label)){v.value=_pfbMoney(committed);v.sub='Ordered services \u00b7 '+ordered.length+' items';}if(/^vendors/i.test(v.label)){var vn=[];cpl.forEach(function(x){if(x.vendor&&vn.indexOf(x.vendor)<0)vn.push(x.vendor);});v.value=''+vn.length;v.sub=vn.slice(0,3).map(function(n){return n.split(' ')[0];}).join(' \u00b7 ')+(vn.length>3?' +'+(vn.length-3):'');}if(/active services/i.test(v.label)){v.value=''+live.length;v.sub=fd+' fulfilled or released \u00b7 '+(live.length-fd)+' in scoping or approval';}});}catch(e){}
+}
+function _obBillBtns(ordId){return BILLS.filter(function(b){return b.order===ordId;}).slice(0,3).map(function(b){return '<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openBillPreviewModal(\''+b.id+'\')">'+b.id+' ↗</button>';}).join('');}
+try{_obRecon();}catch(e){window.__obErr=e.message;}
