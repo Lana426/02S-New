@@ -17708,7 +17708,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
       }
     } else {
       var _allHdr=p==='logistics'?'Quote requests':'All requests';
-      h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+_allHdr+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
+      if(p!=='logistics')h+='<div class="eq-toolbar"><span class="dp-sec-t">'+svg(dpIcon(cfg.icon))+_allHdr+'</span><span class="spacer"></span><span style="font-size:11.5px;color:var(--g500)">'+visRows.length+' · '+pLabel+'</span></div>';
       if(p==='logistics'){
         var _lProjs=['hercules','barryrose','vdc14'];
         var _lShort={hercules:'Hercules',barryrose:'Barry Rose',vdc14:'VDC14'};
@@ -17738,11 +17738,15 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           if(anyFulfilling)_lFulfilling++;
         });
         h+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">';
+        var _lLines=[];_lProjs.forEach(function(pr){(((CC_PROJ_DP.logistics&&CC_PROJ_DP.logistics[pr])||{}).rows||[]).forEach(function(r){_lLines.push(r);});});
+        var _lN=function(st){return _lLines.filter(function(r){return r.state===st;}).length;};
+        var _lRiskN=_lLines.filter(function(r){var nd=_lpDate(r.window||'');return nd&&r.leadTime&&(r.state==='Planned'||r.state==='Draft')&&(new Date()>new Date(nd.getTime()-r.leadTime*86400000));}).length;
+        var _lTot=_lLines.length,_lPend=_lN('In Scoping / Pricing')+_lN('Pending Approval'),_lFul=_lN('Released to Order')+_lN('Fulfilled / Delivered'),_lOk=_lTot-_lRiskN;
         [
-          {k:'Services tracked',v:''+_lTotSvcs,sub:_lTotSvcs+' across 3 active projects',tone:'neu'},
-          {k:'On schedule',v:_lOnTrack+' of '+_lTotSvcs,sub:_lOnTrack+' services on track for delivery',tone:_lOnTrack>=_lTotSvcs*0.7?'ok':'warn'},
-          {k:'Pending action',v:''+_lNeedQuote,sub:_lNeedQuote?_lNeedQuote+' need'+(_lNeedQuote===1?' a':'')+' quote or scheduling':'All quotes received',tone:_lNeedQuote?'warn':'ok'},
-          {k:'In fulfillment',v:''+_lFulfilling,sub:_lFulfilling?_lFulfilling+' service'+(_lFulfilling===1?' actively':'s actively')+' being sourced':'No active fulfillments',tone:_lFulfilling?'ok':'neu'}
+          {k:'Services tracked',v:''+_lTot,sub:_lTot+' service lines across 3 active projects',tone:'neu'},
+          {k:'On schedule',v:_lOk+' of '+_lTot,sub:_lRiskN?_lOk+' on track \u00b7 '+_lRiskN+' at risk (order-by date passed)':'All service lines on track',tone:_lOk>=_lTot*0.7?'ok':'warn'},
+          {k:'Pending action',v:''+_lPend,sub:_lPend?_lN('In Scoping / Pricing')+' to scope and price \u00b7 '+_lN('Pending Approval')+' awaiting approval':'Nothing waiting',tone:_lPend?'warn':'ok'},
+          {k:'In fulfillment',v:''+_lFul,sub:_lFul?_lN('Released to Order')+' released to order \u00b7 '+_lN('Fulfilled / Delivered')+' fulfilled / delivered':'No active fulfillments',tone:_lFul?'ok':'neu'}
         ].forEach(function(k){
           h+='<div class="vital '+k.tone+'"><div class="vk">'+k.k+'</div><div class="vv">'+k.v+'</div><div class="vsub">'+k.sub+'</div></div>';
         });
@@ -17808,6 +17812,7 @@ var _PROJ_LABELS={hercules:'Hercules Solar + BESS',barryrose:'Barry Rose WRF',vd
           h+='</div>';
         }
         h+='</div>';
+        h+=renderLogisticsQuoteQueue(selProj,isDpView);
 
         mount.innerHTML=h;
         return;
