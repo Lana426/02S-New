@@ -20338,7 +20338,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var TIERS = ['Tier 1', 'Tier 2', 'Tier 3'];
   var ASSET_TYPES = [['Excavators', .71], ['Telehandlers', .66], ['Scissor & boom lifts', .62], ['Generators & power', .58], ['Light towers', .49], ['Trailers & containers', .74], ['Skid steers & loaders', .68]];
   var SC_MOD = { 'Southwest': .04, 'Central': 0, 'Southern': -.05, 'Northern': -.02, 'National Programs': .03 };
-  var SVC_LINES = [['GC/GR Services', .78], ['CFE', .72], ['Mapping', .81], ['Geospatial', .69], ['BAS', .64], ['OFE', .75], ['Viz', .83]];
+  var SVC_LINES = [['Mapping', .81], ['Geospatial', .69], ['BAS', .64], ['Viz', .83]];
   var UTIL_TARGET = { 'Equipment': .70, 'Professional services': .76 };
   var ATTACH = { 'Equipment': .64, 'Prefab': .41, 'Professional services': .33, 'Logistics': .52, 'Procurement': .27 };
   var QUARTERS = [{ q: 1, end: 'Mar 31', open: true }, { q: 2, end: 'Jun 30', open: true }, { q: 3, end: 'Sep 30', open: true }, { q: 4, end: 'Dec 31', open: false }];
@@ -20353,7 +20353,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     D2: { n: 'Pipeline conversion', k: 'p', plain: 'Share of pursued opportunities that become sold work.', formula: 'Sold ÷ total opportunities, by count and by dollars.', cut: 'Pillar × product line × region' },
     D3: { n: 'Attach rate', k: 'p', plain: 'How often a McCarthy project that could use O2S does.', formula: 'Dollars using O2S ÷ eligible McCarthy dollars.', cut: 'Pillar × product line × region × business unit' },
     O1: { n: 'Equipment time utilization', k: 'p', plain: 'How much of the time equipment is out earning.', formula: 'Hours in use ÷ hours available.', cut: 'Asset type × product line' },
-    O3: { n: 'Professional services billable utilization', k: 'p', plain: 'Share of available hours billed to clients.', formula: 'Billable hours ÷ available hours.', cut: 'Service line × region' },
+    O3: { n: 'Professional services billable utilization', k: 'p', plain: 'Share of available hours billed to clients.', formula: 'Billable hours ÷ available hours.', cut: 'Product line × region' },
     O4: { n: 'O2S Utilization Index', k: 'i', plain: 'How hard each pillar’s people and assets work against its target.', formula: 'Utilization ÷ pillar target, averaged across pillars. 100 = on target.', cut: 'Pillar' }
   };
   var TABS = {
@@ -20451,7 +20451,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function utilData(f) {
     var scs = REG.filter(function (g) { return f.region === 'All' || f.region === g.k; }), n = scs.length;
-    var eq = ASSET_TYPES.map(function (a) { var t = 0; scs.forEach(function (g) { t += a[1] + SC_MOD[g.k]; }); return { n: a[0], t: t / n }; });
+    var plAdj = PLS.some(function (p) { return p.n === f.pl && p.pillar === 'Equipment'; }) ? Math.sin(hsh(f.pl)) * .03 : 0;
+    var eq = ASSET_TYPES.map(function (a) { var t = 0; scs.forEach(function (g) { t += a[1] + SC_MOD[g.k] + plAdj; }); return { n: a[0], t: t / n }; });
     var ps = SVC_LINES.filter(function (s) { return f.pl === 'All' || f.pl === s[0]; }).map(function (s) { var u = 0; scs.forEach(function (g) { u += s[1] + SC_MOD[g.k] / 2; }); return { n: s[0], u: u / n }; });
     if (!ps.length) ps = SVC_LINES.map(function (s) { return { n: s[0], u: s[1] }; });
     var avg = function (a, k) { return a.length ? a.reduce(function (x, y) { return x + y[k]; }, 0) / a.length : 0; };
@@ -20570,7 +20571,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     if (key === 'sc') { o.push(['All', 'All service centers']); REG.forEach(function (g) { o.push([g.k, g.sc]); }); }
     if (key === 'bu') { o.push(['All', 'All business units']); var seen = {}; REG.forEach(function (g) { if (f.region !== 'All' && f.region !== g.k) return; BUS[g.k].forEach(function (b) { if (!seen[b.n]) { seen[b.n] = 1; o.push([b.n, b.n]); } }); }); }
     if (key === 'pillar') { o.push(['All', 'All pillars']); PILLARS.forEach(function (p) { if (CT3.screen === 'operational' && !UTIL_TARGET[p.k]) return; o.push([p.k, p.k]); }); }
-    if (key === 'pl') { o.push(['All', 'All product lines']); PLS.forEach(function (p) { if (f.pillar === 'All' ? CT3.screen === 'operational' && !UTIL_TARGET[p.pillar] : f.pillar !== p.pillar) return; o.push([p.n, p.n]); }); }
+    if (key === 'pl') { o.push(['All', 'All product lines']); PLS.forEach(function (p) { if (f.pillar === 'All' ? CT3.screen === 'operational' && !UTIL_TARGET[p.pillar] : f.pillar !== p.pillar) return; if (CT3.screen === 'operational' && p.pillar === 'Professional services' && !SVC_LINES.some(function (s) { return s[0] === p.n; })) return; o.push([p.n, p.n]); }); }
     if (key === 'ptype') { o.push(['All', 'Self-perform + GC/GR']); TYPES.forEach(function (t) { o.push([t.k, t.k]); }); }
     if (key === 'tier') { o.push(['All', 'All tiers']); TIERS.forEach(function (t) { o.push([t, t]); }); }
     return o;
@@ -20655,7 +20656,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var h = head('operational', 'Operational', 'Equipment and professional services');
     h += block(0, 'O2S Utilization Index', '', utilBody());
     if (showEq) h += '<section class="ct3-blk"><header><div><h2>Equipment time utilization by asset type</h2></div></header>' + U.eq.map(function (a) { return barRow(a.n, '', a.t, UTIL_TARGET.Equipment, fp(a.t, 0), a.t >= UTIL_TARGET.Equipment ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
-    if (showPs) h += '<section class="ct3-blk"><header><div><h2>Billable utilization by service line</h2></div></header>' + U.ps.map(function (a) { return barRow(a.n, '', a.u, UTIL_TARGET['Professional services'], fp(a.u, 0), a.u >= UTIL_TARGET['Professional services'] ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
+    if (showPs) h += '<section class="ct3-blk"><header><div><h2>Billable utilization by product line</h2></div></header>' + U.ps.map(function (a) { return barRow(a.n, '', a.u, UTIL_TARGET['Professional services'], fp(a.u, 0), a.u >= UTIL_TARGET['Professional services'] ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
     return h;
   }
 
