@@ -20576,16 +20576,30 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     if (key === 'tier') { o.push(['All', 'All tiers']); TIERS.forEach(function (t) { o.push([t, t]); }); }
     return o;
   }
+  var CHEV = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  var CHECK = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  function optLabel(k, v) { var o = optsFor(k); for (var i = 0; i < o.length; i++) if (o[i][0] === v) return o[i][1]; return v; }
   function filterBar() {
-    var ap = APPLY[CT3.screen] || [], h = '<div class="ct3-fb"><div class="ct3-fr">';
+    var ap = APPLY[CT3.screen] || [], f = CT3.f, nAct = 0, h = '<div class="ct3-fb"><div class="ct3-fr">';
+    h += '<div class="ct3-seg2" role="group" aria-label="Period">' + Object.keys(PERIODS).map(function (k) { return '<button class="' + (f.period === k ? 'on' : '') + '" onclick="ct3Set(\'period\',\'' + k + '\')">' + PERIODS[k][0] + '</button>'; }).join('') + '</div>';
+    h += '<span class="ct3-vr"></span>';
     FLT_ORDER.forEach(function (k) {
+      if (k === 'period') return;
       var on = ap.indexOf(k) >= 0, why = WHY[CT3.screen + '.' + k] || 'Not available here';
       if (!on && (k === 'tier' || k === 'sc')) return;
-      h += '<label class="ct3-f' + (on ? '' : ' off') + '" title="' + (on ? '' : escH(why)) + '"><span>' + FLT_LABEL[k] + '</span><select ' + (on ? '' : 'disabled') + ' onchange="ct3Set(\'' + k + '\',this.value)">' +
-        optsFor(k).map(function (x) { var cur = on ? CT3.f[k] : (k === 'period' ? CT3.f.period : 'All'); return '<option value="' + escH(x[0]) + '"' + (x[0] === cur ? ' selected' : '') + '>' + escH(x[1]) + '</option>'; }).join('') + '</select></label>';
+      var cur = on ? f[k] : (k === 'compare' ? f.compare : 'All'), isDim = k !== 'compare', active = on && isDim && cur !== 'All';
+      if (active) nAct++;
+      var lbl = optLabel(k, cur), open = CT3.open === k && on;
+      h += '<div class="ct3-pw">' + '<button class="ct3-pill' + (active ? ' act' : '') + (on ? '' : ' off') + (open ? ' open' : '') + '" ' + (on ? 'onclick="event.stopPropagation();ct3Open(\'' + k + '\')"' : 'disabled title="' + escH(why) + '"') + ' aria-haspopup="listbox" aria-expanded="' + open + '">' +
+        '<span class="lb">' + (k === 'compare' ? 'vs' : FLT_LABEL[k]) + '</span><span class="vl">' + escH(active || k === 'compare' ? lbl : 'All') + '</span>' +
+        (active ? '<span class="x" role="button" aria-label="Clear ' + FLT_LABEL[k] + '" onclick="event.stopPropagation();ct3Set(\'' + k + '\',\'All\')">×</span>' : CHEV) + '</button>';
+      if (open) h += '<div class="ct3-pop" role="listbox" onclick="event.stopPropagation()"><div class="ct3-pt">' + FLT_LABEL[k] + '</div>' + optsFor(k).map(function (x) { var sel = x[0] === cur; return '<button role="option" aria-selected="' + sel + '" class="ct3-opt' + (sel ? ' on' : '') + '" onclick="ct3Set(\'' + k + '\',\'' + jsq(x[0]) + '\')"><span>' + escH(x[1]) + '</span>' + (sel ? CHECK : '') + '</button>'; }).join('') + '</div>';
+      h += '</div>';
     });
-    return h + '<button class="btn btn-ghost btn-sm ct3-rs" onclick="ct3Reset()">Reset</button></div></div>';
+    h += '<span class="ct3-sp"></span>' + (nAct ? '<button class="ct3-clr" onclick="ct3Reset()">Clear ' + nAct + ' filter' + (nAct > 1 ? 's' : '') + '</button>' : '');
+    return h + '</div></div>';
   }
+  function ct3Open(k) { CT3.open = CT3.open === k ? null : k; ct3Render(); }
 
   /* ───────── screens ───────── */
   function groupList(dim) {
@@ -20666,7 +20680,12 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function ct3Css() {
     if ($e('ct3-css')) return;
     var s = document.createElement('style'); s.id = 'ct3-css';
-    s.textContent = '#ctApp .ct3-wrap{max-width:1280px}.ct3-fb{position:sticky;top:0;z-index:20;background:var(--g100);padding:8px 0 12px;margin-bottom:14px;border-bottom:1px solid var(--g200)}.ct3-fr{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.ct3-f{display:flex;flex-direction:column;gap:3px;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--g500)}.ct3-f select{font:inherit;font-size:12.5px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--g900);background:#fff;border:1px solid var(--g250);border-radius:7px;padding:6px 8px;min-width:112px}.ct3-f.off{opacity:.45}.ct3-f.off select{cursor:not-allowed;background:var(--g100)}' +
+    s.textContent = '#ctApp .ct3-wrap{max-width:1280px}.ct3-fb{position:sticky;top:0;z-index:30;margin:-24px -28px 18px;padding:12px 28px;background:rgba(244,244,245,.82);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid rgba(0,0,0,.06)}.ct3-fr{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.ct3-vr{width:1px;height:20px;background:var(--g250);margin:0 4px}' +
+      '.ct3-seg2{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-seg2 button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s,box-shadow .15s}.ct3-seg2 button:hover{color:var(--g900)}.ct3-seg2 button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
+      '.ct3-pw{position:relative}.ct3-pill{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border-radius:999px;background:#fff;border:1px solid var(--g250);font-size:12.5px;color:var(--g900);box-shadow:0 1px 2px rgba(0,0,0,.04);transition:border-color .15s,box-shadow .15s,background .15s}.ct3-pill:hover{border-color:var(--g400);box-shadow:0 2px 6px rgba(0,0,0,.08)}.ct3-pill:focus-visible,.ct3-opt:focus-visible,.ct3-seg2 button:focus-visible{outline:2px solid #dc1d34;outline-offset:2px}.ct3-pill .lb{color:var(--g500);font-weight:500}.ct3-pill .vl{font-weight:650;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ct3-pill svg{color:var(--g400);transition:transform .15s}.ct3-pill.open{border-color:var(--g900);box-shadow:0 0 0 3px rgba(24,24,27,.08)}.ct3-pill.open svg{transform:rotate(180deg)}' +
+      '.ct3-pill.act{background:var(--charcoal);border-color:var(--charcoal);color:#fff}.ct3-pill.act .lb{color:rgba(255,255,255,.6)}.ct3-pill .x{display:inline-grid;place-items:center;width:18px;height:18px;margin-right:-4px;border-radius:50%;background:rgba(255,255,255,.18);font-size:13px;line-height:1}.ct3-pill .x:hover{background:rgba(255,255,255,.34)}.ct3-pill.off{opacity:.4;cursor:not-allowed;box-shadow:none}.ct3-pill.off:hover{border-color:var(--g250);box-shadow:none}' +
+      '.ct3-pop{position:absolute;top:calc(100% + 8px);left:0;min-width:220px;max-height:320px;overflow-y:auto;background:#fff;border:1px solid var(--g200);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.06);padding:6px;animation:ct3pop .14s ease-out;z-index:40}@keyframes ct3pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}.ct3-pt{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--g400);padding:6px 10px 4px}.ct3-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--g700)}.ct3-opt:hover{background:var(--g100)}.ct3-opt.on{font-weight:650;background:var(--g50);color:var(--g900)}.ct3-opt svg{color:#dc1d34;flex-shrink:0}' +
+      '.ct3-clr{font-size:12.5px;font-weight:600;color:var(--g600);padding:7px 12px;border-radius:999px}.ct3-clr:hover{background:rgba(24,24,27,.07);color:var(--g900)}' +
       '.ct3-blk{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:16px 18px;margin-bottom:16px}.ct3-blk>header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.ct3-blk h2{font-size:15px;font-weight:700;letter-spacing:-.01em}.ct3-q{font-size:12px;color:var(--g500);margin-top:2px}.ct3-sp{flex:1}.ct3-bn{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:12px;font-weight:700;flex-shrink:0}.ct3-ha{display:flex;gap:8px;align-items:center}' +
       '.ct3-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}.ct3-t2{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-tile{border:1px solid var(--g200);border-radius:9px;padding:12px 14px;background:#fff}.ct3-tl{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--g600)}.ct3-tl>span{flex:1}.ct3-tv{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:5px 0 2px;font-variant-numeric:tabular-nums}.ct3-ts{font-size:11.5px;color:var(--g500)}' +
       '.ct3-good{color:#15803d!important}.ct3-bad{color:#b91c1c!important}.ct3-i{font-size:13px;color:var(--g400);padding:0 2px;line-height:1}.ct3-i:hover,.ct3-cam:hover{color:var(--g900)}.ct3-cam{display:inline-flex;align-items:center;gap:5px;color:var(--g400);padding:2px 3px}.ct3-camb{height:32px;padding:0 12px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:12.5px;font-weight:600}.ct3-camb span{color:var(--g400);font-weight:600}' +
@@ -20687,6 +20706,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       '<div class="main"><div class="topbar"><div class="tb-brand"><span>02S</span> Control Tower</div><div class="tb-right"><button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Workspaces</button></div></div>' +
       '<div class="content"><div class="ct3-wrap" id="ct3-main"></div></div></div>';
     ct.setAttribute('data-ct3', '2'); ct3Css();
+    if (!window.__ct3Bound) { window.__ct3Bound = 1; document.addEventListener('click', function () { if (CT3.open) { CT3.open = null; ct3Render(); } }); document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && CT3.open) { CT3.open = null; ct3Render(); } }); }
     if (!Object.keys(CT3.snap).length) seedSnaps();
   }
   function ct3Render() {
@@ -20698,14 +20718,14 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function ct3Toast(t) { var d = document.createElement('div'); d.className = 'ct3-toast'; d.textContent = t; document.body.appendChild(d); setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 2600); }
   function ct3Set(k, v) {
-    var f = CT3.f; f[k] = v;
+    var f = CT3.f; f[k] = v; CT3.open = null;
     if (k === 'region') { f.sc = v; if (v !== 'All' && f.bu !== 'All' && !BUS[v].some(function (b) { return b.n === f.bu; })) f.bu = 'All'; }
     if (k === 'sc') { f.region = v; if (v !== 'All' && f.bu !== 'All' && !BUS[v].some(function (b) { return b.n === f.bu; })) f.bu = 'All'; }
     if (k === 'pillar' && !PLS.some(function (p) { return p.n === f.pl && (v === 'All' || p.pillar === v); })) f.pl = 'All';
     if (k === 'pl' && v !== 'All') PLS.forEach(function (p) { if (p.n === v) f.pillar = p.pillar; });
     ct3Render();
   }
-  function ct3Reset() { CT3.f = copy(DEF_F); ct3Render(); }
+  function ct3Reset() { CT3.f = copy(DEF_F); CT3.open = null; ct3Render(); }
   function ct3Pref(k, v) { CT3[k] = v; ct3Render(); }
   function ct3Drill(name) {
     var d = CT3.view, map = { pillar: 'pillar', pl: 'pl', region: 'region', bu: 'bu', ptype: 'ptype' };
@@ -20721,7 +20741,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     try { navigator.clipboard.writeText(lines.join('\n')).then(function () { ct3Toast('Copied'); }, function () { ct3Toast('Copy was blocked by the browser'); }); } catch (e) { ct3Toast('Copy was blocked by the browser'); }
   }
 
-  window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take;
+  window.ct3Open = ct3Open; window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take;
   window.ctNav = function (id) {
     if (!SCREENS_FN[id]) id = 'overview'; CT3.screen = id;
     if (id === 'operational') { if (CT3.f.pillar !== 'All' && !UTIL_TARGET[CT3.f.pillar]) { CT3.f.pillar = 'All'; CT3.f.pl = 'All'; } }
