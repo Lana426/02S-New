@@ -20336,7 +20336,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
   var TIERS = ['Tier 1', 'Tier 2', 'Tier 3'];
-  var ASSET_TYPES = [['Excavators', .71], ['Telehandlers', .66], ['Scissor & boom lifts', .62], ['Generators & power', .58], ['Light towers', .49], ['Trailers & containers', .74], ['Skid steers & loaders', .68]];
+  var ASSET_TYPES = [['Excavators', .71, .78], ['Telehandlers', .66, .71], ['Scissor & boom lifts', .62, .66], ['Generators & power', .58, .69], ['Light towers', .49, .58], ['Trailers & containers', .74, .81], ['Skid steers & loaders', .68, .73]];
   var SC_MOD = { 'Southwest': .04, 'Central': 0, 'Southern': -.05, 'Northern': -.02, 'National Programs': .03 };
   var SVC_LINES = [['Mapping', .81], ['Geospatial', .69], ['BAS', .64], ['Viz', .83]];
   var UTIL_TARGET = { 'Equipment': .70, 'Professional services': .76 };
@@ -20344,7 +20344,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var QUARTERS = [{ q: 1, end: 'Mar 31', open: true }, { q: 2, end: 'Jun 30', open: true }, { q: 3, end: 'Sep 30', open: true }, { q: 4, end: 'Dec 31', open: false }];
 
   var MET = {
-    F1: { n: 'Revenue vs plan to date', k: 'm', plain: 'Revenue billed so far against the plan for the same period.', formula: 'Actual revenue ÷ AOP revenue to date, and the dollar gap.', cut: 'Pillar × product line × region × business unit' },
+    F1: { n: 'Revenue vs plan to date', k: 'm', plain: 'Revenue earned so far against the plan for the same period.', formula: 'Actual revenue ÷ AOP revenue to date, and the dollar gap.', cut: 'Pillar × product line × region × business unit' },
     F2: { n: 'Gross margin vs plan', k: 'p', plain: 'Margin after direct costs against the margin target.', formula: '(Revenue − direct job and equipment cost) ÷ revenue, against the AOP margin target.', cut: 'Pillar × product line × region × business unit' },
     F3: { n: 'Operating profit after overhead', k: 'p', plain: 'Margin after O2S’s share of G&A against plan.', formula: '(Gross margin − allocated G&A) ÷ revenue.', cut: 'Pillar × product line × region × business unit' },
     F4: { n: 'Full-year revenue outlook', k: 'm', plain: 'Where O2S ends the year if the recent pace holds.', formula: 'Year to date plus remaining months at the YTD, 3-month or 1-month average run rate.', cut: 'Pillar × product line × region × business unit' },
@@ -20353,14 +20353,15 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     D2: { n: 'Pipeline conversion', k: 'p', plain: 'Share of pursued opportunities that become sold work.', formula: 'Sold ÷ total opportunities, by count and by dollars.', cut: 'Pillar × product line × region' },
     D3: { n: 'Attach rate', k: 'p', plain: 'How often a McCarthy project that could use O2S does.', formula: 'Dollars using O2S ÷ eligible McCarthy dollars.', cut: 'Pillar × product line × region × business unit' },
     O1: { n: 'Equipment time utilization', k: 'p', plain: 'How much of the time equipment is out earning.', formula: 'Hours in use ÷ hours available.', cut: 'Asset type × product line' },
+    O2: { n: 'Equipment financial utilization', k: 'p', plain: 'How much of what the equipment could earn at standard rates it actually earns.', formula: 'Actual revenue ÷ potential revenue if the asset were on rent at standard rates.', cut: 'Asset type × product line' },
     O3: { n: 'Professional services billable utilization', k: 'p', plain: 'Share of available hours billed to clients.', formula: 'Billable hours ÷ available hours.', cut: 'Product line × region' },
     O4: { n: 'O2S Utilization Index', k: 'i', plain: 'How hard each pillar’s people and assets work against its target.', formula: 'Utilization ÷ pillar target, averaged across pillars. 100 = on target.', cut: 'Pillar' }
   };
   var TABS = {
-    overview: { n: 'Overview', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'O1', 'O3', 'O4'] },
+    overview: { n: 'Overview', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'O1', 'O2', 'O3', 'O4'] },
     financial: { n: 'Financial', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'] },
     demand: { n: 'Demand & adoption', m: ['D2', 'D3'] },
-    operational: { n: 'Operational', m: ['O1', 'O3', 'O4'] }
+    operational: { n: 'Operational', m: ['O1', 'O2', 'O3', 'O4'] }
   };
   var DEF_F = { period: 'ytd', compare: 'aop', region: 'All', bu: 'All', pillar: 'All', pl: 'All', ptype: 'All', sc: 'All', tier: 'All' };
   var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {} };
@@ -20452,11 +20453,11 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function utilData(f) {
     var scs = REG.filter(function (g) { return f.region === 'All' || f.region === g.k; }), n = scs.length;
     var plAdj = PLS.some(function (p) { return p.n === f.pl && p.pillar === 'Equipment'; }) ? Math.sin(hsh(f.pl)) * .03 : 0;
-    var eq = ASSET_TYPES.map(function (a) { var t = 0; scs.forEach(function (g) { t += a[1] + SC_MOD[g.k] + plAdj; }); return { n: a[0], t: t / n }; });
+    var eq = ASSET_TYPES.map(function (a) { var t = 0, fi = 0; scs.forEach(function (g) { t += a[1] + SC_MOD[g.k] + plAdj; fi += a[2] + SC_MOD[g.k] * .8 + plAdj; }); return { n: a[0], t: t / n, fi: fi / n }; });
     var ps = SVC_LINES.filter(function (s) { return f.pl === 'All' || f.pl === s[0]; }).map(function (s) { var u = 0; scs.forEach(function (g) { u += s[1] + SC_MOD[g.k] / 2; }); return { n: s[0], u: u / n }; });
     if (!ps.length) ps = SVC_LINES.map(function (s) { return { n: s[0], u: s[1] }; });
     var avg = function (a, k) { return a.length ? a.reduce(function (x, y) { return x + y[k]; }, 0) / a.length : 0; };
-    return { eq: eq, ps: ps, eqT: avg(eq, 't'), psU: avg(ps, 'u') };
+    return { eq: eq, ps: ps, eqT: avg(eq, 't'), eqF: avg(eq, 'fi'), psU: avg(ps, 'u') };
   }
   function indexOf(f) {
     var U = utilData(f), parts = [];
@@ -20473,12 +20474,13 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       else if (id === 'D2') { P = pipe(baseO()); v = P.sold / P.planned; }
       else if (id === 'D3') v = attach(baseO());
       else if (id === 'O1') v = utilData(f).eqT;
+      else if (id === 'O2') v = utilData(f).eqF;
       else if (id === 'O3') v = utilData(f).psU;
       else if (id === 'O4') v = indexOf(f);
     } finally { CT3.f = save; }
     return v;
   }
-  function fmtv(id, v) { var k = MET[id].k; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
+  function fmtv(id, v) { var k = MET[id].k; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O2' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
   function fdelta(id, d) { var k = MET[id].k; return k === 'm' ? fsm(d) : k === 'p' ? (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(1) + ' pp' : (d >= 0 ? '+' : '−') + Math.abs(Math.round(d)); }
 
   /* ───────── snapshots ───────── */
@@ -20634,7 +20636,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function utilBody() {
     var f = CT3.f, U = utilData(f), showEq = f.pillar === 'All' || f.pillar === 'Equipment', showPs = f.pillar === 'All' || f.pillar === 'Professional services';
-    var b = '<div class="ct3-tiles">' + (showEq ? tile('O1', fp(U.eqT, 0), 'target ' + fp(UTIL_TARGET.Equipment, 0), tone(U.eqT - UTIL_TARGET.Equipment)) : '') + (showPs ? tile('O3', fp(U.psU, 0), 'target ' + fp(UTIL_TARGET['Professional services'], 0), tone(U.psU - UTIL_TARGET['Professional services'])) : '') + tile('O4', String(Math.round(indexOf(f))), '100 = on target', tone(indexOf(f) - 100)) + '</div>';
+    var b = '<div class="ct3-tiles ct3-t4">' + (showEq ? tile('O1', fp(U.eqT, 0), 'target ' + fp(UTIL_TARGET.Equipment, 0), tone(U.eqT - UTIL_TARGET.Equipment)) + tile('O2', fp(U.eqF, 0), 'of potential rental revenue', '') : '') + (showPs ? tile('O3', fp(U.psU, 0), 'target ' + fp(UTIL_TARGET['Professional services'], 0), tone(U.psU - UTIL_TARGET['Professional services'])) : '') + tile('O4', String(Math.round(indexOf(f))), '100 = on target', tone(indexOf(f) - 100)) + '</div>';
     if (showEq) b += barRow('Equipment', 'target ' + fp(UTIL_TARGET.Equipment, 0), U.eqT / UTIL_TARGET.Equipment, 1, Math.round(U.eqT / UTIL_TARGET.Equipment * 100), U.eqT >= UTIL_TARGET.Equipment ? 'ct3-fg' : 'ct3-fb2');
     if (showPs) b += barRow('Professional services', 'target ' + fp(UTIL_TARGET['Professional services'], 0), U.psU / UTIL_TARGET['Professional services'], 1, Math.round(U.psU / UTIL_TARGET['Professional services'] * 100), U.psU >= UTIL_TARGET['Professional services'] ? 'ct3-fg' : 'ct3-fb2');
     return b;
@@ -20667,10 +20669,12 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function scOperational() {
     var f = CT3.f, U = utilData(f), showEq = f.pillar === 'All' || f.pillar === 'Equipment', showPs = f.pillar === 'All' || f.pillar === 'Professional services';
-    var h = head('operational', 'Operational', 'Equipment and professional services');
+    var tg = UTIL_TARGET, h = head('operational', 'Operational', 'Utilization by pillar');
     h += block(0, 'O2S Utilization Index', '', utilBody());
-    if (showEq) h += '<section class="ct3-blk"><header><div><h2>Equipment time utilization by asset type</h2></div></header>' + U.eq.map(function (a) { return barRow(a.n, '', a.t, UTIL_TARGET.Equipment, fp(a.t, 0), a.t >= UTIL_TARGET.Equipment ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
-    if (showPs) h += '<section class="ct3-blk"><header><div><h2>Billable utilization by product line</h2></div></header>' + U.ps.map(function (a) { return barRow(a.n, '', a.u, UTIL_TARGET['Professional services'], fp(a.u, 0), a.u >= UTIL_TARGET['Professional services'] ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
+    if (showEq) h += '<section class="ct3-blk"><header><div><h2>Equipment</h2><div class="ct3-q">By asset type</div></div></header><div class="ct3-two"><div><div class="ct3-ct">Time utilization</div>' +
+      U.eq.map(function (a) { return barRow(a.n, '', a.t, tg.Equipment, fp(a.t, 0), a.t >= tg.Equipment ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</div><div><div class="ct3-ct">Financial utilization</div>' +
+      U.eq.map(function (a) { return barRow(a.n, '', a.fi, null, fp(a.fi, 0), 'ct3-fn'); }).join('') + '</div></div></section>';
+    if (showPs) h += '<section class="ct3-blk"><header><div><h2>Professional services</h2><div class="ct3-q">Billable utilization by product line</div></div></header>' + U.ps.map(function (a) { return barRow(a.n, '', a.u, tg['Professional services'], fp(a.u, 0), a.u >= tg['Professional services'] ? 'ct3-fg' : 'ct3-fb2'); }).join('') + '</section>';
     return h;
   }
 
@@ -20687,7 +20691,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       '.ct3-pop{position:absolute;top:calc(100% + 8px);left:0;min-width:220px;max-height:320px;overflow-y:auto;background:#fff;border:1px solid var(--g200);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.06);padding:6px;animation:ct3pop .14s ease-out;z-index:40}@keyframes ct3pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}.ct3-pt{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--g400);padding:6px 10px 4px}.ct3-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--g700)}.ct3-opt:hover{background:var(--g100)}.ct3-opt.on{font-weight:650;background:var(--g50);color:var(--g900)}.ct3-opt svg{color:#dc1d34;flex-shrink:0}' +
       '.ct3-clr{font-size:12.5px;font-weight:600;color:var(--g600);padding:7px 12px;border-radius:999px}.ct3-clr:hover{background:rgba(24,24,27,.07);color:var(--g900)}' +
       '.ct3-blk{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:16px 18px;margin-bottom:16px}.ct3-blk>header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.ct3-blk h2{font-size:15px;font-weight:700;letter-spacing:-.01em}.ct3-q{font-size:12px;color:var(--g500);margin-top:2px}.ct3-sp{flex:1}.ct3-bn{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--charcoal);color:#fff;font-size:12px;font-weight:700;flex-shrink:0}.ct3-ha{display:flex;gap:8px;align-items:center}' +
-      '.ct3-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}.ct3-t2{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-tile{border:1px solid var(--g200);border-radius:9px;padding:12px 14px;background:#fff}.ct3-tl{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--g600)}.ct3-tl>span{flex:1}.ct3-tv{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:5px 0 2px;font-variant-numeric:tabular-nums}.ct3-ts{font-size:11.5px;color:var(--g500)}' +
+      '.ct3-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}.ct3-t2{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-t4{grid-template-columns:repeat(4,minmax(0,1fr))}.ct3-tile{border:1px solid var(--g200);border-radius:9px;padding:12px 14px;background:#fff}.ct3-tl{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--g600)}.ct3-tl>span{flex:1}.ct3-tv{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:5px 0 2px;font-variant-numeric:tabular-nums}.ct3-ts{font-size:11.5px;color:var(--g500)}' +
       '.ct3-good{color:#15803d!important}.ct3-bad{color:#b91c1c!important}.ct3-i{font-size:13px;color:var(--g400);padding:0 2px;line-height:1}.ct3-i:hover,.ct3-cam:hover{color:var(--g900)}.ct3-cam{display:inline-flex;align-items:center;gap:5px;color:var(--g400);padding:2px 3px}.ct3-camb{height:32px;padding:0 12px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:12.5px;font-weight:600}.ct3-camb span{color:var(--g400);font-weight:600}' +
       '.ct3-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.ct3-ct{font-size:12px;font-weight:700;color:var(--g700);margin-bottom:8px;display:flex;align-items:center;gap:6px}' +
       '.ct3-br{display:grid;grid-template-columns:minmax(110px,190px) 1fr 74px;gap:10px;align-items:center;margin:7px 0;font-size:12.5px}.ct3-bl small{display:block;font-size:10.5px;color:var(--g400)}.ct3-bt{height:12px;background:var(--g100);border-radius:6px;position:relative}.ct3-bf{height:100%;border-radius:6px;background:var(--g400)}.ct3-fg{background:#16a34a}.ct3-fb2{background:#dc2626}.ct3-fn{background:#71717a}.ct3-bm{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--g900)}.ct3-bv{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}' +
