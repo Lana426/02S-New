@@ -20357,15 +20357,21 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     O3: { n: 'Professional services billable utilization', k: 'p', plain: 'Share of available hours billed to clients.', formula: 'Billable hours ÷ available hours.', cut: 'Product line × region' },
     C1: { n: 'Respond time', k: 'd', plain: 'How long a request waits before 02S picks it up.', formula: 'Median days a delivery plan unit (DPU) spends in Draft, from request to first response.', cut: 'Pillar × product line × service center' },
     C2: { n: 'Close time', k: 'd', plain: 'How long a request takes from submission to completion.', formula: 'Median days from request to Completed / Closed, summed across the DPU’s states.', cut: 'Pillar × product line × service center' },
-    C3: { n: 'Bill time', k: 'd', plain: 'How long a completed request waits to be billed.', formula: 'Median days in Completed / Closed until the bill is issued.', cut: 'Pillar × product line × service center' },
+    K1: { n: 'Cost to date', k: 'm', plain: 'Total cost of delivering the revenue earned so far.', formula: 'Revenue − operating profit, including allocated G&A.', cut: 'Pillar × product line × region × business unit' },
+    K2: { n: 'Profit to date', k: 'm', plain: 'Operating profit after overhead so far this year.', formula: 'Gross margin − allocated G&A.', cut: 'Pillar × product line × region × business unit' },
+    K3: { n: 'Full-year cost outlook', k: 'm', plain: 'Where cost ends the year at the current pace.', formula: 'Full-year revenue outlook − full-year profit outlook.', cut: 'Pillar × product line × region × business unit' },
+    K4: { n: 'Full-year profit outlook', k: 'm', plain: 'Where operating profit ends the year at the current pace.', formula: 'Full-year gross margin outlook − allocated G&A.', cut: 'Pillar × product line × region × business unit' },
+    T1: { n: 'Opportunities tied to CMiC jobs', k: 'p', plain: 'Share of opportunities matched to their CMiC job.', formula: 'Opportunities with a CMiC job ÷ all opportunities.', cut: 'Pillar × region' },
+    T2: { n: 'Opportunities with an execution plan', k: 'p', plain: 'Share of tied opportunities that have an execution plan.', formula: 'Opportunities with an execution plan ÷ opportunities tied to a CMiC job.', cut: 'Pillar × product line' },
+    T3: { n: 'Sold vs planned gap', k: 'm', plain: 'Sold value that did not carry into the execution plan.', formula: 'Sold value − execution plan value, for opportunities with a plan.', cut: 'Pillar × product line' },
     O4: { n: 'O2S Utilization Index', k: 'i', plain: 'How hard each pillar’s people and assets work against its target.', formula: 'Utilization ÷ pillar target, averaged across pillars. 100 = on target.', cut: 'Pillar' }
   };
   var TABS = {
-    overview: { n: 'Overview', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'O1', 'O2', 'O3', 'O4', 'C1', 'C2', 'C3'] },
-    financial: { n: 'Financial', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'] },
-    demand: { n: 'Demand & adoption', m: ['D2', 'D3'] },
+    overview: { n: 'Overview', m: ['F1', 'K1', 'K2', 'F4', 'K3', 'K4', 'O1', 'O2', 'O3', 'O4', 'C1', 'C2', 'T1', 'T2', 'T3'] },
+    financial: { n: 'Financial', m: ['F1', 'K1', 'K2', 'F4', 'K3', 'K4', 'F2', 'F3', 'F5', 'F6'] },
+    demand: { n: 'Demand & adoption', m: ['D2', 'D3', 'T1', 'T2', 'T3'] },
     operational: { n: 'Operational', m: ['O1', 'O2', 'O3', 'O4'] },
-    service: { n: 'Service', m: ['C1', 'C2', 'C3'] }
+    service: { n: 'Service', m: ['C1', 'C2'] }
   };
   var DEF_F = { period: 'ytd', compare: 'aop', region: 'All', bu: 'All', pillar: 'All', pl: 'All', ptype: 'All', sc: 'All', tier: 'All' };
   var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {} };
@@ -20465,7 +20471,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var avg = function (a, k) { return a.length ? a.reduce(function (x, y) { return x + y[k]; }, 0) / a.length : 0; };
     return { eq: eq, ps: ps, eqT: avg(eq, 't'), eqF: avg(eq, 'fi'), psU: avg(ps, 'u') };
   }
-  var SVC_STATES = ['Draft', 'In Scoping / Pricing', 'Pending Approval', 'Approved', 'Released to Order', 'Fulfilled / Delivered', 'Completed / Closed'];
+  var SVC_STATES = ['Draft', 'In Scoping / Pricing', 'Pending Approval', 'Approved', 'Released to Order', 'Fulfilled / Delivered'];
+  var LIMIT_DPU = 250;
   var SVC_BASE = { 'Equipment': [.5, 1.8, 1.6, .8, 5.2, 2.0, 3.2], 'Prefab': [.9, 3.2, 2.4, 1.5, 11.5, 2.6, 4.1], 'Professional services': [.7, 2.4, 2.0, .6, 8.3, 1.9, 3.6], 'Logistics': [.4, 1.4, 1.2, .7, 3.6, 1.5, 2.8], 'Procurement': [.6, 2.0, 2.2, .5, 9.4, 2.3, 3.9] };
   var SVC_DPU = { 'Equipment': 62, 'Prefab': 28, 'Professional services': 24, 'Logistics': 36, 'Procurement': 30 };
   var TREND = [1.10, 1.09, 1.07, 1.06, 1.04, 1.02, 1.0, .98, .97, .95];
@@ -20479,14 +20486,31 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var states = SVC_STATES.map(function () { return 0; }), wsum = 0, n = 0, rows = [];
     PILLARS.forEach(function (p) {
       if (f.pillar !== 'All' && f.pillar !== p.k) return;
-      var w = SVC_DPU[p.k] * rw * ms.length * (f.pl !== 'All' ? .35 : 1), d = SVC_BASE[p.k].map(function (x) { return x * pf * rmod * plm; });
+      var w = SVC_DPU[p.k] * rw * ms.length * (f.pl !== 'All' ? .35 : 1), d = SVC_BASE[p.k].slice(0, 6).map(function (x) { return x * pf * rmod * plm; });
       d.forEach(function (x, i) { states[i] += x * w; }); wsum += w; n += Math.round(w);
-      rows.push({ k: p.k, r: d[0], c: d.slice(0, 6).reduce(function (a, b) { return a + b; }, 0), b: d[6], n: Math.round(w) });
+      rows.push({ k: p.k, r: d[0], c: d.reduce(function (a, b) { return a + b; }, 0), n: Math.round(w) });
     });
     states = states.map(function (x) { return wsum ? x / wsum : 0; });
-    var close = states.slice(0, 6).reduce(function (a, b) { return a + b; }, 0), k = prior / pf;
+    var close = states.reduce(function (a, b) { return a + b; }, 0), k = prior / pf;
     var series = TREND.map(function (t) { return close / pf * t; });
-    return { states: states, respond: states[0], close: close, bill: states[6], n: n, rows: rows, series: series, dRespond: states[0] * (k - 1) / k, dClose: close * (k - 1) / k, dBill: states[6] * (k - 1) / k };
+    return { states: states, respond: states[0], close: close, n: n, rows: rows, series: series, dRespond: states[0] * (k - 1) / k, dClose: close * (k - 1) / k };
+  }
+  var TIE_BASE = { 'Equipment': .70, 'Prefab': .60, 'Professional services': .55, 'Logistics': .66, 'Procurement': .50 };
+  function tieData(f) {
+    var save = CT3.f; CT3.f = f; var P, tot = 0, tied = 0, fy = 0, sh = 0;
+    try {
+      P = pipe(baseO()); var all = ct3Agg({}), allFy = 0; for (var i = 0; i < 12; i++) allFy += all.aop[i];
+      PILLARS.forEach(function (p) {
+        if (f.pillar !== 'All' && f.pillar !== p.k) return;
+        var a = ct3Agg(baseO({ pillar: p.k })), v = 0; for (var j = 0; j < 12; j++) v += a.aop[j];
+        var reg = f.region !== 'All' ? REG.filter(function (g) { return g.k === f.region; })[0].f - 1 : 0;
+        tot += v; tied += v * Math.min(.95, TIE_BASE[p.k] + reg * .5); fy += v;
+      });
+      sh = allFy ? fy / allFy : 0;
+    } finally { CT3.f = save; }
+    var cnt = P.cnt, tiedP = tot ? tied / tot : 0, eps = Math.round(5 * sh), tiedCnt = Math.round(cnt * tiedP);
+    var soldEp = tiedCnt ? P.sold * eps / tiedCnt : 0;
+    return { opps: cnt, tied: tiedP, tiedCnt: tiedCnt, eps: eps, ep: tiedCnt ? eps / tiedCnt : 0, soldEp: soldEp, gap: soldEp * .14 };
   }
   function indexOf(f) {
     var U = utilData(f), parts = [];
@@ -20502,7 +20526,10 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       else if (id === 'F4' || id === 'F5' || id === 'F6') { O = ct3Out(baseO()); v = id === 'F4' ? O.out : id === 'F5' ? O.gmOut : O.gap; }
       else if (id === 'D2') { P = pipe(baseO()); v = P.sold / P.planned; }
       else if (id === 'D3') v = attach(baseO());
-      else if (id === 'C1' || id === 'C2' || id === 'C3') { var sd = svcData(f); v = id === 'C1' ? sd.respond : id === 'C2' ? sd.close : sd.bill; }
+      else if (id === 'C1' || id === 'C2') { var sd = svcData(f); v = id === 'C1' ? sd.respond : sd.close; }
+      else if (id === 'K1' || id === 'K2') { S = ct3Sum(baseO()); v = id === 'K1' ? S.rev - S.op : S.op; }
+      else if (id === 'K3' || id === 'K4') { O = ct3Out(baseO()); var fp4 = O.gmOut - O.out * GA_ACT; v = id === 'K4' ? fp4 : O.out - fp4; }
+      else if (id === 'T1' || id === 'T2' || id === 'T3') { var T = tieData(f); v = id === 'T1' ? T.tied : id === 'T2' ? T.ep : T.gap; }
       else if (id === 'O1') v = utilData(f).eqT;
       else if (id === 'O2') v = utilData(f).eqF;
       else if (id === 'O3') v = utilData(f).psU;
@@ -20510,7 +20537,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     } finally { CT3.f = save; }
     return v;
   }
-  function fmtv(id, v) { var k = MET[id].k; if (k === 'd') return v.toFixed(1) + ' d'; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O2' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
+  function fmtv(id, v) { var k = MET[id].k; if (id === 'T1') return fp(v, 0); if (k === 'd') return v.toFixed(1) + ' d'; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O2' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
   function fdelta(id, d) { var k = MET[id].k; if (k === 'd') return (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' d'; return k === 'm' ? fsm(d) : k === 'p' ? (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(1) + ' pp' : (d >= 0 ? '+' : '−') + Math.abs(Math.round(d)); }
 
   /* ───────── snapshots ───────── */
@@ -20561,8 +20588,9 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
 
   /* ───────── parts ───────── */
-  function tile(id, val, sub, cls) {
-    return '<div class="ct3-tile"><div class="ct3-tl"><span>' + MET[id].n + '</span><button class="ct3-i" title="Definition" onclick="ct3Info(\'' + id + '\')">ⓘ</button>' + camBtn('m:' + id) + '</div><div class="ct3-tv">' + val + '</div><div class="ct3-ts ' + (cls || '') + '">' + sub + '</div></div>';
+  function warnLine(t) { return '<div class="ct3-wn"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/></svg>' + t + '</div>'; }
+  function tile(id, val, sub, cls, warn) {
+    return '<div class="ct3-tile"><div class="ct3-tl"><span>' + MET[id].n + '</span><button class="ct3-i" title="Definition" onclick="ct3Info(\'' + id + '\')">ⓘ</button>' + camBtn('m:' + id) + '</div><div class="ct3-tv">' + val + '</div><div class="ct3-ts ' + (cls || '') + '">' + sub + '</div>' + (warn ? warnLine(warn) : '') + '</div>';
   }
   function barRow(label, sub, pct, marker, valTxt, cls) {
     var w = Math.max(0, Math.min(140, pct * 100));
@@ -20646,24 +20674,30 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var DIM_NAME = { pillar: 'Pillar', pl: 'Product line', region: 'Region / NP', bu: 'Business unit', ptype: 'Project type' };
   var DIM_NEXT = { pillar: 'pl', pl: 'region', region: 'bu', bu: 'ptype', ptype: 'pillar' };
 
+  function spark(vals, w, h) {
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals), r = mx - mn || 1;
+    var pts = vals.map(function (v, i) { return (i * (w - 4) / (vals.length - 1) + 2).toFixed(1) + ',' + (h - 3 - (v - mn) / r * (h - 8)).toFixed(1); }).join(' ');
+    return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" class="ct3-spk" preserveAspectRatio="none" aria-hidden="true"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>';
+  }
+  function qcard(q, big, unit, chip, tn, stats, vals, go, warn) {
+    return '<button class="ct3-qc" onclick="ctNav(\'' + go + '\')"><div class="ct3-qq">' + q + '</div><div class="ct3-qb"><span class="ct3-qv">' + big + '</span><span class="ct3-qu">' + unit + '</span></div>' +
+      '<div class="ct3-qch ' + tn + '">' + chip + '</div>' + spark(vals, 220, 38) + '<div class="ct3-qs">' + stats.map(function (x) { return '<div><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>' + (warn ? warnLine(warn) : '') + '<div class="ct3-qg">Details →</div></button>';
+  }
   function scOverview() {
-    var f = CT3.f, S = ct3Sum(baseO()), O = ct3Out(baseO());
+    var f = CT3.f, S = ct3Sum(baseO()), O = ct3Out(baseO()), sd = svcData(f), U = utilData(f), idx = indexOf(f), T = tieData(f);
+    var K1 = S.rev - S.op, K3p = O.gmOut - O.out * GA_ACT;
+    var sum = 'O2S is ' + (S.gap >= 0 ? 'ahead of' : 'behind') + ' plan year to date (' + fsp(S.rev / S.aop - 1) + '), expected to finish ' + fsp(Math.abs(O.gap / O.fyAop)).replace('+', '') + (O.gap >= 0 ? ' above' : ' below') + ' AOP, with utilization at ' + Math.round(idx) + '% of target and requests closing in ' + sd.close.toFixed(1) + ' days.';
     var h = head('overview', 'O2S performance', 'Data as of ' + ASOF);
-    var dim = f.pl !== 'All' ? 'region' : f.pillar !== 'All' ? 'pl' : 'pillar', rows = groupList(dim);
-    var b1 = '<div class="ct3-tiles">' + tile('F1', fm(S.rev), fsp(S.rev / S.aop - 1) + ' · ' + fsm(S.gap) + ' vs ' + COMPARES[f.compare][0], tone(S.gap)) +
-      tile('F2', fp(S.gmP), fbps(S.gmP - S.gmT) + ' vs ' + fp(S.gmT) + ' target', tone(S.gmP - S.gmT)) + tile('F3', fp(S.opP), fbps(S.opP - S.opT) + ' vs ' + fp(S.opT) + ' plan', tone(S.opP - S.opT)) + '</div>';
-    b1 += '<div class="ct3-ct">Revenue vs plan by ' + DIM_NAME[dim].toLowerCase() + '</div>' + rows.map(function (g) { var s = ct3Sum(baseO(g.o)), r = s.aop ? s.rev / s.aop : 0; return barRow(g.k, fm(s.rev) + ' of ' + fm(s.aop), r, 1, fsp(r - 1), r >= 1 ? 'ct3-fg' : 'ct3-fb2'); }).join('');
-    h += block(1, 'Plan to date', 'Where are we against plan so far this year?', b1, 'financial', 'Financial');
-    var act = [], aop = [], proj = [];
-    for (var i = 0; i < 12; i++) { act.push(i < YTD ? O.series.act[i] : null); aop.push(O.series.aop[i]); proj.push(i >= YTD - 1 ? (i === YTD - 1 ? O.series.act[i] : O.rr) : null); }
-    var b2 = '<div class="ct3-tiles">' + tile('F4', fm(O.out), 'Run rate ' + fm(O.rr) + '/mo', '') + tile('F5', fm(O.gmOut), fp(O.gmP) + ' margin', '') + tile('F6', fsm(O.gap), fsp(O.gap / O.fyAop) + ' vs ' + fm(O.fyAop) + ' AOP', tone(O.gap)) + '</div>' +
-      '<div class="ct3-ct">Monthly revenue ($M)<span class="ct3-sp"></span>Run rate ' + seg('method', [['ytd', 'YTD'], ['3m', '3-month'], ['1m', '1-month']], CT3.method) + '</div>' +
-      line([{ v: aop, c: '#a0a0a6', w: 1.5, dash: '4 3' }, { v: act, c: '#18181b' }, { v: proj, c: '#dc1d34', dash: '5 3' }], 900, 210) +
-      '<div class="ct3-lg"><span><i style="background:#18181b"></i>Actual</span><span><i style="background:#dc1d34"></i>Run-rate outlook</span><span><i style="background:#a0a0a6"></i>AOP</span></div>';
-    h += block(2, 'Full-year outlook', 'Where will we end the year?', b2, 'financial', 'Financial');
-    h += block(3, 'O2S Utilization Index', 'How hard are resources working against each pillar’s target?', utilBody(), 'operational', 'Operational');
-    h += block(4, 'Service cycle times', 'Are we turning requests around quickly?', svcTiles(null, svcData(f)), 'service', 'Service');
-    return h;
+    h += '<div class="ct3-sum">' + sum + '</div><div class="ct3-qcs">';
+    var rev = O.series.act.slice(0, YTD), proj = rev.concat([O.rr, O.rr]);
+    var utl = []; for (var m = 0; m < YTD; m++) utl.push(idx * (.94 + .06 * m / (YTD - 1) + .012 * Math.sin(m * 1.3)));
+    var tie = []; for (var k = 0; k < YTD; k++) tie.push(T.tied * (.72 + .28 * k / (YTD - 1)));
+    h += qcard('How are we performing year to date?', fm(S.rev), 'revenue', fsp(S.rev / S.aop - 1) + ' vs plan', tone(S.gap), [['Cost', fm(K1)], ['Profit', fm(S.op)]], rev, 'financial');
+    h += qcard('Where are we heading?', fm(O.out), 'full-year revenue', fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap), [['Cost', fm(O.out - K3p)], ['Profit', fm(K3p)]], proj, 'financial');
+    h += qcard('Are we utilized as expected?', String(Math.round(idx)), 'index', idx >= 100 ? 'At or above target' : Math.round(100 - idx) + ' pts below target', tone(idx - 100), [['Equipment', fp(U.eqT, 0)], ['Prof. services', fp(U.psU, 0)]], utl, 'operational');
+    h += qcard('Are we turning requests around quickly?', sd.close.toFixed(1), 'days to close', Math.abs(sd.dClose) < .05 ? 'In line with prior' : (sd.dClose > 0 ? '−' : '+') + Math.abs(sd.dClose).toFixed(1) + ' d vs prior', tone(sd.dClose), [['Respond', sd.respond.toFixed(1) + ' d'], ['DPUs', sd.n.toLocaleString()]], sd.series.slice(0, YTD), 'service', sd.n < LIMIT_DPU ? 'Based on ' + sd.n + ' DPUs · limited data' : '');
+    h += qcard('Are opportunities tied to execution plans?', fp(T.tied, 0), 'tied to CMiC jobs', fp(T.ep, 0) + ' have an execution plan', T.eps < 10 ? 'ct3-neu' : tone(T.ep - .5), [['Sold vs planned gap', fm(T.gap)], ['Opportunities', T.opps.toLocaleString()]], tie, 'demand', T.eps < 10 ? 'Based on ' + T.eps + ' execution plans · limited data' : '');
+    return h + '</div>';
   }
   function utilBody() {
     var f = CT3.f, U = utilData(f), showEq = f.pillar === 'All' || f.pillar === 'Equipment', showPs = f.pillar === 'All' || f.pillar === 'Professional services';
@@ -20673,10 +20707,11 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     return b;
   }
   function scFinancial() {
-    var S = ct3Sum(baseO()), O = ct3Out(baseO()), f = CT3.f;
+    var S = ct3Sum(baseO()), O = ct3Out(baseO()), K3p = O.gmOut - O.out * GA_ACT;
     var h = head('financial', 'Financial', 'Plan to date and full-year outlook', '<button class="btn btn-ghost btn-sm" onclick="ct3Copy()">Copy as table</button>');
-    h += '<div class="ct3-tiles">' + tile('F1', fm(S.rev), fsp(S.rev / S.aop - 1) + ' · ' + fsm(S.gap) + ' vs plan', tone(S.gap)) + tile('F2', fp(S.gmP), fbps(S.gmP - S.gmT) + ' vs target', tone(S.gmP - S.gmT)) + tile('F3', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan', tone(S.opP - S.opT)) +
-      tile('F4', fm(O.out), 'Run rate ' + fm(O.rr) + '/mo', '') + tile('F5', fm(O.gmOut), fp(O.gmP) + ' margin', '') + tile('F6', fsm(O.gap), fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap)) + '</div>';
+    h += '<div class="ct3-ct">Year to date</div><div class="ct3-tiles">' + tile('F1', fm(S.rev), fsp(S.rev / S.aop - 1) + ' · ' + fsm(S.gap) + ' vs plan', tone(S.gap)) + tile('K1', fm(S.rev - S.op), fp(1 - S.gmP) + ' of revenue direct', '') + tile('K2', fm(S.op), fp(S.opP) + ' margin · ' + fbps(S.opP - S.opT) + ' vs plan', tone(S.opP - S.opT)) + '</div>';
+    h += '<div class="ct3-ct">Full-year outlook<span class="ct3-sp"></span>Run rate ' + seg('method', [['ytd', 'YTD'], ['3m', '3-month'], ['1m', '1-month']], CT3.method) + '</div><div class="ct3-tiles">' + tile('F4', fm(O.out), 'Run rate ' + fm(O.rr) + '/mo', '') + tile('K3', fm(O.out - K3p), fp(1 - O.gmP) + ' of revenue direct', '') + tile('K4', fm(K3p), fp(O.out ? K3p / O.out : 0) + ' margin', '') + '</div>';
+    h += '<div class="ct3-ct">Margin and plan gap</div><div class="ct3-tiles ct3-t4">' + tile('F2', fp(S.gmP), fbps(S.gmP - S.gmT) + ' vs target', tone(S.gmP - S.gmT)) + tile('F3', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan', tone(S.opP - S.opT)) + tile('F5', fm(O.gmOut), fp(O.gmP) + ' margin', '') + tile('F6', fsm(O.gap), fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap)) + '</div>';
     h += '<section class="ct3-blk"><header><div><h2>By ' + DIM_NAME[CT3.view].toLowerCase() + '</h2></div><span class="ct3-sp"></span>' + seg('view', [['pillar', 'Pillar'], ['pl', 'Product line'], ['region', 'Region'], ['bu', 'Business unit'], ['ptype', 'Project type']], CT3.view) + '</header>' + finTable(CT3.view) + '</section>';
     return h;
   }
@@ -20696,6 +20731,9 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     h += '<div class="ct3-two"><section class="ct3-blk"><header><div><h2>Conversion by tier</h2></div></header><table class="ct3-t"><thead><tr><th>Pursuit tier</th><th>Planned</th><th>Sold</th><th>Conversion</th></tr></thead><tbody>' +
       P.tiers.map(function (t) { var pl = P.fy * 1.3 * P.share[t]; return '<tr><td><b>' + t + '</b></td><td>' + fm(pl) + '</td><td>' + fm(pl * P.conv[t]) + '</td><td>' + fp(P.conv[t], 0) + '</td></tr>'; }).join('') + '</tbody></table></section>' +
       '<section class="ct3-blk"><header><div><h2>Attach rate by pillar</h2></div></header>' + PILLARS.filter(function (p) { return f.pillar === 'All' || f.pillar === p.k; }).map(function (p) { var a = attach(baseO({ pillar: p.k, pl: 'All' })); return barRow(p.k, '', a, null, fp(a, 0), 'ct3-fn'); }).join('') + '</section></div>';
+    var T = tieData(f), lw = T.eps < 10 ? 'Based on ' + T.eps + ' execution plans · limited data' : '';
+    h += '<section class="ct3-blk"><header><div><h2>Opportunity to execution plan</h2><div class="ct3-q">How far opportunities carry through to a plan</div></div></header><div class="ct3-tiles">' + tile('T1', fp(T.tied, 0), T.tiedCnt.toLocaleString() + ' of ' + T.opps.toLocaleString() + ' opportunities', '') + tile('T2', fp(T.ep, 0), T.eps + ' of ' + T.tiedCnt.toLocaleString() + ' tied opportunities', '', lw) + tile('T3', fm(T.gap), 'of ' + fm(T.soldEp) + ' sold with a plan', '', lw) + '</div>' +
+      barRow('Opportunities', '', 1, null, T.opps.toLocaleString(), 'ct3-fn') + barRow('Tied to a CMiC job', '', T.tied, null, T.tiedCnt.toLocaleString(), 'ct3-fn') + barRow('With an execution plan', '', T.ep * T.tied, null, T.eps.toLocaleString(), 'ct3-fg') + '</section>';
     return h;
   }
   function scOperational() {
@@ -20710,8 +20748,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
 
   function svcTiles(S, sd) {
-    var dl = function (d) { return Math.abs(d) < .05 ? 'In line with prior' : (d < 0 ? '−' : '+') + Math.abs(d).toFixed(1) + ' d vs prior'; };
-    return '<div class="ct3-tiles">' + tile('C1', sd.respond.toFixed(1) + ' d', dl(-sd.dRespond), tone(sd.dRespond)) + tile('C2', sd.close.toFixed(1) + ' d', dl(-sd.dClose), tone(sd.dClose)) + tile('C3', sd.bill.toFixed(1) + ' d', dl(-sd.dBill), tone(sd.dBill)) + '</div>';
+    var dl = function (d) { return Math.abs(d) < .05 ? 'In line with prior' : (d < 0 ? '−' : '+') + Math.abs(d).toFixed(1) + ' d vs prior'; }, w = sd.n < LIMIT_DPU ? 'Based on ' + sd.n + ' DPUs · limited data' : '';
+    return '<div class="ct3-tiles ct3-t2">' + tile('C1', sd.respond.toFixed(1) + ' d', dl(-sd.dRespond), tone(sd.dRespond), w) + tile('C2', sd.close.toFixed(1) + ' d', dl(-sd.dClose), tone(sd.dClose), w) + '</div>';
   }
   function scService() {
     var f = CT3.f, sd = svcData(f), h = head('service', 'Service', 'Cycle times from delivery plan states · ' + sd.n.toLocaleString() + ' DPUs');
@@ -20721,8 +20759,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       sd.states.map(function (d, i) { return barRow(SVC_STATES[i], '', d / mx, null, d.toFixed(1) + ' d', 'ct3-fn'); }).join('') + '</section>' +
       '<section class="ct3-blk"><header><div><h2>Close time by month</h2><div class="ct3-q">Median days, request to closed</div></div></header>' +
       line([{ v: sd.series.concat([null, null]), c: '#18181b' }], 560, 200) + '</section></div>';
-    h += '<section class="ct3-blk"><header><div><h2>By pillar</h2></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar</th><th>Respond</th><th>Close</th><th>Bill</th><th>DPUs</th></tr></thead><tbody>' +
-      sd.rows.map(function (r) { return '<tr class="ct3-dr" onclick="ct3Set(\'pillar\',\'' + jsq(r.k) + '\')"><td><b>' + r.k + '</b></td><td>' + r.r.toFixed(1) + ' d</td><td>' + r.c.toFixed(1) + ' d</td><td>' + r.b.toFixed(1) + ' d</td><td>' + r.n.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></section>';
+    h += '<section class="ct3-blk"><header><div><h2>By pillar</h2></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar</th><th>Respond</th><th>Close</th><th>DPUs</th></tr></thead><tbody>' +
+      sd.rows.map(function (r) { return '<tr class="ct3-dr" onclick="ct3Set(\'pillar\',\'' + jsq(r.k) + '\')"><td><b>' + r.k + '</b></td><td>' + r.r.toFixed(1) + ' d</td><td>' + r.c.toFixed(1) + ' d</td><td>' + r.n.toLocaleString() + (r.n < LIMIT_DPU ? ' <span class="ct3-tag ct3-lim">limited</span>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div></section>';
     return h;
   }
 
@@ -20746,8 +20784,9 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       '.ct3-svg{width:100%;height:auto}.ct3-lg{display:flex;gap:14px;font-size:11px;color:var(--g500);margin-top:4px}.ct3-lg i{display:inline-block;width:10px;height:3px;margin-right:5px;vertical-align:middle}.ct3-seg{display:inline-flex;background:var(--g100);border-radius:7px;padding:2px}.ct3-seg button{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:5px;color:var(--g600)}.ct3-seg button.on{background:#fff;color:var(--g900);box-shadow:0 1px 2px rgba(0,0,0,.1)}' +
       '.ct3-tw{overflow-x:auto}.ct3-t{width:100%;border-collapse:collapse;font-size:12.5px}.ct3-t th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--g500);font-weight:700;padding:7px 10px;border-bottom:1px solid var(--g200);white-space:nowrap}.ct3-t td{padding:9px 10px;border-bottom:1px solid var(--g100);vertical-align:top;font-variant-numeric:tabular-nums}.ct3-t td small{display:block;font-size:10.5px;color:var(--g400);font-weight:400}.ct3-dr{cursor:pointer}.ct3-dr:hover td{background:var(--g50)}.ct3-tot td{background:var(--g50);border-top:1px solid var(--g250)}.ct3-fn2{font-size:11px;color:var(--g400);margin-top:6px}' +
       '.ct3-tag{display:inline-flex;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:5px;background:var(--g100);color:var(--g600)}.ct3-av{background:#dcfce7;color:#166534}.ct3-mi p{font-size:12.5px;color:var(--g700)}.ct3-mi h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--g500);margin:12px 0 4px}.ct3-sn-r{margin-bottom:10px}.ct3-sq{border:1px solid var(--g200);border-radius:9px;padding:10px 12px;margin-bottom:10px}.ct3-sqh{display:flex;align-items:center;gap:8px;font-size:13px}.ct3-sq .ct3-t{margin-top:8px}' +
+      '.ct3-sum{font-size:17px;line-height:1.5;font-weight:550;letter-spacing:-.01em;color:var(--g900);max-width:900px;margin:2px 0 20px}.ct3-qcs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}.ct3-qcs>.ct3-qc{grid-column:span 2}.ct3-qcs>.ct3-qc:nth-child(n+4){grid-column:span 3}.ct3-qc{text-align:left;background:#fff;border:1px solid var(--g200);border-radius:16px;padding:18px 20px 14px;display:flex;flex-direction:column;gap:10px;transition:box-shadow .18s,transform .18s,border-color .18s;color:var(--g900)}.ct3-qc:hover{box-shadow:0 10px 30px rgba(0,0,0,.09);transform:translateY(-2px);border-color:var(--g300)}.ct3-qq{font-size:12.5px;font-weight:600;color:var(--g500)}.ct3-qb{display:flex;align-items:baseline;gap:8px}.ct3-qv{font-size:38px;font-weight:720;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}.ct3-qu{font-size:12.5px;color:var(--g500)}.ct3-qch{align-self:flex-start;font-size:11.5px;font-weight:650;padding:3px 9px;border-radius:999px;background:var(--g100);color:var(--g600)}.ct3-qch.ct3-good{background:#dcfce7;color:#166534!important}.ct3-qch.ct3-bad{background:#fee2e2;color:#991b1b!important}.ct3-spk{color:var(--g400);width:100%;height:38px}.ct3-qs{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid var(--g100);padding-top:10px}.ct3-qs span{display:block;font-size:11px;color:var(--g500)}.ct3-qs b{font-size:14px;font-variant-numeric:tabular-nums}.ct3-qg{font-size:12px;font-weight:600;color:var(--g500);margin-top:auto}.ct3-qc:hover .ct3-qg{color:var(--g900)}.ct3-wn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:4px 8px;margin-top:8px}.ct3-lim{background:#fef3c7;color:#92400e}' +
       '.ct3-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--charcoal);color:#fff;padding:9px 16px;border-radius:8px;font-size:12.5px;z-index:100001}' +
-      '@media (max-width:1100px){.ct3-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-two{grid-template-columns:1fr}}';
+      '@media (max-width:1100px){.ct3-qcs{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-qcs>.ct3-qc,.ct3-qcs>.ct3-qc:nth-child(n+4){grid-column:auto}.ct3-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ct3-two{grid-template-columns:1fr}}';
     document.head.appendChild(s);
   }
   function ct3Build() {
