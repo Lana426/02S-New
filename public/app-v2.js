@@ -20355,13 +20355,17 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     O1: { n: 'Equipment time utilization', k: 'p', plain: 'How much of the time equipment is out earning.', formula: 'Hours in use ÷ hours available.', cut: 'Asset type × product line' },
     O2: { n: 'Equipment financial utilization', k: 'p', plain: 'How much of what the equipment could earn at standard rates it actually earns.', formula: 'Actual revenue ÷ potential revenue if the asset were on rent at standard rates.', cut: 'Asset type × product line' },
     O3: { n: 'Professional services billable utilization', k: 'p', plain: 'Share of available hours billed to clients.', formula: 'Billable hours ÷ available hours.', cut: 'Product line × region' },
+    C1: { n: 'Respond time', k: 'd', plain: 'How long a request waits before 02S picks it up.', formula: 'Median days a delivery plan unit (DPU) spends in Draft, from request to first response.', cut: 'Pillar × product line × service center' },
+    C2: { n: 'Close time', k: 'd', plain: 'How long a request takes from submission to completion.', formula: 'Median days from request to Completed / Closed, summed across the DPU’s states.', cut: 'Pillar × product line × service center' },
+    C3: { n: 'Bill time', k: 'd', plain: 'How long a completed request waits to be billed.', formula: 'Median days in Completed / Closed until the bill is issued.', cut: 'Pillar × product line × service center' },
     O4: { n: 'O2S Utilization Index', k: 'i', plain: 'How hard each pillar’s people and assets work against its target.', formula: 'Utilization ÷ pillar target, averaged across pillars. 100 = on target.', cut: 'Pillar' }
   };
   var TABS = {
-    overview: { n: 'Overview', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'O1', 'O2', 'O3', 'O4'] },
+    overview: { n: 'Overview', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'O1', 'O2', 'O3', 'O4', 'C1', 'C2', 'C3'] },
     financial: { n: 'Financial', m: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'] },
     demand: { n: 'Demand & adoption', m: ['D2', 'D3'] },
-    operational: { n: 'Operational', m: ['O1', 'O2', 'O3', 'O4'] }
+    operational: { n: 'Operational', m: ['O1', 'O2', 'O3', 'O4'] },
+    service: { n: 'Service', m: ['C1', 'C2', 'C3'] }
   };
   var DEF_F = { period: 'ytd', compare: 'aop', region: 'All', bu: 'All', pillar: 'All', pl: 'All', ptype: 'All', sc: 'All', tier: 'All' };
   var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {} };
@@ -20369,10 +20373,12 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     overview: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
     financial: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
     demand: ['period', 'region', 'pillar', 'pl', 'tier'],
-    operational: ['period', 'region', 'sc', 'pillar', 'pl']
+    operational: ['period', 'region', 'sc', 'pillar', 'pl'],
+    service: ['period', 'region', 'sc', 'pillar', 'pl']
   };
   var WHY = {
     'demand.compare': 'Measured against AOP sales goals', 'demand.bu': 'Not tracked by business unit', 'demand.ptype': 'Not split by project type',
+    'service.compare': 'No service targets yet', 'service.bu': 'Tracked by service center', 'service.ptype': 'Not split by project type',
     'operational.compare': 'Measured against pillar targets', 'operational.bu': 'Tracked by service center', 'operational.ptype': 'Not split by project type'
   };
   var FLT_LABEL = { period: 'Period', compare: 'Compare to', region: 'Region / NP', bu: 'Business unit', pillar: 'Pillar', pl: 'Product line', ptype: 'Project type', sc: 'Service center', tier: 'Pursuit tier' };
@@ -20459,6 +20465,29 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var avg = function (a, k) { return a.length ? a.reduce(function (x, y) { return x + y[k]; }, 0) / a.length : 0; };
     return { eq: eq, ps: ps, eqT: avg(eq, 't'), eqF: avg(eq, 'fi'), psU: avg(ps, 'u') };
   }
+  var SVC_STATES = ['Draft', 'In Scoping / Pricing', 'Pending Approval', 'Approved', 'Released to Order', 'Fulfilled / Delivered', 'Completed / Closed'];
+  var SVC_BASE = { 'Equipment': [.5, 1.8, 1.6, .8, 5.2, 2.0, 3.2], 'Prefab': [.9, 3.2, 2.4, 1.5, 11.5, 2.6, 4.1], 'Professional services': [.7, 2.4, 2.0, .6, 8.3, 1.9, 3.6], 'Logistics': [.4, 1.4, 1.2, .7, 3.6, 1.5, 2.8], 'Procurement': [.6, 2.0, 2.2, .5, 9.4, 2.3, 3.9] };
+  var SVC_DPU = { 'Equipment': 62, 'Prefab': 28, 'Professional services': 24, 'Logistics': 36, 'Procurement': 30 };
+  var TREND = [1.10, 1.09, 1.07, 1.06, 1.04, 1.02, 1.0, .98, .97, .95];
+  function svcData(f) {
+    var ms = PERIODS[f.period][1], pf = 0; ms.forEach(function (m) { pf += TREND[m]; }); pf /= ms.length;
+    var prior; var shift = ms.map(function (m) { return m - ms.length; });
+    prior = shift.every(function (m) { return m >= 0; }) ? shift.reduce(function (a, m) { return a + TREND[m]; }, 0) / shift.length : 1.12;
+    var regs = REG.filter(function (g) { return f.region === 'All' || f.region === g.k; }), rw = regs.reduce(function (a, g) { return a + g.w; }, 0);
+    var rmod = regs.reduce(function (a, g) { return a + g.w * (1 - SC_MOD[g.k] * 1.5); }, 0) / rw;
+    var plm = f.pl !== 'All' ? 1 + Math.sin(hsh(f.pl)) * .08 : 1;
+    var states = SVC_STATES.map(function () { return 0; }), wsum = 0, n = 0, rows = [];
+    PILLARS.forEach(function (p) {
+      if (f.pillar !== 'All' && f.pillar !== p.k) return;
+      var w = SVC_DPU[p.k] * rw * ms.length * (f.pl !== 'All' ? .35 : 1), d = SVC_BASE[p.k].map(function (x) { return x * pf * rmod * plm; });
+      d.forEach(function (x, i) { states[i] += x * w; }); wsum += w; n += Math.round(w);
+      rows.push({ k: p.k, r: d[0], c: d.slice(0, 6).reduce(function (a, b) { return a + b; }, 0), b: d[6], n: Math.round(w) });
+    });
+    states = states.map(function (x) { return wsum ? x / wsum : 0; });
+    var close = states.slice(0, 6).reduce(function (a, b) { return a + b; }, 0), k = prior / pf;
+    var series = TREND.map(function (t) { return close / pf * t; });
+    return { states: states, respond: states[0], close: close, bill: states[6], n: n, rows: rows, series: series, dRespond: states[0] * (k - 1) / k, dClose: close * (k - 1) / k, dBill: states[6] * (k - 1) / k };
+  }
   function indexOf(f) {
     var U = utilData(f), parts = [];
     if (f.pillar === 'All' || f.pillar === 'Equipment') parts.push(U.eqT / UTIL_TARGET.Equipment * 100);
@@ -20473,6 +20502,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       else if (id === 'F4' || id === 'F5' || id === 'F6') { O = ct3Out(baseO()); v = id === 'F4' ? O.out : id === 'F5' ? O.gmOut : O.gap; }
       else if (id === 'D2') { P = pipe(baseO()); v = P.sold / P.planned; }
       else if (id === 'D3') v = attach(baseO());
+      else if (id === 'C1' || id === 'C2' || id === 'C3') { var sd = svcData(f); v = id === 'C1' ? sd.respond : id === 'C2' ? sd.close : sd.bill; }
       else if (id === 'O1') v = utilData(f).eqT;
       else if (id === 'O2') v = utilData(f).eqF;
       else if (id === 'O3') v = utilData(f).psU;
@@ -20480,8 +20510,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     } finally { CT3.f = save; }
     return v;
   }
-  function fmtv(id, v) { var k = MET[id].k; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O2' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
-  function fdelta(id, d) { var k = MET[id].k; return k === 'm' ? fsm(d) : k === 'p' ? (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(1) + ' pp' : (d >= 0 ? '+' : '−') + Math.abs(Math.round(d)); }
+  function fmtv(id, v) { var k = MET[id].k; if (k === 'd') return v.toFixed(1) + ' d'; return k === 'm' ? (id === 'F6' ? fsm(v) : fm(v)) : k === 'p' ? fp(v, id === 'O1' || id === 'O2' || id === 'O3' || id === 'D2' || id === 'D3' ? 0 : 1) : String(Math.round(v)); }
+  function fdelta(id, d) { var k = MET[id].k; if (k === 'd') return (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(1) + ' d'; return k === 'm' ? fsm(d) : k === 'p' ? (d >= 0 ? '+' : '−') + Math.abs(d * 100).toFixed(1) + ' pp' : (d >= 0 ? '+' : '−') + Math.abs(Math.round(d)); }
 
   /* ───────── snapshots ───────── */
   function seedSnaps() {
@@ -20632,6 +20662,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       '<div class="ct3-lg"><span><i style="background:#18181b"></i>Actual</span><span><i style="background:#dc1d34"></i>Run-rate outlook</span><span><i style="background:#a0a0a6"></i>AOP</span></div>';
     h += block(2, 'Full-year outlook', 'Where will we end the year?', b2, 'financial', 'Financial');
     h += block(3, 'O2S Utilization Index', 'How hard are resources working against each pillar’s target?', utilBody(), 'operational', 'Operational');
+    h += block(4, 'Service cycle times', 'Are we turning requests around quickly?', svcTiles(null, svcData(f)), 'service', 'Service');
     return h;
   }
   function utilBody() {
@@ -20678,9 +20709,26 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     return h;
   }
 
+  function svcTiles(S, sd) {
+    var dl = function (d) { return Math.abs(d) < .05 ? 'In line with prior' : (d < 0 ? '−' : '+') + Math.abs(d).toFixed(1) + ' d vs prior'; };
+    return '<div class="ct3-tiles">' + tile('C1', sd.respond.toFixed(1) + ' d', dl(-sd.dRespond), tone(sd.dRespond)) + tile('C2', sd.close.toFixed(1) + ' d', dl(-sd.dClose), tone(sd.dClose)) + tile('C3', sd.bill.toFixed(1) + ' d', dl(-sd.dBill), tone(sd.dBill)) + '</div>';
+  }
+  function scService() {
+    var f = CT3.f, sd = svcData(f), h = head('service', 'Service', 'Cycle times from delivery plan states · ' + sd.n.toLocaleString() + ' DPUs');
+    h += svcTiles(null, sd);
+    var mx = Math.max.apply(null, sd.states) * 1.05 || 1;
+    h += '<div class="ct3-two"><section class="ct3-blk"><header><div><h2>Days in each state</h2><div class="ct3-q">Median days a DPU sits in each state</div></div></header>' +
+      sd.states.map(function (d, i) { return barRow(SVC_STATES[i], '', d / mx, null, d.toFixed(1) + ' d', 'ct3-fn'); }).join('') + '</section>' +
+      '<section class="ct3-blk"><header><div><h2>Close time by month</h2><div class="ct3-q">Median days, request to closed</div></div></header>' +
+      line([{ v: sd.series.concat([null, null]), c: '#18181b' }], 560, 200) + '</section></div>';
+    h += '<section class="ct3-blk"><header><div><h2>By pillar</h2></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar</th><th>Respond</th><th>Close</th><th>Bill</th><th>DPUs</th></tr></thead><tbody>' +
+      sd.rows.map(function (r) { return '<tr class="ct3-dr" onclick="ct3Set(\'pillar\',\'' + jsq(r.k) + '\')"><td><b>' + r.k + '</b></td><td>' + r.r.toFixed(1) + ' d</td><td>' + r.c.toFixed(1) + ' d</td><td>' + r.b.toFixed(1) + ' d</td><td>' + r.n.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></section>';
+    return h;
+  }
+
   /* ───────── shell ───────── */
-  var SCREENS_FN = { overview: scOverview, financial: scFinancial, demand: scDemand, operational: scOperational };
-  var NAV = [['overview', 'Overview', '<path d="M3 12l9-9 9 9M5 10v10h14V10"/>'], ['financial', 'Financial', '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'], ['demand', 'Demand & adoption', '<path d="M3 3v18h18M7 14l4-4 3 3 5-6"/>'], ['operational', 'Operational', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']];
+  var SCREENS_FN = { overview: scOverview, financial: scFinancial, demand: scDemand, operational: scOperational, service: scService };
+  var NAV = [['overview', 'Overview', '<path d="M3 12l9-9 9 9M5 10v10h14V10"/>'], ['financial', 'Financial', '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'], ['demand', 'Demand & adoption', '<path d="M3 3v18h18M7 14l4-4 3 3 5-6"/>'], ['operational', 'Operational', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'], ['service', 'Service', '<path d="M20 6L9 17l-5-5"/>']];
   function ct3Css() {
     if ($e('ct3-css')) return;
     var s = document.createElement('style'); s.id = 'ct3-css';
