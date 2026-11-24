@@ -20343,9 +20343,9 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function withCfg(c, fn) { var sv = CT3.cfg; CT3.cfg = c; try { return fn(); } finally { CT3.cfg = sv; } }
   function withAll(c, fn) { var sf = CT3.f; CT3.f = DEF_F; try { return withCfg(c, fn); } finally { CT3.f = sf; } }
-  var BASIS_DEF = { 'EMP': 'b', 'Fuel': 'b', 'CCEP': 'b', 'Fleet & Personnel Assets': 'b', 'Small Tools & Consumables': 'b', 'Site Services': 'b', 'Mapping': 'c', 'Geospatial': 'c', 'Visualization': 'c', 'Building Automation Systems': 'c', 'Infrared Thermography': 'c', 'Mechanical': 'c', 'Electrical': 'c', 'Steel': 'c', 'Concrete': 'c' };
+  var BASIS_DEF = { 'EMP': 'b', 'Fuel': 'b', 'CCEP': 'b', 'Fleet & Personnel Assets': 'b', 'Small Tools & Consumables': 'b', 'Site Services': 'c', 'Mapping': 'c', 'Geospatial': 'c', 'Visualization': 'c', 'Building Automation Systems': 'c', 'Infrared Thermography': 'c', 'Mechanical': 'c', 'Electrical': 'c', 'Steel': 'c', 'Concrete': 'c' };
   var BASIS_L = { b: 'Run rate', c: '% complete' };
-  var TOCONF = { 'CCEP': 'Client sources disagree on whether CCEP is billings-based or job-based (open decision D11).', 'Fuel': 'Not marked available for run rate in the readiness grid.', 'Site Services': 'Not placed in the readiness map.', 'Infrared Thermography': 'Not placed in the readiness map.' };
+  var TOCONF = { 'CCEP': 'Client sources disagree on whether CCEP is billings-based or job-based (open decision D11).', 'Fuel': 'Not marked available for run rate in the readiness grid.', 'Infrared Thermography': 'Not placed in the readiness map.' };
   function basisOf(p, c) { c = c || CT3.cfg; return (c.basisBy && c.basisBy[p.n]) || BASIS_DEF[p.n] || 'b'; }
   function basisCounts(c, f) { var r = { b: 0, c: 0 }; PLS.forEach(function (p) { if (f && f.pillar && f.pillar !== 'All' && p.pillar !== f.pillar) return; if (f && f.pl && f.pl !== 'All' && p.n !== f.pl) return; r[basisOf(p, c)]++; }); return r; }
   function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' on ' + basisCounts(c).b + ' lines · % complete on ' + basisCounts(c).c + ' lines · Cost to complete at ' + CTC_L[c.ctc] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
