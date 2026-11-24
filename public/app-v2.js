@@ -20333,7 +20333,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   };
   var TYPES = [{ k: 'Self-perform', w: .38, f: 1.02 }, { k: 'GC/GR', w: .62, f: .99 }];
   var GA_ACT = .096, GA_BUD = .092;
-  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', hl: 'after' }, GAR = null;
+  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', hl: 'after', rrBy: {}, ctcBy: {} }, GAR = null;
   var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' }, HL_L = { after: 'after overhead', before: 'before overhead' };
   function gaFn(rev, gm, kind) {
     var m = CT3.cfg.alloc; if (m === 'off') return 0;
@@ -20344,8 +20344,10 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function hlBefore() { return CT3.cfg.hl === 'before' || CT3.cfg.alloc === 'off'; }
   function withCfg(c, fn) { var sv = CT3.cfg; CT3.cfg = c; try { return fn(); } finally { CT3.cfg = sv; } }
   function withAll(c, fn) { var sf = CT3.f; CT3.f = DEF_F; try { return withCfg(c, fn); } finally { CT3.f = sf; } }
-  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' · Cost to complete at ' + CTC_L[c.ctc] + ' · Headline profit ' + HL_L[c.alloc === 'off' ? 'before' : c.hl]; }
-  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && a.hl === b.hl; }
+  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' · Cost to complete at ' + CTC_L[c.ctc] + ' · Headline profit ' + HL_L[c.alloc === 'off' ? 'before' : c.hl] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
+  function cfgCopy(c) { var r = copy(c); r.rrBy = copy(c.rrBy || {}); r.ctcBy = copy(c.ctcBy || {}); return r; }
+  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && a.hl === b.hl && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}); }
+  function nOv(c) { return Object.keys(c.rrBy || {}).length + Object.keys(c.ctcBy || {}).length; }
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
   var TIERS = ['Tier 1', 'Tier 2', 'Tier 3'];
@@ -20387,7 +20389,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     service: { n: 'Service', m: ['C1', 'C2'] }
   };
   var DEF_F = { period: 'ytd', compare: 'aop', region: 'All', bu: 'All', pillar: 'All', pl: 'All', ptype: 'All', sc: 'All', tier: 'All' };
-  var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {}, cfg: copy(CFG0), draft: null, sec: 'alloc', role: 'leader', ver: 12, log: [{ v: 12, d: 'Nov 18', who: 'Staging Admin', t: 'Run rate changed from YTD average to 3-month' }, { v: 11, d: 'Oct 30', who: 'Staging Admin', t: 'Cost to complete set to YTD margin' }, { v: 10, d: 'Oct 2', who: 'Staging Admin', t: 'Overhead allocation set to by revenue' }] };
+  var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {}, cfg: cfgCopy(CFG0), draft: null, sec: 'alloc', exp: {}, role: 'leader', ver: 12, log: [{ v: 12, d: 'Nov 18', who: 'Staging Admin', t: 'Run rate changed from YTD average to 3-month' }, { v: 11, d: 'Oct 30', who: 'Staging Admin', t: 'Cost to complete set to YTD margin' }, { v: 10, d: 'Oct 2', who: 'Staging Admin', t: 'Overhead allocation set to by revenue' }] };
   var APPLY = {
     overview: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
     financial: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
@@ -20449,17 +20451,31 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var ga = gaFn(rev, gm, 'act'), gaB = gaFn(aop, gmA, 'bud');
     return { rev: rev, aop: aop, gap: rev - aop, gm: gm, gmP: rev ? gm / rev : 0, gmT: aop ? gmA / aop : 0, op: gm - ga, opP: rev ? (gm - ga) / rev : 0, opT: aop ? (gmA - gaB) / aop : 0 };
   }
+  function outCore(s, M, C, ytd, ytdGm) {
+    var rr = M === 'ytd' ? ytd / YTD : M === '3m' ? (s.act[7] + s.act[8] + s.act[9]) / 3 : s.act[9], out = ytd + rr * (12 - YTD), gmRem, ra, rc;
+    if (C === 'plan') { ra = s.aop[10] + s.aop[11]; gmRem = ra ? (s.gmA[10] + s.gmA[11]) / ra : 0; }
+    else if (C === 'recent') { rc = s.act[7] + s.act[8] + s.act[9]; gmRem = rc ? (s.gm[7] + s.gm[8] + s.gm[9]) / rc : 0; }
+    else gmRem = ytd ? ytdGm / ytd : 0;
+    return { rr: rr, out: out, gmRem: gmRem, gmOut: ytdGm + (out - ytd) * gmRem };
+  }
   function ct3Out(o) {
     var s = ct3Agg(o), ytd = 0, i, fyAop = 0, ytdGm = 0;
     for (i = 0; i < YTD; i++) { ytd += s.act[i]; ytdGm += s.gm[i]; }
     for (i = 0; i < 12; i++) fyAop += s.aop[i];
-    var M = CT3.cfg.rr, rr = M === 'ytd' ? ytd / YTD : M === '3m' ? (s.act[7] + s.act[8] + s.act[9]) / 3 : s.act[9];
-    var out = ytd + rr * (12 - YTD), C = CT3.cfg.ctc, gmRem, ra, rc;
-    if (C === 'plan') { ra = s.aop[10] + s.aop[11]; gmRem = ra ? (s.gmA[10] + s.gmA[11]) / ra : 0; }
-    else if (C === 'recent') { rc = s.act[7] + s.act[8] + s.act[9]; gmRem = rc ? (s.gm[7] + s.gm[8] + s.gm[9]) / rc : 0; }
-    else gmRem = ytd ? ytdGm / ytd : 0;
-    var gmOut = ytdGm + (out - ytd) * gmRem;
-    return { rr: rr, out: out, fyAop: fyAop, gap: out - fyAop, gmOut: gmOut, gmP: out ? gmOut / out : 0, gmRem: gmRem, ga: gaFn(out, gmOut, 'act'), series: s };
+    var c = outCore(s, CT3.cfg.rr, CT3.cfg.ctc, ytd, ytdGm);
+    if (nOv(CT3.cfg)) {
+      c = { rr: 0, out: 0, gmOut: 0 }; var y2 = 0, g2 = 0;
+      PLS.forEach(function (p) {
+        if (o.pillar && o.pillar !== 'All' && p.pillar !== o.pillar) return;
+        if (o.pl && o.pl !== 'All' && p.n !== o.pl) return;
+        var sp = ct3Agg(mix(o, { pl: p.n })), yy = 0, gg = 0, k;
+        for (k = 0; k < YTD; k++) { yy += sp.act[k]; gg += sp.gm[k]; }
+        var cp = outCore(sp, CT3.cfg.rrBy[p.n] || CT3.cfg.rrBy[p.pillar] || CT3.cfg.rr, CT3.cfg.ctcBy[p.n] || CT3.cfg.ctcBy[p.pillar] || CT3.cfg.ctc, yy, gg);
+        c.rr += cp.rr; c.out += cp.out; c.gmOut += cp.gmOut; y2 += yy; g2 += gg;
+      });
+      c.gmRem = c.out - y2 ? (c.gmOut - g2) / (c.out - y2) : 0;
+    }
+    return { rr: c.rr, out: c.out, fyAop: fyAop, gap: c.out - fyAop, gmOut: c.gmOut, gmP: c.out ? c.gmOut / c.out : 0, gmRem: c.gmRem, ga: gaFn(c.out, c.gmOut, 'act'), series: s };
   }
   function pipe(o) {
     var f = CT3.f, S = ct3Agg(o), fy = 0, i; for (i = 0; i < 12; i++) fy += S.aop[i];
@@ -20596,7 +20612,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function ct3Take(key, q) {
     var Q = QUARTERS[q - 1]; if (!Q.open) { ct3Toast('Q' + q + ' closes ' + Q.end + '. Snapshots open once the quarter has closed.'); return; }
     var ids = snapIds(key), vals = {}; ids.forEach(function (id) { vals[id] = mval(id, CT3.f); });
-    CT3.snap[key] = CT3.snap[key] || {}; CT3.snap[key][q] = { date: 'Nov 24', f: copy(CT3.f), cfg: copy(CT3.cfg), vals: vals };
+    CT3.snap[key] = CT3.snap[key] || {}; CT3.snap[key][q] = { date: 'Nov 24', f: copy(CT3.f), cfg: cfgCopy(CT3.cfg), vals: vals };
     ct3Snaps(key); ct3Render(); ct3Toast('Q' + q + ' FY26 snapshot saved');
   }
   function camBtn(key, big) {
@@ -20638,7 +20654,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function head(tab, title, sub, extra) {
     return '<div class="phead"><div><h1>' + title + '</h1><div class="meta"><span class="chip">' + sub + '</span></div></div><div class="ct3-ha">' + (extra || '') + camBtn('tab:' + tab, true) + '</div></div>' + (tab === 'overview' || tab === 'financial' ? methodLine() : '');
   }
-  function methodTags() { return '<span class="ct3-tag">Run rate · ' + RR_L[CT3.cfg.rr] + '</span><span class="ct3-tag">Cost to complete · ' + CTC_L[CT3.cfg.ctc] + '</span>'; }
+  function methodTags() { return '<span class="ct3-tag">Run rate · ' + RR_L[CT3.cfg.rr] + (Object.keys(CT3.cfg.rrBy).length ? ' + ' + Object.keys(CT3.cfg.rrBy).length + ' overrides' : '') + '</span><span class="ct3-tag">Cost to complete · ' + CTC_L[CT3.cfg.ctc] + (Object.keys(CT3.cfg.ctcBy).length ? ' + ' + Object.keys(CT3.cfg.ctcBy).length + ' overrides' : '') + '</span>'; }
   function methodLine() { return '<div class="ct3-ml"><span>How these numbers are built: ' + escH(cfgLabel(CT3.cfg)) + '</span>' + (CT3.role === 'admin' ? '<button class="ct3-lnk" onclick="ctNav(\'settings\')">Edit in Settings</button>' : '') + '</div>'; }
 
   /* ───────── filters ───────── */
@@ -20797,7 +20813,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     hl: [['after', 'After overhead', 'The Overview shows profit after allocated overhead.'], ['before', 'Before overhead', 'The Overview shows gross profit: direct cost only.']]
   };
   var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'The monthly pace used to project revenue for the rest of the year.', ctc: 'How cost is projected for the months still to come.', hl: 'Which profit the Overview leads with. The Financial tab always shows both.' };
-  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Overhead comes from the CMiC general ledger and Anaplan budgets, loaded manually for v1.'], rr: ['Working assumption: last 3 months. To be confirmed.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'], hl: ['Open decision D1. Applies to the Overview only.'] };
+  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Overhead comes from the CMiC general ledger and Anaplan budgets, loaded manually for v1.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'], hl: ['Open decision D1. Applies to the Overview only.', 'Company-wide for now. It is not set by pillar or product line.'] };
   function setOptLabel(k, v) { var r = SET_OPT[k].filter(function (o) { return o[0] === v; })[0]; return r ? r[1].toLowerCase() : v; }
   function setSnap() {
     var S = ct3Sum(baseO()), O = ct3Out(baseO()), hp = hlBefore() ? S.gm : S.op, pool = S.rev * GA_ACT;
@@ -20821,8 +20837,26 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       return '<tr><td>' + r[1] + '</td><td>' + f(x) + '</td><td><b>' + f(y) + '</b></td><td class="' + (same ? '' : tone(y - x)) + '">' + (same ? '–' : r[2] === 'm' ? fsm(y - x) : fbps(y - x)) + '</td></tr>';
     }).join('') + '</tbody></table>';
   }
+
+  function setByTable(sec, d) {
+    var by = sec === 'rr' ? 'rrBy' : 'ctcBy', L = sec === 'rr' ? RR_L : CTC_L, opts = SET_OPT[sec], def = d[sec];
+    function sel(name, cur, inh) { return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)"><option value="">' + inh + '</option>' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
+    function vals(o) { return sec === 'rr' ? '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td>' : '<td>' + fp(o.gmRem) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
+    var rows = withAll(d, function () {
+      var r = '';
+      PILLARS.forEach(function (p) {
+        var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d[by][x.n]; }), open = CT3.exp[p.k] || anyOv, eff = d[by][p.k] || def;
+        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td><td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def]) + '</td>' + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
+        if (open) plist.forEach(function (x) { r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td><td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff]) + '</td>' + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>'; });
+      });
+      return r;
+    });
+    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Method</th>' + (sec === 'rr' ? '<th>Run rate / month</th><th>Full-year revenue</th>' : '<th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+  }
+  function ct3DraftBy(by, name, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
+  function ct3SetExp(k) { CT3.exp[k] = !CT3.exp[k]; ct3Render(); }
   function scSettings() {
-    var d = CT3.draft || (CT3.draft = copy(CT3.cfg)), keys = ['alloc', 'rr', 'ctc', 'hl'], dirty = keys.some(function (k) { return d[k] !== CT3.cfg[k]; }), last = CT3.log[0], sec = CT3.sec;
+    var d = CT3.draft || (CT3.draft = cfgCopy(CT3.cfg)), keys = ['alloc', 'rr', 'ctc', 'hl'], dirty = !cfgSame(d, CT3.cfg), last = CT3.log[0], sec = CT3.sec;
     var h = '<div class="phead"><div><h1>Settings</h1><div class="meta"><span class="chip">Admin only</span></div></div></div>';
     h += '<p class="ct3-sd">How every Control Tower number is built. Set once; changes apply to everyone who opens the Control Tower.</p>';
     h += '<div class="ct3-sv"><span class="ct3-dot' + (dirty ? ' dirty' : '') + '"></span><div class="ct3-svt">' + (dirty ? '<b>Unsaved changes.</b> Nothing changes for anyone until you save.' : '<b>Saved for everyone.</b> Version ' + last.v + ', saved by ' + last.who + ' on ' + last.d + '.') + '</div><span class="ct3-sp"></span>' +
@@ -20833,17 +20867,20 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     h += '<section class="ct3-blk"><header><div><h2>' + SET_SECS.filter(function (x) { return x[0] === sec; })[0][1] + ' <span class="ct3-tag">Shared with everyone</span></h2><div class="ct3-q">' + SET_DESC[sec] + '</div></div></header><div class="ct3-rg">' +
       SET_OPT[sec].map(function (o) { return '<button class="ct3-ro' + (d[sec] === o[0] ? ' on' : '') + (off ? ' dis' : '') + '" onclick="ct3Draft(\'' + sec + '\',\'' + o[0] + '\')"><b><i></i>' + o[1] + '</b><span>' + o[2] + '</span></button>'; }).join('') + '</div>' +
       (off ? '<div class="ct3-nt">Overhead is not allocated, so both show the same profit.</div>' : '') + SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
+    if (sec === 'rr' || sec === 'ctc') h += setByTable(sec, d);
     h += '<section class="ct3-blk"><header><div><h2>What this does to the numbers</h2><div class="ct3-q">All regions, all pillars, year to date and full-year outlook</div></div></header>' + setPreview(d) + '<div class="ct3-nt">Quarterly snapshots already taken keep the method they were taken with.</div></section>';
     return h;
   }
   function ct3Role(r) { CT3.role = r; CT3.draft = null; if (r !== 'admin' && CT3.screen === 'settings') CT3.screen = 'overview'; ct3Render(); }
   function ct3SetSec(k) { CT3.sec = k; ct3Render(); }
-  function ct3Draft(k, v) { if (!CT3.draft) CT3.draft = copy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
+  function ct3Draft(k, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
   function ct3SetDiscard() { CT3.draft = null; ct3Render(); }
   function ct3SetSave() {
-    var d = CT3.draft, ch = ['alloc', 'rr', 'ctc', 'hl'].filter(function (k) { return d[k] !== CT3.cfg[k]; }); if (!ch.length) return;
-    CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, CT3.cfg[k]) + ' to ' + setOptLabel(k, d[k]); }).join('; ') });
-    CT3.cfg = copy(d); CT3.draft = null; ct3Render(); ct3Toast('Saved for everyone · Version ' + CT3.ver);
+    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc', 'hl'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
+    [['rrBy', 'Run rate'], ['ctcBy', 'Cost to complete']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
+    if (!ch.length) return;
+    CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; ') });
+    CT3.cfg = cfgCopy(d); CT3.draft = null; ct3Render(); ct3Toast('Saved for everyone · Version ' + CT3.ver);
   }
   function ct3Hist() {
     openModal('Settings history', '<div class="ct3-mi"><table class="ct3-t"><thead><tr><th>Version</th><th>Date</th><th>Saved by</th><th>Change</th></tr></thead><tbody>' + CT3.log.map(function (e) { return '<tr><td>' + e.v + '</td><td>' + e.d + '</td><td>' + e.who + '</td><td>' + escH(e.t) + '</td></tr>'; }).join('') + '</tbody></table></div>');
@@ -20855,8 +20892,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     document.body.appendChild(g);
   }
   function ct3GateClose() { var g = $e('ct3-gate'); if (g && g.parentNode) g.parentNode.removeChild(g); }
-  function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = copy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
-  var SET_CSS = '.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
+  function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = cfgCopy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
+  var SET_CSS = '.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
     '.ct3-sd{font-size:14px;color:var(--g600);max-width:760px;margin:0 0 16px;line-height:1.55}.ct3-sv{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}.ct3-svt{font-size:13.5px;color:var(--g700)}.ct3-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;flex:none}.ct3-dot.dirty{background:#d97706}' +
     '.ct3-stt{display:inline-flex;gap:2px;background:rgba(24,24,27,.06);border-radius:14px;padding:4px;margin:0 0 16px;flex-wrap:wrap}.ct3-stt button{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--g600);padding:9px 16px;border-radius:10px;transition:background .15s,color .15s}.ct3-stt button:hover{color:var(--g900)}.ct3-stt button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
     '.ct3-rg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ct3-ro{text-align:left;border:1px solid var(--g250);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,box-shadow .15s}.ct3-ro:hover{border-color:var(--g400)}.ct3-ro.on{border-color:var(--charcoal);box-shadow:0 0 0 1px var(--charcoal)}.ct3-ro b{font-size:13.5px;display:flex;align-items:center;gap:9px}.ct3-ro b i{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g400);display:inline-block;flex:none;box-sizing:border-box}.ct3-ro.on b i{border:5px solid var(--charcoal)}.ct3-ro span{font-size:12px;color:var(--g500);line-height:1.5;padding-left:24px}.ct3-ro.dis{opacity:.4;pointer-events:none}' +
@@ -20930,7 +20967,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     try { navigator.clipboard.writeText(lines.join('\n')).then(function () { ct3Toast('Copied'); }, function () { ct3Toast('Copy was blocked by the browser'); }); } catch (e) { ct3Toast('Copy was blocked by the browser'); }
   }
 
-  window.ct3Open = ct3Open; window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take; window.ct3Role = ct3Role; window.ct3SetSec = ct3SetSec; window.ct3Draft = ct3Draft; window.ct3SetDiscard = ct3SetDiscard; window.ct3SetSave = ct3SetSave; window.ct3Hist = ct3Hist; window.ct3GateClose = ct3GateClose; window.ct3GoSet = ct3GoSet;
+  window.ct3Open = ct3Open; window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take; window.ct3Role = ct3Role; window.ct3SetSec = ct3SetSec; window.ct3Draft = ct3Draft; window.ct3SetDiscard = ct3SetDiscard; window.ct3SetSave = ct3SetSave; window.ct3Hist = ct3Hist; window.ct3GateClose = ct3GateClose; window.ct3GoSet = ct3GoSet; window.ct3DraftBy = ct3DraftBy; window.ct3SetExp = ct3SetExp;
   window.ctNav = function (id) {
     if (!SCREENS_FN[id]) id = 'overview';
     if (id === 'settings') { if (CT3.role !== 'admin') id = 'overview'; else if (CT3.screen !== 'settings') { ct3Gate(); return; } }
