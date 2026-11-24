@@ -20333,7 +20333,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   };
   var TYPES = [{ k: 'Self-perform', w: .38, f: 1.02 }, { k: 'GC/GR', w: .62, f: .99 }];
   var GA_ACT = .096, GA_BUD = .092;
-  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', rrBy: {}, ctcBy: {} }, GAR = null;
+  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', rrBy: {}, ctcBy: {}, basisBy: {} }, GAR = null;
   var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' };
   function gaFn(rev, gm, kind) {
     var m = CT3.cfg.alloc; if (m === 'off') return 0;
@@ -20343,10 +20343,15 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function withCfg(c, fn) { var sv = CT3.cfg; CT3.cfg = c; try { return fn(); } finally { CT3.cfg = sv; } }
   function withAll(c, fn) { var sf = CT3.f; CT3.f = DEF_F; try { return withCfg(c, fn); } finally { CT3.f = sf; } }
-  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' · Cost to complete at ' + CTC_L[c.ctc] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
-  function cfgCopy(c) { var r = copy(c); r.rrBy = copy(c.rrBy || {}); r.ctcBy = copy(c.ctcBy || {}); return r; }
-  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}); }
-  function nOv(c) { return Object.keys(c.rrBy || {}).length + Object.keys(c.ctcBy || {}).length; }
+  var BASIS_DEF = { 'EMP': 'b', 'Fuel': 'b', 'CCEP': 'b', 'Fleet & Personnel Assets': 'b', 'Small Tools & Consumables': 'b', 'Site Services': 'b', 'Mapping': 'c', 'Geospatial': 'c', 'Visualization': 'c', 'Building Automation Systems': 'c', 'Infrared Thermography': 'c', 'Mechanical': 'c', 'Electrical': 'c', 'Steel': 'c', 'Concrete': 'c' };
+  var BASIS_L = { b: 'Run rate', c: '% complete' };
+  var TOCONF = { 'CCEP': 'Client sources disagree on whether CCEP is billings-based or job-based (open decision D11).', 'Fuel': 'Not marked available for run rate in the readiness grid.', 'Site Services': 'Not placed in the readiness map.', 'Infrared Thermography': 'Not placed in the readiness map.' };
+  function basisOf(p, c) { c = c || CT3.cfg; return (c.basisBy && c.basisBy[p.n]) || BASIS_DEF[p.n] || 'b'; }
+  function basisCounts(c, f) { var r = { b: 0, c: 0 }; PLS.forEach(function (p) { if (f && f.pillar && f.pillar !== 'All' && p.pillar !== f.pillar) return; if (f && f.pl && f.pl !== 'All' && p.n !== f.pl) return; r[basisOf(p, c)]++; }); return r; }
+  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' on ' + basisCounts(c).b + ' lines · % complete on ' + basisCounts(c).c + ' lines · Cost to complete at ' + CTC_L[c.ctc] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
+  function cfgCopy(c) { var r = copy(c); r.rrBy = copy(c.rrBy || {}); r.ctcBy = copy(c.ctcBy || {}); r.basisBy = copy(c.basisBy || {}); return r; }
+  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}) && JSON.stringify(a.basisBy || {}) === JSON.stringify(b.basisBy || {}); }
+  function nOv(c) { return Object.keys(c.rrBy || {}).length + Object.keys(c.ctcBy || {}).length + Object.keys(c.basisBy || {}).length; }
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
   var TIERS = ['Tier 1', 'Tier 2', 'Tier 3'];
@@ -20450,8 +20455,11 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var ga = gaFn(rev, gm, 'act'), gaB = gaFn(aop, gmA, 'bud');
     return { rev: rev, aop: aop, gap: rev - aop, gm: gm, gmP: rev ? gm / rev : 0, gmT: aop ? gmA / aop : 0, op: gm - ga, opP: rev ? (gm - ga) / rev : 0, opT: aop ? (gmA - gaB) / aop : 0 };
   }
-  function outCore(s, M, C, ytd, ytdGm) {
-    var rr = M === 'ytd' ? ytd / YTD : M === '3m' ? (s.act[7] + s.act[8] + s.act[9]) / 3 : s.act[9], out = ytd + rr * (12 - YTD), gmRem, ra, rc;
+  function outCore(s, M, C, ytd, ytdGm, B) {
+    var rr, out, gmRem, ra, rc, k, ap = 0;
+    if (B === 'c') { for (k = 0; k < YTD; k++) ap += s.aop[k]; rr = (s.aop[10] + s.aop[11]) * (ap ? ytd / ap : 1) / (12 - YTD); }
+    else rr = M === 'ytd' ? ytd / YTD : M === '3m' ? (s.act[7] + s.act[8] + s.act[9]) / 3 : s.act[9];
+    out = ytd + rr * (12 - YTD);
     if (C === 'plan') { ra = s.aop[10] + s.aop[11]; gmRem = ra ? (s.gmA[10] + s.gmA[11]) / ra : 0; }
     else if (C === 'recent') { rc = s.act[7] + s.act[8] + s.act[9]; gmRem = rc ? (s.gm[7] + s.gm[8] + s.gm[9]) / rc : 0; }
     else gmRem = ytd ? ytdGm / ytd : 0;
@@ -20461,15 +20469,15 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var s = ct3Agg(o), ytd = 0, i, fyAop = 0, ytdGm = 0;
     for (i = 0; i < YTD; i++) { ytd += s.act[i]; ytdGm += s.gm[i]; }
     for (i = 0; i < 12; i++) fyAop += s.aop[i];
-    var c = outCore(s, CT3.cfg.rr, CT3.cfg.ctc, ytd, ytdGm);
-    if (nOv(CT3.cfg)) {
+    var c;
+    {
       c = { rr: 0, out: 0, gmOut: 0 }; var y2 = 0, g2 = 0;
       PLS.forEach(function (p) {
         if (o.pillar && o.pillar !== 'All' && p.pillar !== o.pillar) return;
         if (o.pl && o.pl !== 'All' && p.n !== o.pl) return;
         var sp = ct3Agg(mix(o, { pl: p.n })), yy = 0, gg = 0, k;
         for (k = 0; k < YTD; k++) { yy += sp.act[k]; gg += sp.gm[k]; }
-        var cp = outCore(sp, CT3.cfg.rrBy[p.n] || CT3.cfg.rrBy[p.pillar] || CT3.cfg.rr, CT3.cfg.ctcBy[p.n] || CT3.cfg.ctcBy[p.pillar] || CT3.cfg.ctc, yy, gg);
+        var cp = outCore(sp, CT3.cfg.rrBy[p.n] || CT3.cfg.rrBy[p.pillar] || CT3.cfg.rr, CT3.cfg.ctcBy[p.n] || CT3.cfg.ctcBy[p.pillar] || CT3.cfg.ctc, yy, gg, basisOf(p));
         c.rr += cp.rr; c.out += cp.out; c.gmOut += cp.gmOut; y2 += yy; g2 += gg;
       });
       c.gmRem = c.out - y2 ? (c.gmOut - g2) / (c.out - y2) : 0;
@@ -20653,7 +20661,10 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function head(tab, title, sub, extra) {
     return '<div class="phead"><div><h1>' + title + '</h1><div class="meta"><span class="chip">' + sub + '</span></div></div><div class="ct3-ha">' + (extra || '') + camBtn('tab:' + tab, true) + '</div></div>' + (tab === 'overview' || tab === 'financial' ? methodLine() : '');
   }
-  function methodTags() { return '<span class="ct3-tag">Run rate · ' + RR_L[CT3.cfg.rr] + (Object.keys(CT3.cfg.rrBy).length ? ' + ' + Object.keys(CT3.cfg.rrBy).length + ' overrides' : '') + '</span><span class="ct3-tag">Cost to complete · ' + CTC_L[CT3.cfg.ctc] + (Object.keys(CT3.cfg.ctcBy).length ? ' + ' + Object.keys(CT3.cfg.ctcBy).length + ' overrides' : '') + '</span>'; }
+  function methodTags() {
+    var n = basisCounts(CT3.cfg, CT3.f), rb = Object.keys(CT3.cfg.rrBy).length;
+    return (n.b ? '<span class="ct3-tag">Run rate · ' + RR_L[CT3.cfg.rr] + ' · ' + n.b + (n.b === 1 ? ' line' : ' lines') + '</span>' : '') + (n.c ? '<span class="ct3-tag">% complete · ' + n.c + (n.c === 1 ? ' line' : ' lines') + '</span>' : '') + '<span class="ct3-tag">Cost to complete · ' + CTC_L[CT3.cfg.ctc] + '</span>' + (n.c ? '<span class="ct3-ds ct3-ds-n" title="% complete forecasting data is not yet in the data warehouse">% complete lines are estimates in v1</span>' : '');
+  }
   function methodLine() { return '<div class="ct3-ml"><span>How these numbers are built: ' + escH(cfgLabel(CT3.cfg)) + '</span>' + (CT3.role === 'admin' ? '<button class="ct3-lnk" onclick="ctNav(\'settings\')">Edit in Settings</button>' : '') + '</div>'; }
 
   /* ───────── filters ───────── */
@@ -20810,8 +20821,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     rr: [['ytd', 'Year-to-date average', 'Every month so far counts equally. Smoothest, slowest to react.'], ['3m', 'Last 3 months', 'Recent pace. Balances trend and noise.'], ['1m', 'Last month', 'Most reactive. Moves with a single month.']],
     ctc: [['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['plan', 'Use plan margin', 'Remaining months follow the AOP cost ratio.'], ['recent', 'Use last 3 months margin', 'Remaining months follow the recent cost ratio.']]
   };
-  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'The monthly pace used to project revenue for the rest of the year.', ctc: 'How cost is projected for the months still to come.' };
-  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'] };
+  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'How revenue is projected for the rest of the year. Run-rate lines use a recent monthly pace; % complete lines follow the job plan, scaled by progress to date.', ctc: 'How cost is projected for the months still to come.' };
+  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.', 'The method below applies to run-rate lines only. Open decision D12: run rate is marked available for EMP, Fleet & Personnel Assets and Small Tools & Consumables.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'] };
   function setOptLabel(k, v) { var r = SET_OPT[k].filter(function (o) { return o[0] === v; })[0]; return r ? r[1].toLowerCase() : v; }
   function setSnap() {
     var S = ct3Sum(baseO()), O = ct3Out(baseO()), pool = S.rev * GA_ACT;
@@ -20821,7 +20832,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function setTiles(sec, d) {
     var z = withAll(d, setSnap), S = z.S, O = z.O;
     if (sec === 'alloc') return setTile('Overhead, year to date', fm(z.pool), 'Same pool under every method') + setTile('Operating margin', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan') + setTile('Gross margin', fp(S.gmP), 'Not affected by allocation');
-    if (sec === 'rr') return setTile('Run rate per month', fm(O.rr), RR_L[d.rr]) + setTile('Full-year revenue outlook', fm(O.out), fsp(O.gap / O.fyAop) + ' vs AOP') + setTile('Months still to come', '2', 'Nov and Dec');
+    if (sec === 'rr') return setTile('Monthly pace, remaining months', fm(O.rr), basisCounts(d).b + ' run-rate lines · ' + basisCounts(d).c + ' % complete') + setTile('Full-year revenue outlook', fm(O.out), fsp(O.gap / O.fyAop) + ' vs AOP') + setTile('Months still to come', '2', 'Nov and Dec');
     if (sec === 'ctc') return setTile('Margin, remaining months', fp(O.gmRem), 'Gross, before overhead') + setTile('Full-year cost outlook', fm(z.K3), fp(z.K3 / O.out) + ' of revenue') + setTile('Full-year profit outlook', fm(z.K4), fp(z.K4 / O.out) + ' margin');
     return '';
   }
@@ -20840,31 +20851,34 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   /* Source: 02S Control Tower Products & Data Readiness Map, near-term wave, readiness grid as of Nov 10, 2026; v1 workarounds from O2S Control Tower v1 Metrics and Data Readiness */
   var READY = {
     alloc: [['O2S G&A actuals', 'CMiC GL', 'a', 'GL transactions are in the data warehouse; trial balances are not yet.'], ['McCarthy G&A actuals', 'CMiC GL', 'a', 'In the data warehouse; recently added to Foundry.'], ['G&A budgets and forecasts, O2S and McCarthy', 'Anaplan', 'm', 'Not available near term. Anaplan data is loaded manually for v1.'], ['Pillars and product lines', 'CMiC departments', 'a', 'Master data already in CMiC.']],
-    rr: [['Orders and billings', 'Yard Hub / CMiC to T3', 'a', 'Yard Hub may not reflect off-rent dates that inform forecasted revenue.'], ['O2S jobs and subjobs', 'CMiC, Billing Job UDF', 'a', 'Direct and unallocated scopes; the UDF links each O2S job to the McCarthy job it bills.'], ['Execution plans', 'Foundry Portal / Command Center', 'n', 'Not available near term; partial after Phase 2.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']],
+    rr: [['Orders and billings', 'Yard Hub / CMiC to T3', 'a', 'Yard Hub may not reflect off-rent dates that inform forecasted revenue.'], ['O2S jobs and subjobs', 'CMiC, Billing Job UDF', 'a', 'Direct and unallocated scopes; the UDF links each O2S job to the McCarthy job it bills.'], ['Execution plans', 'Foundry Portal / Command Center', 'n', 'Not available near term; partial after Phase 2.'], ['% complete forecasting, job-based lines', 'CMiC', 'n', 'Not yet in the data warehouse. Needed to forecast job-based product lines.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']],
     ctc: [['O2S job and subjob actuals, budgets and forecasts', 'CMiC', 'a', 'Forecasting % complete and risks and opportunities tables are not yet in the data warehouse.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']]
   };
   var RDY_L = { a: 'Available', m: 'Manual load', n: 'Not yet', x: 'Gap' };
-  var BASIS = { 'EMP': 'b', 'Fuel': 'b', 'CCEP': 'b', 'Fleet & Personnel Assets': 'b', 'Small Tools & Consumables': 'b', 'Mapping': 'c', 'Geospatial': 'c', 'Visualization': 'c', 'Building Automation Systems': 'c', 'Mechanical': 'c', 'Electrical': 'c', 'Steel': 'c', 'Concrete': 'c' };
-  var BASIS_L = { b: 'Billings-based', c: '% complete' };
-  function pillarBasis(k) { var u = {}; PLS.forEach(function (x) { if (x.pillar === k && BASIS[x.n]) u[BASIS[x.n]] = 1; }); var a = Object.keys(u); return a.length === 1 ? BASIS_L[a[0]] : a.length > 1 ? 'Mixed' : '–'; }
+  function pillarBasis(k) { var u = {}; PLS.forEach(function (x) { if (x.pillar === k) u[basisOf(x)] = 1; }); var a = Object.keys(u); return a.length === 1 ? BASIS_L[a[0]] : a.length > 1 ? 'Mixed' : '–'; }
   function setReady(sec) {
     if (!READY[sec]) return '';
     return '<section class="ct3-blk"><header><div><h2>Data behind this</h2><div class="ct3-q">Near-term availability, from the 02S readiness map</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Dataset</th><th>Source</th><th>Status</th><th>Note</th></tr></thead><tbody>' + READY[sec].map(function (r) { return '<tr><td><b>' + escH(r[0]) + '</b></td><td>' + escH(r[1]) + '</td><td><span class="ct3-ds ct3-ds-' + r[2] + '">' + RDY_L[r[2]] + '</span></td><td>' + escH(r[3]) + '</td></tr>'; }).join('') + '</tbody></table></div></section>';
   }
   function setByTable(sec, d) {
-    var by = sec === 'rr' ? 'rrBy' : 'ctcBy', L = sec === 'rr' ? RR_L : CTC_L, opts = SET_OPT[sec], def = d[sec];
-    function sel(name, cur, inh) { return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)"><option value="">' + inh + '</option>' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
-    function vals(o) { return sec === 'rr' ? '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td>' : '<td>' + fp(o.gmRem) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
+    var by = sec === 'rr' ? 'rrBy' : 'ctcBy', L = sec === 'rr' ? RR_L : CTC_L, opts = SET_OPT[sec], def = d[sec], rr = sec === 'rr';
+    function sel(name, cur, inh, off) { return off ? '<span class="ct3-na">Not used</span>' : '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)"><option value="">' + inh + '</option>' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
+    function bsel(x) { var cur = d.basisBy[x.n], dflt = BASIS_DEF[x.n] || 'b'; return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'basisBy\',\'' + escH(jsq(x.n)) + '\',this.value)"><option value="">Default · ' + BASIS_L[dflt] + '</option><option value="b"' + (cur === 'b' ? ' selected' : '') + '>Run rate</option><option value="c"' + (cur === 'c' ? ' selected' : '') + '>% complete</option></select>'; }
+    function vals(o) { return rr ? '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td>' : '<td>' + fp(o.gmRem) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
     var rows = withAll(d, function () {
       var r = '';
       PILLARS.forEach(function (p) {
-        var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d[by][x.n]; }), open = CT3.exp[p.k] || anyOv, eff = d[by][p.k] || def;
-        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td><td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def]) + '</td><td>' + pillarBasis(p.k) + '</td>' + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
-        if (open) plist.forEach(function (x) { r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td><td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff]) + '</td><td>' + (BASIS[x.n] ? BASIS_L[BASIS[x.n]] : '–') + '</td>' + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>'; });
+        var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d[by][x.n] || d.basisBy[x.n]; }), open = CT3.exp[p.k] || anyOv, eff = d[by][p.k] || def, allC = plist.every(function (x) { return basisOf(x, d) === 'c'; });
+        var m = '<td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def], rr && allC) + '</td>', b = '<td>' + pillarBasis(p.k) + '</td>';
+        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td>' + (rr ? b + m : m + b) + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
+        if (open) plist.forEach(function (x) {
+          var isC = basisOf(x, d) === 'c', m2 = '<td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff], rr && isC) + '</td>', b2 = '<td>' + (rr ? bsel(x) : BASIS_L[basisOf(x, d)]) + (TOCONF[x.n] ? ' <span class="ct3-ds ct3-ds-n" title="' + escH(TOCONF[x.n]) + '">To confirm</span>' : '') + '</td>';
+          r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td>' + (rr ? b2 + m2 : m2 + b2) + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>';
+        });
       });
       return r;
     });
-    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Method</th><th>Forecast basis</th>' + (sec === 'rr' ? '<th>Run rate / month</th><th>Full-year revenue</th>' : '<th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Forecast basis follows the readiness map: billings-based lines are forecast from run rate and execution plans, % complete lines from the job forecast. – means the map does not place the line.</div></section>';
+    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">' + (rr ? 'Choose how each product line is forecast. The method applies to run-rate lines; a product line follows its pillar unless it has its own.' : 'Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.') + '</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th>' + (rr ? '<th>Forecast basis</th><th>Method</th><th>Monthly pace</th><th>Full-year revenue</th>' : '<th>Method</th><th>Forecast basis</th><th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Defaults follow the readiness map: billings-based lines are forecast from run rate, job-based lines from % complete. Hover “To confirm” for why a line is open.</div></section>';
   }
   function ct3DraftBy(by, name, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
   function ct3SetExp(k) { CT3.exp[k] = !CT3.exp[k]; ct3Render(); }
@@ -20890,7 +20904,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function ct3SetDiscard() { CT3.draft = null; ct3Render(); }
   function ct3SetSave() {
     var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
-    [['rrBy', 'Run rate'], ['ctcBy', 'Cost to complete']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
+    [['rrBy', 'Run rate'], ['ctcBy', 'Cost to complete'], ['basisBy', 'Forecast basis']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
     if (!ch.length) return;
     CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; ') });
     CT3.cfg = cfgCopy(d); CT3.draft = null; ct3Render(); ct3Toast('Saved for everyone · Version ' + CT3.ver);
@@ -20906,7 +20920,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function ct3GateClose() { var g = $e('ct3-gate'); if (g && g.parentNode) g.parentNode.removeChild(g); }
   function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = cfgCopy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
-  var SET_CSS = '.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
+  var SET_CSS = '.ct3-na{font-size:12px;color:var(--g400)}.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
     '.ct3-sd{font-size:14px;color:var(--g600);max-width:760px;margin:0 0 16px;line-height:1.55}.ct3-sv{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}.ct3-svt{font-size:13.5px;color:var(--g700)}.ct3-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;flex:none}.ct3-dot.dirty{background:#d97706}' +
     '.ct3-stt{display:inline-flex;gap:2px;background:rgba(24,24,27,.06);border-radius:14px;padding:4px;margin:0 0 16px;flex-wrap:wrap}.ct3-stt button{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--g600);padding:9px 16px;border-radius:10px;transition:background .15s,color .15s}.ct3-stt button:hover{color:var(--g900)}.ct3-stt button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
     '.ct3-rg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ct3-ro{text-align:left;border:1px solid var(--g250);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,box-shadow .15s}.ct3-ro:hover{border-color:var(--g400)}.ct3-ro.on{border-color:var(--charcoal);box-shadow:0 0 0 1px var(--charcoal)}.ct3-ro b{font-size:13.5px;display:flex;align-items:center;gap:9px}.ct3-ro b i{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g400);display:inline-block;flex:none;box-sizing:border-box}.ct3-ro.on b i{border:5px solid var(--charcoal)}.ct3-ro span{font-size:12px;color:var(--g500);line-height:1.5;padding-left:24px}.ct3-ro.dis{opacity:.4;pointer-events:none}' +
