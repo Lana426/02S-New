@@ -20309,11 +20309,11 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var SEAS = [.07, .07, .08, .085, .085, .09, .09, .09, .09, .09, .085, .075];
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var PILLARS = [
-    { k: 'Equipment', pls: [['EMP', 72, .34, 1.04, 40], ['Fleet & Personnel Assets', 58, .31, .97, -60], ['Fuel', 44, .12, 1.08, 15], ['CCEP', 36, .30, .93, -90], ['Small Tools & Consumables', 28, .36, 1.02, 25]] },
-    { k: 'Prefab', pls: [['Electrical', 52, .21, 1.06, 55], ['Mechanical', 46, .19, .94, -70], ['Steel', 30, .17, .91, -110], ['Concrete', 24, .18, 1.03, 20], ['DFMA', 18, .22, 1.1, 85]] },
-    { k: 'Professional services', pls: [['GC/GR Services', 34, .26, .96, -30], ['CFE', 22, .28, 1.0, 10], ['Mapping', 12, .30, .98, 0], ['Geospatial', 10, .31, 1.05, 45], ['BAS', 14, .27, .95, -45], ['OFE', 9, .25, 1.02, 20], ['Viz', 7, .33, 1.09, 60]] },
-    { k: 'Logistics', pls: [['Transport & Warehousing', 40, .14, .99, -25]] },
-    { k: 'Procurement', pls: [['Sourced equipment', 26, .09, 1.01, 5]] }
+    { k: 'Equipment', pls: [['EMP', 72, .34, 1.04, 40], ['Fuel', 44, .12, 1.08, 15], ['CCEP', 36, .30, .93, -90], ['Fleet & Personnel Assets', 58, .31, .97, -60]] },
+    { k: 'Prefab', pls: [['Mechanical', 46, .19, .94, -70], ['Electrical', 52, .21, 1.06, 55], ['Steel', 30, .17, .91, -110], ['Concrete', 24, .18, 1.03, 20]] },
+    { k: 'Professional services', pls: [['Mapping', 12, .30, .98, 0], ['Geospatial', 10, .31, 1.05, 45], ['Visualization', 7, .33, 1.09, 60], ['Building Automation Systems', 14, .27, .95, -45], ['Infrared Thermography', 8, .29, 1.0, 20]] },
+    { k: 'Logistics', pls: [['Site Services', 40, .14, .99, -25]] },
+    { k: 'Procurement', pls: [['Small Tools & Consumables', 28, .20, 1.02, 25]] }
   ];
   var PLS = [];
   PILLARS.forEach(function (p) { p.pls.forEach(function (x) { PLS.push({ n: x[0], pillar: p.k, aop: x[1], gm: x[2], perf: x[3], md: x[4] }); }); });
@@ -20333,27 +20333,26 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   };
   var TYPES = [{ k: 'Self-perform', w: .38, f: 1.02 }, { k: 'GC/GR', w: .62, f: .99 }];
   var GA_ACT = .096, GA_BUD = .092;
-  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', hl: 'after', rrBy: {}, ctcBy: {} }, GAR = null;
-  var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' }, HL_L = { after: 'after overhead', before: 'before overhead' };
+  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', rrBy: {}, ctcBy: {} }, GAR = null;
+  var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' };
   function gaFn(rev, gm, kind) {
     var m = CT3.cfg.alloc; if (m === 'off') return 0;
     if (m === 'rev') return rev * (kind === 'bud' ? GA_BUD : GA_ACT);
     if (!GAR) { var a = ct3Agg({}), r = 0, g = 0, ap = 0, ga = 0, i; for (i = 0; i < YTD; i++) { r += a.act[i]; g += a.gm[i]; ap += a.aop[i]; ga += a.gmA[i]; } GAR = { act: GA_ACT * r / g, bud: GA_BUD * ap / ga }; }
     return gm * (kind === 'bud' ? GAR.bud : GAR.act);
   }
-  function hlBefore() { return CT3.cfg.hl === 'before' || CT3.cfg.alloc === 'off'; }
   function withCfg(c, fn) { var sv = CT3.cfg; CT3.cfg = c; try { return fn(); } finally { CT3.cfg = sv; } }
   function withAll(c, fn) { var sf = CT3.f; CT3.f = DEF_F; try { return withCfg(c, fn); } finally { CT3.f = sf; } }
-  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' · Cost to complete at ' + CTC_L[c.ctc] + ' · Headline profit ' + HL_L[c.alloc === 'off' ? 'before' : c.hl] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
+  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' · Cost to complete at ' + CTC_L[c.ctc] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
   function cfgCopy(c) { var r = copy(c); r.rrBy = copy(c.rrBy || {}); r.ctcBy = copy(c.ctcBy || {}); return r; }
-  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && a.hl === b.hl && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}); }
+  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}); }
   function nOv(c) { return Object.keys(c.rrBy || {}).length + Object.keys(c.ctcBy || {}).length; }
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
   var TIERS = ['Tier 1', 'Tier 2', 'Tier 3'];
   var ASSET_TYPES = [['Excavators', .71, .78], ['Telehandlers', .66, .71], ['Scissor & boom lifts', .62, .66], ['Generators & power', .58, .69], ['Light towers', .49, .58], ['Trailers & containers', .74, .81], ['Skid steers & loaders', .68, .73]];
   var SC_MOD = { 'Southwest': .04, 'Central': 0, 'Southern': -.05, 'Northern': -.02, 'National Programs': .03 };
-  var SVC_LINES = [['Mapping', .81], ['Geospatial', .69], ['BAS', .64], ['Viz', .83]];
+  var SVC_LINES = [['Mapping', .81], ['Geospatial', .69], ['Visualization', .83], ['Building Automation Systems', .64], ['Infrared Thermography', .74]];
   var UTIL_TARGET = { 'Equipment': .70, 'Professional services': .76 };
   var ATTACH = { 'Equipment': .64, 'Prefab': .41, 'Professional services': .33, 'Logistics': .52, 'Procurement': .27 };
   var QUARTERS = [{ q: 1, end: 'Mar 31', open: true }, { q: 2, end: 'Jun 30', open: true }, { q: 3, end: 'Sep 30', open: true }, { q: 4, end: 'Dec 31', open: false }];
@@ -20720,15 +20719,15 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function scOverview() {
     var f = CT3.f, S = ct3Sum(baseO()), O = ct3Out(baseO()), sd = svcData(f), U = utilData(f), idx = indexOf(f), T = tieData(f);
-    var HB = hlBefore(), P1 = HB ? S.gm : S.op, K1 = S.rev - P1, K3p = HB ? O.gmOut : O.gmOut - O.ga, PL = HB ? 'Gross profit' : 'Profit';
+    var K1 = S.rev - S.op, K3p = O.gmOut - O.ga;
     var sum = 'O2S is ' + (S.gap >= 0 ? 'ahead of' : 'behind') + ' plan year to date (' + fsp(S.rev / S.aop - 1) + '), expected to finish ' + fsp(Math.abs(O.gap / O.fyAop)).replace('+', '') + (O.gap >= 0 ? ' above' : ' below') + ' AOP, with utilization at ' + Math.round(idx) + '% of target and requests closing in ' + sd.close.toFixed(1) + ' days.';
     var h = head('overview', 'O2S performance', 'Data as of ' + ASOF);
     h += '<div class="ct3-sum">' + sum + '</div><div class="ct3-qcs">';
     var rev = O.series.act.slice(0, YTD), proj = rev.concat([O.rr, O.rr]);
     var utl = []; for (var m = 0; m < YTD; m++) utl.push(idx * (.94 + .06 * m / (YTD - 1) + .012 * Math.sin(m * 1.3)));
     var tie = []; for (var k = 0; k < YTD; k++) tie.push(T.tied * (.72 + .28 * k / (YTD - 1)));
-    h += qcard('How are we performing year to date?', fm(S.rev), 'revenue', fsp(S.rev / S.aop - 1) + ' vs plan', tone(S.gap), [['Cost', fm(K1)], [PL, fm(P1)]], rev, 'financial');
-    h += qcard('Where are we heading?', fm(O.out), 'full-year revenue', fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap), [['Cost', fm(O.out - K3p)], [PL, fm(K3p)]], proj, 'financial');
+    h += qcard('How are we performing year to date?', fm(S.rev), 'revenue', fsp(S.rev / S.aop - 1) + ' vs plan', tone(S.gap), [['Cost', fm(K1)], ['Profit', fm(S.op)]], rev, 'financial');
+    h += qcard('Where are we heading?', fm(O.out), 'full-year revenue', fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap), [['Cost', fm(O.out - K3p)], ['Profit', fm(K3p)]], proj, 'financial');
     h += qcard('Are we utilized as expected?', String(Math.round(idx)), 'index', idx >= 100 ? 'At or above target' : Math.round(100 - idx) + ' pts below target', tone(idx - 100), [['Equipment', fp(U.eqT, 0)], ['Prof. services', fp(U.psU, 0)]], utl, 'operational');
     h += qcard('Are we turning requests around quickly?', sd.close.toFixed(1), 'days to close', Math.abs(sd.dClose) < .05 ? 'In line with prior' : (sd.dClose > 0 ? '−' : '+') + Math.abs(sd.dClose).toFixed(1) + ' d vs prior', tone(sd.dClose), [['Respond', sd.respond.toFixed(1) + ' d'], ['DPUs', sd.n.toLocaleString()]], sd.series.slice(0, YTD), 'service', sd.n < LIMIT_DPU ? 'Based on ' + sd.n + ' DPUs · limited data' : '');
     h += qcard('Are opportunities tied to execution plans?', fp(T.tied, 0), 'tied to CMiC jobs', fp(T.ep, 0) + ' have an execution plan', T.eps < 10 ? 'ct3-neu' : tone(T.ep - .5), [['Sold vs planned gap', fm(T.gap)], ['Opportunities', T.opps.toLocaleString()]], tie, 'demand', T.eps < 10 ? 'Based on ' + T.eps + ' execution plans · limited data' : '');
@@ -20804,20 +20803,19 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var NAV = [['overview', 'Overview', '<path d="M3 12l9-9 9 9M5 10v10h14V10"/>'], ['financial', 'Financial', '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'], ['demand', 'Demand & adoption', '<path d="M3 3v18h18M7 14l4-4 3 3 5-6"/>'], ['operational', 'Operational', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'], ['service', 'Service', '<path d="M20 6L9 17l-5-5"/>'], ['settings', 'Settings', '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>']];
 
   /* ───────── settings (admin) ───────── */
-  var SET_SECS = [['alloc', 'Allocation method', '<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>'], ['rr', 'Run rate', '<path d="M3 17l5-5 4 4 8-9M15 7h5v5"/>'], ['ctc', 'Cost to complete', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'], ['hl', 'Headline margin', '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>']];
-  var SET_NAME = { alloc: 'Overhead allocation', rr: 'Run rate', ctc: 'Cost to complete', hl: 'Headline margin' };
+  var SET_SECS = [['alloc', 'Allocation method', '<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>'], ['rr', 'Run rate', '<path d="M3 17l5-5 4 4 8-9M15 7h5v5"/>'], ['ctc', 'Cost to complete', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']];
+  var SET_NAME = { alloc: 'Overhead allocation', rr: 'Run rate', ctc: 'Cost to complete' };
   var SET_OPT = {
     alloc: [['rev', 'By revenue', 'Every pillar, product line and region carries overhead in proportion to its revenue.'], ['gm', 'By gross margin', 'Overhead follows gross margin, so higher-margin lines carry more of it.'], ['off', 'Not allocated', 'Overhead is left out. Profit equals gross profit.']],
     rr: [['ytd', 'Year-to-date average', 'Every month so far counts equally. Smoothest, slowest to react.'], ['3m', 'Last 3 months', 'Recent pace. Balances trend and noise.'], ['1m', 'Last month', 'Most reactive. Moves with a single month.']],
-    ctc: [['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['plan', 'Use plan margin', 'Remaining months follow the AOP cost ratio.'], ['recent', 'Use last 3 months margin', 'Remaining months follow the recent cost ratio.']],
-    hl: [['after', 'After overhead', 'The Overview shows profit after allocated overhead.'], ['before', 'Before overhead', 'The Overview shows gross profit: direct cost only.']]
+    ctc: [['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['plan', 'Use plan margin', 'Remaining months follow the AOP cost ratio.'], ['recent', 'Use last 3 months margin', 'Remaining months follow the recent cost ratio.']]
   };
-  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'The monthly pace used to project revenue for the rest of the year.', ctc: 'How cost is projected for the months still to come.', hl: 'Which profit the Overview leads with. The Financial tab always shows both.' };
-  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Overhead comes from the CMiC general ledger and Anaplan budgets, loaded manually for v1.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'], hl: ['Open decision D1. Applies to the Overview only.', 'Company-wide for now. It is not set by pillar or product line.'] };
+  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'The monthly pace used to project revenue for the rest of the year.', ctc: 'How cost is projected for the months still to come.' };
+  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'] };
   function setOptLabel(k, v) { var r = SET_OPT[k].filter(function (o) { return o[0] === v; })[0]; return r ? r[1].toLowerCase() : v; }
   function setSnap() {
-    var S = ct3Sum(baseO()), O = ct3Out(baseO()), hp = hlBefore() ? S.gm : S.op, pool = S.rev * GA_ACT;
-    return { S: S, O: O, hp: hp, pool: pool, K3: O.out - (O.gmOut - O.ga), K4: O.gmOut - O.ga };
+    var S = ct3Sum(baseO()), O = ct3Out(baseO()), pool = S.rev * GA_ACT;
+    return { S: S, O: O, pool: pool, K3: O.out - (O.gmOut - O.ga), K4: O.gmOut - O.ga };
   }
   function setTile(l, v, sub) { return '<div class="ct3-tile"><div class="ct3-tl"><span>' + l + '</span></div><div class="ct3-tv">' + v + '</div><div class="ct3-ts">' + sub + '</div></div>'; }
   function setTiles(sec, d) {
@@ -20825,19 +20823,34 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     if (sec === 'alloc') return setTile('Overhead, year to date', fm(z.pool), 'Same pool under every method') + setTile('Operating margin', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan') + setTile('Gross margin', fp(S.gmP), 'Not affected by allocation');
     if (sec === 'rr') return setTile('Run rate per month', fm(O.rr), RR_L[d.rr]) + setTile('Full-year revenue outlook', fm(O.out), fsp(O.gap / O.fyAop) + ' vs AOP') + setTile('Months still to come', '2', 'Nov and Dec');
     if (sec === 'ctc') return setTile('Margin, remaining months', fp(O.gmRem), 'Gross, before overhead') + setTile('Full-year cost outlook', fm(z.K3), fp(z.K3 / O.out) + ' of revenue') + setTile('Full-year profit outlook', fm(z.K4), fp(z.K4 / O.out) + ' margin');
-    return setTile('Overview headline profit', fm(z.hp), fp(z.hp / S.rev) + ' margin, year to date') + setTile('Basis', withCfg(d, function () { return hlBefore() ? 'Before overhead' : 'After overhead'; }), d.alloc === 'off' ? 'No allocation, so both match' : 'Set below') + setTile('Financial tab', 'Both', 'Gross and operating margin shown');
+    return '';
   }
   function setVals(d) {
-    return withAll(d, function () { var hp = hlBefore() ? mval('F1', DEF_F) * mval('F2', DEF_F) : mval('K2', DEF_F); return { HP: hp, F3: mval('F3', DEF_F), F4: mval('F4', DEF_F), K3: mval('K3', DEF_F), K4: mval('K4', DEF_F) }; });
+    return withAll(d, function () { return { HP: mval('K2', DEF_F), F3: mval('F3', DEF_F), F4: mval('F4', DEF_F), K3: mval('K3', DEF_F), K4: mval('K4', DEF_F) }; });
   }
   function setPreview(d) {
-    var a = setVals(CT3.cfg), b = setVals(d), rows = [['HP', 'Headline profit, year to date', 'm'], ['F3', 'Operating margin, year to date', 'p'], ['F4', 'Full-year revenue outlook', 'm'], ['K3', 'Full-year cost outlook', 'm'], ['K4', 'Full-year profit outlook', 'm']];
+    var a = setVals(CT3.cfg), b = setVals(d), rows = [['HP', 'Profit, year to date', 'm'], ['F3', 'Operating margin, year to date', 'p'], ['F4', 'Full-year revenue outlook', 'm'], ['K3', 'Full-year cost outlook', 'm'], ['K4', 'Full-year profit outlook', 'm']];
     return '<table class="ct3-t"><thead><tr><th>Number</th><th>As saved</th><th>As set here</th><th>Change</th></tr></thead><tbody>' + rows.map(function (r) {
       var x = a[r[0]], y = b[r[0]], same = Math.abs(x - y) < 1e-9, f = r[2] === 'm' ? fm : function (v) { return fp(v); };
       return '<tr><td>' + r[1] + '</td><td>' + f(x) + '</td><td><b>' + f(y) + '</b></td><td class="' + (same ? '' : tone(y - x)) + '">' + (same ? '–' : r[2] === 'm' ? fsm(y - x) : fbps(y - x)) + '</td></tr>';
     }).join('') + '</tbody></table>';
   }
 
+
+  /* Source: 02S Control Tower Products & Data Readiness Map, near-term wave, readiness grid as of Nov 10, 2026; v1 workarounds from O2S Control Tower v1 Metrics and Data Readiness */
+  var READY = {
+    alloc: [['O2S G&A actuals', 'CMiC GL', 'a', 'GL transactions are in the data warehouse; trial balances are not yet.'], ['McCarthy G&A actuals', 'CMiC GL', 'a', 'In the data warehouse; recently added to Foundry.'], ['G&A budgets and forecasts, O2S and McCarthy', 'Anaplan', 'm', 'Not available near term. Anaplan data is loaded manually for v1.'], ['Pillars and product lines', 'CMiC departments', 'a', 'Master data already in CMiC.']],
+    rr: [['Orders and billings', 'Yard Hub / CMiC to T3', 'a', 'Yard Hub may not reflect off-rent dates that inform forecasted revenue.'], ['O2S jobs and subjobs', 'CMiC, Billing Job UDF', 'a', 'Direct and unallocated scopes; the UDF links each O2S job to the McCarthy job it bills.'], ['Execution plans', 'Foundry Portal / Command Center', 'n', 'Not available near term; partial after Phase 2.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']],
+    ctc: [['O2S job and subjob actuals, budgets and forecasts', 'CMiC', 'a', 'Forecasting % complete and risks and opportunities tables are not yet in the data warehouse.'], ['Schedules and billing curves', 'P6', 'a', 'Oracle licensing limits data access; schedule data updates monthly.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']]
+  };
+  var RDY_L = { a: 'Available', m: 'Manual load', n: 'Not yet', x: 'Gap' };
+  var BASIS = { 'EMP': 'b', 'Fuel': 'b', 'CCEP': 'b', 'Fleet & Personnel Assets': 'b', 'Small Tools & Consumables': 'b', 'Mapping': 'c', 'Geospatial': 'c', 'Visualization': 'c', 'Building Automation Systems': 'c', 'Mechanical': 'c', 'Electrical': 'c', 'Steel': 'c', 'Concrete': 'c' };
+  var BASIS_L = { b: 'Billings-based', c: '% complete' };
+  function pillarBasis(k) { var u = {}; PLS.forEach(function (x) { if (x.pillar === k && BASIS[x.n]) u[BASIS[x.n]] = 1; }); var a = Object.keys(u); return a.length === 1 ? BASIS_L[a[0]] : a.length > 1 ? 'Mixed' : '–'; }
+  function setReady(sec) {
+    if (!READY[sec]) return '';
+    return '<section class="ct3-blk"><header><div><h2>Data behind this</h2><div class="ct3-q">Near-term availability, from the 02S readiness map</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Dataset</th><th>Source</th><th>Status</th><th>Note</th></tr></thead><tbody>' + READY[sec].map(function (r) { return '<tr><td><b>' + escH(r[0]) + '</b></td><td>' + escH(r[1]) + '</td><td><span class="ct3-ds ct3-ds-' + r[2] + '">' + RDY_L[r[2]] + '</span></td><td>' + escH(r[3]) + '</td></tr>'; }).join('') + '</tbody></table></div></section>';
+  }
   function setByTable(sec, d) {
     var by = sec === 'rr' ? 'rrBy' : 'ctcBy', L = sec === 'rr' ? RR_L : CTC_L, opts = SET_OPT[sec], def = d[sec];
     function sel(name, cur, inh) { return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)"><option value="">' + inh + '</option>' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
@@ -20846,27 +20859,27 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       var r = '';
       PILLARS.forEach(function (p) {
         var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d[by][x.n]; }), open = CT3.exp[p.k] || anyOv, eff = d[by][p.k] || def;
-        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td><td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def]) + '</td>' + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
-        if (open) plist.forEach(function (x) { r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td><td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff]) + '</td>' + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>'; });
+        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td><td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def]) + '</td><td>' + pillarBasis(p.k) + '</td>' + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
+        if (open) plist.forEach(function (x) { r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td><td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff]) + '</td><td>' + (BASIS[x.n] ? BASIS_L[BASIS[x.n]] : '–') + '</td>' + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>'; });
       });
       return r;
     });
-    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Method</th>' + (sec === 'rr' ? '<th>Run rate / month</th><th>Full-year revenue</th>' : '<th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div></section>';
+    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Method</th><th>Forecast basis</th>' + (sec === 'rr' ? '<th>Run rate / month</th><th>Full-year revenue</th>' : '<th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Forecast basis follows the readiness map: billings-based lines are forecast from run rate and execution plans, % complete lines from the job forecast. – means the map does not place the line.</div></section>';
   }
   function ct3DraftBy(by, name, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
   function ct3SetExp(k) { CT3.exp[k] = !CT3.exp[k]; ct3Render(); }
   function scSettings() {
-    var d = CT3.draft || (CT3.draft = cfgCopy(CT3.cfg)), keys = ['alloc', 'rr', 'ctc', 'hl'], dirty = !cfgSame(d, CT3.cfg), last = CT3.log[0], sec = CT3.sec;
+    var d = CT3.draft || (CT3.draft = cfgCopy(CT3.cfg)), dirty = !cfgSame(d, CT3.cfg), last = CT3.log[0], sec = CT3.sec;
     var h = '<div class="phead"><div><h1>Settings</h1><div class="meta"><span class="chip">Admin only</span></div></div></div>';
     h += '<p class="ct3-sd">How every Control Tower number is built. Set once; changes apply to everyone who opens the Control Tower.</p>';
     h += '<div class="ct3-sv"><span class="ct3-dot' + (dirty ? ' dirty' : '') + '"></span><div class="ct3-svt">' + (dirty ? '<b>Unsaved changes.</b> Nothing changes for anyone until you save.' : '<b>Saved for everyone.</b> Version ' + last.v + ', saved by ' + last.who + ' on ' + last.d + '.') + '</div><span class="ct3-sp"></span>' +
       (dirty ? '<button class="btn btn-ghost btn-sm" onclick="ct3SetDiscard()">Discard</button><button class="btn btn-dark btn-sm" onclick="ct3SetSave()">Save for everyone</button>' : '<button class="btn btn-ghost btn-sm" onclick="ct3Hist()">History</button>') + '</div>';
     h += '<div class="ct3-stt">' + SET_SECS.map(function (x) { return '<button class="' + (sec === x[0] ? 'on' : '') + '" onclick="ct3SetSec(\'' + x[0] + '\')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg>' + x[1] + '</button>'; }).join('') + '</div>';
     h += '<div class="ct3-tiles">' + setTiles(sec, d) + '</div>';
-    var off = sec === 'hl' && d.alloc === 'off';
     h += '<section class="ct3-blk"><header><div><h2>' + SET_SECS.filter(function (x) { return x[0] === sec; })[0][1] + ' <span class="ct3-tag">Shared with everyone</span></h2><div class="ct3-q">' + SET_DESC[sec] + '</div></div></header><div class="ct3-rg">' +
-      SET_OPT[sec].map(function (o) { return '<button class="ct3-ro' + (d[sec] === o[0] ? ' on' : '') + (off ? ' dis' : '') + '" onclick="ct3Draft(\'' + sec + '\',\'' + o[0] + '\')"><b><i></i>' + o[1] + '</b><span>' + o[2] + '</span></button>'; }).join('') + '</div>' +
-      (off ? '<div class="ct3-nt">Overhead is not allocated, so both show the same profit.</div>' : '') + SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
+      SET_OPT[sec].map(function (o) { return '<button class="ct3-ro' + (d[sec] === o[0] ? ' on' : '') + '" onclick="ct3Draft(\'' + sec + '\',\'' + o[0] + '\')"><b><i></i>' + o[1] + '</b><span>' + o[2] + '</span></button>'; }).join('') + '</div>' +
+      SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
+    h += setReady(sec);
     if (sec === 'rr' || sec === 'ctc') h += setByTable(sec, d);
     h += '<section class="ct3-blk"><header><div><h2>What this does to the numbers</h2><div class="ct3-q">All regions, all pillars, year to date and full-year outlook</div></div></header>' + setPreview(d) + '<div class="ct3-nt">Quarterly snapshots already taken keep the method they were taken with.</div></section>';
     return h;
@@ -20876,7 +20889,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function ct3Draft(k, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
   function ct3SetDiscard() { CT3.draft = null; ct3Render(); }
   function ct3SetSave() {
-    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc', 'hl'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
+    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
     [['rrBy', 'Run rate'], ['ctcBy', 'Cost to complete']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
     if (!ch.length) return;
     CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; ') });
@@ -20893,7 +20906,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function ct3GateClose() { var g = $e('ct3-gate'); if (g && g.parentNode) g.parentNode.removeChild(g); }
   function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = cfgCopy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
-  var SET_CSS = '.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
+  var SET_CSS = '.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
     '.ct3-sd{font-size:14px;color:var(--g600);max-width:760px;margin:0 0 16px;line-height:1.55}.ct3-sv{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}.ct3-svt{font-size:13.5px;color:var(--g700)}.ct3-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;flex:none}.ct3-dot.dirty{background:#d97706}' +
     '.ct3-stt{display:inline-flex;gap:2px;background:rgba(24,24,27,.06);border-radius:14px;padding:4px;margin:0 0 16px;flex-wrap:wrap}.ct3-stt button{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--g600);padding:9px 16px;border-radius:10px;transition:background .15s,color .15s}.ct3-stt button:hover{color:var(--g900)}.ct3-stt button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
     '.ct3-rg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ct3-ro{text-align:left;border:1px solid var(--g250);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,box-shadow .15s}.ct3-ro:hover{border-color:var(--g400)}.ct3-ro.on{border-color:var(--charcoal);box-shadow:0 0 0 1px var(--charcoal)}.ct3-ro b{font-size:13.5px;display:flex;align-items:center;gap:9px}.ct3-ro b i{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g400);display:inline-block;flex:none;box-sizing:border-box}.ct3-ro.on b i{border:5px solid var(--charcoal)}.ct3-ro span{font-size:12px;color:var(--g500);line-height:1.5;padding-left:24px}.ct3-ro.dis{opacity:.4;pointer-events:none}' +
