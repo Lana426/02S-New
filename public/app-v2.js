@@ -20333,7 +20333,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   };
   var TYPES = [{ k: 'Self-perform', w: .38, f: 1.02 }, { k: 'GC/GR', w: .62, f: .99 }];
   var GA_ACT = .096, GA_BUD = .092;
-  var FC_L = { rr3: 'Run rate · last 3 months', rrytd: 'Run rate · YTD average', pc: '% complete' }, CTC_L = { ytd: 'Hold YTD margin', plan: 'Plan margin' }, OH_L = { rev: 'By revenue', none: 'None' };
+  var FC_L = { rr3: 'Run rate · last 3 months', rrytd: 'Run rate · YTD average', pc: '% complete' }, CTC_L = { ytd: 'Hold YTD margin', plan: 'Plan margin' }, OH_L = { rev: 'By revenue', gm: 'By gross margin', none: 'None' };
   var FIELD_L = { fc: 'Revenue forecast', ctc: 'Cost to complete', oh: 'Overhead' }, SET_L = { fc: FC_L, ctc: CTC_L, oh: OH_L };
   function withCfg(c, fn) { var sv = CT3.cfg; CT3.cfg = c; try { return fn(); } finally { CT3.cfg = sv; } }
   function withAll(c, fn) { var sf = CT3.f; CT3.f = DEF_F; try { return withCfg(c, fn); } finally { CT3.f = sf; } }
@@ -20352,9 +20352,20 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function basisCounts(c, f) { var r = { b: 0, c: 0 }; PLS.forEach(function (p) { if (f && f.pillar && f.pillar !== 'All' && p.pillar !== f.pillar) return; if (f && f.pl && f.pl !== 'All' && p.n !== f.pl) return; r[basisOf(p, c)]++; }); return r; }
   function cfgLabel(c) { var n = basisCounts(c), oh = PLS.filter(function (p) { return lineCfg(p, c).oh === 'rev'; }).length; return 'Run rate on ' + n.b + ' lines · % complete on ' + n.c + ' lines · Overhead on ' + oh + ' of ' + PLS.length + ' lines' + (nOv(c) ? ' · ' + nOv(c) + ' changes from default' : ''); }
   var PLT = null, OHC = {};
-  function plTot() { if (!PLT) { PLT = {}; PLS.forEach(function (p) { var a = ct3Agg({ pl: p.n }), r = 0, ap = 0, i; for (i = 0; i < YTD; i++) { r += a.act[i]; ap += a.aop[i]; } PLT[p.n] = { act: r, aop: ap }; }); } return PLT; }
-  function ohFac(c, kind) { var key = kind + PLS.map(function (p) { return lineCfg(p, c).oh === 'rev' ? 1 : 0; }).join(''), t = plTot(); if (OHC[key] == null) { var all = 0, inc = 0; PLS.forEach(function (p) { all += t[p.n][kind]; if (lineCfg(p, c).oh === 'rev') inc += t[p.n][kind]; }); OHC[key] = inc ? all / inc : 0; } return OHC[key]; }
-  function ohRate(p, c, kind) { c = c || CT3.cfg; return lineCfg(p, c).oh === 'rev' ? (kind === 'bud' ? GA_BUD : GA_ACT) * ohFac(c, kind === 'bud' ? 'aop' : 'act') : 0; }
+  function plTot() { if (!PLT) { PLT = {}; PLS.forEach(function (p) { var a = ct3Agg({ pl: p.n }), r = 0, ap = 0, g = 0, ga = 0, i; for (i = 0; i < YTD; i++) { r += a.act[i]; ap += a.aop[i]; g += a.gm[i]; ga += a.gmA[i]; } PLT[p.n] = { act: r, aop: ap, gm: g, gmA: ga }; }); } return PLT; }
+  function ohRates(c, kind) {
+    var key = kind + PLS.map(function (p) { return lineCfg(p, c).oh; }).join('|');
+    if (!OHC[key]) {
+      var t = plTot(), rk = kind === 'bud' ? 'aop' : 'act', gk = kind === 'bud' ? 'gmA' : 'gm', R = 0, G = 0, S = 0, sh = {}, out = {};
+      PLS.forEach(function (p) { R += t[p.n][rk]; G += t[p.n][gk]; });
+      PLS.forEach(function (p) { var m = lineCfg(p, c).oh; sh[p.n] = m === 'rev' ? t[p.n][rk] / R : m === 'gm' ? t[p.n][gk] / G : 0; S += sh[p.n]; });
+      var pool = (kind === 'bud' ? GA_BUD : GA_ACT) * R;
+      PLS.forEach(function (p) { out[p.n] = S && t[p.n][rk] ? pool * sh[p.n] / S / t[p.n][rk] : 0; });
+      OHC[key] = out;
+    }
+    return OHC[key];
+  }
+  function ohRate(p, c, kind) { c = c || CT3.cfg; return ohRates(c, kind)[p.n]; }
   function ohAll(c) { return PLS.every(function (p) { return lineCfg(p, c).oh === 'rev'; }); }
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
@@ -20925,7 +20936,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     return order.map(function (k) { var x = g[k]; x.t = FIELD_L[x.f] + ': ' + x.lines.join(', ') + ' changed from ' + SET_L[x.f][x.from] + ' to ' + SET_L[x.f][x.to]; return x; });
   }
   function setLineTable(d) {
-    var OPT = { fc: [['rr3', FC_L.rr3], ['rrytd', FC_L.rrytd], ['pc', FC_L.pc]], ctc: [['ytd', CTC_L.ytd], ['plan', CTC_L.plan], ['fcac', 'Job forecast (not yet available)', 1]], oh: [['rev', OH_L.rev], ['none', OH_L.none]] };
+    var OPT = { fc: [['rr3', FC_L.rr3], ['rrytd', FC_L.rrytd], ['pc', FC_L.pc]], ctc: [['ytd', CTC_L.ytd], ['plan', CTC_L.plan], ['fcac', 'Job forecast (not yet available)', 1]], oh: [['rev', OH_L.rev], ['gm', OH_L.gm], ['none', OH_L.none]] };
     function sel(f, vals, saved, fn) {
       var uniq = {}; vals.forEach(function (v) { uniq[v] = 1; }); var mixed = Object.keys(uniq).length > 1, cur = mixed ? '' : vals[0], chg = vals.some(function (v, i) { return v !== saved[i]; });
       return '<select class="ct3-sel' + (chg ? ' chg' : '') + '" onchange="' + fn + '(\'' + f + '\',this.value)">' + (mixed ? '<option value="" disabled selected>Mixed</option>' : '') + OPT[f].map(function (o) { return '<option value="' + o[0] + '"' + (o[2] ? ' disabled' : '') + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
