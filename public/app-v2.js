@@ -20396,7 +20396,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     service: { n: 'Service', m: ['C1', 'C2'] }
   };
   var DEF_F = { period: 'ytd', compare: 'aop', region: 'All', bu: 'All', pillar: 'All', pl: 'All', ptype: 'All', sc: 'All', tier: 'All' };
-  var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {}, cfg: cfgCopy(CFG0), draft: null, sec: 'alloc', exp: {}, role: 'leader', ver: 12, log: [{ v: 12, d: 'Nov 18', who: 'Staging Admin', t: 'Run rate changed from YTD average to 3-month' }, { v: 11, d: 'Oct 30', who: 'Staging Admin', t: 'Cost to complete set to YTD margin' }, { v: 10, d: 'Oct 2', who: 'Staging Admin', t: 'Overhead allocation set to by revenue' }] };
+  var CT3 = { screen: 'overview', method: '3m', view: 'pillar', f: copy(DEF_F), snap: {}, cfg: cfgCopy(CFG0), draft: null, sec: 'alloc', exp: {}, role: 'leader', bridge: 'rev', pending: null, reason: '', ver: 12, log: [{ v: 12, d: 'Nov 18', who: 'Staging Admin', t: 'Run rate changed from YTD average to 3-month' }, { v: 11, d: 'Oct 30', who: 'Staging Admin', t: 'Cost to complete set to YTD margin' }, { v: 10, d: 'Oct 2', who: 'Staging Admin', t: 'Overhead allocation set to by revenue' }] };
   var APPLY = {
     overview: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
     financial: ['period', 'compare', 'region', 'bu', 'pillar', 'pl', 'ptype'],
@@ -20668,7 +20668,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var n = basisCounts(CT3.cfg, CT3.f), c = CT3.cfg, tg = function (t) { return '<span class="ct3-tag">' + t + '</span>'; };
     return (n.b ? tg('Run rate · ' + RR_L[c.rr] + ' · ' + n.b + (n.b === 1 ? ' line' : ' lines')) : '') + (n.c ? tg('% complete · ' + PC_L[c.pc] + ' · ' + n.c + (n.c === 1 ? ' line' : ' lines')) : '') + tg('Cost to complete · ' + (n.b ? CTC_L[c.ctc] : '') + (n.b && n.c ? ' / ' : '') + (n.c ? CTC_L[c.pcm] : '')) + (n.c ? '<span class="ct3-ds ct3-ds-n" title="% complete forecasting data is not yet in the data warehouse">% complete lines are estimates in v1</span>' : '');
   }
-  function methodLine() { return '<div class="ct3-ml"><span>How these numbers are built: ' + escH(cfgLabel(CT3.cfg)) + '</span>' + (CT3.role === 'admin' ? '<button class="ct3-lnk" onclick="ctNav(\'settings\')">Edit in Settings</button>' : '') + '</div>'; }
+  function methodLine() { return '<div class="ct3-ml"><span>How these numbers are built: ' + escH(cfgLabel(CT3.cfg)) + '</span>' + (CT3.role !== 'leader' ? '<button class="ct3-lnk" onclick="ctNav(\'settings\')">Edit in Settings</button>' : '') + '</div>'; }
 
   /* ───────── filters ───────── */
   function optsFor(key) {
@@ -20754,12 +20754,51 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     if (showPs) b += barRow('Professional services', 'target ' + fp(UTIL_TARGET['Professional services'], 0), U.psU / UTIL_TARGET['Professional services'], 1, Math.round(U.psU / UTIL_TARGET['Professional services'] * 100), U.psU >= UTIL_TARGET['Professional services'] ? 'ct3-fg' : 'ct3-fb2');
     return b;
   }
+
+  /* ───────── plan-to-outlook bridge ───────── */
+  function ct3Bridge(o) {
+    var R = { rev: { aop: 0, ytd: 0, rb: 0, rc: 0 }, pro: { aop: 0, ytd: 0, rb: 0, rc: 0 } };
+    PLS.forEach(function (p) {
+      if (o.pillar && o.pillar !== 'All' && p.pillar !== o.pillar) return;
+      if (o.pl && o.pl !== 'All' && p.n !== o.pl) return;
+      var sp = ct3Agg(mix(o, { pl: p.n })), yy = 0, gg = 0, ay = 0, ag = 0, k, ar = sp.aop[10] + sp.aop[11], agr = sp.gmA[10] + sp.gmA[11];
+      for (k = 0; k < YTD; k++) { yy += sp.act[k]; gg += sp.gm[k]; ay += sp.aop[k]; ag += sp.gmA[k]; }
+      var c = outCore(sp, revMethod(p), marMethod(p), yy, gg, basisOf(p)), key = basisOf(p) === 'c' ? 'rc' : 'rb', remR = c.out - yy, remG = c.gmOut - gg;
+      R.rev.aop += ay + ar; R.rev.ytd += yy - ay; R.rev[key] += remR - ar;
+      R.pro.aop += (ag + agr) - gaFn(ay + ar, ag + agr, 'bud'); R.pro.ytd += (gg - gaFn(yy, gg, 'act')) - (ag - gaFn(ay, ag, 'bud')); R.pro[key] += (remG - gaFn(remR, remG, 'act')) - (agr - gaFn(ar, agr, 'bud'));
+    });
+    ['rev', 'pro'].forEach(function (m) { R[m].out = R[m].aop + R[m].ytd + R[m].rb + R[m].rc; });
+    return R;
+  }
+  function bridgeBlock() {
+    var R = ct3Bridge(baseO())[CT3.bridge], n = basisCounts(CT3.cfg, CT3.f), c = CT3.cfg, isP = CT3.bridge === 'pro';
+    var st = [['Plan', 'Plan (AOP)', R.aop, 't', 'Full-year plan'], ['Year to date', 'Year to date vs plan', R.ytd, 'd', 'Actual so far less plan so far']];
+    if (n.b) st.push(['Run-rate lines', 'Run-rate lines, rest of year', R.rb, 'd', n.b + (n.b === 1 ? ' line' : ' lines') + ' · ' + RR_L[c.rr] + ' pace vs plan for Nov and Dec']);
+    if (n.c) st.push(['% complete lines', '% complete lines, rest of year', R.rc, 'd', n.c + (n.c === 1 ? ' line' : ' lines') + ' · job-based, ' + PC_L[c.pc] + ', vs plan for Nov and Dec']);
+    st.push(['Outlook', 'Full-year outlook', R.out, 't', 'Plan plus the steps above']);
+    var lv = [], cum = R.aop, i, lo = R.aop, hi = R.aop;
+    st.forEach(function (x, k) { if (x[3] === 'd') { lv.push([cum, cum + x[2]]); cum += x[2]; } else lv.push([null, x[2]]); var lvl2 = x[3] === 't' ? x[2] : cum; lo = Math.min(lo, lvl2); hi = Math.max(hi, lvl2); });
+    var rng = Math.max(hi - lo, hi * .01), base = lo - rng * 1.4, top = hi + rng * .5, W = 760, H = 240, pl = 8, pt = 28, pb = 34, ph = H - pt - pb, slot = (W - 2 * pl) / st.length, bw = slot * .52;
+    var y = function (v) { return pt + (top - v) / (top - base) * ph; }, f = function (v) { return isP ? fm(v) : fm(v); };
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="ct3-svg" role="img" aria-label="Bridge from plan to full-year outlook">';
+    st.forEach(function (x, k) {
+      var cx = pl + slot * k + slot / 2, x0 = cx - bw / 2, a, b, cls;
+      if (x[3] === 't') { a = y(x[2]); b = y(base); cls = 'ct3-wf-t'; } else { a = y(Math.max(lv[k][0], lv[k][1])); b = y(Math.min(lv[k][0], lv[k][1])); cls = x[2] >= 0 ? 'ct3-wf-u' : 'ct3-wf-d'; }
+      svg += '<rect class="' + cls + '" x="' + x0.toFixed(1) + '" y="' + a.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(2, b - a).toFixed(1) + '" rx="3"/>';
+      svg += '<text class="ct3-wf-tx" x="' + cx.toFixed(1) + '" y="' + (a - 7).toFixed(1) + '" text-anchor="middle">' + (x[3] === 'd' ? fsm(x[2]) : fm(x[2])) + '</text><text class="ct3-wf-lb" x="' + cx.toFixed(1) + '" y="' + (H - 12) + '" text-anchor="middle">' + escH(x[0]) + '</text>';
+      if (k < st.length - 1) { var lvl = x[3] === 't' ? x[2] : lv[k][1], yy = y(lvl); svg += '<line class="ct3-wf-cn" x1="' + (x0 + bw).toFixed(1) + '" x2="' + (pl + slot * (k + 1) + slot / 2 - bw / 2).toFixed(1) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '"/>'; }
+    });
+    svg += '</svg>';
+    var rows = st.map(function (x) { return '<tr' + (x[3] === 't' ? ' class="ct3-tot"' : '') + '><td><b>' + escH(x[1]) + '</b></td><td class="' + (x[3] === 'd' ? tone(x[2]) : '') + '">' + (x[3] === 'd' ? fsm(x[2]) : fm(x[2])) + '</td><td class="ct3-wf-n">' + escH(x[4]) + '</td></tr>'; }).join('');
+    return '<section class="ct3-blk"><header><div><h2>From plan to outlook</h2><div class="ct3-q">Why the full-year ' + (isP ? 'profit after overhead' : 'revenue') + ' outlook differs from AOP</div></div><span class="ct3-sp"></span>' + seg('bridge', [['rev', 'Revenue'], ['pro', 'Profit']], CT3.bridge) + '</header>' + svg + '<div class="ct3-lg"><span>Bars start at ' + fm(base) + ' so the steps are visible.</span></div><div class="ct3-tw"><table class="ct3-t"><tbody>' + rows + '</tbody></table></div></section>';
+  }
   function scFinancial() {
     var S = ct3Sum(baseO()), O = ct3Out(baseO()), K3p = O.gmOut - O.ga;
     var h = head('financial', 'Financial', 'Plan to date and full-year outlook', '<button class="btn btn-ghost btn-sm" onclick="ct3Copy()">Copy as table</button>');
     h += '<div class="ct3-ct">Year to date</div><div class="ct3-tiles">' + tile('F1', fm(S.rev), fsp(S.rev / S.aop - 1) + ' · ' + fsm(S.gap) + ' vs plan', tone(S.gap)) + tile('K1', fm(S.rev - S.op), fp(1 - S.gmP) + ' of revenue direct', '') + tile('K2', fm(S.op), fp(S.opP) + ' margin · ' + fbps(S.opP - S.opT) + ' vs plan', tone(S.opP - S.opT)) + '</div>';
     h += '<div class="ct3-ct">Full-year outlook<span class="ct3-sp"></span>' + methodTags() + '</div><div class="ct3-tiles">' + tile('F4', fm(O.out), 'Run rate ' + fm(O.rr) + '/mo', '') + tile('K3', fm(O.out - K3p), fp(1 - O.gmP) + ' of revenue direct', '') + tile('K4', fm(K3p), fp(O.out ? K3p / O.out : 0) + ' margin', '') + '</div>';
     h += '<div class="ct3-ct">Margin and plan gap</div><div class="ct3-tiles ct3-t4">' + tile('F2', fp(S.gmP), fbps(S.gmP - S.gmT) + ' vs target', tone(S.gmP - S.gmT)) + tile('F3', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan', tone(S.opP - S.opT)) + tile('F5', fm(O.gmOut), fp(O.gmP) + ' margin', '') + tile('F6', fsm(O.gap), fsp(O.gap / O.fyAop) + ' vs AOP', tone(O.gap)) + '</div>';
+    h += bridgeBlock();
     h += '<section class="ct3-blk"><header><div><h2>By ' + DIM_NAME[CT3.view].toLowerCase() + '</h2></div><span class="ct3-sp"></span>' + seg('view', [['pillar', 'Pillar'], ['pl', 'Product line'], ['region', 'Region'], ['bu', 'Business unit'], ['ptype', 'Project type']], CT3.view) + '</header>' + finTable(CT3.view) + '</section>';
     return h;
   }
@@ -20921,35 +20960,59 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default for its basis unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Forecast basis</th><th>Revenue</th><th>Cost to complete</th><th>Monthly pace</th><th>Full-year revenue</th><th>Full-year profit</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Defaults follow the readiness map: billings-based lines are forecast from run rate, job-based lines from % complete. Hover “To confirm” for why a line is open.</div></section>';
   }
   function fcVals(o) { return '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
-  function ct3DraftBy(by, name, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
+  function ct3DraftBy(by, name, v) { if (CT3.pending || CT3.role !== 'admin') return; if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
   function ct3SetExp(k) { CT3.exp[k] = !CT3.exp[k]; ct3Render(); }
   function scSettings() {
-    var d = CT3.draft || (CT3.draft = cfgCopy(CT3.cfg)), dirty = !cfgSame(d, CT3.cfg), last = CT3.log[0], sec = CT3.sec;
-    var h = '<div class="phead"><div><h1>Settings</h1><div class="meta"><span class="chip">Admin only</span></div></div></div>';
+    var pend = CT3.pending, adm = CT3.role === 'admin', d = pend ? pend.cfg : adm ? (CT3.draft || (CT3.draft = cfgCopy(CT3.cfg))) : CT3.cfg, dirty = adm && !pend && !cfgSame(d, CT3.cfg), ov = dirty && ovChanged(d, CT3.cfg), last = CT3.log[0], sec = CT3.sec, locked = !!pend || !adm;
+    var h = '<div class="phead"><div><h1>Settings</h1><div class="meta"><span class="chip">' + (adm ? 'Admin' : 'Finance approver') + '</span></div></div></div>';
     h += '<p class="ct3-sd">How every Control Tower number is built. Set once; changes apply to everyone who opens the Control Tower.</p>';
-    h += '<div class="ct3-sv"><span class="ct3-dot' + (dirty ? ' dirty' : '') + '"></span><div class="ct3-svt">' + (dirty ? '<b>Unsaved changes.</b> Nothing changes for anyone until you save.' : '<b>Saved for everyone.</b> Version ' + last.v + ', saved by ' + last.who + ' on ' + last.d + '.') + '</div><span class="ct3-sp"></span>' +
-      (dirty ? '<button class="btn btn-ghost btn-sm" onclick="ct3SetDiscard()">Discard</button><button class="btn btn-dark btn-sm" onclick="ct3SetSave()">Save for everyone</button>' : '<button class="btn btn-ghost btn-sm" onclick="ct3Hist()">History</button>') + '</div>';
+    var bar, ct = function (c, f, t) { return '<button class="btn ' + c + ' btn-sm" onclick="' + f + '">' + t + '</button>'; };
+    if (pend) bar = '<span class="ct3-dot dirty"></span><div class="ct3-svt"><b>Awaiting approval.</b> ' + pend.ch.length + (pend.ch.length === 1 ? ' change' : ' changes') + ' submitted by ' + pend.by + ' on ' + pend.d + '. Reason: ' + escH(pend.reason) + '</div><span class="ct3-sp"></span>' + (adm ? ct('btn-ghost', 'ct3Withdraw()', 'Withdraw') : ct('btn-ghost', 'ct3Reject()', 'Reject') + ct('btn-dark', 'ct3Approve()', 'Approve'));
+    else if (dirty) bar = '<span class="ct3-dot dirty"></span><div class="ct3-svt"><b>Unsaved changes.</b> ' + (ov ? 'Overrides need a reason and approval before they go live.' : 'Nothing changes for anyone until you save.') + '</div>' + (ov ? '<input class="ct3-reason" placeholder="Reason for override (required)" value="' + escH(CT3.reason) + '" oninput="ct3Reason(this.value)">' : '') + '<span class="ct3-sp"></span>' + ct('btn-ghost', 'ct3SetDiscard()', 'Discard') + ct('btn-dark', 'ct3SetSave()', ov ? 'Submit for approval' : 'Save for everyone');
+    else bar = '<span class="ct3-dot"></span><div class="ct3-svt"><b>Saved for everyone.</b> Version ' + last.v + ', saved by ' + last.who + ' on ' + last.d + '.' + (adm ? '' : ' Nothing is waiting for approval.') + '</div><span class="ct3-sp"></span>' + ct('btn-ghost', 'ct3Hist()', 'History');
+    h += '<div class="ct3-sv">' + bar + '</div>';
     h += '<div class="ct3-stt">' + SET_SECS.map(function (x) { return '<button class="' + (sec === x[0] ? 'on' : '') + '" onclick="ct3SetSec(\'' + x[0] + '\')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg>' + x[1] + '</button>'; }).join('') + '</div>';
-    h += '<div class="ct3-tiles">' + setTiles(sec, d) + '</div>';
+    h += '<div class="' + (locked ? 'ct3-lock' : '') + '"><div class="ct3-tiles">' + setTiles(sec, d) + '</div>';
     h += '<section class="ct3-blk"><header><div><h2>' + SET_SECS.filter(function (x) { return x[0] === sec; })[0][1] + ' <span class="ct3-tag">Shared with everyone</span> <button class="ct3-dq ct3-dqs" title="Data behind this" aria-label="Data behind this" onclick="ct3Data(\'set:' + sec + '\')">?</button></h2><div class="ct3-q">' + SET_DESC[sec] + '</div></div></header>' +
       (sec === 'fc' ? fcCards(d) : '<div class="ct3-rg">' + setRadios(sec, d) + '</div>') + SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
     if (sec === 'fc') h += setFcTable(d);
     h += '<section class="ct3-blk"><header><div><h2>What this does to the numbers</h2><div class="ct3-q">All regions, all pillars, year to date and full-year outlook</div></div></header>' + setPreview(d) + '<div class="ct3-nt">Quarterly snapshots already taken keep the method they were taken with.</div></section>';
-    return h;
+    return h + '</div>';
   }
-  function ct3Role(r) { CT3.role = r; CT3.draft = null; if (r !== 'admin' && CT3.screen === 'settings') CT3.screen = 'overview'; ct3Render(); }
+  function ct3Role(r) { CT3.role = r; CT3.draft = null; if (r === 'leader' && CT3.screen === 'settings') CT3.screen = 'overview'; ct3Render(); }
   function ct3SetSec(k) { CT3.sec = k; ct3Render(); }
-  function ct3Draft(k, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
+  function ct3Draft(k, v) { if (CT3.pending || CT3.role !== 'admin') return; if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
   function ct3SetDiscard() { CT3.draft = null; ct3Render(); }
-  function ct3SetSave() {
-    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc', 'pc', 'pcm'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
+  function ovChanged(d, c) { return ['rrBy', 'ctcBy', 'basisBy'].some(function (k) { return JSON.stringify(d[k] || {}) !== JSON.stringify(c[k] || {}); }); }
+  function setChanges(d, c) {
+    var ch = ['alloc', 'rr', 'ctc', 'pc', 'pcm'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
     [['rrBy', 'Revenue method'], ['ctcBy', 'Cost to complete method'], ['basisBy', 'Forecast basis']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
-    if (!ch.length) return;
-    CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; ') });
+    return ch;
+  }
+  function ct3Reason(v) { CT3.reason = v; }
+  function ct3SetSave() {
+    var d = CT3.draft, c = CT3.cfg; if (!d || CT3.pending || CT3.role !== 'admin') return;
+    var ch = setChanges(d, c); if (!ch.length) return;
+    if (ovChanged(d, c)) {
+      var r = (CT3.reason || '').trim(); if (!r) { ct3Toast('Add a reason for the override first'); return; }
+      CT3.pending = { cfg: cfgCopy(d), reason: r, ch: ch, by: 'Staging Admin', d: 'Nov 24' }; CT3.draft = null; CT3.reason = ''; ct3Render(); ct3Toast('Submitted for approval'); return;
+    }
+    CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; '), reason: '', appr: '–' });
     CT3.cfg = cfgCopy(d); CT3.draft = null; ct3Render(); ct3Toast('Saved for everyone · Version ' + CT3.ver);
   }
+  function ct3Withdraw() { var p = CT3.pending; if (!p) return; CT3.draft = cfgCopy(p.cfg); CT3.reason = p.reason; CT3.pending = null; ct3Render(); }
+  function ct3Approve() {
+    var p = CT3.pending; if (!p || CT3.role !== 'approver') return;
+    CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: p.by, t: p.ch.join('; '), reason: p.reason, appr: 'Finance approver' });
+    CT3.cfg = cfgCopy(p.cfg); CT3.pending = null; ct3Render(); ct3Toast('Approved · Version ' + CT3.ver);
+  }
+  function ct3Reject() {
+    var p = CT3.pending; if (!p || CT3.role !== 'approver') return;
+    CT3.log.unshift({ v: '–', d: 'Nov 24', who: p.by, t: 'Rejected: ' + p.ch.join('; '), reason: p.reason, appr: 'Rejected by Finance approver' });
+    CT3.pending = null; ct3Render(); ct3Toast('Change rejected');
+  }
   function ct3Hist() {
-    openModal('Settings history', '<div class="ct3-mi"><table class="ct3-t"><thead><tr><th>Version</th><th>Date</th><th>Saved by</th><th>Change</th></tr></thead><tbody>' + CT3.log.map(function (e) { return '<tr><td>' + e.v + '</td><td>' + e.d + '</td><td>' + e.who + '</td><td>' + escH(e.t) + '</td></tr>'; }).join('') + '</tbody></table></div>');
+    openModal('Settings history', '<div class="ct3-mi"><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Version</th><th>Date</th><th>Submitted by</th><th>Change</th><th>Reason</th><th>Approved by</th></tr></thead><tbody>' + CT3.log.map(function (e) { return '<tr><td>' + e.v + '</td><td>' + e.d + '</td><td>' + e.who + '</td><td>' + escH(e.t) + '</td><td>' + escH(e.reason || '–') + '</td><td>' + escH(e.appr || '–') + '</td></tr>'; }).join('') + '</tbody></table></div></div>');
   }
   function ct3Gate() {
     if ($e('ct3-gate')) return;
@@ -20958,8 +21021,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     document.body.appendChild(g);
   }
   function ct3GateClose() { var g = $e('ct3-gate'); if (g && g.parentNode) g.parentNode.removeChild(g); }
-  function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = cfgCopy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
-  var SET_CSS = '.ct3-fcg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ct3-fcc{border:1px solid var(--g200);border-radius:12px;padding:16px 18px;background:var(--g50)}.ct3-fcc h3{font-size:14.5px;font-weight:700;margin:0 0 2px}.ct3-fl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin:16px 0 8px}.ct3-rgc{display:grid;gap:8px}.ct3-dq{display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:14px;font-weight:700;line-height:1;transition:border-color .15s,box-shadow .15s}.ct3-dq:hover{border-color:var(--g400);color:var(--g900);box-shadow:0 2px 6px rgba(0,0,0,.08)}.ct3-dqs{width:22px;height:22px;border-radius:50%;font-size:12px;vertical-align:middle}.ct3-ds-p{background:#fef3c7;color:#92400e}.ct3-na{font-size:12px;color:var(--g400)}.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
+  function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = CT3.role === 'admin' ? cfgCopy(CT3.cfg) : null; ct3Build(); ct3Render(); window.scrollTo(0, 0); }
+  var SET_CSS = '.ct3-lock{opacity:.62;pointer-events:none}.ct3-reason{flex:1 1 280px;min-width:200px;font:inherit;font-size:13px;border:1px solid var(--g250);border-radius:8px;padding:7px 10px;background:#fff}.ct3-wf-t{fill:var(--g700)}.ct3-wf-u{fill:#16a34a}.ct3-wf-d{fill:#dc2626}.ct3-wf-tx{fill:var(--g800,#27272a);font-size:12px;font-weight:700}.ct3-wf-lb{fill:var(--g500);font-size:11px}.ct3-wf-cn{stroke:var(--g400);stroke-dasharray:3 3}.ct3-wf-n{color:var(--g500)}.ct3-fcg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ct3-fcc{border:1px solid var(--g200);border-radius:12px;padding:16px 18px;background:var(--g50)}.ct3-fcc h3{font-size:14.5px;font-weight:700;margin:0 0 2px}.ct3-fl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin:16px 0 8px}.ct3-rgc{display:grid;gap:8px}.ct3-dq{display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:14px;font-weight:700;line-height:1;transition:border-color .15s,box-shadow .15s}.ct3-dq:hover{border-color:var(--g400);color:var(--g900);box-shadow:0 2px 6px rgba(0,0,0,.08)}.ct3-dqs{width:22px;height:22px;border-radius:50%;font-size:12px;vertical-align:middle}.ct3-ds-p{background:#fef3c7;color:#92400e}.ct3-na{font-size:12px;color:var(--g400)}.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
     '.ct3-sd{font-size:14px;color:var(--g600);max-width:760px;margin:0 0 16px;line-height:1.55}.ct3-sv{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}.ct3-svt{font-size:13.5px;color:var(--g700)}.ct3-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;flex:none}.ct3-dot.dirty{background:#d97706}' +
     '.ct3-stt{display:inline-flex;gap:2px;background:rgba(24,24,27,.06);border-radius:14px;padding:4px;margin:0 0 16px;flex-wrap:wrap}.ct3-stt button{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--g600);padding:9px 16px;border-radius:10px;transition:background .15s,color .15s}.ct3-stt button:hover{color:var(--g900)}.ct3-stt button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
     '.ct3-rg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ct3-ro{text-align:left;border:1px solid var(--g250);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,box-shadow .15s}.ct3-ro:hover{border-color:var(--g400)}.ct3-ro.on{border-color:var(--charcoal);box-shadow:0 0 0 1px var(--charcoal)}.ct3-ro b{font-size:13.5px;display:flex;align-items:center;gap:9px}.ct3-ro b i{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g400);display:inline-block;flex:none;box-sizing:border-box}.ct3-ro.on b i{border:5px solid var(--charcoal)}.ct3-ro span{font-size:12px;color:var(--g500);line-height:1.5;padding-left:24px}.ct3-ro.dis{opacity:.4;pointer-events:none}' +
@@ -20993,7 +21056,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var logo = ct.querySelector('.sb-logo'), logoHTML = logo ? logo.outerHTML : '';
     var nav = NAV.map(function (n) { return '<button class="sb-item" data-screen="' + n[0] + '" onclick="ctNav(\'' + n[0] + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0">' + n[2] + '</svg>' + n[1] + '</button>'; }).join('');
     ct.innerHTML = '<nav class="sb">' + logoHTML + '<div class="sb-nav" style="padding-top:18px">' + nav + '</div><div class="sb-foot">O2S Control Tower</div></nav>' +
-      '<div class="main"><div class="topbar"><div class="tb-brand"><span>02S</span> Control Tower</div><div class="tb-right"><div class="persona-sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><select id="ct3-role" class="persona-drop" onchange="ct3Role(this.value)"><option value="leader">Leadership</option><option value="admin">Admin</option></select></div><button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Workspaces</button></div></div>' +
+      '<div class="main"><div class="topbar"><div class="tb-brand"><span>02S</span> Control Tower</div><div class="tb-right"><div class="persona-sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><select id="ct3-role" class="persona-drop" onchange="ct3Role(this.value)"><option value="leader">Leadership</option><option value="admin">Admin</option><option value="approver">Finance approver</option></select></div><button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Workspaces</button></div></div>' +
       '<div class="content"><div class="ct3-wrap" id="ct3-main"></div></div></div>';
     ct.setAttribute('data-ct3', '2'); ct3Css();
     if (!window.__ct3Bound) { window.__ct3Bound = 1; document.addEventListener('click', function () { if (CT3.open) { CT3.open = null; ct3Render(); } }); document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && CT3.open) { CT3.open = null; ct3Render(); } }); }
@@ -21004,7 +21067,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var y = window.scrollY;
     m.innerHTML = (CT3.screen === 'settings' ? '' : filterBar()) + (SCREENS_FN[CT3.screen] || scOverview)();
     var rl = $e('ct3-role'); if (rl) rl.value = CT3.role;
-    document.querySelectorAll('#ctApp .sb-item[data-screen="settings"]').forEach(function (b) { b.style.display = CT3.role === 'admin' ? '' : 'none'; });
+    document.querySelectorAll('#ctApp .sb-item[data-screen="settings"]').forEach(function (b) { b.style.display = CT3.role !== 'leader' ? '' : 'none'; });
     document.querySelectorAll('#ctApp .sb-item').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-screen') === CT3.screen); });
     window.scrollTo(0, y);
   }
@@ -21033,10 +21096,10 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     try { navigator.clipboard.writeText(lines.join('\n')).then(function () { ct3Toast('Copied'); }, function () { ct3Toast('Copy was blocked by the browser'); }); } catch (e) { ct3Toast('Copy was blocked by the browser'); }
   }
 
-  window.ct3Open = ct3Open; window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take; window.ct3Role = ct3Role; window.ct3SetSec = ct3SetSec; window.ct3Draft = ct3Draft; window.ct3SetDiscard = ct3SetDiscard; window.ct3SetSave = ct3SetSave; window.ct3Hist = ct3Hist; window.ct3GateClose = ct3GateClose; window.ct3GoSet = ct3GoSet; window.ct3Data = ct3Data; window.ct3DraftBy = ct3DraftBy; window.ct3SetExp = ct3SetExp;
+  window.ct3Open = ct3Open; window.ct3Set = ct3Set; window.ct3Reset = ct3Reset; window.ct3Pref = ct3Pref; window.ct3Drill = ct3Drill; window.ct3Info = ct3Info; window.ct3Copy = ct3Copy; window.ct3Snaps = ct3Snaps; window.ct3Take = ct3Take; window.ct3Role = ct3Role; window.ct3SetSec = ct3SetSec; window.ct3Draft = ct3Draft; window.ct3SetDiscard = ct3SetDiscard; window.ct3SetSave = ct3SetSave; window.ct3Hist = ct3Hist; window.ct3GateClose = ct3GateClose; window.ct3GoSet = ct3GoSet; window.ct3Data = ct3Data; window.ct3DraftBy = ct3DraftBy; window.ct3Reason = ct3Reason; window.ct3Withdraw = ct3Withdraw; window.ct3Approve = ct3Approve; window.ct3Reject = ct3Reject; window.ct3SetExp = ct3SetExp;
   window.ctNav = function (id) {
     if (!SCREENS_FN[id]) id = 'overview';
-    if (id === 'settings') { if (CT3.role !== 'admin') id = 'overview'; else if (CT3.screen !== 'settings') { ct3Gate(); return; } }
+    if (id === 'settings') { if (CT3.role === 'leader') id = 'overview'; else if (CT3.screen !== 'settings') { ct3Gate(); return; } }
     if (id !== 'settings') CT3.draft = null;
     CT3.screen = id;
     if (id === 'operational') { if (CT3.f.pillar !== 'All' && !UTIL_TARGET[CT3.f.pillar]) { CT3.f.pillar = 'All'; CT3.f.pl = 'All'; } }
@@ -21049,5 +21112,5 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var ct = $e('ctApp'); if (ct) ct.style.display = 'flex';
     ct3Build(); window.ctNav('overview');
   };
-  window.__ct3 = { state: CT3, mval: mval, MET: MET, TABS: TABS };
+  window.__ct3 = { state: CT3, mval: mval, MET: MET, TABS: TABS, bridge: ct3Bridge };
 })();
