@@ -20890,7 +20890,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var logo = ct.querySelector('.sb-logo'), logoHTML = logo ? logo.outerHTML : '';
     var nav = NAV.map(function (n) { return '<button class="sb-item" data-screen="' + n[0] + '" onclick="ctNav(\'' + n[0] + '\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0">' + n[2] + '</svg>' + n[1] + '</button>'; }).join('');
     ct.innerHTML = '<nav class="sb">' + logoHTML + '<div class="sb-nav" style="padding-top:18px">' + nav + '</div><div class="sb-foot">O2S Control Tower</div></nav>' +
-      '<div class="main"><div class="topbar"><div class="tb-brand"><span>02S</span> Control Tower</div><div class="tb-right"><span class="ct3-rl">View as</span><span class="ct3-rs" id="ct3-role"></span><button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Workspaces</button></div></div>' +
+      '<div class="main"><div class="topbar"><div class="tb-brand"><span>02S</span> Control Tower</div><div class="tb-right"><div class="persona-sel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;flex-shrink:0"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><select id="ct3-role" class="persona-drop" onchange="ct3Role(this.value)"><option value="leader">Leadership</option><option value="admin">Admin</option></select></div><button class="btn btn-ghost btn-sm" onclick="backFromCT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;flex-shrink:0"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Workspaces</button></div></div>' +
       '<div class="content"><div class="ct3-wrap" id="ct3-main"></div></div></div>';
     ct.setAttribute('data-ct3', '2'); ct3Css();
     if (!window.__ct3Bound) { window.__ct3Bound = 1; document.addEventListener('click', function () { if (CT3.open) { CT3.open = null; ct3Render(); } }); document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && CT3.open) { CT3.open = null; ct3Render(); } }); }
@@ -20900,7 +20900,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     var m = $e('ct3-main'); if (!m) return;
     var y = window.scrollY;
     m.innerHTML = (CT3.screen === 'settings' ? '' : filterBar()) + (SCREENS_FN[CT3.screen] || scOverview)();
-    var rl = $e('ct3-role'); if (rl) rl.innerHTML = [['leader', 'Leadership'], ['admin', 'Admin']].map(function (r) { return '<button class="' + (CT3.role === r[0] ? 'on' : '') + '" onclick="ct3Role(\'' + r[0] + '\')">' + r[1] + '</button>'; }).join('');
+    var rl = $e('ct3-role'); if (rl) rl.value = CT3.role;
     document.querySelectorAll('#ctApp .sb-item[data-screen="settings"]').forEach(function (b) { b.style.display = CT3.role === 'admin' ? '' : 'none'; });
     document.querySelectorAll('#ctApp .sb-item').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-screen') === CT3.screen); });
     window.scrollTo(0, y);
