@@ -20333,8 +20333,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   };
   var TYPES = [{ k: 'Self-perform', w: .38, f: 1.02 }, { k: 'GC/GR', w: .62, f: .99 }];
   var GA_ACT = .096, GA_BUD = .092;
-  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', rrBy: {}, ctcBy: {}, basisBy: {} }, GAR = null;
-  var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' };
+  var CFG0 = { alloc: 'rev', rr: '3m', ctc: 'ytd', pc: 'scaled', pcm: 'plan', rrBy: {}, ctcBy: {}, basisBy: {} }, GAR = null;
+  var AL_L = { rev: 'by revenue', gm: 'by gross margin', off: 'not allocated' }, RR_L = { ytd: 'YTD average', '3m': '3-month', '1m': '1-month' }, CTC_L = { ytd: 'YTD margin', plan: 'plan margin', recent: 'recent margin' }, PC_L = { scaled: 'plan scaled by progress', plan: 'plan as is' };
   function gaFn(rev, gm, kind) {
     var m = CT3.cfg.alloc; if (m === 'off') return 0;
     if (m === 'rev') return rev * (kind === 'bud' ? GA_BUD : GA_ACT);
@@ -20347,10 +20347,13 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var BASIS_L = { b: 'Run rate', c: '% complete' };
   var TOCONF = { 'CCEP': 'Client sources disagree on whether CCEP is billings-based or job-based (open decision D11).', 'Fuel': 'Not marked available for run rate in the readiness grid.', 'Infrared Thermography': 'Not placed in the readiness map.' };
   function basisOf(p, c) { c = c || CT3.cfg; return (c.basisBy && c.basisBy[p.n]) || BASIS_DEF[p.n] || 'b'; }
+  var REV_OK = { b: { ytd: 1, '3m': 1, '1m': 1 }, c: { scaled: 1, plan: 1 } };
+  function revMethod(p, c) { c = c || CT3.cfg; var B = basisOf(p, c), v = c.rrBy[p.n]; if (!(v && REV_OK[B][v])) v = c.rrBy[p.pillar]; if (!(v && REV_OK[B][v])) v = B === 'c' ? c.pc : c.rr; return v; }
+  function marMethod(p, c) { c = c || CT3.cfg; return c.ctcBy[p.n] || c.ctcBy[p.pillar] || (basisOf(p, c) === 'c' ? c.pcm : c.ctc); }
   function basisCounts(c, f) { var r = { b: 0, c: 0 }; PLS.forEach(function (p) { if (f && f.pillar && f.pillar !== 'All' && p.pillar !== f.pillar) return; if (f && f.pl && f.pl !== 'All' && p.n !== f.pl) return; r[basisOf(p, c)]++; }); return r; }
-  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' on ' + basisCounts(c).b + ' lines · % complete on ' + basisCounts(c).c + ' lines · Cost to complete at ' + CTC_L[c.ctc] + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
+  function cfgLabel(c) { return 'Overhead ' + AL_L[c.alloc] + ' · Run rate ' + RR_L[c.rr] + ' on ' + basisCounts(c).b + ' lines · % complete (' + PC_L[c.pc] + ') on ' + basisCounts(c).c + ' lines · Cost to complete at ' + CTC_L[c.ctc] + ' (run rate) and ' + CTC_L[c.pcm] + ' (% complete)' + (nOv(c) ? ' · ' + nOv(c) + ' pillar or product line overrides' : ''); }
   function cfgCopy(c) { var r = copy(c); r.rrBy = copy(c.rrBy || {}); r.ctcBy = copy(c.ctcBy || {}); r.basisBy = copy(c.basisBy || {}); return r; }
-  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}) && JSON.stringify(a.basisBy || {}) === JSON.stringify(b.basisBy || {}); }
+  function cfgSame(a, b) { return a.alloc === b.alloc && a.rr === b.rr && a.ctc === b.ctc && a.pc === b.pc && a.pcm === b.pcm && JSON.stringify(a.rrBy || {}) === JSON.stringify(b.rrBy || {}) && JSON.stringify(a.ctcBy || {}) === JSON.stringify(b.ctcBy || {}) && JSON.stringify(a.basisBy || {}) === JSON.stringify(b.basisBy || {}); }
   function nOv(c) { return Object.keys(c.rrBy || {}).length + Object.keys(c.ctcBy || {}).length + Object.keys(c.basisBy || {}).length; }
   var PERIODS = { ytd: ['FY26 YTD (Jan–Oct)', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], q3: ['Q3 FY26', [6, 7, 8]], l3: ['Last 3 months', [7, 8, 9]], oct: ['Oct 2026', [9]] };
   var COMPARES = { aop: ['FY26 AOP', 1], py: ['Prior year', .9] };
@@ -20457,7 +20460,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function outCore(s, M, C, ytd, ytdGm, B) {
     var rr, out, gmRem, ra, rc, k, ap = 0;
-    if (B === 'c') { for (k = 0; k < YTD; k++) ap += s.aop[k]; rr = (s.aop[10] + s.aop[11]) * (ap ? ytd / ap : 1) / (12 - YTD); }
+    if (B === 'c') { for (k = 0; k < YTD; k++) ap += s.aop[k]; rr = (s.aop[10] + s.aop[11]) * (M === 'plan' ? 1 : (ap ? ytd / ap : 1)) / (12 - YTD); }
     else rr = M === 'ytd' ? ytd / YTD : M === '3m' ? (s.act[7] + s.act[8] + s.act[9]) / 3 : s.act[9];
     out = ytd + rr * (12 - YTD);
     if (C === 'plan') { ra = s.aop[10] + s.aop[11]; gmRem = ra ? (s.gmA[10] + s.gmA[11]) / ra : 0; }
@@ -20477,7 +20480,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
         if (o.pl && o.pl !== 'All' && p.n !== o.pl) return;
         var sp = ct3Agg(mix(o, { pl: p.n })), yy = 0, gg = 0, k;
         for (k = 0; k < YTD; k++) { yy += sp.act[k]; gg += sp.gm[k]; }
-        var cp = outCore(sp, CT3.cfg.rrBy[p.n] || CT3.cfg.rrBy[p.pillar] || CT3.cfg.rr, CT3.cfg.ctcBy[p.n] || CT3.cfg.ctcBy[p.pillar] || CT3.cfg.ctc, yy, gg, basisOf(p));
+        var cp = outCore(sp, revMethod(p), marMethod(p), yy, gg, basisOf(p));
         c.rr += cp.rr; c.out += cp.out; c.gmOut += cp.gmOut; y2 += yy; g2 += gg;
       });
       c.gmRem = c.out - y2 ? (c.gmOut - g2) / (c.out - y2) : 0;
@@ -20662,8 +20665,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     return '<div class="phead"><div><h1>' + title + '</h1><div class="meta"><span class="chip">' + sub + '</span></div></div><div class="ct3-ha">' + (extra || '') + '<button class="ct3-dq" title="Data behind this" aria-label="Data behind this" onclick="ct3Data(\'' + tab + '\')">?</button>' + camBtn('tab:' + tab, true) + '</div></div>' + (tab === 'overview' || tab === 'financial' ? methodLine() : '');
   }
   function methodTags() {
-    var n = basisCounts(CT3.cfg, CT3.f), rb = Object.keys(CT3.cfg.rrBy).length;
-    return (n.b ? '<span class="ct3-tag">Run rate · ' + RR_L[CT3.cfg.rr] + ' · ' + n.b + (n.b === 1 ? ' line' : ' lines') + '</span>' : '') + (n.c ? '<span class="ct3-tag">% complete · ' + n.c + (n.c === 1 ? ' line' : ' lines') + '</span>' : '') + '<span class="ct3-tag">Cost to complete · ' + CTC_L[CT3.cfg.ctc] + '</span>' + (n.c ? '<span class="ct3-ds ct3-ds-n" title="% complete forecasting data is not yet in the data warehouse">% complete lines are estimates in v1</span>' : '');
+    var n = basisCounts(CT3.cfg, CT3.f), c = CT3.cfg, tg = function (t) { return '<span class="ct3-tag">' + t + '</span>'; };
+    return (n.b ? tg('Run rate · ' + RR_L[c.rr] + ' · ' + n.b + (n.b === 1 ? ' line' : ' lines')) : '') + (n.c ? tg('% complete · ' + PC_L[c.pc] + ' · ' + n.c + (n.c === 1 ? ' line' : ' lines')) : '') + tg('Cost to complete · ' + (n.b ? CTC_L[c.ctc] : '') + (n.b && n.c ? ' / ' : '') + (n.c ? CTC_L[c.pcm] : '')) + (n.c ? '<span class="ct3-ds ct3-ds-n" title="% complete forecasting data is not yet in the data warehouse">% complete lines are estimates in v1</span>' : '');
   }
   function methodLine() { return '<div class="ct3-ml"><span>How these numbers are built: ' + escH(cfgLabel(CT3.cfg)) + '</span>' + (CT3.role === 'admin' ? '<button class="ct3-lnk" onclick="ctNav(\'settings\')">Edit in Settings</button>' : '') + '</div>'; }
 
@@ -20814,15 +20817,17 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   var NAV = [['overview', 'Overview', '<path d="M3 12l9-9 9 9M5 10v10h14V10"/>'], ['financial', 'Financial', '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'], ['demand', 'Demand & adoption', '<path d="M3 3v18h18M7 14l4-4 3 3 5-6"/>'], ['operational', 'Operational', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'], ['service', 'Service', '<path d="M20 6L9 17l-5-5"/>'], ['settings', 'Settings', '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>']];
 
   /* ───────── settings (admin) ───────── */
-  var SET_SECS = [['alloc', 'Allocation method', '<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>'], ['rr', 'Run rate', '<path d="M3 17l5-5 4 4 8-9M15 7h5v5"/>'], ['ctc', 'Cost to complete', '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>']];
-  var SET_NAME = { alloc: 'Overhead allocation', rr: 'Run rate', ctc: 'Cost to complete' };
+  var SET_SECS = [['alloc', 'Allocation method', '<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>'], ['fc', 'Forecast', '<path d="M3 17l5-5 4 4 8-9M15 7h5v5"/>']];
+  var SET_NAME = { alloc: 'Overhead allocation', rr: 'Run-rate pace', ctc: 'Cost to complete, run-rate lines', pc: 'Revenue to go, % complete lines', pcm: 'Cost to complete, % complete lines' };
   var SET_OPT = {
     alloc: [['rev', 'By revenue', 'Every pillar, product line and region carries overhead in proportion to its revenue.'], ['gm', 'By gross margin', 'Overhead follows gross margin, so higher-margin lines carry more of it.'], ['off', 'Not allocated', 'Overhead is left out. Profit equals gross profit.']],
     rr: [['ytd', 'Year-to-date average', 'Every month so far counts equally. Smoothest, slowest to react.'], ['3m', 'Last 3 months', 'Recent pace. Balances trend and noise.'], ['1m', 'Last month', 'Most reactive. Moves with a single month.']],
-    ctc: [['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['plan', 'Use plan margin', 'Remaining months follow the AOP cost ratio.'], ['recent', 'Use last 3 months margin', 'Remaining months follow the recent cost ratio.']]
+    ctc: [['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['plan', 'Use plan margin', 'Remaining months follow the AOP cost ratio.'], ['recent', 'Use last 3 months margin', 'Remaining months follow the recent cost ratio.']],
+    pc: [['scaled', 'Plan, scaled by progress', 'Remaining revenue follows the plan for the months left, scaled by how far actuals are ahead of or behind plan so far.'], ['plan', 'Plan as is', 'Remaining revenue follows the plan for the months left, unscaled.']],
+    pcm: [['fcac', 'Job forecast (FCAC)', 'Forecast cost at completion less cost to date, from the job forecast.', 1], ['plan', 'Plan margin', 'Remaining months earn the budgeted job margin.'], ['ytd', 'Hold year-to-date margin', 'Remaining months cost the same share of revenue as the year so far.'], ['recent', 'Last 3 months margin', 'Remaining months follow the recent cost ratio.']]
   };
-  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', rr: 'How revenue is projected for the rest of the year. Run-rate lines use a recent monthly pace; % complete lines follow the job plan, scaled by progress to date.', ctc: 'How cost is projected for the months still to come.' };
-  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], rr: ['Working assumption: last 3 months. To be confirmed.', 'The method below applies to run-rate lines only. Open decision D12: run rate is marked available for EMP, Fleet & Personnel Assets and Small Tools & Consumables.'], ctc: ['Working assumption: hold the year-to-date margin. To be confirmed.'] };
+  var SET_DESC = { alloc: 'How shared overhead (G&A) is spread across pillars, product lines and regions.', fc: 'How revenue and cost are projected for the rest of the year. Each product line is forecast one of two ways.' };
+  var SET_NOTE = { alloc: ['Working assumption: allocation starts simple, on revenue. To be confirmed with Finance.', 'Company-wide only: overhead is one pool, and every pillar and product line has to add back to the total.'], fc: ['Working assumptions: last 3 months for run-rate lines, plan scaled by progress for % complete lines. To be confirmed.', 'Open decision D12: run rate is marked available for EMP, Fleet & Personnel Assets and Small Tools & Consumables.'] };
   function setOptLabel(k, v) { var r = SET_OPT[k].filter(function (o) { return o[0] === v; })[0]; return r ? r[1].toLowerCase() : v; }
   function setSnap() {
     var S = ct3Sum(baseO()), O = ct3Out(baseO()), pool = S.rev * GA_ACT;
@@ -20832,8 +20837,7 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function setTiles(sec, d) {
     var z = withAll(d, setSnap), S = z.S, O = z.O;
     if (sec === 'alloc') return setTile('Overhead, year to date', fm(z.pool), 'Same pool under every method') + setTile('Operating margin', fp(S.opP), fbps(S.opP - S.opT) + ' vs plan') + setTile('Gross margin', fp(S.gmP), 'Not affected by allocation');
-    if (sec === 'rr') return setTile('Monthly pace, remaining months', fm(O.rr), basisCounts(d).b + ' run-rate lines · ' + basisCounts(d).c + ' % complete') + setTile('Full-year revenue outlook', fm(O.out), fsp(O.gap / O.fyAop) + ' vs AOP') + setTile('Months still to come', '2', 'Nov and Dec');
-    if (sec === 'ctc') return setTile('Margin, remaining months', fp(O.gmRem), 'Gross, before overhead') + setTile('Full-year cost outlook', fm(z.K3), fp(z.K3 / O.out) + ' of revenue') + setTile('Full-year profit outlook', fm(z.K4), fp(z.K4 / O.out) + ' margin');
+    if (sec === 'fc') return setTile('Full-year revenue outlook', fm(O.out), fsp(O.gap / O.fyAop) + ' vs AOP') + setTile('Full-year profit outlook', fm(z.K4), fp(z.K4 / O.out) + ' margin') + setTile('Forecast basis', basisCounts(d).b + ' run rate · ' + basisCounts(d).c + ' % complete', 'Product lines');
     return '';
   }
   function setVals(d) {
@@ -20849,11 +20853,6 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
 
 
   /* Source: 02S Control Tower Products & Data Readiness Map, near-term wave, readiness grid as of Nov 10, 2026; v1 workarounds from O2S Control Tower v1 Metrics and Data Readiness */
-  var READY = {
-    alloc: [['O2S G&A actuals', 'CMiC GL', 'a', 'GL transactions are in the data warehouse; trial balances are not yet.'], ['McCarthy G&A actuals', 'CMiC GL', 'a', 'In the data warehouse; recently added to Foundry.'], ['G&A budgets and forecasts, O2S and McCarthy', 'Anaplan', 'm', 'Not available near term. Anaplan data is loaded manually for v1.'], ['Pillars and product lines', 'CMiC departments', 'a', 'Master data already in CMiC.']],
-    rr: [['Orders and billings', 'Yard Hub / CMiC to T3', 'a', 'Yard Hub may not reflect off-rent dates that inform forecasted revenue.'], ['O2S jobs and subjobs', 'CMiC, Billing Job UDF', 'a', 'Direct and unallocated scopes; the UDF links each O2S job to the McCarthy job it bills.'], ['Execution plans', 'Foundry Portal / Command Center', 'n', 'Not available near term; partial after Phase 2.'], ['% complete forecasting, job-based lines', 'CMiC', 'n', 'Not yet in the data warehouse. Needed to forecast job-based product lines.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']],
-    ctc: [['O2S job and subjob actuals, budgets and forecasts', 'CMiC', 'a', 'Forecasting % complete and risks and opportunities tables are not yet in the data warehouse.'], ['AOP financials and metrics', 'TBD', 'm', 'Final AOP outputs by pillar and product line are not in a system. AOP is loaded manually for v1.']]
-  };
   var RDY_L = { a: 'Available', p: 'Partial', m: 'Manual load', n: 'Not yet', x: 'Gap' };
   function pillarBasis(k) { var u = {}; PLS.forEach(function (x) { if (x.pillar === k) u[basisOf(x)] = 1; }); var a = Object.keys(u); return a.length === 1 ? BASIS_L[a[0]] : a.length > 1 ? 'Mixed' : '–'; }
 
@@ -20878,9 +20877,13 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     K1: ['jobactuals', 'eqcost', 'ga02', 'gambc', 'gabud'], K2: ['jobactuals', 'eqcost', 'ga02', 'gambc', 'gabud'], K3: ['billings', 'jobactuals', 'eqcost', 'ga02', 'gambc', 'gabud'], K4: ['billings', 'jobactuals', 'eqcost', 'ga02', 'gambc', 'gabud'],
     D2: ['opps', 'crm'], D3: ['crm', 'opps', 'mbcjobs', 'jobs'], T1: ['opps', 'crm', 'jobs'], T2: ['opps', 'jobs', 'execplans'], T3: ['opps', 'jobs', 'execplans'],
     O1: ['eqinv', 'billings'], O2: ['billings', 'eqcost', 'eqinv'], O3: ['emptime', 'jobs'], O4: ['eqinv', 'billings', 'emptime'], C1: ['execplans', 'billings'], C2: ['execplans', 'billings'] };
+  function readyRows(sec) {
+    if (sec === 'alloc') return [DSD.ga02, DSD.gambc, DSD.gabud, ['Pillars and product lines', 'CMiC departments', 'a', 'Master data already in CMiC.']];
+    return [DSD.billings, DSD.jobs, DSD.execplans, ['% complete forecasting, job-based lines', 'CMiC', 'n', 'Not yet in the data warehouse. Needed to forecast job-based product lines from the job forecast.'], DSD.jobactuals, DSD.aop];
+  }
   function ct3Data(key) {
     var rows, title = 'Data behind this', hasUse = false;
-    if (key.indexOf('set:') === 0) { rows = (READY[key.slice(4)] || []).map(function (r) { return [r[0], r[1], r[2], r[3], '']; }); title += ' · ' + SET_SECS.filter(function (x) { return x[0] === key.slice(4); })[0][1]; }
+    if (key.indexOf('set:') === 0) { rows = readyRows(key.slice(4)).map(function (r) { return [r[0], r[1], r[2], r[3], '']; }); title += ' · ' + SET_SECS.filter(function (x) { return x[0] === key.slice(4); })[0][1]; }
     else {
       var use = {}, order = []; hasUse = true; title += ' · ' + TABS[key].n;
       TABS[key].m.forEach(function (id) { (DEPS[id] || []).forEach(function (d) { if (!use[d]) { use[d] = []; order.push(d); } use[d].push(MET[id].n); }); });
@@ -20889,26 +20892,35 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
     openModal(title, '<div class="ct3-mi"><p>This reflects near-term availability (pre-Phase 2).</p><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Dataset</th><th>Source</th><th>Status</th>' + (hasUse ? '<th>Used by</th>' : '') + '<th>Note</th></tr></thead><tbody>' + rows.map(function (r) { return '<tr><td><b>' + escH(r[0]) + '</b></td><td>' + escH(r[1]) + '</td><td><span class="ct3-ds ct3-ds-' + r[2] + '">' + RDY_L[r[2]] + '</span></td>' + (hasUse ? '<td>' + escH(r[4]) + '</td>' : '') + '<td>' + escH(r[3]) + '</td></tr>'; }).join('') + '</tbody></table></div></div>');
     var mc = document.querySelector('#modal .modal-card'); if (mc) { mc.style.maxWidth = '980px'; mc.style.width = '94vw'; }
   }
-  function setByTable(sec, d) {
-    var by = sec === 'rr' ? 'rrBy' : 'ctcBy', L = sec === 'rr' ? RR_L : CTC_L, opts = SET_OPT[sec], def = d[sec], rr = sec === 'rr';
-    function sel(name, cur, inh, off) { return off ? '<span class="ct3-na">Not used</span>' : '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)"><option value="">' + inh + '</option>' + opts.map(function (o) { return '<option value="' + o[0] + '"' + (cur === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>'; }
+  function setRadios(k, d) { return SET_OPT[k].map(function (o) { return '<button class="ct3-ro' + (d[k] === o[0] ? ' on' : '') + (o[3] ? ' dis' : '') + '" onclick="ct3Draft(\'' + k + '\',\'' + o[0] + '\')"><b><i></i>' + o[1] + (o[3] ? ' <span class="ct3-ds ct3-ds-n">Not yet</span>' : '') + '</b><span>' + o[2] + '</span></button>'; }).join(''); }
+  function fcCards(d) {
+    var n = basisCounts(d);
+    function card(t, sub, a, ak, b, bk) { return '<div class="ct3-fcc"><h3>' + t + '</h3><div class="ct3-q">' + sub + '</div><div class="ct3-fl">' + a + '</div><div class="ct3-rgc">' + setRadios(ak, d) + '</div><div class="ct3-fl">' + b + '</div><div class="ct3-rgc">' + setRadios(bk, d) + '</div></div>'; }
+    return '<div class="ct3-fcg">' + card('Run-rate lines · ' + n.b, 'Volume-driven lines, forecast from recent billings.', 'Revenue pace', 'rr', 'Cost to complete', 'ctc') + card('% complete lines · ' + n.c, 'Job-based lines, forecast from the job plan and progress.', 'Revenue to go', 'pc', 'Cost to complete', 'pcm') + '</div>';
+  }
+  function setFcTable(d) {
+    function opts(kset, cur, inh) { return '<option value="">' + inh + '</option>' + kset.map(function (g) { return (g.l ? '<optgroup label="' + g.l + '">' : '') + g.o.map(function (o) { return '<option value="' + o[0] + '"' + (o[3] ? ' disabled' : '') + (cur === o[0] ? ' selected' : '') + '>' + o[1] + (o[3] ? ' (not yet)' : '') + '</option>'; }).join('') + (g.l ? '</optgroup>' : ''); }).join(''); }
+    function sel(by, name, cur, inh, groups) { return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'' + by + '\',\'' + escH(jsq(name)) + '\',this.value)">' + opts(groups, cur, inh) + '</select>'; }
     function bsel(x) { var cur = d.basisBy[x.n], dflt = BASIS_DEF[x.n] || 'b'; return '<select class="ct3-sel' + (cur ? ' set' : '') + '" onchange="ct3DraftBy(\'basisBy\',\'' + escH(jsq(x.n)) + '\',this.value)"><option value="">Default · ' + BASIS_L[dflt] + '</option><option value="b"' + (cur === 'b' ? ' selected' : '') + '>Run rate</option><option value="c"' + (cur === 'c' ? ' selected' : '') + '>% complete</option></select>'; }
-    function vals(o) { return rr ? '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td>' : '<td>' + fp(o.gmRem) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
+    var G = { rb: { l: 'Run-rate lines', o: SET_OPT.rr }, rc: { l: '% complete lines', o: SET_OPT.pc }, mb: { l: 'Run-rate lines', o: SET_OPT.ctc }, mc: { l: '% complete lines', o: SET_OPT.pcm } };
+    function inhLbl(x, by) { var c2 = cfgCopy(d); delete c2[by][x.n]; return by === 'rrBy' ? ({ ytd: 'YTD avg', '3m': '3-month', '1m': '1-month', scaled: 'scaled plan', plan: 'plan' })[revMethod(x, c2)] : ({ ytd: 'YTD', plan: 'plan', recent: 'recent' })[marMethod(x, c2)]; }
     var rows = withAll(d, function () {
       var r = '';
       PILLARS.forEach(function (p) {
-        var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d[by][x.n] || d.basisBy[x.n]; }), open = CT3.exp[p.k] || anyOv, eff = d[by][p.k] || def, allC = plist.every(function (x) { return basisOf(x, d) === 'c'; });
-        var m = '<td>' + sel(p.k, d[by][p.k], 'Company default · ' + L[def], rr && allC) + '</td>', b = '<td>' + pillarBasis(p.k) + '</td>';
-        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td>' + (rr ? b + m : m + b) + vals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
+        var plist = PLS.filter(function (x) { return x.pillar === p.k; }), anyOv = plist.some(function (x) { return d.rrBy[x.n] || d.ctcBy[x.n] || d.basisBy[x.n]; }), open = CT3.exp[p.k] || anyOv;
+        var hasB = plist.some(function (x) { return basisOf(x, d) === 'b'; }), hasC = plist.some(function (x) { return basisOf(x, d) === 'c'; }), two = hasB && hasC;
+        var rg = [].concat(hasB ? [two ? G.rb : { o: SET_OPT.rr }] : [], hasC ? [two ? G.rc : { o: SET_OPT.pc }] : []), mg = [].concat(hasB ? [two ? G.mb : { o: SET_OPT.ctc }] : [], hasC ? [two ? G.mc : { o: SET_OPT.pcm }] : []);
+        r += '<tr class="ct3-pr"><td><button class="ct3-ex" onclick="ct3SetExp(\'' + escH(jsq(p.k)) + '\')">' + (open ? '▾' : '▸') + '</button><b>' + escH(p.k) + '</b><small>' + plist.length + ' product lines</small></td><td>' + pillarBasis(p.k) + '</td><td>' + sel('rrBy', p.k, d.rrBy[p.k], 'Company default', rg) + '</td><td>' + sel('ctcBy', p.k, d.ctcBy[p.k], 'Company default', mg) + '</td>' + fcVals(ct3Out(baseO({ pillar: p.k, pl: 'All' }))) + '</tr>';
         if (open) plist.forEach(function (x) {
-          var isC = basisOf(x, d) === 'c', m2 = '<td>' + sel(x.n, d[by][x.n], 'Same as pillar · ' + L[eff], rr && isC) + '</td>', b2 = '<td>' + (rr ? bsel(x) : BASIS_L[basisOf(x, d)]) + (TOCONF[x.n] ? ' <span class="ct3-ds ct3-ds-n" title="' + escH(TOCONF[x.n]) + '">To confirm</span>' : '') + '</td>';
-          r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td>' + (rr ? b2 + m2 : m2 + b2) + vals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>';
+          var B = basisOf(x, d), rv = d.rrBy[x.n] && REV_OK[B][d.rrBy[x.n]] ? d.rrBy[x.n] : '';
+          r += '<tr class="ct3-pl"><td>' + escH(x.n) + '</td><td>' + bsel(x) + (TOCONF[x.n] ? ' <span class="ct3-ds ct3-ds-n" title="' + escH(TOCONF[x.n]) + '">To confirm</span>' : '') + '</td><td>' + sel('rrBy', x.n, rv, 'Pillar · ' + inhLbl(x, 'rrBy'), [{ o: B === 'c' ? SET_OPT.pc : SET_OPT.rr }]) + '</td><td>' + sel('ctcBy', x.n, d.ctcBy[x.n], 'Pillar · ' + inhLbl(x, 'ctcBy'), [{ o: B === 'c' ? SET_OPT.pcm : SET_OPT.ctc }]) + '</td>' + fcVals(ct3Out(baseO({ pillar: x.pillar, pl: x.n }))) + '</tr>';
         });
       });
       return r;
     });
-    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">' + (rr ? 'Choose how each product line is forecast. The method applies to run-rate lines; a product line follows its pillar unless it has its own.' : 'Every row follows the company default unless you change it. A product line follows its pillar unless it has its own.') + '</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th>' + (rr ? '<th>Forecast basis</th><th>Method</th><th>Monthly pace</th><th>Full-year revenue</th>' : '<th>Method</th><th>Forecast basis</th><th>Margin, remaining months</th><th>Full-year profit</th>') + '</tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Defaults follow the readiness map: billings-based lines are forecast from run rate, job-based lines from % complete. Hover “To confirm” for why a line is open.</div></section>';
+    return '<section class="ct3-blk"><header><div><h2>By pillar and product line</h2><div class="ct3-q">Every row follows the company default for its basis unless you change it. A product line follows its pillar unless it has its own.</div></div></header><div class="ct3-tw"><table class="ct3-t"><thead><tr><th>Pillar / product line</th><th>Forecast basis</th><th>Revenue</th><th>Cost to complete</th><th>Monthly pace</th><th>Full-year revenue</th><th>Full-year profit</th></tr></thead><tbody>' + rows + '</tbody></table></div><div class="ct3-nt">Defaults follow the readiness map: billings-based lines are forecast from run rate, job-based lines from % complete. Hover “To confirm” for why a line is open.</div></section>';
   }
+  function fcVals(o) { return '<td>' + fm(o.rr) + '</td><td>' + fm(o.out) + '</td><td>' + fm(o.gmOut - o.ga) + '</td>'; }
   function ct3DraftBy(by, name, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); if (v) CT3.draft[by][name] = v; else delete CT3.draft[by][name]; ct3Render(); }
   function ct3SetExp(k) { CT3.exp[k] = !CT3.exp[k]; ct3Render(); }
   function scSettings() {
@@ -20919,10 +20931,9 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
       (dirty ? '<button class="btn btn-ghost btn-sm" onclick="ct3SetDiscard()">Discard</button><button class="btn btn-dark btn-sm" onclick="ct3SetSave()">Save for everyone</button>' : '<button class="btn btn-ghost btn-sm" onclick="ct3Hist()">History</button>') + '</div>';
     h += '<div class="ct3-stt">' + SET_SECS.map(function (x) { return '<button class="' + (sec === x[0] ? 'on' : '') + '" onclick="ct3SetSec(\'' + x[0] + '\')"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + x[2] + '</svg>' + x[1] + '</button>'; }).join('') + '</div>';
     h += '<div class="ct3-tiles">' + setTiles(sec, d) + '</div>';
-    h += '<section class="ct3-blk"><header><div><h2>' + SET_SECS.filter(function (x) { return x[0] === sec; })[0][1] + ' <span class="ct3-tag">Shared with everyone</span> <button class="ct3-dq ct3-dqs" title="Data behind this" aria-label="Data behind this" onclick="ct3Data(\'set:' + sec + '\')">?</button></h2><div class="ct3-q">' + SET_DESC[sec] + '</div></div></header><div class="ct3-rg">' +
-      SET_OPT[sec].map(function (o) { return '<button class="ct3-ro' + (d[sec] === o[0] ? ' on' : '') + '" onclick="ct3Draft(\'' + sec + '\',\'' + o[0] + '\')"><b><i></i>' + o[1] + '</b><span>' + o[2] + '</span></button>'; }).join('') + '</div>' +
-      SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
-    if (sec === 'rr' || sec === 'ctc') h += setByTable(sec, d);
+    h += '<section class="ct3-blk"><header><div><h2>' + SET_SECS.filter(function (x) { return x[0] === sec; })[0][1] + ' <span class="ct3-tag">Shared with everyone</span> <button class="ct3-dq ct3-dqs" title="Data behind this" aria-label="Data behind this" onclick="ct3Data(\'set:' + sec + '\')">?</button></h2><div class="ct3-q">' + SET_DESC[sec] + '</div></div></header>' +
+      (sec === 'fc' ? fcCards(d) : '<div class="ct3-rg">' + setRadios(sec, d) + '</div>') + SET_NOTE[sec].map(function (n) { return '<div class="ct3-nt">' + n + '</div>'; }).join('') + '</section>';
+    if (sec === 'fc') h += setFcTable(d);
     h += '<section class="ct3-blk"><header><div><h2>What this does to the numbers</h2><div class="ct3-q">All regions, all pillars, year to date and full-year outlook</div></div></header>' + setPreview(d) + '<div class="ct3-nt">Quarterly snapshots already taken keep the method they were taken with.</div></section>';
     return h;
   }
@@ -20931,8 +20942,8 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   function ct3Draft(k, v) { if (!CT3.draft) CT3.draft = cfgCopy(CT3.cfg); CT3.draft[k] = v; ct3Render(); }
   function ct3SetDiscard() { CT3.draft = null; ct3Render(); }
   function ct3SetSave() {
-    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
-    [['rrBy', 'Run rate'], ['ctcBy', 'Cost to complete'], ['basisBy', 'Forecast basis']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
+    var d = CT3.draft, c = CT3.cfg, ch = ['alloc', 'rr', 'ctc', 'pc', 'pcm'].filter(function (k) { return d[k] !== c[k]; }).map(function (k) { return SET_NAME[k] + ' changed from ' + setOptLabel(k, c[k]) + ' to ' + setOptLabel(k, d[k]); });
+    [['rrBy', 'Revenue method'], ['ctcBy', 'Cost to complete method'], ['basisBy', 'Forecast basis']].forEach(function (x) { var a = Object.keys(c[x[0]]).length, b = Object.keys(d[x[0]]).length; if (JSON.stringify(c[x[0]]) !== JSON.stringify(d[x[0]])) ch.push(x[1] + ' overrides by pillar and product line: ' + a + ' before, ' + b + ' now'); });
     if (!ch.length) return;
     CT3.ver++; CT3.log.unshift({ v: CT3.ver, d: 'Nov 24', who: 'Staging Admin', t: ch.join('; ') });
     CT3.cfg = cfgCopy(d); CT3.draft = null; ct3Render(); ct3Toast('Saved for everyone · Version ' + CT3.ver);
@@ -20948,13 +20959,13 @@ try{_obRecon();}catch(e){window.__obErr=e.message;}
   }
   function ct3GateClose() { var g = $e('ct3-gate'); if (g && g.parentNode) g.parentNode.removeChild(g); }
   function ct3GoSet() { ct3GateClose(); CT3.screen = 'settings'; CT3.draft = cfgCopy(CT3.cfg); ct3Build(); ct3Render(); window.scrollTo(0, 0); }
-  var SET_CSS = '.ct3-dq{display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:14px;font-weight:700;line-height:1;transition:border-color .15s,box-shadow .15s}.ct3-dq:hover{border-color:var(--g400);color:var(--g900);box-shadow:0 2px 6px rgba(0,0,0,.08)}.ct3-dqs{width:22px;height:22px;border-radius:50%;font-size:12px;vertical-align:middle}.ct3-ds-p{background:#fef3c7;color:#92400e}.ct3-na{font-size:12px;color:var(--g400)}.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
+  var SET_CSS = '.ct3-fcg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.ct3-fcc{border:1px solid var(--g200);border-radius:12px;padding:16px 18px;background:var(--g50)}.ct3-fcc h3{font-size:14.5px;font-weight:700;margin:0 0 2px}.ct3-fl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);margin:16px 0 8px}.ct3-rgc{display:grid;gap:8px}.ct3-dq{display:inline-grid;place-items:center;width:32px;height:32px;border:1px solid var(--g250);border-radius:8px;background:#fff;color:var(--g700);font-size:14px;font-weight:700;line-height:1;transition:border-color .15s,box-shadow .15s}.ct3-dq:hover{border-color:var(--g400);color:var(--g900);box-shadow:0 2px 6px rgba(0,0,0,.08)}.ct3-dqs{width:22px;height:22px;border-radius:50%;font-size:12px;vertical-align:middle}.ct3-ds-p{background:#fef3c7;color:#92400e}.ct3-na{font-size:12px;color:var(--g400)}.ct3-ds{display:inline-flex;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;white-space:nowrap}.ct3-ds-a{background:#dcfce7;color:#166534}.ct3-ds-m{background:#fef3c7;color:#92400e}.ct3-ds-n{background:var(--g100);color:var(--g600);box-shadow:inset 0 0 0 1px var(--g250)}.ct3-ds-x{background:#fee2e2;color:#991b1b}.ct3-sel{font:inherit;font-size:12.5px;color:var(--g700);border:1px solid var(--g250);border-radius:8px;padding:6px 8px;background:#fff;max-width:240px;width:100%}.ct3-sel.set{border-color:var(--charcoal);font-weight:600;color:var(--g900)}.ct3-pr td{background:var(--g50)}.ct3-pl td:first-child{padding-left:38px;color:var(--g700)}.ct3-ex{width:20px;color:var(--g500);margin-right:4px}.ct3-pr small{margin-left:8px;color:var(--g400)}.ct3-rs{display:inline-flex;background:rgba(24,24,27,.06);border-radius:11px;padding:3px;gap:2px}.ct3-rs button{font-size:12.5px;font-weight:600;color:var(--g600);padding:6px 12px;border-radius:8px;transition:background .15s,color .15s}.ct3-rs button:hover{color:var(--g900)}.ct3-rs button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}.ct3-rl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}.ct3-ml{font-size:12px;color:var(--g500);margin:-6px 0 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center}.ct3-lnk{font-size:12px;font-weight:600;color:var(--red);padding:0}.ct3-lnk:hover{text-decoration:underline}' +
     '.ct3-sd{font-size:14px;color:var(--g600);max-width:760px;margin:0 0 16px;line-height:1.55}.ct3-sv{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--g200);border-radius:14px;padding:14px 18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.04);flex-wrap:wrap}.ct3-svt{font-size:13.5px;color:var(--g700)}.ct3-dot{width:10px;height:10px;border-radius:50%;background:#16a34a;flex:none}.ct3-dot.dirty{background:#d97706}' +
     '.ct3-stt{display:inline-flex;gap:2px;background:rgba(24,24,27,.06);border-radius:14px;padding:4px;margin:0 0 16px;flex-wrap:wrap}.ct3-stt button{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--g600);padding:9px 16px;border-radius:10px;transition:background .15s,color .15s}.ct3-stt button:hover{color:var(--g900)}.ct3-stt button.on{background:#fff;color:var(--g900);box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.04)}' +
     '.ct3-rg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.ct3-ro{text-align:left;border:1px solid var(--g250);border-radius:12px;padding:14px 16px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:border-color .15s,box-shadow .15s}.ct3-ro:hover{border-color:var(--g400)}.ct3-ro.on{border-color:var(--charcoal);box-shadow:0 0 0 1px var(--charcoal)}.ct3-ro b{font-size:13.5px;display:flex;align-items:center;gap:9px}.ct3-ro b i{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g400);display:inline-block;flex:none;box-sizing:border-box}.ct3-ro.on b i{border:5px solid var(--charcoal)}.ct3-ro span{font-size:12px;color:var(--g500);line-height:1.5;padding-left:24px}.ct3-ro.dis{opacity:.4;pointer-events:none}' +
     '.ct3-nt{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:var(--g600);margin-top:12px;line-height:1.5}.ct3-nt:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--g400);margin-top:6px;flex:none}' +
     '.ct3-gate{position:fixed;inset:0;background:rgba(24,24,27,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);z-index:100000;display:grid;place-items:center;padding:16px}.ct3-gc{background:#fff;border-radius:18px;max-width:460px;width:100%;padding:24px 26px 20px;box-shadow:0 24px 60px rgba(0,0,0,.3);animation:ct3pop .16s ease-out}.ct3-gc h3{font-size:18px;font-weight:700;margin:14px 0 6px}.ct3-gc p,.ct3-gc li{font-size:13px;color:var(--g600);line-height:1.6}.ct3-gc ul{margin:10px 0 20px 18px;padding:0}.ct3-gi{width:40px;height:40px;border-radius:12px;background:#fef3c7;color:#b45309;display:grid;place-items:center}.ct3-gb{display:flex;justify-content:flex-end;gap:8px}' +
-    '@media (max-width:800px){.ct3-rg{grid-template-columns:1fr}.ct3-rl{display:none}}';
+    '@media (max-width:800px){.ct3-rg,.ct3-fcg{grid-template-columns:1fr}.ct3-rl{display:none}}';
   function ct3Css() {
     if ($e('ct3-css')) return;
     var s = document.createElement('style'); s.id = 'ct3-css';
